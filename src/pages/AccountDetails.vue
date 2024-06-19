@@ -235,7 +235,7 @@
 
     <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
-        <p id="recentTransactions" class="h-is-secondary-title">Recent Account Operations</p>
+        <p id="recentTransactions" class="h-is-secondary-title">Recent Operations</p>
       </template>
       <template v-slot:control>
         <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
@@ -287,7 +287,7 @@
       </template>
     </DashboardCard>
 
-    <ApproveAllowanceSection :account-id="normalizedAccountId ?? undefined"/>
+    <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
 
     <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
 
@@ -331,7 +331,7 @@ import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import ApproveAllowanceSection from "@/components/allowances/ApproveAllowanceSection.vue";
+import AllowancesSection from "@/components/allowances/AllowancesSection.vue";
 import Copyable from "@/components/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
@@ -369,7 +369,7 @@ export default defineComponent({
     MirrorLink,
     InlineBalancesValue,
     Copyable,
-    ApproveAllowanceSection,
+    AllowancesSection,
     EVMAddress,
     AliasValue,
     TransactionLink,
