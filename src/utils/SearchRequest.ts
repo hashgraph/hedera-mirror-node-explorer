@@ -28,8 +28,6 @@ import {
     ContractResultDetails,
     TokenInfo,
     Topic,
-    TopicMessage,
-    TopicMessagesResponse,
     Transaction,
     TransactionByIdResponse,
     TransactionResponse
@@ -50,7 +48,6 @@ export class SearchRequest {
     public transactions = Array<Transaction>()
     public tokenInfo: TokenInfo | null = null
     public topic: Topic | null = null
-    public topicMessages = Array<TopicMessage>()
     public contract: ContractResponse | null = null
     public block: Block | null = null
     public ethereumAddress: string | null = null
@@ -223,7 +220,9 @@ export class SearchRequest {
     //
 
     private updateErrorCount(reason: unknown): void {
-        const notFound = axios.isAxiosError(reason) && reason.response?.status == 404
+        // Workaround: transiently we consider 400 as 404 because of api/v1/topics/{topicId} bug
+        const notFound = axios.isAxiosError(reason)
+            && (reason.response?.status == 404 || reason.response?.status == 400)
         if (!notFound) {
             this.errorCount += 1
         }
@@ -289,15 +288,8 @@ export class SearchRequest {
 
     private async searchTopic(topicID: EntityID): Promise<void> {
         try {
-            if (this.network === "previewnet") {
-                const r = await axios.get<Topic>("api/v1/topics/" + topicID.toString())
-                this.topic = r.data
-            } else {
-                const params = {order: "desc", limit: "1"}
-                // https://testnet.mirrornode.hedera.com/api/v1/docs/#/topics/listTopicMessagesById
-                const r = await axios.get<TopicMessagesResponse>("api/v1/topics/" + topicID.toString() + "/messages", {params})
-                this.topicMessages = r.data.messages ?? []
-            }
+            const r = await axios.get<Topic>("api/v1/topics/" + topicID.toString())
+            this.topic = r.data
         } catch (reason: unknown) {
             this.updateErrorCount(reason)
         }

@@ -174,12 +174,6 @@ export default defineComponent({
                 routeManager.routeToTopic(topicId)
               }
               searchDidEnd(true)
-            } else if (r.topicMessages.length >= 1) {
-              const topicId = r.topicMessages[0].topic_id
-              if (topicId) {
-                routeManager.routeToTopic(topicId)
-              }
-              searchDidEnd(true)
             } else {
               // No match => if searchId looks like an EVM address we say "inactive" else we say "not found"
               if (r.ethereumAddress !== null) {
