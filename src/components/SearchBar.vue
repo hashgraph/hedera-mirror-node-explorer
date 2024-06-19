@@ -168,6 +168,12 @@ export default defineComponent({
                 routeManager.routeToBlock(r.block.number)
               }
               searchDidEnd(true)
+            } else if (r.topic != null) {
+              const topicId = r.topic.topic_id
+              if (topicId) {
+                routeManager.routeToTopic(topicId)
+              }
+              searchDidEnd(true)
             } else if (r.topicMessages.length >= 1) {
               const topicId = r.topicMessages[0].topic_id
               if (topicId) {
