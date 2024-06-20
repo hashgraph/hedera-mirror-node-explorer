@@ -125,7 +125,7 @@
           <input :class="{'has-text-grey': allowanceChoice !== 'nft'}"
                  :value="selectedNft"
                  class="input is-small has-text-right has-text-white"
-                 placeholder="Token ID (0.0.1234)"
+                 placeholder="Collection ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
@@ -211,41 +211,34 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, Ref, ref, watch} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import axios from "axios";
-import {
-  CryptoAllowance,
-  Nfts,
-  TokenAllowance,
-  TokenRelationshipResponse,
-  Transaction,
-  TransactionByIdResponse
-} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, TokenAllowance, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
 import {waitFor} from "@/utils/TimerUtils";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
-import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
-import {formatTokenAmount, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {formatTokenAmount, isOwnedSerials, isValidAssociation, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
-const VALID_CONTRACT_MESSAGE = "Contract found"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
 const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
 const SAME_AS_OWNER_ACCOUNT_MESSAGE = "Same as owner's account"
+const UNKNOWN_TOKENID_MESSAGE = "Unknown token ID"
 const INVALID_TOKENID_MESSAGE = "Invalid token ID"
 const TOKEN_NOT_FUNGIBLE_MESSAGE = "Token is not fungible"
 const TOKEN_NOT_NFT_MESSAGE = "Token is fungible"
 const TOKEN_NOT_FOUND_MESSAGE = "Not associated with this account"
 const NFT_SERIAL_PROMPT_MESSAGE = "Leave empty to approve for ALL"
-const SERIAL_NOT_FOUND_MESSAGE = "Not associated with this account"
+const SERIAL_NOT_OWNED_MESSAGE = "Not owned by this account"
 
 export default defineComponent({
   name: "ApproveAllowanceDialog",
@@ -274,14 +267,16 @@ export default defineComponent({
 
     const selectedSpender = ref<string | null>(null)
     const normalizedSpender = computed(() => EntityID.normalize(nr.stripChecksum(selectedSpender.value ?? "")))
+
     const selectedHbarAmount = ref<string | null>(null)
+
     const selectedToken = ref<string | null>(null)
     const normalizedToken = computed(() => EntityID.normalize(nr.stripChecksum(selectedToken.value ?? "")))
     const tokenInfoLookup = TokenInfoCache.instance.makeLookup(normalizedToken)
     onMounted(() => tokenInfoLookup.mount())
     onBeforeUnmount(() => tokenInfoLookup.unmount())
     const tokenInfo = computed(() => tokenInfoLookup.entity.value)
-    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value))
+    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value, 32))
     const initialTokenAmount = computed(
         () => props.currentTokenAllowance?.amount_granted
             ? formatTokenAmount(
@@ -296,10 +291,31 @@ export default defineComponent({
             ? Number.parseFloat(selectedTokenAmount.value) * Math.pow(10, Number(tokenInfo.value?.decimals))
             : null
     )
+
     const selectedNft = ref<string | null>(null)
     const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNft.value ?? "")))
+    const nftInfoLookup = TokenInfoCache.instance.makeLookup(normalizedNFT)
+    onMounted(() => nftInfoLookup.mount())
+    onBeforeUnmount(() => nftInfoLookup.unmount())
+    const nftInfo = computed(() => nftInfoLookup.entity.value)
+    const nftSymbol = computed(() => makeTokenSymbol(nftInfo.value, 32))
+
     const selectedNftSerials = ref<string | null>(null)
-    const nftSerials = ref<number[]>([])
+    const nftSerials = computed(() => {
+          const result: number[] = []
+          const inputSerialsSplit = selectedNftSerials.value ? selectedNftSerials.value.split(',') : []
+          for (const s of inputSerialsSplit) {
+            if (s.length) {
+              const i = parseInt(s)
+              if (!result.includes(i)) {
+                result.push(i)
+              }
+            }
+          }
+          return result
+        }
+    )
+
     const allowanceChoice = ref("hbar")
 
     const isSpenderValid = ref(false)
@@ -314,6 +330,7 @@ export default defineComponent({
     const isTokenValid = ref(false)
     const tokenFeedback = ref<string | null>(null)
     let tokenValidationTimerId = -1
+
     const isTokenAmountValid = computed(() =>
         selectedTokenAmount.value !== null &&
         parseFloat(selectedTokenAmount.value) >= 0)
@@ -371,7 +388,8 @@ export default defineComponent({
       ) && edited.value
     })
 
-    watch([() => props.showDialog, tokenInfo], () => {
+    // watch([() => props.showDialog, tokenInfo], () => {
+    watch([() => props.showDialog], () => {
       if (props.showDialog) {
         if (props.currentHbarAllowance) {
           isEditing.value = true
@@ -423,8 +441,25 @@ export default defineComponent({
         selectedSpender.value = null
       }
     })
-    const validateSpender =
-        () => validateAccount(selectedSpender.value, isSpenderValid, spenderFeedback)
+
+    const validateSpender = async () => {
+      isSpenderValid.value = false
+      const checksum = nr.extractChecksum(selectedSpender.value ?? "")
+      const isValidChecksum = checksum ? nr.isValidChecksum(normalizedSpender.value ?? "", checksum, network) : true
+
+      if (normalizedSpender.value === null) {
+        spenderFeedback.value = INVALID_ACCOUNTID_MESSAGE
+      } else if (!isValidChecksum) {
+        spenderFeedback.value = INVALID_CHECKSUM_MESSAGE
+      } else if (normalizedSpender.value === walletManager.accountId.value) {
+        spenderFeedback.value = SAME_AS_OWNER_ACCOUNT_MESSAGE
+      } else if (!await AccountByIdCache.instance.lookup(normalizedSpender.value)) {
+        spenderFeedback.value = UNKNOWN_ACCOUNT_MESSAGE
+      } else {
+        isSpenderValid.value = true
+        spenderFeedback.value = VALID_ACCOUNT_MESSAGE
+      }
+    }
 
     watch(selectedToken, () => {
       isTokenValid.value = false
@@ -439,14 +474,32 @@ export default defineComponent({
         selectedToken.value = null
       }
     })
-    const validateToken = () => validateTokenAssociation(
-        walletManager.accountId.value,
-        selectedToken.value,
-        'FUNGIBLE_COMMON',
-        isTokenValid,
-        tokenFeedback)
 
-    watch(selectedNft, () => {
+    const validateToken = async () => {
+      isTokenValid.value = false
+
+      const checksum = nr.extractChecksum(selectedToken.value ?? "")
+      const isValidChecksum = checksum ? nr.isValidChecksum(normalizedToken.value ?? "", checksum, network) : true
+
+      if (normalizedToken.value === null) {
+        tokenFeedback.value = INVALID_TOKENID_MESSAGE
+      } else if (!isValidChecksum) {
+        tokenFeedback.value = INVALID_CHECKSUM_MESSAGE
+      } else if (tokenInfo.value === null) {
+        tokenFeedback.value = UNKNOWN_TOKENID_MESSAGE
+      } else if (tokenInfo.value?.type !== 'FUNGIBLE_COMMON') {
+        tokenFeedback.value = TOKEN_NOT_FUNGIBLE_MESSAGE
+      } else if (! await isValidAssociation(walletManager.accountId.value, normalizedToken.value)) {
+        tokenFeedback.value = TOKEN_NOT_FOUND_MESSAGE
+      } else {
+        isTokenValid.value = true
+        tokenFeedback.value = null
+      }
+    }
+
+    watch(selectedNft, (value, oldValue) => {
+      console.log(`selectedNft - oldValue:${oldValue}`)
+      console.log(`selectedNft - value:${value}`)
       isNftValid.value = false
       nftFeedback.value = null
       if (nftValidationTimerId != -1) {
@@ -459,12 +512,28 @@ export default defineComponent({
         selectedNft.value = null
       }
     })
-    const validateNft = () => validateTokenAssociation(
-        walletManager.accountId.value,
-        selectedNft.value,
-        'NON_FUNGIBLE_UNIQUE',
-        isNftValid,
-        nftFeedback)
+
+    const validateNft = async () => {
+      isNftValid.value = false
+
+      const checksum = nr.extractChecksum(selectedNft.value ?? "")
+      const isValidChecksum = checksum ? nr.isValidChecksum(normalizedNFT.value ?? "", checksum, network) : true
+
+      if (normalizedNFT.value === null) {
+        nftFeedback.value = INVALID_TOKENID_MESSAGE
+      } else if (!isValidChecksum) {
+        nftFeedback.value = INVALID_CHECKSUM_MESSAGE
+      } else if (nftInfo.value === null) {
+        nftFeedback.value = UNKNOWN_TOKENID_MESSAGE
+      } else if (nftInfo.value?.type !== 'NON_FUNGIBLE_UNIQUE') {
+        nftFeedback.value = TOKEN_NOT_NFT_MESSAGE
+      } else if (! await isValidAssociation(walletManager.accountId.value, normalizedNFT.value)) {
+        nftFeedback.value = TOKEN_NOT_FOUND_MESSAGE
+      } else {
+        isNftValid.value = true
+        nftFeedback.value = null
+      }
+    }
 
     watch([selectedNftSerials, selectedNft], () => {
       isNftSerialsValid.value = true
@@ -479,13 +548,16 @@ export default defineComponent({
         selectedNftSerials.value = null
       }
     })
-    const validateNftSerials = () => validateSerialsAssociation(
-        walletManager.accountId.value,
-        normalizedNFT.value,
-        selectedNftSerials.value,
-        isNftSerialsValid,
-        nftSerials,
-        nftSerialsFeedback)
+
+    const validateNftSerials = async () => {
+      if (! await isOwnedSerials(walletManager.accountId.value, normalizedNFT.value, nftSerials.value)) {
+        isNftSerialsValid.value = false
+        nftSerialsFeedback.value = SERIAL_NOT_OWNED_MESSAGE
+      } else {
+        isNftSerialsValid.value = true
+        nftSerialsFeedback.value = null
+      }
+    }
 
     const showConfirmDialog = ref(false)
 
@@ -507,23 +579,27 @@ export default defineComponent({
               + " for " + tokenSymbol.value + " token (" + token + ")?"
         } else {
           result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + selectedTokenAmount.value + " " + tokenSymbol.value + " tokens (" + token + ")?"
+              + " for " + selectedTokenAmount.value + " " + tokenSymbol.value + " (" + token + ") tokens?"
         }
       } else {  // 'nft'
         const nFT = normalizedNFT.value
-        result = "Do you want to approve an allowance to account " + toAccount
-            + " for NFT " + nFT
-        if (nftSerials.value.length) {
-          result += " ("
+        if (nftSerials.value.length > 0) {
+          result = "Do you want to approve an allowance to account " + toAccount
+              + " for NFTs " + nftSymbol.value + " "
           for (let i = 0; i < nftSerials.value.length; i++) {
-            if (i > 0) {
+            if (i > 20) {
+              result += '…'
+              break
+            } else if (i > 0) {
               result += ', '
             }
             result += '#' + nftSerials.value[i]
           }
-          result += ')'
+          result += '?'
+        } else {
+          result = "Do you want to approve an allowance to account " + toAccount
+              + " for all NFTs of collection " + nftSymbol.value + " (" + nFT + ")?"
         }
-        result += '?'
       }
       return result
     })
@@ -536,12 +612,48 @@ export default defineComponent({
     const progressExtraTransactionId = ref<string | null>(null)
     const showProgressSpinner = ref(false)
 
-    const handleSpenderInput = (event: Event) => handleEntityIDInput(selectedSpender, event)
-    const handleHbarAmountInput = (event: Event) => handleAmountInput(selectedHbarAmount, event)
-    const handleTokenInput = (event: Event) => handleEntityIDInput(selectedToken, event)
-    const handleTokenAmountInput = (event: Event) => handleAmountInput(selectedTokenAmount, event)
-    const handleNftInput = (event: Event) => handleEntityIDInput(selectedNft, event)
-    const handleNftSerialsInput = (event: Event) => handleIntListInput(selectedNftSerials, event)
+    const handleSpenderInput = (event: Event) => {
+      const newValue = inputEntityID(event, selectedSpender.value)
+      if (newValue === selectedSpender.value) {
+        selectedSpender.value = ""
+      }
+      selectedSpender.value = newValue
+    }
+    const handleHbarAmountInput = (event: Event) => {
+      const newValue = inputAmount(event, selectedHbarAmount.value)
+      if (newValue === selectedHbarAmount.value) {
+        selectedHbarAmount.value = ""
+      }
+      selectedHbarAmount.value = newValue
+    }
+    const handleTokenInput = (event: Event) => {
+      const newValue = inputEntityID(event, selectedToken.value)
+      if (newValue === selectedToken.value) {
+        selectedToken.value = ""
+      }
+      selectedToken.value = newValue
+    }
+    const handleTokenAmountInput = (event: Event) => {
+      const newValue = inputAmount(event, selectedTokenAmount.value)
+      if (newValue === selectedTokenAmount.value) {
+        selectedTokenAmount.value = ""
+      }
+      selectedTokenAmount.value = newValue
+    }
+    const handleNftInput = (event: Event) => {
+      const newValue = inputEntityID(event, selectedNft.value)
+      if (newValue === selectedNft.value) {
+        selectedNft.value = ""
+      }
+      selectedNft.value = newValue
+    }
+    const handleNftSerialsInput = (event: Event) => {
+      const newValue = inputIntList(event, selectedNftSerials.value)
+      if (newValue === selectedNftSerials.value) {
+        selectedNftSerials.value = ""
+      }
+      selectedNftSerials.value = newValue
+    }
 
     const handleCancel = () => {
       context.emit('update:showDialog', false)
@@ -616,232 +728,6 @@ export default defineComponent({
           progressExtraTransactionId.value = null
           showProgressSpinner.value = false
         }
-      }
-    }
-
-    const handleEntityIDInput = (entityID: Ref<string | null>, event: Event) => {
-      const previousValue = entityID.value
-      let isValidInput = true
-      let isValidID = false
-      let isPastDash = false
-
-      const value = (event.target as HTMLInputElement).value
-      for (const c of value) {
-        if ((c >= '0' && c <= '9') || c === '.') {
-          if (isPastDash) {
-            isValidInput = false
-            break
-          } else {
-            isValidID = EntityID.parse(nr.stripChecksum(value)) !== null
-          }
-        } else if (c === '-') {
-          if (!isValidID || isPastDash) {
-            isValidInput = false
-            break
-          } else {
-            isPastDash = true
-          }
-        } else if (c < 'a' || c > 'z' || !isPastDash) {
-          isValidInput = false
-          break
-        }
-      }
-
-      if (isValidInput) {
-        entityID.value = value
-      } else {
-        entityID.value = ""
-        entityID.value = previousValue
-      }
-    }
-
-    const handleAmountInput = (amount: Ref<string | null>, event: Event) => {
-      const previousValue = amount.value
-      let isValidInput = true
-      let isDecimal = false
-
-      const value = (event.target as HTMLInputElement).value
-      for (const c of value) {
-        if ((c >= '0' && c <= '9') || c === '.') {
-          if (c === '.') {
-            isValidInput = !isDecimal
-            isDecimal = true
-          }
-        } else {
-          isValidInput = false
-          break
-        }
-      }
-
-      if (isValidInput) {
-        amount.value = value
-      } else {
-        amount.value = ""
-        amount.value = previousValue
-      }
-    }
-
-    const handleIntListInput = (list: Ref<string | null>, event: Event) => {
-      const previousValue = list.value
-      let isValidInput = true
-      let previousWasComma = false
-
-      const value = (event.target as HTMLInputElement).value
-      for (const c of value) {
-        if ((c >= '0' && c <= '9') || c === ',') {
-          if (c === ',') {
-            isValidInput = !previousWasComma
-            previousWasComma = true
-          } else {
-            previousWasComma = false
-          }
-        } else {
-          isValidInput = false
-          break
-        }
-      }
-
-      if (isValidInput) {
-        list.value = value
-      } else {
-        list.value = ""
-        list.value = previousValue
-      }
-    }
-
-    const validateAccount = (accountId: string | null, isValid: Ref<boolean>, message: Ref<string | null>) => {
-      const checksum = nr.extractChecksum(accountId ?? "")
-      const entity = EntityID.normalize(nr.stripChecksum(accountId ?? ""))
-      const isValidChecksum = checksum ? nr.isValidChecksum(entity ?? "", checksum, network) : true
-
-      if (entity === null) {
-        message.value = INVALID_ACCOUNTID_MESSAGE
-      } else if (isValidChecksum) {
-        if (entity === walletManager.accountId.value) {
-          message.value = SAME_AS_OWNER_ACCOUNT_MESSAGE
-        } else {
-          AccountByIdCache.instance.lookup(entity)
-              .then((r) => {
-                if (r) {
-                  isValid.value = true
-                  ContractByIdCache.instance.lookup(entity)
-                      .then((r) => {
-                        if (r) {
-                          message.value = VALID_CONTRACT_MESSAGE
-                        } else {
-                          message.value = VALID_ACCOUNT_MESSAGE
-                        }
-                      })
-                } else {
-                  message.value = UNKNOWN_ACCOUNT_MESSAGE
-                }
-              })
-              .catch(() => message.value = UNKNOWN_ACCOUNT_MESSAGE)
-        }
-      } else {
-        message.value = INVALID_CHECKSUM_MESSAGE
-      }
-    }
-
-    const validateTokenAssociation = (
-        accountId: string | null,
-        tokenId: string | null,
-        type: string | null,
-        isValid: Ref<boolean>,
-        message: Ref<string | null>) => {
-
-      const checksum = nr.extractChecksum(tokenId ?? "")
-      const entity = EntityID.normalize(nr.stripChecksum(tokenId ?? ""))
-      const isValidChecksum = checksum ? nr.isValidChecksum(entity ?? "", checksum, network) : true
-
-      if (entity === null) {
-        message.value = INVALID_TOKENID_MESSAGE
-      } else if (isValidChecksum) {
-        if (accountId && tokenId) {
-
-          const uRL = "api/v1/accounts/" + accountId + "/tokens"
-          const params = {
-            'token.id': entity,
-          }
-          axios
-              .get<TokenRelationshipResponse>(uRL, {params: params})
-              .then((response) => {
-                const tokens = response.data.tokens
-                if (tokens && tokens.length > 0) {
-                  if (type !== null) {
-                    if (tokenInfo.value != null) {
-                      if (tokenInfo.value.type === type) {
-                        isValid.value = true
-                      } else {
-                        message.value = (type === 'FUNGIBLE_COMMON') ? TOKEN_NOT_FUNGIBLE_MESSAGE : TOKEN_NOT_NFT_MESSAGE
-                      }
-                    } else {
-                      message.value = TOKEN_NOT_FOUND_MESSAGE
-                    }
-                  } else {
-                    isValid.value = true
-                  }
-                } else {
-                  message.value = TOKEN_NOT_FOUND_MESSAGE
-                }
-              })
-              .catch(() => message.value = TOKEN_NOT_FOUND_MESSAGE)
-        }
-      } else {
-        message.value = INVALID_CHECKSUM_MESSAGE
-      }
-    }
-
-    const validateSerialsAssociation = (
-        accountId: string | null,
-        tokenId: string | null,
-        inputSerials: string | null,
-        isValid: Ref<boolean>,
-        resultSerials: Ref<number[]>,
-        message: Ref<string | null>) => {
-
-      const inputSerialsSplit = inputSerials ? inputSerials.split(',') : []
-
-      if (accountId && tokenId && inputSerialsSplit.length) {
-        const uRL = "api/v1/accounts/" + accountId + "/nfts"
-        const params = {
-          'token.id': tokenId,
-        }
-        axios
-            .get<Nfts>(uRL, {params: params})
-            .then((response) => {
-              const nfts = response.data.nfts
-              if (nfts && nfts.length > 0) {
-                const serialsInAccount = Array<number>()
-                for (const nft of nfts) {
-                  if (nft.serial_number) {
-                    serialsInAccount.push(nft.serial_number)
-                  }
-                }
-                for (const s of inputSerialsSplit) {
-                  if (s.length) {
-                    const i = parseInt(s)
-                    if (serialsInAccount.includes(i)) {
-                      if (!resultSerials.value.includes(i)) {
-                        resultSerials.value.push(i)
-                      }
-                    } else {
-                      isValid.value = false
-                      break
-                    }
-                  }
-                }
-              } else {
-                isValid.value = false
-              }
-              if (!isValid.value) {
-                message.value = SERIAL_NOT_FOUND_MESSAGE
-              }
-            })
-            .catch(() => {
-              isValid.value = false
-              message.value = SERIAL_NOT_FOUND_MESSAGE
-            })
       }
     }
 
