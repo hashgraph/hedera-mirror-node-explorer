@@ -388,7 +388,6 @@ export default defineComponent({
       ) && edited.value
     })
 
-    // watch([() => props.showDialog, tokenInfo], () => {
     watch([() => props.showDialog], () => {
       if (props.showDialog) {
         if (props.currentHbarAllowance) {

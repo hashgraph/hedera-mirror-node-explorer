@@ -65,12 +65,11 @@
       <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props">
-        <span v-if="props.row.isEditable" class="icon is-small">
-            <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
-        </span>
-      <InfoTooltip v-else
-                   label="The allowance cannot be modified because the token is no longer associated with this account."/>
+    <o-table-column v-if="isWalletConnected" v-slot="props" field="edit-icon" position="right">
+      <span v-if="props.row.isEditable" class="icon is-small has-text-right">
+        <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+      </span>
+      <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>

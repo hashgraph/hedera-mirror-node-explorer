@@ -136,7 +136,7 @@ export class AppStorage {
     }
 
     //
-    // preferred tab in account operations
+    // preferred tab in account operations section
     //
 
     private static readonly ACCOUNT_OPERATION_TAB_KEY = 'accountOperationTab'
@@ -150,7 +150,21 @@ export class AppStorage {
     }
 
     //
-    // preferred tab in account operations
+    // preferred tab in account allowances section
+    //
+
+    private static readonly ACCOUNT_ALLOWANCE_TAB_KEY = 'accountAllowanceTab'
+
+    static getAccountAllowanceTab() {
+        return this.getLocalStorageItem(this.ACCOUNT_ALLOWANCE_TAB_KEY)
+    }
+
+    static setAccountAllowanceTab(newValue: string | null) {
+        this.setLocalStorageItem(this.ACCOUNT_ALLOWANCE_TAB_KEY, newValue)
+    }
+
+    //
+    // preferred tab in contract bytecode section
     //
 
     private static readonly CONTRACT_BYTECODE_TAB_KEY = 'contractBytecodeTab'

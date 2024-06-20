@@ -25,34 +25,46 @@
 <template>
 
   <DashboardCard v-if="accountId" collapsible-key="allowances">
+
     <template v-slot:title>
       <span class="h-is-secondary-title">Allowances</span>
     </template>
+
     <template v-slot:control>
       <button v-if="isWalletConnected && isHederaWallet" id="approve-button" class="button is-white is-small"
-              @click="handleApproveButton">APPROVE ALLOWANCE…
+              @click="onClick">APPROVE ALLOWANCE…
       </button>
     </template>
-    <template v-slot:content><br/></template>
-    <template v-slot:leftContent>
-      <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
-      <div id="hbarAllowancesTable">
-        <HbarAllowanceTable :controller="hbarAllowanceTableController" @edit-allowance="editHbarAllowance"/>
-      </div>
+
+    <template v-slot:content>
+      <Tabs
+          :selected-tab="selectedTab"
+          :tab-ids="tabIds"
+          :tabLabels="tabLabels"
+          @update:selected-tab="onUpdate($event)"
+      />
+
+      <template v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
+        <HbarAllowanceTable
+            :controller="hbarAllowanceTableController"
+            @edit-allowance="onEditHbar"/>
+      </template>
+
+      <template v-else id="tokenAllowancesTable">
+        <TokenAllowanceTable
+            :controller="tokenAllowanceTableController"
+            @edit-allowance="onEditToken"/>
+      </template>
+
     </template>
-    <template v-slot:rightContent>
-      <p class="h-is-tertiary-text mb-2">Token Allowances</p>
-      <div id="tokenAllowancesTable">
-        <TokenAllowanceTable :controller="tokenAllowanceTableController" @edit-allowance="editTokenAllowance"/>
-      </div>
-    </template>
+
   </DashboardCard>
 
   <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
                           :owner-account-id="ownerAccountId"
                           :current-hbar-allowance="currentHbarAllowance"
                           :current-token-allowance="currentTokenAllowance"
-                          @allowance-approved="handleApproval"
+                          @allowance-approved="onApprove"
   />
 
   <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
@@ -83,11 +95,13 @@ import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue
 import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import Tabs from "@/components/Tabs.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
-  name: 'ApproveAllowanceSection',
+  name: 'AllowancesSection',
 
-  components: {ProgressDialog, ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
+  components: {Tabs, ProgressDialog, ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
 
   props: {
     accountId: String,
@@ -109,6 +123,14 @@ export default defineComponent({
         cleanUpRouteQuery()
       }
     })
+
+    const tabIds = ['hbar', 'token']
+    const tabLabels = ['HBAR', 'Tokens']
+    const selectedTab = ref(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
+    const onUpdate = (tab: string) => {
+      selectedTab.value = tab
+      AppStorage.setAccountAllowanceTab(tab)
+    }
 
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
@@ -133,7 +155,7 @@ export default defineComponent({
 
     const notWithMetamaskDialogVisible = ref(false)
 
-    const handleApproveButton = () => {
+    const onClick = () => {
       if (walletManager.isHederaWallet.value) {
         showApproveAllowanceDialog.value = true
         currentHbarAllowance.value = null
@@ -143,14 +165,14 @@ export default defineComponent({
       }
     }
 
-    const handleApproval = () => {
+    const onApprove = () => {
       hbarAllowanceTableController.unmount()
       tokenAllowanceTableController.unmount()
       hbarAllowanceTableController.mount()
       tokenAllowanceTableController.mount()
     }
 
-    const editHbarAllowance = (allowance: CryptoAllowance) => {
+    const onEditHbar = (allowance: CryptoAllowance) => {
       // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
         currentHbarAllowance.value = allowance
@@ -161,7 +183,7 @@ export default defineComponent({
       }
     }
 
-    const editTokenAllowance = (allowance: TokenAllowance) => {
+    const onEditToken = (allowance: TokenAllowance) => {
       // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
         currentHbarAllowance.value = null
@@ -188,6 +210,10 @@ export default defineComponent({
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
+      selectedTab,
+      tabIds,
+      tabLabels,
+      onUpdate,
       showApproveAllowanceDialog,
       isWalletConnected,
       isHederaWallet: walletManager.isHederaWallet,
@@ -195,11 +221,11 @@ export default defineComponent({
       tokenAllowanceTableController,
       currentTokenAllowance,
       currentHbarAllowance,
-      handleApproveButton,
-      handleApproval,
+      onClick,
+      onApprove,
       ownerAccountId: walletManager.accountId,
-      editHbarAllowance,
-      editTokenAllowance,
+      onEditHbar,
+      onEditToken,
       notWithMetamaskDialogVisible,
       Mode
     }
