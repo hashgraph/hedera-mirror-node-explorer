@@ -32,12 +32,8 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
 
     public readonly accountId: Ref<string | null>
 
-    public constructor(router: Router,
-                       accountId: Ref<string | null>,
-                       pageSize: ComputedRef<number>,
-                       pageParamName = "p", keyParamName = "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
-            pageParamName, keyParamName);
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>, pageParamName = "p", keyParamName = "k") {
+        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100, pageParamName, keyParamName);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
     }
@@ -46,8 +42,12 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
     // TableController
     //
 
-    public async load(spenderId: string | null, operator: KeyOperator,
-                      order: SortOrder, limit: number): Promise<TokenAllowance[] | null> {
+    public async load(
+        key: string | null,
+        operator: KeyOperator,
+        order: SortOrder,
+        limit: number
+    ): Promise<TokenAllowance[] | null> {
         let result: Promise<TokenAllowance[] | null>
 
         if (this.accountId.value === null) {
@@ -57,17 +57,26 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
                 limit: number
                 order: string
                 "spender.id": string | undefined
+                "token.id": string | undefined
             }
             params.limit = limit
             params.order = TableController.invertSortOrder(order)
-            if (spenderId !== null) {
-                params["spender.id"] = TableController.invertKeyOperator(operator) + ":" + spenderId
+            if (key !== null) {
+                const items = key.split('-')
+                const spender = items[0]
+                const token = items[1]
+                if (params.order === SortOrder.ASC) {
+                    params["spender.id"] = KeyOperator.gte + ":" + spender
+                    params["token.id"] = KeyOperator.gt + ":" + token
+                } else {
+                    params["spender.id"] = KeyOperator.lte + ":" + spender
+                    params["token.id"] = KeyOperator.lt + ":" + token
+                }
             }
             const cb = (r: AxiosResponse<TokenAllowancesResponse>): Promise<TokenAllowance[] | null> => {
                 return Promise.resolve(r.data.allowances ?? [])
             }
-            result = axios.get<TokenAllowancesResponse>(
-                "api/v1/accounts/" + this.accountId.value + "/allowances/tokens", {params: params})
+            result = axios.get<TokenAllowancesResponse>("api/v1/accounts/" + this.accountId.value + "/allowances/tokens", {params: params})
                 .then(cb)
         }
 
@@ -75,7 +84,7 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
     }
 
     public keyFor(row: TokenAllowance): string {
-        return row.spender ?? ""
+        return row.spender && row.token_id ? `${row.spender}-${row.token_id}` : ""
     }
 
     public keyFromString(s: string): string | null {

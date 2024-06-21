@@ -53,16 +53,16 @@
       <AccountLink :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
+    <o-table-column v-slot="props" field="amount" label="Amount">
+      <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="token" label="Token ID">
       <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Amount">
-      <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
+    <o-table-column v-slot="props" field="timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props" field="edit-icon" position="right">
@@ -85,7 +85,8 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {isTokenAllowanceEditable, TokenAllowance} from "@/schemas/HederaSchemas";
+import {TokenAllowance} from "@/schemas/HederaSchemas";
+import {isValidAssociation} from "@/schemas/HederaUtils";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -130,7 +131,7 @@ export default defineComponent({
       const result = []
       for (const a of props.controller.rows.value) {
         let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-        isTokenAllowanceEditable(a).then((r) => allowance.isEditable = r)
+        isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
         result.push(allowance)
       }
       return result
