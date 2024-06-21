@@ -24,7 +24,6 @@
 
 import {EntityID} from "@/utils/EntityID";
 import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
-import {BalanceCache} from "@/utils/cache/BalanceCache";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -108,20 +107,17 @@ export interface TokenAllowance extends CryptoAllowance {
     token_id: string | null,    // Network entity ID in the format of shard.realm.num
 }
 
-export async function isTokenAllowanceEditable(allowance: TokenAllowance): Promise<boolean> {
-    let result = false
-    if (allowance.owner != null) {
-        const r = await BalanceCache.instance.lookup(allowance.owner, true)
-        if (r && r.balances && r.balances.length >= 1) {
-            for (const balance of r.balances[0].tokens) {
-                if (balance.token_id === allowance.token_id) {
-                    result = true
-                    break
-                }
-            }
-        }
-    }
-    return result
+export interface NftAllowance {
+    approved_for_all: boolean,      // Boolean value indicating if the spender has the allowance to spend all NFTs owned by the given owner
+    owner: string | null,           // Network entity ID in the format of shard.realm.num
+    spender: string | null,         // Network entity ID in the format of shard.realm.num
+    timestamp: TimestampRange,
+    token_id: string | null         // Network entity ID in the format of shard.realm.num
+}
+
+export interface NftAllowancesResponse {
+    allowances: Array<NftAllowance>,
+    links: Links
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

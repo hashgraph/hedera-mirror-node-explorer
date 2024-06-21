@@ -50,12 +50,17 @@
             @edit-allowance="onEditHbar"/>
       </template>
 
-      <template v-else id="tokenAllowancesTable">
+      <template v-else-if="selectedTab === 'token'" id="tokenAllowancesTable">
         <TokenAllowanceTable
             :controller="tokenAllowanceTableController"
             @edit-allowance="onEditToken"/>
       </template>
 
+      <template v-else id="nftAllowancesTable">
+        <NftAllowanceTable
+            :controller="nftAllowanceTableController"
+            @delete-allowance="onDeleteNft"/>
+      </template>
     </template>
 
   </DashboardCard>
@@ -93,15 +98,25 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
-import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, NftAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
+import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
+import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 
 export default defineComponent({
   name: 'AllowancesSection',
 
-  components: {Tabs, ProgressDialog, ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
+  components: {
+    NftAllowanceTable,
+    Tabs,
+    ProgressDialog,
+    ApproveAllowanceDialog,
+    TokenAllowanceTable,
+    HbarAllowanceTable,
+    DashboardCard
+  },
 
   props: {
     accountId: String,
@@ -117,6 +132,7 @@ export default defineComponent({
         () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
     // const isWalletConnected = computed(() => false)
     const showApproveAllowanceDialog = ref(false)
+    const showDeleteAllowanceDialog = ref(false)
 
     watch(showApproveAllowanceDialog, (newValue) => {
       if (!newValue) {
@@ -124,8 +140,8 @@ export default defineComponent({
       }
     })
 
-    const tabIds = ['hbar', 'token']
-    const tabLabels = ['HBAR', 'Tokens']
+    const tabIds = ['hbar', 'token', 'nft']
+    const tabLabels = ['HBAR', 'Tokens', 'NFTs']
     const selectedTab = ref(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
     const onUpdate = (tab: string) => {
       selectedTab.value = tab
@@ -152,6 +168,14 @@ export default defineComponent({
         router, computedAccountId, perPage, "pt", "kt")
     onMounted(() => tokenAllowanceTableController.mount())
     onBeforeUnmount(() => tokenAllowanceTableController.unmount())
+
+    //
+    // NFT Allowances Table Controller
+    //
+    const nftAllowanceTableController = new NftAllowanceTableController(
+        router, computedAccountId, perPage, "pn", "kn")
+    onMounted(() => nftAllowanceTableController.mount())
+    onBeforeUnmount(() => nftAllowanceTableController.unmount())
 
     const notWithMetamaskDialogVisible = ref(false)
 
@@ -194,6 +218,15 @@ export default defineComponent({
       }
     }
 
+    const onDeleteNft = (allowance: NftAllowance) => {
+      // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
+      if (walletManager.isHederaWallet.value) {
+        showDeleteAllowanceDialog.value = true
+      } else {
+        notWithMetamaskDialogVisible.value = true
+      }
+    }
+
     const cleanUpRouteQuery = async () => {
       const query = {...router.currentRoute.value.query}
       if (query.app) {
@@ -219,6 +252,7 @@ export default defineComponent({
       isHederaWallet: walletManager.isHederaWallet,
       hbarAllowanceTableController,
       tokenAllowanceTableController,
+      nftAllowanceTableController,
       currentTokenAllowance,
       currentHbarAllowance,
       onClick,
@@ -226,6 +260,7 @@ export default defineComponent({
       ownerAccountId: walletManager.accountId,
       onEditHbar,
       onEditToken,
+      onDeleteNft,
       notWithMetamaskDialogVisible,
       Mode
     }
