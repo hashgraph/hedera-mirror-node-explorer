@@ -79,6 +79,6 @@
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-require-transform": "^1.0.21",
     "vitest": "^1.2.2",
-    "vue-tsc": "^2.0.21"
+    "vue-tsc": "^2.0.22"
   }
 }
