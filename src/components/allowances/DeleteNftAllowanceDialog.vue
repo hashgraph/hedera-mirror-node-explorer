@@ -1,0 +1,207 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+  <Dialog :controller="controller">
+
+    <!-- title -->
+    <template v-slot:dialogTitle>
+      <div class="h-is-primary-title">
+        <span>
+          Delete allowance
+        </span>
+        <span v-if="spender" class="ml-1">
+          to account
+        </span>
+        <span v-if="spender" class="h-is-secondary-text has-text-weight-light ml-1">
+          {{ spender }}
+        </span>
+      </div>
+    </template>
+
+    <!-- input -->
+    <template v-slot:dialogInput>
+      <div class="h-is-tertiary-text mb-2">
+        <span>
+          Do you want to delete the allowance for NFT
+        </span>
+        <span class="h-is-extra-text mr-1">
+          {{ '#' + serial }}
+        </span>
+        <span>
+          of collection
+        </span>
+      </div>
+      <div class="h-is-tertiary-text h-is-extra-text">
+        {{ tokenName }}
+      </div>
+    </template>
+
+    <!-- busy -->
+    <template v-slot:dialogBusy>
+      <div class="h-is-tertiary-text mb-2">
+        Connecting to Hedera Network using your wallet…
+      </div>
+      <div class="">
+        Check your wallet for any approval request
+      </div>
+    </template>
+
+    <!-- success -->
+    <template v-slot:dialogSuccess>
+      <div class="is-flex is-align-items-baseline">
+        <div class="icon is-medium has-text-success ml-0">
+          <i class="fas fa-check"/>
+        </div>
+        <div class="h-is-tertiary-text">
+          Operation completed
+        </div>
+      </div>
+    </template>
+
+    <!-- error -->
+    <template v-slot:dialogError>
+      <div class="is-flex is-align-items-baseline">
+        <div class="icon is-medium has-text-danger">
+          <span style="font-size: 18px; font-weight: 900">X</span>
+        </div>
+        <div class="h-is-tertiary-text">
+          Operation failed
+        </div>
+      </div>
+    </template>
+
+    <template v-slot:dialogInputButtons>
+      <DialogButton :controller="controller">CANCEL</DialogButton>
+      <CommitButton :controller="controller" :enabled="true" @action="onDelete">DELETE</CommitButton>
+    </template>
+
+
+  </Dialog>
+
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script lang="ts">
+
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import Dialog from "@/components/dialog/Dialog.vue";
+import CommitButton from "@/components/dialog/CommitButton.vue";
+import DialogButton from "@/components/dialog/DialogButton.vue";
+import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import {walletManager} from "@/router";
+import {Nft} from "@/schemas/HederaSchemas";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {makeTokenName, waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {normalizeTransactionId} from "@/utils/TransactionID";
+import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+
+export default defineComponent({
+  name: "DeleteNftAllowanceDialog",
+  components: {DialogButton, CommitButton, Dialog},
+  props: {
+    controller: {
+      type: Object as PropType<DialogController>,
+      required: true
+    },
+    nftAllowance: {
+      type: Object as PropType<Nft | null>,
+      default: null
+    }
+  },
+  setup(props) {
+    const spender = computed(() => props.nftAllowance?.spender ?? null)
+    const token = computed(() => props.nftAllowance?.token_id ?? null)
+    const serial = computed(() => props.nftAllowance?.serial_number ?? null)
+
+    const tokenInfoLookup = TokenInfoCache.instance.makeLookup(token)
+    onMounted(() => tokenInfoLookup.mount())
+    onBeforeUnmount(() => tokenInfoLookup.unmount())
+    const tokenInfo = computed(() => tokenInfoLookup.entity.value)
+    const tokenName = computed(() => makeTokenName(tokenInfo.value, 32))
+
+    const errorMessage = ref<string | null>(null)
+    const errorMessageDetails = ref<string | null>(null)
+
+    // const onDelete = async () => {
+    //   props.controller.mode.value = DialogMode.Busy
+    //   if (token.value != null && serial.value != null) {
+    //     await walletManager.deleteNftAllowance(token.value, serial.value)
+    //   }
+    //   props.controller.mode.value = DialogMode.Success
+    // }
+
+    const onDelete = async () => {
+      props.controller.mode.value = DialogMode.Busy
+      if (token.value != null && serial.value != null) {
+        let tid = null
+
+        try {
+          tid = normalizeTransactionId(
+              await walletManager.deleteNftAllowance(token.value, serial.value)
+          )
+          console.log("Transaction ID: " + tid)
+          if (tid) {
+            await waitForTransactionRefresh(tid, 10, 3000)
+          }
+          props.controller.mode.value = DialogMode.Success
+        } catch (reason) {
+          console.warn("Transaction Error: " + reason)
+
+          if (reason instanceof WalletDriverCancelError) {
+            props.controller.handleClose()
+          } else {
+            props.controller.mode.value = DialogMode.Error
+            if (reason instanceof WalletDriverError) {
+              errorMessage.value = reason.message
+              errorMessageDetails.value = reason.extra
+            } else {
+              errorMessage.value = "Operation did not complete"
+              errorMessageDetails.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
+            }
+          }
+        }
+      }
+    }
+
+    return {
+      spender,
+      serial,
+      errorMessage,
+      errorMessageDetails,
+      tokenName,
+      onDelete
+    }
+  }
+})
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style scoped/>

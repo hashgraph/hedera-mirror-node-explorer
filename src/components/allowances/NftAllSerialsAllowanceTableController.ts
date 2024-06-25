@@ -19,12 +19,12 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Nft, Nfts} from "@/schemas/HederaSchemas";
+import {NftAllowance, NftAllowancesResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
-export class NftAllowanceTableController extends TableController<Nft, string> {
+export class NftAllSerialsAllowanceTableController extends TableController<NftAllowance, string> {
 
     //
     // Public
@@ -54,8 +54,8 @@ export class NftAllowanceTableController extends TableController<Nft, string> {
         operator: KeyOperator,
         order: SortOrder,
         limit: number
-    ): Promise<Nft[] | null> {
-        let result: Promise<Nft[] | null>
+    ): Promise<NftAllowance[] | null> {
+        let result: Promise<NftAllowance[] | null>
 
         if (this.accountId.value === null) {
             result = Promise.resolve(null)
@@ -63,38 +63,36 @@ export class NftAllowanceTableController extends TableController<Nft, string> {
             const params = {} as {
                 limit: number
                 order: string
-                "spender.id": string
+                "account.id": string | undefined
                 "token.id": string | undefined
-                serialnumber: string | undefined
             }
             params.limit = limit
             params.order = TableController.invertSortOrder(order)
-            params["spender.id"] = KeyOperator.gte + ":0.0.1"
             if (key !== null) {
                 const items = key.split('-')
-                const token = items[0]
-                const serial = items[1]
+                const account = items[0]
+                const token = items[1]
                 if (params.order === SortOrder.ASC) {
-                    params["token.id"] = KeyOperator.gte + ":" + token
-                    params.serialnumber = KeyOperator.gt + ":" + serial
+                    params["account.id"] = KeyOperator.gte + ":" + account
+                    params["token.id"] = KeyOperator.gt + ":" + token
                 } else {
-                    params["token.id"] = KeyOperator.lte + ":" + token
-                    params.serialnumber = KeyOperator.lt + ":" + serial
+                    params["account.id"] = KeyOperator.lte + ":" + account
+                    params["token.id"] = KeyOperator.lt + ":" + token
                 }
             }
-            const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
-                return Promise.resolve(r.data.nfts ?? [])
+            const cb = (r: AxiosResponse<NftAllowancesResponse>): Promise<NftAllowance[] | null> => {
+                return Promise.resolve(r.data.allowances ?? [])
             }
-            result = axios.get<Nfts>(
-                "api/v1/accounts/" + this.accountId.value + "/nfts", {params: params})
+            result = axios.get<NftAllowancesResponse>(
+                "api/v1/accounts/" + this.accountId.value + "/allowances/nfts", {params: params})
                 .then(cb)
         }
 
         return result
     }
 
-    public keyFor(row: Nft): string {
-        return row.token_id && row.serial_number ? `${row.token_id}-${row.serial_number}` : ""
+    public keyFor(row: NftAllowance): string {
+        return row.spender && row.token_id ? `${row.spender}-${row.token_id}` : ""
     }
 
     public keyFromString(s: string): string | null {
@@ -104,4 +102,5 @@ export class NftAllowanceTableController extends TableController<Nft, string> {
     public stringFromKey(key: string): string {
         return key
     }
+
 }

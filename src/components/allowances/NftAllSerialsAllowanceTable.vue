@@ -26,7 +26,7 @@
 
   <o-table
       v-model:current-page="currentPage"
-      :data="nfts"
+      :data="allowances"
       :hoverable="false"
       :loading="loading"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -46,33 +46,29 @@
       default-sort="spender"
       @page-change="onPageChange">
 
-    <o-table-column v-slot="props" field="token" label="Token ID">
-      <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="serial" label="Serial #">
-      <div class="is-numeric">
-        {{ props.row.serial_number }}
-      </div>
-    </o-table-column>
-
     <o-table-column v-slot="props" field="spender" label="Spender">
       <AccountLink :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
+    <o-table-column v-slot="props" field="token" label="Token ID">
+      <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
+    </o-table-column>
+
     <o-table-column v-slot="props" field="timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
+      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props">
-      <span class="h-is-property-text icon is-small">
+      <span v-if="props.row.isEditable" class="h-is-property-text icon is-small">
         <i class="far fa-trash-alt" @click="$emit('deleteAllowance', props.row)"></i>
       </span>
+      <InfoTooltip v-else
+                   label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
 
-  <EmptyTable v-if="!nfts.length"/>
+  <EmptyTable v-if="!allowances.length"/>
 
 </template>
 
@@ -83,7 +79,7 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Nft} from "@/schemas/HederaSchemas";
+import {NftAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -92,10 +88,15 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
+import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
+import {isValidAssociation} from "@/schemas/HederaUtils";
+
+interface DisplayedNftAllowance extends NftAllowance {
+  isEditable: boolean
+}
 
 export default defineComponent({
-  name: 'NftAllowanceTable',
+  name: 'NftAllSerialsAllowanceTable',
 
   components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
 
@@ -103,7 +104,7 @@ export default defineComponent({
 
   props: {
     controller: {
-      type: Object as PropType<NftAllowanceTableController>,
+      type: Object as PropType<NftAllSerialsAllowanceTableController>,
       required: true
     }
   },
@@ -119,12 +120,22 @@ export default defineComponent({
             && walletManager.accountId.value === props.controller.accountId.value
     )
 
+    const allowances = computed<DisplayedNftAllowance[]>(() => {
+      const result = []
+      for (const a of props.controller.rows.value) {
+        let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
+        isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
+        result.push(allowance)
+      }
+      return result
+    })
+
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
       isWalletConnected,
-      nfts: props.controller.rows as ComputedRef<Nft[]>,
+      allowances,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
