@@ -24,11 +24,10 @@
 
 <template>
 
-  <MediaContent
+  <NftPreview
       v-if="property === NftCellItem.image"
       :url="url"
       :type="type"
-      :is-nft="true"
       :size="50"
       :auto="false"
       :no-anchor="true"
@@ -48,10 +47,10 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import MediaContent from "@/components/MediaContent.vue";
 import {NftBySerialCache} from "@/utils/cache/NftBySerialCache";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import BlobValue from "@/components/values/BlobValue.vue";
+import NftPreview from "@/components/token/NftPreview.vue";
 
 export enum NftCellItem {
   name = "name",
@@ -62,7 +61,7 @@ export enum NftCellItem {
 
 export default defineComponent({
   name: "NftCell",
-  components: {BlobValue, MediaContent},
+  components: {NftPreview, BlobValue},
 
   props: {
     tokenId: {
