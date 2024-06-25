@@ -189,6 +189,30 @@ export class WalletManager {
         }
     }
 
+    public async deleteNftAllowance(token: string, serialNumber: number): Promise<string> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.deleteNftAllowance(this.accountIdRef.value, token, serialNumber)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("deleteNftAllowance")
+        }
+    }
+
+    public async deleteNftAllSerialsAllowance(token: string, spender: string): Promise<string> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.deleteNftAllSerialsAllowance(this.accountIdRef.value, token, spender)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("deleteNftAllSerialsAllowance")
+        }
+    }
+
     public async associateToken(tokenId: string): Promise<string> {
         if (this.accountIdRef.value !== null) {
             return this.activeDriver.associateToken(this.accountIdRef.value, tokenId)
@@ -225,15 +249,5 @@ export class WalletManager {
             throw this.activeDriver.callFailure("callContract")
         }
     }
-
-
-    //
-    // public async deleteNftAllowance(token: string, serialNumbers: number[]): Promise<string> {
-    //     if (this.activeDriver instanceof WalletDriver_Hedera) {
-    //         await this.activeDriver.deleteNftAllowance(token, spender, amount)
-    //     } else {
-    //         throw this.activeDriver.unsupportedOperation()
-    //     }
-    // }
 
 }
