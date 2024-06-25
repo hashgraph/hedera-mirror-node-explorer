@@ -20,8 +20,9 @@
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import router from "@/router";
 import BlobValue from '../../../src/components/values/BlobValue.vue';
+import {IPFS_GATEWAY_PREFIX} from "../Mocks";
+import router from "../../../src/router";
 
 describe("BlobValue.vue", () => {
 
@@ -216,7 +217,6 @@ describe("BlobValue.vue", () => {
     //
 
     const BLOB_URL = "https://hedera.com"
-    const IPFS_GATEWAY_PREFIX = 'https://gateway.pinata.cloud/ipfs/'
 
     it("blobValue url", async () => {
 
@@ -254,7 +254,7 @@ describe("BlobValue.vue", () => {
     //
 
     const BLOB_IPFS_URL = "ipfs://bafkreibvlezrqebhb57weqec4g2npf7yfskpcpmfq2cy3c336x7exqvjsq"
-    const BLOB_RESULTING_URL= IPFS_GATEWAY_PREFIX + "bafkreibvlezrqebhb57weqec4g2npf7yfskpcpmfq2cy3c336x7exqvjsq"
+    const BLOB_RESULTING_URL = IPFS_GATEWAY_PREFIX + "bafkreibvlezrqebhb57weqec4g2npf7yfskpcpmfq2cy3c336x7exqvjsq"
 
 
     it("blobValue IPFS URL", async () => {

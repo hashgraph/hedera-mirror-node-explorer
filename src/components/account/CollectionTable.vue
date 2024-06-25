@@ -42,9 +42,27 @@
       aria-previous-label="Previous page"
       @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="serial" label="Serial #">
+
+    <o-table-column v-slot="props" field="image" label="Preview">
+      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.image"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="serial" label="#">
       {{ props.row.serial_number }}
     </o-table-column>
+
+    <o-table-column v-slot="props" field="name" label="Name">
+      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.name"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="creator" label="Creator">
+      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.creator"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="description" label="Description">
+      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.description"/>
+    </o-table-column>
+
   </o-table>
 
   <EmptyTable v-if="!collection.length"/>
@@ -63,11 +81,13 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import {CollectionTableController} from "@/components/account/CollectionTableController";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 
 export default defineComponent({
   name: 'CollectionTable',
 
   components: {
+    NftCell,
     EmptyTable,
   },
 
@@ -112,6 +132,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       pageSize: props.controller.pageSize as Ref<Number>,
       handleClick,
+      NftCellItem,
       ORUGA_MOBILE_BREAKPOINT
     }
   }

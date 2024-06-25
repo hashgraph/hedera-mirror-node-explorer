@@ -29,14 +29,15 @@
   >
     <DashboardCard collapsible-key="nftDetails">
       <template #title>
-        <span class="h-is-primary-title mr-1">NFT</span>
-        <span class="h-is-tertiary-text mr-3">#{{ serialNumber }}</span>
-        <span
-            class=" h-is-tertiary-text h-is-extra-text should-wrap"
-            style="word-break: break-all"
-        >
-          {{ `${tokenName} (${tokenSymbol})` }}
-        </span>
+        <div class="is-flex is-align-items-baseline h-is-tertiary-text">
+          <div
+              class="is-inline-block h-is-extra-text should-wrap mr-3"
+              style="word-break: break-all"
+          >
+            {{ nftName ?? tokenName }}
+          </div>
+          <span class="mr-2 has-text-grey">Non Fungible Token</span>
+        </div>
       </template>
 
       <template #content>
@@ -46,24 +47,54 @@
         />
       </template>
 
-      <template #leftContent>
-        <Property id="tokenId">
-          <template #name>NFT Collection</template>
+      <template #mediaContent>
+        <NftPreview
+            :type="type"
+            :url="imageUrl"
+            :size="isSmallScreen ? 450 : 300"
+            :auto="true"
+        />
+      </template>
+      <template #mediaDescription>
+        <Property v-if="description" id="description" custom-nb-col-class="is-one-quarter">
+          <template #name>Description</template>
           <template #value>
-            <TokenLink :token-id="tokenId" :show-extra="true"/>
+            <BlobValue :blob-value="description"/>
           </template>
         </Property>
-        <Property id="accountId">
-          <template #name>Account ID</template>
+        <Property id="tokenId" custom-nb-col-class="is-one-quarter">
+          <template #name>NFT Collection</template>
+          <template #value>
+            <router-link :to="tokenRoute">
+              <span class="h-is-extra-text mr-2">{{ tokenName }}</span>
+            </router-link>
+            <span>(</span>
+            <TokenLink :token-id="tokenId" :show-extra="false"/>
+            <span>)</span>
+          </template>
+        </Property>
+        <Property id="serialNumber" custom-nb-col-class="is-one-quarter">
+          <template #name>Serial #</template>
+          <template #value>
+            {{ serialNumber }}
+          </template>
+        </Property>
+        <Property id="accountId" custom-nb-col-class="is-one-quarter">
+          <template #name>Owner</template>
           <template #value>
             <AccountLink
                 :account-id="nftInfo?.account_id"
-                :show-none="true"
             />
           </template>
         </Property>
-        <Property id="createdTimestamp">
-          <template #name>Created Timestamp</template>
+        <Property v-if="creator" id="creator" custom-nb-col-class="is-one-quarter">
+          <template #name>Creator</template>
+          <template #value>
+            {{ creator }}
+          </template>
+        </Property>
+        <Property id="createdTimestamp" custom-nb-col-class="is-one-quarter">
+          <template #name>Created</template>
           <template #value>
             <TimestampValue
                 :show-none="true"
@@ -71,8 +102,8 @@
             />
           </template>
         </Property>
-        <Property id="modifiedTimeStamp">
-          <template #name>Modified Timestamp</template>
+        <Property id="modifiedTimeStamp" custom-nb-col-class="is-one-quarter">
+          <template #name>Modified</template>
           <template #value>
             <TimestampValue
                 :timestamp="nftInfo?.modified_timestamp"
@@ -80,44 +111,35 @@
             />
           </template>
         </Property>
-        <Property id="createTransaction">
+        <Property id="spenderId" custom-nb-col-class="is-one-quarter">
+          <template #name>Spender</template>
+          <template #value>
+            <AccountLink
+                :account-id="nftInfo?.spender_id"
+            />
+          </template>
+        </Property>
+        <Property id="delegatingSpender" custom-nb-col-class="is-one-quarter">
+          <template #name>Delegating Spender</template>
+          <template #value>
+            <AccountLink
+                :account-id="nftInfo?.delegating_spender"
+            />
+          </template>
+        </Property>
+        <Property id="createTransaction" custom-nb-col-class="is-one-quarter">>
           <template v-slot:name>Mint Transaction</template>
           <template v-slot:value>
             <TransactionLink :transactionLoc="nftInfo?.created_timestamp ?? undefined"/>
           </template>
         </Property>
-        <Property id="metadata">
-          <template #name>Metadata</template>
-          <template #value>
-            <BlobValue
-                :base64="true"
-                :blob-value="nftInfo?.metadata"
-                :show-none="true"
-            />
-          </template>
-        </Property>
-        <Property id="spenderId">
-          <template #name>Spender ID</template>
-          <template #value>
-            <AccountLink
-                :account-id="nftInfo?.spender_id"
-                :show-none="true"
-            />
-          </template>
-        </Property>
-        <Property id="delegatingSpender">
-          <template #name>Delegating Spender</template>
-          <template #value>
-            <AccountLink
-                :account-id="nftInfo?.delegating_spender"
-                :show-none="true"
-            />
-          </template>
-        </Property>
       </template>
+
     </DashboardCard>
 
-    <DashboardCard v-if="nftInfo">
+    <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
+
+    <DashboardCard v-if="nftInfo" collapsible-key="recentNftTransactions">
       <template #title>
         <p id="recentTransactions" class="h-is-secondary-title">
           Recent Transactions
@@ -158,7 +180,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
-import router from "@/router"
+import router, {routeManager} from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
 import DashboardCard from "@/components/DashboardCard.vue"
 import BlobValue from "@/components/values/BlobValue.vue"
@@ -176,15 +198,20 @@ import TransactionFilterSelect from "@/components/transaction/TransactionFilterS
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/link/TokenLink.vue";
+import MetadataSection from "@/components/token/MetadataSection.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
+import NftPreview from "@/components/token/NftPreview.vue";
 
 export default defineComponent({
   name: "NftDetails",
 
   components: {
+    NftPreview,
     TransactionLink,
     MirrorLink,
+    MetadataSection,
     TokenLink,
     ContractResultsSection,
     PlayPauseButton,
@@ -239,6 +266,11 @@ export default defineComponent({
     onMounted(() => nftLookup.mount())
     onBeforeUnmount(() => nftLookup.unmount())
 
+    const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
+    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata)
+    onMounted(() => metadataAnalyzer.mount())
+    onBeforeUnmount(() => metadataAnalyzer.unmount())
+
     const notification = computed(() => {
       let result
       if (!validEntityId.value) {
@@ -260,9 +292,7 @@ export default defineComponent({
 
     const perPage = computed(() => (isMediumScreen ? 10 : 5))
 
-    //
-    // TokenBalanceTableController
-    //
+    const tokenRoute = computed(() => routeManager.makeRouteToToken(props.tokenId))
 
     const tokenId = ref(props.tokenId)
 
@@ -314,6 +344,14 @@ export default defineComponent({
       transactionType: transactionTableController.transactionType,
       tokenSymbol,
       tokenName,
+      tokenRoute,
+      metadata,
+      metadataAnalyzer,
+      nftName: metadataAnalyzer.name,
+      creator: metadataAnalyzer.creator,
+      description: metadataAnalyzer.description,
+      type: metadataAnalyzer.type,
+      imageUrl: metadataAnalyzer.imageUrl,
     }
   },
 })
@@ -333,10 +371,4 @@ function parseBigIntString(s: string | undefined): bigint | undefined {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-.headline-grid {
-  display: grid;
-  grid-template-columns: 2fr 10fr;
-  grid-column-gap: 0.5rem;
-}
-</style>
+<style/>

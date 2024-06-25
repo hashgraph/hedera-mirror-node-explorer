@@ -23,7 +23,7 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {ContractStateResponse, KeyType} from "@/schemas/HederaSchemas";
+import {ContractStateResponse, KeyType} from "../../src/schemas/HederaSchemas";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,
@@ -496,12 +496,14 @@ export const SAMPLE_BALANCES = {
 export const SAMPLE_NFTS = {
     "nfts": [
         {
-            "account_id": "0.0.700000",
-            "created_timestamp": "1646600193.520332000",
+            "account_id": "0.0.4346448",
+            "created_timestamp": "1715777298.140701005",
+            "delegating_spender": null,
             "deleted": false,
-            "metadata": "YmFma3JlaWI1NXRwbG10YW5jbzQ2dG1qNzVudGF0dHJieW50aGpvcTJuYmdhbnF0NHA3bnI0ZWczNzQ=",
-            "modified_timestamp": "1646600193.520332000",
+            "metadata": "Unusable Metadata",
+            "modified_timestamp": "1715777409.504562003",
             "serial_number": 2,
+            "spender": null,
             "token_id": "0.0.748383"
         },
         {
@@ -512,10 +514,126 @@ export const SAMPLE_NFTS = {
             "modified_timestamp": "1646599959.709228732",
             "serial_number": 1,
             "token_id": "0.0.748383"
+        },
+        {
+            "account_id": "0.0.2646875",
+            "created_timestamp": "1715726157.487084003",
+            "delegating_spender": null,
+            "deleted": false,
+            "metadata": "aXBmczovL1FtUEo4Z20xSDhWN2JvUkdSYld2clpaMUpDMnlxc2ozaGJCSnlCYUxQZ0huUTg=",
+            "modified_timestamp": "1715726162.297036850",
+            "serial_number": 342,
+            "spender": null,
+            "token_id": "0.0.748383"
         }
     ]
 }
 
+export const IPFS_GATEWAY_PREFIX = 'https://gateway.pinata.cloud/ipfs/'
+
+export const CID_METADATA = "UW1QSjhnbTFIOFY3Ym9SR1JiV3ZyWloxSkMyeXFzajNoYkJKeUJhTFBnSG5ROA=="
+export const IPFS_METADATA = "aXBmczovL1FtUEo4Z20xSDhWN2JvUkdSYld2clpaMUpDMnlxc2ozaGJCSnlCYUxQZ0huUTg="
+export const IPFS_METADATA_CONTENT_URL = IPFS_GATEWAY_PREFIX + "QmPJ8gm1H8V7boRGRbWvrZZ1JC2yqsj3hbBJyBaLPgHnQ8"
+export const IPFS_IMAGE_URL = IPFS_GATEWAY_PREFIX + "QmXhGcYgJPgVmdDzkUuiK1RVy6fW7NVaJLLxir2iKLKRZU/0292-Shrak.png"
+export const IPFS_METADATA_CONTENT = {
+    "name": "Shrak #293",
+    "creator": "@Buckyoto + @JuicyUnlimited for @KarateCombat",
+    "creatorDID": "did:hedera:mainnet:7Prd74ry1Uct87nZqL3ny7aR7Cg46JamVbJgk8azVgUm;hedera:mainnet:fid=0.0.123",
+    "type": "image/png",
+    "description": "This is a collection about $KARATE. $KARATE is not for the faint of heart. Happy Karate De Mayo to all one thousand and all. www.KARATE.com",
+    "image": "ipfs://QmXhGcYgJPgVmdDzkUuiK1RVy6fW7NVaJLLxir2iKLKRZU/0292-Shrak.png",
+    "format": "HIP412@2.0.0",
+    "attributes": [
+        {
+            "trait_type": "SEASON",
+            "display_type": "string",
+            "value": "0"
+        },
+        {
+            "trait_type": "RANK",
+            "display_type": "string",
+            "value": "293"
+        },
+        {
+            "trait_type": "USERNAME",
+            "value": "Shrak"
+        },
+        {
+            "trait_type": "SCORE",
+            "display_type": "string",
+            "value": "350200"
+        }
+    ]
+}
+export const NON_STD_METADATA_CONTENT = {
+    "custom": "Non standard metadata",
+    "picture": "ipfs://QmXhGcYgJPgVmdDzkUuiK1RVy6fW7NVaJLLxir2iKLKRZU/0292-Shrak.png"
+}
+
+export const HTTPS_METADATA = "aHR0cHM6Ly9jbG91ZGZsYXJlLWlwZnMuY29tL2lwZnMvUW1QSjhnbTFIOFY3Ym9SR1JiV3ZyWloxSkMyeXFzajNoYkJKeUJhTFBnSG5ROA=="
+export const HTTPS_METADATA_CONTENT_URL = "https://cloudflare-ipfs.com/ipfs/QmPJ8gm1H8V7boRGRbWvrZZ1JC2yqsj3hbBJyBaLPgHnQ8"
+
+export const HCS_METADATA = "aGNzOi8vNi8wLjAuNTY3MTEzOA=="
+export const HCS_TOPIC = "0.0.5671138"
+export const HCS_TOPIC_MESSAGES = {
+    "messages": [{
+        "chunk_info": {
+            "initial_transaction_id": {
+                "account_id": "0.0.4368166",
+                "nonce": 0,
+                "scheduled": false,
+                "transaction_valid_start": "1713898867.880037813"
+            }, "number": 1, "total": 1
+        },
+        "consensus_timestamp": "1713898880.739044003",
+        "message": "eyJ0X2lkIjoiMC4wLjU2NzExNTUiLCJvcCI6InJlZ2lzdGVyIiwibSI6IlZlcnNpb24gMS4iLCJwIjoiaGNzLTYifQ==",
+        "payer_account_id": "0.0.4368166",
+        "running_hash": "H9o6QzEEJDOxcdfIkT9Rw0zf+1VxLfyeod18r4faaObHbBy/qkxLgFVjWRB5JzAn",
+        "running_hash_version": 3,
+        "sequence_number": 1,
+        "topic_id": "0.0.5671138"
+    }], "links": {"next": null}
+}
+export const HCS_METADATA_CONTENT = {
+    "t_id": "0.0.5671155",
+    "op": "register",
+    "m": "Version 1.",
+    "p": "hcs-6"
+}
+
+export const TOPIC_METADATA = "MC4wLjU2NzExMzg="
+
+export const TIMESTAMP_METADATA = "MTcxMzUwOTQzNS44Nzg3NjIwMDM="
+export const TIMESTAMP = "1713509435.878762003"
+export const TIMESTAMP_SUBMIT_MESSAGE = {
+    "chunk_info": {
+        "initial_transaction_id": {
+            "account_id": "0.0.5679025",
+            "nonce": 0,
+            "scheduled": false,
+            "transaction_valid_start": "1713918758.268758530"
+        }, "number": 1, "total": 1
+    },
+    "consensus_timestamp": "1713918763.034719003",
+    "message": "eyJJZGVudGlmaWVyIjoiaUFzc2V0cyIsIlR5cGUiOiJQcm9maWxlIiwiQXV0aG9yIjoiMC4wLjU2NzkwMjUiLCJOYW1lIjoiaWJpcmQgIiwiQmlvIjoiIiwiV2Vic2l0ZSI6ImliaXJkLmNvbW11bml0eSIsIkxvY2F0aW9uIjoiIiwiVXNlck1lc3NhZ2VzIjoiMC4wLjU2NzkwNDUiLCJQaWN0dXJlIjoiaXBmczovL2JhZmtyZWlhYnFkbnp0M2l5NWtpbGZxbGt0dnptYndqbW9ra3h1NzM2NjJ5dnNpdnZteXhnb2huYnptIiwiQmFubmVyIjpudWxsfQ==",
+    "payer_account_id": "0.0.5679025",
+    "running_hash": "VBHsKHXb5RMi8b9wxk+e+uJ75HXymA5rZSXpSWum3o/Z4VgJCN8C3tEH3T4Fd84w",
+    "running_hash_version": 3,
+    "sequence_number": 1,
+    "topic_id": "0.0.5679050"
+}
+export const TIMESTAMP_METADATA_CONTENT = {
+    "Identifier": "iAssets",
+    "Type": "Profile",
+    "Author": "0.0.5679025",
+    "Name": "ibird ",
+    "Bio": "",
+    "Website": "ibird.community",
+    "Location": "",
+    "UserMessages": "0.0.5679045",
+    "Picture": "ipfs://bafkreiabqdnzt3iy5kilfqlktvzmbwjmokkxu73662yvsivvmyxgohnbzm",
+    "Banner": null
+}
 
 //
 // https://testnet.mirrornode.hedera.com/api/v1/transactions/0.0.29624024-1646025139-152901498
@@ -3278,7 +3396,8 @@ export const SAMPLE_LOGIC_ADDRESS_RESPONSE: ContractStateResponse = {
             "slot": "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
             "value": "0x00000000000000000000000000000000000000000000000000000000000c41df" // SAMPLE_CONTRACT_DUDE
         }
-    ]
+    ],
+    links: null
 }
 
 export const SAMPLE_ADMIN_ADDRESS_RESPONSE: ContractStateResponse = {
@@ -3290,7 +3409,8 @@ export const SAMPLE_ADMIN_ADDRESS_RESPONSE: ContractStateResponse = {
             "slot": "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
             "value": "0x000000000000000000000000000000000000000000000000000000000002294a" // SAMPLE_CONTRACT_WITH_SWARM_HASH
         }
-    ]
+    ],
+    links: null
 }
 
 //

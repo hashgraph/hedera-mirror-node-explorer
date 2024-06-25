@@ -124,7 +124,7 @@ describe("AccountBalances.vue", () => {
 
         const nftsCard = wrapper.get("#nftsCard")
         expect(nftsCard.find('thead').text()).toBe("NFT Collection Nb of NFTs")
-        expect(nftsCard.find('tbody').text()).toBe("0.0.748383" + SAMPLE_NONFUNGIBLE.symbol + "2")
+        expect(nftsCard.find('tbody').text()).toBe("0.0.748383" + SAMPLE_NONFUNGIBLE.symbol + SAMPLE_NFTS.nfts.length)
 
         wrapper.unmount()
         await flushPromises()

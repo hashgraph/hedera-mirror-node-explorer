@@ -51,7 +51,7 @@
       </template>
 
       <template v-else>
-        <div v-if="decodedValue.length > 512" style="max-height: 200px; padding: 10px"
+        <div v-if="decodedValue.length > 1024" style="max-height: 200px; padding: 10px"
              class="h-is-json mt-1 h-code-box h-has-page-background is-inline-block has-text-left h-is-text-size-3 should-wrap">
           <span id="blob-main">
             {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
