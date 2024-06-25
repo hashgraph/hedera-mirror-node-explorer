@@ -442,7 +442,7 @@ export interface Nft {
     metadata: string
     modified_timestamp: string | null
     serial_number: number
-    spender_id: string | null
+    spender: string | null
     token_id: string | null // Network entity ID in the format of shard.realm.num
 }
 

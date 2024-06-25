@@ -115,7 +115,8 @@
           <template #name>Spender</template>
           <template #value>
             <AccountLink
-                :account-id="nftInfo?.spender_id"
+                :account-id="nftInfo?.spender"
+                :show-none="true"
             />
           </template>
         </Property>
