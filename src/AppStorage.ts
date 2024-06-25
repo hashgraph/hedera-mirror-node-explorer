@@ -121,6 +121,20 @@ export class AppStorage {
     }
 
     //
+    // display allowances "Approved for all" in AllowanceSection
+    //
+
+    private static readonly SELECT_APPROVED_FOR_ALL_KEY = 'approvedForAll'
+
+    public static getSelectApprovedForAll(): boolean {
+        return this.getLocalStorageItem(this.SELECT_APPROVED_FOR_ALL_KEY) != null
+    }
+
+    public static setSelectApprovedForAll(newValue: boolean | null): void {
+        this.setLocalStorageItem(this.SELECT_APPROVED_FOR_ALL_KEY, newValue ? "true" : null)
+    }
+
+    //
     // sections collapsed state
     //
 
