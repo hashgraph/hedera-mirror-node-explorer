@@ -216,15 +216,19 @@ import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import axios from "axios";
-import {CryptoAllowance, TokenAllowance, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {waitFor} from "@/utils/TimerUtils";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
-import {formatTokenAmount, isOwnedSerials, isValidAssociation, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {
+  formatTokenAmount,
+  isOwnedSerials,
+  isValidAssociation,
+  makeTokenSymbol,
+  waitForTransactionRefresh
+} from "@/schemas/HederaUtils";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
@@ -693,13 +697,12 @@ export default defineComponent({
                   normalizedNFT.value, normalizedSpender.value, nftSerials.value))
             }
           }
-          console.log("Transaction ID=" + tid)
 
           if (tid) {
             progressMainMessage.value = "Completing operation…"
             progressExtraMessage.value = "This may take a few seconds"
             showProgressSpinner.value = true
-            await waitForTransactionRefresh(tid, 10)
+            await waitForTransactionRefresh(tid, 10, props.polling)
           }
 
           progressDialogMode.value = Mode.Success
@@ -711,7 +714,7 @@ export default defineComponent({
           context.emit('allowanceApproved')
         }
       } catch (reason) {
-        console.log("Transaction Error: " + reason)
+        console.warn("Transaction Error: " + reason)
 
         if (reason instanceof WalletDriverCancelError) {
           showProgressDialog.value = false
@@ -728,25 +731,6 @@ export default defineComponent({
           showProgressSpinner.value = false
         }
       }
-    }
-
-    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
-      let result: Promise<Transaction | string>
-
-      if (attemptIndex >= 0) {
-        await waitFor(props.polling)
-        try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
-          const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
-        } catch {
-          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
-        }
-      } else {
-        result = Promise.resolve(transactionId)
-      }
-
-      return result
     }
 
     return {

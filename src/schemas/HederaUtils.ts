@@ -31,12 +31,14 @@ import {
     TokenRelationshipResponse,
     TokenTransfer,
     Transaction,
+    TransactionByIdResponse,
     Transfer,
 } from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
 import * as hashgraph from "@hashgraph/proto";
 import axios from "axios";
+import {waitFor} from "@/utils/TimerUtils";
 
 export function makeEthAddressForAccount(account: AccountInfo): string | null {
     if (account.evm_address) return account.evm_address;
@@ -373,4 +375,23 @@ export async function isOwnedSerials(accountId: string | null, tokenId: string |
         result = false
     }
     return Promise.resolve(result)
+}
+
+export async function waitForTransactionRefresh(transactionId: string, attemptIndex: number, polling = 3000) {
+    let result: Promise<Transaction | string>
+
+    if (attemptIndex >= 0) {
+        await waitFor(polling)
+        try {
+            const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
+            const transactions = response.data.transactions ?? []
+            result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
+        } catch {
+            result = waitForTransactionRefresh(transactionId, attemptIndex - 1, polling)
+        }
+    } else {
+        result = Promise.resolve(transactionId)
+    }
+
+    return result
 }
