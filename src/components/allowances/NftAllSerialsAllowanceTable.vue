@@ -58,7 +58,7 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props">
+    <o-table-column v-if="isWalletConnected" v-slot="props" field="action" position="right">
       <span v-if="props.row.isEditable" class="h-is-property-text icon is-small">
         <i class="far fa-trash-alt" @click="$emit('deleteAllowance', props.row)"></i>
       </span>
