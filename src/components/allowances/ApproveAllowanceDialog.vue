@@ -28,12 +28,22 @@
     <div class="modal-content" style="width: 768px; border-radius: 16px">
       <div class="box">
 
-        <span class="h-is-primary-title">
-          <span v-if="isEditing">Modify allowance</span>
-          <span v-else>Approve allowance</span>
-          <span v-if="ownerAccountId"> for account </span>
-          <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ ownerAccountId }}</span>
-        </span>
+        <div v-if="isEditing" class="h-is-primary-title">
+          <span >
+            Modify allowance
+          </span>
+          <span v-if="selectedSpender">
+            to account
+          </span>
+          <span v-if="selectedSpender" class="h-is-secondary-text has-text-weight-light mr-3">
+            {{ selectedSpender }}
+          </span>
+        </div>
+        <div v-else class="h-is-primary-title">
+          <span>
+            Approve allowance
+          </span>
+        </div>
 
         <hr class="h-card-separator"/>
 
@@ -185,9 +195,9 @@
     <template v-slot:dialogTitle>
       <span v-if="isEditing" class="h-is-primary-title">Modify allowance </span>
       <span v-else class="h-is-primary-title">Approve allowance </span>
-      <span v-if="ownerAccountId"> for account </span>
-      <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3"
-            style="line-height: 36px">{{ ownerAccountId }}</span>
+      <span v-if="selectedSpender"> to account </span>
+      <span v-if="selectedSpender" class="h-is-secondary-text has-text-weight-light mr-3"
+            style="line-height: 36px">{{ selectedSpender }}</span>
     </template>
   </ConfirmDialog>
 
@@ -226,7 +236,7 @@ import {
   formatTokenAmount,
   isOwnedSerials,
   isValidAssociation,
-  makeTokenSymbol,
+  makeTokenName,
   waitForTransactionRefresh
 } from "@/schemas/HederaUtils";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
@@ -280,7 +290,7 @@ export default defineComponent({
     onMounted(() => tokenInfoLookup.mount())
     onBeforeUnmount(() => tokenInfoLookup.unmount())
     const tokenInfo = computed(() => tokenInfoLookup.entity.value)
-    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value, 32))
+    const tokenName = computed(() => makeTokenName(tokenInfo.value, 32))
     const initialTokenAmount = computed(
         () => props.currentTokenAllowance?.amount_granted
             ? formatTokenAmount(
@@ -302,7 +312,7 @@ export default defineComponent({
     onMounted(() => nftInfoLookup.mount())
     onBeforeUnmount(() => nftInfoLookup.unmount())
     const nftInfo = computed(() => nftInfoLookup.entity.value)
-    const nftSymbol = computed(() => makeTokenSymbol(nftInfo.value, 32))
+    const nftName = computed(() => makeTokenName(nftInfo.value, 32))
 
     const selectedNftSerials = ref<string | null>(null)
     const nftSerials = computed(() => {
@@ -377,7 +387,7 @@ export default defineComponent({
         result = "Previous allowance was to "
             + props.currentTokenAllowance.spender + " for "
             + initialTokenAmount.value
-            + " " + tokenSymbol.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
+            + " " + tokenName.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
       } else {
         result = null
       }
@@ -570,25 +580,21 @@ export default defineComponent({
 
       if (allowanceChoice.value === 'hbar') {
         if (Number(selectedHbarAmount.value) === 0) {
-          result = "Do you want to remove the hbar allowance for account " + toAccount + "?"
+          result = "Do you want to remove the hbar allowance?"
         } else {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
+          result = "Do you want to approve an allowance for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
         }
       } else if (allowanceChoice.value === 'token') {
         const token = normalizedToken.value
         if (rawTokenAmount.value === 0) {
-          result = "Do you want to remove the allowance to account " + toAccount
-              + " for " + tokenSymbol.value + " token (" + token + ")?"
+          result = "Do you want to remove the allowance for token " + tokenName.value + "?"
         } else {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + selectedTokenAmount.value + " " + tokenSymbol.value + " (" + token + ") tokens?"
+          result = "Do you want to approve an allowance for " + selectedTokenAmount.value + " tokens (" + tokenName.value + ")?"
         }
       } else {  // 'nft'
         const nFT = normalizedNFT.value
         if (nftSerials.value.length > 0) {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for NFTs " + nftSymbol.value + " "
+          result = "Do you want to approve an allowance to account for NFTs " + nftName.value + " "
           for (let i = 0; i < nftSerials.value.length; i++) {
             if (i > 20) {
               result += '…'
@@ -600,8 +606,7 @@ export default defineComponent({
           }
           result += '?'
         } else {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for all NFTs of collection " + nftSymbol.value + " (" + nFT + ")?"
+          result = "Do you want to approve an allowance for all NFTs of collection " + nftName.value + "?"
         }
       }
       return result
