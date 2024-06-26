@@ -87,9 +87,12 @@
         <div class="icon is-medium has-text-success ml-0">
           <i class="fas fa-check"/>
         </div>
-        <div class="h-is-tertiary-text">
+        <div class="h-is-tertiary-text mb-4">
           Operation completed
         </div>
+      </div>
+      <div v-if="formattedTransactionId" class="h-is-property-text">
+        {{ 'With transaction ID: ' + formattedTransactionId }}
       </div>
     </template>
 
@@ -133,7 +136,7 @@ import {walletManager} from "@/router";
 import {Nft, NftAllowance} from "@/schemas/HederaSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, waitForTransactionRefresh} from "@/schemas/HederaUtils";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
@@ -170,29 +173,34 @@ export default defineComponent({
     const tokenInfo = computed(() => tokenInfoLookup.entity.value)
     const tokenName = computed(() => makeTokenName(tokenInfo.value, 32))
 
+    const tid = ref<string | null>(null)
+    const formattedTransactionId = computed(() =>
+        tid.value != null ? TransactionID.normalize(tid.value, true) : null
+    )
+
     const errorMessage = ref<string | null>(null)
     const errorMessageDetails = ref<string | null>(null)
 
     const onDelete = async () => {
       props.controller.mode.value = DialogMode.Busy
-      let tid = null
+      tid.value = null
 
       try {
 
-        if( isApprovedForAll.value && token.value != null && spender.value != null) {
-          tid = normalizeTransactionId(
+        if (isApprovedForAll.value && token.value != null && spender.value != null) {
+          tid.value = normalizeTransactionId(
               await walletManager.deleteNftAllSerialsAllowance(token.value, spender.value)
           )
         } else if (token.value != null && serial.value != null) {
-          tid = normalizeTransactionId(
+          tid.value = normalizeTransactionId(
               await walletManager.deleteNftAllowance(token.value, serial.value)
           )
         } else {
           // This should not happen
         }
         console.log("Transaction ID: " + tid)
-        if (tid) {
-          await waitForTransactionRefresh(tid, 10, 3000)
+        if (tid.value) {
+          await waitForTransactionRefresh(tid.value, 10, 3000)
         }
         props.controller.mode.value = DialogMode.Success
 
@@ -220,6 +228,7 @@ export default defineComponent({
       spender,
       serial,
       tokenName,
+      formattedTransactionId,
       errorMessage,
       errorMessageDetails,
       onDelete,
