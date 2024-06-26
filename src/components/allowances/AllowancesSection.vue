@@ -105,9 +105,6 @@
   <DeleteNftAllowanceDialog
       :controller="deleteDialogController"
       :nft-allowance="currentNftAllowance"
-  />
-  <DeleteNftAllSerialsAllowanceDialog
-      :controller="deleteAllSerialsDialogController"
       :nft-all-serials-allowance="currentNftAllSerialsAllowance"
   />
 
@@ -135,15 +132,13 @@ import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
 import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
-import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
-import DeleteNftAllSerialsAllowanceDialog from "@/components/allowances/DeleteNftAllSerialsAllowanceDialog.vue";
+import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 
 export default defineComponent({
   name: 'AllowancesSection',
 
   components: {
-    DeleteNftAllSerialsAllowanceDialog,
     DeleteNftAllowanceDialog,
     NftAllSerialsAllowanceTable,
     NftAllowanceTable,
@@ -192,8 +187,8 @@ export default defineComponent({
 
     const currentHbarAllowance = ref<CryptoAllowance | null>(null)
     const currentTokenAllowance = ref<TokenAllowance | null>(null)
-    const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
     const currentNftAllowance = ref<Nft | null>(null)
+    const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
 
     //
     // HBAR Allowances Table Controller
@@ -228,7 +223,6 @@ export default defineComponent({
     })
 
     const deleteDialogController = new DialogController()
-    const deleteAllSerialsDialogController = new DialogController()
 
     const notWithMetamaskDialogVisible = ref(false)
 
@@ -287,7 +281,7 @@ export default defineComponent({
       if (walletManager.isHederaWallet.value) {
         currentNftAllowance.value = null
         currentNftAllSerialsAllowance.value = allowance
-        deleteAllSerialsDialogController.visible.value = true
+        deleteDialogController.visible.value = true
       } else {
         notWithMetamaskDialogVisible.value = true
       }
@@ -338,7 +332,6 @@ export default defineComponent({
       onDeleteNft,
       onDeleteAllSerialsNft,
       deleteDialogController,
-      deleteAllSerialsDialogController,
       notWithMetamaskDialogVisible,
       Mode,
       selectApprovedForAll,
