@@ -576,7 +576,6 @@ export default defineComponent({
 
     const confirmMessage = computed(() => {
       let result: string
-      const toAccount = normalizedSpender.value
 
       if (allowanceChoice.value === 'hbar') {
         if (Number(selectedHbarAmount.value) === 0) {
@@ -585,14 +584,12 @@ export default defineComponent({
           result = "Do you want to approve an allowance for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
         }
       } else if (allowanceChoice.value === 'token') {
-        const token = normalizedToken.value
         if (rawTokenAmount.value === 0) {
           result = "Do you want to remove the allowance for token " + tokenName.value + "?"
         } else {
           result = "Do you want to approve an allowance for " + selectedTokenAmount.value + " tokens (" + tokenName.value + ")?"
         }
       } else {  // 'nft'
-        const nFT = normalizedNFT.value
         if (nftSerials.value.length > 0) {
           result = "Do you want to approve an allowance to account for NFTs " + nftName.value + " "
           for (let i = 0; i < nftSerials.value.length; i++) {
