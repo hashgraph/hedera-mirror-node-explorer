@@ -402,7 +402,7 @@ export default defineComponent({
       ) && edited.value
     })
 
-    watch([() => props.showDialog], () => {
+    watch(() => props.showDialog, () => {
       if (props.showDialog) {
         if (props.currentHbarAllowance) {
           isEditing.value = true
@@ -438,6 +438,15 @@ export default defineComponent({
           selectedNft.value = null
           selectedNftSerials.value = null
         }
+      }
+    })
+
+    watch(tokenInfo, () => {
+      if (props.currentTokenAllowance && selectedTokenAmount.value == props.currentTokenAllowance.amount_granted.toString()) {
+        selectedTokenAmount.value =  formatTokenAmount(
+                BigInt(props.currentTokenAllowance.amount_granted),
+                Number(tokenInfo.value?.decimals ?? 0)
+            )
       }
     })
 
@@ -510,9 +519,7 @@ export default defineComponent({
       }
     }
 
-    watch(selectedNft, (value, oldValue) => {
-      console.log(`selectedNft - oldValue:${oldValue}`)
-      console.log(`selectedNft - value:${value}`)
+    watch(selectedNft, () => {
       isNftValid.value = false
       nftFeedback.value = null
       if (nftValidationTimerId != -1) {

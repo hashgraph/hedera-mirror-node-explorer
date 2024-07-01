@@ -89,7 +89,7 @@
                           :owner-account-id="ownerAccountId"
                           :current-hbar-allowance="currentHbarAllowance"
                           :current-token-allowance="currentTokenAllowance"
-                          @allowance-approved="onApprove"
+                          @allowance-approved="onAllowanceApproved"
   />
 
   <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
@@ -237,7 +237,7 @@ export default defineComponent({
       }
     }
 
-    const onApprove = () => {
+    const onAllowanceApproved = () => {
       hbarAllowanceTableController.unmount()
       tokenAllowanceTableController.unmount()
       nftAllowanceTableController.unmount()
@@ -337,7 +337,7 @@ export default defineComponent({
       currentNftAllowance,
       currentNftAllSerialsAllowance,
       onClick,
-      onApprove,
+      onAllowanceApproved,
       ownerAccountId: walletManager.accountId,
       onEditHbar,
       onEditToken,
