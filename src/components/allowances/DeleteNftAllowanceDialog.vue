@@ -156,7 +156,8 @@ export default defineComponent({
       default: null
     }
   },
-  setup(props) {
+  emits: ["deleted"],
+  setup(props, ctx) {
     const isApprovedForAll = computed(() => props.nftAllSerialsAllowance != null)
 
     const spender = computed(() =>
@@ -203,6 +204,7 @@ export default defineComponent({
           await waitForTransactionRefresh(tid.value, 10, 3000)
         }
         props.controller.mode.value = DialogMode.Success
+        ctx.emit('deleted')
 
       } catch (reason) {
 

@@ -106,6 +106,7 @@
       :controller="deleteDialogController"
       :nft-allowance="currentNftAllowance"
       :nft-all-serials-allowance="currentNftAllSerialsAllowance"
+      @deleted="onNftDeleted"
   />
 
 </template>
@@ -239,8 +240,12 @@ export default defineComponent({
     const onApprove = () => {
       hbarAllowanceTableController.unmount()
       tokenAllowanceTableController.unmount()
+      nftAllowanceTableController.unmount()
+      nftAllSerialsAllowanceTableController.unmount()
       hbarAllowanceTableController.mount()
       tokenAllowanceTableController.mount()
+      nftAllowanceTableController.mount()
+      nftAllSerialsAllowanceTableController.mount()
     }
 
     const onEditHbar = (allowance: CryptoAllowance) => {
@@ -287,6 +292,13 @@ export default defineComponent({
       }
     }
 
+    const onNftDeleted = () => {
+      nftAllowanceTableController.unmount()
+      nftAllSerialsAllowanceTableController.unmount()
+      nftAllowanceTableController.mount()
+      nftAllSerialsAllowanceTableController.mount()
+    }
+
     const cleanUpRouteQuery = async () => {
       const query = {...router.currentRoute.value.query}
       if (query.app) {
@@ -331,6 +343,7 @@ export default defineComponent({
       onEditToken,
       onDeleteNft,
       onDeleteAllSerialsNft,
+      onNftDeleted,
       deleteDialogController,
       notWithMetamaskDialogVisible,
       Mode,
