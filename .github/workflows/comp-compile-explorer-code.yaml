@@ -97,7 +97,7 @@ jobs:
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Report Unit Test Coverage
-        uses: davelosert/vitest-coverage-report-action@9fd25c0d0394bfd0ffa632777316402c2e5fb81f # v2.4.0
+        uses: davelosert/vitest-coverage-report-action@65846c957a86d94dcdfc49195da0059476cebb3f # v2.5.0
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Cypress run
