@@ -238,14 +238,10 @@ export default defineComponent({
     }
 
     const onAllowanceApproved = () => {
-      hbarAllowanceTableController.unmount()
-      tokenAllowanceTableController.unmount()
-      nftAllowanceTableController.unmount()
-      nftAllSerialsAllowanceTableController.unmount()
-      hbarAllowanceTableController.mount()
-      tokenAllowanceTableController.mount()
-      nftAllowanceTableController.mount()
-      nftAllSerialsAllowanceTableController.mount()
+      hbarAllowanceTableController.refresh()
+      tokenAllowanceTableController.refresh()
+      nftAllowanceTableController.refresh()
+      nftAllSerialsAllowanceTableController.refresh()
     }
 
     const onEditHbar = (allowance: CryptoAllowance) => {
@@ -293,10 +289,8 @@ export default defineComponent({
     }
 
     const onNftDeleted = () => {
-      nftAllowanceTableController.unmount()
-      nftAllSerialsAllowanceTableController.unmount()
-      nftAllowanceTableController.mount()
-      nftAllSerialsAllowanceTableController.mount()
+      nftAllowanceTableController.refresh()
+      nftAllSerialsAllowanceTableController.refresh()
     }
 
     const cleanUpRouteQuery = async () => {

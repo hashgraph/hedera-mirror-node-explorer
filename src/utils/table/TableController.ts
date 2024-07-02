@@ -109,6 +109,12 @@ export abstract class TableController<R, K> implements PlayPauseController {
         this.bufferDidChange().catch(this.errorHandler)
     }
 
+    public async refresh(): Promise<void> {
+        this.buffer.clear()
+        await this.buffer.refresh()
+        await this.bufferDidChange()
+    }
+
     //
     // PlayPauseController
     //
