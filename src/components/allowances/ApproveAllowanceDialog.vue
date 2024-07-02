@@ -380,12 +380,10 @@ export default defineComponent({
     const editingFeedback = computed(() => {
       let result: string | null
       if (props.currentHbarAllowance) {
-        result = "Previous allowance was to "
-            + props.currentHbarAllowance.spender + " for "
+        result = "Previous allowance was for "
             + props.currentHbarAllowance.amount_granted / 100000000 + " hbars"
       } else if (props.currentTokenAllowance) {
-        result = "Previous allowance was to "
-            + props.currentTokenAllowance.spender + " for "
+        result = "Previous allowance was for "
             + initialTokenAmount.value
             + " " + tokenName.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
       } else {
