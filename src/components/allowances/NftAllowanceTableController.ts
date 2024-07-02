@@ -72,14 +72,14 @@ export class NftAllowanceTableController extends TableController<Nft, string> {
             params["spender.id"] = KeyOperator.gte + ":0.0.1"
             if (key !== null) {
                 const items = key.split('-')
-                const token = items[0]
-                const serial = items[1]
+                const token = items[0] ?? null
+                const serial = items[1] ?? null
                 if (params.order === SortOrder.ASC) {
-                    params["token.id"] = KeyOperator.gte + ":" + token
-                    params.serialnumber = KeyOperator.gt + ":" + serial
+                    params["token.id"] = token ? KeyOperator.gte + ":" + token : undefined
+                    params.serialnumber = serial ? KeyOperator.gt + ":" + serial : undefined
                 } else {
-                    params["token.id"] = KeyOperator.lte + ":" + token
-                    params.serialnumber = KeyOperator.lt + ":" + serial
+                    params["token.id"] = token ? KeyOperator.lte + ":" + token : undefined
+                    params.serialnumber = serial ? KeyOperator.lt + ":" + serial : undefined
                 }
             }
             const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
