@@ -89,6 +89,7 @@
                           :owner-account-id="ownerAccountId"
                           :current-hbar-allowance="currentHbarAllowance"
                           :current-token-allowance="currentTokenAllowance"
+                          :token-decimals="tokenDecimals"
                           @allowance-approved="onAllowanceApproved"
   />
 
@@ -135,6 +136,7 @@ import {NftAllSerialsAllowanceTableController} from "@/components/allowances/Nft
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 
 export default defineComponent({
   name: 'AllowancesSection',
@@ -188,6 +190,7 @@ export default defineComponent({
 
     const currentHbarAllowance = ref<CryptoAllowance | null>(null)
     const currentTokenAllowance = ref<TokenAllowance | null>(null)
+    const tokenDecimals = ref<string | null>(null)
     const currentNftAllowance = ref<Nft | null>(null)
     const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
 
@@ -255,9 +258,11 @@ export default defineComponent({
       }
     }
 
-    const onEditToken = (allowance: TokenAllowance) => {
+    const onEditToken = async (allowance: TokenAllowance) => {
       // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
+        const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
+        tokenDecimals.value = info?.decimals ?? null
         currentHbarAllowance.value = null
         currentTokenAllowance.value = allowance
         showApproveAllowanceDialog.value = true
@@ -326,6 +331,7 @@ export default defineComponent({
       tokenAllowanceTableController,
       nftAllowanceTableController,
       nftAllSerialsAllowanceTableController,
+      tokenDecimals,
       currentTokenAllowance,
       currentHbarAllowance,
       currentNftAllowance,

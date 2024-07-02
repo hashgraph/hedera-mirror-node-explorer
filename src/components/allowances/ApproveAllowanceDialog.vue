@@ -268,6 +268,10 @@ export default defineComponent({
     },
     currentHbarAllowance: Object as PropType<CryptoAllowance | null>,
     currentTokenAllowance: Object as PropType<TokenAllowance | null>,
+    tokenDecimals: {
+      type: String as PropType<string | null>,
+      default: null
+    },
     polling: { // For testing purpose
       type: Number,
       default: 3000
@@ -295,14 +299,14 @@ export default defineComponent({
         () => props.currentTokenAllowance?.amount_granted
             ? formatTokenAmount(
                 BigInt(props.currentTokenAllowance.amount_granted),
-                Number(tokenInfo.value?.decimals ?? 0)
+                Number(props.tokenDecimals ?? 0)
             )
             : null
     )
     const selectedTokenAmount = ref<string | null>(null)
     const rawTokenAmount = computed(
         () => selectedTokenAmount.value != null
-            ? Number.parseFloat(selectedTokenAmount.value) * Math.pow(10, Number(tokenInfo.value?.decimals))
+            ? Number.parseFloat(selectedTokenAmount.value) * Math.pow(10, Number(props.tokenDecimals))
             : null
     )
 
@@ -421,7 +425,7 @@ export default defineComponent({
           selectedTokenAmount.value = props.currentTokenAllowance.amount_granted
               ? formatTokenAmount(
                   BigInt(props.currentTokenAllowance.amount_granted),
-                  Number(tokenInfo.value?.decimals ?? 0)
+                  Number(props.tokenDecimals ?? 0)
               )
               : null
           selectedNft.value = null
@@ -436,15 +440,6 @@ export default defineComponent({
           selectedNft.value = null
           selectedNftSerials.value = null
         }
-      }
-    })
-
-    watch(tokenInfo, () => {
-      if (props.currentTokenAllowance && selectedTokenAmount.value == props.currentTokenAllowance.amount_granted.toString()) {
-        selectedTokenAmount.value =  formatTokenAmount(
-                BigInt(props.currentTokenAllowance.amount_granted),
-                Number(tokenInfo.value?.decimals ?? 0)
-            )
       }
     })
 
