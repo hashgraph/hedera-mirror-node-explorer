@@ -58,6 +58,7 @@
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
+                 :disabled="isSpenderDisabled"
                  @input="event => handleSpenderInput(event)">
           <div v-if="spenderFeedback" id="spenderFeedback"
                :class="{'has-text-grey': isSpenderValid, 'has-text-danger': !isSpenderValid}"
@@ -337,6 +338,7 @@ export default defineComponent({
     const allowanceChoice = ref("hbar")
 
     const isSpenderValid = ref(false)
+    const isSpenderDisabled = computed(() => !!props.currentTokenAllowance)
     const spenderFeedback = ref<string | null>(null)
     let spenderValidationTimerId = -1
 
@@ -444,16 +446,20 @@ export default defineComponent({
     })
 
     watch(selectedSpender, (newValue) => {
-      isSpenderValid.value = false
       spenderFeedback.value = null
-      if (spenderValidationTimerId != -1) {
-        window.clearTimeout(spenderValidationTimerId)
-        spenderValidationTimerId = -1
-      }
-      if (newValue?.length) {
-        spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
+      if (isSpenderDisabled.value) {
+        isSpenderValid.value = true
       } else {
-        selectedSpender.value = null
+        isSpenderValid.value = false
+        if (spenderValidationTimerId != -1) {
+          window.clearTimeout(spenderValidationTimerId)
+          spenderValidationTimerId = -1
+        }
+        if (newValue?.length) {
+          spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
+        } else {
+          selectedSpender.value = null
+        }
       }
     })
 
@@ -746,6 +752,7 @@ export default defineComponent({
       selectedNftSerials,
       allowanceChoice,
       isSpenderValid,
+      isSpenderDisabled,
       spenderFeedback,
       isTokenValid,
       tokenFeedback,
