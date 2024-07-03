@@ -42,7 +42,7 @@
         This might be transient. Try to search again in a few moments.
       </template>
       <template v-else>
-        <span>No account, transaction, contract, token or topic matches "</span>
+        <span>No account, transaction, contract, token, topic or block matches "</span>
         <span style="font-weight: 400">{{ searchedId }}</span>
         <span>".</span>
         <br/><br/>
@@ -52,6 +52,15 @@
           <div class="has-text-left" style="display: inline-block; max-width: 1024px">
             <span style="display: inline-block">Make sure you enter one of the expressions below:</span>
             <br/><br/>
+            <div>
+              &bull; a domain name<br/>
+              <div class="should-wrap h-help-item">
+                Example:&nbsp;domain1.hbar
+              </div>
+              <div class="should-wrap h-help-item">
+                or:&nbsp;domain2.hh
+              </div>
+            </div>
             <div>
               &bull; an entity ID with or without checksum (0.0.x or 0.0.x-abcde)<br/>
               <div class="should-wrap h-help-item">
