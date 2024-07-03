@@ -43,7 +43,7 @@
           class="input has-text-white h-is-navbar-item"
           style="z-index: 1; height: 40px"
           type="text"
-          placeholder="Search accounts, transactions, tokens, contracts and topics"
+          placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
           v-model="searchedId"
           v-bind:disabled="searchInputDisabled"
           ref="search-input"

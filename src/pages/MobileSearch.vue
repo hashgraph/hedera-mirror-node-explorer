@@ -28,7 +28,7 @@
 
     <div class="is-flex is-align-items-center mb-6">
       <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">
-      <span class="ml-4">Search accounts, transactions, tokens, contracts and topics</span>
+      <span class="ml-4">Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp</span>
     </div>
 
     <SearchBar/>
