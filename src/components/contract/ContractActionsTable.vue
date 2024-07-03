@@ -28,6 +28,9 @@
     <o-table
         :data="actions ?? []"
         :paginated="isPaginated"
+        pagination-order="left"
+        :range-before="0"
+        :range-after="0"
         :per-page="NB_ACTIONS_PER_PAGE"
 
         detailed

@@ -26,6 +26,9 @@
   <o-table
       :data="collections"
       :paginated="!isTouchDevice"
+      pagination-order="left"
+      :range-before="0"
+      :range-after="0"
       :per-page="perPage"
       @cell-click="handleClick"
 

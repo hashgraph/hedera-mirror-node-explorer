@@ -29,6 +29,9 @@
       :loading="loading"
       :paginated="paginated"
       backend-pagination
+      pagination-order="left"
+      :range-before="0"
+      :range-after="0"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
