@@ -29,6 +29,9 @@
       :hoverable="true"
       :paginated="!isTouchDevice"
       backend-pagination
+      pagination-order="left"
+      :range-before="0"
+      :range-after="0"
       :total="totalRowCount"
       :current-page="currentPage"
       :per-page="pageSize"

@@ -27,7 +27,11 @@
   <o-table
       :data="transactions"
       :loading="loading"
+      :paginated="!isTouchDevice"
       backend-pagination
+      pagination-order="left"
+      :range-before="0"
+      :range-after="0"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -35,7 +39,6 @@
       @cell-click="handleClick"
 
       :hoverable="true"
-      :paginated="!isTouchDevice"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
