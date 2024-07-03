@@ -459,17 +459,17 @@ export default defineComponent({
 
     const contractRoute = computed(() => {
       const accountId = accountLocParser.accountId.value
-      return accountId ? routeManager.makeRouteToContract(accountId) : null
+      return accountId ? routeManager.makeRouteToContract(accountId) : ''
     })
 
     const stakedNodeRoute = computed(() => {
       const stakedNodeId = accountLocParser.stakedNodeId.value
-      return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : null
+      return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : ''
     })
 
     const operatorNodeRoute = computed(() => {
       const operatorNodeId = accountLocParser.nodeId.value
-      return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : null
+      return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
     })
 
     const tabIds = ['transactions', 'contracts', 'rewards']
