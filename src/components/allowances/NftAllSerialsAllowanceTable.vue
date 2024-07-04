@@ -32,6 +32,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="paginated"
+      pagination-order="left"
+      :range-before="0"
+      :range-after="0"
       :per-page="perPage"
       :striped="true"
 
