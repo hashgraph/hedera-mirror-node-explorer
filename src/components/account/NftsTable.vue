@@ -118,7 +118,7 @@ export default defineComponent({
       }
     }
 
-    const MAX_DISPLAYED_SERIALS = 6
+    const MAX_DISPLAYED_SERIALS = 20
     const formatSerials = (serials: number[]): string => {
       let result = ''
       for (let i = 0; i < serials.length; i++) {
