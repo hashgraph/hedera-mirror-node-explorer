@@ -74,13 +74,14 @@ describe("AccountBalances.vue", () => {
         // console.log(wrapper.find('tbody').text())
 
         const balanceCard = wrapper.get("#balanceCard")
-        expect(balanceCard.find('thead').text()).toBe("Token Balance/Nb of NFTs")
+        expect(balanceCard.find('thead').text()).toBe("Token Name Symbol Type Balance Nb. of NFTs")
         expect(balanceCard.find('tbody').text()).toBe(
-            "0.0.34332104" + "HSuite" + "0.0000" +
-            "0.0.49292859" + "TokenA7" + "0.00000000")
+            "0.0.34332104" + "HSUITE" + "HSuite" + "Fungible" + "0.0000" +
+            "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "Fungible" + "0.00000000"
+        )
 
         const nftsCard = wrapper.get("#nftsCard")
-        expect(nftsCard.find('thead').text()).toBe("NFT Collection Nb of NFTs")
+        expect(nftsCard.find('thead').text()).toBe("Collection Name Symbol Serial Numbers Total")
         expect(nftsCard.find('tbody').text()).toBe("")
 
         wrapper.unmount()
@@ -119,12 +120,14 @@ describe("AccountBalances.vue", () => {
         // console.log(wrapper.find('tbody').text())
 
         const balanceCard = wrapper.get("#balanceCard")
-        expect(balanceCard.find('thead').text()).toBe("Token Balance/Nb of NFTs")
+        expect(balanceCard.find('thead').text()).toBe("Token Name Symbol Type Balance Nb. of NFTs")
         expect(balanceCard.find('tbody').text()).toBe("")
 
         const nftsCard = wrapper.get("#nftsCard")
-        expect(nftsCard.find('thead').text()).toBe("NFT Collection Nb of NFTs")
-        expect(nftsCard.find('tbody').text()).toBe("0.0.748383" + SAMPLE_NONFUNGIBLE.symbol + SAMPLE_NFTS.nfts.length)
+        expect(nftsCard.find('thead').text()).toBe("Collection Name Symbol Serial Numbers Total")
+        expect(nftsCard.find('tbody').text()).toBe(
+            "0.0.748383" + "Ħ Frens Kingdom" + "ĦFRENSKINGD…" + "#2, #1, #342" + "3"
+        )
 
         wrapper.unmount()
         await flushPromises()
