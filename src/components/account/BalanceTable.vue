@@ -51,15 +51,47 @@
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
-          v-bind:show-extra="true"
-          v-bind:token-id="props.row.token_id"
-          v-bind:no-anchor="true"
+          :show-extra="false"
+          :token-id="props.row.token_id"
+          :no-anchor="true"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance/Nb of NFTs" position="right">
-      <TokenAmount v-bind:amount="BigInt(props.row.balance)"
-                   v-bind:token-id="props.row.token_id"/>
+    <o-table-column v-slot="props" field="name" label="Name">
+      <TokenCell
+          :token-id="props.row.token_id"
+          :property="TokenCellItem.tokenName"
+      />
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="symbol" label="Symbol">
+      <TokenCell
+          :token-id="props.row.token_id"
+          :property="TokenCellItem.tokenSymbol"
+      />
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="type" label="Type">
+      <TokenCell
+          :token-id="props.row.token_id"
+          :property="TokenCellItem.tokenType"
+      />
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+      <TokenCell
+          :token-id="props.row.token_id"
+          :property="TokenCellItem.tokenBalance"
+          :balance-or-nb-serials="props.row.balance"
+      />
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="nb-nfts" label="Nb. of NFTs" position="right">
+      <TokenCell
+          :token-id="props.row.token_id"
+          :property="TokenCellItem.tokenNbSerials"
+          :balance-or-nb-serials="props.row.balance"
+      />
     </o-table-column>
 
   </o-table>
@@ -82,11 +114,13 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
+import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 
 export default defineComponent({
   name: 'BalanceTable',
 
   components: {
+    TokenCell,
     EmptyTable,
     TokenLink,
     TokenAmount
@@ -119,6 +153,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       pageSize: props.controller.pageSize as Ref<Number>,
       handleClick,
+      TokenCellItem,
       ORUGA_MOBILE_BREAKPOINT
     }
   }
