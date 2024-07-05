@@ -21,6 +21,7 @@
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {Nft, Nfts} from "@/schemas/HederaSchemas";
 import axios, {AxiosResponse} from "axios";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 
 export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]> {
 
@@ -34,12 +35,12 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
         const result: NftCollectionInfo[] = []
         let nextURL: string | null = "api/v1/accounts/" + accountId + "/nfts"
         const params = {
-            limit: 100 as number | undefined
+            limit: 100 as number | undefined,
+            order: 'ASC'
         }
         while (nextURL !== null) {
-            const response: AxiosResponse<Nfts>
-                = await axios.get<Nfts>(nextURL, {params: params})
-            this.appendNfts(response.data.nfts ?? [], result)
+            const response: AxiosResponse<Nfts> = await axios.get<Nfts>(nextURL, {params: params})
+            await this.appendNfts(response.data.nfts ?? [], result)
             nextURL = response.data.links?.next ?? null
             params.limit = undefined
         }
@@ -50,15 +51,13 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
     // Private
     //
 
-    private static readonly SAMPLE_COUNT = 10
-
-    private appendNfts(nfts: Nft[], result: NftCollectionInfo[]) {
+    private async appendNfts(nfts: Nft[], result: NftCollectionInfo[]) {
         for (const nft of nfts) {
-            this.appendNft(nft, result)
+           await this.appendNft(nft, result)
         }
     }
 
-    private appendNft(nft: Nft, result: NftCollectionInfo[]) {
+    private async appendNft(nft: Nft, result: NftCollectionInfo[]) {
 
         //
         // Nfts[] are returned in a specific order.
@@ -68,12 +67,15 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
 
         const lastCollection = result.length >= 1 ? result[result.length - 1] : null
         if (lastCollection !== null && lastCollection.tokenId === nft.token_id) {
-            lastCollection.collectionSize += 1
-            if (lastCollection.samples.length < NftCollectionCache.SAMPLE_COUNT) {
-                lastCollection.samples.push(nft)
-            }
+            lastCollection.serials.push(nft.serial_number)
         } else {
-            result.push(new NftCollectionInfo(nft.token_id ?? null, nft))
+           const info = await TokenInfoCache.instance.lookup(nft.token_id ?? '')
+            result.push(new NftCollectionInfo(
+                nft.token_id ?? null,
+                info?.name ?? null,
+                info?.symbol ?? null,
+                nft.serial_number
+            ))
         }
     }
 }
@@ -81,12 +83,19 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
 export class NftCollectionInfo {
 
     public readonly tokenId: string | null
-    public collectionSize: number
-    public samples: Nft[]
+    public readonly tokenName: string | null
+    public readonly tokenSymbol: string | null
+    public serials: number[]
 
-    public constructor(tokenId: string | null, firstSample: Nft) {
+    public constructor(
+        tokenId: string | null,
+        tokenName: string | null,
+        tokenSymbol: string | null,
+        firstSample: number
+    ) {
         this.tokenId = tokenId
-        this.collectionSize = 1
-        this.samples = [firstSample]
+        this.tokenName = tokenName
+        this.tokenSymbol = tokenSymbol
+        this.serials = [firstSample]
     }
 }

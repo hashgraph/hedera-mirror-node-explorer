@@ -42,16 +42,31 @@
       aria-page-label="Page"
       aria-previous-label="Previous page"
   >
-    <o-table-column v-slot="props" field="token_id" label="NFT Collection">
+
+    <o-table-column v-slot="props" field="collection" label="Collection">
       <TokenLink
-          v-bind:show-extra="true"
-          v-bind:token-id="props.row.tokenId"
-          v-bind:no-anchor="true"
+          :show-extra="false"
+          :token-id="props.row.tokenId"
+          :no-anchor="true"
       />
     </o-table-column>
-    <o-table-column v-slot="props" field="owned" label="Nb of NFTs" position="right">
-      {{ props.row.collectionSize }}
+
+    <o-table-column v-slot="props" field="name" label="Name">
+      <TokenCell :token-id="props.row.tokenId" :property="TokenCellItem.tokenName"/>
     </o-table-column>
+
+    <o-table-column v-slot="props" field="symbol" label="Symbol">
+      <TokenCell :token-id="props.row.tokenId" :property="TokenCellItem.tokenSymbol"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="serials" label="Serial Numbers" position="left">
+      {{ formatSerials(props.row.serials) }}
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="owned" label="Total" position="right">
+      {{ props.row.serials.length }}
+    </o-table-column>
+
   </o-table>
 
   <EmptyTable v-if="!collections.length"/>
@@ -71,11 +86,13 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import {useRoute} from "vue-router";
 import {NftCollectionInfo} from "@/utils/cache/NftCollectionCache";
+import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 
 export default defineComponent({
   name: 'NftsTable',
 
   components: {
+    TokenCell,
     EmptyTable,
     TokenLink,
   },
@@ -101,11 +118,27 @@ export default defineComponent({
       }
     }
 
+    const MAX_DISPLAYED_SERIALS = 6
+    const formatSerials = (serials: number[]): string => {
+      let result = ''
+      for (let i = 0; i < serials.length; i++) {
+        if (i < MAX_DISPLAYED_SERIALS) {
+          result += (i == 0 ? `#${serials[i]}` : `, #${serials[i]}`)
+        } else {
+          result += `… (${serials.length - MAX_DISPLAYED_SERIALS} more)`
+          break
+        }
+      }
+      return result
+    }
+
     return {
       isTouchDevice,
       isMediumScreen,
       perPage,
       handleClick,
+      formatSerials,
+      TokenCellItem,
       ORUGA_MOBILE_BREAKPOINT
     }
   }
