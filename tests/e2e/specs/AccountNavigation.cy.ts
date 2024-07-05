@@ -55,7 +55,16 @@ describe('Account Navigation', () => {
             .should('be.visible')
             .should('have.length.at.least', 1)
 
+        cy.get('#tab-token').click()
+
         cy.get('#tokenAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('#tab-nft').click()
+
+        cy.get('#nftAllowancesTable')
             .find('tbody tr')
             .should('be.visible')
             .should('have.length.at.least', 1)
