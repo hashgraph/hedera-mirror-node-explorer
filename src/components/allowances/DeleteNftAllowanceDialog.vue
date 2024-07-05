@@ -199,7 +199,7 @@ export default defineComponent({
         } else {
           // This should not happen
         }
-        console.log("Transaction ID: " + tid)
+        // console.log("Transaction ID: " + tid.value)
         if (tid.value) {
           await waitForTransactionRefresh(tid.value, 10, 3000)
         }
