@@ -84,7 +84,7 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
 import {TokenAllowance} from "@/schemas/HederaSchemas";
 import {isValidAssociation} from "@/schemas/HederaUtils";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
@@ -127,14 +127,16 @@ export default defineComponent({
     )
     // const isWalletConnected = computed(() => false)
 
-    const allowances = computed<DisplayedTokenAllowance[]>(() => {
+    const allowances = ref<DisplayedTokenAllowance[]>([])
+    watch(props.controller.rows, async () => {
       const result = []
       for (const a of props.controller.rows.value) {
         let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-        isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
+        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
+        allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
         result.push(allowance)
       }
-      return result
+      allowances.value = result
     })
 
     return {

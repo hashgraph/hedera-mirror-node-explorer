@@ -66,7 +66,7 @@
         <i class="far fa-trash-alt" @click="$emit('deleteAllowance', props.row)"></i>
       </span>
       <InfoTooltip v-else
-                   label="The allowance cannot be modified because the token is no longer associated with this account."/>
+                   label="The allowance cannot be modified because the NFT collection is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
@@ -81,13 +81,12 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
 import {NftAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
@@ -101,7 +100,7 @@ interface DisplayedNftAllowance extends NftAllowance {
 export default defineComponent({
   name: 'NftAllSerialsAllowanceTable',
 
-  components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {InfoTooltip, TokenLink, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["deleteAllowance"],
 
@@ -123,14 +122,16 @@ export default defineComponent({
             && walletManager.accountId.value === props.controller.accountId.value
     )
 
-    const allowances = computed<DisplayedNftAllowance[]>(() => {
+    const allowances = ref<DisplayedNftAllowance[]>([])
+    watch(props.controller.rows, async () => {
       const result = []
       for (const a of props.controller.rows.value) {
         let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
-        isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
+        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
+        allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
         result.push(allowance)
       }
-      return result
+      allowances.value = result
     })
 
     return {

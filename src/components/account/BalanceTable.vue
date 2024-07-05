@@ -109,7 +109,6 @@
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {TokenBalance, TokenRelationship} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/link/TokenLink.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
@@ -123,7 +122,6 @@ export default defineComponent({
     TokenCell,
     EmptyTable,
     TokenLink,
-    TokenAmount
   },
 
   props: {

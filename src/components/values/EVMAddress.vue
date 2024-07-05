@@ -84,11 +84,6 @@ export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 
 export default defineComponent({
   name: "EVMAddress",
-  methods: {
-    routeManager() {
-      return routeManager
-    }
-  },
   components: {TokenLink, AccountLink, ContractLink, Copyable},
   props: {
     address: {

@@ -55,21 +55,21 @@
         </label>
       </div>
 
-      <template v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
+      <div v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
         <HbarAllowanceTable
             :controller="hbarAllowanceTableController"
             @edit-allowance="onEditHbar"
         />
-      </template>
+      </div>
 
-      <template v-else-if="selectedTab === 'token'" id="tokenAllowancesTable">
+      <div v-else-if="selectedTab === 'token'" id="tokenAllowancesTable">
         <TokenAllowanceTable
             :controller="tokenAllowanceTableController"
             @edit-allowance="onEditToken"
         />
-      </template>
+      </div>
 
-      <template v-else id="nftAllowancesTable">
+      <div v-else id="nftAllowancesTable">
         <NftAllSerialsAllowanceTable
             v-if="selectApprovedForAll"
             :controller="nftAllSerialsAllowanceTableController"
@@ -80,7 +80,7 @@
             :controller="nftAllowanceTableController"
             @delete-allowance="onDeleteNft"
         />
-      </template>
+      </div>
     </template>
 
   </DashboardCard>

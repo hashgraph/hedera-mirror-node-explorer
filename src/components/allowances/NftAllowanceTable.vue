@@ -91,16 +91,14 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
-import InfoTooltip from "@/components/InfoTooltip.vue";
 import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 
 export default defineComponent({
   name: 'NftAllowanceTable',
 
-  components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TokenLink, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["deleteAllowance"],
 
