@@ -50,9 +50,10 @@ export class TokenRelationshipsTableController extends TableController<TokenRela
                 order: string
             }
             params.limit = limit
-            params.order = order
+            params.order = TableController.invertSortOrder(order)
+            const keyOperator = TableController.invertKeyOperator(operator)
             if (tokenId !== null) {
-                params["token.id"] = operator + ":" + tokenId
+                params["token.id"] = keyOperator + ":" + tokenId
             }
             const url = `api/v1/accounts/${this.accountId.value}/tokens`
             const r = await axios.get<TokenRelationshipResponse>(url, {params: params})
