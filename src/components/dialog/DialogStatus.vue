@@ -63,7 +63,10 @@ export default defineComponent({
       type: Object as PropType<DialogController>,
       required: true
     },
-    isSuccess: Boolean as PropType<boolean | undefined>,
+    isSuccess: {
+      type: Boolean as PropType<boolean | undefined>,
+      default: undefined
+    }
   },
   setup(props) {
 
