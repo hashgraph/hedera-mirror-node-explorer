@@ -79,7 +79,6 @@ import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
 import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
-import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
@@ -89,7 +88,7 @@ import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMe
 export default defineComponent({
   name: 'MessageTransactionTable',
 
-  components: {TopicMessageCell, TopicIOL, EmptyTable, TimestampValue, BlobValue},
+  components: {TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
 
   props: {
     controller: {
