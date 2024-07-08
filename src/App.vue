@@ -94,6 +94,11 @@ export default defineComponent({
     })
     provide('isLargeScreen', isLargeScreen)
 
+    const isXLargeScreen = computed(() => {
+      return windowWidth.value >= XLARGE_BREAKPOINT
+    })
+    provide('isXLargeScreen', isXLargeScreen)
+
     const onResizeHandler = () => {
       windowWidth.value = window.innerWidth
     }
