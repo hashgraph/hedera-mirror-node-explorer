@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -28,6 +28,7 @@ import {
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_SUPPLY,
     SAMPLE_TOKEN,
+    SAMPLE_TOPIC_MESSAGES,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MainDashboard from "@/pages/MainDashboard.vue";
@@ -76,6 +77,11 @@ describe("MainDashboard.vue", () => {
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
+        const matcher5 = "/api/v1/topics/messages/"
+        mock.onGet(matcher5 + SAMPLE_MESSAGE_TRANSACTIONS.transactions[0].consensus_timestamp)
+            .reply(200, SAMPLE_TOPIC_MESSAGES.messages[0]);
+        mock.onGet(matcher5 + SAMPLE_MESSAGE_TRANSACTIONS.transactions[1].consensus_timestamp)
+            .reply(200, SAMPLE_TOPIC_MESSAGES.messages[1]);
 
         const wrapper = mount(MainDashboard, {
             global: {
@@ -129,10 +135,10 @@ describe("MainDashboard.vue", () => {
         expect(cards[2].findComponent(PlayPauseButton).exists()).toBe(true)
         const t2 = cards[2].findComponent(MessageTransactionTable)
         expect(t2.exists()).toBe(true)
-        expect(t2.get('thead').text()).toBe("Topic ID Memo Time")
+        expect(t2.get('thead').text()).toBe("Topic ID Content Time")
         expect(t2.get('tbody').text()).toBe(
-            "0.0.120438" + "None" + "1:59:03.9969 PMMar 8, 2022, UTC" +
-            "0.0.120438" + "None" + "1:59:03.9622 PMMar 8, 2022, UTC"
+            "0.0.120438" + "backgroundMessage" + "1:59:03.9969 PMMar 8, 2022, UTC" +
+            "0.0.120438" + "backgroundMessage" + "1:59:03.9622 PMMar 8, 2022, UTC"
         )
 
         mock.restore()

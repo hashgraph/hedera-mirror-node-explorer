@@ -3138,7 +3138,7 @@ export const SAMPLE_TOPIC_MESSAGES = {
         {
             "chunk_info": null,
             "consensus_timestamp": "1642097184.056478572",
-            "message": "AAABflSejDhfTmV3IG1lc3NhZ2VfNQ==",
+            "message": "YmFja2dyb3VuZE1lc3NhZ2U=",
             "payer_account_id": "0.0.950",
             "running_hash": "8byKHCHutoTADN1e83GtFAMek+5BffakLZUuGOre0cAt3s4yk1jnxLvWsttLfs3n",
             "running_hash_version": 3,

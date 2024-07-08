@@ -55,10 +55,8 @@
       <TopicIOL class="w200" :topic-id="props.row.entity_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="Memo">
-      <div class="w250">
-        <BlobValue v-bind:blob-value="props.row.memo_base64" v-bind:base64="true" v-bind:show-none="true"/>
-      </div>
+    <o-table-column v-slot="props" field="content" label="Content">
+      <TopicMessageCell :timestamp="props.row.consensus_timestamp" :property="TopicMessageCellItem.message"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
@@ -81,16 +79,16 @@ import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
 import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
-import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
+import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMessageCell.vue";
 
 export default defineComponent({
   name: 'MessageTransactionTable',
 
-  components: {TopicIOL, EmptyTable, TimestampValue, BlobValue},
+  components: {TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
 
   props: {
     controller: {
@@ -113,7 +111,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-
+      TopicMessageCellItem,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

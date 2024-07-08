@@ -48,7 +48,7 @@
 
     <div class="columns is-multiline">
 
-      <div class="column" :class="{'is-full': !displaySideBySide}">
+      <div class="column" :class="{'is-full':!isXLargeScreen}">
         <DashboardCard data-cy="smartContractCalls">
           <template v-slot:title>
             <span class="h-is-secondary-title">Smart Contract Calls</span>
@@ -124,7 +124,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const displaySideBySide = inject('isLargeScreen', true)
+    const isXLargeScreen = inject('isXLargeScreen', true)
 
     const router = useRouter()
     const pageSize = computed(() => isMediumScreen ? 5 : 6)
@@ -162,7 +162,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      displaySideBySide,
+      isXLargeScreen,
       cryptoTableController,
       messageTableController,
       contractTableController,
