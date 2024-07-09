@@ -23,6 +23,6 @@ import {KNSProvider} from "@/utils/name_service/provider/KNSProvider"
 import {HNSProvider} from "@/utils/name_service/provider/HNSProvider"
 
 export const nameServiceProviders: NameServiceProvider[] = [
-    new KNSProvider(),
-    new HNSProvider()
+    new HNSProvider(),
+    new KNSProvider()
 ]
