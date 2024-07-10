@@ -426,7 +426,7 @@ export default defineComponent({
         progressExtraMessage.value = "Check your wallet for any approval request"
         progressExtraTransactionId.value = null
         showProgressSpinner.value = false
-        const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward), false)
+        const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward))
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true

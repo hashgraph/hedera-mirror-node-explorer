@@ -111,7 +111,7 @@ export default defineComponent({
     const closeDisabled = computed(() => props.mode == Mode.Busy)
 
     const formattedTransactionId = computed(
-        () => props.extraTransactionId != null ? TransactionID.normalize(props.extraTransactionId) : null)
+        () => props.extraTransactionId != null ? TransactionID.normalizeForDisplay(props.extraTransactionId) : null)
 
     return {
       handleClose,

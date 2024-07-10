@@ -84,7 +84,7 @@ export class TransactionAnalyzer {
 
     public readonly formattedTransactionId: ComputedRef<string | null> = computed(() => {
         const transaction_id = this.transaction.value?.transaction_id
-        return transaction_id ? TransactionID.normalize(transaction_id) : null
+        return transaction_id ? TransactionID.normalizeForDisplay(transaction_id) : null
     })
 
     public readonly formattedHash: ComputedRef<string | null> = computed(() => {

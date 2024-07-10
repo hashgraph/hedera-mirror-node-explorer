@@ -692,17 +692,17 @@ export default defineComponent({
           if (allowanceChoice.value === 'hbar') {
             if (selectedHbarAmount.value != null) {
               tid = TransactionID.normalize(await walletManager.approveHbarAllowance(
-                  normalizedSpender.value, parseFloat(selectedHbarAmount.value)), false)
+                  normalizedSpender.value, parseFloat(selectedHbarAmount.value)))
             }
           } else if (allowanceChoice.value === 'token') {
             if (normalizedToken.value != null && rawTokenAmount.value != null) {
               tid = TransactionID.normalize(await walletManager.approveTokenAllowance(
-                  normalizedToken.value, normalizedSpender.value, rawTokenAmount.value), false)
+                  normalizedToken.value, normalizedSpender.value, rawTokenAmount.value))
             }
           } else { // 'nft'
             if (normalizedNFT.value != null) {
               tid = TransactionID.normalize(await walletManager.approveNFTAllowance(
-                  normalizedNFT.value, normalizedSpender.value, nftSerials.value), false)
+                  normalizedNFT.value, normalizedSpender.value, nftSerials.value))
             }
           }
 

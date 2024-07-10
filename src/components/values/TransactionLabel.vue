@@ -51,7 +51,7 @@ export default defineComponent({
 
   setup(props) {
     const transactionText = computed(() => {
-      return props.transactionId ? TransactionID.normalize(props.transactionId) : ""
+      return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : ""
     })
 
     const errorFlagVisible = computed(() => {

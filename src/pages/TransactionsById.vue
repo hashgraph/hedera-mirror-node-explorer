@@ -74,11 +74,11 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const normalizedTransactionId = computed(() => {
-      return props.transactionId ? TransactionID.normalize(props.transactionId) : "?";
+      return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : "?";
     })
 
     const paramTransactionId = computed(() => {
-      return props.transactionId ? TransactionID.normalize(props.transactionId, false) : null
+      return props.transactionId ? TransactionID.normalize(props.transactionId) : null
     })
 
     const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)

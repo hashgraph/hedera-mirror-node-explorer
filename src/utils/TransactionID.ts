@@ -106,9 +106,13 @@ export class TransactionID {
         return this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
     }
 
-    public static normalize(transactionID: string, forDisplay = true): string {
+    public static normalizeForDisplay(transactionID: string): string {
+        return TransactionID.normalize(transactionID, TransactionID.useArobasForm.value)
+    }
+
+    public static normalize(transactionID: string, useArobas = false): string {
         const tid = TransactionID.parse(transactionID)
-        return tid != null ? tid.toString(forDisplay ? TransactionID.useArobasForm.value : false) : transactionID
+        return tid != null ? tid.toString(useArobas) : transactionID
     }
 
     public static makePayerID(transactionID: string): string | null {

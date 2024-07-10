@@ -100,7 +100,7 @@ export default defineComponent({
     onMounted(() => updateNormalizedId())
 
     const formattedId = computed(() => {
-      return normalizedId.value !== null ? TransactionID.normalize(normalizedId.value) : null
+      return normalizedId.value !== null ? TransactionID.normalizeForDisplay(normalizedId.value) : null
     })
 
     const routeToTransaction = computed(() => {

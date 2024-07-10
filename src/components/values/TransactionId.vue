@@ -48,9 +48,9 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const transactionId = ref(TransactionID.normalize(props.id ?? ''))
+    const transactionId = ref(TransactionID.normalizeForDisplay(props.id ?? ''))
     watch([() => props.id, TransactionID.useArobasForm], () =>
-            transactionId.value = TransactionID.normalize(props.id ?? ''), {immediate: true}
+            transactionId.value = TransactionID.normalizeForDisplay(props.id ?? ''), {immediate: true}
     )
     return {
       transactionId

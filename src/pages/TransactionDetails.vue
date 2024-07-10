@@ -38,18 +38,21 @@
             <div v-else class="h-has-pill has-background-danger">FAILURE</div>
           </div>
         </div>
-        <span v-if="routeToAllTransactions">
-          <router-link :to="routeToAllTransactions">
-            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
-          </router-link>
-        </span>
       </template>
 
       <template v-slot:control>
         <o-select v-model="txIdForm" class="h-is-text-size-3">
-          <option value="arobas">Use arobas form of ID</option>
-          <option value="dash">Use dash form of ID</option>
+          <option value="arobas">{{ arobasForm }}</option>
+          <option value="dash">{{ dashForm }}</option>
         </o-select>
+      </template>
+
+      <template v-slot:subtitle>
+        <div v-if="routeToAllTransactions">
+          <router-link :to="routeToAllTransactions">
+            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
+          </router-link>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -332,6 +335,9 @@ export default defineComponent({
     onMounted(() => transactionAnalyzer.mount())
     onBeforeUnmount(() => transactionAnalyzer.unmount())
 
+    const arobasForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(true))
+    const dashForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(false))
+
     const transactionGroupLookup = TransactionGroupCache.instance.makeLookup(transactionLocParser.transactionId)
     onMounted(() => transactionGroupLookup.mount())
     onBeforeUnmount(() => transactionGroupLookup.unmount())
@@ -449,6 +455,8 @@ export default defineComponent({
       transactionId: transactionLocParser.transactionId,
       transaction: transactionDetail,
       formattedTransactionId: transactionAnalyzer.formattedTransactionId,
+      arobasForm,
+      dashForm,
       netAmount: transactionAnalyzer.netAmount,
       entity: transactionAnalyzer.entityDescriptor,
       contractId: transactionAnalyzer.contractId,
