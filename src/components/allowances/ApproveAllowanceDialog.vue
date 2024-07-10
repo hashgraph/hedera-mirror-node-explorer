@@ -28,12 +28,22 @@
     <div class="modal-content" style="width: 768px; border-radius: 16px">
       <div class="box">
 
-        <span class="h-is-primary-title">
-          <span v-if="isEditing">Modify allowance</span>
-          <span v-else>Approve allowance</span>
-          <span v-if="ownerAccountId"> for account </span>
-          <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ ownerAccountId }}</span>
-        </span>
+        <div v-if="isEditing" class="h-is-primary-title">
+          <span >
+            Modify allowance
+          </span>
+          <span v-if="selectedSpender">
+            to account
+          </span>
+          <span v-if="selectedSpender" class="h-is-secondary-text has-text-weight-light mr-3">
+            {{ selectedSpender }}
+          </span>
+        </div>
+        <div v-else class="h-is-primary-title">
+          <span>
+            Approve allowance
+          </span>
+        </div>
 
         <hr class="h-card-separator"/>
 
@@ -48,6 +58,7 @@
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                  background-color: var(--h-theme-box-background-color)"
                  type="text"
+                 :disabled="isSpenderDisabled"
                  @input="event => handleSpenderInput(event)">
           <div v-if="spenderFeedback" id="spenderFeedback"
                :class="{'has-text-grey': isSpenderValid, 'has-text-danger': !isSpenderValid}"
@@ -185,9 +196,9 @@
     <template v-slot:dialogTitle>
       <span v-if="isEditing" class="h-is-primary-title">Modify allowance </span>
       <span v-else class="h-is-primary-title">Approve allowance </span>
-      <span v-if="ownerAccountId"> for account </span>
-      <span v-if="ownerAccountId" class="h-is-secondary-text has-text-weight-light mr-3"
-            style="line-height: 36px">{{ ownerAccountId }}</span>
+      <span v-if="selectedSpender"> to account </span>
+      <span v-if="selectedSpender" class="h-is-secondary-text has-text-weight-light mr-3"
+            style="line-height: 36px">{{ selectedSpender }}</span>
     </template>
   </ConfirmDialog>
 
@@ -216,15 +227,19 @@ import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import axios from "axios";
-import {CryptoAllowance, TokenAllowance, Transaction, TransactionByIdResponse} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {normalizeTransactionId} from "@/utils/TransactionID";
-import {waitFor} from "@/utils/TimerUtils";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
-import {formatTokenAmount, isOwnedSerials, isValidAssociation, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {
+  formatTokenAmount,
+  isOwnedSerials,
+  isValidAssociation,
+  makeTokenName,
+  waitForTransactionRefresh
+} from "@/schemas/HederaUtils";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
@@ -254,6 +269,10 @@ export default defineComponent({
     },
     currentHbarAllowance: Object as PropType<CryptoAllowance | null>,
     currentTokenAllowance: Object as PropType<TokenAllowance | null>,
+    tokenDecimals: {
+      type: String as PropType<string | null>,
+      default: null
+    },
     polling: { // For testing purpose
       type: Number,
       default: 3000
@@ -276,19 +295,19 @@ export default defineComponent({
     onMounted(() => tokenInfoLookup.mount())
     onBeforeUnmount(() => tokenInfoLookup.unmount())
     const tokenInfo = computed(() => tokenInfoLookup.entity.value)
-    const tokenSymbol = computed(() => makeTokenSymbol(tokenInfo.value, 32))
+    const tokenName = computed(() => makeTokenName(tokenInfo.value, 32))
     const initialTokenAmount = computed(
         () => props.currentTokenAllowance?.amount_granted
             ? formatTokenAmount(
                 BigInt(props.currentTokenAllowance.amount_granted),
-                Number(tokenInfo.value?.decimals ?? 0)
+                Number(props.tokenDecimals ?? 0)
             )
             : null
     )
     const selectedTokenAmount = ref<string | null>(null)
     const rawTokenAmount = computed(
         () => selectedTokenAmount.value != null
-            ? Number.parseFloat(selectedTokenAmount.value) * Math.pow(10, Number(tokenInfo.value?.decimals))
+            ? Number.parseFloat(selectedTokenAmount.value) * Math.pow(10, Number(props.tokenDecimals))
             : null
     )
 
@@ -298,7 +317,7 @@ export default defineComponent({
     onMounted(() => nftInfoLookup.mount())
     onBeforeUnmount(() => nftInfoLookup.unmount())
     const nftInfo = computed(() => nftInfoLookup.entity.value)
-    const nftSymbol = computed(() => makeTokenSymbol(nftInfo.value, 32))
+    const nftName = computed(() => makeTokenName(nftInfo.value, 32))
 
     const selectedNftSerials = ref<string | null>(null)
     const nftSerials = computed(() => {
@@ -319,6 +338,7 @@ export default defineComponent({
     const allowanceChoice = ref("hbar")
 
     const isSpenderValid = ref(false)
+    const isSpenderDisabled = computed(() => !!props.currentTokenAllowance)
     const spenderFeedback = ref<string | null>(null)
     let spenderValidationTimerId = -1
 
@@ -366,14 +386,12 @@ export default defineComponent({
     const editingFeedback = computed(() => {
       let result: string | null
       if (props.currentHbarAllowance) {
-        result = "Previous allowance was to "
-            + props.currentHbarAllowance.spender + " for "
+        result = "Previous allowance was for "
             + props.currentHbarAllowance.amount_granted / 100000000 + " hbars"
       } else if (props.currentTokenAllowance) {
-        result = "Previous allowance was to "
-            + props.currentTokenAllowance.spender + " for "
+        result = "Previous allowance was for "
             + initialTokenAmount.value
-            + " " + tokenSymbol.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
+            + " " + tokenName.value + " tokens (" + props.currentTokenAllowance.token_id + ")"
       } else {
         result = null
       }
@@ -388,8 +406,7 @@ export default defineComponent({
       ) && edited.value
     })
 
-    // watch([() => props.showDialog, tokenInfo], () => {
-    watch([() => props.showDialog], () => {
+    watch(() => props.showDialog, () => {
       if (props.showDialog) {
         if (props.currentHbarAllowance) {
           isEditing.value = true
@@ -410,7 +427,7 @@ export default defineComponent({
           selectedTokenAmount.value = props.currentTokenAllowance.amount_granted
               ? formatTokenAmount(
                   BigInt(props.currentTokenAllowance.amount_granted),
-                  Number(tokenInfo.value?.decimals ?? 0)
+                  Number(props.tokenDecimals ?? 0)
               )
               : null
           selectedNft.value = null
@@ -429,16 +446,20 @@ export default defineComponent({
     })
 
     watch(selectedSpender, (newValue) => {
-      isSpenderValid.value = false
       spenderFeedback.value = null
-      if (spenderValidationTimerId != -1) {
-        window.clearTimeout(spenderValidationTimerId)
-        spenderValidationTimerId = -1
-      }
-      if (newValue?.length) {
-        spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
+      if (isSpenderDisabled.value) {
+        isSpenderValid.value = true
       } else {
-        selectedSpender.value = null
+        isSpenderValid.value = false
+        if (spenderValidationTimerId != -1) {
+          window.clearTimeout(spenderValidationTimerId)
+          spenderValidationTimerId = -1
+        }
+        if (newValue?.length) {
+          spenderValidationTimerId = window.setTimeout(() => validateSpender(), 500)
+        } else {
+          selectedSpender.value = null
+        }
       }
     })
 
@@ -497,9 +518,7 @@ export default defineComponent({
       }
     }
 
-    watch(selectedNft, (value, oldValue) => {
-      console.log(`selectedNft - oldValue:${oldValue}`)
-      console.log(`selectedNft - value:${value}`)
+    watch(selectedNft, () => {
       isNftValid.value = false
       nftFeedback.value = null
       if (nftValidationTimerId != -1) {
@@ -563,29 +582,22 @@ export default defineComponent({
 
     const confirmMessage = computed(() => {
       let result: string
-      const toAccount = normalizedSpender.value
 
       if (allowanceChoice.value === 'hbar') {
         if (Number(selectedHbarAmount.value) === 0) {
-          result = "Do you want to remove the hbar allowance for account " + toAccount + "?"
+          result = "Do you want to remove the hbar allowance?"
         } else {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
+          result = "Do you want to approve an allowance for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
         }
       } else if (allowanceChoice.value === 'token') {
-        const token = normalizedToken.value
         if (rawTokenAmount.value === 0) {
-          result = "Do you want to remove the allowance to account " + toAccount
-              + " for " + tokenSymbol.value + " token (" + token + ")?"
+          result = "Do you want to remove the allowance for token " + tokenName.value + "?"
         } else {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for " + selectedTokenAmount.value + " " + tokenSymbol.value + " (" + token + ") tokens?"
+          result = "Do you want to approve an allowance for " + selectedTokenAmount.value + " tokens (" + tokenName.value + ")?"
         }
       } else {  // 'nft'
-        const nFT = normalizedNFT.value
         if (nftSerials.value.length > 0) {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for NFTs " + nftSymbol.value + " "
+          result = "Do you want to approve an allowance to account for NFTs " + nftName.value + " "
           for (let i = 0; i < nftSerials.value.length; i++) {
             if (i > 20) {
               result += '…'
@@ -597,8 +609,7 @@ export default defineComponent({
           }
           result += '?'
         } else {
-          result = "Do you want to approve an allowance to account " + toAccount
-              + " for all NFTs of collection " + nftSymbol.value + " (" + nFT + ")?"
+          result = "Do you want to approve an allowance for all NFTs of collection " + nftName.value + "?"
         }
       }
       return result
@@ -694,13 +705,12 @@ export default defineComponent({
                   normalizedNFT.value, normalizedSpender.value, nftSerials.value))
             }
           }
-          console.log("Transaction ID=" + tid)
 
           if (tid) {
             progressMainMessage.value = "Completing operation…"
             progressExtraMessage.value = "This may take a few seconds"
             showProgressSpinner.value = true
-            await waitForTransactionRefresh(tid, 10)
+            await waitForTransactionRefresh(tid, 10, props.polling)
           }
 
           progressDialogMode.value = Mode.Success
@@ -712,7 +722,7 @@ export default defineComponent({
           context.emit('allowanceApproved')
         }
       } catch (reason) {
-        console.log("Transaction Error: " + reason)
+        console.warn("Transaction Error: " + reason)
 
         if (reason instanceof WalletDriverCancelError) {
           showProgressDialog.value = false
@@ -731,25 +741,6 @@ export default defineComponent({
       }
     }
 
-    const waitForTransactionRefresh = async (transactionId: string, attemptIndex: number) => {
-      let result: Promise<Transaction | string>
-
-      if (attemptIndex >= 0) {
-        await waitFor(props.polling)
-        try {
-          const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
-          const transactions = response.data.transactions ?? []
-          result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
-        } catch {
-          result = waitForTransactionRefresh(transactionId, attemptIndex - 1)
-        }
-      } else {
-        result = Promise.resolve(transactionId)
-      }
-
-      return result
-    }
-
     return {
       editingFeedback,
       enableApproveButton,
@@ -761,6 +752,7 @@ export default defineComponent({
       selectedNftSerials,
       allowanceChoice,
       isSpenderValid,
+      isSpenderDisabled,
       spenderFeedback,
       isTokenValid,
       tokenFeedback,

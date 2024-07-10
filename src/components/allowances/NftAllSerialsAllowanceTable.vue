@@ -53,10 +53,6 @@
       <AccountLink :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
-      <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
-    </o-table-column>
-
     <o-table-column v-slot="props" field="token" label="Token ID">
       <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
     </o-table-column>
@@ -65,11 +61,12 @@
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props" field="edit-icon" position="right">
-      <span v-if="props.row.isEditable" class="icon is-small has-text-right">
-        <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+    <o-table-column v-if="isWalletConnected" v-slot="props" field="action" position="right">
+      <span v-if="props.row.isEditable" class="h-is-property-text icon is-small">
+        <i class="far fa-trash-alt" @click="$emit('deleteAllowance', props.row)"></i>
       </span>
-      <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
+      <InfoTooltip v-else
+                   label="The allowance cannot be modified because the NFT collection is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
@@ -85,32 +82,31 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
-import {TokenAllowance} from "@/schemas/HederaSchemas";
-import {isValidAssociation} from "@/schemas/HederaUtils";
+import {NftAllowance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
+import {isValidAssociation} from "@/schemas/HederaUtils";
 
-interface DisplayedTokenAllowance extends TokenAllowance {
+interface DisplayedNftAllowance extends NftAllowance {
   isEditable: boolean
 }
 
 export default defineComponent({
-  name: 'TokenAllowanceTable',
+  name: 'NftAllSerialsAllowanceTable',
 
-  components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {InfoTooltip, TokenLink, AccountLink, EmptyTable, TimestampValue},
 
-  emits: ["editAllowance"],
+  emits: ["deleteAllowance"],
 
   props: {
     controller: {
-      type: Object as PropType<TokenAllowanceTableController>,
+      type: Object as PropType<NftAllSerialsAllowanceTableController>,
       required: true
     }
   },
@@ -125,13 +121,12 @@ export default defineComponent({
             && walletManager.connected.value
             && walletManager.accountId.value === props.controller.accountId.value
     )
-    // const isWalletConnected = computed(() => false)
 
-    const allowances = ref<DisplayedTokenAllowance[]>([])
+    const allowances = ref<DisplayedNftAllowance[]>([])
     watch(props.controller.rows, async () => {
       const result = []
       for (const a of props.controller.rows.value) {
-        let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
+        let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
         // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
         allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
         result.push(allowance)

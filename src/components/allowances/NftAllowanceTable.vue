@@ -26,7 +26,7 @@
 
   <o-table
       v-model:current-page="currentPage"
-      :data="allowances"
+      :data="nfts"
       :hoverable="false"
       :loading="loading"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -49,32 +49,33 @@
       default-sort="spender"
       @page-change="onPageChange">
 
-    <o-table-column v-slot="props" field="spender" label="Spender">
-      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="amount" label="Amount">
-      <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
-    </o-table-column>
-
     <o-table-column v-slot="props" field="token" label="Token ID">
       <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
+    <o-table-column v-slot="props" field="serial" label="Serial #">
+      <div class="is-numeric">
+        {{ props.row.serial_number }}
+      </div>
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props" field="edit-icon" position="right">
-      <span v-if="props.row.isEditable" class="icon is-small has-text-right">
-        <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+    <o-table-column v-slot="props" field="spender" label="Spender">
+      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
+    </o-table-column>
+
+    <o-table-column v-if="isWalletConnected" v-slot="props" field="action" position="right">
+      <span class="h-is-property-text icon is-small">
+        <i class="far fa-trash-alt" @click="$emit('deleteAllowance', props.row)"></i>
       </span>
-      <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
   </o-table>
 
-  <EmptyTable v-if="!allowances.length"/>
+  <EmptyTable v-if="!nfts.length"/>
 
 </template>
 
@@ -84,33 +85,26 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
-import {TokenAllowance} from "@/schemas/HederaSchemas";
-import {isValidAssociation} from "@/schemas/HederaUtils";
+import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {Nft} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
-import InfoTooltip from "@/components/InfoTooltip.vue";
-
-interface DisplayedTokenAllowance extends TokenAllowance {
-  isEditable: boolean
-}
+import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 
 export default defineComponent({
-  name: 'TokenAllowanceTable',
+  name: 'NftAllowanceTable',
 
-  components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TokenLink, AccountLink, EmptyTable, TimestampValue},
 
-  emits: ["editAllowance"],
+  emits: ["deleteAllowance"],
 
   props: {
     controller: {
-      type: Object as PropType<TokenAllowanceTableController>,
+      type: Object as PropType<NftAllowanceTableController>,
       required: true
     }
   },
@@ -125,26 +119,13 @@ export default defineComponent({
             && walletManager.connected.value
             && walletManager.accountId.value === props.controller.accountId.value
     )
-    // const isWalletConnected = computed(() => false)
-
-    const allowances = ref<DisplayedTokenAllowance[]>([])
-    watch(props.controller.rows, async () => {
-      const result = []
-      for (const a of props.controller.rows.value) {
-        let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
-        allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
-        result.push(allowance)
-      }
-      allowances.value = result
-    })
 
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
       isWalletConnected,
-      allowances,
+      nfts: props.controller.rows as ComputedRef<Nft[]>,
       loading: props.controller.loading as ComputedRef<boolean>,
       total: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,

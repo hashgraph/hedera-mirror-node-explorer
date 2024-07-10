@@ -19,12 +19,12 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {TokenAllowance, TokenAllowancesResponse} from "@/schemas/HederaSchemas";
+import {Nft, Nfts} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
-export class TokenAllowanceTableController extends TableController<TokenAllowance, string> {
+export class NftAllowanceTableController extends TableController<Nft, string> {
 
     //
     // Public
@@ -32,8 +32,15 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
 
     public readonly accountId: Ref<string | null>
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>, pageParamName = "p", keyParamName = "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100, pageParamName, keyParamName);
+    public constructor(
+        router: Router,
+        accountId: Ref<string | null>,
+        pageSize: ComputedRef<number>,
+        pageParamName = "p",
+        keyParamName = "k"
+    ) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
+            pageParamName, keyParamName);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
     }
@@ -47,8 +54,8 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
         operator: KeyOperator,
         order: SortOrder,
         limit: number
-    ): Promise<TokenAllowance[] | null> {
-        let result: Promise<TokenAllowance[] | null>
+    ): Promise<Nft[] | null> {
+        let result: Promise<Nft[] | null>
 
         if (this.accountId.value === null) {
             result = Promise.resolve(null)
@@ -56,35 +63,38 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
             const params = {} as {
                 limit: number
                 order: string
-                "spender.id": string | undefined
+                "spender.id": string
                 "token.id": string | undefined
+                serialnumber: string | undefined
             }
             params.limit = limit
             params.order = TableController.invertSortOrder(order)
+            params["spender.id"] = KeyOperator.gte + ":0.0.1"
             if (key !== null) {
                 const items = key.split('-')
-                const spender = items[0] ?? null
-                const token = items[1] ?? null
+                const token = items[0] ?? null
+                const serial = items[1] ?? null
                 if (params.order === SortOrder.ASC) {
-                    params["spender.id"] = spender ? KeyOperator.gte + ":" + spender : undefined
-                    params["token.id"] = token ? KeyOperator.gt + ":" + token : undefined
+                    params["token.id"] = token ? KeyOperator.gte + ":" + token : undefined
+                    params.serialnumber = serial ? KeyOperator.gt + ":" + serial : undefined
                 } else {
-                    params["spender.id"] = spender ? KeyOperator.lte + ":" + spender : undefined
-                    params["token.id"] = token ? KeyOperator.lt + ":" + token : undefined
+                    params["token.id"] = token ? KeyOperator.lte + ":" + token : undefined
+                    params.serialnumber = serial ? KeyOperator.lt + ":" + serial : undefined
                 }
             }
-            const cb = (r: AxiosResponse<TokenAllowancesResponse>): Promise<TokenAllowance[] | null> => {
-                return Promise.resolve(r.data.allowances ?? [])
+            const cb = (r: AxiosResponse<Nfts>): Promise<Nft[] | null> => {
+                return Promise.resolve(r.data.nfts ?? [])
             }
-            result = axios.get<TokenAllowancesResponse>("api/v1/accounts/" + this.accountId.value + "/allowances/tokens", {params: params})
+            result = axios.get<Nfts>(
+                "api/v1/accounts/" + this.accountId.value + "/nfts", {params: params})
                 .then(cb)
         }
 
         return result
     }
 
-    public keyFor(row: TokenAllowance): string {
-        return row.spender && row.token_id ? `${row.spender}-${row.token_id}` : ""
+    public keyFor(row: Nft): string {
+        return row.token_id && row.serial_number ? `${row.token_id}-${row.serial_number}` : ""
     }
 
     public keyFromString(s: string): string | null {
@@ -94,5 +104,4 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
     public stringFromKey(key: string): string {
         return key
     }
-
 }

@@ -102,22 +102,25 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    //
-    // public async deleteNftAllowance(token: string, serialNumbers: number[]): Promise<string> {
-    //
-    //    const trans = new AccountAllowanceDeleteTransaction()
-    //    if (1 <= serialNumbers.length && serialNumbers.length <= 20) {
-    //         const tid = TokenId.fromString(token)
-    //         for (const sn of serialNumbers) {
-    //             trans.deleteAllTokenNftAllowances(new NftId(tid, sn), this.accountId.value)
-    //         }
-    //     } else {
-    //         throw this.callFailure("Invalid serial number count (" + serialNumbers.length + ")")
-    //     }
-    //     const result = await this.executeTransaction(trans)
-    //
-    //     return Promise.resolve(result)
-    // }
+
+    public async deleteNftAllowance(accountId: string, token: string, serial: number): Promise<string> {
+
+        const trans = new AccountAllowanceDeleteTransaction()
+        const tokenId = TokenId.fromString(token)
+        trans.deleteAllTokenNftAllowances(new NftId(tokenId, serial), accountId)
+        const result = await this.executeTransaction(accountId, trans)
+
+        return Promise.resolve(result)
+    }
+
+    public async deleteNftAllSerialsAllowance(accountId: string, token: string, spender: string): Promise<string> {
+
+        const trans = new AccountAllowanceApproveTransaction()
+        trans.deleteTokenNftAllowanceAllSerials(token, accountId, spender)
+        const result = await this.executeTransaction(accountId, trans)
+
+        return Promise.resolve(result)
+    }
 
     //
     // Public (to be subclassed)

@@ -25,34 +25,72 @@
 <template>
 
   <DashboardCard v-if="accountId" collapsible-key="allowances">
+
     <template v-slot:title>
       <span class="h-is-secondary-title">Allowances</span>
     </template>
+
     <template v-slot:control>
       <button v-if="isWalletConnected && isHederaWallet" id="approve-button" class="button is-white is-small"
-              @click="handleApproveButton">APPROVE ALLOWANCE…
+              @click="onClick">APPROVE ALLOWANCE…
       </button>
     </template>
-    <template v-slot:content><br/></template>
-    <template v-slot:leftContent>
-      <p class="h-is-tertiary-text mb-2">HBAR Allowances</p>
-      <div id="hbarAllowancesTable">
-        <HbarAllowanceTable :controller="hbarAllowanceTableController" @edit-allowance="editHbarAllowance"/>
+
+    <template v-slot:content>
+      <Tabs
+          :selected-tab="selectedTab"
+          :tab-ids="tabIds"
+          :tabLabels="tabLabels"
+          @update:selected-tab="onUpdate($event)"
+      />
+
+      <div v-if="selectedTab === 'nft'" id="approvedForAll"
+           class="is-flex is-align-items-center is-justify-content-end">
+        <p class="has-text-weight-light">Approved for all</p>
+        <label class="checkbox pt-1 ml-3">
+          <input
+              type="checkbox"
+              v-model="selectApprovedForAll"
+          >
+        </label>
+      </div>
+
+      <div v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
+        <HbarAllowanceTable
+            :controller="hbarAllowanceTableController"
+            @edit-allowance="onEditHbar"
+        />
+      </div>
+
+      <div v-else-if="selectedTab === 'token'" id="tokenAllowancesTable">
+        <TokenAllowanceTable
+            :controller="tokenAllowanceTableController"
+            @edit-allowance="onEditToken"
+        />
+      </div>
+
+      <div v-else id="nftAllowancesTable">
+        <NftAllSerialsAllowanceTable
+            v-if="selectApprovedForAll"
+            :controller="nftAllSerialsAllowanceTableController"
+            @delete-allowance="onDeleteAllSerialsNft"
+        />
+        <NftAllowanceTable
+            v-else
+            :controller="nftAllowanceTableController"
+            @delete-allowance="onDeleteNft"
+        />
       </div>
     </template>
-    <template v-slot:rightContent>
-      <p class="h-is-tertiary-text mb-2">Token Allowances</p>
-      <div id="tokenAllowancesTable">
-        <TokenAllowanceTable :controller="tokenAllowanceTableController" @edit-allowance="editTokenAllowance"/>
-      </div>
-    </template>
+
   </DashboardCard>
 
   <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
                           :owner-account-id="ownerAccountId"
                           :current-hbar-allowance="currentHbarAllowance"
                           :current-token-allowance="currentTokenAllowance"
-                          @allowance-approved="handleApproval"
+                          :token-decimals="tokenDecimals"
+                          @allowance-approved="onAllowanceApproved"
   />
 
   <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
@@ -64,6 +102,13 @@
       <span class="h-is-primary-title">Unsupported Operation</span>
     </template>
   </ProgressDialog>
+
+  <DeleteNftAllowanceDialog
+      :controller="deleteDialogController"
+      :nft-allowance="currentNftAllowance"
+      :nft-all-serials-allowance="currentNftAllSerialsAllowance"
+      @deleted="onNftDeleted"
+  />
 
 </template>
 
@@ -81,13 +126,32 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
-import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import Tabs from "@/components/Tabs.vue";
+import {AppStorage} from "@/AppStorage";
+import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
+import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
+import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
+import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
+import {DialogController} from "@/components/dialog/DialogController";
+import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 
 export default defineComponent({
-  name: 'ApproveAllowanceSection',
+  name: 'AllowancesSection',
 
-  components: {ProgressDialog, ApproveAllowanceDialog, TokenAllowanceTable, HbarAllowanceTable, DashboardCard},
+  components: {
+    DeleteNftAllowanceDialog,
+    NftAllSerialsAllowanceTable,
+    NftAllowanceTable,
+    Tabs,
+    ProgressDialog,
+    ApproveAllowanceDialog,
+    TokenAllowanceTable,
+    HbarAllowanceTable,
+    DashboardCard
+  },
 
   props: {
     accountId: String,
@@ -101,7 +165,7 @@ export default defineComponent({
     const computedAccountId = computed(() => props.accountId || null)
     const isWalletConnected = computed(
         () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
-    // const isWalletConnected = computed(() => false)
+
     const showApproveAllowanceDialog = ref(false)
 
     watch(showApproveAllowanceDialog, (newValue) => {
@@ -110,10 +174,25 @@ export default defineComponent({
       }
     })
 
+    const tabIds = ['hbar', 'token', 'nft']
+    const tabLabels = ['HBAR', 'Tokens', 'NFTs']
+    const selectedTab = ref(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
+    const onUpdate = (tab: string) => {
+      selectedTab.value = tab
+      AppStorage.setAccountAllowanceTab(tab)
+    }
+
+    const selectApprovedForAll = ref(false)
+    onMounted(() => selectApprovedForAll.value = AppStorage.getSelectApprovedForAll())
+    watch(selectApprovedForAll, (value) => AppStorage.setSelectApprovedForAll(value))
+
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
     const currentHbarAllowance = ref<CryptoAllowance | null>(null)
     const currentTokenAllowance = ref<TokenAllowance | null>(null)
+    const tokenDecimals = ref<string | null>(null)
+    const currentNftAllowance = ref<Nft | null>(null)
+    const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
 
     //
     // HBAR Allowances Table Controller
@@ -131,9 +210,27 @@ export default defineComponent({
     onMounted(() => tokenAllowanceTableController.mount())
     onBeforeUnmount(() => tokenAllowanceTableController.unmount())
 
+    //
+    // NFT Allowances Table Controllers
+    //
+    const nftAllowanceTableController = new NftAllowanceTableController(
+        router, computedAccountId, perPage, "pn", "kn")
+    const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
+        router, computedAccountId, perPage, "pc", "kc")
+    onMounted(() => {
+      nftAllowanceTableController.mount()
+      nftAllSerialsAllowanceTableController.mount()
+    })
+    onBeforeUnmount(() => {
+      nftAllowanceTableController.unmount()
+      nftAllSerialsAllowanceTableController.unmount()
+    })
+
+    const deleteDialogController = new DialogController()
+
     const notWithMetamaskDialogVisible = ref(false)
 
-    const handleApproveButton = () => {
+    const onClick = () => {
       if (walletManager.isHederaWallet.value) {
         showApproveAllowanceDialog.value = true
         currentHbarAllowance.value = null
@@ -143,14 +240,14 @@ export default defineComponent({
       }
     }
 
-    const handleApproval = () => {
-      hbarAllowanceTableController.unmount()
-      tokenAllowanceTableController.unmount()
-      hbarAllowanceTableController.mount()
-      tokenAllowanceTableController.mount()
+    const onAllowanceApproved = () => {
+      hbarAllowanceTableController.refresh()
+      tokenAllowanceTableController.refresh()
+      nftAllowanceTableController.refresh()
+      nftAllSerialsAllowanceTableController.refresh()
     }
 
-    const editHbarAllowance = (allowance: CryptoAllowance) => {
+    const onEditHbar = (allowance: CryptoAllowance) => {
       // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
         currentHbarAllowance.value = allowance
@@ -161,15 +258,44 @@ export default defineComponent({
       }
     }
 
-    const editTokenAllowance = (allowance: TokenAllowance) => {
+    const onEditToken = async (allowance: TokenAllowance) => {
       // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
       if (walletManager.isHederaWallet.value) {
+        const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
+        tokenDecimals.value = info?.decimals ?? null
         currentHbarAllowance.value = null
         currentTokenAllowance.value = allowance
         showApproveAllowanceDialog.value = true
       } else {
         notWithMetamaskDialogVisible.value = true
       }
+    }
+
+    const onDeleteNft = async (nft: Nft) => {
+      // console.log("Delete NFT Allowance: " + JSON.stringify(nft))
+      if (walletManager.isHederaWallet.value) {
+        currentNftAllowance.value = nft
+        currentNftAllSerialsAllowance.value = null
+        deleteDialogController.visible.value = true
+      } else {
+        notWithMetamaskDialogVisible.value = true
+      }
+    }
+
+    const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
+      // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
+      if (walletManager.isHederaWallet.value) {
+        currentNftAllowance.value = null
+        currentNftAllSerialsAllowance.value = allowance
+        deleteDialogController.visible.value = true
+      } else {
+        notWithMetamaskDialogVisible.value = true
+      }
+    }
+
+    const onNftDeleted = () => {
+      nftAllowanceTableController.refresh()
+      nftAllSerialsAllowanceTableController.refresh()
     }
 
     const cleanUpRouteQuery = async () => {
@@ -184,24 +310,45 @@ export default defineComponent({
       }
     }
 
+    const onChangeApprovedForAll = (event: Event) => {
+      const checked = (event.target as HTMLInputElement).checked
+      selectApprovedForAll.value = checked
+      AppStorage.setSelectApprovedForAll(checked)
+    }
+
     return {
       isTouchDevice,
       isSmallScreen,
       isMediumScreen,
+      selectedTab,
+      tabIds,
+      tabLabels,
+      onUpdate,
       showApproveAllowanceDialog,
       isWalletConnected,
       isHederaWallet: walletManager.isHederaWallet,
       hbarAllowanceTableController,
       tokenAllowanceTableController,
+      nftAllowanceTableController,
+      nftAllSerialsAllowanceTableController,
+      tokenDecimals,
       currentTokenAllowance,
       currentHbarAllowance,
-      handleApproveButton,
-      handleApproval,
+      currentNftAllowance,
+      currentNftAllSerialsAllowance,
+      onClick,
+      onAllowanceApproved,
       ownerAccountId: walletManager.accountId,
-      editHbarAllowance,
-      editTokenAllowance,
+      onEditHbar,
+      onEditToken,
+      onDeleteNft,
+      onDeleteAllSerialsNft,
+      onNftDeleted,
+      deleteDialogController,
       notWithMetamaskDialogVisible,
-      Mode
+      Mode,
+      selectApprovedForAll,
+      onChangeApprovedForAll
     }
   }
 });

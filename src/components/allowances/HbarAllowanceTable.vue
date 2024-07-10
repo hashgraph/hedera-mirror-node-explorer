@@ -61,7 +61,7 @@
       <HbarAmount :amount="props.row.amount_granted"/>
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props">
+    <o-table-column v-if="isWalletConnected" v-slot="props" position="right">
       <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
     </o-table-column>
 

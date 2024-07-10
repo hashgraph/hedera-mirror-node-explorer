@@ -29,14 +29,16 @@
 // /* eslint-disable import/no-extraneous-dependencies, global-require */
 // const webpack = require('@cypress/webpack-preprocessor')
 
-module.exports = (on, config) => {
+import generated from "@cypress/code-coverage/task";
+
+export default (on, config) => {
     // on('file:preprocessor', webpack({
     //  webpackOptions: require('@vue/cli-service/webpack.config'),
     //  watchOptions: {}
     // }))
 
     // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require('@cypress/code-coverage/task')(on, config)
+    generated(on, config)
 
     return Object.assign({}, config, {
         fixturesFolder: 'tests/e2e/fixtures',

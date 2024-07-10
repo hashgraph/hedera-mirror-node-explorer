@@ -19,12 +19,12 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {TokenAllowance, TokenAllowancesResponse} from "@/schemas/HederaSchemas";
+import {NftAllowance, NftAllowancesResponse} from "@/schemas/HederaSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
-export class TokenAllowanceTableController extends TableController<TokenAllowance, string> {
+export class NftAllSerialsAllowanceTableController extends TableController<NftAllowance, string> {
 
     //
     // Public
@@ -32,8 +32,15 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
 
     public readonly accountId: Ref<string | null>
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>, pageParamName = "p", keyParamName = "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100, pageParamName, keyParamName);
+    public constructor(
+        router: Router,
+        accountId: Ref<string | null>,
+        pageSize: ComputedRef<number>,
+        pageParamName = "p",
+        keyParamName = "k"
+    ) {
+        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
+            pageParamName, keyParamName);
         this.accountId = accountId
         this.watchAndReload([this.accountId])
     }
@@ -47,8 +54,8 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
         operator: KeyOperator,
         order: SortOrder,
         limit: number
-    ): Promise<TokenAllowance[] | null> {
-        let result: Promise<TokenAllowance[] | null>
+    ): Promise<NftAllowance[] | null> {
+        let result: Promise<NftAllowance[] | null>
 
         if (this.accountId.value === null) {
             result = Promise.resolve(null)
@@ -56,34 +63,35 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
             const params = {} as {
                 limit: number
                 order: string
-                "spender.id": string | undefined
+                "account.id": string | undefined
                 "token.id": string | undefined
             }
             params.limit = limit
             params.order = TableController.invertSortOrder(order)
             if (key !== null) {
                 const items = key.split('-')
-                const spender = items[0] ?? null
+                const account = items[0] ?? null
                 const token = items[1] ?? null
                 if (params.order === SortOrder.ASC) {
-                    params["spender.id"] = spender ? KeyOperator.gte + ":" + spender : undefined
+                    params["account.id"] = account ? KeyOperator.gte + ":" + account : undefined
                     params["token.id"] = token ? KeyOperator.gt + ":" + token : undefined
                 } else {
-                    params["spender.id"] = spender ? KeyOperator.lte + ":" + spender : undefined
+                    params["account.id"] = account ? KeyOperator.lte + ":" + account : undefined
                     params["token.id"] = token ? KeyOperator.lt + ":" + token : undefined
                 }
             }
-            const cb = (r: AxiosResponse<TokenAllowancesResponse>): Promise<TokenAllowance[] | null> => {
+            const cb = (r: AxiosResponse<NftAllowancesResponse>): Promise<NftAllowance[] | null> => {
                 return Promise.resolve(r.data.allowances ?? [])
             }
-            result = axios.get<TokenAllowancesResponse>("api/v1/accounts/" + this.accountId.value + "/allowances/tokens", {params: params})
+            result = axios.get<NftAllowancesResponse>(
+                "api/v1/accounts/" + this.accountId.value + "/allowances/nfts", {params: params})
                 .then(cb)
         }
 
         return result
     }
 
-    public keyFor(row: TokenAllowance): string {
+    public keyFor(row: NftAllowance): string {
         return row.spender && row.token_id ? `${row.spender}-${row.token_id}` : ""
     }
 
