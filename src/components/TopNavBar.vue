@@ -160,7 +160,7 @@
 <script lang="ts">
 
 import {routeManager, walletManager} from "@/router";
-import SearchBar from "@/components/SearchBar.vue";
+import SearchBar from "@/components/search/SearchBar.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";

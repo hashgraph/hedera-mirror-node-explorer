@@ -71,7 +71,7 @@ import {defineComponent, inject, onMounted, ref, watch} from "vue";
 import {SearchRequest} from "@/utils/SearchRequest";
 import {routeManager} from "@/router";
 import {gtagSearch} from "@/gtag";
-import NameCollisionDialog from "@/components/NameCollisionDialog.vue";
+import NameCollisionDialog from "@/components/search/NameCollisionDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {NameRecord} from "@/utils/name_service/NameService";
 
