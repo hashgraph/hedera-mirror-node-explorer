@@ -51,7 +51,7 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import Footer from "@/components/Footer.vue";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
@@ -74,11 +74,11 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     const normalizedTransactionId = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, true) : "?";
+      return props.transactionId ? TransactionID.normalize(props.transactionId) : "?";
     })
 
     const paramTransactionId = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, false) : null
+      return props.transactionId ? TransactionID.normalize(props.transactionId, false) : null
     })
 
     const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)

@@ -235,7 +235,7 @@ import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
 import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
@@ -426,7 +426,7 @@ export default defineComponent({
         progressExtraMessage.value = "Check your wallet for any approval request"
         progressExtraTransactionId.value = null
         showProgressSpinner.value = false
-        const transactionId = normalizeTransactionId(await walletManager.changeStaking(nodeId, accountId, declineReward))
+        const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward), false)
         progressMainMessage.value = "Completing operation…"
         progressExtraMessage.value = "This may take a few seconds"
         showProgressSpinner.value = true

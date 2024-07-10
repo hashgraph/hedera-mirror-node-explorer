@@ -24,7 +24,7 @@ import {EntityDescriptor} from "@/utils/EntityDescriptor";
 import {computeNetAmount, isSuccessfulResult} from "@/utils/TransactionTools";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {BlockByTsCache} from "@/utils/cache/BlockByTsCache";
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
@@ -84,7 +84,7 @@ export class TransactionAnalyzer {
 
     public readonly formattedTransactionId: ComputedRef<string | null> = computed(() => {
         const transaction_id = this.transaction.value?.transaction_id
-        return transaction_id ? normalizeTransactionId(transaction_id, true) : null
+        return transaction_id ? TransactionID.normalize(transaction_id) : null
     })
 
     public readonly formattedHash: ComputedRef<string | null> = computed(() => {

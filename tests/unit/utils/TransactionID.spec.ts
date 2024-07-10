@@ -20,8 +20,8 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
+import {describe, expect, test} from 'vitest'
+import {TransactionID} from "@/utils/TransactionID";
 
 describe("TransactionID.ts", () => {
 
@@ -91,15 +91,15 @@ describe("TransactionID.ts", () => {
     })
 
     //
-    // TransactionID.normalizeTransactionId()
+    // TransactionID.normalize()
     //
 
     test("normalize", () => {
         const str1 = "0.0.88-1640084590-665216882"
         const str2 = "0.0.88@1640084590.665216882"
-        expect(normalizeTransactionId(str1, true)).toBe(str2)
-        expect(normalizeTransactionId(str2, false)).toBe(str1)
-        expect(normalizeTransactionId(str1, false)).toBe(str1)
-        expect(normalizeTransactionId(str2, true)).toBe(str2)
+        expect(TransactionID.normalize(str1)).toBe(str2)
+        expect(TransactionID.normalize(str2, false)).toBe(str1)
+        expect(TransactionID.normalize(str1, false)).toBe(str1)
+        expect(TransactionID.normalize(str2)).toBe(str2)
     })
 })

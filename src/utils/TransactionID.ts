@@ -104,9 +104,9 @@ export class TransactionID {
         return this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
     }
 
-    public static normalize(transactionID: string, useArobas = true): string {
+    public static normalize(transactionID: string, forDisplay = true): string {
         const tid = TransactionID.parse(transactionID)
-        return tid != null ? tid.toString(useArobas) : transactionID
+        return tid != null ? tid.toString(forDisplay ? TransactionID.useArobas : false) : transactionID
     }
 
     public static makePayerID(transactionID: string): string | null {
@@ -118,6 +118,8 @@ export class TransactionID {
     // Private
     //
 
+    private static useArobas = true
+
     private constructor(entityID: EntityID, seconds: number, nanoSeconds: number) {
         this.entityID = entityID
         this.seconds = seconds
@@ -125,9 +127,4 @@ export class TransactionID {
     }
 
 
-}
-
-export function normalizeTransactionId(value: string, useArobas = false): string {
-    const tid = TransactionID.parse(value)
-    return tid != null ? tid.toString(useArobas) : value
 }
