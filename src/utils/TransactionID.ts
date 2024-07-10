@@ -19,6 +19,8 @@
  */
 
 import {EntityID} from "./EntityID";
+import {AppStorage} from "@/AppStorage";
+import {computed, ref} from "vue";
 
 export class TransactionID {
 
@@ -106,7 +108,7 @@ export class TransactionID {
 
     public static normalize(transactionID: string, forDisplay = true): string {
         const tid = TransactionID.parse(transactionID)
-        return tid != null ? tid.toString(forDisplay ? TransactionID.useArobas : false) : transactionID
+        return tid != null ? tid.toString(forDisplay ? TransactionID.useArobasForm.value : false) : transactionID
     }
 
     public static makePayerID(transactionID: string): string | null {
@@ -114,11 +116,18 @@ export class TransactionID {
         return tid != null ? tid.entityID.toString() : null
     }
 
+    public static useArobasForm = computed(() => TransactionID.useArobasFormRef.value)
+
+    public static setUseArobasForm(value: boolean): void {
+        TransactionID.useArobasFormRef.value = value
+        AppStorage.setUseDashForm(!value)
+    }
+
     //
     // Private
     //
 
-    private static useArobas = true
+    private static useArobasFormRef = ref(!AppStorage.getUseDashForm())
 
     private constructor(entityID: EntityID, seconds: number, nanoSeconds: number) {
         this.entityID = entityID

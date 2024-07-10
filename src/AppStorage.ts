@@ -249,6 +249,19 @@ export class AppStorage {
         this.setLocalStorageItem(this.SHOW_LOGIC_ABI_KEY, newValue ? "true" : null)
     }
 
+    //
+    // use arobas form of Transaction ID
+    //
+    
+    private static readonly USE_DASH_FORM_KEY = 'useDashForm'
+
+    public static getUseDashForm(): boolean {
+        return this.getLocalStorageItem(this.USE_DASH_FORM_KEY) !== null
+    }
+
+    public static setUseDashForm(newValue: boolean): void {
+        this.setLocalStorageItem(this.USE_DASH_FORM_KEY, newValue ? "true" : null)
+    }
 
     //
     // Private

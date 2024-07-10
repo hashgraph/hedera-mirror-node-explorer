@@ -30,13 +30,15 @@
       <template v-slot:title>
         <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
-          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
+          <div class="h-is-secondary-text mr-3">
+            <TransactionId :id="formattedTransactionId"/>
+          </div>
           <div v-if="transaction" class="h-is-text-size-2 mt-1">
             <div v-if="transactionSucceeded" class="h-has-pill has-background-success">SUCCESS</div>
             <div v-else class="h-has-pill has-background-danger">FAILURE</div>
           </div>
         </div>
-        <span v-if="routeToAllTransactions && !isLargeScreen">
+        <span v-if="routeToAllTransactions">
           <router-link :to="routeToAllTransactions">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
@@ -44,10 +46,10 @@
       </template>
 
       <template v-slot:control>
-        <router-link v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink"
-                     :to="routeToAllTransactions">
-          <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
-        </router-link>
+        <o-select v-model="txIdForm" class="h-is-text-size-3">
+          <option value="arobas">Use arobas form of ID</option>
+          <option value="dash">Use dash form of ID</option>
+        </o-select>
       </template>
 
       <template v-slot:content>
@@ -253,7 +255,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
@@ -281,6 +283,8 @@ import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer"
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import MirrorLink from "@/components/MirrorLink.vue";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
+import {TransactionID} from "@/utils/TransactionID";
+import TransactionId from "@/components/values/TransactionId.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -289,6 +293,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TransactionId,
     TokenExtra,
     MirrorLink,
     TokenLink,
@@ -314,6 +319,9 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    const txIdForm = ref(TransactionID.useArobasForm.value ? 'arobas' : 'dash')
+    watch(txIdForm, () => TransactionID.setUseArobasForm(txIdForm.value === 'arobas'))
 
     const transactionLoc = computed(() => props.transactionLoc ?? null)
     const transactionLocParser = new TransactionLocParser(transactionLoc)
@@ -436,6 +444,7 @@ export default defineComponent({
       isMediumScreen,
       isLargeScreen,
       isTouchDevice,
+      txIdForm,
       showMaxFeeTooltip,
       transactionId: transactionLocParser.transactionId,
       transaction: transactionDetail,
