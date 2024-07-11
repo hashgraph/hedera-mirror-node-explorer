@@ -136,7 +136,7 @@ import {walletManager} from "@/router";
 import {Nft, NftAllowance} from "@/schemas/HederaSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, waitForTransactionRefresh} from "@/schemas/HederaUtils";
-import {normalizeTransactionId, TransactionID} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 
 export default defineComponent({
@@ -189,11 +189,11 @@ export default defineComponent({
       try {
 
         if (isApprovedForAll.value && token.value != null && spender.value != null) {
-          tid.value = normalizeTransactionId(
+          tid.value = TransactionID.normalize(
               await walletManager.deleteNftAllSerialsAllowance(token.value, spender.value)
           )
         } else if (token.value != null && serial.value != null) {
-          tid.value = normalizeTransactionId(
+          tid.value = TransactionID.normalize(
               await walletManager.deleteNftAllowance(token.value, serial.value)
           )
         } else {
