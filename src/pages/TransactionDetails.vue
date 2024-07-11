@@ -42,8 +42,8 @@
 
       <template v-slot:control>
         <o-select v-model="txIdForm" class="h-is-text-size-3">
-          <option value="arobas">{{ arobasForm }}</option>
-          <option value="dash">{{ dashForm }}</option>
+          <option value="arobas">Format using '@' and '.'</option>
+          <option value="dash">Format using '-' and '-'</option>
         </o-select>
       </template>
 
