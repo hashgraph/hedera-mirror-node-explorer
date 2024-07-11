@@ -180,11 +180,31 @@ export default defineComponent({
     const onUpdate = (tab: string) => {
       selectedTab.value = tab
       AppStorage.setAccountAllowanceTab(tab)
+      switch (selectedTab.value) {
+        case 'hbar':
+          hbarAllowanceTableController.refresh()
+          break
+        case 'token':
+          tokenAllowanceTableController.refresh()
+          break
+        case 'nft':
+          if (selectApprovedForAll.value) {
+            nftAllSerialsAllowanceTableController.refresh()
+          } else {
+            nftAllowanceTableController.refresh()
+          }
+          break
+        default:
+          //should not happen
+      }
     }
 
     const selectApprovedForAll = ref(false)
     onMounted(() => selectApprovedForAll.value = AppStorage.getSelectApprovedForAll())
-    watch(selectApprovedForAll, (value) => AppStorage.setSelectApprovedForAll(value))
+    watch(selectApprovedForAll, (value) => {
+      AppStorage.setSelectApprovedForAll(value)
+      value ? nftAllSerialsAllowanceTableController.refresh() : nftAllowanceTableController.refresh()
+    })
 
     const perPage = computed(() => isMediumScreen ? 10 : 5)
 
