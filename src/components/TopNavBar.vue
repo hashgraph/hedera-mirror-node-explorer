@@ -98,7 +98,7 @@
 
       <div id="navbar-grid">
         <div id="search-bar">
-          <SearchBar/>
+          <SearchBarV2/>
         </div>
 
         <div id="drop-down-menu">
@@ -160,7 +160,7 @@
 <script lang="ts">
 
 import {routeManager, walletManager} from "@/router";
-import SearchBar from "@/components/search/SearchBar.vue";
+import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
@@ -174,7 +174,7 @@ import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {ConnectWalletDialog, AxiosStatus, SearchBar, WalletChooser, WalletInfo},
+  components: {ConnectWalletDialog, AxiosStatus, SearchBarV2, WalletChooser, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
