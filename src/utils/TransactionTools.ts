@@ -203,6 +203,10 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             result = "Crypto Delete Allowance"
             break
 
+        case TransactionType.ETHEREUMTRANSACTION:
+            result = "Ethereum Transaction";
+            break;
+
         case TransactionType.FILECREATE:
             result = "File Create";
             break;
@@ -218,6 +222,19 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 
         case TransactionType.FREEZE:
             result = "Freeze";
+            break;
+
+        case TransactionType.NODECREATE:
+            result = "Node Create";
+            break;
+        case TransactionType.NODEDELETE:
+            result = "Node Delete";
+            break;
+        case TransactionType.NODESTAKEUPDATE:
+            result = "Node Stake Update";
+            break;
+        case TransactionType.NODEUPDATE:
+            result = "Node Update";
             break;
 
         case TransactionType.SCHEDULECREATE:
@@ -288,14 +305,6 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
 
         case TransactionType.UNCHECKEDSUBMIT:
             result = "Unchecked Submit";
-            break;
-
-        case TransactionType.ETHEREUMTRANSACTION:
-            result = "Ethereum Transaction";
-            break;
-
-        case TransactionType.NODESTAKEUPDATE:
-            result = "Node Stake Update";
             break;
 
         case TransactionType.UTILPRNG:
