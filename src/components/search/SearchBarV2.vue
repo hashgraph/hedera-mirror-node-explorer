@@ -25,15 +25,17 @@
 <template>
 
   <div v-if="!isMediumScreen">
-    <form data-cy="searchBar" class="control" action="" v-on:submit.prevent="handleSubmit">
-      <input
-          class="input has-background-white has-text-black"
-          style="border-radius: 10px; height: 50px"
-          type="text"
-          v-model="searchedText"
-          v-bind:disabled="searchInputDisabled"
-      />
-    </form>
+    <div class="is-flex is-flex-direction-column">
+      <form data-cy="searchBar" class="control" action="" v-on:submit.prevent="handleSubmit">
+        <input
+            class="input has-background-white has-text-black"
+            style="border-radius: 10px; height: 50px"
+            type="text"
+            v-model="searchedText"
+        />
+      </form>
+      <SearchDropdown :search-controller="searchController"/>
+    </div>
   </div>
 
   <div v-else>
@@ -47,8 +49,12 @@
             type="text"
             placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
             v-model="searchedText"
-            v-bind:disabled="searchInputDisabled"
         />
+        <button class="button is-dark" type="submit" value="searchBar"
+                style="border-color: white; border-left: none; height: 40px; z-index: 0; outline: none"
+                :disabled="submitDisabled">
+          <i class="fa fa-search"/>
+        </button>
       </form>
       <SearchDropdown :search-controller="searchController"/>
     </div>
@@ -62,7 +68,7 @@
 
 <script setup lang="ts">
 
-import {inject, ref} from "vue";
+import {computed, inject, ref} from "vue";
 import SearchDropdown from "@/components/search/SearchDropdown.vue";
 import {SearchController} from "@/components/search/SearchController";
 import router from "@/router";
@@ -70,7 +76,6 @@ import router from "@/router";
 const isMediumScreen = inject('isMediumScreen', true)
 // const isTouchDevice = inject('isTouchDevice', false)
 const searchedText = ref<string>("")
-const searchInputDisabled = ref(false)
 
 const searchController = new SearchController(searchedText)
 
@@ -82,6 +87,8 @@ const handleSubmit = (): void => {
     searchedText.value = "" // Hides SearchDropdown
   }
 }
+
+const submitDisabled = computed(() => searchController.candidateCount.value == 0)
 
 </script>
 
