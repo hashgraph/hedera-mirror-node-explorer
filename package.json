@@ -31,7 +31,7 @@
     "@hashgraph/sdk": "^2.48.1",
     "@hedera-name-service/hns-resolution-sdk": "^2.0.11",
     "@kabuto-sh/ns": "^0.14.2",
-    "@metamask/providers": "^17.1.0",
+    "@metamask/providers": "^17.1.1",
     "@oruga-ui/oruga-next": "^0.7.0",
     "@vuepic/vue-datepicker": "^8.8.1",
     "axios": "^1.7.2",
