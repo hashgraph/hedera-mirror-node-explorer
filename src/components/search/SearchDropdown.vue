@@ -25,8 +25,10 @@
 <template>
   <div style="position: relative" ref="root">
     <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
-      <template v-for="c in searchController.candidates.value" :key="c.description">
-        <EntityLink :route="c.route" :will-navigate="willNavigate">{{ c.description }}</EntityLink>
+      <template v-for="a in searchController.allAgents" :key="a.constructor.name">
+        <template v-for="c in a.candidates.value" :key="c.description">
+          <EntityLink :route="c.route" :will-navigate="() => willNavigate(a, c)">{{ c.description }}</EntityLink>
+        </template>
       </template>
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey">
         No match
@@ -44,6 +46,10 @@
 import {onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {SearchController} from "@/components/search/SearchController";
 import EntityLink from "@/components/values/link/EntityLink.vue";
+import {DomainNameSearchAgent, SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
+import {routeManager} from "@/router";
+import {AppStorage} from "@/AppStorage";
+import {NameRecord} from "@/utils/name_service/NameService";
 
 const props = defineProps({
   "searchController": {
@@ -52,8 +58,13 @@ const props = defineProps({
   }
 })
 
-const willNavigate = () => {
+const willNavigate = (a: SearchAgent<unknown, unknown>, c: SearchCandidate<unknown>) => {
   props.searchController.inputText.value = "" // Hides SearchDropDown
+  if (a instanceof DomainNameSearchAgent) {
+    const record = c.entity as NameRecord
+    const network = routeManager.currentNetwork.value
+    AppStorage.setNameRecord(record.entityId, network, record)
+  }
 }
 
 const root = ref<HTMLElement|null>(null)
