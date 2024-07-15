@@ -112,7 +112,10 @@ export abstract class SearchAgent<L, E> {
 }
 
 export class SearchCandidate<E> {
-    constructor(readonly description: string, readonly route: RouteLocationRaw, readonly entity: E) {}
+    constructor(readonly description: string,
+                readonly extra: string|null,
+                readonly route: RouteLocationRaw,
+                readonly entity: E) {}
 }
 
 
@@ -161,7 +164,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
         if (entity.account !== null) {
             const description = "Account " + entity.account
             const route = routeManager.makeRouteToAccount(entity.account)
-            result = new SearchCandidate(description, route, entity)
+            result = new SearchCandidate(description, null, route, entity)
         } else {
             result = null
         }
@@ -206,7 +209,7 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
         if (entity.contract_id !== null) {
             const description = "Contract " + entity.contract_id
             const route = routeManager.makeRouteToContract(entity.contract_id)
-            result = new SearchCandidate(description, route, entity)
+            result = new SearchCandidate(description, null, route, entity)
         } else {
             result = null
         }
@@ -251,7 +254,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
         if (entity.token_id !== null) {
             const description = "Token " + entity.token_id
             const route = routeManager.makeRouteToToken(entity.token_id)
-            result = new SearchCandidate(description, route, entity)
+            result = new SearchCandidate(description, null,route, entity)
         } else {
             result = null
         }
@@ -302,7 +305,7 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
     protected makeCandidate(loc: TransactionID | Timestamp | Uint8Array, entity: Transaction): SearchCandidate<Transaction> | null {
         const description = "Transaction " + entity.transaction_id
         const route = routeManager.makeRouteToTransaction(entity.transaction_id)
-        return new SearchCandidate(description, route, entity)
+        return new SearchCandidate(description, null, route, entity)
     }
 
 
@@ -326,9 +329,10 @@ export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
     }
 
     protected makeCandidate(domainName: string, entity: NameRecord): SearchCandidate<NameRecord> | null {
-        const description = "Account " + entity.entityId + " (resolved with " + entity.providerAlias + ")"
+        const description = "Account " + entity.entityId
+        const extra = " (resolved with " + entity.providerAlias + ")"
         const route = routeManager.makeRouteToAccount(entity.entityId)
-        return new SearchCandidate(description, route, entity)
+        return new SearchCandidate(description, extra, route, entity)
     }
 
 
@@ -364,7 +368,7 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
     protected makeCandidate(blockNb: number|Uint8Array, entity: Block): SearchCandidate<Block> | null {
         const description = "Block " + entity.number
         const route = routeManager.makeRouteToBlock(entity.number ?? 1)
-        return new SearchCandidate(description, route, entity)
+        return new SearchCandidate(description, null, route, entity)
     }
 
 }

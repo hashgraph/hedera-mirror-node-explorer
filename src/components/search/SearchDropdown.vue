@@ -27,7 +27,9 @@
     <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
       <template v-for="a in searchController.allAgents" :key="a.constructor.name">
         <template v-for="c in a.candidates.value" :key="c.description">
-          <EntityLink :route="c.route" :will-navigate="() => willNavigate(a, c)">{{ c.description }}</EntityLink>
+          <EntityLink :route="c.route" :will-navigate="() => willNavigate(a, c)">
+            {{ c.description }} <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
+          </EntityLink>
         </template>
       </template>
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey">
