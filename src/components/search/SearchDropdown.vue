@@ -32,11 +32,13 @@
           </EntityLink>
         </template>
       </template>
+      <template v-for="a in searchController.domainNameSearchAgents" :key="a.constructor.name">
+        <div v-if="a.loading.value" class="has-text-grey">
+          Connecting to {{ a.provider.providerAlias }}…
+        </div>
+      </template>
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey">
         No match
-      </div>
-      <div v-else-if="searchController.domainNameSearchAgent.loading.value" class="has-text-grey">
-        Connecting to name services…
       </div>
     </div>
   </div>

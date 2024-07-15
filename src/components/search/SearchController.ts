@@ -33,6 +33,7 @@ import {
     TokenSearchAgent,
     TransactionSearchAgent
 } from "@/components/search/SearchAgent";
+import {nameServiceProviders} from "@/utils/name_service/provider/AllProviders";
 
 export class SearchController {
 
@@ -41,16 +42,10 @@ export class SearchController {
     private readonly contractSearchAgent = new ContractSearchAgent()
     private readonly tokenSearchAgent = new TokenSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
-    public readonly domainNameSearchAgent = new DomainNameSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
-    public readonly allAgents: SearchAgent<unknown, unknown>[] = [
-        this.contractSearchAgent,
-        this.accountSearchAgent,
-        this.tokenSearchAgent,
-        this.transactionSearchAgent,
-        this.domainNameSearchAgent,
-        this.blockSearchAgent
-    ]
+
+    public readonly allAgents: SearchAgent<unknown, unknown>[] = []
+    public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []
 
     //
     // Public
@@ -58,6 +53,18 @@ export class SearchController {
 
     public constructor(public readonly inputText: Ref<string>) {
         this.inputChangeController = new InputChangeController(inputText)
+        this.allAgents.push(
+            this.contractSearchAgent,
+            this.accountSearchAgent,
+            this.tokenSearchAgent,
+            this.transactionSearchAgent,
+            this.blockSearchAgent
+        )
+        for (const p of nameServiceProviders) {
+            const a = new DomainNameSearchAgent(p)
+            this.domainNameSearchAgents.push(a)
+            this.allAgents.push(a)
+        }
         watch(this.actualInputText, this.actualInputTextDidChange)
     }
 
@@ -70,7 +77,10 @@ export class SearchController {
     public readonly loading = computed(() => {
         let result = false
         for (const a of this.allAgents) {
-            result ||= a.loading.value
+            if (a.loading.value) {
+                result = true
+                break
+            }
         }
         return result
     })
@@ -110,8 +120,11 @@ export class SearchController {
         this.contractSearchAgent.loc.value = entityID ?? hexBytes
         this.tokenSearchAgent.loc.value = entityID ?? hexBytes
         this.transactionSearchAgent.loc.value = transactionID ?? timestamp
-        this.domainNameSearchAgent.loc.value = domainName
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
+
+        for (const a of this.domainNameSearchAgents) {
+            a.loc.value = domainName
+        }
     }
 }
 

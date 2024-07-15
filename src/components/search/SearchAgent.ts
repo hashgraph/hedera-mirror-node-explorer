@@ -39,6 +39,7 @@ import {routeManager} from "@/router";
 import {TransactionID} from "@/utils/TransactionID";
 import {Timestamp} from "@/utils/Timestamp";
 import {NameRecord, NameService} from "@/utils/name_service/NameService";
+import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
 
 export abstract class SearchAgent<L, E> {
 
@@ -314,18 +315,26 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
 export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
 
     //
+    // Public
+    //
+
+    public constructor(public readonly provider: NameServiceProvider) {
+        super()
+    }
+
+    //
     // SearchAgent
     //
 
     protected async load(domainName: string): Promise<NameRecord[]> {
-        let result: NameRecord[]
+        let record: NameRecord|null
         try {
             const network = routeManager.currentNetwork.value
-            result = await NameService.instance.resolve(domainName, network)
+            record = await NameService.instance.singleResolve(domainName, network, this.provider.providerAlias)
         } catch {
-            result = []
+            record = null
         }
-        return result
+        return record !== null ? [record] : []
     }
 
     protected makeCandidate(domainName: string, entity: NameRecord): SearchCandidate<NameRecord> | null {
