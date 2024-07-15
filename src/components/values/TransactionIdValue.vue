@@ -40,7 +40,7 @@ import {defineComponent, PropType, ref, watch} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
 
 export default defineComponent({
-  name: "TransactionId",
+  name: "TransactionIdValue",
   props: {
     id: {
       type: String as PropType<string | null>,

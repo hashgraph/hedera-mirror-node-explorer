@@ -31,7 +31,7 @@
         <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
           <div class="h-is-secondary-text mr-3">
-            <TransactionId :id="formattedTransactionId"/>
+            <TransactionIdValue :id="formattedTransactionId"/>
           </div>
           <div v-if="transaction" class="h-is-text-size-2 mt-1">
             <div v-if="transactionSucceeded" class="h-has-pill has-background-success">SUCCESS</div>
@@ -287,7 +287,7 @@ import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import MirrorLink from "@/components/MirrorLink.vue";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {TransactionID} from "@/utils/TransactionID";
-import TransactionId from "@/components/values/TransactionId.vue";
+import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -296,7 +296,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
-    TransactionId,
+    TransactionIdValue,
     TokenExtra,
     MirrorLink,
     TokenLink,
