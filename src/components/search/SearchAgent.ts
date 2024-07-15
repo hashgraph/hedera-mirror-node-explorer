@@ -326,7 +326,7 @@ export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
     }
 
     protected makeCandidate(domainName: string, entity: NameRecord): SearchCandidate<NameRecord> | null {
-        const description = "Account " + entity.entityId + "(registered in " + entity.providerAlias + ")"
+        const description = "Account " + entity.entityId + " (resolved with " + entity.providerAlias + ")"
         const route = routeManager.makeRouteToAccount(entity.entityId)
         return new SearchCandidate(description, route, entity)
     }

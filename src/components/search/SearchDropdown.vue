@@ -33,6 +33,9 @@
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey">
         No match
       </div>
+      <div v-else-if="searchController.domainNameSearchAgent.loading.value" class="has-text-grey">
+        Connecting to name services…
+      </div>
     </div>
   </div>
 </template>

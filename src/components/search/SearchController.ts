@@ -41,7 +41,7 @@ export class SearchController {
     private readonly contractSearchAgent = new ContractSearchAgent()
     private readonly tokenSearchAgent = new TokenSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
-    private readonly domainNameSearchAgent = new DomainNameSearchAgent()
+    public readonly domainNameSearchAgent = new DomainNameSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
     public readonly allAgents: SearchAgent<unknown, unknown>[] = [
         this.contractSearchAgent,
