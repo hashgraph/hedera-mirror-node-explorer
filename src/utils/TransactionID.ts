@@ -100,19 +100,19 @@ export class TransactionID {
         return result
     }
 
-    public toString(useArobas = true): string {
-        const sep1 = useArobas ? "@" : "-"
-        const sep2 = useArobas ? "." : "-"
+    public toString(useAtForm = true): string {
+        const sep1 = useAtForm ? "@" : "-"
+        const sep2 = useAtForm ? "." : "-"
         return this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
     }
 
     public static normalizeForDisplay(transactionID: string): string {
-        return TransactionID.normalize(transactionID, TransactionID.useArobasForm.value)
+        return TransactionID.normalize(transactionID, TransactionID.useAtForm.value)
     }
 
-    public static normalize(transactionID: string, useArobas = false): string {
+    public static normalize(transactionID: string, useAtForm = false): string {
         const tid = TransactionID.parse(transactionID)
-        return tid != null ? tid.toString(useArobas) : transactionID
+        return tid != null ? tid.toString(useAtForm) : transactionID
     }
 
     public static makePayerID(transactionID: string): string | null {
@@ -120,10 +120,10 @@ export class TransactionID {
         return tid != null ? tid.entityID.toString() : null
     }
 
-    public static useArobasForm = computed(() => TransactionID.useArobasFormRef.value)
+    public static useAtForm = computed(() => TransactionID.useAtFormRef.value)
 
-    public static setUseArobasForm(value: boolean): void {
-        TransactionID.useArobasFormRef.value = value
+    public static setUseAtForm(value: boolean): void {
+        TransactionID.useAtFormRef.value = value
         AppStorage.setUseDashForm(!value)
     }
 
@@ -131,7 +131,7 @@ export class TransactionID {
     // Private
     //
 
-    private static useArobasFormRef = ref(!AppStorage.getUseDashForm())
+    private static useAtFormRef = ref(!AppStorage.getUseDashForm())
 
     private constructor(entityID: EntityID, seconds: number, nanoSeconds: number) {
         this.entityID = entityID

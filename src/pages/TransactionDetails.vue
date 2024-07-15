@@ -42,8 +42,8 @@
 
       <template v-slot:control>
         <o-select v-model="txIdForm" class="h-is-text-size-3">
-          <option value="arobas">Format using '@' and '.'</option>
-          <option value="dash">Format using '-' and '-'</option>
+          <option value="atForm">Format using '@' and '.'</option>
+          <option value="dashForm">Format using '-' and '-'</option>
         </o-select>
       </template>
 
@@ -323,8 +323,8 @@ export default defineComponent({
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const txIdForm = ref(TransactionID.useArobasForm.value ? 'arobas' : 'dash')
-    watch(txIdForm, () => TransactionID.setUseArobasForm(txIdForm.value === 'arobas'))
+    const txIdForm = ref(TransactionID.useAtForm.value ? 'atForm' : 'dashForm')
+    watch(txIdForm, () => TransactionID.setUseAtForm(txIdForm.value === 'atForm'))
 
     const transactionLoc = computed(() => props.transactionLoc ?? null)
     const transactionLocParser = new TransactionLocParser(transactionLoc)
@@ -335,7 +335,7 @@ export default defineComponent({
     onMounted(() => transactionAnalyzer.mount())
     onBeforeUnmount(() => transactionAnalyzer.unmount())
 
-    const arobasForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(true))
+    const atForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(true))
     const dashForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(false))
 
     const transactionGroupLookup = TransactionGroupCache.instance.makeLookup(transactionLocParser.transactionId)
@@ -455,7 +455,7 @@ export default defineComponent({
       transactionId: transactionLocParser.transactionId,
       transaction: transactionDetail,
       formattedTransactionId: transactionAnalyzer.formattedTransactionId,
-      arobasForm,
+      atForm,
       dashForm,
       netAmount: transactionAnalyzer.netAmount,
       entity: transactionAnalyzer.entityDescriptor,
