@@ -97,9 +97,23 @@ describe("TransactionID.ts", () => {
     test("normalize", () => {
         const str1 = "0.0.88-1640084590-665216882"
         const str2 = "0.0.88@1640084590.665216882"
-        expect(TransactionID.normalize(str1)).toBe(str2)
-        expect(TransactionID.normalize(str2, false)).toBe(str1)
+        expect(TransactionID.normalize(str1)).toBe(str1)
         expect(TransactionID.normalize(str1, false)).toBe(str1)
-        expect(TransactionID.normalize(str2)).toBe(str2)
+        expect(TransactionID.normalize(str1, true)).toBe(str2)
+        expect(TransactionID.normalize(str2)).toBe(str1)
+        expect(TransactionID.normalize(str2, false)).toBe(str1)
+        expect(TransactionID.normalize(str2, true)).toBe(str2)
+    })
+
+    //
+    // TransactionID.makePayerID()
+    //
+
+    test("makePayerID", () => {
+        const str1 = "0.0.88-1640084590-665216882"
+        const str2 = "0.0.88@1640084590.665216882"
+        const payerId = "0.0.88"
+        expect(TransactionID.makePayerID(str1)).toBe(payerId)
+        expect(TransactionID.makePayerID(str2)).toBe(payerId)
     })
 })
