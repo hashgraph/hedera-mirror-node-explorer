@@ -25,6 +25,9 @@ import {TransactionID} from "@/utils/TransactionID";
 
 describe("TransactionID.ts", () => {
 
+    const dashForm = "0.0.88-1640084590-665216882"
+    const atForm = "0.0.88@1640084590.665216882"
+
     //
     // TransactionID.parse()
     //
@@ -95,14 +98,31 @@ describe("TransactionID.ts", () => {
     //
 
     test("normalize", () => {
-        const str1 = "0.0.88-1640084590-665216882"
-        const str2 = "0.0.88@1640084590.665216882"
-        expect(TransactionID.normalize(str1)).toBe(str1)
-        expect(TransactionID.normalize(str1, false)).toBe(str1)
-        expect(TransactionID.normalize(str1, true)).toBe(str2)
-        expect(TransactionID.normalize(str2)).toBe(str1)
-        expect(TransactionID.normalize(str2, false)).toBe(str1)
-        expect(TransactionID.normalize(str2, true)).toBe(str2)
+        expect(TransactionID.normalize(atForm)).toBe(dashForm)
+        expect(TransactionID.normalize(atForm, false)).toBe(dashForm)
+        expect(TransactionID.normalize(atForm, true)).toBe(atForm)
+
+        expect(TransactionID.normalize(dashForm)).toBe(dashForm)
+        expect(TransactionID.normalize(dashForm, false)).toBe(dashForm)
+        expect(TransactionID.normalize(dashForm, true)).toBe(atForm)
+    })
+
+    //
+    // TransactionID.normalizeForDisplay()
+    //
+
+    test("normalizeForDisplay", () => {
+        expect(TransactionID.normalizeForDisplay(dashForm)).toBe(atForm)
+        TransactionID.setUseAtForm(false)
+        expect(TransactionID.normalizeForDisplay(dashForm)).toBe(dashForm)
+        TransactionID.setUseAtForm(true)
+        expect(TransactionID.normalizeForDisplay(dashForm)).toBe(atForm)
+
+        expect(TransactionID.normalizeForDisplay(atForm)).toBe(atForm)
+        TransactionID.setUseAtForm(false)
+        expect(TransactionID.normalizeForDisplay(atForm)).toBe(dashForm)
+        TransactionID.setUseAtForm(true)
+        expect(TransactionID.normalizeForDisplay(atForm)).toBe(atForm)
     })
 
     //
