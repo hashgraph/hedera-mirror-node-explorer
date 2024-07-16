@@ -20,8 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-
-import {TransactionID} from "../../../src/utils/TransactionID";
+import {makeExchangeFormat} from "../TestUtils";
 
 describe('Search Bar', () => {
 
@@ -52,7 +51,7 @@ describe('Search Bar', () => {
         const searchTransaction = "0.0.1407723@1674820202.780744468"
         testBody(
             searchTransaction,
-            '/mainnet/transactionsById/' + TransactionID.normalize(searchTransaction, false),
+            '/mainnet/transactionsById/' + makeExchangeFormat(searchTransaction),
             'Transactions with ID '
         )
         cy.get('table')
@@ -75,7 +74,7 @@ describe('Search Bar', () => {
         const searchTransaction = "0.0.445590@1674821543.265349407"
         testBody(
             searchTransaction,
-            '/mainnet/transactionsById/' + TransactionID.normalize(searchTransaction, false),
+            '/mainnet/transactionsById/' + makeExchangeFormat(searchTransaction),
             'Transactions with ID '
         )
         cy.get('table')

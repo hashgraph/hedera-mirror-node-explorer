@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {TransactionID} from "../../../src/utils/TransactionID";
+import {makeExchangeFormat} from "../TestUtils";
 
 describe('Account Navigation', () => {
 
@@ -127,7 +127,7 @@ describe('Account Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
-                cy.url().should('include', 'tid=' + TransactionID.normalize($id.text()))
+                cy.url().should('include', 'tid=' + makeExchangeFormat($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
 

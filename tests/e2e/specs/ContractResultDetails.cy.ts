@@ -22,7 +22,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {TransactionID} from "../../../src/utils/TransactionID";
+import {makeExchangeFormat} from "../TestUtils";
 
 describe('ContractResultDetails', () => {
 
@@ -30,9 +30,9 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.849013@1674816312.786087545"
         const consensusTimestamp = "1674816325.275978041"
 
-        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + TransactionID.normalize(transactionId))
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + makeExchangeFormat(transactionId))
         cy.url().should('include', '/mainnet/transaction/')
-        cy.url().should('include', TransactionID.normalize(transactionId))
+        cy.url().should('include', makeExchangeFormat(transactionId))
         cy.url().should('include', consensusTimestamp)
 
         cy.get('#transactionTypeValue').should('have.text', 'CONTRACT CALL')
@@ -47,9 +47,9 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.1753656@1674816661.856939387"
         const consensusTimestamp = "1674816673.923476354"
 
-        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + TransactionID.normalize(transactionId))
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + makeExchangeFormat(transactionId))
         cy.url().should('include', '/mainnet/transaction/')
-        cy.url().should('include', TransactionID.normalize(transactionId))
+        cy.url().should('include', makeExchangeFormat(transactionId))
         cy.url().should('include', consensusTimestamp)
 
         cy.get('#transactionTypeValue').should('have.text', 'CONTRACT CALL')
@@ -64,9 +64,9 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.1123011@1674816563.776883593"
         const consensusTimestamp = "1674816577.015074957"
 
-        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + TransactionID.normalize(transactionId))
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + makeExchangeFormat(transactionId))
         cy.url().should('include', '/mainnet/transaction/')
-        cy.url().should('include', TransactionID.normalize(transactionId))
+        cy.url().should('include', makeExchangeFormat(transactionId))
         cy.url().should('include', consensusTimestamp)
 
         cy.get('#transactionTypeValue').should('have.text', 'TOKEN BURN')
@@ -81,9 +81,9 @@ describe('ContractResultDetails', () => {
         const transactionId = "0.0.1123011@1674816563.776883593"
         const consensusTimestamp = "1674816577.015074956"
 
-        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + TransactionID.normalize(transactionId))
+        cy.visit('mainnet/transaction/' + consensusTimestamp + "?tid=" + makeExchangeFormat(transactionId))
         cy.url().should('include', '/mainnet/transaction/')
-        cy.url().should('include', TransactionID.normalize(transactionId))
+        cy.url().should('include', makeExchangeFormat(transactionId))
         cy.url().should('include', consensusTimestamp)
 
         cy.get('#transactionTypeValue').should('have.text', 'CRYPTO TRANSFER')

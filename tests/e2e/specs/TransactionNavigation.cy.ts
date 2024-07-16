@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {TransactionID} from "../../../src/utils/TransactionID";
+import {makeExchangeFormat} from "../TestUtils";
 
 describe('Transaction Navigation', () => {
 
@@ -167,7 +167,7 @@ describe('Transaction Navigation', () => {
             .contains('Show all transactions with the same ID')
             .click()
 
-        cy.url().should('include', '/mainnet/transactionsById/' + TransactionID.normalize(transactionId, false))
+        cy.url().should('include', '/mainnet/transactionsById/' + makeExchangeFormat(transactionId))
         cy.contains('Transactions with ID ' + transactionId)
 
         cy.get('table')
