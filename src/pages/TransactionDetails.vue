@@ -41,9 +41,9 @@
       </template>
 
       <template v-slot:control>
-        <o-select v-model="txIdForm" class="h-is-text-size-3">
-          <option value="atForm">Format using '@' and '.'</option>
-          <option value="dashForm">Format using '-' and '-'</option>
+        <o-select v-model="txIdForm" class="h-is-text-size-3 ml-3">
+          <option value="atForm">Default format</option>
+          <option value="dashForm">Exchange format</option>
         </o-select>
       </template>
 
