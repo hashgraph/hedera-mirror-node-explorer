@@ -49,7 +49,7 @@
 
       <template v-slot:subtitle>
         <div v-if="routeToAllTransactions">
-          <router-link :to="routeToAllTransactions">
+          <router-link :to="routeToAllTransactions" id="allTransactionsLink">
             <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
           </router-link>
         </div>
