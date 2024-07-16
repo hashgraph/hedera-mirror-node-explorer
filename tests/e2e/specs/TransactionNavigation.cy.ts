@@ -156,7 +156,7 @@ describe('Transaction Navigation', () => {
             })
     })
 
-    it('should follow link "Show all transations with same ID"', () => {
+    it('should follow link "Show all transactions with same ID"', () => {
         const timestamp = "1674505116.619586693"
         const transactionId = "0.0.995584@1674505107.270597663"
 
@@ -180,6 +180,30 @@ describe('Transaction Navigation', () => {
 
         cy.url().should('include', '/mainnet/transaction/')
         cy.contains('Transaction ' + transactionId)
+    })
+
+    it('should switch format of transaction ID', () => {
+        const timestamp = "1674505116.619586693"
+        const transactionId = "0.0.995584@1674505107.270597663"
+
+        cy.visit('mainnet/transaction/' + timestamp)
+        cy.url().should('include', '/mainnet/transaction/' + timestamp)
+
+        cy.contains('Transaction ' + transactionId)
+
+        cy.get('[data-cy="select-format"]')
+            .select('dashForm')
+            .then(($type) => {
+                cy.wrap($type).should('have.value', 'dashForm')
+                cy.contains('Transaction ' + makeExchangeFormat(transactionId))
+            })
+
+        cy.get('[data-cy="select-format"]')
+            .select('atForm')
+            .then(($type) => {
+                cy.wrap($type).should('have.value', 'atForm')
+                cy.contains('Transaction ' + transactionId)
+            })
     })
 
     it('should handle ETHEREUMTRANSACTION type', () => {
