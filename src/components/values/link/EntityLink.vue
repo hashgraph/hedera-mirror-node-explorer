@@ -31,13 +31,10 @@
     </template>
 
     <template v-else>
-<!--  https://v3.router.vuejs.org/fr/api/#router-link -->
-      <router-link :to="route" custom v-slot="{href, navigate}">
-        <a :href="href" @click.prevent="willNavigate();navigate()">
-          <span class="h-is-hoverable">
-            <slot/>
-          </span>
-        </a>
+      <router-link :to="route">
+        <span class="h-is-hoverable">
+          <slot/>
+        </span>
       </router-link>
     </template>
 
@@ -56,15 +53,12 @@ import {RouteLocationRaw} from "vue-router";
 
 export default defineComponent({
   name: "EntityLink",
+  components: {},
   props: {
     route: {
       type: Object as PropType<RouteLocationRaw|null>,
       default: null
     },
-    willNavigate: {
-      type: Function as PropType<() => void>,
-      default: () => {}
-    }
   },
 });
 
