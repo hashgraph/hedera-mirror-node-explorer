@@ -40,6 +40,7 @@ import {TransactionID} from "@/utils/TransactionID";
 import {Timestamp} from "@/utils/Timestamp";
 import {NameRecord, NameService} from "@/utils/name_service/NameService";
 import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
+import {AppStorage} from "@/AppStorage";
 
 export abstract class SearchAgent<L, E> {
 
@@ -54,6 +55,11 @@ export abstract class SearchAgent<L, E> {
 
     public constructor() {
         watch(this.loc, this.entityLocDidChange)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public willNavigate(candidate: SearchCandidate<E>): void {
+        // Possibly override by subclasses
     }
 
     //
@@ -116,7 +122,8 @@ export class SearchCandidate<E> {
     constructor(readonly description: string,
                 readonly extra: string|null,
                 readonly route: RouteLocationRaw,
-                readonly entity: E) {}
+                readonly entity: E,
+                readonly agent: SearchAgent<unknown,E>) {}
 }
 
 
@@ -165,7 +172,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
         if (entity.account !== null) {
             const description = "Account " + entity.account
             const route = routeManager.makeRouteToAccount(entity.account)
-            result = new SearchCandidate(description, null, route, entity)
+            result = new SearchCandidate(description, null, route, entity, this)
         } else {
             result = null
         }
@@ -210,7 +217,7 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
         if (entity.contract_id !== null) {
             const description = "Contract " + entity.contract_id
             const route = routeManager.makeRouteToContract(entity.contract_id)
-            result = new SearchCandidate(description, null, route, entity)
+            result = new SearchCandidate(description, null, route, entity, this)
         } else {
             result = null
         }
@@ -255,7 +262,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
         if (entity.token_id !== null) {
             const description = "Token " + entity.token_id
             const route = routeManager.makeRouteToToken(entity.token_id)
-            result = new SearchCandidate(description, null,route, entity)
+            result = new SearchCandidate(description, null,route, entity, this)
         } else {
             result = null
         }
@@ -306,7 +313,7 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
     protected makeCandidate(loc: TransactionID | Timestamp | Uint8Array, entity: Transaction): SearchCandidate<Transaction> | null {
         const description = "Transaction " + entity.transaction_id
         const route = routeManager.makeRouteToTransaction(entity.transaction_id)
-        return new SearchCandidate(description, null, route, entity)
+        return new SearchCandidate(description, null, route, entity, this)
     }
 
 
@@ -326,6 +333,12 @@ export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
     // SearchAgent
     //
 
+    public willNavigate(candidate: SearchCandidate<NameRecord>): void {
+        const record = candidate.entity
+        const network = routeManager.currentNetwork.value
+        AppStorage.setNameRecord(record.entityId, network, record)
+    }
+
     protected async load(domainName: string): Promise<NameRecord[]> {
         let record: NameRecord|null
         try {
@@ -341,7 +354,7 @@ export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
         const description = "Account " + entity.entityId
         const extra = " (resolved with " + entity.providerAlias + ")"
         const route = routeManager.makeRouteToAccount(entity.entityId)
-        return new SearchCandidate(description, extra, route, entity)
+        return new SearchCandidate(description, extra, route, entity, this)
     }
 
 
@@ -377,7 +390,7 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
     protected makeCandidate(blockNb: number|Uint8Array, entity: Block): SearchCandidate<Block> | null {
         const description = "Block " + entity.number
         const route = routeManager.makeRouteToBlock(entity.number ?? 1)
-        return new SearchCandidate(description, null, route, entity)
+        return new SearchCandidate(description, null, route, entity, this)
     }
 
 }

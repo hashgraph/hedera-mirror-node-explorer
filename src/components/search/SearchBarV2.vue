@@ -83,8 +83,9 @@ const handleSubmit = (): void => {
   const allCandidates = searchController.candidates.value
   const defaultCandidate = allCandidates.length >= 1 ? allCandidates[0] : null
   if (defaultCandidate !== null) {
-    router.push(defaultCandidate.route)
     searchedText.value = "" // Hides SearchDropdown
+    defaultCandidate.agent.willNavigate(defaultCandidate)
+    router.push(defaultCandidate.route)
   }
 }
 

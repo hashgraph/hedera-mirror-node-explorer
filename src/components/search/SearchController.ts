@@ -44,7 +44,7 @@ export class SearchController {
     private readonly transactionSearchAgent = new TransactionSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
 
-    public readonly allAgents: SearchAgent<unknown, unknown>[] = []
+    private readonly allAgents: SearchAgent<unknown, unknown>[] = []
     public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []
 
     //
