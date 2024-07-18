@@ -206,7 +206,10 @@ const testBody = (searchID: string,
         } else {
             cy.get('input').type(searchID)
         }
-    }).submit()
+    })
+
+    cy.get('[data-cy=searchCompleted]')
+    cy.get('[data-cy=searchBar]').submit()
 
     cy.url({timeout: 5000}).should('include', expectedPath)
     cy.contains(expectedTitle ? (expectedTitle + searchID) : 'No result')
