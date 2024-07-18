@@ -24,7 +24,7 @@
     "@bladelabs/blade-web3.js": "1.2.2",
     "@ethereum-sourcify/bytecode-utils": "^1.2.8",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
-    "@fortawesome/free-brands-svg-icons": "^6.5.2",
+    "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@hashgraph/proto": "^2.15.0",
