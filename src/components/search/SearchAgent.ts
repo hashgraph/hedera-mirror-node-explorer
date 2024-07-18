@@ -68,11 +68,9 @@ export abstract class SearchAgent<L, E> {
     //
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected /* abstract */ async load(loc: L, abortController: AbortController): Promise<E[]> {
+    protected /* abstract */ async load(loc: L, abortController: AbortController): Promise<SearchCandidate<E>[]> {
         return Promise.reject("To be subclassed")
     }
-
-    protected abstract makeCandidate(loc: L, entity: E): SearchCandidate<E>|null
 
     //
     // Private
@@ -87,8 +85,7 @@ export abstract class SearchAgent<L, E> {
         this.loading.value = true
         try {
             if (this.loc.value !== null) {
-                const entities = await this.load(this.loc.value, this.abortController)
-                this.candidates.value = this.buildCandidates(this.loc.value, entities)
+                this.candidates.value = await this.load(this.loc.value, this.abortController)
             } else {
                 this.candidates.value = []
             }
@@ -107,16 +104,6 @@ export abstract class SearchAgent<L, E> {
         return reason instanceof DOMException && reason.name == "AbortError"
     }
 
-    private buildCandidates(loc: L, entities: E[]): SearchCandidate<E>[] {
-        const result: SearchCandidate<E>[] = []
-        for (const e of entities) {
-            const newCandidate = this.makeCandidate(loc, e)
-            if (newCandidate !== null) {
-                result.push(newCandidate)
-            }
-        }
-        return result
-    }
 }
 
 export class SearchCandidate<E> {
@@ -135,16 +122,36 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
     // SearchAgent
     //
 
-    protected async load(accountParam: EntityID | Uint8Array | string): Promise<AccountInfo[]> {
-        let result: AccountInfo[]
+    protected async load(accountParam: EntityID | Uint8Array | string): Promise<SearchCandidate<AccountInfo>[]> {
+        let result: SearchCandidate<AccountInfo>[]
         try {
             if (accountParam instanceof Uint8Array && (accountParam.length == 32 || accountParam.length == 33)) {
                 // accountParam is a public key
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
                 const publicKey = byteToHex(accountParam)
-                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=2")
+                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=10")
                 // limit=2 because we want to know if there are more than 1 account with this public key
-                result = r.data.accounts ?? []
+                if (r.data.accounts) {
+                    if (r.data.links?.next) {
+                        const description = "All accounts with key " + publicKey
+                        const route = routeManager.makeRouteToAccountsWithKey(publicKey.toString())
+                        const account0 = r.data.accounts[0]
+                        const candidate = new SearchCandidate<AccountInfo>(description, null, route, account0, this)
+                        result = [candidate]
+                    } else {
+                        result = []
+                        for (const a of r.data.accounts) {
+                            if (a.account !== null) {
+                                const description = "Account " + a.account
+                                const route = routeManager.makeRouteToAccount(a.account)
+                                const candidate = new SearchCandidate<AccountInfo>(description, null, route, a, this)
+                                result.push(candidate)
+                            }
+                        }
+                    }
+                } else {
+                    result = []
+                }
             } else {
                 let accountLoc: string|null
                 if (accountParam instanceof EntityID) {
@@ -157,7 +164,15 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
                 if (accountLoc !== null) {
                     // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress
                     const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountLoc)
-                    result = [r.data]
+                    const accountInfo = r.data
+                    if (accountInfo.account !== null) {
+                        const description = "Account " + accountInfo.account
+                        const route = routeManager.makeRouteToAccount(accountInfo.account)
+                        const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo, this)
+                        result = [candidate]
+                    } else {
+                        result = []
+                    }
                 } else {
                     result = []
                 }
@@ -167,18 +182,6 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
         }
 
         return Promise.resolve(result)
-    }
-
-    protected makeCandidate(loc: EntityID | Uint8Array | string, entity: AccountInfo): SearchCandidate<AccountInfo> | null {
-        let result: SearchCandidate<AccountInfo>|null
-        if (entity.account !== null) {
-            const description = "Account " + entity.account
-            const route = routeManager.makeRouteToAccount(entity.account)
-            result = new SearchCandidate(description, null, route, entity, this)
-        } else {
-            result = null
-        }
-        return result
     }
 }
 
@@ -189,41 +192,37 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
     // SearchAgent
     //
 
-    protected async load(contractParam: EntityID | Uint8Array): Promise<ContractResponse[]> {
-        let result: ContractResponse[]
-        try {
-            let contractLoc: string|null
-            if (contractParam instanceof EntityID) {
-                contractLoc = contractParam.toString()
-            } else if (contractParam.length == 20) {
-                contractLoc = byteToHex(contractParam)
-            } else {
-                contractLoc = null
-            }
-            if (contractLoc !== null) {
-                // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
-                const r = await axios.get<ContractResponse>("api/v1/contracts/" + contractLoc)
-                result = [r.data]
-            } else {
-                result = []
-            }
-        } catch {
+    protected async load(contractParam: EntityID | Uint8Array): Promise<SearchCandidate<ContractResponse>[]> {
+
+        let contractLoc: string|null
+        if (contractParam instanceof EntityID) {
+            contractLoc = contractParam.toString()
+        } else if (contractParam.length == 20) {
+            contractLoc = byteToHex(contractParam)
+        } else {
+            contractLoc = null
+        }
+
+        let contractInfo: ContractResponse|null
+        if (contractLoc !== null) {
+            // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
+            const r = await axios.get<ContractResponse>("api/v1/contracts/" + contractLoc)
+            contractInfo = r.data
+        } else {
+            contractInfo = null
+        }
+
+        let result: SearchCandidate<ContractResponse>[]
+        if (contractInfo !== null && contractInfo.contract_id) {
+            const description = "Contract " + contractInfo.contract_id
+            const route = routeManager.makeRouteToContract(contractInfo.contract_id)
+            const candidate = new SearchCandidate<ContractResponse>(description, null, route, contractInfo, this)
+            result = [candidate]
+        } else {
             result = []
         }
 
         return Promise.resolve(result)
-    }
-
-    protected makeCandidate(loc: EntityID | Uint8Array, entity: ContractResponse): SearchCandidate<ContractResponse> | null {
-        let result: SearchCandidate<ContractResponse>|null
-        if (entity.contract_id !== null) {
-            const description = "Contract " + entity.contract_id
-            const route = routeManager.makeRouteToContract(entity.contract_id)
-            result = new SearchCandidate(description, null, route, entity, this)
-        } else {
-            result = null
-        }
-        return result
     }
 
 }
@@ -234,41 +233,41 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
     // SearchAgent
     //
 
-    protected async load(contractParam: EntityID | Uint8Array): Promise<TokenInfo[]> {
-        let result: TokenInfo[]
-        try {
-            let contractLoc: string|null
-            if (contractParam instanceof EntityID) {
-                contractLoc = contractParam.toString()
-            } else if (contractParam.length == 20) {
-                contractLoc = byteToHex(contractParam)
-            } else {
-                contractLoc = null
-            }
-            if (contractLoc !== null) {
+    protected async load(contractParam: EntityID | Uint8Array): Promise<SearchCandidate<TokenInfo>[]> {
+
+        let contractLoc: string|null
+        if (contractParam instanceof EntityID) {
+            contractLoc = contractParam.toString()
+        } else if (contractParam.length == 20) {
+            contractLoc = byteToHex(contractParam)
+        } else {
+            contractLoc = null
+        }
+
+        let tokenInfo: TokenInfo|null
+        if (contractLoc !== null) {
+            try {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
                 const r = await axios.get<TokenInfo>("api/v1/tokens/" + contractLoc)
-                result = [r.data]
-            } else {
-                result = []
+                tokenInfo = r.data
+            } catch {
+                tokenInfo = null
             }
-        } catch {
+        } else {
+            tokenInfo = null
+        }
+
+        let result: SearchCandidate<TokenInfo>[]
+        if (tokenInfo !== null && tokenInfo.token_id !== null) {
+            const description = "Token " + tokenInfo.token_id
+            const route = routeManager.makeRouteToToken(tokenInfo.token_id)
+            const candidate = new SearchCandidate(description, null,route, tokenInfo, this)
+            result = [candidate]
+        } else {
             result = []
         }
 
         return Promise.resolve(result)
-    }
-
-    protected makeCandidate(loc: EntityID | Uint8Array, entity: TokenInfo): SearchCandidate<TokenInfo> | null {
-        let result: SearchCandidate<TokenInfo>|null
-        if (entity.token_id !== null) {
-            const description = "Token " + entity.token_id
-            const route = routeManager.makeRouteToToken(entity.token_id)
-            result = new SearchCandidate(description, null,route, entity, this)
-        } else {
-            result = null
-        }
-        return result
     }
 
 }
@@ -279,32 +278,34 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
     // SearchAgent
     //
 
-    protected async load(transactionParam: TransactionID | Timestamp | Uint8Array): Promise<Transaction[]> {
-        let result: Transaction[]
+    protected async load(transactionParam: TransactionID | Timestamp | Uint8Array): Promise<SearchCandidate<Transaction>[]> {
+        let result: SearchCandidate<Transaction>[]
         try {
+            let transactions: Transaction[]
             if (transactionParam instanceof TransactionID) {
                 const tid = transactionParam.toString(false)
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/transactions/getTransactionById
                 const r = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + tid)
-                result = r.data.transactions ?? []
+                transactions = r.data.transactions ?? []
             } else if (transactionParam instanceof Timestamp) {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/transactions/listTransactions
                 const t = transactionParam.toString()
                 const r = await axios.get<TransactionResponse>("api/v1/transactions?timestamp=" + t)
-                result = r.data.transactions ?? []
+                transactions = r.data.transactions ?? []
             } else {
                 if (transactionParam.length == 48) { // Hedera hash
                     // https://testnet.mirrornode.hedera.com/api/v1/docs/#/transactions/getTransactionById
                     const r = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + byteToHex(transactionParam))
-                    result = r.data.transactions ?? []
+                    transactions = r.data.transactions ?? []
                 } else if (transactionParam.length == 32) { // Ethereum hash
                     const r1 = await axios.get<ContractResultDetails>("api/v1/contracts/results/" + byteToHex(transactionParam))
                     const r2 = await axios.get<TransactionResponse>("api/v1/transactions?timestamp=" + r1.data.timestamp)
-                    result = r2.data.transactions ?? []
+                    transactions = r2.data.transactions ?? []
                 } else {
-                    result = []
+                    transactions = []
                 }
             }
+            result = this.makeCandidates(transactionParam, transactions ?? [])
         } catch {
             result = []
         }
@@ -312,12 +313,42 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
         return Promise.resolve(result)
     }
 
-    protected makeCandidate(loc: TransactionID | Timestamp | Uint8Array, entity: Transaction): SearchCandidate<Transaction> | null {
-        const description = "Transaction " + entity.transaction_id
-        const route = routeManager.makeRouteToTransaction(entity.transaction_id)
-        return new SearchCandidate(description, null, route, entity, this)
-    }
+    //
+    // Private
+    //
 
+    private makeCandidates(transactionParam: TransactionID | Timestamp | Uint8Array, transactions: Transaction[]): SearchCandidate<Transaction>[] {
+        let result: SearchCandidate<Transaction>[]
+        if (transactions.length >= 1) {
+            const transaction0 = transactions[0]
+            if (transactionParam instanceof TransactionID) {
+                if (transactions.length == 1) {
+                    const description = "Transaction " + transactionParam.toString()
+                    const route = routeManager.makeRouteToTransaction(transaction0.transaction_id)
+                    const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
+                    result = [candidate]
+                } else {
+                    const description = "All transactions with ID " + transactionParam.toString()
+                    const route = routeManager.makeRouteToTransactionsById(transaction0.transaction_id)
+                    const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
+                    result = [candidate]
+                }
+            } else if (transactionParam instanceof Timestamp) {
+                const description = "Transaction " + transaction0.transaction_id
+                const route = routeManager.makeRouteToTransaction(transactionParam.toString())
+                const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
+                result = [candidate]
+            } else { // transactionParam instanceof Uint8Array
+                const description = "Transaction " + transaction0.transaction_id
+                const route = routeManager.makeRouteToTransaction(transaction0.consensus_timestamp)
+                const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
+                result = [candidate]
+            }
+        } else {
+            result = []
+        }
+        return result
+    }
 
 }
 
@@ -341,14 +372,21 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
         AppStorage.setNameRecord(record.entityId, network, record)
     }
 
-    protected async load(domainName: string): Promise<DomainNameResolution[]> {
-        let result: DomainNameResolution|null
+    protected async load(domainName: string): Promise<SearchCandidate<DomainNameResolution>[]> {
+        let result: SearchCandidate<DomainNameResolution>|null
         try {
             const network = routeManager.currentNetwork.value
             const record = await NameService.instance.singleResolve(domainName, network, this.provider.providerAlias)
             if (record !== null) {
                 const accountInfo = await AccountByIdCache.instance.lookup(record.entityId)
-                result = new DomainNameResolution(record, accountInfo)
+                const description = "Account " + record.entityId
+                const nonExistent = accountInfo == null
+                const extra = nonExistent
+                    ? " (resolved with " + record.providerAlias + ", non-existent)"
+                    : " (resolved with " + record.providerAlias + ")"
+                const route = routeManager.makeRouteToAccount(record.entityId)
+                const resolution = new DomainNameResolution(record, accountInfo)
+                result = new SearchCandidate(description, extra, route, resolution, this, nonExistent)
             } else {
                 result = null
             }
@@ -357,17 +395,6 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
         }
         return result !== null ? [result] : []
     }
-
-    protected makeCandidate(domainName: string, resolution: DomainNameResolution): SearchCandidate<DomainNameResolution> | null {
-        const description = "Account " + resolution.record.entityId
-        const nonExistent = resolution.accountInfo == null
-        const extra = nonExistent
-            ? " (resolved with " + resolution.record.providerAlias + ", non-existent)"
-            : " (resolved with " + resolution.record.providerAlias + ")"
-        const route = routeManager.makeRouteToAccount(resolution.record.entityId)
-        return new SearchCandidate(description, extra, route, resolution, this, nonExistent)
-    }
-
 
 }
 
@@ -381,31 +408,32 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
     // SearchAgent
     //
 
-    protected async load(blockParam: number|Uint8Array): Promise<Block[]> {
-        let result: Block[]
+    protected async load(blockParam: number|Uint8Array): Promise<SearchCandidate<Block>[]> {
+        let result: SearchCandidate<Block>[]
         try {
+            let block: Block|null
             if (blockParam instanceof Uint8Array) {
                 if (blockParam.length == 48) {
-                    const b = await axios.get<Block>("api/v1/blocks/" + byteToHex(blockParam))
-                    result = [b.data]
+                    block = (await axios.get<Block>("api/v1/blocks/" + byteToHex(blockParam))).data
                 } else {
-                    result = []
+                    block = null
                 }
             } else {
-                const b = await axios.get<Block>("api/v1/blocks/" + blockParam)
-                result = [b.data]
+                block = (await axios.get<Block>("api/v1/blocks/" + blockParam)).data
+            }
+            if (block !== null) {
+                const description = "Block " + block.number
+                const route = routeManager.makeRouteToBlock(block.number ?? 1)
+                const candidate = new SearchCandidate<Block>(description, null, route, block, this)
+                result = [candidate]
+            } else {
+                result = []
             }
         } catch {
             result = []
         }
 
         return Promise.resolve(result)
-    }
-
-    protected makeCandidate(blockNb: number|Uint8Array, entity: Block): SearchCandidate<Block> | null {
-        const description = "Block " + entity.number
-        const route = routeManager.makeRouteToBlock(entity.number ?? 1)
-        return new SearchCandidate(description, null, route, entity, this)
     }
 
 }
