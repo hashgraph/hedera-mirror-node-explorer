@@ -26,7 +26,7 @@
   <div style="position: relative" ref="root">
     <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
       <template v-for="(c,i) in searchController.candidates.value" :key="c.description">
-        <button class="button-as-link h-is-property-text" @click="navigate(c)">
+        <button class="button-as-link h-is-property-text h-is-hoverable" @click="navigate(c)">
           {{ c.description }}
           <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
           <span v-if="i == 0" style="float: right">&#x21b5;</span>
