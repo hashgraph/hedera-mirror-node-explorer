@@ -42,6 +42,7 @@
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey h-is-property-text">
         No match
       </div>
+      <div v-if="!searchController.loading.value" data-cy="searchCompleted" style="display: none"/>
     </div>
   </div>
 </template>
