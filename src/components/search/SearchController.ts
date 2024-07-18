@@ -101,6 +101,17 @@ export class SearchController {
         return result
     })
 
+    public readonly defaultCandidate = computed(() => {
+        let result: SearchCandidate<unknown>|null = null
+        for (const c of this.candidates.value) {
+            if (!c.nonExistent) {
+                result = c
+                break
+            }
+        }
+        return result
+    })
+
     //
     // Private
     //

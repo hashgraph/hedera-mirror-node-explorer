@@ -40,6 +40,7 @@ import {TransactionID} from "@/utils/TransactionID";
 import {Timestamp} from "@/utils/Timestamp";
 import {NameRecord, NameService} from "@/utils/name_service/NameService";
 import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AppStorage} from "@/AppStorage";
 
 export abstract class SearchAgent<L, E> {
@@ -123,7 +124,8 @@ export class SearchCandidate<E> {
                 readonly extra: string|null,
                 readonly route: RouteLocationRaw,
                 readonly entity: E,
-                readonly agent: SearchAgent<unknown,E>) {}
+                readonly agent: SearchAgent<unknown,E>,
+                readonly nonExistent: boolean = false) {}
 }
 
 
@@ -319,7 +321,7 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
 
 }
 
-export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
+export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolution> {
 
     //
     // Public
@@ -333,31 +335,44 @@ export class DomainNameSearchAgent extends SearchAgent<string, NameRecord> {
     // SearchAgent
     //
 
-    public willNavigate(candidate: SearchCandidate<NameRecord>): void {
-        const record = candidate.entity
+    public willNavigate(candidate: SearchCandidate<DomainNameResolution>): void {
+        const record = candidate.entity.record
         const network = routeManager.currentNetwork.value
         AppStorage.setNameRecord(record.entityId, network, record)
     }
 
-    protected async load(domainName: string): Promise<NameRecord[]> {
-        let record: NameRecord|null
+    protected async load(domainName: string): Promise<DomainNameResolution[]> {
+        let result: DomainNameResolution|null
         try {
             const network = routeManager.currentNetwork.value
-            record = await NameService.instance.singleResolve(domainName, network, this.provider.providerAlias)
+            const record = await NameService.instance.singleResolve(domainName, network, this.provider.providerAlias)
+            if (record !== null) {
+                const accountInfo = await AccountByIdCache.instance.lookup(record.entityId)
+                result = new DomainNameResolution(record, accountInfo)
+            } else {
+                result = null
+            }
         } catch {
-            record = null
+            result = null
         }
-        return record !== null ? [record] : []
+        return result !== null ? [result] : []
     }
 
-    protected makeCandidate(domainName: string, entity: NameRecord): SearchCandidate<NameRecord> | null {
-        const description = "Account " + entity.entityId
-        const extra = " (resolved with " + entity.providerAlias + ")"
-        const route = routeManager.makeRouteToAccount(entity.entityId)
-        return new SearchCandidate(description, extra, route, entity, this)
+    protected makeCandidate(domainName: string, resolution: DomainNameResolution): SearchCandidate<DomainNameResolution> | null {
+        const description = "Account " + resolution.record.entityId
+        const nonExistent = resolution.accountInfo == null
+        const extra = nonExistent
+            ? " (resolved with " + resolution.record.providerAlias + ", non-existent)"
+            : " (resolved with " + resolution.record.providerAlias + ")"
+        const route = routeManager.makeRouteToAccount(resolution.record.entityId)
+        return new SearchCandidate(description, extra, route, resolution, this, nonExistent)
     }
 
 
+}
+
+export class DomainNameResolution {
+    constructor(public readonly record: NameRecord, public readonly accountInfo: AccountInfo|null) {}
 }
 
 export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {

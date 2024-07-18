@@ -80,8 +80,7 @@ const searchedText = ref<string>("")
 const searchController = new SearchController(searchedText)
 
 const handleSubmit = (): void => {
-  const allCandidates = searchController.candidates.value
-  const defaultCandidate = allCandidates.length >= 1 ? allCandidates[0] : null
+  const defaultCandidate = searchController.defaultCandidate.value
   if (defaultCandidate !== null) {
     searchedText.value = "" // Hides SearchDropdown
     defaultCandidate.agent.willNavigate(defaultCandidate)
@@ -89,7 +88,7 @@ const handleSubmit = (): void => {
   }
 }
 
-const submitDisabled = computed(() => searchController.candidateCount.value == 0)
+const submitDisabled = computed(() => searchController.defaultCandidate.value === null)
 
 </script>
 
