@@ -130,7 +130,7 @@ export class SearchController {
         this.accountSearchAgent.loc.value = entityID ?? hexBytes ?? alias
         this.contractSearchAgent.loc.value = entityID ?? hexBytes
         this.tokenSearchAgent.loc.value = entityID ?? hexBytes
-        this.transactionSearchAgent.loc.value = transactionID ?? timestamp
+        this.transactionSearchAgent.loc.value = transactionID ?? timestamp ?? hexBytes
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
 
         for (const a of this.domainNameSearchAgents) {
