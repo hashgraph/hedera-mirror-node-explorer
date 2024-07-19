@@ -77,19 +77,28 @@
         <Property id="gasLimit">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_limit" none-label="None"/>
+            <GasAmount
+                :gas="contractResult?.gas_limit"
+                :price="contractType==='Pre-Eip1559' ? gasPrice :  maxFeePerGas"
+            />
           </template>
         </Property>
         <Property id="gasUsed">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_used" none-label="None"/>
+            <GasAmount
+                :gas="contractResult?.gas_used"
+                :price="contractType==='Pre-Eip1559' ? gasPrice :  maxFeePerGas"
+            />
           </template>
         </Property>
         <Property id="gasConsumed">
           <template v-slot:name>Gas Consumed</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_consumed" none-label="None"/>
+            <GasAmount
+                :gas="contractResult?.gas_consumed"
+                :price="contractType==='Pre-Eip1559' ? gasPrice :  maxFeePerGas"
+            />
           </template>
         </Property>
         <Property v-if="contractType==='Post-Eip1559'" id="maxFeePerGas">
@@ -158,12 +167,14 @@ import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import GasAmount from "@/components/values/GasAmount.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
+    GasAmount,
     HexaValue,
     FunctionError,
     FunctionResult,
