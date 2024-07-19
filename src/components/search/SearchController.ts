@@ -31,6 +31,7 @@ import {
     SearchAgent,
     SearchCandidate,
     TokenSearchAgent,
+    TopicSearchAgent,
     TransactionSearchAgent
 } from "@/components/search/SearchAgent";
 import {nameServiceProviders} from "@/utils/name_service/provider/AllProviders";
@@ -41,6 +42,7 @@ export class SearchController {
     private readonly accountSearchAgent = new AccountSearchAgent()
     private readonly contractSearchAgent = new ContractSearchAgent()
     private readonly tokenSearchAgent = new TokenSearchAgent()
+    private readonly topicSearchAgent = new TopicSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
 
@@ -57,6 +59,7 @@ export class SearchController {
             this.contractSearchAgent,
             this.accountSearchAgent,
             this.tokenSearchAgent,
+            this.topicSearchAgent,
             this.transactionSearchAgent,
             this.blockSearchAgent
         )
@@ -130,6 +133,7 @@ export class SearchController {
         this.accountSearchAgent.loc.value = entityID ?? hexBytes ?? alias
         this.contractSearchAgent.loc.value = entityID ?? hexBytes
         this.tokenSearchAgent.loc.value = entityID ?? hexBytes
+        this.topicSearchAgent.loc.value = entityID
         this.transactionSearchAgent.loc.value = transactionID ?? timestamp ?? hexBytes
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
 

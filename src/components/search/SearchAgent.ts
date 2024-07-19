@@ -28,6 +28,7 @@ import {
     ContractResponse,
     ContractResultDetails,
     TokenInfo,
+    Topic,
     Transaction,
     TransactionByIdResponse,
     TransactionResponse
@@ -270,6 +271,28 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
         return Promise.resolve(result)
     }
 
+}
+
+export class TopicSearchAgent extends SearchAgent<EntityID, Topic>{
+
+    //
+    // SearchAgent
+    //
+
+    protected async load(topicID: EntityID): Promise<SearchCandidate<Topic>[]> {
+        let result: SearchCandidate<Topic>[]
+        try {
+            const topicInfo = (await axios.get<Topic>("api/v1/topics/" + topicID.toString())).data
+            const description = "Topic " + topicInfo.topic_id
+            const route = routeManager.makeRouteToTopic(topicID.toString())
+            const candidate = new SearchCandidate(description, null,route, topicInfo, this)
+            result = [candidate]
+        } catch {
+            result = []
+        }
+
+        return Promise.resolve(result)
+    }
 }
 
 export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestamp | Uint8Array, Transaction> {
