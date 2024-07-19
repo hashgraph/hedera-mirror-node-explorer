@@ -33,7 +33,7 @@ import {
     TransactionByIdResponse,
     TransactionResponse
 } from "@/schemas/HederaSchemas";
-import {byteToHex} from "@/utils/B64Utils";
+import {aliasToBase32, byteToHex, paddedBytes} from "@/utils/B64Utils";
 import axios from "axios";
 import {RouteLocationRaw} from "vue-router";
 import {routeManager} from "@/router";
@@ -124,61 +124,79 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
     //
 
     protected async load(accountParam: EntityID | Uint8Array | string): Promise<SearchCandidate<AccountInfo>[]> {
-        let result: SearchCandidate<AccountInfo>[]
-        try {
-            if (accountParam instanceof Uint8Array && (accountParam.length == 32 || accountParam.length == 33)) {
+
+        let accountLoc: string|Uint8Array
+        if (accountParam instanceof EntityID) {
+            accountLoc = accountParam.toString()
+        } else if (accountParam instanceof  Uint8Array) {
+            if (accountParam.length == 32 || accountParam.length == 33) {
                 // accountParam is a public key
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
-                const publicKey = byteToHex(accountParam)
-                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=10")
-                // limit=2 because we want to know if there are more than 1 account with this public key
-                if (r.data.accounts) {
-                    if (r.data.links?.next) {
-                        const description = "All accounts with key " + publicKey
-                        const route = routeManager.makeRouteToAccountsWithKey(publicKey.toString())
-                        const account0 = r.data.accounts[0]
-                        const candidate = new SearchCandidate<AccountInfo>(description, null, route, account0, this)
-                        result = [candidate]
-                    } else {
-                        result = []
-                        for (const a of r.data.accounts) {
-                            if (a.account !== null) {
-                                const description = "Account " + a.account
-                                const route = routeManager.makeRouteToAccount(a.account)
-                                const candidate = new SearchCandidate<AccountInfo>(description, null, route, a, this)
-                                result.push(candidate)
-                            }
-                        }
-                    }
-                } else {
-                    result = []
-                }
+                accountLoc = accountParam
+            } else if (accountParam.length <= 20) {
+                accountLoc = byteToHex(paddedBytes(accountParam, 20))
             } else {
-                let accountLoc: string|null
-                if (accountParam instanceof EntityID) {
-                    accountLoc = accountParam.toString()
-                } else if (accountParam instanceof Uint8Array) {
-                    accountLoc = accountParam.length == 20 ? byteToHex(accountParam) : null
-                } else {
-                    accountLoc = accountParam
-                }
-                if (accountLoc !== null) {
-                    // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress
-                    const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountLoc)
-                    const accountInfo = r.data
-                    if (accountInfo.account !== null) {
-                        const description = "Account " + accountInfo.account
-                        const route = routeManager.makeRouteToAccount(accountInfo.account)
-                        const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo, this)
-                        result = [candidate]
-                    } else {
-                        result = []
-                    }
-                } else {
-                    result = []
-                }
+                // account alias in hex form
+                accountLoc = aliasToBase32(accountParam)
+            }
+        } else {
+            // account alias in base 32
+            accountLoc = accountParam
+        }
+
+        let accountInfos: AccountInfo[]
+        let drained: boolean
+        try {
+            if (accountLoc instanceof Uint8Array) {
+                // accountParam is a public key
+                // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
+                const publicKey = byteToHex(accountLoc)
+                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=10")
+                accountInfos = r.data.accounts ?? []
+                drained = (r.data.links?.next ?? null) == null
+            } else {
+                // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress
+                const r = await axios.get<AccountBalanceTransactions>("api/v1/accounts/" + accountLoc)
+                accountInfos = [r.data]
+                drained = true
             }
         } catch {
+            accountInfos = []
+            drained = true
+        }
+
+        let result: SearchCandidate<AccountInfo>[]
+        if (accountInfos.length == 1) {
+            const accountInfo = accountInfos[0]
+            if (accountInfo.account) {
+                const description = "Account " + accountInfo.account
+                const route = routeManager.makeRouteToAccount(accountInfo.account)
+                const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo, this)
+                result = [candidate]
+            } else {
+                result = []
+            }
+        } else if (accountInfos.length >= 2) {
+            if (drained) {
+                // We have all the accounts matching accountLoc (10 max) => we display them all
+                result = []
+                for (const a of accountInfos) {
+                    if (a.account !== null) {
+                        const description = "Account " + a.account
+                        const route = routeManager.makeRouteToAccount(a.account)
+                        const candidate = new SearchCandidate<AccountInfo>(description, null, route, a, this)
+                        result.push(candidate)
+                    }
+                }
+            } else {
+                // There's more than 10 accounts matcing accountLoc => we display a navigation link
+                const description = "All accounts with key " + accountLoc
+                const route = routeManager.makeRouteToAccountsWithKey(accountLoc.toString())
+                const accountInfo0 = accountInfos[0]
+                const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo0, this)
+                result = [candidate]
+            }
+        } else {
             result = []
         }
 
