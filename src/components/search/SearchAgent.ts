@@ -324,7 +324,7 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
             if (transactionParam instanceof TransactionID) {
                 if (transactions.length == 1) {
                     const description = "Transaction " + transactionParam.toString()
-                    const route = routeManager.makeRouteToTransaction(transaction0.transaction_id)
+                    const route = routeManager.makeRouteToTransaction(transaction0.consensus_timestamp)
                     const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                     result = [candidate]
                 } else {
