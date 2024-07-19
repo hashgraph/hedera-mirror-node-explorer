@@ -38,6 +38,57 @@ import {nameServiceProviders} from "@/utils/name_service/provider/AllProviders";
 
 export class SearchController {
 
+    /*
+
+    inputText syntax                      | Description      | Tentative searches
+    =====================================+==================+======================================================
+    shard.realm.num[-checksum]           | Entity ID        | api/v1/accounts/{shard.realm.num}
+                                         |                  | api/v1/contracts/{shard.realm.num}
+                                         |                  | api/v1/tokens/{shard.realm.num}
+                                         |                  | api/v1/topics/{shard.realm.num}
+                                         |                  | api/v1/topics/{shard.realm.num}/messages
+    -------------------------------------+------------------+------------------------------------------------------
+    integer[-checksum]                   | Incomplete       | api/v1/accounts/0.0.{integer}
+                                         | Entity ID        | api/v1/contracts/0.0.{integer}
+                                         |                  | api/v1/tokens/0.0.{integer}
+                                         |                  | api/v1/topics/0.0.{integer}
+                                         |                  | api/v1/topics/0.0.{integer}/messages
+    -------------------------------------+------------------+------------------------------------------------------
+    shard.realm.num@seconds.nanoseconds  | Transaction ID   | api/v1/transactions/normalize({inputText})
+    -------------------------------------+------------------+------------------------------------------------------
+    shard.realm.num@seconds              | Incomplete       | api/v1/transactions/normalize({inputText}.000000000)
+                                         | Transaction ID   |
+    -------------------------------------+------------------+------------------------------------------------------
+    shard.realm.num-seconds-nanoseconds  | Transaction ID   | api/v1/transactions/{inputText}
+                                         | (normalized)     |
+    -------------------------------------+------------------+------------------------------------------------------
+    hexadecimal 48 bytes                 | Hedera Hash      | api/v1/transactions/{inputText}
+                                         |                  | api/v1/blocks/{inputText}
+    -------------------------------------+------------------+------------------------------------------------------
+    hexadecimal 32 bytes                 | EVM Hash         | api/v1/contracts/results/{inputText}
+                                         |                  |  + api/v1/transactions/{result.timestamp}
+    -------------------------------------+------------------+------------------------------------------------------
+    hexadecimal 20 bytes                 | Ethereum Address | api/v1/accounts/{inputText}
+                                         |                  | api/v1/contracts/{inputText}
+                                         |                  | api/v1/token/ethereumToEntityID({inputText})
+    -------------------------------------+------------------+------------------------------------------------------
+    hexadecimal < 20 bytes               | Incomplete       | api/v1/accounts/padded({inputText})
+                                         | Ethereum Address | api/v1/contracts/padded({inputText})
+                                         |                  | api/v1/token/ethereumToEntityID(padded({inputText}))
+    -------------------------------------+------------------+------------------------------------------------------
+    hexadecimal 32/33 bytes              | Public Key       | api/v1/accounts/?account.publickey={inputText}
+    -------------------------------------+------------------+------------------------------------------------------
+    hexadecimal n bytes                  | Account Alias    | api/v1/accounts/base32({inputText})
+                                         | in hex form      |
+    -------------------------------------+------------------+------------------------------------------------------
+    base32                               | Account Alias    | api/v1/accounts/{inputText}
+    -------------------------------------+------------------+------------------------------------------------------
+    /\.[a-z|ℏ]+$/                        | Kabuto domain    | Kabuto API
+                                         | HNS domain       | HNS API
+    -------------------------------------+------------------+------------------------------------------------------
+
+     */
+
     private readonly inputChangeController: InputChangeController
     private readonly accountSearchAgent = new AccountSearchAgent()
     private readonly contractSearchAgent = new ContractSearchAgent()
