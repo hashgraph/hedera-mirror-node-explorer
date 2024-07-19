@@ -98,7 +98,6 @@ export abstract class SearchAgent<L, E> {
             }
         }
 
-        console.log(this.constructor.name + ".entityLocDidChange: this.candidates=" + this.candidates.value.length)
     }
 
     private isAbortError(reason: unknown): boolean {
