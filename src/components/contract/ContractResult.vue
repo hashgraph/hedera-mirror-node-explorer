@@ -95,19 +95,25 @@
         <Property id="maxFeePerGas">
           <template v-slot:name>Max Fee Per Gas</template>
           <template v-slot:value>
-            <PlainAmount :amount="maxFeePerGas" none-label="None"/>
+            <HbarAmount :amount="maxFeePerGas"/>
+            <span v-if="maxFeePerGas"
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
         <Property id="maxPriorityFeePerGas">
           <template v-slot:name>Max Priority Fee Per Gas</template>
           <template v-slot:value>
-            <PlainAmount :amount="maxPriorityFeePerGas" none-label="None"/>
+            <HbarAmount :amount="maxPriorityFeePerGas"/>
+            <span v-if="maxPriorityFeePerGas"
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxPriorityFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
         <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="gasPrice" :timestamp="contractResult?.timestamp" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice"/>
+            <span v-if="gasPrice"
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${gasPrice * 10} gWei` }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">
