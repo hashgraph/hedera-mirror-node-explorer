@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -188,9 +190,14 @@ describe('Search Bar', () => {
 
     it('should bring "No result" with unknown ID', () => {
         const unknownID = "42.42.42"
-        cy.visit('/testnet/dashboard')
-        cy.get('#mobile-search-icon').click()
-        testBody(unknownID, '/testnet/search-result/' + unknownID)
+        cy.get('[data-cy=searchBar]').within(() => {
+            cy.get('input').type(unknownID)
+        })
+        cy.get('[data-cy=searchCompleted]')
+        cy.get('[data-cy=searchBar]').submit()
+        cy.get('[data-cy=searchDropdown]').within(() => {
+            cy.contains("No match")
+        })
     })
 
 })
