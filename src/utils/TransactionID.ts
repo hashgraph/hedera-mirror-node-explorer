@@ -19,6 +19,8 @@
  */
 
 import {EntityID} from "./EntityID";
+import {AppStorage} from "@/AppStorage";
+import {computed, ref} from "vue";
 
 export class TransactionID {
 
@@ -98,15 +100,19 @@ export class TransactionID {
         return result
     }
 
-    public toString(useArobas = true): string {
-        const sep1 = useArobas ? "@" : "-"
-        const sep2 = useArobas ? "." : "-"
+    public toString(useAtForm = true): string {
+        const sep1 = useAtForm ? "@" : "-"
+        const sep2 = useAtForm ? "." : "-"
         return this.entityID.toString() + sep1 + this.seconds + sep2 + this.nanoSeconds.toString().padStart(9, '0')
     }
 
-    public static normalize(transactionID: string, useArobas = true): string {
+    public static normalizeForDisplay(transactionID: string): string {
+        return TransactionID.normalize(transactionID, TransactionID.useAtForm.value)
+    }
+
+    public static normalize(transactionID: string, useAtForm = false): string {
         const tid = TransactionID.parse(transactionID)
-        return tid != null ? tid.toString(useArobas) : transactionID
+        return tid != null ? tid.toString(useAtForm) : transactionID
     }
 
     public static makePayerID(transactionID: string): string | null {
@@ -114,9 +120,18 @@ export class TransactionID {
         return tid != null ? tid.entityID.toString() : null
     }
 
+    public static useAtForm = computed(() => TransactionID.useAtFormRef.value)
+
+    public static setUseAtForm(value: boolean): void {
+        TransactionID.useAtFormRef.value = value
+        AppStorage.setUseDashForm(!value)
+    }
+
     //
     // Private
     //
+
+    private static useAtFormRef = ref(!AppStorage.getUseDashForm())
 
     private constructor(entityID: EntityID, seconds: number, nanoSeconds: number) {
         this.entityID = entityID
@@ -125,9 +140,4 @@ export class TransactionID {
     }
 
 
-}
-
-export function normalizeTransactionId(value: string, useArobas = false): string {
-    const tid = TransactionID.parse(value)
-    return tid != null ? tid.toString(useArobas) : value
 }

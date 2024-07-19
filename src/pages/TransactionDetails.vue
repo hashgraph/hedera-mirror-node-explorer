@@ -30,24 +30,33 @@
       <template v-slot:title>
         <div class="is-flex is-align-items-center is-flex-wrap-wrap">
           <span class="h-is-primary-title mr-1">Transaction </span>
-          <span class="h-is-secondary-text mr-3">{{ formattedTransactionId ?? "" }}</span>
+          <div class="h-is-secondary-text mr-3">
+            <TransactionIdValue :id="formattedTransactionId"/>
+          </div>
           <div v-if="transaction" class="h-is-text-size-2 mt-1">
             <div v-if="transactionSucceeded" class="h-has-pill has-background-success">SUCCESS</div>
             <div v-else class="h-has-pill has-background-danger">FAILURE</div>
           </div>
         </div>
-        <span v-if="routeToAllTransactions && !isLargeScreen">
-          <router-link :to="routeToAllTransactions">
-            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
-          </router-link>
-        </span>
       </template>
 
       <template v-slot:control>
-        <router-link v-if="routeToAllTransactions && isLargeScreen" id="allTransactionsLink"
-                     :to="routeToAllTransactions">
-          <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
-        </router-link>
+        <o-select
+            data-cy="select-format"
+            v-model="txIdForm"
+            class="h-is-text-size-3 ml-3"
+        >
+          <option value="atForm">Default format</option>
+          <option value="dashForm">Exchange format</option>
+        </o-select>
+      </template>
+
+      <template v-slot:subtitle>
+        <div v-if="routeToAllTransactions">
+          <router-link :to="routeToAllTransactions" id="allTransactionsLink">
+            <span class="h-is-property-text has-text-grey">Show all transactions with the same ID</span>
+          </router-link>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -253,7 +262,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
@@ -281,6 +290,8 @@ import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer"
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import MirrorLink from "@/components/MirrorLink.vue";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
+import {TransactionID} from "@/utils/TransactionID";
+import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -289,6 +300,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    TransactionIdValue,
     TokenExtra,
     MirrorLink,
     TokenLink,
@@ -315,6 +327,9 @@ export default defineComponent({
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
+    const txIdForm = ref(TransactionID.useAtForm.value ? 'atForm' : 'dashForm')
+    watch(txIdForm, () => TransactionID.setUseAtForm(txIdForm.value === 'atForm'))
+
     const transactionLoc = computed(() => props.transactionLoc ?? null)
     const transactionLocParser = new TransactionLocParser(transactionLoc)
     onMounted(() => transactionLocParser.mount())
@@ -323,6 +338,9 @@ export default defineComponent({
     const transactionAnalyzer = new TransactionAnalyzer(transactionLocParser.transaction)
     onMounted(() => transactionAnalyzer.mount())
     onBeforeUnmount(() => transactionAnalyzer.unmount())
+
+    const atForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(true))
+    const dashForm = computed(() => TransactionID.parse(transactionLocParser.transactionId.value ?? '')?.toString(false))
 
     const transactionGroupLookup = TransactionGroupCache.instance.makeLookup(transactionLocParser.transactionId)
     onMounted(() => transactionGroupLookup.mount())
@@ -436,10 +454,13 @@ export default defineComponent({
       isMediumScreen,
       isLargeScreen,
       isTouchDevice,
+      txIdForm,
       showMaxFeeTooltip,
       transactionId: transactionLocParser.transactionId,
       transaction: transactionDetail,
       formattedTransactionId: transactionAnalyzer.formattedTransactionId,
+      atForm,
+      dashForm,
       netAmount: transactionAnalyzer.netAmount,
       entity: transactionAnalyzer.entityDescriptor,
       contractId: transactionAnalyzer.contractId,

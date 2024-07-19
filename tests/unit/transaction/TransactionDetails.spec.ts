@@ -20,7 +20,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import TransactionDetails from "@/pages/TransactionDetails.vue";
@@ -45,7 +45,8 @@ import {
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_FILE_UPDATE_TRANSACTION,
     SAMPLE_NETWORK_EXCHANGERATE,
-    SAMPLE_NETWORK_NODES, SAMPLE_NONFUNGIBLE,
+    SAMPLE_NETWORK_NODES,
+    SAMPLE_NONFUNGIBLE,
     SAMPLE_PARENT_CHILD_TRANSACTIONS,
     SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS,
     SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
@@ -59,7 +60,7 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import {HMSF} from "@/utils/HMSF";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
@@ -114,7 +115,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC
@@ -219,7 +220,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
         expect(wrapper.get("#durationValue").text()).toBe("None")
@@ -311,7 +312,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
 
@@ -367,7 +368,7 @@ describe("TransactionDetails.vue", () => {
 
         await flushPromises()
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#memoValue").text()).toBe("None")
 
@@ -397,7 +398,7 @@ describe("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:26.066680977Z Execute contract")
 
@@ -442,7 +443,7 @@ describe("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_FAILED_TRANSACTION.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(SAMPLE_FAILED_TRANSACTION.transaction_id)))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -511,7 +512,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
 
@@ -555,7 +556,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SCHEDULING.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(SCHEDULING.transaction_id)))
 
         const link = wrapper.get("#scheduledLink")
         expect(link.text()).toBe("Show scheduled transaction")
@@ -603,7 +604,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SCHEDULED.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(SCHEDULED.transaction_id)))
 
         const link = wrapper.get("#schedulingLink")
         expect(link.text()).toBe("Show schedule create transaction")
@@ -652,7 +653,7 @@ describe("TransactionDetails.vue", () => {
             // console.log(wrapper.html())
             // console.log(wrapper.text())
 
-            expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(CHILD.transaction_id, true)))
+            expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(CHILD.transaction_id)))
 
             const link = wrapper.get("#parentTransactionValue")
             expect(link.text()).toBe("CONTRACT CALL")
@@ -701,7 +702,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(PARENT.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(PARENT.transaction_id)))
 
         const children = wrapper.get("#childTransactionsValue")
         expect(children.text()).toBe("" +
@@ -757,7 +758,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(NONCE_1.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(NONCE_1.transaction_id)))
         expect(wrapper.find("#parentTransaction").exists()).toBe(false)
 
         wrapper.unmount()
@@ -811,7 +812,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("TOKEN ASSOCIATE")
         expect(wrapper.get("#consensusAtValue").text()).toBe("6:51:52.1505 PMDec 21, 2022, UTC") // UTC because of HMSF.forceUTC
@@ -874,7 +875,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("CONTRACT CALL"))
         expect(wrapper.get("#entityIdName").text()).toBe("Token ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
@@ -922,7 +923,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
         expect(wrapper.get("#entityIdName").text()).toBe("Account ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
@@ -968,7 +969,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
         expect(wrapper.get("#entityIdName").text()).toBe("Contract ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
@@ -1085,7 +1086,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transactionId, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
         expect(wrapper.get("#entityIdName").text()).toBe("Token ID")
         expect(wrapper.get("#entityIdValue").text()).toMatch(entityId)
@@ -1144,7 +1145,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(transaction.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(false)
@@ -1193,7 +1194,7 @@ describe("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Transaction " + normalizeTransactionId(SAMPLE_TRANSACTION.transaction_id, true)))
+        expect(wrapper.text()).toMatch(RegExp("^Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC

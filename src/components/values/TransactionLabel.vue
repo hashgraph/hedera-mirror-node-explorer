@@ -38,7 +38,7 @@
 <script lang="ts">
 
 import {computed, defineComponent} from "vue";
-import {normalizeTransactionId} from "@/utils/TransactionID";
+import {TransactionID} from "@/utils/TransactionID";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 
 export default defineComponent({
@@ -51,7 +51,7 @@ export default defineComponent({
 
   setup(props) {
     const transactionText = computed(() => {
-      return props.transactionId ? normalizeTransactionId(props.transactionId, true) : ""
+      return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : ""
     })
 
     const errorFlagVisible = computed(() => {

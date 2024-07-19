@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {normalizeTransactionId} from "../../../src/utils/TransactionID";
+import {makeExchangeFormat} from "../TestUtils";
 
 describe('Transaction Navigation', () => {
 
@@ -156,7 +156,7 @@ describe('Transaction Navigation', () => {
             })
     })
 
-    it('should follow link "Show all transations with same ID"', () => {
+    it('should follow link "Show all transactions with same ID"', () => {
         const timestamp = "1674505116.619586693"
         const transactionId = "0.0.995584@1674505107.270597663"
 
@@ -167,7 +167,7 @@ describe('Transaction Navigation', () => {
             .contains('Show all transactions with the same ID')
             .click()
 
-        cy.url().should('include', '/mainnet/transactionsById/' + normalizeTransactionId(transactionId))
+        cy.url().should('include', '/mainnet/transactionsById/' + makeExchangeFormat(transactionId))
         cy.contains('Transactions with ID ' + transactionId)
 
         cy.get('table')
@@ -180,6 +180,30 @@ describe('Transaction Navigation', () => {
 
         cy.url().should('include', '/mainnet/transaction/')
         cy.contains('Transaction ' + transactionId)
+    })
+
+    it('should switch format of transaction ID', () => {
+        const timestamp = "1674505116.619586693"
+        const transactionId = "0.0.995584@1674505107.270597663"
+
+        cy.visit('mainnet/transaction/' + timestamp)
+        cy.url().should('include', '/mainnet/transaction/' + timestamp)
+
+        cy.contains('Transaction ' + transactionId)
+
+        cy.get('[data-cy="select-format"]')
+            .select('dashForm')
+            .then(($type) => {
+                cy.wrap($type).should('have.value', 'dashForm')
+                cy.contains('Transaction ' + makeExchangeFormat(transactionId))
+            })
+
+        cy.get('[data-cy="select-format"]')
+            .select('atForm')
+            .then(($type) => {
+                cy.wrap($type).should('have.value', 'atForm')
+                cy.contains('Transaction ' + transactionId)
+            })
     })
 
     it('should handle ETHEREUMTRANSACTION type', () => {

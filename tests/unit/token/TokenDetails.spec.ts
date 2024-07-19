@@ -112,7 +112,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#evmAddress").text()).toMatch(
             RegExp("^EVM Address:0x0000000000000000000000000000000001c49eecCopy"))
 
-        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalize(SAMPLE_TRANSACTION.transaction_id))
+        expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.text()).toMatch("Balances")
         expect(wrapper.findComponent(TokenBalanceTable).exists()).toBe(true)

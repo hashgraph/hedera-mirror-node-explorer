@@ -204,7 +204,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
                 }
             }
             if (response) {
-                const transactionId = TransactionID.normalize(response.transactionId.toString(), false);
+                const transactionId = TransactionID.normalize(response.transactionId.toString());
                 result = Promise.resolve(transactionId)
             } else { // When user clicks on "Reject" button HashConnectSigner.call() returns undefined :(
                 throw new WalletDriverCancelError()

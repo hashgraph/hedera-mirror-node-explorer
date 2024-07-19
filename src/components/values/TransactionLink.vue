@@ -24,9 +24,11 @@
 
 <template>
 
-  <div v-if="formattedId && routeToTransaction">
+  <div v-if="formattedId && routeToTransaction" class="is-numeric should-wrap">
     <router-link :to="routeToTransaction">
-      <span class="is-numeric should-wrap">{{ formattedId }}</span>
+      <div>
+        <TransactionIdValue :id="formattedId"/>
+      </div>
     </router-link>
   </div>
 
@@ -51,9 +53,11 @@ import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";
 import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
+import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 
 export default defineComponent({
   name: "TransactionLink",
+  components: {TransactionIdValue},
 
   props: {
     transactionLoc: String as PropType<string | undefined>,
@@ -96,7 +100,7 @@ export default defineComponent({
     onMounted(() => updateNormalizedId())
 
     const formattedId = computed(() => {
-      return normalizedId.value !== null ? TransactionID.normalize(normalizedId.value) : null
+      return normalizedId.value !== null ? TransactionID.normalizeForDisplay(normalizedId.value) : null
     })
 
     const routeToTransaction = computed(() => {

@@ -229,7 +229,6 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import {normalizeTransactionId} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
@@ -241,6 +240,7 @@ import {
   waitForTransactionRefresh
 } from "@/schemas/HederaUtils";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
+import {TransactionID} from "@/utils/TransactionID";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
@@ -691,17 +691,17 @@ export default defineComponent({
 
           if (allowanceChoice.value === 'hbar') {
             if (selectedHbarAmount.value != null) {
-              tid = normalizeTransactionId(await walletManager.approveHbarAllowance(
+              tid = TransactionID.normalize(await walletManager.approveHbarAllowance(
                   normalizedSpender.value, parseFloat(selectedHbarAmount.value)))
             }
           } else if (allowanceChoice.value === 'token') {
             if (normalizedToken.value != null && rawTokenAmount.value != null) {
-              tid = normalizeTransactionId(await walletManager.approveTokenAllowance(
+              tid = TransactionID.normalize(await walletManager.approveTokenAllowance(
                   normalizedToken.value, normalizedSpender.value, rawTokenAmount.value))
             }
           } else { // 'nft'
             if (normalizedNFT.value != null) {
-              tid = normalizeTransactionId(await walletManager.approveNFTAllowance(
+              tid = TransactionID.normalize(await walletManager.approveNFTAllowance(
                   normalizedNFT.value, normalizedSpender.value, nftSerials.value))
             }
           }

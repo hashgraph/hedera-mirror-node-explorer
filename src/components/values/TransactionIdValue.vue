@@ -24,21 +24,9 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Transactions with ID </span>
-        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-      </template>
-      <template v-slot:content>
-        <TransactionByIdTable v-bind:transactions="transactions"/>
-      </template>
-    </DashboardCard>
-
-  </section>
-
-  <Footer/>
+  <div>
+    <span>{{ transactionId }}</span>
+  </div>
 
 </template>
 
@@ -48,50 +36,24 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
-import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
+import {defineComponent, PropType, ref, watch} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
-import Footer from "@/components/Footer.vue";
-import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 export default defineComponent({
-  name: 'TransactionsById',
-
+  name: "TransactionIdValue",
   props: {
-    network: String,
-    transactionId: String
+    id: {
+      type: String as PropType<string | null>,
+      default: null
+    }
   },
-
-  components: {
-    Footer,
-    DashboardCard,
-    TransactionByIdTable,
-  },
-
   setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const normalizedTransactionId = computed(() => {
-      return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : "?";
-    })
-
-    const paramTransactionId = computed(() => {
-      return props.transactionId ? TransactionID.normalize(props.transactionId) : null
-    })
-
-    const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)
-    onMounted(() => groupLookup.mount())
-    onBeforeUnmount(() => groupLookup.unmount())
-
-    const transactions = computed(() => groupLookup.entity.value ?? [])
-
+    const transactionId = ref(TransactionID.normalizeForDisplay(props.id ?? ''))
+    watch([() => props.id, TransactionID.useAtForm], () =>
+            transactionId.value = TransactionID.normalizeForDisplay(props.id ?? ''), {immediate: true}
+    )
     return {
-      isSmallScreen,
-      isTouchDevice,
-      transactions,
-      normalizedTransactionId
+      transactionId
     }
   }
 });
@@ -103,3 +65,4 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style/>
+

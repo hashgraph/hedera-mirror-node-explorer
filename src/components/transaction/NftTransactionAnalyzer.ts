@@ -18,14 +18,9 @@
  *
  */
 
-import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue"
-import {
-    NftTransactionTransfer,
-    TokenRelationship,
-    TransactionType,
-} from "@/schemas/HederaSchemas"
+import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
+import {NftTransactionTransfer, TokenRelationship, TransactionType,} from "@/schemas/HederaSchemas"
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
-import {normalizeTransactionId} from "@/utils/TransactionID"
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache"
 
 export class NftTransactionAnalyzer {
@@ -68,14 +63,6 @@ export class NftTransactionAnalyzer {
     public readonly entityId = computed(
         () => this.transaction.value?.sender_account_id ?? null,
     )
-
-    public readonly formattedTransactionId: ComputedRef<string | null> =
-        computed(() => {
-            const transaction_id = this.transaction.value?.transaction_id
-            return transaction_id
-                ? normalizeTransactionId(transaction_id, true)
-                : null
-        })
 
     public readonly isTokenAssociation = computed(
         () => this.transactionType.value === TransactionType.TOKENASSOCIATE,
