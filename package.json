@@ -33,7 +33,7 @@
     "@kabuto-sh/ns": "^0.14.2",
     "@metamask/providers": "^17.1.1",
     "@oruga-ui/oruga-next": "^0.7.0",
-    "@vuepic/vue-datepicker": "^8.8.1",
+    "@vuepic/vue-datepicker": "^9.0.0",
     "axios": "^1.7.2",
     "base32-decode": "^1.0.0",
     "base32-encode": "^2.0.0",
