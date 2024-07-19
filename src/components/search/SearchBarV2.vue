@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="!isMediumScreen">
+  <div v-if="!isMediumScreen" ref="root">
     <div class="is-flex is-flex-direction-column">
       <form data-cy="searchBar" class="control" action="" v-on:submit.prevent="handleSubmit">
         <input
@@ -38,7 +38,7 @@
     </div>
   </div>
 
-  <div v-else>
+  <div v-else ref="root">
     <div class="is-flex is-flex-direction-column">
       <form data-cy="searchBar" id="searchBar"
             class="control is-flex" action=""
@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, ref} from "vue";
+import {computed, inject, onBeforeUnmount, onMounted, ref} from "vue";
 import SearchDropdown from "@/components/search/SearchDropdown.vue";
 import {SearchController} from "@/components/search/SearchController";
 import router from "@/router";
@@ -89,6 +89,21 @@ const handleSubmit = (): void => {
 }
 
 const submitDisabled = computed(() => searchController.defaultCandidate.value === null)
+
+const root = ref<HTMLElement|null>(null)
+const isInside = (target: Node) => root.value !== null && root.value.contains(target)
+
+const onMouseDown = (ev: MouseEvent) => {
+  if (ev.target instanceof Node && !isInside(ev.target)) {
+    searchController.inputText.value = "" // Hides SearchDropdown
+  }
+}
+onMounted(() => {
+  document.addEventListener("mousedown", onMouseDown)
+})
+onBeforeUnmount(() => {
+  document.removeEventListener("mousedown", onMouseDown)
+})
 
 </script>
 
