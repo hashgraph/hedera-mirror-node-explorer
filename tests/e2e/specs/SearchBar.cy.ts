@@ -234,7 +234,13 @@ describe('Search Bar', () => {
     it('should bring "No result" with unknown ID', () => {
         const unknownID = "42.42.42"
         cy.visit('/testnet/dashboard')
-        testBody(unknownID, '/testnet/search-result/' + unknownID)
+        cy.get('[data-cy=searchBar]').within(() => {
+            cy.get('input').type(unknownID)
+        })
+        cy.get('[data-cy=searchCompleted]')
+        cy.get('[data-cy=searchDropdown]').within(() => {
+            cy.contains("No match")
+        })
     })
 
     it('should find the account ID with a submit button click', () => {

@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div style="position: relative" ref="root">
+  <div style="position: relative" ref="root" data-cy="searchDropdown">
     <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
       <template v-for="(c,i) in searchController.candidates.value" :key="c.description">
         <button class="button-as-link h-is-property-text"
