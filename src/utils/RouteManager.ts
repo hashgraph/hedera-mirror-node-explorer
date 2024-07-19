@@ -386,19 +386,13 @@ export class RouteManager {
     }
 
     //
-    // NoSearchResult
+    // SearchHelp
     //
 
-    public makeRouteToNoSearchResult(searchedId: string, errorCount: number): RouteLocationRaw {
+    public makeRouteToSearchHelp(): RouteLocationRaw {
         return {
-            name: 'NoSearchResult',
-            params: {searchedId: searchedId, network: this.currentNetwork.value},
-            query: {errorCount: errorCount}
+            name: 'SearchHelp'
         }
-    }
-
-    public routeToNoSearchResult(searchedId: string, errorCount: number): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToNoSearchResult(searchedId, errorCount))
     }
 
     //

@@ -41,6 +41,7 @@
       </template>
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey h-is-property-text">
         No match
+        <span class="icon fas fa-question-circle has-text-grey h-is-hoverable is-small mt-1 ml-1" style="cursor:pointer" @click="navigateToHelp"/>
       </div>
       <div v-if="!searchController.loading.value" data-cy="searchCompleted" style="display: none"/>
     </div>
@@ -56,7 +57,7 @@
 import {PropType} from "vue";
 import {SearchController} from "@/components/search/SearchController";
 import {SearchCandidate} from "@/components/search/SearchAgent";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 
 const props = defineProps({
   "searchController": {
@@ -69,6 +70,11 @@ const navigate = (c: SearchCandidate<unknown>) => {
   props.searchController.inputText.value = "" // Hides SearchDropDown
   c.agent.willNavigate(c)
   router.push(c.route)
+}
+
+const navigateToHelp = () => {
+  props.searchController.inputText.value = "" // Hides SearchDropDown
+  router.push(routeManager.makeRouteToSearchHelp())
 }
 
 </script>
