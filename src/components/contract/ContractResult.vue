@@ -92,7 +92,7 @@
             <PlainAmount :amount="contractResult?.gas_consumed" none-label="None"/>
           </template>
         </Property>
-        <Property id="maxFeePerGas">
+        <Property v-if="contractType==='Post-Eip1559'" id="maxFeePerGas">
           <template v-slot:name>Max Fee Per Gas</template>
           <template v-slot:value>
             <HbarAmount :amount="maxFeePerGas"/>
@@ -100,7 +100,7 @@
                   class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
-        <Property id="maxPriorityFeePerGas">
+        <Property v-if="contractType==='Post-Eip1559'" id="maxPriorityFeePerGas">
           <template v-slot:name>Max Priority Fee Per Gas</template>
           <template v-slot:value>
             <HbarAmount :amount="maxPriorityFeePerGas"/>
@@ -108,7 +108,7 @@
                   class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxPriorityFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
-        <Property id="gasPrice">
+        <Property v-if="contractType==='Pre-Eip1559'" id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
             <HbarAmount :amount="gasPrice"/>
