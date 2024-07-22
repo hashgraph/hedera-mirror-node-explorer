@@ -251,22 +251,25 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
     // SearchAgent
     //
 
-    protected async load(contractParam: EntityID | Uint8Array): Promise<SearchCandidate<TokenInfo>[]> {
+    protected async load(tokenParam: EntityID | Uint8Array): Promise<SearchCandidate<TokenInfo>[]> {
 
-        let contractLoc: string|null
-        if (contractParam instanceof EntityID) {
-            contractLoc = contractParam.toString()
-        } else if (contractParam.length == 20) {
-            contractLoc = byteToHex(contractParam)
+        let tokenLoc: string|null
+        if (tokenParam instanceof EntityID) {
+            tokenLoc = tokenParam.toString()
+        } else if (tokenParam.length <= 20) {
+            // accountParam is an evm address (possibly partial)
+            const evmAddress = byteToHex(paddedBytes(tokenParam, 20))
+            const entityID = EntityID.fromAddress(evmAddress)
+            tokenLoc = entityID !== null ? entityID.toString() : null
         } else {
-            contractLoc = null
+            tokenLoc = null
         }
 
         let tokenInfo: TokenInfo|null
-        if (contractLoc !== null) {
+        if (tokenLoc !== null) {
             try {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
-                const r = await axios.get<TokenInfo>("api/v1/tokens/" + contractLoc)
+                const r = await axios.get<TokenInfo>("api/v1/tokens/" + tokenLoc)
                 tokenInfo = r.data
             } catch {
                 tokenInfo = null
