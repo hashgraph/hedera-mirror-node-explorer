@@ -68,7 +68,7 @@
       </template>
 
       <template v-slot:rightContent>
-        <Property id="type">
+        <Property v-if="contractType" id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
             <StringValue :string-value="contractType"/>
@@ -79,7 +79,7 @@
           <template v-slot:value>
             <GasAmount
                 :gas="contractResult?.gas_limit"
-                :price="contractType==='Pre-Eip1559' ? gasPrice :  maxFeePerGas"
+                :price="displayedPrice"
             />
           </template>
         </Property>
@@ -88,7 +88,7 @@
           <template v-slot:value>
             <GasAmount
                 :gas="contractResult?.gas_used"
-                :price="contractType==='Pre-Eip1559' ? gasPrice :  maxFeePerGas"
+                :price="displayedPrice"
             />
           </template>
         </Property>
@@ -97,7 +97,7 @@
           <template v-slot:value>
             <GasAmount
                 :gas="contractResult?.gas_consumed"
-                :price="contractType==='Pre-Eip1559' ? gasPrice :  maxFeePerGas"
+                :price="displayedPrice"
             />
           </template>
         </Property>
@@ -219,11 +219,23 @@ export default defineComponent({
     onMounted(() => contractResultAnalyzer.mount())
     onBeforeUnmount(() => contractResultAnalyzer.unmount())
 
+    const displayedPrice = computed(() => {
+      let result: number | null
+      if (contractResultAnalyzer.contractType.value === 'Pre-Eip1559') {
+        result = contractResultAnalyzer.gasPrice.value
+      } else if (contractResultAnalyzer.contractType.value === 'Post-Eip1559') {
+        result = contractResultAnalyzer.maxFeePerGas.value
+      } else {
+        result = contractResultAnalyzer.maxFeePerGas.value ?? contractResultAnalyzer.gasPrice.value
+      }
+      return result
+    })
 
     return {
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      displayedPrice,
       fromId: contractResultAnalyzer.fromId,
       toId: contractResultAnalyzer.toId,
       gasPrice: contractResultAnalyzer.gasPrice,
