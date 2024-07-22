@@ -117,7 +117,7 @@
                   class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxPriorityFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
-        <Property v-if="contractType==='Pre-Eip1559'" id="gasPrice">
+        <Property v-if="contractType==='Pre-Eip1559' || contractType === null" id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
             <HbarAmount :amount="gasPrice"/>
@@ -226,7 +226,7 @@ export default defineComponent({
       } else if (contractResultAnalyzer.contractType.value === 'Post-Eip1559') {
         result = contractResultAnalyzer.maxFeePerGas.value
       } else {
-        result = contractResultAnalyzer.maxFeePerGas.value ?? contractResultAnalyzer.gasPrice.value
+        result = contractResultAnalyzer.gasPrice.value
       }
       return result
     })
