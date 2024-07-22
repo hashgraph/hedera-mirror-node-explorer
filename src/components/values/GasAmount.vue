@@ -24,7 +24,7 @@
 
 <template>
   <PlainAmount :amount="gas" none-label="None"/>
-  <span class="h-is-extra-text h-is-smaller ml-2">
+  <span v-if="amount" class="h-is-extra-text h-is-smaller ml-2">
     <HbarAmount :amount="amount"/>
   </span>
 </template>
