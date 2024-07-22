@@ -133,6 +133,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
                 accountLoc = accountParam
             } else if (accountParam.length <= 20) {
+                // accountParam is an evm address (possibly partial)
                 accountLoc = byteToHex(paddedBytes(accountParam, 20))
             } else {
                 // account alias in hex form
@@ -215,8 +216,9 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
         let contractLoc: string|null
         if (contractParam instanceof EntityID) {
             contractLoc = contractParam.toString()
-        } else if (contractParam.length == 20) {
-            contractLoc = byteToHex(contractParam)
+        } else if (contractParam.length <= 20) {
+            // contractParam is an evm address (possibly partial)
+            contractLoc = byteToHex(paddedBytes(contractParam, 20))
         } else {
             contractLoc = null
         }
