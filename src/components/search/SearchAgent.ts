@@ -366,25 +366,26 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
         let result: SearchCandidate<Transaction>[]
         if (transactions.length >= 1) {
             const transaction0 = transactions[0]
+            const displayTransactionID = TransactionID.normalizeForDisplay(transaction0.transaction_id)
             if (transactionParam instanceof TransactionID) {
                 if (transactions.length == 1) {
-                    const description = "Transaction " + transactionParam.toString()
+                    const description = "Transaction " + displayTransactionID
                     const route = routeManager.makeRouteToTransaction(transaction0.consensus_timestamp)
                     const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                     result = [candidate]
                 } else {
-                    const description = "All transactions with ID " + transactionParam.toString()
+                    const description = "All transactions with ID " + displayTransactionID
                     const route = routeManager.makeRouteToTransactionsById(transaction0.transaction_id)
                     const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                     result = [candidate]
                 }
             } else if (transactionParam instanceof Timestamp) {
-                const description = "Transaction " + transaction0.transaction_id
+                const description = "Transaction " + displayTransactionID
                 const route = routeManager.makeRouteToTransaction(transactionParam.toString())
                 const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                 result = [candidate]
             } else { // transactionParam instanceof Uint8Array
-                const description = "Transaction " + transaction0.transaction_id
+                const description = "Transaction " + displayTransactionID
                 const route = routeManager.makeRouteToTransaction(transaction0.consensus_timestamp)
                 const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                 result = [candidate]
