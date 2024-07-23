@@ -31,7 +31,7 @@
                 @click="navigate(c)" :disabled="c.nonExistent">
           {{ c.description }}
           <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
-          <span v-if="i == 0" style="float: right">&#x21b5;</span>
+          <span v-if="i == 0" style="float: right">&#x23ce;</span>
         </button>
       </template>
       <template v-for="a in searchController.domainNameSearchAgents" :key="a.constructor.name">
