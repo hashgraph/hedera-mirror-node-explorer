@@ -176,7 +176,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
             } else {
                 result = []
             }
-        } else if (accountInfos.length >= 2) {
+        } else if (accountInfos.length >= 2) { // => accountLoc instanceof Uint8Array
             if (drained) {
                 // We have all the accounts matching accountLoc (10 max) => we display them all
                 result = []
@@ -189,9 +189,10 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
                     }
                 }
             } else {
-                // There's more than 10 accounts matcing accountLoc => we display a navigation link
-                const description = "All accounts with key " + accountLoc
-                const route = routeManager.makeRouteToAccountsWithKey(accountLoc.toString())
+                // There's more than 10 accounts matching accountLoc => we display a navigation link
+                const description = "All accounts with public key above"
+                const key = byteToHex(accountLoc as Uint8Array)
+                const route = routeManager.makeRouteToAccountsWithKey(key)
                 const accountInfo0 = accountInfos[0]
                 const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo0, this)
                 result = [candidate]
