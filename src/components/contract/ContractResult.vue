@@ -68,7 +68,7 @@
       </template>
 
       <template v-slot:rightContent>
-        <Property id="type">
+        <Property v-if="contractType" id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
             <StringValue :string-value="contractType"/>
@@ -77,37 +77,52 @@
         <Property id="gasLimit">
           <template v-slot:name>Gas Limit</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_limit" none-label="None"/>
+            <GasAmount
+                :gas="contractResult?.gas_limit"
+                :price="displayedPrice"
+            />
           </template>
         </Property>
         <Property id="gasUsed">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_used" none-label="None"/>
+            <GasAmount
+                :gas="contractResult?.gas_used"
+                :price="displayedPrice"
+            />
           </template>
         </Property>
         <Property id="gasConsumed">
           <template v-slot:name>Gas Consumed</template>
           <template v-slot:value>
-            <PlainAmount :amount="contractResult?.gas_consumed" none-label="None"/>
+            <GasAmount
+                :gas="contractResult?.gas_consumed"
+                :price="displayedPrice"
+            />
           </template>
         </Property>
-        <Property id="maxFeePerGas">
+        <Property v-if="contractType==='Post-Eip1559'" id="maxFeePerGas">
           <template v-slot:name>Max Fee Per Gas</template>
           <template v-slot:value>
-            <PlainAmount :amount="maxFeePerGas" none-label="None"/>
+            <HbarAmount :amount="maxFeePerGas"/>
+            <span v-if="maxFeePerGas"
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
-        <Property id="maxPriorityFeePerGas">
+        <Property v-if="contractType==='Post-Eip1559'" id="maxPriorityFeePerGas">
           <template v-slot:name>Max Priority Fee Per Gas</template>
           <template v-slot:value>
-            <PlainAmount :amount="maxPriorityFeePerGas" none-label="None"/>
+            <HbarAmount :amount="maxPriorityFeePerGas"/>
+            <span v-if="maxPriorityFeePerGas"
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxPriorityFeePerGas * 10} gWei` }}</span>
           </template>
         </Property>
-        <Property id="gasPrice">
+        <Property v-if="contractType==='Pre-Eip1559' || contractType === null" id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
-            <HbarAmount :amount="gasPrice" :timestamp="contractResult?.timestamp" :show-extra="true"/>
+            <HbarAmount :amount="gasPrice"/>
+            <span v-if="gasPrice"
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${gasPrice * 10} gWei` }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">
@@ -152,12 +167,14 @@ import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import GasAmount from "@/components/values/GasAmount.vue";
 
 export default defineComponent({
 
   name: 'ContractResult',
 
   components: {
+    GasAmount,
     HexaValue,
     FunctionError,
     FunctionResult,
@@ -202,11 +219,23 @@ export default defineComponent({
     onMounted(() => contractResultAnalyzer.mount())
     onBeforeUnmount(() => contractResultAnalyzer.unmount())
 
+    const displayedPrice = computed(() => {
+      let result: number | null
+      if (contractResultAnalyzer.contractType.value === 'Pre-Eip1559') {
+        result = contractResultAnalyzer.gasPrice.value
+      } else if (contractResultAnalyzer.contractType.value === 'Post-Eip1559') {
+        result = contractResultAnalyzer.maxFeePerGas.value
+      } else {
+        result = contractResultAnalyzer.gasPrice.value
+      }
+      return result
+    })
 
     return {
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      displayedPrice,
       fromId: contractResultAnalyzer.fromId,
       toId: contractResultAnalyzer.toId,
       gasPrice: contractResultAnalyzer.gasPrice,

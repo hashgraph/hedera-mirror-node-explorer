@@ -139,10 +139,19 @@
                 </span>
           </template>
         </Property>
-        <Property id="operatorAccount">
-          <template v-slot:name>Payer Account</template>
+        <Property v-if="transactionType === TransactionType.ETHEREUMTRANSACTION" id="senderAccount">
+          <template v-slot:name>Sender Account</template>
           <template v-slot:value>
-            <AccountLink v-if="transaction" v-bind:accountId="makeOperatorAccountLabel(transaction)"
+            <AccountLink :accountId="senderAccount"
+                         v-bind:show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="operatorAccount">
+          <template v-slot:name>
+            {{ transactionType === TransactionType.ETHEREUMTRANSACTION ? 'Relay Account' : 'Payer Account' }}
+          </template>
+          <template v-slot:value>
+            <AccountLink v-if="transaction" v-bind:accountId="operatorAccount"
                          v-bind:show-extra="true"/>
           </template>
         </Property>
@@ -263,7 +272,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {getTargetedTokens, makeOperatorAccountLabel, makeTypeLabel} from "@/utils/TransactionTools";
+import {getTargetedTokens, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -469,6 +478,8 @@ export default defineComponent({
       formattedHash: transactionAnalyzer.formattedHash,
       transactionType: transactionAnalyzer.transactionType,
       transactionSucceeded: transactionAnalyzer.hasSucceeded,
+      senderAccount: transactionAnalyzer.senderAccount,
+      operatorAccount: transactionAnalyzer.operatorAccount,
       scheduledTransaction,
       schedulingTransaction,
       parentTransaction,
@@ -478,7 +489,6 @@ export default defineComponent({
       routeName,
       routeManager,
       makeTypeLabel,
-      makeOperatorAccountLabel,
       routeToAllTransactions,
       displayAllChildrenLinks,
       displayTransfers,
@@ -487,7 +497,8 @@ export default defineComponent({
       isTokenAssociation: transactionAnalyzer.isTokenAssociation,
       associatedTokens: transactionAnalyzer.tokens,
       getTargetedTokens,
-      MAX_INLINE_CHILDREN
+      MAX_INLINE_CHILDREN,
+      TransactionType
     }
   },
 })

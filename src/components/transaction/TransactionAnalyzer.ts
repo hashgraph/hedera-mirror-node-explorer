@@ -21,18 +21,21 @@
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {TokenRelationship, Transaction, TransactionType} from "@/schemas/HederaSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor";
-import {computeNetAmount, isSuccessfulResult} from "@/utils/TransactionTools";
+import {computeNetAmount, isSuccessfulResult, makeOperatorAccountLabel} from "@/utils/TransactionTools";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {TransactionID} from "@/utils/TransactionID";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {BlockByTsCache} from "@/utils/cache/BlockByTsCache";
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
+import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
+import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 
 export class TransactionAnalyzer {
 
     public readonly transaction: Ref<Transaction | null>
     public readonly contractId: Ref<string | null> = ref(null)
+    public readonly senderAccount: Ref<string | null> = ref(null)
     public readonly blockNumber: Ref<number | null> = ref(null)
     public readonly entityDescriptor = ref(EntityDescriptor.DEFAULT_ENTITY_DESCRIPTOR)
     public readonly tokenRelationships: Ref<TokenRelationship[]> = ref([])
@@ -73,6 +76,10 @@ export class TransactionAnalyzer {
         () => this.transaction.value !== null
             ? computeNetAmount(this.transaction.value?.transfers, this.transaction.value?.charged_tx_fee)
             : 0)
+
+    public readonly operatorAccount: ComputedRef<string | null> = computed(() =>
+        this.transaction.value ? makeOperatorAccountLabel(this.transaction.value) : null
+    )
 
     public readonly maxFee: ComputedRef<number> = computed(() => {
         const result = this.transaction.value?.max_fee ? Number.parseFloat(this.transaction.value?.max_fee) : 0
@@ -134,6 +141,9 @@ export class TransactionAnalyzer {
                     case TransactionType.ETHEREUMTRANSACTION: {
                         const contract = await ContractByIdCache.instance.lookup(entityId)
                         this.contractId.value = contract ? entityId : null
+                        const result = await ContractResultByTransactionIdCache.instance.lookup(this.transaction.value?.transaction_id)
+                        const account = await AccountByAddressCache.instance.lookup(result?.from ?? '')
+                        this.senderAccount.value = account?.account ?? null
                         break
                     }
                     case TransactionType.CONTRACTCREATEINSTANCE:
