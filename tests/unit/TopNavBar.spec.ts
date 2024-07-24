@@ -21,7 +21,7 @@
 import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import SearchBar from "@/components/SearchBar.vue";
+import SearchBarV2 from "../../src/components/search/SearchBarV2.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
@@ -95,7 +95,7 @@ describe("TopNavBar.vue", () => {
         expect(links[16].text()).toBe("Staking")
         expect(links[17].text()).toBe("Blocks")
 
-        expect(wrapper.findComponent(SearchBar).exists()).toBe(true)
+        expect(wrapper.findComponent(SearchBarV2).exists()).toBe(true)
 
         const logos = wrapper.findAll("img")
         expect(logos.length).toBe(9)

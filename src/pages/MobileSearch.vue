@@ -31,7 +31,7 @@
       <span class="ml-4">Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp</span>
     </div>
 
-    <SearchBar/>
+    <SearchBarV2/>
 
   </section>
 
@@ -49,12 +49,12 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watc
 import {useRoute} from "vue-router";
 import router from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/App.vue";
-import SearchBar from "@/components/SearchBar.vue";
+import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import Footer from "@/components/Footer.vue";
 
 export default defineComponent({
   name: 'MobileSearch',
-  components: {Footer, SearchBar},
+  components: {Footer, SearchBarV2},
   props: {
     "searchedId": String,
     "network": String

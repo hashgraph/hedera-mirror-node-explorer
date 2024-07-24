@@ -234,7 +234,13 @@ describe('Search Bar', () => {
     it('should bring "No result" with unknown ID', () => {
         const unknownID = "42.42.42"
         cy.visit('/testnet/dashboard')
-        testBody(unknownID, '/testnet/search-result/' + unknownID)
+        cy.get('[data-cy=searchBar]').within(() => {
+            cy.get('input').type(unknownID)
+        })
+        cy.get('[data-cy=searchCompleted]')
+        cy.get('[data-cy=searchDropdown]').within(() => {
+            cy.contains("No match")
+        })
     })
 
     it('should find the account ID with a submit button click', () => {
@@ -266,7 +272,9 @@ const testBody = (searchID: string,
         } else {
             cy.get('input').type(searchID)
         }
-    }).submit()
+    })
+    cy.get('[data-cy=searchCompleted]')
+    cy.get('[data-cy=searchBar]').submit()
 
     cy.url({timeout: 5000}).should('include', expectedPath)
     cy.contains(expectedTitle ? (expectedTitle + searchID) : 'No result')
@@ -291,6 +299,7 @@ const clickTestBody = (searchID: string,
         }
     })
 
+    cy.get('[data-cy=searchCompleted]')
     cy.get('form > button').click()
 
     cy.url({timeout: 5000}).should('include', expectedPath)

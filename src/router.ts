@@ -31,7 +31,7 @@ import Contracts from "@/pages/Contracts.vue";
 import ContractDetails from "@/pages/ContractDetails.vue";
 import Topics from "@/pages/Topics.vue";
 import TopicDetails from "@/pages/TopicDetails.vue";
-import NoSearchResult from "@/pages/NoSearchResult.vue";
+import SearchHelp from "@/pages/SearchHelp.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
 import AccountBalances from "@/pages/AccountBalances.vue";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
@@ -224,14 +224,10 @@ const routes: Array<RouteRecordRaw> = [
         props: true
     },
     {
-        path: '/:network/search-result/:searchedId',
-        name: 'NoSearchResult',
-        component: NoSearchResult,
-        props: route => ({
-            network: route.params.network as string | undefined,
-            searchedId: route.params.searchedId as string | undefined,
-            errorCount: Number(route.query.errorCount) as number | undefined
-        })
+        path: '/:network/search-help',
+        name: 'SearchHelp',
+        component: SearchHelp,
+        props: true
     },
     {
         path: '/:network/mobile-menu',
@@ -311,7 +307,7 @@ router.beforeEach((to) => {
         case "BlockDetails":
             document.title = "Hedera Block " + to.params.blockHon + titleSuffix
             break;
-        case "NoSearchResult":
+        case "SearchHelp":
             document.title = "Search Results" + titleSuffix
             break;
         case "PageNotFound":
