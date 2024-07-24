@@ -48,7 +48,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Public
     //
 
-    public readonly pageSize: Ref<number>
+    public pageSize: Ref<number>
 
     public readonly currentPage: Ref<number> = ref(1)
 
