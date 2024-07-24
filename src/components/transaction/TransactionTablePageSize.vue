@@ -41,7 +41,7 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from "vue";
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
+import {TableController} from "@/utils/table/TableController";
 
 
 export default defineComponent({
@@ -49,7 +49,7 @@ export default defineComponent({
 
   props: {
     controller: {
-      type: Object as PropType<TransactionTableControllerXL>,
+      type: Object as PropType<TableController<any, any>>,
       required: true
     }
   },
