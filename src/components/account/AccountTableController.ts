@@ -33,7 +33,14 @@ export class AccountTableController extends TableController<AccountInfo, string>
     //
 
     public constructor(router: Router, pageSize: ComputedRef<number>, pubKey: string | null = null) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100)
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            TableController.SLOW_REFRESH_PERIOD,
+            AccountTableController.SLOW_REFRESH_COUNT,
+            100
+        )
         this.pubKey = pubKey
     }
 

@@ -18,15 +18,8 @@
  *
  */
 
-import {
-    KeyOperator,
-    SortOrder,
-    TableController,
-} from "@/utils/table/TableController"
-import {
-    NftTransactionTransfer,
-    NftTransactionHistory,
-} from "@/schemas/HederaSchemas"
+import {KeyOperator, SortOrder, TableController,} from "@/utils/table/TableController"
+import {NftTransactionHistory, NftTransactionTransfer,} from "@/schemas/HederaSchemas"
 import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue"
 import axios from "axios"
 import {LocationQuery, Router} from "vue-router"
@@ -55,8 +48,8 @@ export class NftTransactionTableController extends TableController<
             router,
             pageSize,
             10 * pageSize.value,
-            5000,
-            10,
+            TableController.SLOW_REFRESH_PERIOD,
+            TableController.SLOW_REFRESH_COUNT,
             100,
             pageParamName,
             keyParamName,

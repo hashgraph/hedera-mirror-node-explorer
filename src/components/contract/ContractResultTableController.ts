@@ -36,8 +36,16 @@ export class ContractResultTableController extends TableController<ContractResul
                        contractId: Ref<string | null>,
                        pageSize: ComputedRef<number>,
                        pageParamName = "p", keyParamName = "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
-            pageParamName, keyParamName);
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            TableController.SLOW_REFRESH_PERIOD,
+            TableController.SLOW_REFRESH_COUNT,
+            100,
+            pageParamName,
+            keyParamName
+        );
         this.contractId = contractId
         this.watchAndReload([this.contractId])
     }
