@@ -41,8 +41,16 @@ export class TransactionTableController extends TableController<Transaction, str
                        pageParamName = "p",
                        keyParamName = "k",
                        accountId: Ref<string | null> = ref(null)) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
-            pageParamName, keyParamName);
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            TableController.FAST_REFRESH_PERIOD,
+            TableController.FAST_REFRESH_COUNT,
+            100,
+            pageParamName,
+            keyParamName
+        );
         this.transactionType = transactionType
         this.transactionResult = transactionResult
         this.accountId = accountId

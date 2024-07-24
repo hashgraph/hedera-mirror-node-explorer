@@ -31,7 +31,14 @@ export class BlockTableController extends TableController<Block, number> {
     //
 
     public constructor(router: Router, pageSize: ComputedRef<number>) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            TableController.FAST_REFRESH_PERIOD,
+            TableController.FAST_REFRESH_COUNT,
+            100
+        );
     }
 
     //
