@@ -305,6 +305,11 @@ export class RouteManager {
         return result
     }
 
+    public makeRouteToMatchingTokens(tokenName: string): RouteLocationRaw {
+        // To be implemented
+        return this.makeRouteToMainDashboard()
+    }
+
     //
     // Contract
     //

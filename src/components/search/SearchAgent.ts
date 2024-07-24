@@ -27,7 +27,9 @@ import {
     Block,
     ContractResponse,
     ContractResultDetails,
+    Token,
     TokenInfo,
+    TokensResponse,
     Topic,
     Transaction,
     TransactionByIdResponse,
@@ -478,6 +480,52 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
             }
         } catch {
             result = []
+        }
+
+        return Promise.resolve(result)
+    }
+
+}
+
+export class TokenNameSearchAgent extends SearchAgent<string, Token> {
+
+    //
+    // SearchAgent
+    //
+
+    protected async load(tokenName: string): Promise<SearchCandidate<Token>[]> {
+
+
+        let tokens: Token[]
+        let drained: boolean
+        try {
+            // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
+            const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=10")
+            tokens = r.data.tokens ?? []
+            drained = (r.data.links?.next ?? null) === null
+        } catch {
+            tokens = []
+            drained = true
+        }
+
+        const result: SearchCandidate<Token>[] = []
+        if (tokens.length >= 1) {
+            for (const t of tokens) {
+                if (t.token_id !== null) {
+                    const description = "Token " + t.token_id
+                    const extra = " (named '" + t.name + "')"
+                    const route = routeManager.makeRouteToToken(t.token_id)
+                    const candidate = new SearchCandidate<Token>(description, extra, route, t, this)
+                    result.push(candidate)
+                }
+            }
+            // Not needed since no api/v1/tokens/?name does not support pagination
+            // if (!drained) {
+            //     const description = "Show all tokens matching '" + tokenName + "'"
+            //     const route = routeManager.makeRouteToMatchingTokens(tokenName)
+            //     const candidate = new SearchCandidate<Token>(description, null, route, tokens[0], this)
+            //     result.push(candidate)
+            // }
         }
 
         return Promise.resolve(result)
