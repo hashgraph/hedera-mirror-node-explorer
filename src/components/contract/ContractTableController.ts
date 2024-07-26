@@ -31,7 +31,14 @@ export class ContractTableController extends TableController<Contract, string> {
     //
 
     public constructor(router: Router, pageSize: ComputedRef<number>) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100);
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            TableController.SLOW_REFRESH_PERIOD,
+            TableController.SLOW_REFRESH_COUNT,
+            100
+        );
     }
 
     //

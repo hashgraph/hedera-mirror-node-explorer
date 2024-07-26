@@ -40,8 +40,16 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                        pageSize: Ref<number>,
                        accountIdMandatory: boolean,
                        pageParamName = "p", keyParamName = "k") {
-        super(router, pageSize, 10 * pageSize.value, 5000, 10, 100,
-            pageParamName, keyParamName);
+        super(
+            router,
+            pageSize,
+            10 * pageSize.value,
+            TableController.FAST_REFRESH_PERIOD,
+            TableController.FAST_REFRESH_COUNT,
+            100,
+            pageParamName,
+            keyParamName
+        );
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
         this.watchAndReload([this.transactionType, this.accountId, this.pageSize])

@@ -27,6 +27,12 @@ import {PlayPauseController} from "@/components/PlayPauseButton.vue";
 
 export abstract class TableController<R, K> implements PlayPauseController {
 
+    public static readonly SLOW_REFRESH_PERIOD = 60000 // 1 min
+    public static readonly SLOW_REFRESH_COUNT = 10 //
+
+    public static readonly FAST_REFRESH_PERIOD = 5000 // 5 sec
+    public static readonly FAST_REFRESH_COUNT = 25
+
     public readonly router: Router
     public readonly presumedRowCount: number
     public readonly updatePeriod: number
