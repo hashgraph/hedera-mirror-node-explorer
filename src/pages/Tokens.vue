@@ -74,7 +74,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -108,7 +108,7 @@ export default defineComponent({
     //
     // NFT and TOKEN TableController
     //
-    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const perPage = ref(isMediumScreen ? 15 : 10)
     const nftTableController = new TokenTableController(useRouter(), perPage, ref(NONFUNGIBLE), "p1", "k1")
     const tokenTableController = new TokenTableController(useRouter(), perPage, ref(FUNGIBLE), "p2", "k2")
     onMounted(() => {

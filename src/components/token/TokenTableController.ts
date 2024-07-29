@@ -19,7 +19,7 @@
  */
 
 import {Token, TokensResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
@@ -32,7 +32,7 @@ export class TokenTableController extends TableController<Token, string> {
     // Public
     //
 
-    public constructor(router: Router, pageSize: ComputedRef<number>, tokenType: Ref<string | null>,
+    public constructor(router: Router, pageSize: Ref<number>, tokenType: Ref<string | null>,
                        pageParamName: string, keyParamName: string) {
         super(
             router,
@@ -45,7 +45,7 @@ export class TokenTableController extends TableController<Token, string> {
             keyParamName
         );
         this.tokenType = tokenType
-        this.watchAndReload([this.tokenType])
+        this.watchAndReload([this.tokenType, this.pageSize])
     }
 
     //
