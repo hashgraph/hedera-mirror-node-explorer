@@ -73,7 +73,14 @@
       </span>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TransactionTablePageSize :controller="controller"/>
+    </template>
+
   </o-table>
+
+  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+                            style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="!nfts.length"/>
 
@@ -94,11 +101,12 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
+import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
 
 export default defineComponent({
   name: 'NftAllowanceTable',
 
-  components: {TokenLink, AccountLink, EmptyTable, TimestampValue},
+  components: {TransactionTablePageSize, TokenLink, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["deleteAllowance"],
 
@@ -131,7 +139,8 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as Ref<boolean>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }
