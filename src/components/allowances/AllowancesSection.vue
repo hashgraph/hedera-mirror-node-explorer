@@ -206,7 +206,7 @@ export default defineComponent({
       value ? nftAllSerialsAllowanceTableController.refresh() : nftAllowanceTableController.refresh()
     })
 
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const perPage = ref(isMediumScreen ? 10 : 5)
 
     const currentHbarAllowance = ref<CryptoAllowance | null>(null)
     const currentTokenAllowance = ref<TokenAllowance | null>(null)

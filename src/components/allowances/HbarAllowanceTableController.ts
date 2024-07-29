@@ -19,11 +19,8 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {
-    CryptoAllowance,
-    CryptoAllowancesResponse
-} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
+import {CryptoAllowance, CryptoAllowancesResponse} from "@/schemas/HederaSchemas";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
@@ -37,12 +34,12 @@ export class HbarAllowanceTableController extends TableController<CryptoAllowanc
 
     public constructor(router: Router,
                        accountId: Ref<string | null>,
-                       pageSize: ComputedRef<number>,
+                       pageSize: Ref<number>,
                        pageParamName = "p", keyParamName = "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
             pageParamName, keyParamName);
         this.accountId = accountId
-        this.watchAndReload([this.accountId])
+        this.watchAndReload([this.accountId, this.pageSize])
     }
 
     //
