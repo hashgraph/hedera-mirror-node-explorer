@@ -27,7 +27,7 @@
   <o-table
       :data="accounts"
       :loading="loading"
-      paginated
+      :paginated="paginated"
       backend-pagination
       pagination-order="left"
       :range-before="0"
@@ -83,7 +83,13 @@
       <HbarAmount v-bind:amount="props.row.balance.balance ?? 0"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TransactionTablePageSize :controller="controller"/>
+    </template>
   </o-table>
+
+  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+                            style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="!accounts.length"/>
 
@@ -106,11 +112,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
 import AccountIOL from "@/components/values/link/AccountIOL.vue";
+import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
 
 export default defineComponent({
   name: 'AccountTable',
 
-  components: {AccountIOL, EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
+  components: {TransactionTablePageSize, AccountIOL, EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
 
   props: {
     controller: {
@@ -142,6 +149,8 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT,
     }
