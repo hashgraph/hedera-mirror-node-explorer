@@ -99,7 +99,7 @@ export default defineComponent({
     //
     // ContractTableController
     //
-    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const perPage = ref(isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
     const verifiedContractsController =
         new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(),)
