@@ -67,6 +67,9 @@
       </div>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TransactionTablePageSize :controller="controller"/>
+    </template>
   </o-table>
 
   <EmptyTable v-if="!contracts.length"/>
@@ -89,6 +92,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import ContractName from "@/components/values/ContractName.vue";
 import ContractIOL from "@/components/values/link/ContractIOL.vue";
+import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
 
 
 //
@@ -98,7 +102,7 @@ import ContractIOL from "@/components/values/link/ContractIOL.vue";
 export default defineComponent({
   name: 'ContractTable',
 
-  components: {ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
+  components: {TransactionTablePageSize, ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {
