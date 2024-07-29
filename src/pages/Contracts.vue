@@ -63,7 +63,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
+import {defineComponent, inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -102,7 +102,7 @@ export default defineComponent({
     const perPage = ref(isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
     const verifiedContractsController =
-        new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(),)
+        new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(), perPage)
 
     return {
       isSmallScreen,

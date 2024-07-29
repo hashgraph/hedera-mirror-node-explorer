@@ -42,6 +42,7 @@
 
 import {defineComponent, PropType} from "vue";
 import {TableController} from "@/utils/table/TableController";
+import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 
 
 export default defineComponent({
@@ -49,7 +50,7 @@ export default defineComponent({
 
   props: {
     controller: {
-      type: Object as PropType<TableController<any, any>>,
+      type: Object as PropType<TableController<any, any> | VerifiedContractsController>,
       required: true
     }
   },
