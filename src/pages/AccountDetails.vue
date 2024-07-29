@@ -496,8 +496,7 @@ export default defineComponent({
         router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)
 
     const verifiedContractsController = new VerifiedContractsController(
-        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId)
-    )
+        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId), perPage)
 
     const rewardsTableController = new StakingRewardsTableController(
         router, accountLocParser.accountId, perPage, "p2", "k2")
