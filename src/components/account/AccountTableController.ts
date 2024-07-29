@@ -19,7 +19,7 @@
  */
 
 import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef} from "vue";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
@@ -32,7 +32,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
     // Public
     //
 
-    public constructor(router: Router, pageSize: ComputedRef<number>, pubKey: string | null = null) {
+    public constructor(router: Router, pageSize: Ref<number>, pubKey: string | null = null) {
         super(
             router,
             pageSize,
@@ -42,6 +42,7 @@ export class AccountTableController extends TableController<AccountInfo, string>
             100
         )
         this.pubKey = pubKey
+        this.watchAndReload([this.pageSize])
     }
 
     //

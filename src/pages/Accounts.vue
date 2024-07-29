@@ -50,7 +50,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import AccountTable from "@/components/account/AccountTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -80,7 +80,7 @@ export default defineComponent({
     //
     // AccountTableController
     //
-    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const perPage = ref(isMediumScreen ? 15 : 10)
     const accountTableController = new AccountTableController(useRouter(), perPage)
     onMounted(() => accountTableController.mount())
     onBeforeUnmount(() => accountTableController.unmount())
