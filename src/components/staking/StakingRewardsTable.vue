@@ -58,7 +58,13 @@
       <HbarAmount v-bind:amount="props.row.amount"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TransactionTablePageSize :controller="controller"/>
+    </template>
   </o-table>
+
+  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+                            style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="!rewards.length"/>
 
@@ -79,11 +85,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
+import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
 
 export default defineComponent({
   name: 'StakingRewardsTable',
 
-  components: {HbarAmount, EmptyTable, TimestampValue},
+  components: {TransactionTablePageSize, HbarAmount, EmptyTable, TimestampValue},
 
   props: {
     narrowed: Boolean,
@@ -115,7 +122,8 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as Ref<boolean>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       accountId: props.controller.accountId as Ref<string>,
       handleClick,
 

@@ -38,7 +38,7 @@ export class StakingRewardsTableController extends TableController<StakingReward
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
             pageParamName, keyParamName);
         this.accountId = accountId
-        this.watchAndReload([this.accountId])
+        this.watchAndReload([this.accountId, this.pageSize])
         watch(this.accountId, this.updateAvailableAPI)
     }
 

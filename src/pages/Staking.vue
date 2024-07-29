@@ -484,7 +484,7 @@ export default defineComponent({
     //
     // Rewards Transactions Table Controller
     //
-    const pageSize = computed(() => isMediumScreen ? 10 : 5)
+    const pageSize = ref(isMediumScreen ? 10 : 5)
     const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
