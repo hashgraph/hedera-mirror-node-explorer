@@ -47,7 +47,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, watch} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -75,7 +75,7 @@ export default defineComponent({
 
 
     const router = useRouter()
-    const pageSize = computed(() => isMediumScreen ? 15 : 5)
+    const pageSize = ref(isMediumScreen ? 15 : 5)
     const transactionTableController = new TransactionTableController(
         router, pageSize, TransactionType.CONSENSUSCREATETOPIC, TransactionResult.SUCCESS)
     onMounted(() => transactionTableController.mount())

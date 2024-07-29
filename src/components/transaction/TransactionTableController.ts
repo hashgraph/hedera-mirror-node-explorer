@@ -54,7 +54,7 @@ export class TransactionTableController extends TableController<Transaction, str
         this.transactionType = transactionType
         this.transactionResult = transactionResult
         this.accountId = accountId
-        this.watchAndReload([this.accountId])
+        this.watchAndReload([this.accountId, this.pageSize])
     }
 
     //
