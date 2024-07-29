@@ -20,7 +20,7 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {TokenAllowance, TokenAllowancesResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
@@ -32,10 +32,10 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
 
     public readonly accountId: Ref<string | null>
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>, pageParamName = "p", keyParamName = "k") {
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>, pageParamName = "p", keyParamName = "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100, pageParamName, keyParamName);
         this.accountId = accountId
-        this.watchAndReload([this.accountId])
+        this.watchAndReload([this.accountId, this.pageSize])
     }
 
     //
