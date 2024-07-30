@@ -23,7 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-select v-model="perPage" class="h-is-text-size-2">
+  <o-select
+      v-model="perPage"
+      class="h-is-text-size-2"
+      data-cy="select-page-size"
+  >
     <!--        Use "as number" to avoid warning as o-select does not allow to force type-->
     <option :value="5 as number">5 per page</option>
     <option :value="10 as number">10 per page</option>

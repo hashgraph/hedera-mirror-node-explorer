@@ -268,4 +268,36 @@ describe('Transaction Navigation', () => {
             .find('span')
             .contains('Transaction with timestamp ' + unknownTimestamp + ' was not found')
     })
+
+    it('should change the table page size', () => {
+
+        cy.visit('testnet/transactions/')
+        cy.url().should('include', '/testnet/transactions')
+
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length', 15)
+
+        cy.get('[data-cy="select-page-size"]')
+            .select('5')
+            .then(($type) => {
+                cy.wrap($type).should('have.value', '5')
+            })
+
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length', 5)
+
+        cy.get('[data-cy="select-page-size"]')
+            .select('50')
+            .then(($type) => {
+                cy.wrap($type).should('have.value', '50')
+            })
+
+        cy.get('table')
+            .find('tbody tr')
+            .should('have.length', 50)
+
+    })
+
 })
