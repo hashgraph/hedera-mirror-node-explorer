@@ -73,12 +73,12 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller"/>
+      <TablePageSize :controller="controller"/>
     </template>
 
   </o-table>
 
-  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+  <TablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
                             style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="!allowances.length"/>
@@ -103,7 +103,7 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 interface DisplayedTokenAllowance extends TokenAllowance {
   isEditable: boolean
@@ -112,7 +112,7 @@ interface DisplayedTokenAllowance extends TokenAllowance {
 export default defineComponent({
   name: 'TokenAllowanceTable',
 
-  components: {TransactionTablePageSize, InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TablePageSize, InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["editAllowance"],
 

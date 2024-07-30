@@ -66,11 +66,11 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller"/>
+      <TablePageSize :controller="controller"/>
     </template>
   </o-table>
 
-  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+  <TablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
                             style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="!allowances.length"/>
@@ -92,12 +92,12 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {walletManager} from "@/router";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'HbarAllowanceTable',
 
-  components: {TransactionTablePageSize, HbarAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TablePageSize, HbarAmount, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["editAllowance"],
 

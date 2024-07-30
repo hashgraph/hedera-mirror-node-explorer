@@ -88,7 +88,7 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller"/>
+      <TablePageSize :controller="controller"/>
     </template>
   </o-table>
 
@@ -110,12 +110,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'BlockTable',
 
-  components: {TransactionTablePageSize, PlainAmount, TimestampValue, EmptyTable},
+  components: {TablePageSize, PlainAmount, TimestampValue, EmptyTable},
 
   props: {
     narrowed: Boolean,

@@ -66,7 +66,7 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller"/>
+      <TablePageSize :controller="controller"/>
     </template>
   </o-table>
 
@@ -87,12 +87,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'TokenTable',
 
-  components: {TransactionTablePageSize, TokenIOL, EmptyTable},
+  components: {TablePageSize, TokenIOL, EmptyTable},
 
   props: {
     controller: {
