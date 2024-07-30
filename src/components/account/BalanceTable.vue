@@ -27,14 +27,14 @@
   <o-table
       :data="relationships"
       :loading="loading"
-      :paginated="!isTouchDevice"
+      :paginated="paginated"
       backend-pagination
       pagination-order="left"
       :range-before="0"
       :range-after="0"
       :total="totalRowCount"
       :current-page="currentPage"
-      :per-page="pageSize"
+      :per-page="perPage"
       @page-change="onPageChange"
       @cellClick="handleClick"
 
@@ -94,7 +94,17 @@
       />
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize v-model:size="perPage"/>
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!relationships.length"/>
 
@@ -114,11 +124,13 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'BalanceTable',
 
   components: {
+    TablePageSize,
     TokenCell,
     EmptyTable,
     TokenLink,
@@ -149,7 +161,9 @@ export default defineComponent({
       totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
-      pageSize: props.controller.pageSize as Ref<Number>,
+      perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
       TokenCellItem,
       ORUGA_MOBILE_BREAKPOINT
