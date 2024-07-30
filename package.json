@@ -44,7 +44,7 @@
     "file-saver": "^2.0.5",
     "hashconnect": "^0.1.10",
     "jszip": "^3.10.1",
-    "multiformats": "^13.2.1",
+    "multiformats": "^13.2.2",
     "prismjs": "^1.29.0",
     "vue": "^3.4.34",
     "vue-router": "^4.4.0"
