@@ -25,7 +25,7 @@
 <template>
   <o-table
       :data="collections"
-      :paginated="!isTouchDevice"
+      :paginated="paginated"
       pagination-order="left"
       :range-before="0"
       :range-after="0"
@@ -67,7 +67,17 @@
       {{ props.row.serials.length }}
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize v-model:size="perPage"/>
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!collections.length"/>
 
@@ -79,7 +89,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, PropType} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -87,11 +97,13 @@ import {routeManager} from "@/router";
 import {useRoute} from "vue-router";
 import {NftCollectionInfo} from "@/utils/cache/NftCollectionCache";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'NftsTable',
 
   components: {
+    TablePageSize,
     TokenCell,
     EmptyTable,
     TokenLink,
@@ -104,13 +116,13 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const route = useRoute();
 
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const perPage = computed(() => isMediumScreen ? 15 : 5)
+    const perPage = ref(isMediumScreen ? 15 : 5)
 
     const handleClick = (nft: NftCollectionInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (nft.tokenId) {
@@ -132,10 +144,15 @@ export default defineComponent({
       return result
     }
 
+    const paginated = computed(() => props.collections.length > perPage.value)
+    const showPageSizeSelector = computed(() => props.collections.length > 5)
+
     return {
       isTouchDevice,
       isMediumScreen,
       perPage,
+      paginated,
+      showPageSizeSelector,
       handleClick,
       formatSerials,
       TokenCellItem,
