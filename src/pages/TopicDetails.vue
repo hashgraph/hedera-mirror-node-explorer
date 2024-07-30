@@ -215,7 +215,7 @@ export default defineComponent({
     // messageTableController
     //
 
-    const pageSize = computed(() => isMediumScreen ? 15 : 5)
+    const pageSize = ref(isMediumScreen ? 15 : 5)
     const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
     onMounted(() => messageTableController.mount())
     onBeforeUnmount(() => messageTableController.unmount())

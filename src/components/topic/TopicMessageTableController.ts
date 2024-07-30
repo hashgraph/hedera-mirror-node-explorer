@@ -21,7 +21,7 @@
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController"
 import {TopicMessage, TopicMessagesResponse} from "@/schemas/HederaSchemas"
 import axios, {AxiosResponse} from "axios"
-import {ComputedRef} from "vue"
+import {ComputedRef, Ref} from "vue"
 import {Router} from "vue-router";
 
 export class TopicMessageTableController extends TableController<TopicMessage, string> {
@@ -32,7 +32,7 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
     // Public
     //
 
-    public constructor(router: Router, topicId: ComputedRef<string | null>, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, topicId: ComputedRef<string | null>, pageSize: Ref<number>) {
         super(
             router,
             pageSize,
@@ -42,7 +42,7 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
             100
         );
         this.topicId = topicId
-        this.watchAndReload([this.topicId])
+        this.watchAndReload([this.topicId, this.pageSize])
     }
 
     //

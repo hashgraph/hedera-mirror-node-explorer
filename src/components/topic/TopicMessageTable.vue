@@ -64,7 +64,15 @@
         </div>
       </o-table-column>
 
+      <template v-slot:bottom-left>
+        <TablePageSize :controller="controller"/>
+      </template>
+
     </o-table>
+
+    <TablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+                   style="width: 116px; margin-left: 4px"/>
+
     <EmptyTable v-if="!messages.length"/>
   </div>
 
@@ -84,12 +92,13 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TopicMessage} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
 
   name: 'TopicMessageTable',
 
-  components: {EmptyTable, BlobValue, TimestampValue},
+  components: {TablePageSize, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {
@@ -118,7 +127,8 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       ORUGA_MOBILE_BREAKPOINT,
       handleClick
     }
