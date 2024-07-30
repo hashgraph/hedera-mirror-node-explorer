@@ -19,7 +19,7 @@
  */
 
 import {TokenRelationship, TokenRelationshipResponse,} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
+import {Ref} from "vue";
 import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
@@ -32,7 +32,7 @@ export class TokenRelationshipsTableController extends TableController<TokenRela
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>) {
         super(
             router,
             pageSize,
@@ -42,6 +42,7 @@ export class TokenRelationshipsTableController extends TableController<TokenRela
             100
         )
         this.accountId = accountId
+        this.watchAndReload([this.accountId, this.pageSize])
     }
 
     //

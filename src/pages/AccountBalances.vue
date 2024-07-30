@@ -62,7 +62,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -97,7 +97,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const perPage = computed(() => isMediumScreen ? 15 : 5)
+    const perPage = ref(isMediumScreen ? 15 : 5)
     const normalizedAccountId = computed(() => {
       const result = EntityID.parse(props.accountId) ?? EntityID.fromAddress(props.accountId)
       return result !== null ? result.toString() : null
