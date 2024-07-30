@@ -30,11 +30,11 @@
       :data="transactions"
       :hoverable="true"
       :narrowed="narrowed"
-      :paginated="!isTouchDevice && paginationNeeded"
+      :paginated="paginated"
       pagination-order="left"
       :range-before="0"
       :range-after="0"
-      :per-page="isMediumScreen ? pageSize : 5"
+      :per-page="perPage"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       aria-current-label="Current page"
@@ -62,7 +62,17 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize v-model:size="perPage"/>
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!transactions.length"/>
 
@@ -83,11 +93,12 @@ import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'BlockTransactionTable',
 
-  components: {TransactionSummary, EmptyTable, TimestampValue, TransactionLabel},
+  components: {TablePageSize, TransactionSummary, EmptyTable, TimestampValue, TransactionLabel},
 
   props: {
     narrowed: Boolean,
@@ -104,11 +115,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const DEFAULT_PAGE_SIZE = 15
-    const pageSize = props.nbItems ?? DEFAULT_PAGE_SIZE
-    const paginationNeeded = computed(() => {
-          return props.transactions.length > 5
-        }
-    )
+    const perPage = ref(props.nbItems ?? DEFAULT_PAGE_SIZE)
 
     const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
       routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey || event.button === 1)
@@ -116,11 +123,15 @@ export default defineComponent({
 
     let currentPage = ref(1)
 
+    const paginated = computed(() => props.transactions.length > perPage.value)
+    const showPageSizeSelector = computed(() => props.transactions.length > 5)
+
     return {
       isTouchDevice,
       isMediumScreen,
-      pageSize,
-      paginationNeeded,
+      perPage,
+      paginated,
+      showPageSizeSelector,
       handleClick,
       currentPage,
 
