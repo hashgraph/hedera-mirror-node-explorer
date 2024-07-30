@@ -73,13 +73,16 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize :controller="controller"/>
+      <TablePageSize v-model:size="perPage"/>
     </template>
 
   </o-table>
 
-  <TablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
-                            style="width: 116px; margin-left: 4px"/>
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!allowances.length"/>
 
