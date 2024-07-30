@@ -60,11 +60,11 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller"/>
+      <TablePageSize :controller="controller"/>
     </template>
   </o-table>
 
-  <TransactionTablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
+  <TablePageSize v-if="!paginated && showPageSizeSelector" :controller="controller"
                             style="width: 116px; margin-left: 4px"/>
 
   <EmptyTable v-if="!contracts.length" :loading="!loaded" :no-data-message="noDataMessage"/>
@@ -85,12 +85,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'VerifiedContractsTable',
 
-  components: {TransactionTablePageSize, ContractName, EmptyTable, TimestampValue},
+  components: {TablePageSize, ContractName, EmptyTable, TimestampValue},
 
   props: {
     controller: {

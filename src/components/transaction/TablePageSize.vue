@@ -50,7 +50,7 @@ import {VerifiedContractsController} from "@/components/contract/VerifiedContrac
 
 
 export default defineComponent({
-  name: "TransactionTablePageSize",
+  name: "TablePageSize",
 
   props: {
     controller: {

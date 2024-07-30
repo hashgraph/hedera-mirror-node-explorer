@@ -68,7 +68,7 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TransactionTablePageSize :controller="controller"/>
+      <TablePageSize :controller="controller"/>
     </template>
   </o-table>
 
@@ -92,7 +92,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import ContractName from "@/components/values/ContractName.vue";
 import ContractIOL from "@/components/values/link/ContractIOL.vue";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 
 //
@@ -102,7 +102,7 @@ import TransactionTablePageSize from "@/components/transaction/TransactionTableP
 export default defineComponent({
   name: 'ContractTable',
 
-  components: {TransactionTablePageSize, ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
+  components: {TablePageSize, ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {

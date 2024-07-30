@@ -27,7 +27,7 @@ import Transactions from "@/pages/Transactions.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import TransactionTablePageSize from "@/components/transaction/TransactionTablePageSize.vue";
+import TablePageSize from "../../../src/components/transaction/TablePageSize.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -133,7 +133,7 @@ describe("Transactions.vue", () => {
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 
-        const select = card.findComponent(TransactionTablePageSize)
+        const select = card.findComponent(TablePageSize)
         expect(select.exists()).toBe(false)
 
         mock.restore()
@@ -176,7 +176,7 @@ describe("Transactions.vue", () => {
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 
-        const select = card.findComponent(TransactionTablePageSize)
+        const select = card.findComponent(TablePageSize)
         expect(select.exists()).toBe(true)
 
         expect(select.text()).toBe(
