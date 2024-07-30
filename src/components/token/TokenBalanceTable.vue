@@ -27,7 +27,7 @@
   <o-table
       :data="tokenBalances"
       :loading="loading"
-      paginated
+      :paginated="paginated"
       backend-pagination
       pagination-order="left"
       :range-before="0"
@@ -57,7 +57,17 @@
       <TokenAmount v-bind:amount="BigInt(props.row.balance)" v-bind:token-id="tokenId"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize v-model:size="perPage"/>
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!tokenBalances.length"/>
 
@@ -77,11 +87,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountIOL from "@/components/values/link/AccountIOL.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'TokenBalanceTable',
 
-  components: {AccountIOL, EmptyTable, TokenAmount},
+  components: {TablePageSize, AccountIOL, EmptyTable, TokenAmount},
 
   props: {
     controller: {
@@ -110,6 +121,8 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT
     }

@@ -326,7 +326,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import {routeManager, walletManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -445,7 +445,7 @@ export default defineComponent({
       routeManager.routeToToken(tokenId)
     }
 
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const perPage = ref(isMediumScreen ? 10 : 5)
 
     //
     // TokenBalanceTableController
