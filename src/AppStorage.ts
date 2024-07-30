@@ -88,6 +88,41 @@ export class AppStorage {
     }
 
     //
+    // Table page size (generic)
+    //
+
+    private static readonly TRANSFER_TABLE_PAGE_SIZE_KEY = 'transferPageSize'
+    private static readonly CONTRACT_CALL_TABLE_PAGE_SIZE_KEY = 'contractCallPageSize'
+    private static readonly MESSAGE_TABLE_PAGE_SIZE_KEY = 'messagePageSize'
+
+    private static readonly TRANSACTIONS_TABLE_PAGE_SIZE_KEY = 'transactionsPageSize'
+
+    private static readonly TOKENS_TABLE_PAGE_SIZE_KEY = 'tokensPageSize'
+
+    private static readonly TOPICS_TABLE_PAGE_SIZE_KEY = 'topicsPageSize'
+    private static readonly TOPIC_MESSAGES_TABLE_PAGE_SIZE_KEY = 'topicMessagesPageSize'
+
+    private static readonly CONTRACTS_TABLE_PAGE_SIZE_KEY = 'contractsPageSize'
+    private static readonly RECENT_CALLS_TABLE_PAGE_SIZE_KEY = 'recentCallsPageSize'
+
+    private static readonly ACCOUNTS_TABLE_PAGE_SIZE_KEY = 'accountsPageSize'
+    private static readonly ACCOUNT_OPERATIONS_TABLE_PAGE_SIZE_KEY = 'accountOperationsPageSize'
+    private static readonly ALLOWANCE_TABLE_PAGE_SIZE_KEY = 'allowancePageSize'
+    private static readonly STAKING_TABLE_PAGE_SIZE_KEY = 'stakingPageSize'
+
+    private static readonly BLOCKS_TABLE_PAGE_SIZE_KEY = 'blocksPageSize'
+    private static readonly BLOCK_TRANSACTIONS_TABLE_PAGE_SIZE_KEY = 'blockTransactionsPageSize'
+
+    public static geyTablePageSize(key: string): number | null {
+        const size = this.getLocalStorageItem(key)
+        return size ? Number(size) : null
+    }
+
+    public static setTablePageSize(key: string, newValue: number | null): void {
+        this.setLocalStorageItem(key, newValue ? newValue?.toString() : null)
+    }
+
+    //
     // cookiePolicy
     //
 
