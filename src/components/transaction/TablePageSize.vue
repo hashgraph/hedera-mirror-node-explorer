@@ -24,7 +24,8 @@
 
 <template>
   <o-select
-      v-model="perPage"
+      v-bind:model-value="size"
+      @update:model-value="onSelect($event)"
       class="h-is-text-size-2"
       data-cy="select-page-size"
   >
@@ -44,24 +45,24 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
-import {TableController} from "@/utils/table/TableController";
-import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import {defineComponent} from "vue";
 
 
 export default defineComponent({
   name: "TablePageSize",
 
   props: {
-    controller: {
-      type: Object as PropType<TableController<any, any> | VerifiedContractsController>,
+    size: {
+      type: Number,
       required: true
     }
   },
+  emits: ["update:size"],
 
-  setup(props) {
+  setup(props, context) {
+    const onSelect = (value: number) => context.emit("update:size", value);
     return {
-      perPage: props.controller.pageSize,
+      onSelect
     }
   }
 });

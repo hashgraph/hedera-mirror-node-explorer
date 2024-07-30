@@ -66,7 +66,7 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize :controller="controller"/>
+      <TablePageSize v-model:size="perPage"/>
     </template>
   </o-table>
 
