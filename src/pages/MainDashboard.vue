@@ -122,7 +122,6 @@ export default defineComponent({
 
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const isXLargeScreen = inject('isXLargeScreen', true)
 

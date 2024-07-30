@@ -63,6 +63,10 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize :controller="controller"/>
+    </template>
+
   </o-table>
 
   <EmptyTable v-if="!transactions.length"/>
@@ -84,11 +88,12 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
 import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMessageCell.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'MessageTransactionTable',
 
-  components: {TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
+  components: {TablePageSize, TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
 
   props: {
     controller: {

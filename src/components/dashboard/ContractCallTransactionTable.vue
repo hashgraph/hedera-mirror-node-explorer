@@ -63,6 +63,10 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize :controller="controller"/>
+    </template>
+
   </o-table>
 
   <EmptyTable v-if="!transactions.length"/>
@@ -84,11 +88,12 @@ import TransactionSummary from "@/components/transaction/TransactionSummary.vue"
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'ContractCallTransactionTable',
 
-  components: {EmptyTable, TransactionSummary, TimestampValue, TransactionLabel},
+  components: {TablePageSize, EmptyTable, TransactionSummary, TimestampValue, TransactionLabel},
 
   props: {
     controller: {
