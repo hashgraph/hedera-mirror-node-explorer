@@ -73,7 +73,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
 
   </o-table>
@@ -81,6 +84,7 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -107,6 +111,7 @@ import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 interface DisplayedTokenAllowance extends TokenAllowance {
   isEditable: boolean
@@ -163,6 +168,7 @@ export default defineComponent({
       perPage: props.controller.pageSize as Ref<number>,
       paginated: props.controller.paginated as ComputedRef<boolean>,
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

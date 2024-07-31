@@ -130,13 +130,13 @@ export default defineComponent({
     const bottomPageSize = ref(5)
 
     const cryptoTableController = new TransactionTableController(
-        router, topPageSize, TransactionType.CRYPTOTRANSFER, "", "p1", "k1")
+        router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
 
     const messageTableController = new TransactionTableController(
-        router, bottomPageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", "p2", "k2")
+        router, bottomPageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", null, "p2", "k2")
 
     const contractTableController = new TransactionTableController(
-        router, bottomPageSize, TransactionType.CONTRACTCALL, "", "p3", "k3")
+        router, bottomPageSize, TransactionType.CONTRACTCALL, "", null, "p3", "k3")
 
     onMounted(() => {
       cryptoTableController.mount()

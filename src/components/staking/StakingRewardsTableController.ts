@@ -28,16 +28,19 @@ import {Router} from "vue-router";
 export class StakingRewardsTableController extends TableController<StakingReward, string> {
 
     public readonly accountId: Ref<string | null>
+    public storageKey: string
 
     //
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>,
+    public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>, storageKey: string,
                        pageParamName = "p", keyParamName = "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
+            storageKey,
             pageParamName, keyParamName);
         this.accountId = accountId
+        this.storageKey = storageKey
         this.watchAndReload([this.accountId, this.pageSize])
         watch(this.accountId, this.updateAvailableAPI)
     }

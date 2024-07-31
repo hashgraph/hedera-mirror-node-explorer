@@ -489,16 +489,33 @@ export default defineComponent({
     const accountId = accountLocParser.accountId
 
     const transactionTableController = new TransactionTableControllerXL(
-        router, accountId, perPage, true, "p1", "k1")
+        router,
+        accountId,
+        perPage,
+        true,
+        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+        "p1", "k1")
 
     const contractCreateTableController = new TransactionTableController(
-        router, perPage, TransactionType.CONTRACTCREATEINSTANCE, "success", "p3", "k3", accountId)
+        router,
+        perPage,
+        TransactionType.CONTRACTCREATEINSTANCE,
+        "success",
+        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+        "p3", "k3",
+        accountId)
 
     const verifiedContractsController = new VerifiedContractsController(
-        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId), perPage)
+        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId),
+        perPage,
+        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY)
 
     const rewardsTableController = new StakingRewardsTableController(
-        router, accountLocParser.accountId, perPage, "p2", "k2")
+        router,
+        accountLocParser.accountId,
+        perPage,
+        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+        "p2", "k2")
 
     //
     // Transactions download

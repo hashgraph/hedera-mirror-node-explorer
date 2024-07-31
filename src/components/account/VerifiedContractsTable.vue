@@ -60,13 +60,17 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="storageKey"
+      />
     </template>
   </o-table>
 
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="storageKey"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -124,6 +128,7 @@ export default defineComponent({
       ORUGA_MOBILE_BREAKPOINT,
       contracts: props.controller.contracts,
       perPage: props.controller.pageSize,
+      storageKey: props.controller.storageKey,
       paginated: props.controller.paginated as ComputedRef<boolean>,
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
     }

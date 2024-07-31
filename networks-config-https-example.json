@@ -6,9 +6,9 @@
     "ledgerID": "00",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
+      "repoURL": "https://repository-verify.hashscan.io/contracts/",
+      "serverURL": "https://server-verify.hashscan.io/",
+      "verifierURL": "https://verify.hashscan.io/#/",
       "chainID": 295
     }
   },
@@ -19,9 +19,9 @@
     "ledgerID": "01",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
+      "repoURL": "https://repository-verify.hashscan.io/contracts/",
+      "serverURL": "https://server-verify.hashscan.io/",
+      "verifierURL": "https://verify.hashscan.io/#/",
       "chainID": 296
     }
   },
@@ -32,23 +32,10 @@
     "ledgerID": "02",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
+      "repoURL": "https://repository-verify.hashscan.io/contracts/",
+      "serverURL": "https://server-verify.hashscan.io/",
+      "verifierURL": "https://verify.hashscan.io/#/",
       "chainID": 297
-    }
-  },
-  {
-    "name": "localnode",
-    "displayName": "LOCAL NODE",
-    "url": "http://127.0.0.1:5551",
-    "ledgerID": "FF",
-    "sourcifySetup": {
-      "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
-      "chainID": 298
     }
   }
 ]

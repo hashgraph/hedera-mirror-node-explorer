@@ -244,6 +244,7 @@ import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {gtagTransaction} from "@/gtag";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'Staking',
@@ -485,7 +486,7 @@ export default defineComponent({
     // Rewards Transactions Table Controller
     //
     const pageSize = ref(isMediumScreen ? 10 : 5)
-    const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize)
+    const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize, AppStorage.STAKING_TABLE_PAGE_SIZE_KEY)
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 

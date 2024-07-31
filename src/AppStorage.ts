@@ -91,29 +91,32 @@ export class AppStorage {
     // Table page size (generic)
     //
 
-    private static readonly TRANSFER_TABLE_PAGE_SIZE_KEY = 'transferPageSize'
-    private static readonly CONTRACT_CALL_TABLE_PAGE_SIZE_KEY = 'contractCallPageSize'
-    private static readonly MESSAGE_TABLE_PAGE_SIZE_KEY = 'messagePageSize'
+    public static readonly TRANSFER_TABLE_PAGE_SIZE_KEY = 'transferPageSize'
+    public static readonly BOTTOM_DASHBOARD_TABLE_PAGE_SIZE_KEY = 'bottomDashboardPageSize'
 
-    private static readonly TRANSACTIONS_TABLE_PAGE_SIZE_KEY = 'transactionsPageSize'
+    public static readonly TRANSACTION_TABLE_PAGE_SIZE_KEY = 'transactionPageSize'
 
-    private static readonly TOKENS_TABLE_PAGE_SIZE_KEY = 'tokensPageSize'
+    public static readonly TOKEN_TABLE_PAGE_SIZE_KEY = 'tokenPageSize'
+    public static readonly TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY = 'tokenBalancePageSize'
+    public static readonly NFT_HOLDER_TABLE_PAGE_SIZE_KEY = 'nftHolderPageSize'
 
-    private static readonly TOPICS_TABLE_PAGE_SIZE_KEY = 'topicsPageSize'
-    private static readonly TOPIC_MESSAGES_TABLE_PAGE_SIZE_KEY = 'topicMessagesPageSize'
+    public static readonly TOPIC_TABLE_PAGE_SIZE_KEY = 'topicPageSize'
+    public static readonly TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY = 'topicMessagePageSize'
 
-    private static readonly CONTRACTS_TABLE_PAGE_SIZE_KEY = 'contractsPageSize'
-    private static readonly RECENT_CALLS_TABLE_PAGE_SIZE_KEY = 'recentCallsPageSize'
+    public static readonly CONTRACT_TABLE_PAGE_SIZE_KEY = 'contractPageSize'
+    public static readonly RECENT_CALL_TABLE_PAGE_SIZE_KEY = 'recentCallPageSize'
 
-    private static readonly ACCOUNTS_TABLE_PAGE_SIZE_KEY = 'accountsPageSize'
-    private static readonly ACCOUNT_OPERATIONS_TABLE_PAGE_SIZE_KEY = 'accountOperationsPageSize'
-    private static readonly ALLOWANCE_TABLE_PAGE_SIZE_KEY = 'allowancePageSize'
-    private static readonly STAKING_TABLE_PAGE_SIZE_KEY = 'stakingPageSize'
+    public static readonly ACCOUNT_TABLE_PAGE_SIZE_KEY = 'accountPageSize'
+    public static readonly ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY = 'accountOperationPageSize'
+    public static readonly ALLOWANCE_TABLE_PAGE_SIZE_KEY = 'allowancePageSize'
+    public static readonly STAKING_TABLE_PAGE_SIZE_KEY = 'stakingPageSize'
+    public static readonly ACCOUNT_BALANCE_TABLE_PAGE_SIZE_KEY = 'accountBalancePageSize'
+    public static readonly ACCOUNT_NFT_TABLE_PAGE_SIZE_KEY = 'accountNftPageSize'
 
-    private static readonly BLOCKS_TABLE_PAGE_SIZE_KEY = 'blocksPageSize'
-    private static readonly BLOCK_TRANSACTIONS_TABLE_PAGE_SIZE_KEY = 'blockTransactionsPageSize'
+    public static readonly BLOCK_TABLE_PAGE_SIZE_KEY = 'blockPageSize'
+    public static readonly BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY = 'blockTransactionPageSize'
 
-    public static geyTablePageSize(key: string): number | null {
+    public static getTablePageSize(key: string): number | null {
         const size = this.getLocalStorageItem(key)
         return size ? Number(size) : null
     }

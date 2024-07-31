@@ -61,7 +61,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
   </o-table>
 
@@ -85,9 +88,15 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'TopicTable',
+  computed: {
+    AppStorage() {
+      return AppStorage
+    }
+  },
 
   components: {TablePageSize, TopicIOL, EmptyTable, BlobValue, TimestampValue},
 

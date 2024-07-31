@@ -95,7 +95,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ACCOUNT_BALANCE_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
 
   </o-table>
@@ -103,6 +106,7 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="AppStorage.ACCOUNT_BALANCE_TABLE_PAGE_SIZE_KEY"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -125,6 +129,7 @@ import {routeManager} from "@/router";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'BalanceTable',
@@ -166,6 +171,7 @@ export default defineComponent({
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
       TokenCellItem,
+      AppStorage,
       ORUGA_MOBILE_BREAKPOINT
     }
   }

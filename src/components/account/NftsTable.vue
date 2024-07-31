@@ -68,7 +68,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ACCOUNT_NFT_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
 
   </o-table>
@@ -76,6 +79,7 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="AppStorage.ACCOUNT_NFT_TABLE_PAGE_SIZE_KEY"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -98,6 +102,7 @@ import {useRoute} from "vue-router";
 import {NftCollectionInfo} from "@/utils/cache/NftCollectionCache";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'NftsTable',
@@ -156,6 +161,7 @@ export default defineComponent({
       handleClick,
       formatSerials,
       TokenCellItem,
+      AppStorage,
       ORUGA_MOBILE_BREAKPOINT
     }
   }

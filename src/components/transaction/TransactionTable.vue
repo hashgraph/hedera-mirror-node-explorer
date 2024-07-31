@@ -73,7 +73,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="storageKey ?? undefined"
+      />
     </template>
 
   </o-table>
@@ -81,6 +84,7 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="storageKey ?? undefined"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -106,6 +110,7 @@ import {TransactionTableControllerXL} from "@/components/transaction/Transaction
 import EmptyTable from "@/components/EmptyTable.vue";
 import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: "TransactionTable",
@@ -147,11 +152,13 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      storageKey: props.controller.storageKey,
       paginated: props.controller.paginated as ComputedRef<boolean>,
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       showingEthereumTransactions,
       handleClick,
       makeTypeLabel,
+      AppStorage,
       ORUGA_MOBILE_BREAKPOINT,
     }
   }

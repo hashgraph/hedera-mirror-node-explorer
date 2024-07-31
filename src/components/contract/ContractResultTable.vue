@@ -70,7 +70,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
 
   </o-table>
@@ -78,6 +81,7 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -103,6 +107,7 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'ContractResultTable',
@@ -143,6 +148,7 @@ export default defineComponent({
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
       makeErrorMessage,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }
