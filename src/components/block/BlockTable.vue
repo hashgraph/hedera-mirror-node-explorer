@@ -126,7 +126,7 @@ export default defineComponent({
 
     const handleClick = (block: Block, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (block.number) {
-        routeManager.routeToBlock(block.number, event.ctrlKey || event.metaKey)
+        routeManager.routeToBlock(block.number, event.ctrlKey || event.metaKey || event.button === 1)
       }
     }
 

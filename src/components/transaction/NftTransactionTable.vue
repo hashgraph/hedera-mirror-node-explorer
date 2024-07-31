@@ -136,7 +136,7 @@ export default defineComponent({
         ci: number,
         event: MouseEvent,
     ) => {
-      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey || event.button === 1)
     }
 
     const transactions = computed(() => {

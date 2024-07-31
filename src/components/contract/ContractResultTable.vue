@@ -111,7 +111,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const handleClick = (result: ContractResult, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransactionByTs(result.timestamp, event.ctrlKey || event.metaKey)
+      routeManager.routeToTransactionByTs(result.timestamp, event.ctrlKey || event.metaKey || event.button === 1)
     }
 
     const makeErrorMessage = (result: ContractResult) => {
