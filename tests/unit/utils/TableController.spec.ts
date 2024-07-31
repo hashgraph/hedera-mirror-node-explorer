@@ -20,11 +20,11 @@
  *
  */
 
-import {afterEach, beforeEach, describe, test, expect, vi} from 'vitest'
+import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest'
 import {computed, nextTick, Ref, ref} from "vue";
-import {makeRouter} from "@/router";
 import {flushPromises} from "@vue/test-utils";
-import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
+import {KeyOperator, SortOrder, TableController} from "../../../src/utils/table/TableController";
+import {makeRouter} from "../../../src/router";
 
 describe("TableController.ts", () => {
 
@@ -399,7 +399,7 @@ describe("TableController.ts", () => {
         expect(tc.rows.value).toStrictEqual([29, 28, 27, 26, 25, 24, 23, 22, 21, 20])
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.currentPage.value).toBe(3)
-        expect(tc.loadCounter).toBe(3) // Page #3 has been load at the same time than page #2
+        expect(tc.loadCounter).toBe(3) // Page #3 has been loaded at the same time as page #2
         expect(currentRoute.value.query).toStrictEqual({p: "3", k: "29"})
 
         // Goto page #1
@@ -706,6 +706,7 @@ class TestTableController extends TableController<number, number> {
             TestTableController.UPDATED_PERIOD,
             TestTableController.MAX_UPDATE_COUNT,
             TestTableController.MAX_LIMIT,
+            null,
             pageParamName,
             keyParamName)
         this.startKey = startKey
