@@ -103,15 +103,15 @@
         <br/><br/>
         <NetworkDashboardItem id="consensusStake" :value="makeFloorHbarAmount(stake)" name="HBAR"
                               title="Stake for Consensus"/>
-        <p v-if="stake" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">{{
+        <p v-if="stake > 0" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">{{
             stakePercentage
           }} of total</p>
-        <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
         <br/><br/>
         <div v-if="stake === 0">
           <NetworkDashboardItem id="currentStake" :value="makeFloorHbarAmount(unclampedStake)"
                                 name="HBAR" title="Current Stake"/>
-          <br/><br/>
+          <p class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
+          <br/>
         </div>
         <NetworkDashboardItem id="minStake" :value="makeFloorHbarAmount(minStake)" name="HBAR" title="Min Stake"/>
         <br/><br/>
