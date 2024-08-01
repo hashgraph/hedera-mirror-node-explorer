@@ -86,6 +86,13 @@
     <o-table-column v-slot="props" field="gas_used" label="Gas Used" position="right">
       <PlainAmount v-bind:amount="props.row.gas_used"/>
     </o-table-column>
+
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.BLOCK_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
   </o-table>
 
   <EmptyTable v-if="!blocks.length"/>
@@ -106,11 +113,13 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'BlockTable',
 
-  components: {PlainAmount, TimestampValue, EmptyTable},
+  components: {TablePageSize, PlainAmount, TimestampValue, EmptyTable},
 
   props: {
     narrowed: Boolean,
@@ -140,7 +149,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
-
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

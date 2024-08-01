@@ -59,7 +59,20 @@
       <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="storageKey"
+      />
+    </template>
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="storageKey"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!contracts.length" :loading="!loaded" :no-data-message="noDataMessage"/>
 
@@ -71,7 +84,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from 'vue';
+import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, PropType} from 'vue';
 import {Contract} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
@@ -79,11 +92,12 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 export default defineComponent({
   name: 'VerifiedContractsTable',
 
-  components: {ContractName, EmptyTable, TimestampValue},
+  components: {TablePageSize, ContractName, EmptyTable, TimestampValue},
 
   props: {
     controller: {
@@ -95,7 +109,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const perPage = 10
     const noDataMessage = computed(() =>
         props.overflow
             ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
@@ -110,11 +123,14 @@ export default defineComponent({
     }
 
     return {
-      perPage,
       noDataMessage,
       handleClick,
       ORUGA_MOBILE_BREAKPOINT,
       contracts: props.controller.contracts,
+      perPage: props.controller.pageSize,
+      storageKey: props.controller.storageKey,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
     }
   }
 });

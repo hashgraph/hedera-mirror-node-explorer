@@ -23,7 +23,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-select v-model="perPage" class="h-is-text-size-2">
+  <o-select
+      v-bind:model-value="selected"
+      @update:model-value="onSelect($event)"
+      class="h-is-text-size-2"
+      data-cy="select-page-size"
+  >
     <!--        Use "as number" to avoid warning as o-select does not allow to force type-->
     <option :value="5 as number">5 per page</option>
     <option :value="10 as number">10 per page</option>
@@ -40,23 +45,48 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType} from "vue";
-import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
+import {defineComponent, onMounted, ref, watch} from "vue";
+import {AppStorage} from "@/AppStorage";
 
 
 export default defineComponent({
-  name: "TransactionTablePageSize",
+  name: "TablePageSize",
 
   props: {
-    controller: {
-      type: Object as PropType<TransactionTableControllerXL>,
+    size: {
+      type: Number,
       required: true
+    },
+    storageKey: {
+      type: String,
+      default: ''
     }
   },
+  emits: ["update:size"],
 
-  setup(props) {
+  setup(props, context) {
+    const defaultValue = props.size
+    const selected = ref(props.size)
+    watch(() => props.size, () => selected.value = props.size)
+    onMounted(() => {
+      const preferred = AppStorage.getTablePageSize(props.storageKey)
+      if (preferred) {
+        selected.value = preferred
+        context.emit("update:size", preferred)
+      }
+    })
+    const onSelect = (value: number) => {
+      selected.value = value
+      if (value != defaultValue) {
+        AppStorage.setTablePageSize(props.storageKey, value)
+      } else {
+        AppStorage.setTablePageSize(props.storageKey, null)
+      }
+      context.emit("update:size", value)
+    }
     return {
-      perPage: props.controller.pageSize,
+      selected,
+      onSelect
     }
   }
 });

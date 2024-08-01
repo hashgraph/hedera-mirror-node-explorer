@@ -63,6 +63,13 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.BOTTOM_DASHBOARD_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
+
   </o-table>
 
   <EmptyTable v-if="!transactions.length"/>
@@ -84,11 +91,13 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
 import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMessageCell.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'MessageTransactionTable',
 
-  components: {TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
+  components: {TablePageSize, TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
 
   props: {
     controller: {
@@ -112,6 +121,7 @@ export default defineComponent({
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
       TopicMessageCellItem,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

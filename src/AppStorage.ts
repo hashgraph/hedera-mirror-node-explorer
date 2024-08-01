@@ -88,6 +88,44 @@ export class AppStorage {
     }
 
     //
+    // Table page size (generic)
+    //
+
+    public static readonly TRANSFER_TABLE_PAGE_SIZE_KEY = 'transferPageSize'
+    public static readonly BOTTOM_DASHBOARD_TABLE_PAGE_SIZE_KEY = 'bottomDashboardPageSize'
+
+    public static readonly TRANSACTION_TABLE_PAGE_SIZE_KEY = 'transactionPageSize'
+
+    public static readonly TOKEN_TABLE_PAGE_SIZE_KEY = 'tokenPageSize'
+    public static readonly TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY = 'tokenBalancePageSize'
+    public static readonly NFT_HOLDER_TABLE_PAGE_SIZE_KEY = 'nftHolderPageSize'
+
+    public static readonly TOPIC_TABLE_PAGE_SIZE_KEY = 'topicPageSize'
+    public static readonly TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY = 'topicMessagePageSize'
+
+    public static readonly CONTRACT_TABLE_PAGE_SIZE_KEY = 'contractPageSize'
+    public static readonly RECENT_CALL_TABLE_PAGE_SIZE_KEY = 'recentCallPageSize'
+
+    public static readonly ACCOUNT_TABLE_PAGE_SIZE_KEY = 'accountPageSize'
+    public static readonly ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY = 'accountOperationPageSize'
+    public static readonly ALLOWANCE_TABLE_PAGE_SIZE_KEY = 'allowancePageSize'
+    public static readonly STAKING_TABLE_PAGE_SIZE_KEY = 'stakingPageSize'
+    public static readonly ACCOUNT_BALANCE_TABLE_PAGE_SIZE_KEY = 'accountBalancePageSize'
+    public static readonly ACCOUNT_NFT_TABLE_PAGE_SIZE_KEY = 'accountNftPageSize'
+
+    public static readonly BLOCK_TABLE_PAGE_SIZE_KEY = 'blockPageSize'
+    public static readonly BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY = 'blockTransactionPageSize'
+
+    public static getTablePageSize(key: string): number | null {
+        const size = this.getLocalStorageItem(key)
+        return size ? Number(size) : null
+    }
+
+    public static setTablePageSize(key: string, newValue: number | null): void {
+        this.setLocalStorageItem(key, newValue ? newValue?.toString() : null)
+    }
+
+    //
     // cookiePolicy
     //
 

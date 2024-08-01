@@ -50,7 +50,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
@@ -78,7 +78,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
 
     // BlockTableController
-    const pageSize = computed(() => isMediumScreen ? 15 : 5)
+    const pageSize = ref(isMediumScreen ? 15 : 5)
     const blockTableController = new BlockTableController(useRouter(), pageSize)
     onMounted(() => blockTableController.mount())
     onBeforeUnmount(() => blockTableController.unmount())

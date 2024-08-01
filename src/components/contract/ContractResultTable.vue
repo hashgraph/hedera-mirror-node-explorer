@@ -69,7 +69,21 @@
       <HbarAmount :amount="props.row.amount"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!results.length"/>
 
@@ -92,11 +106,13 @@ import StringValue from "@/components/values/StringValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'ContractResultTable',
 
-  components: {HbarAmount, EVMAddress, StringValue, EmptyTable, TimestampValue},
+  components: {TablePageSize, HbarAmount, EVMAddress, StringValue, EmptyTable, TimestampValue},
 
   props: {
     controller: {
@@ -128,9 +144,11 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as Ref<boolean>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
       makeErrorMessage,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

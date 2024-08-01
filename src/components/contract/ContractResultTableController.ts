@@ -20,7 +20,7 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {ContractResult, ContractResultsResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef, Ref} from "vue";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
 
@@ -34,7 +34,7 @@ export class ContractResultTableController extends TableController<ContractResul
 
     public constructor(router: Router,
                        contractId: Ref<string | null>,
-                       pageSize: ComputedRef<number>,
+                       pageSize: Ref<number>,
                        pageParamName = "p", keyParamName = "k") {
         super(
             router,
@@ -47,7 +47,7 @@ export class ContractResultTableController extends TableController<ContractResul
             keyParamName
         );
         this.contractId = contractId
-        this.watchAndReload([this.contractId])
+        this.watchAndReload([this.contractId, this.pageSize])
     }
 
     //

@@ -67,6 +67,12 @@
       </div>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
   </o-table>
 
   <EmptyTable v-if="!contracts.length"/>
@@ -89,6 +95,8 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import ContractName from "@/components/values/ContractName.vue";
 import ContractIOL from "@/components/values/link/ContractIOL.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 
 //
@@ -98,7 +106,7 @@ import ContractIOL from "@/components/values/link/ContractIOL.vue";
 export default defineComponent({
   name: 'ContractTable',
 
-  components: {ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
+  components: {TablePageSize, ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
 
   props: {
     controller: {
@@ -134,6 +142,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
+      AppStorage,
       ORUGA_MOBILE_BREAKPOINT,
     }
   }

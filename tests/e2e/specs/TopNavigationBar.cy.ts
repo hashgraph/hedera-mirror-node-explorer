@@ -34,7 +34,8 @@ describe('Top Navigation Bar', () => {
         cy.contains('Smart Contract Calls')
         cy.contains('HCS Messages')
 
-        cy.get('select')
+        cy.get('#drop-down-menu')
+            .find('select')
             .select('MAINNET')
             .should('have.value', 'mainnet')
 
@@ -43,7 +44,8 @@ describe('Top Navigation Bar', () => {
         cy.contains('Smart Contract Calls')
         cy.contains('HCS Messages')
 
-        cy.get('select')
+        cy.get('#drop-down-menu')
+            .find('select')
             .select('TESTNET')
             .should('have.value', 'testnet')
 
@@ -52,7 +54,8 @@ describe('Top Navigation Bar', () => {
         cy.contains('Smart Contract Calls')
         cy.contains('HCS Messages')
 
-        cy.get('select')
+        cy.get('#drop-down-menu')
+            .find('select')
             .select('PREVIEWNET')
             .should('have.value', 'previewnet')
 

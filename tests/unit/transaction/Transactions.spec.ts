@@ -22,11 +22,12 @@ import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "../Mocks";
+import {SAMPLE_TOKEN, SAMPLE_TRANSACTION, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Transactions from "@/pages/Transactions.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import TablePageSize from "../../../src/components/transaction/TablePageSize.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -92,6 +93,99 @@ describe("Transactions.vue", () => {
             "123423\n\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC"
         )
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    test("without page size selector", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios)
+
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply(200,  {
+            "transactions": [
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+            ]
+        })
+
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
+
+        const wrapper = mount(Transactions, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {},
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        const card = wrapper.findComponent(DashboardCard)
+        expect(card.exists()).toBe(true)
+        expect(card.text()).toMatch(RegExp("^Recent Transactions"))
+
+        const select = card.findComponent(TablePageSize)
+        expect(select.exists()).toBe(false)
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    test("page size selector", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios)
+
+        const matcher1 = "/api/v1/transactions"
+        mock.onGet(matcher1).reply(200,  {
+            "transactions": [
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+                SAMPLE_TRANSACTION,
+            ]
+        })
+
+        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
+
+        const wrapper = mount(Transactions, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {},
+        });
+
+        await flushPromises()
+        // console.log(wrapper.text())
+
+        const card = wrapper.findComponent(DashboardCard)
+        expect(card.exists()).toBe(true)
+        expect(card.text()).toMatch(RegExp("^Recent Transactions"))
+
+        const select = card.findComponent(TablePageSize)
+        expect(select.exists()).toBe(true)
+
+        expect(select.text()).toBe(
+            "5 per page" +
+            "10 per page" +
+            "15 per page" +
+            "20 per page" +
+            "50 per pag" +
+            "e100 per page")
 
         mock.restore()
         wrapper.unmount()

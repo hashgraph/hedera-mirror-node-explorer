@@ -65,7 +65,20 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"/>
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!transactions.length"/>
 
@@ -85,11 +98,13 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import ContractName from "@/components/values/ContractName.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'AccountCreatedContractsTable',
 
-  components: {ContractName, EmptyTable, TimestampValue},
+  components: {TablePageSize, ContractName, EmptyTable, TimestampValue},
 
   props: {
     controller: {
@@ -115,7 +130,9 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

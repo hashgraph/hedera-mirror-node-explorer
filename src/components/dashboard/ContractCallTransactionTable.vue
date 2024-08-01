@@ -63,6 +63,13 @@
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.BOTTOM_DASHBOARD_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
+
   </o-table>
 
   <EmptyTable v-if="!transactions.length"/>
@@ -84,11 +91,13 @@ import TransactionSummary from "@/components/transaction/TransactionSummary.vue"
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'ContractCallTransactionTable',
 
-  components: {EmptyTable, TransactionSummary, TimestampValue, TransactionLabel},
+  components: {TablePageSize, EmptyTable, TransactionSummary, TimestampValue, TransactionLabel},
 
   props: {
     controller: {
@@ -111,6 +120,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
+      AppStorage,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,

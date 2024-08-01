@@ -65,6 +65,12 @@
       </div>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
   </o-table>
 
   <EmptyTable v-if="!tokens.length"/>
@@ -84,11 +90,18 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'TokenTable',
+  computed: {
+    AppStorage() {
+      return AppStorage
+    }
+  },
 
-  components: {TokenIOL, EmptyTable},
+  components: {TablePageSize, TokenIOL, EmptyTable},
 
   props: {
     controller: {

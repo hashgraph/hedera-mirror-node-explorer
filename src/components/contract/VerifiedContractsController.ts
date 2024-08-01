@@ -38,8 +38,10 @@ export class VerifiedContractsController implements PlayPauseController {
     public overflow = computed(() => this.contractsLookup.entity.value?.overflow ?? false)
     public loaded = computed(() => this.contractsLookup.entity.value != null)
 
-    public constructor(contractsLookup: Lookup<VerifiedContractsBuffer>) {
+    public constructor(contractsLookup: Lookup<VerifiedContractsBuffer>, pageSize: Ref<number>, storageKey: string) {
         this.contractsLookup = contractsLookup
+        this.pageSize = pageSize
+        this.storageKey = storageKey
         watch(
             this.contractsLookup.entity,
             () => {
@@ -48,6 +50,14 @@ export class VerifiedContractsController implements PlayPauseController {
             }
         )
     }
+
+    public pageSize: Ref<number>
+    public storageKey: string
+
+    public readonly paginated: ComputedRef<boolean> = computed(
+        () => this.contracts.value.length >= this.pageSize.value)
+
+    public readonly showPageSizeSelector = computed(() => this.contracts.value.length > 5)
 
     public async mount(): Promise<void> {
         this.contractsLookup.mount()

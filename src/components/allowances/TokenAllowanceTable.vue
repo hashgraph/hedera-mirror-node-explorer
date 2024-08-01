@@ -72,7 +72,21 @@
       <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!allowances.length"/>
 
@@ -96,6 +110,8 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 interface DisplayedTokenAllowance extends TokenAllowance {
   isEditable: boolean
@@ -104,7 +120,7 @@ interface DisplayedTokenAllowance extends TokenAllowance {
 export default defineComponent({
   name: 'TokenAllowanceTable',
 
-  components: {InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
+  components: {TablePageSize, InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["editAllowance"],
 
@@ -150,7 +166,9 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as Ref<boolean>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

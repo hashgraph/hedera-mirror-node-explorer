@@ -19,7 +19,7 @@
  */
 
 import {Block, BlocksResponse} from "@/schemas/HederaSchemas";
-import {ComputedRef} from "vue";
+import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
@@ -30,7 +30,7 @@ export class BlockTableController extends TableController<Block, number> {
     // Public
     //
 
-    public constructor(router: Router, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, pageSize: Ref<number>) {
         super(
             router,
             pageSize,
@@ -39,6 +39,7 @@ export class BlockTableController extends TableController<Block, number> {
             TableController.FAST_REFRESH_COUNT,
             100
         );
+        this.watchAndReload([this.pageSize])
     }
 
     //

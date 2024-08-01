@@ -32,7 +32,7 @@ export class NftHolderTableController extends TableController<Nft, string> {
     // Public
     //
 
-    public constructor(router: Router, tokenId: ComputedRef<string | null>, pageSize: ComputedRef<number>) {
+    public constructor(router: Router, tokenId: ComputedRef<string | null>, pageSize: Ref<number>) {
         super(
             router,
             pageSize,
@@ -42,7 +42,7 @@ export class NftHolderTableController extends TableController<Nft, string> {
             100
         );
         this.tokenId = tokenId
-        this.watchAndReload([this.tokenId])
+        this.watchAndReload([this.tokenId, this.pageSize])
     }
 
     //

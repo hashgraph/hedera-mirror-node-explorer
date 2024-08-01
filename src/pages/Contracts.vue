@@ -63,7 +63,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, ref} from 'vue';
+import {defineComponent, inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
@@ -73,6 +73,7 @@ import {useRouter} from "vue-router";
 import VerifiedContractsTable from "@/components/account/VerifiedContractsTable.vue";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'Contracts',
@@ -99,10 +100,10 @@ export default defineComponent({
     //
     // ContractTableController
     //
-    const perPage = computed(() => isMediumScreen ? 15 : 10)
+    const perPage = ref(isMediumScreen ? 15 : 10)
     const contractTableController = new ContractTableController(useRouter(), perPage)
     const verifiedContractsController =
-        new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(),)
+        new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(), perPage, AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY)
 
     return {
       isSmallScreen,

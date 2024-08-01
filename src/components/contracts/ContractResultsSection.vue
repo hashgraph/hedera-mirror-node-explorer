@@ -50,7 +50,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import router from "@/router";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
@@ -72,7 +72,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const computedContractId = computed(() => props.contractId || null)
-    const perPage = computed(() => isMediumScreen ? 10 : 5)
+    const perPage = ref(isMediumScreen ? 10 : 5)
 
     const showContractResults = computed(() => resultTableController.rows.value.length)
 

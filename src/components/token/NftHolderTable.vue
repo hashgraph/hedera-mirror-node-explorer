@@ -28,7 +28,7 @@
     <o-table
         :data="nfts"
         :loading="loading"
-        paginated
+        :paginated="paginated"
         backend-pagination
         pagination-order="left"
         :range-before="0"
@@ -86,7 +86,22 @@
             :serial-number="props.row.serial_number"
             :property="NftCellItem.description"/>
       </o-table-column>
+
+      <template v-slot:bottom-left>
+        <TablePageSize
+            v-model:size="perPage"
+            :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
+        />
+      </template>
+
     </o-table>
+
+    <TablePageSize
+        v-if="!paginated && showPageSizeSelector"
+        v-model:size="perPage"
+        :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
+        style="width: 116px; margin-left: 4px"
+    />
 
     <EmptyTable v-if="!nfts.length"/>
   </div>
@@ -107,11 +122,13 @@ import {NftHolderTableController} from "@/components/token/NftHolderTableControl
 import {routeManager} from "@/router";
 import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'NftHolderTable',
 
-  components: {NftCell, AccountIOL, EmptyTable},
+  components: {TablePageSize, NftCell, AccountIOL, EmptyTable},
 
   props: {
     controller: {
@@ -149,9 +166,12 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       ORUGA_MOBILE_BREAKPOINT,
       NftCellItem,
       handleClick,
+      AppStorage,
     }
   }
 });

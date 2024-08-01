@@ -69,7 +69,21 @@
                    label="The allowance cannot be modified because the NFT collection is no longer associated with this account."/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!allowances.length"/>
 
@@ -92,6 +106,8 @@ import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
 import {isValidAssociation} from "@/schemas/HederaUtils";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 interface DisplayedNftAllowance extends NftAllowance {
   isEditable: boolean
@@ -100,7 +116,7 @@ interface DisplayedNftAllowance extends NftAllowance {
 export default defineComponent({
   name: 'NftAllSerialsAllowanceTable',
 
-  components: {InfoTooltip, TokenLink, AccountLink, EmptyTable, TimestampValue},
+  components: {TablePageSize, InfoTooltip, TokenLink, AccountLink, EmptyTable, TimestampValue},
 
   emits: ["deleteAllowance"],
 
@@ -145,7 +161,9 @@ export default defineComponent({
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as Ref<boolean>,
+      paginated: props.controller.paginated as ComputedRef<boolean>,
+      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }
