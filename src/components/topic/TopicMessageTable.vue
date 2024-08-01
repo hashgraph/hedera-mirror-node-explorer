@@ -38,7 +38,7 @@
         :per-page="perPage"
         focusable
         @page-change="onPageChange"
-        @click="handleClick"
+        @cell-click="handleClick"
 
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
