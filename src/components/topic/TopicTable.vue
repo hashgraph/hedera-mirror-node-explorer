@@ -112,7 +112,7 @@ export default defineComponent({
 
     const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (t.entity_id) {
-        routeManager.routeToTopic(t.entity_id, event.ctrlKey || event.metaKey || event.button === 1)
+        routeManager.routeToTopic(t.entity_id, event)
       }
     }
 

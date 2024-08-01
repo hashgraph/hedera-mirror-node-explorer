@@ -123,7 +123,7 @@ export default defineComponent({
     const perPage = ref(props.nbItems ?? DEFAULT_PAGE_SIZE)
 
     const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey || event.button === 1)
+      routeManager.routeToTransaction(t, event)
     }
 
     let currentPage = ref(1)

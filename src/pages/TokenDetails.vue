@@ -328,7 +328,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
-import {routeManager, walletManager} from "@/router";
+import {walletManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
@@ -441,10 +441,6 @@ export default defineComponent({
       return result
     })
 
-    const showTokenDetails = (tokenId: string) => {
-      routeManager.routeToToken(tokenId)
-    }
-
     const perPage = ref(isMediumScreen ? 10 : 5)
 
     //
@@ -480,7 +476,6 @@ export default defineComponent({
       validEntityId,
       normalizedTokenId,
       notification,
-      showTokenDetails,
       parseBigIntString,
       tokenAnalyzer,
       ethereumAddress: tokenAnalyzer.ethereumAddress,

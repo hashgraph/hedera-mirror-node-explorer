@@ -120,7 +120,7 @@ export default defineComponent({
 
     const handleClick = (t: Token, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (t.token_id) {
-        routeManager.routeToToken(t.token_id, event.ctrlKey || event.metaKey || event.button === 1)
+        routeManager.routeToToken(t.token_id, event)
       }
     }
 
