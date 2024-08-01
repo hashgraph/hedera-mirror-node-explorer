@@ -149,9 +149,9 @@ import StringValue from "@/components/values/StringValue.vue";
 import {
   isCouncilNode,
   makeAnnualizedRate,
-  makeStakePercentage,
   makeNodeDescriptionPrefix,
-  makeNodeOwnerDescription
+  makeNodeOwnerDescription,
+  makeStakePercentage
 } from "@/schemas/HederaUtils";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
@@ -189,7 +189,7 @@ export default defineComponent({
 
     const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (node.node_id !== undefined) {
-        routeManager.routeToNode(node.node_id, event.ctrlKey || event.metaKey)
+        routeManager.routeToNode(node.node_id, event.ctrlKey || event.metaKey || event.button === 1)
       }
     }
 

@@ -120,7 +120,7 @@ export default defineComponent({
 
     const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (contract.contract_id) {
-        routeManager.routeToContract(contract.contract_id, event.ctrlKey || event.metaKey)
+        routeManager.routeToContract(contract.contract_id, event.ctrlKey || event.metaKey || event.button === 1)
       }
     }
 

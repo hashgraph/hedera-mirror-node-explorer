@@ -102,7 +102,7 @@ export default defineComponent({
 
     const handleClick = (t: StakingReward, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (t.timestamp) {
-        routeManager.routeToTransactionByTs(t.timestamp, event.ctrlKey || event.metaKey)
+        routeManager.routeToTransactionByTs(t.timestamp, event.ctrlKey || event.metaKey || event.button === 1)
       }
     }
 

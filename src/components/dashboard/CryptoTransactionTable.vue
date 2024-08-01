@@ -99,7 +99,7 @@ export default defineComponent({
   setup(props) {
 
     const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey)
+      routeManager.routeToTransaction(t, event.ctrlKey || event.metaKey || event.button === 1)
     }
 
     return {

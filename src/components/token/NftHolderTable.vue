@@ -135,7 +135,7 @@ export default defineComponent({
         routeManager.routeToSerial(
             n.token_id,
             n.serial_number,
-            event.ctrlKey || event.metaKey,
+            event.ctrlKey || event.metaKey || event.button === 1,
         );
       }
     };

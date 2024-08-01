@@ -129,7 +129,7 @@ export default defineComponent({
 
     const handleClick = (a: AccountInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (a.account) {
-        routeManager.routeToAccount(a.account, event.ctrlKey || event.metaKey)
+        routeManager.routeToAccount(a.account, event.ctrlKey || event.metaKey || event.button === 1)
       }
     }
 
