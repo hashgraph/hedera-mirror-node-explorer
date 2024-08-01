@@ -39,6 +39,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                        accountId: Ref<string | null>,
                        pageSize: Ref<number>,
                        accountIdMandatory: boolean,
+                       storageKey: string | null = null,
                        pageParamName = "p", keyParamName = "k") {
         super(
             router,
@@ -47,6 +48,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
             TableController.FAST_REFRESH_PERIOD,
             TableController.FAST_REFRESH_COUNT,
             100,
+            storageKey,
             pageParamName,
             keyParamName
         );

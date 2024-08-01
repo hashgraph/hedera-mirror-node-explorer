@@ -24,7 +24,7 @@
 
 <template>
   <o-select
-      v-bind:model-value="size"
+      v-bind:model-value="selected"
       @update:model-value="onSelect($event)"
       class="h-is-text-size-2"
       data-cy="select-page-size"
@@ -45,7 +45,8 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {defineComponent, onMounted, ref, watch} from "vue";
+import {AppStorage} from "@/AppStorage";
 
 
 export default defineComponent({
@@ -55,13 +56,36 @@ export default defineComponent({
     size: {
       type: Number,
       required: true
+    },
+    storageKey: {
+      type: String,
+      default: ''
     }
   },
   emits: ["update:size"],
 
   setup(props, context) {
-    const onSelect = (value: number) => context.emit("update:size", value);
+    const defaultValue = props.size
+    const selected = ref(props.size)
+    watch(() => props.size, () => selected.value = props.size)
+    onMounted(() => {
+      const preferred = AppStorage.getTablePageSize(props.storageKey)
+      if (preferred) {
+        selected.value = preferred
+        context.emit("update:size", preferred)
+      }
+    })
+    const onSelect = (value: number) => {
+      selected.value = value
+      if (value != defaultValue) {
+        AppStorage.setTablePageSize(props.storageKey, value)
+      } else {
+        AppStorage.setTablePageSize(props.storageKey, null)
+      }
+      context.emit("update:size", value)
+    }
     return {
+      selected,
       onSelect
     }
   }

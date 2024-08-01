@@ -64,7 +64,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.BOTTOM_DASHBOARD_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
 
   </o-table>
@@ -89,6 +92,7 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
 import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMessageCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'MessageTransactionTable',
@@ -117,6 +121,7 @@ export default defineComponent({
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
       TopicMessageCellItem,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }

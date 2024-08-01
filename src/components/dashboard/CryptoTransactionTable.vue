@@ -63,7 +63,10 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.TRANSFER_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
 
   </o-table>
@@ -88,6 +91,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'CryptoTransactionTable',
@@ -115,6 +119,7 @@ export default defineComponent({
       onPageChange: props.controller.onPageChange,
       perPage: props.controller.pageSize as Ref<number>,
       handleClick,
+      AppStorage,
 
       // From App
       ORUGA_MOBILE_BREAKPOINT,

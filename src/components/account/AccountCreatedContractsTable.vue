@@ -66,7 +66,9 @@
     </o-table-column>
 
     <template v-slot:bottom-left>
-      <TablePageSize v-model:size="perPage"/>
+      <TablePageSize
+          v-model:size="perPage"
+          :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"/>
     </template>
 
   </o-table>
@@ -74,6 +76,7 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
+      :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"
       style="width: 116px; margin-left: 4px"
   />
 
@@ -96,6 +99,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import ContractName from "@/components/values/ContractName.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'AccountCreatedContractsTable',
@@ -128,6 +132,7 @@ export default defineComponent({
       paginated: props.controller.paginated as ComputedRef<boolean>,
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       handleClick,
+      AppStorage,
       // From App
       ORUGA_MOBILE_BREAKPOINT,
     }
