@@ -153,9 +153,9 @@ export class RouteManager {
     // Transaction
     //
 
-    public routeToTransaction(t: Transaction, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToTransaction(t: Transaction, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToTransaction(t.consensus_timestamp));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -165,9 +165,9 @@ export class RouteManager {
         return result
     }
 
-    public routeToTransactionByTs(consensusTimestamp: string | undefined, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToTransactionByTs(consensusTimestamp: string | undefined, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToTransaction(consensusTimestamp));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -211,9 +211,9 @@ export class RouteManager {
         }
     }
 
-    public routeToAccount(accountId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToAccount(accountId: string, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToAccount(accountId));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -255,9 +255,9 @@ export class RouteManager {
         return {name: 'TokenDetails', params: {tokenId: tokenId, network: this.currentNetwork.value}}
     }
 
-    public routeToToken(tokenId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToToken(tokenId: string, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToToken(tokenId));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -281,9 +281,9 @@ export class RouteManager {
         }
     }
 
-    public routeToSerial(tokenId: string, serialNumber: number, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToSerial(tokenId: string, serialNumber: number, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToSerial(tokenId, serialNumber))
             window.open(routeData.href, '_blank')
             result = Promise.resolve()
@@ -293,9 +293,9 @@ export class RouteManager {
         return result
     }
 
-    public routeToCollection(accountId: string, tokenId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToCollection(accountId: string, tokenId: string, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToCollection(accountId, tokenId))
             window.open(routeData.href, '_blank')
             result = Promise.resolve()
@@ -313,9 +313,9 @@ export class RouteManager {
         return {name: 'ContractDetails', params: {contractId: contractId, network: this.currentNetwork.value}}
     }
 
-    public routeToContract(contractId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToContract(contractId: string, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToContract(contractId));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -333,9 +333,9 @@ export class RouteManager {
         return {name: 'TopicDetails', params: {topicId: topicId, network: this.currentNetwork.value}}
     }
 
-    public routeToTopic(topicId: string, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToTopic(topicId: string, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToTopic(topicId));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -353,9 +353,9 @@ export class RouteManager {
         return {name: 'BlockDetails', params: {blockHon: blockHon, network: this.currentNetwork.value}}
     }
 
-    public routeToBlock(blockHon: string | number, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToBlock(blockHon: string | number, event: MouseEvent | null = null): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event && (event.ctrlKey || event.metaKey || event.button === 1)) {
             const routeData = this.router.resolve(this.makeRouteToBlock(blockHon));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()
@@ -373,9 +373,9 @@ export class RouteManager {
         return {name: 'NodeDetails', params: {nodeId: nodeId, network: this.currentNetwork.value}}
     }
 
-    public routeToNode(nodeId: number, newTab = false): Promise<NavigationFailure | void | undefined> {
+    public routeToNode(nodeId: number, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
         let result: Promise<NavigationFailure | void | undefined>
-        if (newTab) {
+        if (event.ctrlKey || event.metaKey || event.button === 1) {
             const routeData = this.router.resolve(this.makeRouteToNode(nodeId));
             window.open(routeData.href, '_blank');
             result = Promise.resolve()

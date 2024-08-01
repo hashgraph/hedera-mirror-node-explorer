@@ -131,7 +131,7 @@ export default defineComponent({
 
     const handleClick = (nft: NftCollectionInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (nft.tokenId) {
-        routeManager.routeToCollection(route.params.accountId as string, nft.tokenId, event.ctrlKey || event.metaKey || event.button === 1)
+        routeManager.routeToCollection(route.params.accountId as string, nft.tokenId, event)
       }
     }
 

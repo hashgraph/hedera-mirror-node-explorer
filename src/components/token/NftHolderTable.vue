@@ -149,11 +149,7 @@ export default defineComponent({
         event: MouseEvent,
     ) => {
       if (n.token_id && n.serial_number) {
-        routeManager.routeToSerial(
-            n.token_id,
-            n.serial_number,
-            event.ctrlKey || event.metaKey || event.button === 1,
-        );
+        routeManager.routeToSerial(n.token_id, n.serial_number, event);
       }
     };
 

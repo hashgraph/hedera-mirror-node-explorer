@@ -119,7 +119,7 @@ export default defineComponent({
     onBeforeUnmount(() => props.controller.unmount())
 
     const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToContract(contract.contract_id!, event.ctrlKey || event.metaKey || event.button === 1)
+      routeManager.routeToContract(contract.contract_id!, event)
     }
 
     return {
