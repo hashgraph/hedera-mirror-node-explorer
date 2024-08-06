@@ -20,7 +20,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {makeRouter} from "@/router";
 import {computed, ref} from "vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
@@ -163,7 +163,7 @@ describe("TransactionTableController.ts", () => {
             "account.id": ACCOUNT_ID,
             "timestamp": "lte:" + TIMESTAMP0
         }
-        mock.onGet(matcher1, param1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
+        mock.onGet(matcher1, {params: param1}).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
         // Setup controller
         const router = makeRouter()
