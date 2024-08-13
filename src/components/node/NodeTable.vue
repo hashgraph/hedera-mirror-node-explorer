@@ -189,7 +189,7 @@ export default defineComponent({
 
     const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event: MouseEvent) => {
       if (node.node_id !== undefined) {
-        routeManager.routeToNode(node.node_id, event.ctrlKey || event.metaKey || event.button === 1)
+        routeManager.routeToNode(node.node_id, event)
       }
     }
 

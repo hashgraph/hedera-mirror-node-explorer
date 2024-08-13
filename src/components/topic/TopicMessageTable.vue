@@ -38,7 +38,7 @@
         :per-page="perPage"
         focusable
         @page-change="onPageChange"
-        @click="handleClick"
+        @cell-click="handleClick"
 
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
@@ -119,10 +119,10 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: TopicMessage) => {
+    const handleClick = (t: TopicMessage,  c: unknown, i: number, ci: number, event: MouseEvent) => {
       const consensusTimestamp = t.consensus_timestamp
       if (consensusTimestamp) {
-        routeManager.routeToTransactionByTs(consensusTimestamp)
+        routeManager.routeToTransactionByTs(consensusTimestamp, event)
       }
     }
 
