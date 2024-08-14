@@ -517,7 +517,7 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
             for (const t of tokens) {
                 if (t.token_id !== null) {
                     const description = "Token " + t.token_id
-                    const extra = "  " + t.name
+                    const extra = " " + t.name
                     const route = routeManager.makeRouteToToken(t.token_id)
                     const candidate = new SearchCandidate<Token>(description, extra, route, t, this)
                     result.push(candidate)

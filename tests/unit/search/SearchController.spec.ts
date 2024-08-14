@@ -35,6 +35,7 @@ import {
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_TOKEN,
+    SAMPLE_TOKEN_DUDE,
     SAMPLE_TOPIC,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
@@ -51,6 +52,11 @@ describe("SearchController.vue", () => {
     const SAMPLE_PATCHED_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT))
     const SAMPLE_PATCHED_ACCOUNT_ID = new EntityID(0, 0, SAMPLE_BLOCK.number)
     SAMPLE_PATCHED_ACCOUNT.account = SAMPLE_PATCHED_ACCOUNT_ID.toString()
+
+    // We derive a NAME_PATTERN from SAMPLE_TOKEN.name
+    const SAMPLE_TOKEN_NAME = SAMPLE_TOKEN.name.slice(2, 5)
+    expect(SAMPLE_TOKEN.name.indexOf(SAMPLE_TOKEN_NAME)).not.toBe(-1)
+    expect(SAMPLE_TOKEN_DUDE.name.indexOf(SAMPLE_TOKEN_NAME)).not.toBe(-1)
 
     beforeEach(() => {
 
@@ -93,6 +99,16 @@ describe("SearchController.vue", () => {
 
             const matcher0 = "api/v1/tokens/" + SAMPLE_TOKEN.token_id
             mock.onGet(matcher0).reply(200, SAMPLE_TOKEN)
+        }
+
+        {
+            // Token search by name
+
+            const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=11"
+            mock.onGet(matcher0).reply(200, {
+                tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
+                links: {next: null}
+            })
         }
 
         {
@@ -760,6 +776,66 @@ describe("SearchController.vue", () => {
         expect(controller.candidates.value[0].description).toBe("Token " + SAMPLE_TOKEN.token_id)
         expect(controller.candidates.value[0].extra).toBeNull()
         expect(controller.candidates.value[0].nonExistent).toBe(false)
+        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+
+    })
+
+
+    //
+    // Token with name
+    //
+
+    it("search token with name", async () => {
+
+        const inputText = ref<string>("")
+        const controller = new SearchController(inputText)
+        await flushPromises()
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(false)
+        expect(controller.actualInputText.value).toBe("")
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.candidates.value).toStrictEqual([])
+        expect(controller.defaultCandidate.value).toBeNull()
+
+        inputText.value = SAMPLE_TOKEN_NAME
+        await nextTick()
+        expect(vi.getTimerCount()).toBe(1)
+        expect(controller.visible.value).toBe(false)
+        expect(controller.actualInputText.value).toBe("")
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.candidates.value).toStrictEqual([])
+        expect(controller.defaultCandidate.value).toBeNull()
+
+        vi.advanceTimersToNextTimer()
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(true)
+        expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN_NAME)
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.candidates.value).toStrictEqual([])
+        expect(controller.defaultCandidate.value).toBeNull()
+
+        await flushPromises()
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_TOKEN_NAME,
+            "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=11",
+        ])
+
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(true)
+        expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN_NAME)
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(2)
+        expect(controller.candidates.value[0].description).toBe("Token " + SAMPLE_TOKEN.token_id)
+        expect(controller.candidates.value[0].extra).toBe(" " + SAMPLE_TOKEN.name)
+        expect(controller.candidates.value[0].nonExistent).toBe(false)
+        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TOKEN)
+        expect(controller.candidates.value[1].description).toBe("Token " + SAMPLE_TOKEN_DUDE.token_id)
+        expect(controller.candidates.value[1].extra).toBe(" " + SAMPLE_TOKEN_DUDE.name)
+        expect(controller.candidates.value[1].nonExistent).toBe(false)
+        expect(controller.candidates.value[1].entity).toStrictEqual(SAMPLE_TOKEN_DUDE)
         expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
 
     })
