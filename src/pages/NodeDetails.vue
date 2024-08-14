@@ -98,39 +98,80 @@
       </template>
 
       <template v-slot:rightContent>
-        <NetworkDashboardItem id="yearlyRate" :value="annualizedRate.toString()" name="APPROX ANNUAL EQUIVALENT"
-                              title="Last Period Reward Rate"/>
-        <br/><br/>
-        <NetworkDashboardItem id="consensusStake" :value="makeFloorHbarAmount(stake)" name="HBAR"
-                              title="Stake for Consensus"/>
-        <p v-if="stake" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">{{
-            stakePercentage
-          }} of total</p>
-        <p v-else class="h-is-property-text h-is-extra-text mt-1">(&lt;Min)</p>
-        <br/><br/>
-        <div v-if="stake === 0">
-          <NetworkDashboardItem id="currentStake" :value="makeFloorHbarAmount(unclampedStake)"
-                                name="HBAR" title="Current Stake"/>
-          <br/><br/>
+        <div>
+          <NetworkDashboardItem
+              id="yearlyRate"
+              :value="annualizedRate.toString()"
+              name="APPROX ANNUAL EQUIVALENT"
+              title="Last Period Reward Rate"
+          />
         </div>
-        <NetworkDashboardItem id="minStake" :value="makeFloorHbarAmount(minStake)" name="HBAR" title="Min Stake"/>
-        <br/><br/>
-        <NetworkDashboardItem id="maxStake" :value="makeFloorHbarAmount(maxStake)" name="HBAR" title="Max Stake"/>
-        <br/><br/>
-        <NetworkDashboardItem id="rewarded" :value="makeFloorHbarAmount(stakeRewarded)" name="HBAR"
-                              title="Staked for Reward"/>
-        <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeRewardedPercentage }}% of
-          total</p>
-        <br/><br/>
-        <NetworkDashboardItem id="notRewarded" :value="makeFloorHbarAmount(stakeUnrewarded)" name="HBAR"
-                              title="Staked For No Reward"/>
-        <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">{{ stakeUnrewardedPercentage }}% of
-          total</p>
-        <br/><br/>
-        <NetworkDashboardItem id="stakingPeriod" name="HOURS" title="Current Staking Period" value="24"/>
-        <p class="h-is-property-text h-is-extra-text mt-1">from 00:00 am today to 11:59 pm today UTC</p>
-        <div class="mt-6"/>
-        <br/>
+
+        <div class="mt-5">
+          <NetworkDashboardItem
+              id="consensusStake"
+              :value="makeFloorHbarAmount(stake)"
+              name="HBAR"
+              title="Stake for Consensus"
+          />
+          <p v-if="stake > 0" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">
+            {{ stakePercentage }} of total
+          </p>
+        </div>
+
+        <div class="mt-5">
+          <NetworkDashboardItem
+              id="rewarded"
+              :value="makeFloorHbarAmount(stakeRewarded)"
+              name="HBAR"
+              title="Staked for Reward"
+          />
+          <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
+            {{ stakeRewardedPercentage }}% of total
+          </p>
+        </div>
+
+        <div class="mt-5">
+          <NetworkDashboardItem
+              id="notRewarded"
+              :value="makeFloorHbarAmount(stakeUnrewarded)"
+              name="HBAR"
+              title="Staked For No Reward"
+          />
+          <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
+            {{ stakeUnrewardedPercentage }}% of total
+          </p>
+        </div>
+
+        <div class="mt-5">
+          <NetworkDashboardItem
+              id="minStake"
+              :value="makeFloorHbarAmount(minStake)"
+              name="HBAR"
+              title="Min Stake"
+          />
+        </div>
+
+        <div class="mt-5">
+          <NetworkDashboardItem
+              id="maxStake"
+              :value="makeFloorHbarAmount(maxStake)"
+              name="HBAR"
+              title="Max Stake"
+          />
+        </div>
+
+        <div class="mt-5">
+          <NetworkDashboardItem
+              id="stakingPeriod"
+              name="HOURS"
+              title="Current Staking Period"
+              value="24"
+          />
+          <p class="h-is-property-text h-is-extra-text mt-1">
+            from 00:00 am today to 11:59 pm today UTC
+          </p>
+        </div>
       </template>
 
     </DashboardCard>
