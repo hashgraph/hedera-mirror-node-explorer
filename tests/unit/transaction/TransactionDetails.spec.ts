@@ -178,7 +178,7 @@ describe("TransactionDetails.vue", () => {
 
         const param3 = {timestamp: timestamp, internal: true}
         const matcher3 = "/api/v1/contracts/results"
-        mock.onGet(matcher3, param3).reply(200, {
+        mock.onGet(matcher3, {params: param3}).reply(200, {
             results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
         });
 
@@ -281,7 +281,7 @@ describe("TransactionDetails.vue", () => {
 
         const param3 = {timestamp: timestamp, internal: true}
         const matcher3 = "/api/v1/contracts/results"
-        mock.onGet(matcher3, param3).reply(200, {
+        mock.onGet(matcher3, {params: param3}).reply(200, {
             results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
         });
 
@@ -1041,7 +1041,7 @@ describe("TransactionDetails.vue", () => {
 
         const param3 = {timestamp: timestamp, internal: true}
         const matcher3 = "/api/v1/contracts/results"
-        mock.onGet(matcher3, param3).reply(200, {
+        mock.onGet(matcher3, {params: param3}).reply(200, {
             results: [result], "links": {"next": null}
         });
 
