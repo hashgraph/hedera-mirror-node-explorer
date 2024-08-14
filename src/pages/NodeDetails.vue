@@ -113,6 +113,7 @@
               :value="makeFloorHbarAmount(stake)"
               name="HBAR"
               title="Stake for Consensus"
+              :info-label="stakeLabel"
           />
           <p v-if="stake > 0" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">
             {{ stakePercentage }} of total
@@ -254,6 +255,11 @@ export default defineComponent({
             ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
             : "0")
 
+    const stakeLabel = computed(() =>
+        nodeAnalyzer.stake.value === 0
+            ? 'Stake for consensus is 0 because (Staked for Reward + Staked For No Reward) was less than Min Stake at the beginning of the current staking period.'
+            : null)
+
     const stakeRewardedPercentage = computed(() =>
         networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
 
@@ -280,6 +286,7 @@ export default defineComponent({
       node: nodeAnalyzer.node,
       annualizedRate: nodeAnalyzer.annualizedRate,
       stake: nodeAnalyzer.stake,
+      stakeLabel,
       minStake: nodeAnalyzer.minStake,
       maxStake: nodeAnalyzer.maxStake,
       stakePercentage,
