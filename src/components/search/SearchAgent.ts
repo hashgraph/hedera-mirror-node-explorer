@@ -501,19 +501,20 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
 
 
         let tokens: Token[]
-        // let drained: boolean
+        let drained: boolean
         try {
             // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
             const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=" + (this.limit+1))
             tokens = r.data.tokens ?? []
-            // drained = tokens.length <= this.limit
+            drained = tokens.length <= this.limit
         } catch {
             tokens = []
-            // drained = true
+            drained = true
         }
 
         const result: SearchCandidate<Token>[] = []
         if (tokens.length >= 1) {
+            tokens.sort((t1: Token, t2:Token) => t1.name.localeCompare(t2.name))
             for (const t of tokens) {
                 if (t.token_id !== null) {
                     const description = "Token " + t.token_id
@@ -523,12 +524,12 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
                     result.push(candidate)
                 }
             }
-            // if (!drained) {
-            //     const description = "Show more tokens matching '" + tokenName + "'"
-            //     const route = routeManager.makeRouteToMatchingTokens(tokenName)
-            //     const candidate = new SearchCandidate<Token>(description, null, route, tokens[0], this)
-            //     result.push(candidate)
-            // }
+            if (!drained) {
+                const description = "Only " + this.limit + " first matches are shown"
+                const dummyRoute = routeManager.makeRouteToMainDashboard()
+                const candidate = new SearchCandidate<Token>(description, null, dummyRoute, tokens[0], this, true)
+                result.push(candidate)
+            }
         }
 
         return Promise.resolve(result)
