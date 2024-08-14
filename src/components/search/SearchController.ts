@@ -190,7 +190,6 @@ export class SearchController {
             && entityID === null
             && transactionID === null
             && hexBytes === null
-            && alias === null
             && timestamp === null
         const tokenName = isTokenName ? searchedText : null
 
