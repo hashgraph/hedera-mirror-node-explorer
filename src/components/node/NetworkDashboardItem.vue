@@ -29,8 +29,12 @@
              multiline
              class="h-tooltip">
     <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-      <p v-if="isMediumScreen" class="h-is-property-text mb-1">{{ title }}</p>
-      <p v-else class="h-is-text-size-3 mb-1">{{ title }}</p>
+      <div class="is-flex mb-1">
+        <p :class="{'h-is-property-text':isMediumScreen,'h-is-text-size-3':!isMediumScreen}">
+          {{ title }}
+        </p>
+        <InfoTooltip class="ml-2" :label="infoLabel"/>
+      </div>
 
       <div class="is-flex is-align-items-center">
         <div class="is-flex has-text-white is-align-items-baseline">
@@ -59,16 +63,21 @@
 <script lang="ts">
 
 import {defineComponent, inject, PropType} from 'vue';
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 export default defineComponent({
   name: 'NetworkDashboardItem',
-  components: {},
+  components: {InfoTooltip},
   props: {
     title: String,
     name: String,
     value: String as PropType<string | null>,
     variation: String,
     tooltipLabel: {
+      type: String as PropType<string | null>,
+      default: null
+    },
+    infoLabel: {
       type: String as PropType<string | null>,
       default: null
     }
