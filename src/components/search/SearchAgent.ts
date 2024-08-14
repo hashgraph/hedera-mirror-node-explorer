@@ -27,7 +27,9 @@ import {
     Block,
     ContractResponse,
     ContractResultDetails,
+    Token,
     TokenInfo,
+    TokensResponse,
     Topic,
     Transaction,
     TransactionByIdResponse,
@@ -480,6 +482,53 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
             }
         } catch {
             result = []
+        }
+
+        return Promise.resolve(result)
+    }
+
+}
+
+export class TokenNameSearchAgent extends SearchAgent<string, Token> {
+
+    private readonly limit = 10
+
+    //
+    // SearchAgent
+    //
+
+    protected async load(tokenName: string): Promise<SearchCandidate<Token>[]> {
+
+
+        let tokens: Token[]
+        // let drained: boolean
+        try {
+            // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
+            const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=" + (this.limit+1))
+            tokens = r.data.tokens ?? []
+            // drained = tokens.length <= this.limit
+        } catch {
+            tokens = []
+            // drained = true
+        }
+
+        const result: SearchCandidate<Token>[] = []
+        if (tokens.length >= 1) {
+            for (const t of tokens) {
+                if (t.token_id !== null) {
+                    const description = "Token " + t.token_id
+                    const extra = "  " + t.name
+                    const route = routeManager.makeRouteToToken(t.token_id)
+                    const candidate = new SearchCandidate<Token>(description, extra, route, t, this)
+                    result.push(candidate)
+                }
+            }
+            // if (!drained) {
+            //     const description = "Show more tokens matching '" + tokenName + "'"
+            //     const route = routeManager.makeRouteToMatchingTokens(tokenName)
+            //     const candidate = new SearchCandidate<Token>(description, null, route, tokens[0], this)
+            //     result.push(candidate)
+            // }
         }
 
         return Promise.resolve(result)

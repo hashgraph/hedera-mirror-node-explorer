@@ -30,6 +30,7 @@ import {
     DomainNameSearchAgent,
     SearchAgent,
     SearchCandidate,
+    TokenNameSearchAgent,
     TokenSearchAgent,
     TopicSearchAgent,
     TransactionSearchAgent
@@ -96,6 +97,7 @@ export class SearchController {
     private readonly topicSearchAgent = new TopicSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
+    private readonly tokenNameSearchAgent = new TokenNameSearchAgent()
 
     private readonly allAgents: SearchAgent<unknown, unknown>[] = []
     public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []
@@ -112,7 +114,8 @@ export class SearchController {
             this.tokenSearchAgent,
             this.topicSearchAgent,
             this.transactionSearchAgent,
-            this.blockSearchAgent
+            this.blockSearchAgent,
+            this.tokenNameSearchAgent
         )
         for (const p of nameServiceProviders) {
             const a = new DomainNameSearchAgent(p)
@@ -181,12 +184,23 @@ export class SearchController {
         const domainName = /\.[a-zA-Z|ℏ]+$/.test(searchedText) ? searchedText : null
         const blockNb = EntityID.parsePositiveInt(searchedText)
 
+        // const isTokenName = searchedText.length >= 3 && isASCII(searchedText)
+        const isTokenName = searchedText.length >= 3
+            && isASCII(searchedText)
+            && entityID === null
+            && transactionID === null
+            && hexBytes === null
+            && alias === null
+            && timestamp === null
+        const tokenName = isTokenName ? searchedText : null
+
         this.accountSearchAgent.loc.value = entityID ?? hexBytes ?? alias
         this.contractSearchAgent.loc.value = entityID ?? hexBytes
         this.tokenSearchAgent.loc.value = entityID ?? hexBytes
         this.topicSearchAgent.loc.value = entityID
         this.transactionSearchAgent.loc.value = transactionID ?? timestamp ?? hexBytes
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
+        this.tokenNameSearchAgent.loc.value = tokenName
 
         for (const a of this.domainNameSearchAgents) {
             a.loc.value = domainName
@@ -227,3 +241,13 @@ class InputChangeController {
     }
 }
 
+function isASCII(s: string): boolean {
+    let result = true
+    for (let i = 0; i < s.length; i += 1) {
+        if (s.charCodeAt(i) > 255) { // 255 … or 127 ?
+            result = false
+            break
+        }
+    }
+    return result
+}
