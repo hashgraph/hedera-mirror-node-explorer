@@ -501,21 +501,18 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
 
 
         let tokens: Token[]
-        let drained: boolean
         try {
             // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
-            const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=" + (this.limit+1))
+            const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=100")
             tokens = r.data.tokens ?? []
-            drained = tokens.length <= this.limit
         } catch {
             tokens = []
-            drained = true
         }
 
         const result: SearchCandidate<Token>[] = []
         if (tokens.length >= 1) {
-            tokens.sort((t1: Token, t2:Token) => t1.name.localeCompare(t2.name))
-            for (const t of tokens) {
+            tokens.sort((t1: Token, t2:Token) => TokenNameSearchAgent.compareToken(t1, t2, tokenName))
+            for (const t of tokens.slice(0, this.limit)) {
                 if (t.token_id !== null) {
                     const description = t.name
                     const extra = " " + t.token_id
@@ -524,7 +521,7 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
                     result.push(candidate)
                 }
             }
-            if (!drained) {
+            if (tokens.length > this.limit) {
                 const description = "Only " + this.limit + " first matches are shown"
                 const dummyRoute = routeManager.makeRouteToMainDashboard()
                 const candidate = new SearchCandidate<Token>(description, null, dummyRoute, tokens[0], this, true)
@@ -535,4 +532,45 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
         return Promise.resolve(result)
     }
 
+    //
+    // Private
+    //
+
+    /*
+        This comparison function ensures the following ordering:
+            1) first tokens whose name matches target
+            2) next tokens whose name starts with target
+            3) then other tokens
+     */
+    
+    private static compareToken(t1: Token, t2: Token, target: string): number {
+        let result: number
+        const n1 = t1.name.toLocaleLowerCase()
+        const n2 = t2.name.toLocaleLowerCase()
+        const t = target.toLocaleLowerCase()
+        if (n1 == t) {
+            if (n2 == t) {
+                result = t1.name.localeCompare(t2.name)
+            } else {
+                result = -1                     // n1 before n2
+            }
+        } else if (n1.startsWith(t)) {
+            if (n2 == t) {
+                result = +1                     // n1 after n2
+            } else if (n2.startsWith(t)) {
+                result = t1.name.localeCompare(t2.name)
+            } else {
+                result = -1                     // n1 before n2
+            }
+        } else {
+            if (n2 == t) {
+                result = +1                     // n1 after n2
+            } else if (n2.startsWith(t)) {
+                result = +1                     // n1 after n2
+            } else {
+                result = t1.name.localeCompare(t2.name)
+            }
+        }
+        return result
+    }
 }

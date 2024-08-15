@@ -104,7 +104,7 @@ describe("SearchController.vue", () => {
         {
             // Token search by name
 
-            const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=11"
+            const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100"
             mock.onGet(matcher0).reply(200, {
                 tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
                 links: {next: null}
@@ -376,7 +376,7 @@ describe("SearchController.vue", () => {
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
-            "api/v1/tokens/?name=CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ&limit=11",
+            "api/v1/tokens/?name=CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ&limit=100",
         ])
 
         expect(vi.getTimerCount()).toBe(0)
@@ -821,7 +821,7 @@ describe("SearchController.vue", () => {
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/" + SAMPLE_TOKEN_NAME,
-            "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=11",
+            "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100",
         ])
 
         expect(vi.getTimerCount()).toBe(0)
