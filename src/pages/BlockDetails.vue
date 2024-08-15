@@ -33,11 +33,21 @@
 
       <template v-slot:control>
         <div class="is-flex is-justify-content-flex-end is-align-items-center">
-          <button id="prev-block-button" :disabled="disablePreviousButton"
-                  class="button is-white is-small" @click="handlePreviousBlock">&lt; PREV. BLOCK
+          <button
+              id="prev-block-button"
+              :disabled="disablePreviousButton"
+              class="button is-white is-small"
+              @click="handlePreviousBlock"
+          >
+            &lt; {{ isSmallScreen ? 'PREV. BLOCK' : 'PREV.'}}
           </button>
-          <button id="next-block-button" :disabled="disableNextButton"
-                  class="button is-white is-small ml-4" @click="handleNextBlock">NEXT BLOCK &gt;
+          <button
+              id="next-block-button"
+              :disabled="disableNextButton"
+              class="button is-white is-small ml-4"
+              @click="handleNextBlock"
+          >
+            {{ isSmallScreen ? 'NEXT BLOCK' : 'NEXT'}} &gt;
           </button>
         </div>
       </template>
