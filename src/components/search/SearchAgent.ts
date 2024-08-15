@@ -517,8 +517,8 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
             tokens.sort((t1: Token, t2:Token) => t1.name.localeCompare(t2.name))
             for (const t of tokens) {
                 if (t.token_id !== null) {
-                    const description = "Token " + t.token_id
-                    const extra = " " + t.name
+                    const description = t.name
+                    const extra = " " + t.token_id
                     const route = routeManager.makeRouteToToken(t.token_id)
                     const candidate = new SearchCandidate<Token>(description, extra, route, t, this)
                     result.push(candidate)
