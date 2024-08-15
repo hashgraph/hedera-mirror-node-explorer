@@ -522,7 +522,7 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
                 }
             }
             if (tokens.length > this.limit) {
-                const description = "Only " + this.limit + " first matches are shown"
+                const description = "Only first " + this.limit + " matches are shown"
                 const dummyRoute = routeManager.makeRouteToMainDashboard()
                 const candidate = new SearchCandidate<Token>(description, null, dummyRoute, tokens[0], this, true)
                 result.push(candidate)
