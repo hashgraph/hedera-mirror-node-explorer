@@ -106,6 +106,7 @@ export class EntityDescriptor {
             case TransactionType.TOKENFEESCHEDULEUPDATE:
             case TransactionType.TOKENMINT:
             case TransactionType.TOKENPAUSE:
+            case TransactionType.TOKENREJECT:
             case TransactionType.TOKENUNPAUSE:
             case TransactionType.TOKENWIPE:
                 result = new EntityDescriptor("Token ID", "TokenDetails");
