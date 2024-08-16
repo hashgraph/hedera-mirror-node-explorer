@@ -26,7 +26,7 @@ import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
-import {SAMPLE_CONTRACT} from "../Mocks";
+import {SAMPLE_CONTRACT, SAMPLE_TOKEN, SAMPLE_TOKEN_WITH_KEYS} from "../Mocks";
 import {SourcifyResponse} from "@/utils/cache/SourcifyCache";
 import {routeManager} from "@/router";
 
@@ -142,7 +142,121 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     })
 
+    test("fungible token as a contract", async () => {
 
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN.token_id
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN)
+        const abi = require('../../../public/abi/IERC20.json')
+        const matcher6 = "http://localhost:3000/abi/IERC20.json"
+        mock.onGet(matcher6).reply(200, abi)
+
+
+        // 1) new
+        const contractId: Ref<string | null> = ref(null)
+        const contractAnalyzer = new ContractAnalyzer(contractId)
+        expect(contractAnalyzer.contractId.value).toBeNull()
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+        // 2) mount
+        contractAnalyzer.mount()
+        await flushPromises()
+        expect(contractAnalyzer.contractId.value).toBeNull()
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+        // 3) setup
+        contractId.value = SAMPLE_TOKEN.token_id
+        await flushPromises()
+        expect(contractAnalyzer.contractId.value).toBe(SAMPLE_TOKEN.token_id)
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).not.toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+        // 4) unmount
+        contractAnalyzer.unmount()
+        await flushPromises()
+        expect(contractAnalyzer.contractId.value).toBe(SAMPLE_TOKEN.token_id)
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+
+    })
+
+    test("non fungible token as a contract", async () => {
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN_WITH_KEYS.token_id
+        mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS)
+        const abi = require('../../../public/abi/IERC721.json')
+        const matcher6 = "http://localhost:3000/abi/IERC721.json"
+        mock.onGet(matcher6).reply(200, abi)
+
+
+        // 1) new
+        const contractId: Ref<string | null> = ref(null)
+        const contractAnalyzer = new ContractAnalyzer(contractId)
+        expect(contractAnalyzer.contractId.value).toBeNull()
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+        // 2) mount
+        contractAnalyzer.mount()
+        await flushPromises()
+        expect(contractAnalyzer.contractId.value).toBeNull()
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+        // 3) setup
+        contractId.value = SAMPLE_TOKEN_WITH_KEYS.token_id
+        await flushPromises()
+        expect(contractAnalyzer.contractId.value).toBe(SAMPLE_TOKEN_WITH_KEYS.token_id)
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).not.toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+        // 4) unmount
+        contractAnalyzer.unmount()
+        await flushPromises()
+        expect(contractAnalyzer.contractId.value).toBe(SAMPLE_TOKEN_WITH_KEYS.token_id)
+        expect(contractAnalyzer.sourceFileName.value).toBeNull()
+        expect(contractAnalyzer.contractName.value).toBeNull()
+        expect(contractAnalyzer.interface.value).toBeNull()
+        expect(contractAnalyzer.byteCode.value).toBeNull()
+        expect(contractAnalyzer.fullMatch.value).toBeNull()
+        expect(contractAnalyzer.sourcifyURL.value).toBeNull()
+
+
+    })
 })
 
 
