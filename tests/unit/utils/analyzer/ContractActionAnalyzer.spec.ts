@@ -67,6 +67,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
         expect(fetchGetURLs(mock)).toStrictEqual([
             "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/contracts/0.0.96037",
+            "api/v1/tokens/0.0.96037",
         ])
 
         // 4) unmount
@@ -77,6 +78,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
         expect(fetchGetURLs(mock)).toStrictEqual([
             "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/contracts/0.0.96037",
+            "api/v1/tokens/0.0.96037",
         ])
 
         SignatureCache.instance.clear()
@@ -122,6 +124,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
             "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/accounts/0x0000000000000000000000000000000000017727",
             "api/v1/contracts/0.0.96037",
+            "api/v1/tokens/0.0.96037",
         ])
         expect(analyzer.action.value).toStrictEqual(SAMPLE_ACTION)
         expect(analyzer.fromId.value).toBe("0.0.96039")
@@ -136,6 +139,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
             "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/accounts/0x0000000000000000000000000000000000017727",
             "api/v1/contracts/0.0.96037",
+            "api/v1/tokens/0.0.96037",
         ])
 
         AccountByAddressCache.instance.clear()
