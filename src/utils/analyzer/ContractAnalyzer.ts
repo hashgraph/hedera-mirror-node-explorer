@@ -276,10 +276,10 @@ export class ContractAnalyzer {
             let abiName: string|null
             switch(this.tokenInfo.value.type) {
                 case "FUNGIBLE_COMMON":
-                    abiName = "IERC20"
+                    abiName = "IERC20+IHRC"
                     break
                 case "NON_FUNGIBLE_UNIQUE":
-                    abiName = "IERC721"
+                    abiName = "IERC721+IHRC"
                     break
                 default:
                     abiName = null

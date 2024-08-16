@@ -148,8 +148,8 @@ describe("ContractAnalyzer.spec.ts", () => {
 
         const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN)
-        const abi = require('../../../public/abi/IERC20.json')
-        const matcher6 = "http://localhost:3000/abi/IERC20.json"
+        const abi = require('../../../public/abi/IERC20+IHRC.json')
+        const matcher6 = "http://localhost:3000/abi/IERC20+IHRC.json"
         mock.onGet(matcher6).reply(200, abi)
 
 
@@ -206,8 +206,8 @@ describe("ContractAnalyzer.spec.ts", () => {
 
         const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN_WITH_KEYS.token_id
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS)
-        const abi = require('../../../public/abi/IERC721.json')
-        const matcher6 = "http://localhost:3000/abi/IERC721.json"
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher6 = "http://localhost:3000/abi/IERC721+IHRC.json"
         mock.onGet(matcher6).reply(200, abi)
 
 
