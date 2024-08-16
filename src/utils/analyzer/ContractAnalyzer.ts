@@ -25,14 +25,17 @@ import {AssetCache} from "@/utils/cache/AssetCache";
 import {SourcifyCache, SourcifyRecord, SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {ContractResponse} from "@/schemas/HederaSchemas";
+import {ContractResponse, TokenInfo} from "@/schemas/HederaSchemas";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {EntityID} from "@/utils/EntityID";
 
 export class ContractAnalyzer {
 
     public readonly contractId: Ref<string | null>
     public readonly byteCodeAnalyzer: ByteCodeAnalyzer
     private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
+    private readonly tokenInfo: Ref<TokenInfo|null> = ref(null)
     public readonly systemContractEntry: Ref<SystemContractEntry | null> = ref(null)
     public readonly sourcifyRecord: Ref<SourcifyRecord | null> = ref(null)
     private readonly abi: Ref<ethers.Fragment[] | null> = ref(null)
@@ -53,7 +56,7 @@ export class ContractAnalyzer {
         this.watchHandles = [
             watch(this.contractId, this.contractIdDidChange, {immediate: true}),
             watch(this.contractResponse, this.contractResponseDidChange, {immediate: true}),
-            watch([this.systemContractEntry, this.metadata], this.updateABI, {immediate: true}),
+            watch([this.systemContractEntry, this.metadata, this.tokenInfo], this.updateABI, {immediate: true}),
         ]
     }
 
@@ -61,12 +64,25 @@ export class ContractAnalyzer {
         for (const wh of this.watchHandles) wh()
         this.watchHandles = []
         this.contractResponse.value = null
+        this.tokenInfo.value = null
         this.systemContractEntry.value = null
         this.sourcifyRecord.value = null
         this.abi.value = null
     }
 
-    public readonly contractAddress: ComputedRef<string | null> = computed(() => this.contractResponse.value?.evm_address ?? null)
+    public readonly contractAddress: ComputedRef<string | null> = computed(() => {
+        let result: string|null
+        if (this.contractResponse.value !== null) {
+            result = this.contractResponse.value.evm_address ?? null
+        } else if (this.tokenInfo.value !== null) {
+            const tokenId = this.tokenInfo.value.token_id
+            const eid = tokenId ? EntityID.parse(tokenId) : null
+            result = eid?.toAddress() ?? null
+        } else {
+            result = null
+        }
+        return result
+    })
 
     public readonly globalState = computed<GlobalState | null>(() => {
         let result: GlobalState | null
@@ -172,7 +188,7 @@ export class ContractAnalyzer {
     // })
 
     //
-    // Public (null if contractId is a system contract)
+    // Public (null if contractId is a system contract or a token)
     //
 
     public readonly byteCode: ComputedRef<string | null> = computed(() => {
@@ -211,17 +227,25 @@ export class ContractAnalyzer {
             if (e !== null) {
                 this.systemContractEntry.value = e
                 this.contractResponse.value = null
+                this.tokenInfo.value = null
             } else {
                 this.systemContractEntry.value = null
                 try {
                     this.contractResponse.value = await ContractByIdCache.instance.lookup(this.contractId.value)
+                    if (this.contractResponse.value !== null) {
+                        this.tokenInfo.value = null
+                    } else {
+                        this.tokenInfo.value = await TokenInfoCache.instance.lookup(this.contractId.value)
+                    }
                 } catch {
                     this.contractResponse.value = null
+                    this.tokenInfo.value = null
                 }
             }
         } else {
             this.systemContractEntry.value = null
             this.contractResponse.value = null
+            this.tokenInfo.value = null
         }
     }
 
@@ -248,6 +272,21 @@ export class ContractAnalyzer {
             }
         } else if (this.metadata.value !== null) {
             this.abi.value = this.metadata.value.output.abi as ethers.Fragment[] | null
+        } else if (this.tokenInfo.value !== null) {
+            let abiName: string|null
+            switch(this.tokenInfo.value.type) {
+                case "FUNGIBLE_COMMON":
+                    abiName = "IERC20"
+                    break
+                case "NON_FUNGIBLE_UNIQUE":
+                    abiName = "IERC721"
+                    break
+                default:
+                    abiName = null
+                    break
+            }
+            const abiURL = window.location.origin + "/abi/" + abiName + ".json"
+            this.abi.value = await AssetCache.instance.lookup(abiURL) as ethers.Fragment[]
         } else {
             this.abi.value = null
         }
