@@ -43,14 +43,7 @@
       </div>
     </template>
 
-    <template v-if="showRawMetadata" #content>
-      <BlobValue
-          :blob-value="metadataString"
-          :pretty="true"
-      />
-    </template>
-
-    <template v-else #content>
+    <template #content>
 
       <Property id="raw-metadata-property" :full-width="true">
         <template #name>
@@ -76,74 +69,92 @@
           />
         </template>
       </Property>
-      <Property v-if="format" id="format" :full-width="true">
-        <template #name>
-          Format
-        </template>
-        <template #value>
-          <BlobValue :blob-value="format" :show-none="true"/>
-        </template>
-      </Property>
-      <Property v-if="image" id="image" :full-width="true">
-        <template #name>
-          Image
-        </template>
-        <template #value>
-          <BlobValue :blob-value="image" :show-none="true"/>
-        </template>
-      </Property>
-      <Property v-if="type" id="type" :full-width="true">
-        <template #name>
-          Type
-        </template>
-        <template #value>
-          <BlobValue :blob-value="type" :show-none="true"/>
-        </template>
-      </Property>
-      <Property v-if="checksum" id="checksum" :full-width="true">
-        <template #name>
-          Checksum
-        </template>
-        <template #value>
-          <BlobValue :blob-value="checksum" :show-none="true"/>
-        </template>
-      </Property>
-      <Property v-if="creatorDID" id="creator-did" :full-width="true">
-        <template #name>
-          Creator DID
-        </template>
-        <template #value>
-          <BlobValue :blob-value="creatorDID" :show-none="true"/>
-        </template>
-      </Property>
-      <Property v-if="properties" id="properties" :full-width="true">
-        <template #name>
-          Properties
-        </template>
-        <template #value>
-          <BlobValue :blob-value="properties" :pretty="true" :show-none="true"/>
-        </template>
-      </Property>
 
-      <template v-if="attributes.length">
-        <p class="h-is-tertiary-text mt-5 mb-3">Attributes</p>
-        <template v-for="attr in attributes" :key="attr.trait_type">
-          <NftAttribute :attribute="attr"/>
+      <template v-if="showRawMetadata">
+        <Property id="raw-content" :full-width="true">
+          <template #name>
+            Content
+          </template>
+          <template #value>
+            <BlobValue
+                :blob-value="metadataString"
+                :pretty="true"
+            />
+          </template>
+        </Property>
+      </template>
+
+      <template v-else>
+        <Property v-if="format" id="format" :full-width="true">
+          <template #name>
+            Format
+          </template>
+          <template #value>
+            <BlobValue :blob-value="format" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="image" id="image" :full-width="true">
+          <template #name>
+            Image
+          </template>
+          <template #value>
+            <BlobValue :blob-value="image" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="type" id="type" :full-width="true">
+          <template #name>
+            Type
+          </template>
+          <template #value>
+            <BlobValue :blob-value="type" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="checksum" id="checksum" :full-width="true">
+          <template #name>
+            Checksum
+          </template>
+          <template #value>
+            <BlobValue :blob-value="checksum" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="creatorDID" id="creator-did" :full-width="true">
+          <template #name>
+            Creator DID
+          </template>
+          <template #value>
+            <BlobValue :blob-value="creatorDID" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="properties" id="properties" :full-width="true">
+          <template #name>
+            Properties
+          </template>
+          <template #value>
+            <BlobValue :blob-value="properties" :pretty="true" :show-none="true"/>
+          </template>
+        </Property>
+
+        <template v-if="attributes.length">
+          <p class="h-is-tertiary-text mt-5 mb-3">Attributes</p>
+          <template v-for="attr in attributes" :key="attr.trait_type">
+            <NftAttribute :attribute="attr"/>
+          </template>
+        </template>
+
+        <template v-if="files.length">
+          <p class="h-is-tertiary-text mt-5 mb-3">Files</p>
+          <div id="file-container-area" class="file-container">
+            <NftFile
+                v-for="(file) in files" :key="file.uri"
+                class="file-container-item mt-3"
+                :type="file.type"
+                :url="file.url"
+                :size="200"
+            />
+          </div>
         </template>
       </template>
 
-      <template v-if="files.length">
-        <p class="h-is-tertiary-text mt-5 mb-3">Files</p>
-        <div id="file-container-area" class="file-container">
-          <NftFile
-              v-for="(file) in files" :key="file.uri"
-              class="file-container-item mt-3"
-              :type="file.type"
-              :url="file.url"
-              :size="200"
-          />
-        </div>
-      </template>
     </template>
 
   </DashboardCard>
