@@ -25,7 +25,6 @@
 <template>
 
   <DashboardCard
-      v-if="rawMetadata"
       id="metadata-section"
       class="h-card"
       collapsible-key="metadataSection"
