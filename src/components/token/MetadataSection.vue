@@ -25,7 +25,7 @@
 <template>
 
   <DashboardCard
-      v-if="metadata"
+      v-if="rawMetadata"
       id="metadata-section"
       class="h-card"
       collapsible-key="metadataSection"
@@ -37,7 +37,7 @@
 
     <template #control>
       <div v-if="metadataString" class="is-flex is-align-items-center is-justify-content-end">
-        <p class="has-text-weight-light">Show raw metadata</p>
+        <p class="has-text-weight-light">Raw content</p>
         <label class="checkbox pt-1 ml-3">
           <input type="checkbox" v-model="showRawMetadata">
         </label>
@@ -53,12 +53,19 @@
 
     <template v-else #content>
 
-      <Property id="metadata" :full-width="true">
-        <template #name>Metadata Location</template>
+      <Property id="raw-metadata-property" :full-width="true">
+        <template #name>
+          Raw Metadata
+        </template>
+        <template #value>
+          <BlobValue :blob-value="rawMetadata" :show-none="true"/>
+        </template>
+      </Property>
+      <Property id="metadata-location" :full-width="true">
+        <template #name>Content Location</template>
         <template #value>
           <BlobValue
               class="is-inline-block"
-              :base64="true"
               :blob-value="metadata"
               :show-none="true"
           />
@@ -187,7 +194,8 @@ export default defineComponent({
       showRawMetadata,
       metadataInfo: props.metadataAnalyzer.metadataInfo,
       metadataWarning: props.metadataAnalyzer.metadataWarning,
-      metadata: props.metadataAnalyzer.rawMetadata,
+      metadata: props.metadataAnalyzer.metadata,
+      rawMetadata: props.metadataAnalyzer.rawMetadata,
       metadataString: props.metadataAnalyzer.metadataString,
       attributes: props.metadataAnalyzer.attributes,
       creatorDID: props.metadataAnalyzer.creatorDID,
