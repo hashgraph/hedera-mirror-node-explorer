@@ -35,7 +35,7 @@
     </template>
 
     <template #control>
-      <div v-if="metadataString" class="is-flex is-align-items-center is-justify-content-end">
+      <div v-if="metadataString" class="is-flex is-align-items-baseline is-justify-content-end">
         <p class="has-text-weight-light">Raw content</p>
         <label class="checkbox pt-1 ml-3">
           <input type="checkbox" v-model="showRawMetadata">
