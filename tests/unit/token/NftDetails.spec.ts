@@ -91,7 +91,7 @@ describe("NftDetails.vue", () => {
         expect(wrapper.findComponent('MetadataSection').exists()).toBe(false)
 
         const selector = wrapper.get('select')
-        expect(selector.text()).toBe('TYPES: ALLCRYPTO APPROVE ALLOWANCECRYPTO DELETE ALLOWANCECRYPTO TRANSFERTOKEN BURNTOKEN DELETETOKEN MINTTOKEN WIPE')
+        expect(selector.text()).toBe('TYPES: ALLCRYPTO APPROVE ALLOWANCECRYPTO DELETE ALLOWANCECRYPTO TRANSFERTOKEN BURNTOKEN DELETETOKEN MINTTOKEN REJECTTOKEN WIPE')
 
         const txTable = wrapper.get('#recentTransactionsTable')
         expect(txTable.text()).toContain('IDTypeContentTime')

@@ -57,6 +57,7 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENDELETION:
         case TransactionType.TOKENFEESCHEDULEUPDATE:
         case TransactionType.TOKENPAUSE:
+        case TransactionType.TOKENREJECT:
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
         case TransactionType.TOKENUPDATENFTS:
@@ -289,6 +290,9 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             break;
         case TransactionType.TOKENPAUSE:
             result = "Token Pause";
+            break;
+        case TransactionType.TOKENREJECT:
+            result = "Token Reject";
             break;
         case TransactionType.TOKENREVOKEKYC:
             result = "Token KYC Revoke";
