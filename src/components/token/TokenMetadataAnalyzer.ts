@@ -262,7 +262,7 @@ export class TokenMetadataAnalyzer {
             } else {
                 try {
                     CID.parse(metadata.value)
-                    content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata}`)
+                    content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata.value}`)
                 } catch {
                     content.value = null
                 }
