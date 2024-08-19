@@ -84,7 +84,7 @@
           <BlobValue :blob-value="format" :show-none="true"/>
         </template>
       </Property>
-      <Property id="image" :full-width="true">
+      <Property v-if="image" id="image" :full-width="true">
         <template #name>
           Image
         </template>
@@ -92,7 +92,7 @@
           <BlobValue :blob-value="image" :show-none="true"/>
         </template>
       </Property>
-      <Property id="type" :full-width="true">
+      <Property v-if="type" id="type" :full-width="true">
         <template #name>
           Type
         </template>
@@ -100,7 +100,7 @@
           <BlobValue :blob-value="type" :show-none="true"/>
         </template>
       </Property>
-      <Property id="checksum" v-if="checksum" :full-width="true">
+      <Property v-if="checksum" id="checksum" :full-width="true">
         <template #name>
           Checksum
         </template>
