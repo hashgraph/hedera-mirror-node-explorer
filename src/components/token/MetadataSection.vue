@@ -60,7 +60,7 @@
           <BlobValue :blob-value="rawMetadata" :show-none="true"/>
         </template>
       </Property>
-      <Property id="metadata-location" :full-width="true">
+      <Property v-if="rawMetadata" id="metadata-location" :full-width="true">
         <template #name>Content Location</template>
         <template #value>
           <BlobValue
