@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -74,6 +76,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher3).reply(200, []);
         const matcher4 = "/api/v1/transactions"
         mock.onGet(matcher4).reply(200, SAMPLE_TRANSACTIONS);
+        const abi = require('../../../public/abi/IERC20+IHRC.json')
+        const matcher6 = "http://localhost:3000/abi/IERC20+IHRC.json"
+        mock.onGet(matcher6).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -141,6 +146,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
         const matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher6 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher6).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -202,6 +210,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
         let matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -235,6 +246,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher3).reply(200, []);
         const matcher4 = "/api/v1/tokens/" + testTokenId + "/nfts"
         mock.onGet(matcher4).reply(200, SAMPLE_NFTS);
+        const abi2 = require('../../../public/abi/IERC20+IHRC.json')
+        const matcher62 = "http://localhost:3000/abi/IERC20+IHRC.json"
+        mock.onGet(matcher62).reply(200, abi2)
 
         await wrapper.setProps({
             tokenId: testTokenId
@@ -295,6 +309,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
         const matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -345,6 +362,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
         const matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -397,6 +417,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
         const matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -436,6 +459,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher3).reply(200, []);
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+        const abi = require('../../../public/abi/IERC20+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC20+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -494,6 +520,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher3).reply(200, []);
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
@@ -550,6 +579,9 @@ describe("TokenDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_NFTS);
         const matcher3 = "/api/v1/contracts/" + testTokenId + "/results"
         mock.onGet(matcher3).reply(200, []);
+        const abi = require('../../../public/abi/IERC721+IHRC.json')
+        const matcher61 = "http://localhost:3000/abi/IERC721+IHRC.json"
+        mock.onGet(matcher61).reply(200, abi)
 
         const wrapper = mount(TokenDetails, {
             global: {
