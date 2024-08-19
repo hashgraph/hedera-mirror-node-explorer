@@ -116,8 +116,14 @@ describe("MetadataSection.vue", () => {
         expect(wrapper.get("#raw-metadata-propertyName").text()).toBe('Raw Metadata')
         expect(wrapper.get("#raw-metadata-propertyValue").text()).toBe(UNUSABLE_METADATA)
 
-        expect(wrapper.get("#typeValue").text()).toBe('None')
-        expect(wrapper.get("#imageValue").text()).toBe('None')
+        expect(wrapper.find("#formatValue").exists()).toBe(false)
+        expect(wrapper.find("#imageValue").exists()).toBe(false)
+        expect(wrapper.find("#typeValue").exists()).toBe(false)
+        expect(wrapper.find("#checksumValue").exists()).toBe(false)
+        expect(wrapper.find("#creatorDIDValue").exists()).toBe(false)
+        expect(wrapper.find("#propertiesValue").exists()).toBe(false)
+        expect(wrapper.text()).not.contains('Attributes')
+        expect(wrapper.text()).not.contains('Files')
 
         wrapper.unmount()
         analyzer.unmount()
