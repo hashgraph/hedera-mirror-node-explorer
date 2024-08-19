@@ -50,6 +50,7 @@ describe("MetadataSection.vue", () => {
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         const metadata = ref(IPFS_METADATA)
+        const decodedMetadata = atob(IPFS_METADATA)
         const analyzer = new TokenMetadataAnalyzer(metadata)
         analyzer.mount()
 
@@ -66,6 +67,12 @@ describe("MetadataSection.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(wrapper.get("#raw-metadata-propertyName").text()).toBe('Raw Metadata')
+        expect(wrapper.get("#raw-metadata-propertyValue").text()).toBe(metadata.value)
+
+        expect(wrapper.get("#metadata-locationName").text()).toBe('Content Location')
+        expect(wrapper.get("#metadata-locationValue").text()).toBe(decodedMetadata)
+
         expect(wrapper.get("#typeValue").text()).toBe(IPFS_METADATA_CONTENT.type)
         expect(wrapper.get("#imageValue").text()).toBe(IPFS_METADATA_CONTENT.image)
         expect(wrapper.get("#formatValue").text()).toBe(IPFS_METADATA_CONTENT.format)
@@ -79,6 +86,45 @@ describe("MetadataSection.vue", () => {
         }
 
         mock.restore()
+        wrapper.unmount()
+        analyzer.unmount()
+        await flushPromises()
+    });
+
+    it("Should display raw metadata property when metadata unusable", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const UNUSABLE_METADATA = '==AA'
+        const metadata = ref(UNUSABLE_METADATA)
+        const analyzer = new TokenMetadataAnalyzer(metadata)
+        analyzer.mount()
+
+        const wrapper = mount(MetadataSection, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                metadataAnalyzer: analyzer,
+                collapsed: false
+            },
+        });
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.get("#raw-metadata-propertyName").text()).toBe('Raw Metadata')
+        expect(wrapper.get("#raw-metadata-propertyValue").text()).toBe(UNUSABLE_METADATA)
+
+        expect(wrapper.find("#formatValue").exists()).toBe(false)
+        expect(wrapper.find("#imageValue").exists()).toBe(false)
+        expect(wrapper.find("#typeValue").exists()).toBe(false)
+        expect(wrapper.find("#checksumValue").exists()).toBe(false)
+        expect(wrapper.find("#creatorDIDValue").exists()).toBe(false)
+        expect(wrapper.find("#propertiesValue").exists()).toBe(false)
+        expect(wrapper.text()).not.contains('Attributes')
+        expect(wrapper.text()).not.contains('Files')
+
         wrapper.unmount()
         analyzer.unmount()
         await flushPromises()

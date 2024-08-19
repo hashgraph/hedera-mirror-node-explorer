@@ -81,15 +81,7 @@ export class TokenMetadataAnalyzer {
     public loadSuccess = computed(() => this.loadSuccessRef.value)
     public loadError = computed(() => this.loadErrorRef.value)
 
-    public readonly metadata = computed(() => {
-        let result
-        try {
-            result = Buffer.from(this.rawMetadata.value ?? '', 'base64').toString()
-        } catch {
-            result = this.rawMetadata.value
-        }
-        return result
-    })
+    public readonly metadata = ref('')
 
     public metadataInfo = computed(() => {
         let result: string | null
@@ -242,35 +234,35 @@ export class TokenMetadataAnalyzer {
 
     private async metadataDidChange(value: string | null): Promise<void> {
         const content = this.metadataContentRef
+        const metadata = this.metadata
 
-        let metadata
         try {
-            metadata = Buffer.from(value ?? '', 'base64').toString()
+            metadata.value = Buffer.from(value ?? '', 'base64').toString()
         } catch {
-            metadata = value
+            metadata.value = value ?? ''
         }
 
-        if (metadata !== null) {
-            if (metadata.startsWith('ipfs://')) {
-                content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata.substring(7)}`)
-            } else if (metadata.startsWith('hcs://')) {
-                const i = metadata.lastIndexOf('/');
-                const id = metadata.substring(i + 1);
+        if (metadata.value !== null) {
+            if (metadata.value.startsWith('ipfs://')) {
+                content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata.value.substring(7)}`)
+            } else if (metadata.value.startsWith('hcs://')) {
+                const i = metadata.value.lastIndexOf('/');
+                const id = metadata.value.substring(i + 1);
                 if (EntityID.parse(id) !== null) {
                     content.value = await this.readMetadataFromTopic(id)
                 } else {
                     content.value = null
                 }
-            } else if (metadata.startsWith('https://')) {
-                content.value = await this.readMetadataFromUrl(metadata)
-            } else if (EntityID.parse(metadata) !== null) {
-                content.value = await this.readMetadataFromTopic(metadata)
-            } else if (Timestamp.parse(metadata) !== null) {
-                content.value = await this.readMetadataFromTimestamp(metadata)
+            } else if (metadata.value.startsWith('https://')) {
+                content.value = await this.readMetadataFromUrl(metadata.value)
+            } else if (EntityID.parse(metadata.value) !== null) {
+                content.value = await this.readMetadataFromTopic(metadata.value)
+            } else if (Timestamp.parse(metadata.value) !== null) {
+                content.value = await this.readMetadataFromTimestamp(metadata.value)
             } else {
                 try {
-                    CID.parse(metadata)
-                    content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata}`)
+                    CID.parse(metadata.value)
+                    content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata.value}`)
                 } catch {
                     content.value = null
                 }
