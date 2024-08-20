@@ -87,17 +87,17 @@ export function makeFilterValues(nftFilter: boolean): string[] {
       })
   if (nftFilter) {
     result = result.filter(el => {
-      return el === "CRYPTOTRANSFER"
-          || el === "TOKENMINT"
-          || el === "CRYPTOAPPROVEALLOWANCE"
-          || el === "CRYPTODELETEALLOWANCE"
-          || el === "TOKENWIPE"
-          || el === "TOKENAIRDROP"
-          || el === "TOKENBURN"
-          || el === "TOKENCANCELAIRDROP"
-          || el === "TOKENCLAIMAIRDROP"
-          || el === "TOKENREJECT"
-          || el === "TOKENDELETION";
+      return el === TransactionType.CRYPTOTRANSFER
+          || el ===TransactionType.TOKENMINT
+          || el ===TransactionType.CRYPTOAPPROVEALLOWANCE
+          || el ===TransactionType.CRYPTODELETEALLOWANCE
+          || el ===TransactionType.TOKENWIPE
+          || el ===TransactionType.TOKENAIRDROP
+          || el ===TransactionType.TOKENBURN
+          || el ===TransactionType.TOKENCANCELAIRDROP
+          || el ===TransactionType.TOKENCLAIMAIRDROP
+          || el ===TransactionType.TOKENREJECT
+          || el ===TransactionType.TOKENDELETION;
     })
   }
   result.splice(0, 0, "")
