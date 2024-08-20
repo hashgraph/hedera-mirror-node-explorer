@@ -64,6 +64,7 @@ describe("AccountDetails.vue", () => {
     const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
 
     it("Should display account details", async () => {
+        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: true});
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -142,14 +143,15 @@ describe("AccountDetails.vue", () => {
         const select = wrapper.findComponent(TransactionFilterSelect)
         expect(select.exists()).toBe(true)
         expect(select.text()).toBe(
-            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE " +
-            "HASHCRYPTO APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCECRYPTO " +
-            "DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE " +
-            "APPENDFILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGEHCS " +
-            "UPDATE TOPICNODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN " +
-            "ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN " +
-            "KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN " +
-            "UPDATETOKEN UPDATE NFTSTOKEN WIPEUNCHECKED SUBMIT")
+            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE HASHCRYPTO " +
+            "APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCE" +
+            "CRYPTO DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE APPEND" +
+            "FILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGE" +
+            "HCS UPDATE TOPICNODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATE" +
+            "SCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN AIRDROPTOKEN ASSOCIATE" +
+            "TOKEN BURNTOKEN CANCEL AIRDROPTOKEN CLAIM AIRDROPTOKEN CREATETOKEN DELETETOKEN DISSOCIATE" +
+            "TOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSE" +
+            "TOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN UPDATETOKEN UPDATE NFTSTOKEN WIPEUNCHECKED SUBMIT")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
@@ -334,7 +336,7 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to node", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
+        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: false});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -432,6 +434,49 @@ describe("AccountDetails.vue", () => {
         expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")
         expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.00000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should filter transaction types when VITE_APP_ENABLE_AIRDROP not set ", async () => {
+        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: false});
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
+
+        const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
+        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
+
+        const matcher2 = "/api/v1/transactions"
+        mock.onGet(matcher2).reply(200, SAMPLE_TRANSACTIONS);
+
+        const wrapper = mount(AccountDetails, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: SAMPLE_ACCOUNT.account ?? undefined
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        const select = wrapper.findComponent(TransactionFilterSelect)
+        expect(select.exists()).toBe(true)
+        expect(select.text()).toBe(
+            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE HASHCRYPTO " +
+            "APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCE" +
+            "CRYPTO DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE APPEND" +
+            "FILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGE" +
+            "HCS UPDATE TOPICNODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATE" +
+            "SCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN ASSOCIATE" +
+            "TOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATE" +
+            "TOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSE" +
+            "TOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN UPDATETOKEN UPDATE NFTSTOKEN WIPEUNCHECKED SUBMIT")
 
         mock.restore()
         wrapper.unmount()
