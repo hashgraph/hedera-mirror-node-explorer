@@ -193,10 +193,11 @@
             <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
-        <Property id="maxAutoAssociation">
+        <Property id="maxAutoAssociation"
+                  tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0).">
           <template v-slot:name>Max. Auto. Association</template>
           <template v-slot:value>
-            <StringValue :string-value="account?.max_automatic_token_associations?.toString()"/>
+            <StringValue :string-value="maxAutoAssociationValue"/>
           </template>
         </Property>
         <Property id="receiverSigRequired">
@@ -351,6 +352,7 @@ import TransactionDownloadDialog from "@/components/download/TransactionDownload
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
@@ -422,6 +424,11 @@ export default defineComponent({
     const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
+
+    const maxAutoAssociationValue = computed(() =>
+        labelForAutomaticTokenAssociation(
+            accountLocParser.accountInfo.value?.max_automatic_token_associations ?? 0
+        ))
 
     //
     // BalanceAnalyzer
@@ -544,6 +551,7 @@ export default defineComponent({
       notification: accountLocParser.errorNotification,
       isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
       account: accountLocParser.accountInfo,
+      maxAutoAssociationValue,
       normalizedAccountId: accountLocParser.accountId,
       accountChecksum: accountLocParser.accountChecksum,
       accountInfo: accountLocParser.accountDescription,
@@ -571,6 +579,7 @@ export default defineComponent({
       onDateCleared,
       domainName: nameQuery.name,
       domainProviderName: nameQuery.providerName,
+      labelForAutomaticTokenAssociation,
     }
   }
 });
