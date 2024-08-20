@@ -20,17 +20,20 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import AccountDetails from "@/pages/AccountDetails.vue";
 import {
     SAMPLE_ACCOUNT,
-    SAMPLE_ACCOUNT_BALANCES, SAMPLE_ACCOUNT_DUDE,
-    SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE,
+    SAMPLE_ACCOUNT_BALANCES,
+    SAMPLE_ACCOUNT_DUDE,
+    SAMPLE_NETWORK_NODES,
+    SAMPLE_NETWORK_STAKE,
     SAMPLE_NONFUNGIBLE,
-    SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE,
+    SAMPLE_TOKEN,
+    SAMPLE_TOKEN_DUDE,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -185,7 +188,7 @@ describe("NodeDetails.vue", () => {
         expect(wrapper.find("#aliasValue").exists()).toBe(false)
         expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022, UTC")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("77d 3h 40min")
-        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("10")
+        expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("Unlimited Auto Associations")
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("true")
 
         mock.restore()
