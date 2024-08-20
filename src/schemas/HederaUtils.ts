@@ -377,6 +377,22 @@ export async function isOwnedSerials(accountId: string | null, tokenId: string |
     return Promise.resolve(result)
 }
 
+export function labelForAutomaticTokenAssociation(rawProperty: number): string {
+    let result: string
+    console.log(`labelForAutomaticTokenAssociation - property: ${rawProperty}`)
+    switch (rawProperty) {
+        case -1:
+            result = 'Unlimited Auto Associations'
+            break
+        case 0:
+            result = 'No Auto Association'
+            break
+        default:
+            result = rawProperty.toString()
+    }
+    return result
+}
+
 export async function waitForTransactionRefresh(transactionId: string, attemptIndex: number, polling = 3000) {
     let result: Promise<Transaction | string>
 

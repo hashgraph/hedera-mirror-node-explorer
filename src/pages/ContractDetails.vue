@@ -132,10 +132,11 @@
             <AccountLink :account-id="autoRenewAccount"/>
           </template>
         </Property>
-        <Property id="maxAutoAssociation">
+        <Property id="maxAutoAssociation"
+                  tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0).">
           <template v-slot:name>Max. Auto. Association</template>
           <template v-slot:value>
-            <StringValue :string-value="contract?.max_automatic_token_associations?.toString()"/>
+            <StringValue :string-value="maxAutoAssociationValue"/>
           </template>
         </Property>
       </template>
@@ -230,6 +231,7 @@ import MirrorLink from "@/components/MirrorLink.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 
 export default defineComponent({
 
@@ -285,6 +287,10 @@ export default defineComponent({
     onBeforeUnmount(() => contractLocParser.unmount())
 
     const displayNonce = computed(() => contractLocParser.entity.value?.nonce != undefined)
+    const maxAutoAssociationValue = computed(() =>
+        labelForAutomaticTokenAssociation(
+            contractLocParser.entity.value?.max_automatic_token_associations ?? 0
+        ))
 
     const autoRenewAccount = computed(() => {
       return contractLocParser.entity.value?.auto_renew_account ?? null
@@ -347,6 +353,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       contract: contractLocParser.entity,
+      maxAutoAssociationValue,
       balanceAnalyzer,
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
