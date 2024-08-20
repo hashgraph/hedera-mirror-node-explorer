@@ -45,7 +45,7 @@
 
 <script lang="ts">
 
-import {defineComponent} from "vue";
+import {computed, defineComponent} from "vue";
 import {TransactionType} from "@/schemas/HederaSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 
@@ -64,6 +64,7 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const isAirdropEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
 
     const makeFilterLabel = (filterValue: string): string => {
       return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
@@ -71,38 +72,45 @@ export default defineComponent({
 
     const handleOption = (option: string) => context.emit('update:selectedFilter', option)
 
+    const filterValues = computed(() => {
+      let result = Object
+          .keys(TransactionType)
+          .sort((a, b) => {
+            return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
+          })
+      if (props.nftFilter) {
+        result = result.filter(el => {
+          return el === TransactionType.CRYPTOTRANSFER
+              || el ===TransactionType.TOKENMINT
+              || el ===TransactionType.CRYPTOAPPROVEALLOWANCE
+              || el ===TransactionType.CRYPTODELETEALLOWANCE
+              || el ===TransactionType.TOKENWIPE
+              || el ===TransactionType.TOKENAIRDROP
+              || el ===TransactionType.TOKENBURN
+              || el ===TransactionType.TOKENCANCELAIRDROP
+              || el ===TransactionType.TOKENCLAIMAIRDROP
+              || el ===TransactionType.TOKENREJECT
+              || el ===TransactionType.TOKENDELETION;
+        })
+      }
+      if (!isAirdropEnabled) {
+        result = result.filter(el => {
+          return el !== TransactionType.TOKENAIRDROP
+              && el !== TransactionType.TOKENCANCELAIRDROP
+              && el !== TransactionType.TOKENCLAIMAIRDROP;
+        })
+      }
+      result.splice(0, 0, "")
+      return result
+    })
+
     return {
-      filterValues: makeFilterValues(props.nftFilter),
+      filterValues,
       makeFilterLabel,
       handleOption,
     }
   }
 });
-
-export function makeFilterValues(nftFilter: boolean): string[] {
-  let result = Object
-      .keys(TransactionType)
-      .sort((a, b) => {
-        return makeTypeLabel(a as TransactionType) < makeTypeLabel(b as TransactionType) ? -1 : 1;
-      })
-  if (nftFilter) {
-    result = result.filter(el => {
-      return el === TransactionType.CRYPTOTRANSFER
-          || el ===TransactionType.TOKENMINT
-          || el ===TransactionType.CRYPTOAPPROVEALLOWANCE
-          || el ===TransactionType.CRYPTODELETEALLOWANCE
-          || el ===TransactionType.TOKENWIPE
-          || el ===TransactionType.TOKENAIRDROP
-          || el ===TransactionType.TOKENBURN
-          || el ===TransactionType.TOKENCANCELAIRDROP
-          || el ===TransactionType.TOKENCLAIMAIRDROP
-          || el ===TransactionType.TOKENREJECT
-          || el ===TransactionType.TOKENDELETION;
-    })
-  }
-  result.splice(0, 0, "")
-  return result
-}
 
 </script>
 
