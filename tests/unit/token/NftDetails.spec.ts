@@ -40,6 +40,7 @@ HMSF.forceUTC = true
 describe("NftDetails.vue", () => {
 
     it("Should display details of NFT", async () => {
+        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: true});
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -91,7 +92,9 @@ describe("NftDetails.vue", () => {
         expect(wrapper.findComponent('MetadataSection').exists()).toBe(false)
 
         const selector = wrapper.get('select')
-        expect(selector.text()).toBe('TYPES: ALLCRYPTO APPROVE ALLOWANCECRYPTO DELETE ALLOWANCECRYPTO TRANSFERTOKEN BURNTOKEN DELETETOKEN MINTTOKEN REJECTTOKEN WIPE')
+        expect(selector.text()).toBe(
+            'TYPES: ALLCRYPTO APPROVE ALLOWANCECRYPTO DELETE ALLOWANCECRYPTO TRANSFERTOKEN AIRDROPTOKEN BURN' +
+            'TOKEN CANCEL AIRDROPTOKEN CLAIM AIRDROPTOKEN DELETETOKEN MINTTOKEN REJECTTOKEN WIPE')
 
         const txTable = wrapper.get('#recentTransactionsTable')
         expect(txTable.text()).toContain('IDTypeContentTime')
