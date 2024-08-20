@@ -62,6 +62,9 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENUPDATE:
         case TransactionType.TOKENUPDATENFTS:
         case TransactionType.TOKENWIPE:
+        case TransactionType.TOKENAIRDROP:
+        case TransactionType.TOKENCANCELAIRDROP:
+        case TransactionType.TOKENCLAIMAIRDROP:
             result = row.entity_id ? "Token ID: " + row.entity_id : ""
             break
         case TransactionType.CONTRACTCREATEINSTANCE:
@@ -293,6 +296,15 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             break;
         case TransactionType.TOKENREJECT:
             result = "Token Reject";
+            break;
+        case TransactionType.TOKENAIRDROP:
+            result = "Token Airdrop";
+            break;
+        case TransactionType.TOKENCANCELAIRDROP:
+            result = "Token Cancel Airdrop";
+            break;
+        case TransactionType.TOKENCLAIMAIRDROP:
+            result = "Token Claim Airdrop";
             break;
         case TransactionType.TOKENREVOKEKYC:
             result = "Token KYC Revoke";

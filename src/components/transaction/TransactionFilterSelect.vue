@@ -92,7 +92,10 @@ export function makeFilterValues(nftFilter: boolean): string[] {
           || el === "CRYPTOAPPROVEALLOWANCE"
           || el === "CRYPTODELETEALLOWANCE"
           || el === "TOKENWIPE"
+          || el === "TOKENAIRDROP"
           || el === "TOKENBURN"
+          || el === "TOKENCANCELAIRDROP"
+          || el === "TOKENCLAIMAIRDROP"
           || el === "TOKENREJECT"
           || el === "TOKENDELETION";
     })

@@ -98,7 +98,10 @@ export class EntityDescriptor {
                 result = new EntityDescriptor("Schedule ID", null);
                 break;
 
+            case TransactionType.TOKENAIRDROP:
             case TransactionType.TOKENBURN:
+            case TransactionType.TOKENCANCELAIRDROP:
+            case TransactionType.TOKENCLAIMAIRDROP:
             case TransactionType.TOKENCREATION:
             case TransactionType.TOKENDELETION:
             case TransactionType.TOKENUPDATE:
