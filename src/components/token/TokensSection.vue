@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="accountId && showSection" collapsible-key="tokens">
+  <DashboardCard v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
 
     <template v-slot:title>
       <span class="h-is-secondary-title">Tokens</span>
@@ -38,11 +38,11 @@
           @update:selected-tab="onSelectTab($event)"
       />
 
-      <div v-if="selectedTab === 'association'" id="associationTable">
+      <div v-if="selectedTab === 'associations'" id="associationsTable">
         <BalanceTable :controller="tokenRelationshipTableController"/>
       </div>
 
-      <div v-else-if="selectedTab === 'nft'" id="nftTable">
+      <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
         <NftsTable :collections="nftCollections"/>
       </div>
 
@@ -79,7 +79,7 @@ const perPage = ref(10)
 const showSection = computed(() => tokenRelationshipTableController.rows.value.length > 0)
 const accountId = computed(() => props.accountId)
 
-const tabIds = ['nft', 'association']
+const tabIds = ['nfts', 'associations']
 const tabLabels = ['NFTs', 'Associations']
 const selectedTab = ref(AppStorage.getAccountTokenTab() ?? tabIds[0])
 const onSelectTab = (tab: string) => {
