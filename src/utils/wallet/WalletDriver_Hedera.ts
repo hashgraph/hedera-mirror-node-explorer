@@ -29,6 +29,7 @@ import {
     TokenAssociateTransaction,
     TokenDissociateTransaction,
     TokenId,
+    TokenRejectTransaction,
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
@@ -130,6 +131,15 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
+    public async rejectTokens(accountId: string, tokenIds: string[]): Promise<string> {
+
+        const trans = new TokenRejectTransaction()
+        trans.setTokenIds(tokenIds.map(tokenId => TokenId.fromString(tokenId)))
+        const result = await this.executeTransaction(accountId, trans)
+
+        return Promise.resolve(result)
+    }
+
     //
     // Public (to be subclassed)
     //
@@ -195,7 +205,8 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
             | AccountAllowanceDeleteTransaction
             | TokenAssociateTransaction
             | TokenDissociateTransaction
-            | ContractExecuteTransaction): Promise<string> {
+            | ContractExecuteTransaction
+            | TokenRejectTransaction): Promise<string> {
         let result: Promise<string>
 
         const signer = this.makeSigner(accountId)
