@@ -25,17 +25,21 @@
 <template>
   <div>
     <!-- <div class="is-relative"> -->
-    <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white is-small"
+    <button id="showTokenActions" class="button is-white is-small"
             @click="() => isActive = !isActive">TOKEN ACTIONS
     </button>
 
     <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column box">
-      <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer"
+      <div v-if="isDissociated" id="associateToken" class="is-cursor is-hover-grey is-full has-cursor-pointer"
            @click="handleAssociate">TOKEN ASSOCIATE
       </div>
 
-      <div v-if="isAssociated" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+      <div v-if="isAssociated" id="dissociateToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
            @click="handleDissociate">TOKEN DISSOCIATE
+      </div>
+
+      <div v-if="isAssociated" id="rejectToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+           @click="handleReject">TOKEN REJECT
       </div>
 
       <div v-if="isWatchAssetSupported" id="showStakingDialog"
@@ -43,11 +47,6 @@
            @click="handleImport">TOKEN IMPORT
       </div>
     </div>
-
-    <button v-if="isHederaWallet" id="showStakingDialog" class="button is-white is-small"
-            @click="() => isDissociated ? handleAssociate() : handleDissociate()">
-      {{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}
-    </button>
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
                    :main-message="confirmMessage"
@@ -178,8 +177,27 @@ export default defineComponent({
     // Alert dialog states
     const alertController = new DialogController()
     const tooltipLabel = computed(
-        () => "Token " + tokenSymbol.value + " cannot be dissociated because "
-            + walletManager.accountId.value + " is its treasury account."
+        () => {
+          let result: string
+          switch (action.value) {
+            case "ASSOCIATE":
+              result = "Token " + tokenSymbol.value + " cannot be associated because "
+                  + walletManager.accountId.value + " is its treasury account."
+              break
+            case "DISSOCIATE":
+              result = "Token " + tokenSymbol.value + " cannot be dissociated because "
+                  + walletManager.accountId.value + " is its treasury account."
+              break
+            case "REJECT":
+              result = "Token " + tokenSymbol.value + " cannot be rejected because "
+                  + walletManager.accountId.value + " is its treasury account."
+              break
+            default:
+              result = "?"
+              break
+          }
+          return result
+        }
     )
 
     //
@@ -242,6 +260,21 @@ export default defineComponent({
     }
 
     //
+    // handleReject()
+    //
+    const handleReject = () => {
+      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
+        action.value = 'REJECT'
+        showConfirmDialog.value = true
+        dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
+        confirmMessage.value = `Confirm rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        confirmExtraMessage.value = null
+      } else {
+        alertController.visible.value = true
+      }
+    }
+
+    //
     // handleImport()
     //
     const handleImport = () => {
@@ -275,6 +308,9 @@ export default defineComponent({
           break;
         case "DISSOCIATE":
           dissociateAction();
+          break;
+        case "REJECT":
+          rejectAction();
           break;
         case "IMPORT_TOKEN":
           importTokenAction();
@@ -360,6 +396,31 @@ export default defineComponent({
     }
 
     //
+    // rejectAction()
+    //
+    const rejectAction = async () => {
+      try {
+        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
+          showProgressDialog.value = true
+          showProgressSpinner.value = true
+          progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          try {
+            await walletManager.rejectTokens([tokenId.value!])
+          } finally {
+            props.analyzer.tokenAssociationDidChange()
+            gtagTransaction("reject_token")
+          }
+        }
+        showProgressDialog.value = false
+        showDoneDialog.value = true
+        dialogTitle.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+      } catch (reason) {
+        handleError(reason)
+      }
+    }
+
+    //
     // importTokenAction()
     //
     const importTokenAction = async () => {
@@ -425,6 +486,7 @@ export default defineComponent({
       handleAssociate,
       showWatchOption,
       handleDissociate,
+      handleReject,
       isEthereumWallet,
       showDynamicDialog,
       tokenSerialNumber,
