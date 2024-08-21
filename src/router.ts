@@ -33,7 +33,6 @@ import Topics from "@/pages/Topics.vue";
 import TopicDetails from "@/pages/TopicDetails.vue";
 import SearchHelp from "@/pages/SearchHelp.vue";
 import PageNotFound from "@/pages/PageNotFound.vue";
-import AccountBalances from "@/pages/AccountBalances.vue";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import TransactionsById from "@/pages/TransactionsById.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
@@ -130,12 +129,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/address/:accountAddress',
         name: 'AddressDetails',
         component: AddressDetails,
-        props: true
-    },
-    {
-        path: '/:network/accountbalances/:accountId',
-        name: 'AccountBalances',
-        component: AccountBalances,
         props: true
     },
     {
@@ -297,9 +290,6 @@ router.beforeEach((to) => {
             break;
         case "AdminKeyDetails":
             document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
-            break;
-        case "AccountBalances":
-            document.title = "Balances for Hedera Account " + to.params.accountId + titleSuffix
             break;
         case "NodeDetails":
             document.title = "Hedera Node " + to.params.nodeId + titleSuffix

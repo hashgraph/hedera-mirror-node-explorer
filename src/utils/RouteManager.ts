@@ -129,7 +129,6 @@ export class RouteManager {
         const r = route ?? this.currentRoute.value
         return r === 'Accounts'
             || r === 'AccountDetails'
-            || r === 'AccountBalances'
             || r === 'AccountsWithKey'
             || r === 'AdminKeyDetails'
     }
