@@ -86,28 +86,19 @@ describe('Account Navigation', () => {
         cy.go('back')
         cy.url().should('include', '/mainnet/account/')
 
-        cy.get('#balance')
-            .contains('a', "Show all tokens")
-            .click()
-
-        cy.url().should('include', 'accountbalances/' + accountId1)
-        cy.contains('All Tokens Associated to ' + accountId1)
-
-        cy.get('#balanceCard')
-            .find('table')
+        cy.get('#nftsTable')
             .find('tbody tr')
+            .should('be.visible')
             .should('have.length.at.least', 2)
             .eq(0)
             .find('td')
-            .eq(0)
-            .find('span')
-            .eq(0)
+            .eq(1)
             .click()
-            .then(($id) => {
-                cy.log('Selected token Id: ' + $id.text())
-                cy.url().should('include', '/mainnet/token/' + $id.text())
-                cy.contains('Token ID:' + $id.text())
-            })
+
+        cy.url().should('include', `/mainnet/accountcollection/${accountId1}`)
+        cy.contains('NFT Collection')
+        cy.contains('for Account' + accountId1)
+
     })
 
     it.skip('should follow links from account with few tokens', () => {
