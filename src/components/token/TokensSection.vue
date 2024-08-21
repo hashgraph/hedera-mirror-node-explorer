@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="accountId" collapsible-key="tokens">
+  <DashboardCard v-if="accountId && showSection" collapsible-key="tokens">
 
     <template v-slot:title>
       <span class="h-is-secondary-title">Tokens</span>
@@ -76,7 +76,8 @@ const props = defineProps({
 })
 
 const perPage = ref(10)
-const computedAccountId = computed(() => props.accountId || null)
+const showSection = computed(() => tokenRelationshipTableController.rows.value.length > 0)
+const accountId = computed(() => props.accountId)
 
 const tabIds = ['nft', 'association']
 const tabLabels = ['NFTs', 'Associations']
@@ -94,8 +95,8 @@ const onSelectTab = (tab: string) => {
   }
 }
 
-const tokenRelationshipTableController = new TokenRelationshipsTableController(useRouter(), computedAccountId, perPage);
-const nftCollectionLookup = NftCollectionCache.instance.makeLookup(computedAccountId)
+const tokenRelationshipTableController = new TokenRelationshipsTableController(useRouter(), accountId, perPage);
+const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
 onMounted(() => {
   tokenRelationshipTableController.mount()
   nftCollectionLookup.mount()
