@@ -286,7 +286,7 @@ describe("ContractDetails.vue", () => {
         expect(resultTable.exists()).toBe(true)
 
         expect(resultTable.find('thead').text()).toBe("Time From Error Message Transfer Amount")
-        const rows = wrapper.find('tbody').findAll('tr')
+        const rows = resultTable.find('tbody').findAll('tr')
 
         let cells = rows[0].findAll('td')
         expect(cells[0].text()).toBe("9:11:37.9739 AMFeb 3, 2023, UTC")

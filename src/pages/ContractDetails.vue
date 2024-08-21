@@ -76,9 +76,8 @@
 
         <div class="h-is-property-text">
           <Property id="balance" :full-width="isMediumScreen">
-            <template v-slot:name>{{
-                balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance'
-              }}
+            <template v-slot:name>
+              <span class="h-is-tertiary-text">Balance</span>
             </template>
             <template v-slot:value>
               <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
@@ -182,6 +181,8 @@
       </template>
     </DashboardCard>
 
+    <TokensSection :account-id="normalizedContractId"/>
+
     <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
     <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
@@ -232,12 +233,14 @@ import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
+import TokensSection from "@/components/token/TokensSection.vue";
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    TokensSection,
     InfoTooltip,
     EntityIOL,
     InlineBalancesValue,
