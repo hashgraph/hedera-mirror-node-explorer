@@ -242,6 +242,18 @@ export class WalletManager {
         }
     }
 
+    public async rejectTokens(tokenIds: string[]): Promise<string> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.rejectTokens(this.accountIdRef.value, tokenIds)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("rejectToken")
+        }
+    }
+
     public async watchToken(token: string, serialNumber?: string): Promise<void> {
         if (this.accountIdRef.value !== null) {
             if (this.activeDriver instanceof WalletDriver_Ethereum) {
