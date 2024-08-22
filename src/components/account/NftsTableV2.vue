@@ -24,56 +24,60 @@
 
 <template>
 
-    <o-table
-        :data="props.controller.rows.value"
-        :loading="props.controller.loading.value"
-        :hoverable="true"
-        :paginated="props.controller.paginated.value"
-        backend-pagination
-        pagination-order="left"
-        :range-before="0"
-        :range-after="0"
-        :total="props.controller.totalRowCount.value"
-        :per-page="props.controller.pageSize.value"
-        @page-change="props.controller.onPageChange"
-        :striped="true"
-        :v-model:current-page="props.controller.currentPage.value"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
-        @cell-click="handleClick"
-    >
+  <o-table
+      :data="props.controller.rows.value"
+      :loading="props.controller.loading.value"
+      :hoverable="true"
+      :paginated="props.controller.paginated.value"
+      backend-pagination
+      pagination-order="left"
+      :range-before="0"
+      :range-after="0"
+      :total="props.controller.totalRowCount.value"
+      :per-page="props.controller.pageSize.value"
+      @page-change="props.controller.onPageChange"
+      :striped="true"
+      :v-model:current-page="props.controller.currentPage.value"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      @cell-click="handleClick"
+  >
 
-      <o-table-column v-slot="props" field="image" label="Preview">
-        <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.image"/>
-      </o-table-column>
+    <o-table-column v-slot="props" field="image" label="Image">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.image"/>
+    </o-table-column>
 
-      <o-table-column v-slot="props" field="collection" label="Collection">
-        {{ props.row.token_id }}
-      </o-table-column>
+    <o-table-column v-slot="props" field="token-id" label="Token ID">
+      {{ props.row.token_id }}
+    </o-table-column>
 
-      <o-table-column v-slot="props" field="serial" label="#">
-        {{ props.row.serial_number }}
-      </o-table-column>
+    <o-table-column v-slot="props" field="serial" label="#">
+      {{ props.row.serial_number }}
+    </o-table-column>
 
-      <o-table-column v-slot="props" field="name" label="Name">
-        <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.name"/>
-      </o-table-column>
+    <o-table-column v-slot="props" field="token-name" label="Collection">
+      <TokenCell :token-id="props.row.token_id" :property="TokenCellItem.tokenName"/>
+    </o-table-column>
 
-      <o-table-column v-slot="props" field="creator" label="Creator">
-        <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.creator"/>
-      </o-table-column>
+    <o-table-column v-slot="props" field="name" label="Name">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.name"/>
+    </o-table-column>
 
-      <o-table-column v-slot="props" field="description" label="Description">
-        <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number"
-                 :property="NftCellItem.description"/>
-      </o-table-column>
+    <o-table-column v-slot="props" field="creator" label="Creator">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.creator"/>
+    </o-table-column>
 
-    </o-table>
+    <o-table-column v-slot="props" field="description" label="Description">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number"
+               :property="NftCellItem.description"/>
+    </o-table-column>
 
-    <EmptyTable v-if="!props.controller.totalRowCount"/>
+  </o-table>
+
+  <EmptyTable v-if="!props.controller.totalRowCount"/>
 
 </template>
 
@@ -90,6 +94,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 import {NftsTableController} from "@/components/account/NftsTableController";
+import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 
 const props = defineProps({
   controller: {
