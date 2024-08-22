@@ -26,7 +26,7 @@
 
   <div class="is-inline-block">
 
-    <EntityLink :route="tokenRoute">
+    <EntityLink :route="!noAnchor ? tokenRoute : null">
       <TokenIOL :token-id="tokenId"/>
     </EntityLink>
 
@@ -34,7 +34,7 @@
       <span class="ml-2">
         <TokenExtra
             :token-id="tokenId ?? undefined"
-            :use-anchor="true"
+            :use-anchor="!noAnchor"
         />
       </span>
     </template>
@@ -61,6 +61,10 @@ export default defineComponent({
   props: {
     tokenId: String,
     showExtra: Boolean,
+    noAnchor: {
+      type: Boolean,
+      default: false
+    }
   },
   setup(props) {
     const tokenRoute = computed(() => props.tokenId ? routeManager.makeRouteToToken(props.tokenId) : null)

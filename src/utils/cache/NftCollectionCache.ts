@@ -36,13 +36,14 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
         let nextURL: string | null = "api/v1/accounts/" + accountId + "/nfts"
         const params = {
             limit: 100 as number | undefined,
-            order: 'ASC'
+            order: 'ASC' as string | undefined
         }
         while (nextURL !== null) {
             const response: AxiosResponse<Nfts> = await axios.get<Nfts>(nextURL, {params: params})
             await this.appendNfts(response.data.nfts ?? [], result)
             nextURL = response.data.links?.next ?? null
             params.limit = undefined
+            params.order = undefined
         }
         return Promise.resolve(result)
     }

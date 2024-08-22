@@ -93,7 +93,7 @@ export default defineComponent({
       return name.value === 'Contracts' || name.value === 'ContractDetails'
     })
     const isAccountRoute = computed(() => {
-      return name.value === 'Accounts' || name.value === 'AccountDetails' || name.value === 'AccountBalances'
+      return name.value === 'Accounts' || name.value === 'AccountDetails'
     })
 
     const onResizeHandler = () => {

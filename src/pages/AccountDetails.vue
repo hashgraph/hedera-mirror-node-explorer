@@ -108,12 +108,7 @@
         <div class="h-is-property-text">
           <Property id="balance" :full-width="isMediumScreen">
             <template v-slot:name>
-              <span class="h-is-tertiary-text">
-                {{balanceAnalyzer.tokenBalances.value.length > 0 ? 'Balances' : 'Balance'}}
-              </span>
-              <router-link id="show-all-link" :to="{name: 'AccountBalances', params: {accountId: accountId}}">
-                <div class="mt-1 h-is-extra-text">Show all tokens</div>
-              </router-link>
+              <span class="h-is-tertiary-text">Balance</span>
             </template>
             <template v-slot:value>
               <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
@@ -234,6 +229,8 @@
       </template>
     </DashboardCard>
 
+    <TokensSection :account-id="normalizedAccountId"/>
+
     <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
         <p id="recentTransactions" class="h-is-secondary-title">Recent Operations</p>
@@ -353,12 +350,14 @@ import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
+import TokensSection from "@/components/token/TokensSection.vue";
 
 export default defineComponent({
 
   name: 'AccountDetails',
 
   components: {
+    TokensSection,
     InfoTooltip,
     EntityIOL,
     TransactionDownloadDialog,

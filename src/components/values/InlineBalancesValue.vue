@@ -32,14 +32,6 @@
       {{ elapsed }}
     </div>
   </div>
-  <div v-for="b in displayedBalances" :key="b.token_id ?? undefined" class="h-is-tertiary-text">
-    <TokenAmount
-        :amount="BigInt(b.balance)"
-        :show-extra="true"
-        :token-id="b.token_id"
-        :account-id="accountId"
-    />
-  </div>
 
 </template>
 
@@ -49,14 +41,10 @@
 
 <script lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
+import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
-import {TokenBalance} from "@/schemas/HederaSchemas";
-import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
-
-const MAX_TOKEN_BALANCES = 10
 
 export default defineComponent({
 
@@ -81,14 +69,6 @@ export default defineComponent({
 
     const accountId = props.balanceAnalyzer.accountId ?? ref(null)
 
-    //
-    // NftCollectionCache
-    //
-
-    const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
-    onMounted(() => nftCollectionLookup.mount())
-    onBeforeUnmount(() => nftCollectionLookup.unmount())
-
     const elapsed = computed(() => {
       let result: string | null
       const duration = props.balanceAnalyzer.balanceAge.value
@@ -110,31 +90,6 @@ export default defineComponent({
       return result
     })
 
-    const displayedBalances: ComputedRef<TokenBalance[]> = computed(() => {
-      const result: TokenBalance[] = []
-      const allBalances = props.balanceAnalyzer.tokenBalances.value
-      // Display in priority 'non-zero balances'
-      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-        if (allBalances[i].balance > 0) {
-          result.push(allBalances[i])
-        }
-      }
-      // Complete with 'zero balances' if any room left
-      for (let i = 0; i < allBalances.length && result.length < MAX_TOKEN_BALANCES; i++) {
-        if (!result.includes(allBalances[i])) {
-          result.push(allBalances[i])
-        }
-      }
-      return result
-    })
-
-    const displayAllTokenLinks = computed(() => {
-      // Display 'Show all tokens' link if > 10 balances or if at least 1 NFT collection (so we get a chance to
-      // display the collection details)
-      return displayedBalances.value.length < props.balanceAnalyzer.tokenBalances.value.length
-          || (nftCollectionLookup.entity.value?.length ?? 0) > 0
-    })
-
     return {
       isSmallScreen,
       isMediumScreen,
@@ -142,8 +97,6 @@ export default defineComponent({
       accountId,
       balanceTimeStamp: props.balanceAnalyzer.balanceTimeStamp,
       hbarBalance: props.balanceAnalyzer.hbarBalance,
-      displayedBalances,
-      displayAllTokenLinks,
       elapsed,
     }
   }

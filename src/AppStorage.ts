@@ -216,6 +216,20 @@ export class AppStorage {
     }
 
     //
+    // preferred tab in account tokens section
+    //
+
+    private static readonly ACCOUNT_TOKEN_TAB_KEY = 'accountTokenTab'
+
+    static getAccountTokenTab() {
+        return this.getLocalStorageItem(this.ACCOUNT_TOKEN_TAB_KEY)
+    }
+
+    static setAccountTokenTab(newValue: string | null) {
+        this.setLocalStorageItem(this.ACCOUNT_TOKEN_TAB_KEY, newValue)
+    }
+
+    //
     // preferred tab in contract bytecode section
     //
 
@@ -290,7 +304,7 @@ export class AppStorage {
     //
     // use arobas form of Transaction ID
     //
-    
+
     private static readonly USE_DASH_FORM_KEY = 'useDashForm'
 
     public static getUseDashForm(): boolean {
@@ -368,10 +382,10 @@ export class AppStorage {
 
     private static readonly NAMING = "naming"
 
-    public static getNameRecord(entityId: string, network: string): NameRecord|null {
+    public static getNameRecord(entityId: string, network: string): NameRecord | null {
         const key = this.makeNamingKey(entityId, network)
         const jsonText = this.getLocalStorageItem(key)
-        let result: unknown|null
+        let result: unknown | null
         if (jsonText !== null) {
             try {
                 result = JSON.parse(jsonText)
@@ -381,7 +395,7 @@ export class AppStorage {
         } else {
             result = null
         }
-        return result as NameRecord|null
+        return result as NameRecord | null
     }
 
     public static setNameRecord(entityId: string, network: string, newRecord: NameRecord): void {
@@ -400,7 +414,4 @@ export class AppStorage {
     private static makeNamingKey(entityId: string, network: string): string {
         return this.NAMING + "/" + network + "/" + entityId
     }
-
-
-
 }
