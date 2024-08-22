@@ -221,7 +221,7 @@ import router, {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractByteCodeSection from "@/components/contract/ContractByteCodeSection.vue";
-import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
+import ContractResultsSection from "@/components/contract/ContractResultsSection.vue";
 import Copyable from "@/components/Copyable.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
