@@ -37,7 +37,6 @@ export class StakingRewardsTableController extends TableController<StakingReward
     public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>, storageKey: string,
                        pageParamName = "p", keyParamName = "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
-            storageKey,
             pageParamName, keyParamName);
         this.accountId = accountId
         this.storageKey = storageKey

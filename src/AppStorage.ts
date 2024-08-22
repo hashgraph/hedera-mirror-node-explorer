@@ -110,8 +110,7 @@ export class AppStorage {
     public static readonly ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY = 'accountOperationPageSize'
     public static readonly ALLOWANCE_TABLE_PAGE_SIZE_KEY = 'allowancePageSize'
     public static readonly STAKING_TABLE_PAGE_SIZE_KEY = 'stakingPageSize'
-    public static readonly ACCOUNT_BALANCE_TABLE_PAGE_SIZE_KEY = 'accountBalancePageSize'
-    public static readonly ACCOUNT_NFT_TABLE_PAGE_SIZE_KEY = 'accountNftPageSize'
+    public static readonly ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY = 'accountTokensPageSize'
 
     public static readonly BLOCK_TABLE_PAGE_SIZE_KEY = 'blockPageSize'
     public static readonly BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY = 'blockTransactionPageSize'

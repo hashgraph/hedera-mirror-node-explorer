@@ -706,7 +706,6 @@ class TestTableController extends TableController<number, number> {
             TestTableController.UPDATED_PERIOD,
             TestTableController.MAX_UPDATE_COUNT,
             TestTableController.MAX_LIMIT,
-            null,
             pageParamName,
             keyParamName)
         this.startKey = startKey

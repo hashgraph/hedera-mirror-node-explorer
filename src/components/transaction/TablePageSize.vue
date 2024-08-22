@@ -45,7 +45,7 @@
 
 <script lang="ts">
 
-import {defineComponent, onMounted, ref, watch} from "vue";
+import {defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {AppStorage} from "@/AppStorage";
 
 
@@ -58,8 +58,8 @@ export default defineComponent({
       required: true
     },
     storageKey: {
-      type: String,
-      default: ''
+      type: String as PropType<string | null>,
+      default: null
     }
   },
   emits: ["update:size"],
@@ -77,10 +77,12 @@ export default defineComponent({
     })
     const onSelect = (value: number) => {
       selected.value = value
-      if (value != defaultValue) {
-        AppStorage.setTablePageSize(props.storageKey, value)
-      } else {
-        AppStorage.setTablePageSize(props.storageKey, null)
+      if (props.storageKey !==null) {
+        if (value != defaultValue) {
+          AppStorage.setTablePageSize(props.storageKey, value)
+        } else {
+          AppStorage.setTablePageSize(props.storageKey, null)
+        }
       }
       context.emit("update:size", value)
     }

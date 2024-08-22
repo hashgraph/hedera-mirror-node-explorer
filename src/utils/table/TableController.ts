@@ -49,7 +49,6 @@ export abstract class TableController<R, K> implements PlayPauseController {
     //
 
     public pageSize: Ref<number>
-    public storageKey: string | null
 
     public readonly currentPage: Ref<number> = ref(1)
 
@@ -215,7 +214,6 @@ export abstract class TableController<R, K> implements PlayPauseController {
     protected constructor(router: Router, pageSize: Ref<number>,
                           presumedRowCount: number, updatePeriod: number,
                           maxUpdateCount: number, maxLimit: number,
-                          storageKey: string | null = null,
                           pageParamName = "p", keyParamName = "k") {
         this.router = router
         this.presumedRowCount = presumedRowCount
@@ -223,7 +221,6 @@ export abstract class TableController<R, K> implements PlayPauseController {
         this.maxAutoUpdateCount = maxUpdateCount
         this.pageSize = pageSize
         this.maxLimit = maxLimit
-        this.storageKey = storageKey
         this.pageParamName = pageParamName
         this.keyParamName = keyParamName
         this.buffer = new RowBuffer<R, K>(this, presumedRowCount);

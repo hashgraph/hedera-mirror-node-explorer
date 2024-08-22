@@ -38,7 +38,7 @@ export class TransactionTableController extends TableController<Transaction, str
     public constructor(router: Router, pageSize: Ref<number>,
                        transactionType = "",
                        transactionResult = "",
-                       storageKey: string | null = null,
+                       storageKey: string | null,
                        pageParamName = "p",
                        keyParamName = "k",
                        accountId: Ref<string | null> = ref(null)) {
@@ -49,15 +49,17 @@ export class TransactionTableController extends TableController<Transaction, str
             TableController.FAST_REFRESH_PERIOD,
             TableController.FAST_REFRESH_COUNT,
             100,
-            storageKey,
             pageParamName,
             keyParamName
         );
         this.transactionType = transactionType
         this.transactionResult = transactionResult
         this.accountId = accountId
+        this.storageKey = storageKey
         this.watchAndReload([this.accountId, this.pageSize])
     }
+
+    public storageKey: string | null
 
     //
     // TableController
