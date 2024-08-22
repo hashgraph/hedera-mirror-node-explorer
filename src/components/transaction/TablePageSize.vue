@@ -69,7 +69,7 @@ export default defineComponent({
     const selected = ref(props.size)
     watch(() => props.size, () => selected.value = props.size)
     onMounted(() => {
-      const preferred = AppStorage.getTablePageSize(props.storageKey)
+      const preferred = props.storageKey ? AppStorage.getTablePageSize(props.storageKey) : null
       if (preferred) {
         selected.value = preferred
         context.emit("update:size", preferred)
@@ -77,7 +77,7 @@ export default defineComponent({
     })
     const onSelect = (value: number) => {
       selected.value = value
-      if (props.storageKey !==null) {
+      if (props.storageKey !== null) {
         if (value != defaultValue) {
           AppStorage.setTablePageSize(props.storageKey, value)
         } else {

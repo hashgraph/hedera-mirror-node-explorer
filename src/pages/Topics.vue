@@ -54,6 +54,7 @@ import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
 import {useRouter} from "vue-router";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: 'Topics',
@@ -77,7 +78,12 @@ export default defineComponent({
     const router = useRouter()
     const pageSize = ref(isMediumScreen ? 15 : 5)
     const transactionTableController = new TransactionTableController(
-        router, pageSize, TransactionType.CONSENSUSCREATETOPIC, TransactionResult.SUCCESS)
+        router,
+        pageSize,
+        TransactionType.CONSENSUSCREATETOPIC,
+        TransactionResult.SUCCESS,
+        AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY
+    )
     onMounted(() => transactionTableController.mount())
     onBeforeUnmount(() => transactionTableController.unmount())
 
