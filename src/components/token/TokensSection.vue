@@ -43,7 +43,7 @@
       </div>
 
       <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
-        <NftsTable :collections="nftCollections"/>
+        <NftsTableV2 :controller="nftsTableController"/>
       </div>
 
     </template>
@@ -62,11 +62,11 @@ import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
-import NftsTable from "@/components/account/NftsTable.vue";
 import BalanceTable from "@/components/account/BalanceTable.vue";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 import {useRouter} from "vue-router";
-import {NftCollectionCache} from "@/utils/cache/NftCollectionCache";
+import {NftsTableController} from "@/components/account/NftsTableController";
+import NftsTableV2 from "@/components/account/NftsTableV2.vue";
 
 const props = defineProps({
   accountId: {
@@ -75,7 +75,7 @@ const props = defineProps({
   }
 })
 
-const perPage = ref(10)
+const perPage = ref(5)
 const showSection = computed(() => tokenRelationshipTableController.totalRowCount.value > 0)
 const accountId = computed(() => props.accountId)
 
@@ -95,22 +95,32 @@ const onSelectTab = (tab: string) => {
   }
 }
 
+const nftsTableController = new NftsTableController(
+    useRouter(),
+    accountId,
+    perPage,
+    AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY,
+    "ps", "ks"
+);
+onMounted(() => {
+  nftsTableController.mount()
+})
+onBeforeUnmount(() => {
+  nftsTableController.unmount()
+})
+
 const tokenRelationshipTableController = new TokenRelationshipsTableController(
     useRouter(),
     accountId,
     perPage,
     "pr", "kr"
 );
-const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
 onMounted(() => {
   tokenRelationshipTableController.mount()
-  nftCollectionLookup.mount()
 })
 onBeforeUnmount(() => {
   tokenRelationshipTableController.unmount()
-  nftCollectionLookup.unmount()
 })
-const nftCollections = computed(() => nftCollectionLookup.entity.value ?? [])
 
 </script>
 
