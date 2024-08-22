@@ -76,7 +76,7 @@ const props = defineProps({
 })
 
 const perPage = ref(10)
-const showSection = computed(() => tokenRelationshipTableController.rows.value.length > 0)
+const showSection = computed(() => tokenRelationshipTableController.totalRowCount.value > 0)
 const accountId = computed(() => props.accountId)
 
 const tabIds = ['nfts', 'associations']
