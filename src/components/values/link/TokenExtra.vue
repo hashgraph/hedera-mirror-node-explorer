@@ -58,7 +58,7 @@ export default defineComponent({
     },
     useAnchor: {
       type: Boolean,
-      defaults: false
+      default: false
     }
   },
 
