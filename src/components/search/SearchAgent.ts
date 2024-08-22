@@ -58,10 +58,6 @@ export abstract class SearchAgent<L, E> {
     // Public
     //
 
-    public constructor() {
-        watch(this.loc, this.entityLocDidChange)
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public willNavigate(candidate: SearchCandidate<E>): void {
         // Possibly override by subclasses
@@ -70,6 +66,10 @@ export abstract class SearchAgent<L, E> {
     //
     // Protected
     //
+
+    protected constructor(public readonly title: string) {
+        watch(this.loc, this.entityLocDidChange)
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected /* abstract */ async load(loc: L, abortController: AbortController): Promise<SearchCandidate<E>[]> {
@@ -120,6 +120,14 @@ export class SearchCandidate<E> {
 
 
 export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | string, AccountInfo>{
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Account");
+    }
 
     //
     // SearchAgent
@@ -173,7 +181,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
         if (accountInfos.length == 1) {
             const accountInfo = accountInfos[0]
             if (accountInfo.account) {
-                const description = "Account " + accountInfo.account
+                const description = accountInfo.account
                 const route = routeManager.makeRouteToAccount(accountInfo.account)
                 const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo, this)
                 result = [candidate]
@@ -186,7 +194,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
                 result = []
                 for (const a of accountInfos) {
                     if (a.account !== null) {
-                        const description = "Account " + a.account
+                        const description = a.account
                         const route = routeManager.makeRouteToAccount(a.account)
                         const candidate = new SearchCandidate<AccountInfo>(description, null, route, a, this)
                         result.push(candidate)
@@ -211,6 +219,14 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
 
 
 export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, ContractResponse>{
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Contract");
+    }
 
     //
     // SearchAgent
@@ -239,7 +255,7 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
 
         let result: SearchCandidate<ContractResponse>[]
         if (contractInfo !== null && contractInfo.contract_id) {
-            const description = "Contract " + contractInfo.contract_id
+            const description = contractInfo.contract_id
             const route = routeManager.makeRouteToContract(contractInfo.contract_id)
             const candidate = new SearchCandidate<ContractResponse>(description, null, route, contractInfo, this)
             result = [candidate]
@@ -253,6 +269,14 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
 }
 
 export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenInfo>{
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Token");
+    }
 
     //
     // SearchAgent
@@ -287,7 +311,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
 
         let result: SearchCandidate<TokenInfo>[]
         if (tokenInfo !== null && tokenInfo.token_id !== null) {
-            const description = "Token " + tokenInfo.token_id
+            const description = tokenInfo.token_id
             const route = routeManager.makeRouteToToken(tokenInfo.token_id)
             const candidate = new SearchCandidate(description, null,route, tokenInfo, this)
             result = [candidate]
@@ -303,16 +327,25 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
 export class TopicSearchAgent extends SearchAgent<EntityID, Topic>{
 
     //
+    // Public
+    //
+
+    public constructor() {
+        super("Topic");
+    }
+
+    //
     // SearchAgent
     //
 
     protected async load(topicID: EntityID): Promise<SearchCandidate<Topic>[]> {
         let result: SearchCandidate<Topic>[]
         try {
-            const topicInfo = (await axios.get<Topic>("api/v1/topics/" + topicID.toString())).data
-            const description = "Topic " + topicInfo.topic_id
-            const route = routeManager.makeRouteToTopic(topicID.toString())
-            const candidate = new SearchCandidate(description, null,route, topicInfo, this)
+            const tid = topicID.toString()
+            const topicInfo = (await axios.get<Topic>("api/v1/topics/" + tid)).data
+            const description = tid
+            const route = routeManager.makeRouteToTopic(tid)
+            const candidate = new SearchCandidate(description, null, route, topicInfo, this)
             result = [candidate]
         } catch {
             result = []
@@ -323,6 +356,14 @@ export class TopicSearchAgent extends SearchAgent<EntityID, Topic>{
 }
 
 export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestamp | Uint8Array, Transaction> {
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Transaction");
+    }
 
     //
     // SearchAgent
@@ -374,7 +415,7 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
             const displayTransactionID = TransactionID.normalizeForDisplay(transaction0.transaction_id)
             if (transactionParam instanceof TransactionID) {
                 if (transactions.length == 1) {
-                    const description = "Transaction " + displayTransactionID
+                    const description = displayTransactionID
                     const route = routeManager.makeRouteToTransaction(transaction0.consensus_timestamp)
                     const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                     result = [candidate]
@@ -385,12 +426,12 @@ export class TransactionSearchAgent extends SearchAgent<TransactionID | Timestam
                     result = [candidate]
                 }
             } else if (transactionParam instanceof Timestamp) {
-                const description = "Transaction " + displayTransactionID
+                const description = displayTransactionID
                 const route = routeManager.makeRouteToTransaction(transactionParam.toString())
                 const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                 result = [candidate]
             } else { // transactionParam instanceof Uint8Array
-                const description = "Transaction " + displayTransactionID
+                const description = displayTransactionID
                 const route = routeManager.makeRouteToTransaction(transaction0.consensus_timestamp)
                 const candidate = new SearchCandidate<Transaction>(description, null, route, transaction0, this)
                 result = [candidate]
@@ -410,7 +451,7 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
     //
 
     public constructor(public readonly provider: NameServiceProvider) {
-        super()
+        super("Account registered with " + provider.providerAlias)
     }
 
     //
@@ -430,11 +471,9 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
             const record = await NameService.instance.singleResolve(domainName, network, this.provider.providerAlias)
             if (record !== null) {
                 const accountInfo = await AccountByIdCache.instance.lookup(record.entityId)
-                const description = "Account " + record.entityId
+                const description = record.entityId
                 const nonExistent = accountInfo == null
-                const extra = nonExistent
-                    ? " (resolved with " + record.providerAlias + ", non-existent)"
-                    : " (resolved with " + record.providerAlias + ")"
+                const extra = nonExistent ? "non-existent" : null
                 const route = routeManager.makeRouteToAccount(record.entityId)
                 const resolution = new DomainNameResolution(record, accountInfo)
                 result = new SearchCandidate(description, extra, route, resolution, this, nonExistent)
@@ -456,6 +495,14 @@ export class DomainNameResolution {
 export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
 
     //
+    // Public
+    //
+
+    public constructor() {
+        super("Block");
+    }
+
+    //
     // SearchAgent
     //
 
@@ -472,8 +519,8 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
             } else {
                 block = (await axios.get<Block>("api/v1/blocks/" + blockParam)).data
             }
-            if (block !== null) {
-                const description = "Block " + block.number
+            if (block !== null && block.number) {
+                const description = block.number.toString()
                 const route = routeManager.makeRouteToBlock(block.number ?? 1)
                 const candidate = new SearchCandidate<Block>(description, null, route, block, this)
                 result = [candidate]
@@ -492,6 +539,14 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
 export class TokenNameSearchAgent extends SearchAgent<string, Token> {
 
     private readonly limit = 10
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Token");
+    }
 
     //
     // SearchAgent

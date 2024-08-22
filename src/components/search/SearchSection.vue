@@ -23,26 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div style="position: relative" data-cy="searchDropdown">
-    <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
-      <template v-for="(a,i) in searchController.visibleAgents.value" :key="a.constructor.name">
-        <hr v-if="i >= 1" class="h-card-separator m-0" style="height:1px"/>
-        <SearchSection :search-controller="searchController" :search-agent="a"/>
-      </template>
-      <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">
-        <hr v-if="searchController.visibleAgents.value.length >= 1" class="h-card-separator m-0" style="height:1px"/>
-        <template v-for="a in searchController.domainNameSearchAgents" :key="a.constructor.name">
-          <div v-if="a.loading.value" class="has-text-grey h-is-property-text">
-            Connecting to {{ a.provider.providerAlias }}…
-          </div>
-        </template>
-      </template>
-      <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey h-is-property-text">
-        No match
-        <span class="icon fas fa-question-circle has-text-grey h-is-hoverable is-small mt-1 ml-1" style="cursor:pointer" @click="navigateToHelp"/>
-      </div>
-      <div v-if="!searchController.loading.value" data-cy="searchCompleted" style="display: none"/>
-    </div>
+  <div>
+    <div class="h-is-text-size-4 has-text-grey mb-1">{{ searchAgent.title }}</div>
+    <template v-for="(c,i) in searchAgent.candidates.value" :key="c.description">
+      <button class="button-as-link h-is-property-text"
+              :class="{'h-is-hoverable': !c.nonExistent, 'has-text-grey': c.nonExistent}"
+              @click="navigate(c)" :disabled="c.nonExistent" style="width: 100%">
+        {{ c.description }}
+        <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
+        <span v-if="isFallback(i)" style="float: right">&#x23ce;</span>
+      </button>
+    </template>
   </div>
 </template>
 
@@ -53,20 +44,29 @@
 <script setup lang="ts">
 
 import {PropType} from "vue";
+import {SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
+import router from "@/router";
 import {SearchController} from "@/components/search/SearchController";
-import router, {routeManager} from "@/router";
-import SearchSection from "@/components/search/SearchSection.vue";
 
 const props = defineProps({
   "searchController": {
     type: Object as PropType<SearchController>,
     required: true
-  }
+  },
+  "searchAgent": {
+    type: Object as PropType<SearchAgent<unknown, unknown>>,
+    required: true
+  },
 })
 
-const navigateToHelp = () => {
+const isFallback = (i: number) => {
+  return props.searchAgent.candidates.value[i] == props.searchController.candidates.value[0]
+}
+
+const navigate = (c: SearchCandidate<unknown>) => {
   props.searchController.inputText.value = "" // Hides SearchDropDown
-  router.push(routeManager.makeRouteToSearchHelp())
+  c.agent.willNavigate(c)
+  router.push(c.route)
 }
 
 </script>
@@ -75,4 +75,13 @@ const navigateToHelp = () => {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+.button-as-link {
+  background: none!important;
+  border: none;
+  padding: 0!important;
+  text-align: left;
+  color: white;
+  cursor: pointer;
+}
+</style>

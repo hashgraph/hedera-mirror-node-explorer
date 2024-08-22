@@ -142,6 +142,26 @@ export class SearchController {
         return result
     })
 
+    public readonly visibleAgents = computed(() => {
+        const result: SearchAgent<unknown, unknown>[] = []
+        for (const a of this.allAgents) {
+            if (a.candidates.value.length >= 1) {
+                result.push(a)
+            }
+        }
+        return result
+    })
+
+    public readonly loadingDomainNameSearchAgents = computed(() => {
+        const result: DomainNameSearchAgent[] = []
+        for (const a of this.domainNameSearchAgents) {
+            if (a.loading.value) {
+                result.push(a)
+            }
+        }
+        return result
+    })
+
     public readonly candidateCount = computed(() => {
         let result = 0
         for (const a of this.allAgents) {
