@@ -172,12 +172,12 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Public (utilities)
     //
 
-    public static invertSortOrder(order: SortOrder): string {
+    public static invertSortOrder(order: SortOrder): SortOrder {
         return order == SortOrder.ASC ? SortOrder.DESC : SortOrder.ASC
     }
 
-    public static invertKeyOperator(operator: KeyOperator): string {
-        let result: string
+    public static invertKeyOperator(operator: KeyOperator): KeyOperator {
+        let result: KeyOperator
         switch (operator) {
             case KeyOperator.gt:
                 result = KeyOperator.lt
@@ -382,5 +382,20 @@ export abstract class TableController<R, K> implements PlayPauseController {
 }
 
 export enum KeyOperator { gt = "gt", gte = "gte", lt = "lt", lte = "lte" }
+
+export function getNonStrictOperator(operator: KeyOperator): KeyOperator {
+    let result
+    switch (operator) {
+        case KeyOperator.gt:
+        case KeyOperator.gte:
+            result = KeyOperator.gte
+            break
+        case KeyOperator.lt:
+        case KeyOperator.lte:
+            result = KeyOperator.lte
+            break
+    }
+    return result
+}
 
 export enum SortOrder { ASC = "asc", DESC = "desc" }
