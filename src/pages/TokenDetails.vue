@@ -352,7 +352,7 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
-import ContractResultsSection from "@/components/contracts/ContractResultsSection.vue";
+import ContractResultsSection from "@/components/contract/ContractResultsSection.vue";
 import Copyable from "@/components/Copyable.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
