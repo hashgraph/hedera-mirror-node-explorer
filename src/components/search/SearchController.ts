@@ -97,7 +97,7 @@ export class SearchController {
     private readonly topicSearchAgent = new TopicSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
-    private readonly tokenNameSearchAgent = new TokenNameSearchAgent()
+    public readonly tokenNameSearchAgent = new TokenNameSearchAgent()
 
     private readonly allAgents: SearchAgent<unknown, unknown>[] = []
     public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []

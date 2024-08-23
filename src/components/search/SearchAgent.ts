@@ -27,7 +27,6 @@ import {
     Block,
     ContractResponse,
     ContractResultDetails,
-    Token,
     TokenInfo,
     TokensResponse,
     Topic,
@@ -46,6 +45,7 @@ import {NameRecord, NameService} from "@/utils/name_service/NameService";
 import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AppStorage} from "@/AppStorage";
+import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
 
 export abstract class SearchAgent<L, E> {
 
@@ -76,11 +76,7 @@ export abstract class SearchAgent<L, E> {
         return Promise.reject("To be subclassed")
     }
 
-    //
-    // Private
-    //
-
-    private readonly entityLocDidChange = async () => {
+    protected readonly entityLocDidChange = async () => {
 
         if (this.loading.value) {
             this.abortController.abort()
@@ -102,6 +98,10 @@ export abstract class SearchAgent<L, E> {
         }
 
     }
+
+    //
+    // Private
+    //
 
     private isAbortError(reason: unknown): boolean {
         return reason instanceof DOMException && reason.name == "AbortError"
@@ -536,7 +536,9 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
 
 }
 
-export class TokenNameSearchAgent extends SearchAgent<string, Token> {
+export class TokenNameSearchAgent extends SearchAgent<string, TokenLike> {
+
+    public readonly source: Ref<TokenNameSource> = ref(TokenNameSource.SELECTION)
 
     private readonly limit = 10
 
@@ -545,41 +547,56 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
     //
 
     public constructor() {
-        super("Token");
+        super("Token")
+        watch(this.source, this.entityLocDidChange)
     }
 
     //
     // SearchAgent
     //
 
-    protected async load(tokenName: string): Promise<SearchCandidate<Token>[]> {
+    protected async load(tokenName: string): Promise<SearchCandidate<TokenLike>[]> {
 
 
-        let tokens: Token[]
+        let tokens: TokenLike[]
         try {
-            // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
-            const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=100")
-            tokens = r.data.tokens ?? []
+            switch(this.source.value) {
+                case TokenNameSource.NETWORK: {
+                    // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
+                    const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=100")
+                    tokens = r.data.tokens ?? []
+                    tokens.sort((t1: TokenLike, t2:TokenLike) => TokenNameSearchAgent.compareToken(t1, t2, tokenName))
+                    break
+                }
+                case TokenNameSource.SELECTION: {
+                    const index = await SelectedTokensCache.instance.lookup()
+                    tokens = index.search(tokenName)
+                    break
+                }
+                default: {
+                    tokens = []
+                    break
+                }
+            }
         } catch {
             tokens = []
         }
 
-        const result: SearchCandidate<Token>[] = []
+        const result: SearchCandidate<TokenLike>[] = []
         if (tokens.length >= 1) {
-            tokens.sort((t1: Token, t2:Token) => TokenNameSearchAgent.compareToken(t1, t2, tokenName))
             for (const t of tokens.slice(0, this.limit)) {
                 if (t.token_id !== null) {
                     const description = t.name
                     const extra = " " + t.token_id
                     const route = routeManager.makeRouteToToken(t.token_id)
-                    const candidate = new SearchCandidate<Token>(description, extra, route, t, this)
+                    const candidate = new SearchCandidate<TokenLike>(description, extra, route, t, this)
                     result.push(candidate)
                 }
             }
             if (tokens.length > this.limit) {
                 const description = "Only first " + this.limit + " matches are shown"
                 const dummyRoute = routeManager.makeRouteToMainDashboard()
-                const candidate = new SearchCandidate<Token>(description, null, dummyRoute, tokens[0], this, true)
+                const candidate = new SearchCandidate<TokenLike>(description, null, dummyRoute, tokens[0], this, true)
                 result.push(candidate)
             }
         }
@@ -598,7 +615,7 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
             3) then other tokens
      */
     
-    private static compareToken(t1: Token, t2: Token, target: string): number {
+    private static compareToken(t1: TokenLike, t2: TokenLike, target: string): number {
         let result: number
         const n1 = t1.name.toLocaleLowerCase()
         const n2 = t2.name.toLocaleLowerCase()
@@ -629,3 +646,10 @@ export class TokenNameSearchAgent extends SearchAgent<string, Token> {
         return result
     }
 }
+
+export interface TokenLike {
+    token_id: string|null
+    name: string
+}
+
+export enum TokenNameSource { NETWORK, SELECTION }

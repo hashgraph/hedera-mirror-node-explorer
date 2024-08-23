@@ -42,6 +42,7 @@ import {
 } from "../Mocks";
 import {fetchGetURLs} from "../MockUtils";
 import {base64DecToArr, byteToHex} from "../../../src/utils/B64Utils";
+import {TokenNameSource} from "../../../src/components/search/SearchAgent";
 
 describe("SearchController.vue", () => {
 
@@ -345,6 +346,7 @@ describe("SearchController.vue", () => {
 
         const inputText = ref<string>("")
         const controller = new SearchController(inputText)
+        controller.tokenNameSearchAgent.source.value = TokenNameSource.NETWORK
         await flushPromises()
         expect(vi.getTimerCount()).toBe(0)
         expect(controller.visible.value).toBe(false)
@@ -790,6 +792,7 @@ describe("SearchController.vue", () => {
 
         const inputText = ref<string>("")
         const controller = new SearchController(inputText)
+        controller.tokenNameSearchAgent.source.value = TokenNameSource.NETWORK
         await flushPromises()
         expect(vi.getTimerCount()).toBe(0)
         expect(controller.visible.value).toBe(false)
