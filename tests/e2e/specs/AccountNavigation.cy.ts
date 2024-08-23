@@ -94,11 +94,11 @@ describe('Account Navigation', () => {
             .find('td')
             .eq(1)
             .click()
-
-        cy.url().should('include', `/mainnet/accountcollection/${accountId1}`)
-        cy.contains('NFT Collection')
-        cy.contains('for Account' + accountId1)
-
+            .then(($id) => {
+                cy.url().should('include', `/mainnet/token/${$id.text()}`)
+                cy.contains('Non Fungible Token')
+                cy.contains(`(${$id.text()})`)
+            })
     })
 
     it.skip('should follow links from account with few tokens', () => {
