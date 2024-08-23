@@ -164,7 +164,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     public abstract keyFromString(s: string): K | null
 
     public async load(key: K | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<R[] | null> {
-        throw new Error("To be subclassed: key=" + key + ", operator=" + operator + ", limit=" + limit)
+        throw new Error("To be subclassed: key=" + key + ", operator=" + operator + ", order=" + order + ", limit=" + limit)
     }
 
     //
