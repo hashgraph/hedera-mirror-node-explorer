@@ -43,7 +43,7 @@
       </div>
 
       <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
-        <NftsTableV2 :controller="nftsTableController"/>
+        <NftsTable :controller="nftsTableController"/>
       </div>
 
     </template>
@@ -66,7 +66,7 @@ import BalanceTable from "@/components/account/BalanceTable.vue";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 import {useRouter} from "vue-router";
 import {NftsTableController} from "@/components/account/NftsTableController";
-import NftsTableV2 from "@/components/account/NftsTableV2.vue";
+import NftsTable from "@/components/account/NftsTable.vue";
 
 const props = defineProps({
   accountId: {
