@@ -35,10 +35,9 @@ export class HbarAllowanceTableController extends TableController<CryptoAllowanc
     public constructor(router: Router,
                        accountId: Ref<string | null>,
                        pageSize: Ref<number>,
-                       storageKey: string | null = null,
                        pageParamName = "p", keyParamName = "k") {
         super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
-            storageKey, pageParamName, keyParamName);
+            pageParamName, keyParamName);
         this.accountId = accountId
         this.watchAndReload([this.accountId, this.pageSize])
     }
