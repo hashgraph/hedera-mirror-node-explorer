@@ -221,7 +221,6 @@ export default defineComponent({
         router,
         computedAccountId,
         perPage,
-        AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY,
         "ph", "kh"
     )
     onMounted(() => hbarAllowanceTableController.mount())
@@ -234,7 +233,6 @@ export default defineComponent({
         router,
         computedAccountId,
         perPage,
-        AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY,
         "pt", "kt"
     )
     onMounted(() => tokenAllowanceTableController.mount())
@@ -247,14 +245,12 @@ export default defineComponent({
         router,
         computedAccountId,
         perPage,
-        AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY,
         "pn", "kn"
     )
     const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
         router,
         computedAccountId,
         perPage,
-        AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY,
         "pc", "kc"
     )
     onMounted(() => {

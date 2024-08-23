@@ -99,7 +99,6 @@ const nftsTableController = new NftsTableController(
     useRouter(),
     accountId,
     perPage,
-    AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY,
     "ps", "ks"
 );
 onMounted(() => {

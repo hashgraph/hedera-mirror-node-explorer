@@ -37,7 +37,6 @@ export class NftsTableController extends TableController<Nft, string> {
         router: Router,
         accountId: Ref<string | null>,
         pageSize: Ref<number>,
-        storageKey: string | null = null,
         pageParamName = "p",
         keyParamName = "k"
     ) {
@@ -48,7 +47,6 @@ export class NftsTableController extends TableController<Nft, string> {
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
             100,
-            storageKey,
             pageParamName, keyParamName
         )
         this.accountId = accountId
