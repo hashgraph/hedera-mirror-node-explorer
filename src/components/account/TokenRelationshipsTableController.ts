@@ -32,14 +32,22 @@ export class TokenRelationshipsTableController extends TableController<TokenRela
     // Public
     //
 
-    public constructor(router: Router, accountId: Ref<string | null>, pageSize: Ref<number>) {
+    public constructor(
+        router: Router,
+        accountId: Ref<string | null>,
+        pageSize: Ref<number>,
+        pageParamName = "p",
+        keyParamName = "k"
+    ) {
         super(
             router,
             pageSize,
             10 * pageSize.value,
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
-            100
+            100,
+            pageParamName,
+            keyParamName
         )
         this.accountId = accountId
         this.watchAndReload([this.accountId, this.pageSize])

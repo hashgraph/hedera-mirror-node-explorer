@@ -95,7 +95,12 @@ const onSelectTab = (tab: string) => {
   }
 }
 
-const tokenRelationshipTableController = new TokenRelationshipsTableController(useRouter(), accountId, perPage);
+const tokenRelationshipTableController = new TokenRelationshipsTableController(
+    useRouter(),
+    accountId,
+    perPage,
+    "pr", "kr"
+);
 const nftCollectionLookup = NftCollectionCache.instance.makeLookup(accountId)
 onMounted(() => {
   tokenRelationshipTableController.mount()

@@ -514,7 +514,8 @@ export default defineComponent({
     const verifiedContractsController = new VerifiedContractsController(
         VerifiedContractsByAccountIdCache.instance.makeLookup(accountId),
         perPage,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY)
+        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
+    )
 
     const rewardsTableController = new StakingRewardsTableController(
         router,
