@@ -85,14 +85,6 @@ const selectedTab = ref(AppStorage.getAccountTokenTab() ?? tabIds[0])
 const onSelectTab = (tab: string) => {
   selectedTab.value = tab
   AppStorage.setAccountTokenTab(tab)
-  switch (selectedTab.value) {
-    case 'fungible':
-      break
-    case 'nft':
-      break
-    default:
-      //should not happen
-  }
 }
 
 const nftsTableController = new NftsTableController(
