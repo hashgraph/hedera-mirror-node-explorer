@@ -23,67 +23,61 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+
   <o-table
-      :data="collections"
-      :paginated="paginated"
+      :data="props.controller.rows.value"
+      :loading="props.controller.loading.value"
+      :hoverable="true"
+      :paginated="props.controller.paginated.value"
+      backend-pagination
       pagination-order="left"
       :range-before="0"
       :range-after="0"
-      :per-page="perPage"
-      @cell-click="handleClick"
-
-      :hoverable="true"
-      :narrowed="true"
+      :total="props.controller.totalRowCount.value"
+      :per-page="props.controller.pageSize.value"
+      @page-change="props.controller.onPageChange"
       :striped="true"
+      :v-model:current-page="props.controller.currentPage.value"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
+      @cell-click="handleClick"
   >
 
-    <o-table-column v-slot="props" field="collection" label="Collection">
-      <TokenLink
-          :show-extra="false"
-          :token-id="props.row.tokenId"
-          :no-anchor="true"
-      />
+    <o-table-column v-slot="props" field="image" label="Image">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.image"/>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="token-id" label="Token ID">
+      {{ props.row.token_id }}
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="serial" label="#">
+      {{ props.row.serial_number }}
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="token-name" label="Collection">
+      <TokenCell :token-id="props.row.token_id" :property="TokenCellItem.tokenName"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="name" label="Name">
-      <TokenCell :token-id="props.row.tokenId" :property="TokenCellItem.tokenName"/>
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.name"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
-      <TokenCell :token-id="props.row.tokenId" :property="TokenCellItem.tokenSymbol"/>
+    <o-table-column v-slot="props" field="creator" label="Creator">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number" :property="NftCellItem.creator"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="serials" label="Serial Numbers" position="left">
-      {{ formatSerials(props.row.serials) }}
+    <o-table-column v-slot="props" field="description" label="Description">
+      <NftCell :token-id="props.row.token_id" :serial-number="props.row.serial_number"
+               :property="NftCellItem.description"/>
     </o-table-column>
-
-    <o-table-column v-slot="props" field="owned" label="Total" position="right">
-      {{ props.row.serials.length }}
-    </o-table-column>
-
-    <template v-slot:bottom-left>
-      <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
-      />
-    </template>
 
   </o-table>
 
-  <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
-  />
-
-  <EmptyTable v-if="!collections.length"/>
+  <EmptyTable v-if="!props.controller.totalRowCount"/>
 
 </template>
 
@@ -91,81 +85,29 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
-import TokenLink from "@/components/values/link/TokenLink.vue";
+import {PropType} from 'vue';
+import {Nft} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
-import {useRoute} from "vue-router";
-import {NftCollectionInfo} from "@/utils/cache/NftCollectionCache";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
+import {NftsTableController} from "@/components/account/NftsTableController";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
-import TablePageSize from "@/components/transaction/TablePageSize.vue";
-import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'NftsTable',
-
-  components: {
-    TablePageSize,
-    TokenCell,
-    EmptyTable,
-    TokenLink,
+const props = defineProps({
+  controller: {
+    type: Object as PropType<NftsTableController>,
+    required: true
   },
+})
 
-  props: {
-    collections: {
-      type: Object as PropType<NftCollectionInfo[]>,
-      required: true
-    },
-  },
-
-  setup(props) {
-    const route = useRoute();
-
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const perPage = ref(isMediumScreen ? 15 : 5)
-
-    const handleClick = (nft: NftCollectionInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (nft.tokenId) {
-        routeManager.routeToCollection(route.params.accountId as string, nft.tokenId, event)
-      }
-    }
-
-    const MAX_DISPLAYED_SERIALS = 20
-    const formatSerials = (serials: number[]): string => {
-      let result = ''
-      for (let i = 0; i < serials.length; i++) {
-        if (i < MAX_DISPLAYED_SERIALS) {
-          result += (i == 0 ? `#${serials[i]}` : `, #${serials[i]}`)
-        } else {
-          result += `… (${serials.length - MAX_DISPLAYED_SERIALS} more)`
-          break
-        }
-      }
-      return result
-    }
-
-    const paginated = computed(() => props.collections.length > perPage.value)
-    const showPageSizeSelector = computed(() => props.collections.length > 5)
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      perPage,
-      paginated,
-      showPageSizeSelector,
-      handleClick,
-      formatSerials,
-      TokenCellItem,
-      AppStorage,
-      ORUGA_MOBILE_BREAKPOINT
-    }
+const handleClick = (n: Nft, c: unknown, i: number, ci: number, event: MouseEvent,) => {
+  if (n.token_id && n.serial_number) {
+    routeManager.routeToSerial(n.token_id, n.serial_number, event);
   }
-});
+};
 
 </script>
 

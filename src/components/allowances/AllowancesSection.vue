@@ -218,7 +218,11 @@ export default defineComponent({
     // HBAR Allowances Table Controller
     //
     const hbarAllowanceTableController = new HbarAllowanceTableController(
-        router, computedAccountId, perPage, "ph", "kh")
+        router,
+        computedAccountId,
+        perPage,
+        "ph", "kh"
+    )
     onMounted(() => hbarAllowanceTableController.mount())
     onBeforeUnmount(() => hbarAllowanceTableController.unmount())
 
@@ -226,7 +230,11 @@ export default defineComponent({
     // Token Allowances Table Controller
     //
     const tokenAllowanceTableController = new TokenAllowanceTableController(
-        router, computedAccountId, perPage, "pt", "kt")
+        router,
+        computedAccountId,
+        perPage,
+        "pt", "kt"
+    )
     onMounted(() => tokenAllowanceTableController.mount())
     onBeforeUnmount(() => tokenAllowanceTableController.unmount())
 
@@ -234,9 +242,17 @@ export default defineComponent({
     // NFT Allowances Table Controllers
     //
     const nftAllowanceTableController = new NftAllowanceTableController(
-        router, computedAccountId, perPage, "pn", "kn")
+        router,
+        computedAccountId,
+        perPage,
+        "pn", "kn"
+    )
     const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
-        router, computedAccountId, perPage, "pc", "kc")
+        router,
+        computedAccountId,
+        perPage,
+        "pc", "kc"
+    )
     onMounted(() => {
       nftAllowanceTableController.mount()
       nftAllSerialsAllowanceTableController.mount()

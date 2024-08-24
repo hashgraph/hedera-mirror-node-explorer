@@ -119,9 +119,11 @@ describe("TokensSection.vue", () => {
         await tab.trigger('click')
 
         const nftsTable = tokensSection.get("#nftsTable")
-        expect(nftsTable.find('thead').text()).toBe("Collection Name Symbol Serial Numbers Total")
+        expect(nftsTable.find('thead').text()).toBe("Image Token ID # Collection Name Creator Description")
         expect(nftsTable.find('tbody').text()).toBe(
-            "0.0.748383" + "Ħ Frens Kingdom" + "ĦFRENSKINGD…" + "#2, #1, #342" + "3"
+            "NFT" + "0.0.748383" + "2" + "Ħ Frens Kingdom" +
+            "NFT" + "0.0.748383" + "1" + "Ħ Frens Kingdom" +
+            "NFT" + "0.0.748383" + "342" + "Ħ Frens Kingdom"
         )
 
         wrapper.unmount()

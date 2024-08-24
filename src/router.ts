@@ -50,7 +50,6 @@ import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
 import RoutingSpec from "@/pages/RoutingSpec.vue";
-import AccountCollection from "@/pages/AccountCollection.vue"
 import {gtagPageView} from "@/gtag";
 
 const routes: Array<RouteRecordRaw> = [
@@ -129,12 +128,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/address/:accountAddress',
         name: 'AddressDetails',
         component: AddressDetails,
-        props: true
-    },
-    {
-        path: '/:network/accountcollection/:accountId/:tokenId',
-        name: 'AccountCollection',
-        component: AccountCollection,
         props: true
     },
     {
