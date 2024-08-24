@@ -75,7 +75,7 @@ const props = defineProps({
   }
 })
 
-const perPage = ref(5)
+const perPage = ref(10)
 const showSection = computed(() => tokenRelationshipTableController.totalRowCount.value > 0)
 const accountId = computed(() => props.accountId)
 
