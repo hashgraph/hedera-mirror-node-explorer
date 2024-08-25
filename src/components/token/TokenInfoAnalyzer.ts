@@ -20,7 +20,7 @@
 
 import {computed, Ref} from "vue";
 import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
-import {TokenInfo} from "@/schemas/HederaSchemas";
+import {TokenInfo, TokenType} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import router, {walletManager} from "@/router";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
@@ -58,10 +58,10 @@ export class TokenInfoAnalyzer {
         () => this.tokenInfo.value?.decimals ?? null)
 
     public readonly isFungible = computed(
-        () => this.tokenInfo.value != null ? this.tokenInfo.value.type == "FUNGIBLE_COMMON" : null)
+        () => this.tokenInfo.value != null ? this.tokenInfo.value.type == TokenType.FUNGIBLE_COMMON : null)
 
     public readonly isNft = computed(
-        () => this.tokenInfo.value != null ? this.tokenInfo.value.type == "NON_FUNGIBLE_UNIQUE" : null)
+        () => this.tokenInfo.value != null ? this.tokenInfo.value.type == TokenType.NON_FUNGIBLE_UNIQUE : null)
 
     public readonly hasFixedFees = computed(
         () => this.tokenInfo.value?.custom_fees?.fixed_fees && this.tokenInfo.value.custom_fees.fixed_fees.length > 0

@@ -25,7 +25,7 @@ import {AssetCache} from "@/utils/cache/AssetCache";
 import {SourcifyCache, SourcifyRecord, SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {ContractResponse, TokenInfo} from "@/schemas/HederaSchemas";
+import {ContractResponse, TokenInfo, TokenType} from "@/schemas/HederaSchemas";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {EntityID} from "@/utils/EntityID";
@@ -275,10 +275,10 @@ export class ContractAnalyzer {
         } else if (this.tokenInfo.value !== null) {
             let abiName: string|null
             switch(this.tokenInfo.value.type) {
-                case "FUNGIBLE_COMMON":
+                case TokenType.FUNGIBLE_COMMON:
                     abiName = "IERC20+IHRC"
                     break
-                case "NON_FUNGIBLE_UNIQUE":
+                case TokenType.NON_FUNGIBLE_UNIQUE:
                     abiName = "IERC721+IHRC"
                     break
                 default:

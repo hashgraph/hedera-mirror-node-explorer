@@ -81,6 +81,7 @@ import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
+import {TokenType} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: 'Tokens',
@@ -102,15 +103,12 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const displaySideBySide = inject('isLargeScreen', true)
 
-    const FUNGIBLE = "FUNGIBLE_COMMON"
-    const NONFUNGIBLE = "NON_FUNGIBLE_UNIQUE"
-
     //
     // NFT and TOKEN TableController
     //
     const perPage = ref(isMediumScreen ? 15 : 10)
-    const nftTableController = new TokenTableController(useRouter(), perPage, ref(NONFUNGIBLE), "p1", "k1")
-    const tokenTableController = new TokenTableController(useRouter(), perPage, ref(FUNGIBLE), "p2", "k2")
+    const nftTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.NON_FUNGIBLE_UNIQUE), "p1", "k1")
+    const tokenTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.FUNGIBLE_COMMON), "p2", "k2")
     onMounted(() => {
       nftTableController.mount()
       tokenTableController.mount()

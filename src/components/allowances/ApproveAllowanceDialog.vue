@@ -227,7 +227,7 @@ import router, {walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {CryptoAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
@@ -544,7 +544,7 @@ export default defineComponent({
         nftFeedback.value = INVALID_CHECKSUM_MESSAGE
       } else if (nftInfo.value === null) {
         nftFeedback.value = UNKNOWN_TOKENID_MESSAGE
-      } else if (nftInfo.value?.type !== 'NON_FUNGIBLE_UNIQUE') {
+      } else if (nftInfo.value?.type !== TokenType.NON_FUNGIBLE_UNIQUE) {
         nftFeedback.value = TOKEN_NOT_NFT_MESSAGE
       } else if (! await isValidAssociation(walletManager.accountId.value, normalizedNFT.value)) {
         nftFeedback.value = TOKEN_NOT_FOUND_MESSAGE
