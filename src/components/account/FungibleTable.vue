@@ -83,10 +83,10 @@
   </o-table>
 
   <TablePageSize
-      v-if="!controller.paginated && controller.showPageSizeSelector"
+      v-if="!controller.paginated.value && controller.showPageSizeSelector.value"
       v-model:size="controller.pageSize.value"
       :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+      style="width: 102px; margin-left: 4px"
   />
 
   <EmptyTable v-if="!controller.totalRowCount.value"/>
