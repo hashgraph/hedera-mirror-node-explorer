@@ -76,7 +76,21 @@
                :property="NftCellItem.description"/>
     </o-table-column>
 
+    <template v-slot:bottom-left>
+      <TablePageSize
+          v-model:size="controller.pageSize.value"
+          :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+      />
+    </template>
+
   </o-table>
+
+  <TablePageSize
+      v-if="!controller.paginated.value && controller.showPageSizeSelector.value"
+      v-model:size="controller.pageSize.value"
+      :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+      style="width: 102px; margin-left: 4px"
+  />
 
   <EmptyTable v-if="!controller.totalRowCount"/>
 
@@ -96,6 +110,8 @@ import {routeManager} from "@/router";
 import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 import {NftsTableController} from "@/components/account/NftsTableController";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
+import {AppStorage} from "@/AppStorage";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 
 defineProps({
   controller: {
