@@ -23,6 +23,7 @@ import {Ref} from "vue";
 import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
+import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
 export class FungibleTableController extends TableController<Token, string> {
 
@@ -59,9 +60,13 @@ export class FungibleTableController extends TableController<Token, string> {
 
     public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Token[] | null> {
         let result
+
         if (this.accountId.value === null) {
             result = Promise.resolve(null)
         } else {
+            order = TransactionTableController.invertSortOrder(order)
+            operator = TransactionTableController.invertKeyOperator(operator)
+
             const params = {} as {
                 "account.id": string
                 limit: number
@@ -78,8 +83,8 @@ export class FungibleTableController extends TableController<Token, string> {
             params.type = TokenType.FUNGIBLE_COMMON
 
             const url = `api/v1/tokens`
-            const r = await axios.get<TokensResponse>(url, {params: params})
-            result = Promise.resolve(r.data.tokens ?? [])
+            const response = await axios.get<TokensResponse>(url, {params: params})
+            result = Promise.resolve(response.data.tokens ?? null)
         }
         return result
     }
