@@ -86,6 +86,26 @@ describe('Account Navigation', () => {
         cy.go('back')
         cy.url().should('include', '/mainnet/account/')
 
+        cy.get('#tab-fungible').click()
+        cy.get('#fungibleTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+            .then(($id) => {
+                        cy.url().should('include', `/mainnet/token/${$id.text()}`)
+                        cy.contains('Fungible Token')
+                        cy.contains(`${$id.text()}`)
+            })
+
+        cy.go('back')
+        cy.url().should('include', '/mainnet/account/')
+
+        cy.get('#tab-nfts').click()
+
         cy.get('#nftsTable')
             .find('tbody tr')
             .should('be.visible')
@@ -97,7 +117,7 @@ describe('Account Navigation', () => {
             .then(($id) => {
                 cy.url().should('include', `/mainnet/token/${$id.text()}`)
                 cy.contains('Non Fungible Token')
-                cy.contains(`(${$id.text()})`)
+                cy.contains(`${$id.text()}`)
             })
     })
 

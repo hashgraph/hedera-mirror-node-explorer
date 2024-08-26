@@ -2,7 +2,7 @@
  *
  * Hedera Mirror Node Explorer
  *
- * Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,20 +18,20 @@
  *
  */
 
-import {Nft, Nfts} from "@/schemas/HederaSchemas";
+import {Token, TokensResponse, TokenType,} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
 import axios from "axios";
-import {getNonStrictOperator, KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 
-export class NftsTableController extends TableController<Nft, string> {
-
-    public readonly accountId: Ref<string | null>
+export class FungibleTableController extends TableController<Token, string> {
 
     //
     // Public
     //
+
+    public readonly accountId: Ref<string | null>
 
     public constructor(
         router: Router,
@@ -47,7 +47,8 @@ export class NftsTableController extends TableController<Nft, string> {
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
             100,
-            pageParamName, keyParamName
+            pageParamName,
+            keyParamName
         )
         this.accountId = accountId
         this.watchAndReload([this.accountId, this.pageSize])
@@ -57,49 +58,46 @@ export class NftsTableController extends TableController<Nft, string> {
     // TableController
     //
 
-    public async load(key: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
+    public async load(tokenId: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Token[] | null> {
         let result
 
-        if (this.accountId.value == null) {
+        if (this.accountId.value === null) {
             result = Promise.resolve(null)
         } else {
             order = TransactionTableController.invertSortOrder(order)
             operator = TransactionTableController.invertKeyOperator(operator)
 
             const params = {} as {
+                "account.id": string
                 limit: number
                 "token.id": string | undefined
-                serialnumber: string | undefined
                 order: string
+                type: string | undefined
             }
+            params["account.id"] = this.accountId.value
             params.limit = limit
             params.order = order
-
-            if (key !== null) {
-                const items = key.split('-')
-                const token = items[0] ?? null
-                const serial = items[1] ?? null
-
-                params["token.id"] = token ? `${getNonStrictOperator(operator)}:${token}` : undefined
-                params.serialnumber = serial ? `${operator}:${serial}` : undefined
+            if (tokenId !== null) {
+                params["token.id"] = operator + ":" + tokenId
             }
+            params.type = TokenType.FUNGIBLE_COMMON
 
-            const url = `api/v1/accounts/${this.accountId.value}/nfts`
-            const response = await axios.get<Nfts>(url, {params: params},)
-            result = Promise.resolve(response.data.nfts ?? null)
+            const url = `api/v1/tokens`
+            const response = await axios.get<TokensResponse>(url, {params: params})
+            result = Promise.resolve(response.data.tokens ?? null)
         }
         return result
     }
 
-    public keyFor(row: Nft): string {
-        return row.token_id && row.serial_number ? `${row.token_id}-${row.serial_number}` : ""
+    public keyFor(row: Token): string {
+        return row.token_id ?? ""
     }
 
     public stringFromKey(key: string): string {
-        return key
+        return key;
     }
 
     public keyFromString(s: string): string | null {
-        return s
+        return s;
     }
 }

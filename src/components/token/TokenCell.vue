@@ -48,6 +48,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import {BalanceCache} from "@/utils/cache/BalanceCache";
 import {TokenType} from "@/schemas/HederaSchemas";
 
 export enum TokenCellItem {
@@ -67,6 +68,10 @@ export default defineComponent({
       type: String as PropType<string | null>,
       default: null
     },
+    accountId: {
+      type: String as PropType<string | null>,
+      default: null
+    },
     property: {
       type: String as PropType<TokenCellItem>,
       default: TokenCellItem.tokenName
@@ -78,13 +83,34 @@ export default defineComponent({
   },
 
   setup(props) {
-    const id = computed(() => props.tokenId)
+    const tokenId = computed(() => props.tokenId)
+    const accountId = computed(() => props.accountId)
 
-    const infoLookup = TokenInfoCache.instance.makeLookup(id)
+    const infoLookup = TokenInfoCache.instance.makeLookup(tokenId)
     onMounted(() => infoLookup.mount())
     onBeforeUnmount(() => infoLookup.unmount())
 
-    const propertyValue = computed(() => {
+    const balanceLookup = BalanceCache.instance.makeLookup(accountId)
+    onMounted(() => balanceLookup.mount())
+    onBeforeUnmount(() => balanceLookup.unmount())
+
+    const tokenBalance = computed(() => {
+      let result
+      if (balanceLookup.entity.value !== null && balanceLookup.entity.value.balances.length >= 1) {
+        result = null
+        for (const t of balanceLookup.entity.value.balances[0].tokens) {
+          if (t.token_id === props.tokenId) {
+            result = t.balance
+            break
+          }
+        }
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const propertyValue = computed( () => {
       let result: string | null
       switch (props.property) {
         case TokenCellItem.tokenName:
@@ -97,13 +123,19 @@ export default defineComponent({
           result = infoLookup.entity.value?.type === TokenType.FUNGIBLE_COMMON ? 'Fungible' : 'NFT'
           break
         case TokenCellItem.tokenBalance:
-          result = infoLookup.entity.value?.type === TokenType.FUNGIBLE_COMMON
-              ? (props.balanceOrNbSerials?.toString() ?? '')
-              : null
+          if (infoLookup.entity.value?.type === TokenType.FUNGIBLE_COMMON) {
+            if (props.balanceOrNbSerials !== null) {
+              result = props.balanceOrNbSerials.toString()
+            } else {
+              result = tokenBalance.value?.toString() ?? null
+            }
+          } else {
+            result = null
+          }
           break
         case TokenCellItem.tokenNbSerials:
           result = infoLookup.entity.value?.type === TokenType.NON_FUNGIBLE_UNIQUE
-              ? (props.balanceOrNbSerials?.toString() ?? '')
+              ? props.balanceOrNbSerials?.toString() ?? null
               : null
           break
         default:

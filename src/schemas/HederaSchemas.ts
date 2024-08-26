@@ -125,9 +125,9 @@ export interface NftAllowancesResponse {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface BalancesResponse {
-    timestamp: string | null | undefined
-    balances: Array<AccountBalance> | undefined
-    links: Links | undefined
+    timestamp: string | null
+    balances: Array<AccountBalance>
+    links: Links
 }
 
 export interface AccountBalance {

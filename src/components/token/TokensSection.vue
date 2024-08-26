@@ -38,8 +38,8 @@
           @update:selected-tab="onSelectTab($event)"
       />
 
-      <div v-if="selectedTab === 'associations'" id="associationsTable">
-        <BalanceTable :controller="tokenRelationshipTableController"/>
+      <div v-if="selectedTab === 'fungible'" id="fungibleTable">
+        <FungibleTable :controller="fungibleTableController"/>
       </div>
 
       <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
@@ -62,11 +62,11 @@ import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
-import BalanceTable from "@/components/account/BalanceTable.vue";
-import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";
 import {useRouter} from "vue-router";
 import {NftsTableController} from "@/components/account/NftsTableController";
 import NftsTable from "@/components/account/NftsTable.vue";
+import FungibleTable from "@/components/account/FungibleTable.vue";
+import {FungibleTableController} from "@/components/account/FungibleTableController";
 
 const props = defineProps({
   accountId: {
@@ -76,11 +76,13 @@ const props = defineProps({
 })
 
 const perPage = ref(10)
-const showSection = computed(() => tokenRelationshipTableController.totalRowCount.value > 0)
+const showSection = computed(() =>
+    fungibleTableController.totalRowCount.value > 0 || nftsTableController.totalRowCount.value > 0
+)
 const accountId = computed(() => props.accountId)
 
-const tabIds = ['nfts', 'associations']
-const tabLabels = ['NFTs', 'Associations']
+const tabIds = ['fungible', 'nfts']
+const tabLabels = ['Fungible', 'NFTs']
 const selectedTab = ref(AppStorage.getAccountTokenTab() ?? tabIds[0])
 const onSelectTab = (tab: string) => {
   selectedTab.value = tab
@@ -100,17 +102,17 @@ onBeforeUnmount(() => {
   nftsTableController.unmount()
 })
 
-const tokenRelationshipTableController = new TokenRelationshipsTableController(
+const fungibleTableController = new FungibleTableController(
     useRouter(),
     accountId,
     perPage,
     "pr", "kr"
 );
 onMounted(() => {
-  tokenRelationshipTableController.mount()
+  fungibleTableController.mount()
 })
 onBeforeUnmount(() => {
-  tokenRelationshipTableController.unmount()
+  fungibleTableController.unmount()
 })
 
 </script>
