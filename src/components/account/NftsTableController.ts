@@ -58,35 +58,37 @@ export class NftsTableController extends TableController<Nft, string> {
     //
 
     public async load(key: string | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Nft[] | null> {
+        let result
+
         if (this.accountId.value == null) {
-            return Promise.resolve(null)
+            result = Promise.resolve(null)
+        } else {
+            order = TransactionTableController.invertSortOrder(order)
+            operator = TransactionTableController.invertKeyOperator(operator)
+
+            const params = {} as {
+                limit: number
+                "token.id": string | undefined
+                serialnumber: string | undefined
+                order: string
+            }
+            params.limit = limit
+            params.order = order
+
+            if (key !== null) {
+                const items = key.split('-')
+                const token = items[0] ?? null
+                const serial = items[1] ?? null
+
+                params["token.id"] = token ? `${getNonStrictOperator(operator)}:${token}` : undefined
+                params.serialnumber = serial ? `${operator}:${serial}` : undefined
+            }
+
+            const url = `api/v1/accounts/${this.accountId.value}/nfts`
+            const response = await axios.get<Nfts>(url, {params: params},)
+            result = Promise.resolve(response.data.nfts ?? null)
         }
-
-        order = TransactionTableController.invertSortOrder(order)
-        operator = TransactionTableController.invertKeyOperator(operator)
-
-        const params = {} as {
-            limit: number
-            "token.id": string | undefined
-            serialnumber: string | undefined
-            order: string
-        }
-        params.limit = limit
-        params.order = order
-
-        if (key !== null) {
-            const items = key.split('-')
-            const token = items[0] ?? null
-            const serial = items[1] ?? null
-
-            params["token.id"] = token ? `${getNonStrictOperator(operator)}:${token}` : undefined
-            params.serialnumber = serial ? `${operator}:${serial}` : undefined
-        }
-
-        const url = `api/v1/accounts/${this.accountId.value}/nfts`
-        const response = await axios.get<Nfts>(url, {params: params},)
-
-        return Promise.resolve(response.data.nfts ?? null)
+        return result
     }
 
     public keyFor(row: Nft): string {
