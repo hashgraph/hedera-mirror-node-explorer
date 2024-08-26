@@ -48,6 +48,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import {TokenType} from "@/schemas/HederaSchemas";
 
 export enum TokenCellItem {
   tokenName = "tokenName",
@@ -77,9 +78,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const FUNGIBLE = "FUNGIBLE_COMMON"
-    const NONFUNGIBLE = "NON_FUNGIBLE_UNIQUE"
-
     const id = computed(() => props.tokenId)
 
     const infoLookup = TokenInfoCache.instance.makeLookup(id)
@@ -96,15 +94,15 @@ export default defineComponent({
           result = makeTokenSymbol(infoLookup.entity.value)
           break
         case TokenCellItem.tokenType:
-          result = infoLookup.entity.value?.type === FUNGIBLE ? 'Fungible' : 'NFT'
+          result = infoLookup.entity.value?.type === TokenType.FUNGIBLE_COMMON ? 'Fungible' : 'NFT'
           break
         case TokenCellItem.tokenBalance:
-          result = infoLookup.entity.value?.type === FUNGIBLE
+          result = infoLookup.entity.value?.type === TokenType.FUNGIBLE_COMMON
               ? (props.balanceOrNbSerials?.toString() ?? '')
               : null
           break
         case TokenCellItem.tokenNbSerials:
-          result = infoLookup.entity.value?.type === NONFUNGIBLE
+          result = infoLookup.entity.value?.type === TokenType.NON_FUNGIBLE_UNIQUE
               ? (props.balanceOrNbSerials?.toString() ?? '')
               : null
           break

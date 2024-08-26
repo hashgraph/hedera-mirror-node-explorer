@@ -350,6 +350,11 @@ export interface Token {
     type: string // FUNGIBLE_COMMON, NON_FUNGIBLE_UNIQUE
 }
 
+export enum TokenType {
+    FUNGIBLE_COMMON = "FUNGIBLE_COMMON",
+    NON_FUNGIBLE_UNIQUE = "NON_FUNGIBLE_UNIQUE"
+}
+
 export interface TokenInfo {
 
     admin_key: Key | null
