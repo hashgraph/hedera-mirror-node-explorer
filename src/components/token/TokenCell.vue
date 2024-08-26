@@ -94,7 +94,7 @@ export default defineComponent({
     onMounted(() => balanceLookup.mount())
     onBeforeUnmount(() => balanceLookup.unmount())
 
-    const lookedUpBalance = computed(() => {
+    const tokenBalance = computed(() => {
       let result
       if (balanceLookup.entity.value !== null && balanceLookup.entity.value.balances.length >= 1) {
         result = null
@@ -110,7 +110,7 @@ export default defineComponent({
       return result
     })
 
-    const propertyValue = computed(() => {
+    const propertyValue = computed( () => {
       let result: string | null
       switch (props.property) {
         case TokenCellItem.tokenName:
@@ -124,10 +124,10 @@ export default defineComponent({
           break
         case TokenCellItem.tokenBalance:
           if (infoLookup.entity.value?.type === TokenType.FUNGIBLE_COMMON) {
-            if (props.accountId !== null) {
-              result = lookedUpBalance.value?.toString() ?? null
+            if (props.balanceOrNbSerials !== null) {
+              result = props.balanceOrNbSerials.toString()
             } else {
-              result = props.balanceOrNbSerials?.toString() ?? null
+              result = tokenBalance.value?.toString() ?? null
             }
           } else {
             result = null
