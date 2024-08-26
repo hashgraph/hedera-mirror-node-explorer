@@ -58,17 +58,11 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="name" label="Name">
-      <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenName"
-      />
+      {{ props.row.name }}
     </o-table-column>
 
     <o-table-column v-slot="props" field="symbol" label="Symbol">
-      <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenSymbol"
-      />
+      {{ props.row.symbol }}
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
