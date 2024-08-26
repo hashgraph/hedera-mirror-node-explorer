@@ -38,7 +38,7 @@
           @update:selected-tab="onSelectTab($event)"
       />
 
-      <div v-if="selectedTab === 'fungible'" id="associationsTable">
+      <div v-if="selectedTab === 'fungible'" id="fungibleTable">
         <FungibleTable :controller="fungibleTableController"/>
       </div>
 

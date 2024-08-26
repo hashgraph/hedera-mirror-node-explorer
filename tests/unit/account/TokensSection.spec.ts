@@ -180,7 +180,7 @@ describe("TokensSection.vue", () => {
         await tab.trigger('click')
         await flushPromises()
 
-        const associationsTable = tokensSection.get("#associationsTable")
+        const associationsTable = tokensSection.get("#fungibleTable")
         expect(associationsTable.find('thead').text()).toBe("Token Name Symbol Balance")
         expect(associationsTable.find('tbody').text()).toBe(
             "0.0.34332104" + "HSUITE" + "HSuite" + "42.0000" +
