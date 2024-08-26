@@ -76,7 +76,9 @@ const props = defineProps({
 })
 
 const perPage = ref(10)
-const showSection = computed(() => fungibleTableController.totalRowCount.value > 0)
+const showSection = computed(() =>
+    fungibleTableController.totalRowCount.value > 0 || nftsTableController.totalRowCount.value > 0
+)
 const accountId = computed(() => props.accountId)
 
 const tabIds = ['fungible', 'nfts']
