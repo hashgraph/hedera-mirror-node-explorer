@@ -25,7 +25,7 @@ env:
 jobs:
   prepare-release:
     name: Release / Prepare
-    runs-on: [ self-hosted, Linux, medium, ephemeral ]
+    runs-on: mirror-node-linux-medium
     outputs:
       version: ${{ steps.extract.outputs.version }}
     steps:
@@ -68,7 +68,7 @@ jobs:
 
   deploy-docker-image:
     name: Deploy / Docker / Image
-    runs-on: [ self-hosted, Linux, medium, ephemeral ]
+    runs-on: mirror-node-linux-medium
     needs:
       - prepare-release
     steps:
