@@ -486,8 +486,8 @@ export default defineComponent({
 
     const tabIds = ['transactions', 'contracts', 'rewards']
     const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
-    const selectedTab = ref(AppStorage.getAccountOperationTab() ?? tabIds[0])
-    const handleTabUpdate = (tab: string) => {
+    const selectedTab = ref<string|null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
+    const handleTabUpdate = (tab: string|null) => {
       selectedTab.value = tab
       AppStorage.setAccountOperationTab(tab)
     }

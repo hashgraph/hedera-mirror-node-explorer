@@ -176,8 +176,8 @@ export default defineComponent({
 
     const tabIds = ['hbar', 'token', 'nft']
     const tabLabels = ['HBAR', 'Tokens', 'NFTs']
-    const selectedTab = ref(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
-    const onUpdate = (tab: string) => {
+    const selectedTab = ref<string|null>(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
+    const onUpdate = (tab: string|null) => {
       selectedTab.value = tab
       AppStorage.setAccountAllowanceTab(tab)
       switch (selectedTab.value) {
