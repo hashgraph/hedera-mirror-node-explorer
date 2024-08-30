@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
+  <div v-if="tabIds.length >= 1" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
     <div class="tabs is-toggle h-is-property-text mb-1">
       <ul>
         <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selectedTab === tab}">
