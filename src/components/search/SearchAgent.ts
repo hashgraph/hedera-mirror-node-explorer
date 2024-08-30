@@ -49,6 +49,7 @@ import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
 
 export abstract class SearchAgent<L, E> {
 
+    public readonly id = this.constructor.name
     public readonly loading = ref<boolean>(false)
     public readonly loc: Ref<L|null> = ref(null)
     public readonly candidates: Ref<SearchCandidate<E>[]> = ref([])

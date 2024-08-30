@@ -25,13 +25,13 @@
 <template>
   <div style="position: relative" data-cy="searchDropdown">
     <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
-      <template v-for="(a,i) in searchController.visibleAgents.value" :key="a.constructor.name">
+      <template v-for="(a,i) in searchController.visibleAgents.value" :key="a.id">
         <hr v-if="i >= 1" class="h-card-separator m-0" style="height:1px"/>
         <SearchSection :search-controller="searchController" :search-agent="a"/>
       </template>
       <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">
         <hr v-if="searchController.visibleAgents.value.length >= 1" class="h-card-separator m-0" style="height:1px"/>
-        <template v-for="a in searchController.domainNameSearchAgents" :key="a.constructor.name">
+        <template v-for="a in searchController.domainNameSearchAgents" :key="a.id">
           <div v-if="a.loading.value" class="has-text-grey h-is-property-text">
             Connecting to {{ a.provider.providerAlias }}…
           </div>
