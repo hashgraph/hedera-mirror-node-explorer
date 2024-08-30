@@ -619,7 +619,7 @@ export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
     //
 
     public constructor() {
-        super("Token")
+        super("All Tokens")
     }
 
     //
