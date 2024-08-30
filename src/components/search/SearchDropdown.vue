@@ -24,11 +24,10 @@
 
 <template>
   <div style="position: relative" data-cy="searchDropdown">
-    <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
-      <template v-for="(a,i) in searchController.visibleAgents.value" :key="a.id">
-        <hr v-if="i >= 1" class="h-card-separator m-0" style="height:1px"/>
-        <SearchSection :search-controller="searchController" :search-agent="a"/>
-      </template>
+    <div v-if="searchController.visible.value"
+         class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 10px">
+      <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+      <SearchSection v-if="selectedAgent !== null" :search-controller="searchController" :search-agent="selectedAgent"/>
       <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">
         <hr v-if="searchController.visibleAgents.value.length >= 1" class="h-card-separator m-0" style="height:1px"/>
         <template v-for="a in searchController.domainNameSearchAgents" :key="a.id">
@@ -52,10 +51,12 @@
 
 <script setup lang="ts">
 
-import {PropType} from "vue";
+import {computed, PropType} from "vue";
 import {SearchController} from "@/components/search/SearchController";
 import router, {routeManager} from "@/router";
+import SearchTabs from "@/components/search/SearchTabs.vue";
 import SearchSection from "@/components/search/SearchSection.vue";
+import {SearchAgent} from "@/components/search/SearchAgent";
 
 const props = defineProps({
   "searchController": {
@@ -64,10 +65,26 @@ const props = defineProps({
   }
 })
 
+const selectedAgentId = defineModel("selectedAgentId", {
+  type: String as PropType<string|null>,
+  required: true
+})
+
+const selectedAgent = computed(() => {
+  let result: SearchAgent<unknown, unknown>|null
+  if (selectedAgentId.value !== null) {
+    result = props.searchController.findAgentById(selectedAgentId.value)
+  } else {
+    result = null
+  }
+  return result
+})
+
 const navigateToHelp = () => {
   props.searchController.inputText.value = "" // Hides SearchDropDown
   router.push(routeManager.makeRouteToSearchHelp())
 }
+
 
 </script>
 

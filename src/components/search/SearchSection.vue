@@ -24,14 +24,13 @@
 
 <template>
   <div>
-    <div class="h-is-text-size-4 has-text-grey mb-1">{{ searchAgent.title }}</div>
     <template v-for="(c,i) in searchAgent.candidates.value" :key="c.description">
       <button class="button-as-link h-is-property-text"
               :class="{'h-is-hoverable': !c.nonExistent, 'has-text-grey': c.nonExistent}"
               @click="navigate(c)" :disabled="c.nonExistent" style="width: 100%">
         {{ c.description }}
         <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
-        <span v-if="isFallback(i)" style="float: right">&#x23ce;</span>
+        <span v-if="i == 0" style="float: right">&#x23ce;</span>
       </button>
     </template>
   </div>
@@ -59,9 +58,6 @@ const props = defineProps({
   },
 })
 
-const isFallback = (i: number) => {
-  return props.searchAgent.candidates.value[i] == props.searchController.candidates.value[0]
-}
 
 const navigate = (c: SearchCandidate<unknown>) => {
   props.searchController.inputText.value = "" // Hides SearchDropDown
