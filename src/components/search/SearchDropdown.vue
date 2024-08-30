@@ -25,7 +25,7 @@
 <template>
   <div style="position: relative" data-cy="searchDropdown">
     <div v-if="searchController.visible.value"
-         class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 10px">
+         class="box" style="position: absolute; display: flex; flex-direction: column; gap: 4px; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 10px">
       <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
       <SearchSection v-if="selectedAgent !== null" :search-controller="searchController" :search-agent="selectedAgent"/>
       <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">

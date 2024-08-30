@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Tabs :tab-ids=tabIds :tab-labels=tabLabels v-model:selected-tab="selectedAgentId"/>
+  <Tabs :tab-ids=tabIds :tab-labels=tabLabels v-model:selected-tab="selectedAgentId" :compact="true"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
