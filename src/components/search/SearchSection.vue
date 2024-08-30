@@ -24,7 +24,7 @@
 
 <template>
   <div>
-    <template v-for="(c,i) in searchAgent.candidates.value" :key="c.description">
+    <template v-for="(c,i) in searchAgent.candidates.value" :key="i">
       <button class="button-as-link h-is-property-text"
               :class="{'h-is-hoverable': !c.nonExistent, 'has-text-grey': c.nonExistent}"
               @click="navigate(c)" :disabled="c.nonExistent" style="width: 100%">
