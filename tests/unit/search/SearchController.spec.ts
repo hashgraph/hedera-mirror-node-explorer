@@ -42,7 +42,7 @@ import {
 } from "../Mocks";
 import {fetchGetURLs} from "../MockUtils";
 import {base64DecToArr, byteToHex} from "../../../src/utils/B64Utils";
-import {TokenNameSource} from "../../../src/components/search/SearchAgent";
+import {SelectedTokensCache} from "../../../src/utils/cache/SelectedTokensCache";
 
 describe("SearchController.vue", () => {
 
@@ -105,6 +105,10 @@ describe("SearchController.vue", () => {
         {
             // Token search by name
 
+            const abi = require('../../../public/selected-tokens.json')
+            const matcher = "http://localhost:3000/selected-tokens.json"
+            mock.onGet(matcher).reply(200, abi)
+
             const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100"
             mock.onGet(matcher0).reply(200, {
                 tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
@@ -153,6 +157,7 @@ describe("SearchController.vue", () => {
     })
 
     afterEach(() => {
+        SelectedTokensCache.instance.clear()
         mock.reset()
         vi.useRealTimers()
     })
@@ -346,7 +351,6 @@ describe("SearchController.vue", () => {
 
         const inputText = ref<string>("")
         const controller = new SearchController(inputText)
-        controller.tokenNameSearchAgent.source.value = TokenNameSource.NETWORK
         await flushPromises()
         expect(vi.getTimerCount()).toBe(0)
         expect(controller.visible.value).toBe(false)
@@ -378,6 +382,7 @@ describe("SearchController.vue", () => {
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
+            "http://localhost:3000/selected-tokens.json",
             "api/v1/tokens/?name=CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ&limit=100",
         ])
 
@@ -792,7 +797,6 @@ describe("SearchController.vue", () => {
 
         const inputText = ref<string>("")
         const controller = new SearchController(inputText)
-        controller.tokenNameSearchAgent.source.value = TokenNameSource.NETWORK
         await flushPromises()
         expect(vi.getTimerCount()).toBe(0)
         expect(controller.visible.value).toBe(false)
@@ -824,6 +828,7 @@ describe("SearchController.vue", () => {
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/" + SAMPLE_TOKEN_NAME,
+            "http://localhost:3000/selected-tokens.json",
             "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100",
         ])
 

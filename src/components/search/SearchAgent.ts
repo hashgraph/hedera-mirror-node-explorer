@@ -49,7 +49,6 @@ import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
 
 export abstract class SearchAgent<L, E> {
 
-    public readonly id = this.constructor.name
     public readonly loading = ref<boolean>(false)
     public readonly loc: Ref<L|null> = ref(null)
     public readonly candidates: Ref<SearchCandidate<E>[]> = ref([])
@@ -64,11 +63,12 @@ export abstract class SearchAgent<L, E> {
         // Possibly override by subclasses
     }
 
+
     //
     // Protected
     //
 
-    protected constructor(public readonly title: string) {
+    protected constructor(public readonly title: string, public readonly id = this.constructor.name) {
         watch(this.loc, this.entityLocDidChange)
     }
 
@@ -452,7 +452,8 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
     //
 
     public constructor(public readonly provider: NameServiceProvider) {
-        super("Account registered with " + provider.providerAlias)
+        super("Account on " + provider.providerAlias,
+            "DomainNameSearchAgent-" + provider.providerAlias)
     }
 
     //
@@ -537,19 +538,21 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
 
 }
 
-export class TokenNameSearchAgent extends SearchAgent<string, TokenLike> {
-
-    public readonly source: Ref<TokenNameSource> = ref(TokenNameSource.SELECTION)
+export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike> {
 
     private readonly limit = 10
 
     //
-    // Public
+    // Protected (to be subclassed)
     //
 
-    public constructor() {
-        super("Token")
-        watch(this.source, this.entityLocDidChange)
+    protected constructor(title: string) {
+        super(title)
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
+        throw "Must be subclassed"
     }
 
     //
@@ -558,27 +561,9 @@ export class TokenNameSearchAgent extends SearchAgent<string, TokenLike> {
 
     protected async load(tokenName: string): Promise<SearchCandidate<TokenLike>[]> {
 
-
         let tokens: TokenLike[]
         try {
-            switch(this.source.value) {
-                case TokenNameSource.NETWORK: {
-                    // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
-                    const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=100")
-                    tokens = r.data.tokens ?? []
-                    tokens.sort((t1: TokenLike, t2:TokenLike) => TokenNameSearchAgent.compareToken(t1, t2, tokenName))
-                    break
-                }
-                case TokenNameSource.SELECTION: {
-                    const index = await SelectedTokensCache.instance.lookup()
-                    tokens = index.search(tokenName)
-                    break
-                }
-                default: {
-                    tokens = []
-                    break
-                }
-            }
+            tokens = await this.loadTokens(tokenName)
         } catch {
             tokens = []
         }
@@ -605,6 +590,50 @@ export class TokenNameSearchAgent extends SearchAgent<string, TokenLike> {
         return Promise.resolve(result)
     }
 
+}
+
+export class NarrowTokenNameSearchAgent extends TokenNameSearchAgent {
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Top Tokens")
+    }
+
+    //
+    // TokenNameSearchAgent
+    //
+
+    protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
+        const index = await SelectedTokensCache.instance.lookup()
+        return Promise.resolve(index.search(tokenName))
+    }
+}
+
+export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("Token")
+    }
+
+    //
+    // TokenNameSearchAgent
+    //
+
+    protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
+        // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
+        const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=100")
+        const result = r.data.tokens ?? []
+        result.sort((t1: TokenLike, t2:TokenLike) => FullTokenNameSearchAgent.compareToken(t1, t2, tokenName))
+        return Promise.resolve(result)
+    }
+
     //
     // Private
     //
@@ -615,7 +644,7 @@ export class TokenNameSearchAgent extends SearchAgent<string, TokenLike> {
             2) next tokens whose name starts with target
             3) then other tokens
      */
-    
+
     private static compareToken(t1: TokenLike, t2: TokenLike, target: string): number {
         let result: number
         const n1 = t1.name.toLocaleLowerCase()
@@ -652,5 +681,3 @@ export interface TokenLike {
     token_id: string|null
     name: string
 }
-
-export enum TokenNameSource { NETWORK, SELECTION }

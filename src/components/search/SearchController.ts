@@ -28,9 +28,10 @@ import {
     BlockSearchAgent,
     ContractSearchAgent,
     DomainNameSearchAgent,
+    FullTokenNameSearchAgent,
+    NarrowTokenNameSearchAgent,
     SearchAgent,
     SearchCandidate,
-    TokenNameSearchAgent,
     TokenSearchAgent,
     TopicSearchAgent,
     TransactionSearchAgent
@@ -97,7 +98,8 @@ export class SearchController {
     private readonly topicSearchAgent = new TopicSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
-    public readonly tokenNameSearchAgent = new TokenNameSearchAgent()
+    private readonly narrowTokenNameSearchAgent = new NarrowTokenNameSearchAgent()
+    public readonly fullTokenNameSearchAgent = new FullTokenNameSearchAgent()
 
     private readonly allAgents: SearchAgent<unknown, unknown>[] = []
     public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []
@@ -109,13 +111,14 @@ export class SearchController {
     public constructor(public readonly inputText: Ref<string>) {
         this.inputChangeController = new InputChangeController(inputText)
         this.allAgents.push(
+            this.narrowTokenNameSearchAgent,
+            this.fullTokenNameSearchAgent,
             this.contractSearchAgent,
             this.accountSearchAgent,
             this.tokenSearchAgent,
             this.topicSearchAgent,
             this.transactionSearchAgent,
             this.blockSearchAgent,
-            this.tokenNameSearchAgent
         )
         for (const p of nameServiceProviders) {
             const a = new DomainNameSearchAgent(p)
@@ -230,7 +233,8 @@ export class SearchController {
         this.topicSearchAgent.loc.value = entityID
         this.transactionSearchAgent.loc.value = transactionID ?? timestamp ?? hexBytes
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
-        this.tokenNameSearchAgent.loc.value = tokenName
+        this.narrowTokenNameSearchAgent.loc.value = tokenName
+        this.fullTokenNameSearchAgent.loc.value = tokenName
 
         for (const a of this.domainNameSearchAgents) {
             a.loc.value = domainName
