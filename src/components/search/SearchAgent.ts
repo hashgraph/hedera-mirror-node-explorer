@@ -607,8 +607,14 @@ export class NarrowTokenNameSearchAgent extends TokenNameSearchAgent {
     //
 
     protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
-        const index = await SelectedTokensCache.instance.lookup()
-        return Promise.resolve(index.search(tokenName))
+        let result: TokenLike[]
+        if (routeManager.currentNetwork.value == "mainnet") {
+            const index = await SelectedTokensCache.instance.lookup()
+            result = index.search(tokenName)
+        } else {
+            result = []
+        }
+        return Promise.resolve(result)
     }
 }
 
