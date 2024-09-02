@@ -60,8 +60,14 @@ describe("AdminKeyDetails.vue", () => {
         mock.onGet(matcher31).reply(200, {rewards: []})
         const matcher32 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/allowances/tokens"
         mock.onGet(matcher32).reply(200, {rewards: []})
+        const matcher33 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/allowances/nfts"
+        mock.onGet(matcher33).reply(200, {nfts: []})
         const matcher4 = "/api/v1/tokens/0.0.29662956"
         mock.onGet(matcher4).reply(200, SAMPLE_TOKEN);
+        const matcher5 = "api/v1/tokens"
+        mock.onGet(matcher5).reply(200, { tokens: [] });
+        const matcher6 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/nfts"
+        mock.onGet(matcher6).reply(200, { nfts: [] });
 
         const wrapper = mount(AccountDetails, {
             global: {

@@ -379,7 +379,6 @@ export async function isOwnedSerials(accountId: string | null, tokenId: string |
 
 export function labelForAutomaticTokenAssociation(rawProperty: number): string {
     let result: string
-    console.log(`labelForAutomaticTokenAssociation - property: ${rawProperty}`)
     switch (rawProperty) {
         case -1:
             result = 'Unlimited Auto Associations'

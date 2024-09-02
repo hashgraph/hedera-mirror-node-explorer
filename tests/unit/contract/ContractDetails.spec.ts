@@ -87,6 +87,13 @@ describe("ContractDetails.vue", () => {
         const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
+        const matcher10 = "api/v1/tokens"
+        mock.onGet(matcher10).reply(200, { tokens: [] });
+
+        const matcher11 = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts"
+        mock.onGet(matcher11).reply(200, { nfts: [] });
+
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -179,6 +186,12 @@ describe("ContractDetails.vue", () => {
         const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
+        const matcher10 = "api/v1/tokens"
+        mock.onGet(matcher10).reply(200, { tokens: [] });
+
+        const matcher11 = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts"
+        mock.onGet(matcher11).reply(200, { nfts: [] });
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -268,6 +281,12 @@ describe("ContractDetails.vue", () => {
         const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
+        const matcher10 = "api/v1/tokens"
+        mock.onGet(matcher10).reply(200, { tokens: [] });
+
+        const matcher11 = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts"
+        mock.onGet(matcher11).reply(200, { nfts: [] });
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -330,6 +349,12 @@ describe("ContractDetails.vue", () => {
         let matcher8 = "api/v1/contracts/" + contract1.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
+        const matcher10 = "api/v1/tokens"
+        mock.onGet(matcher10).reply(200, { tokens: [] });
+
+        const matcher11 = "api/v1/accounts/" + contract1.contract_id + "/nfts"
+        mock.onGet(matcher11).reply(200, { nfts: [] });
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -367,6 +392,9 @@ describe("ContractDetails.vue", () => {
 
         matcher8 = "api/v1/contracts/" + contract2.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher12 = "api/v1/accounts/" + contract2.contract_id + "/nfts"
+        mock.onGet(matcher12).reply(200, { nfts: [] });
 
         await wrapper.setProps({
             contractId: SAMPLE_CONTRACT_DUDE.contract_id ?? undefined
@@ -462,6 +490,12 @@ describe("ContractDetails.vue", () => {
         const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
 
+        const matcher10 = "api/v1/tokens"
+        mock.onGet(matcher10).reply(200, { tokens: [] });
+
+        const matcher11 = "api/v1/accounts/" + contract.contract_id + "/nfts"
+        mock.onGet(matcher11).reply(200, { nfts: [] });
+
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -508,6 +542,12 @@ describe("ContractDetails.vue", () => {
 
         const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
         mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+
+        const matcher10 = "api/v1/tokens"
+        mock.onGet(matcher10).reply(200, { tokens: [] });
+
+        const matcher11 = "api/v1/accounts/" + contract.contract_id + "/nfts"
+        mock.onGet(matcher11).reply(200, { nfts: [] });
 
         const wrapper = mount(ContractDetails, {
             global: {

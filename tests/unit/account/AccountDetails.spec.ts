@@ -102,6 +102,15 @@ describe("AccountDetails.vue", () => {
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
 
+        const matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        const matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -191,6 +200,15 @@ describe("AccountDetails.vue", () => {
         let matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
 
+        let matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        let matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        let matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -225,6 +243,12 @@ describe("AccountDetails.vue", () => {
 
         matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
+
+        matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
 
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
@@ -308,6 +332,15 @@ describe("AccountDetails.vue", () => {
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
 
+        const matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        const matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -362,6 +395,15 @@ describe("AccountDetails.vue", () => {
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
 
+        const matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        const matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -415,6 +457,15 @@ describe("AccountDetails.vue", () => {
         const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
 
+        const matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        const matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -449,6 +500,21 @@ describe("AccountDetails.vue", () => {
 
         const matcher2 = "/api/v1/transactions"
         mock.onGet(matcher2).reply(200, SAMPLE_TRANSACTIONS);
+
+        const matcher9 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, {rewards: []})
+
+        const matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, {rewards: []})
+
+        const matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        const matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
 
         const wrapper = mount(AccountDetails, {
             global: {
