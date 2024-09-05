@@ -121,8 +121,8 @@ describe("ContractActionAnalyzer.spec.ts", () => {
         action.value = SAMPLE_ACTION
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
-            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/accounts/0x0000000000000000000000000000000000017727",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/contracts/0.0.96037",
             "api/v1/tokens/0.0.96037",
         ])
@@ -136,8 +136,8 @@ describe("ContractActionAnalyzer.spec.ts", () => {
         expect(analyzer.fromId.value).toBeNull()
         expect(analyzer.toId.value).toBeNull()
         expect(fetchGetURLs(mock)).toStrictEqual([
-            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/accounts/0x0000000000000000000000000000000000017727",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/contracts/0.0.96037",
             "api/v1/tokens/0.0.96037",
         ])
@@ -183,8 +183,8 @@ describe("ContractActionAnalyzer.spec.ts", () => {
         action.value = SAMPLE_ACTION
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
-            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/accounts/0x0000000000000000000000000000000000017725",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
         ])
         expect(analyzer.action.value).toStrictEqual(SAMPLE_ACTION)
         expect(analyzer.fromId.value).toBe("0.0.96039")
@@ -196,8 +196,8 @@ describe("ContractActionAnalyzer.spec.ts", () => {
         expect(analyzer.fromId.value).toBeNull()
         expect(analyzer.toId.value).toBeNull()
         expect(fetchGetURLs(mock)).toStrictEqual([
-            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
             "api/v1/accounts/0x0000000000000000000000000000000000017725",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x70a08231",
         ])
 
         AccountByAddressCache.instance.clear()
