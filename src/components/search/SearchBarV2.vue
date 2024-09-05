@@ -31,6 +31,7 @@
             class="input has-background-white has-text-black"
             style="border-radius: 10px; height: 50px"
             type="text"
+            spellcheck="false"
             v-model="searchedText"
             ref="inputElement"
         />
@@ -48,6 +49,7 @@
             class="input has-text-white h-is-navbar-item"
             style="z-index: 1; height: 40px"
             type="text"
+            spellcheck="false"
             placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
             v-model="searchedText"
             ref="inputElement"
