@@ -137,6 +137,15 @@ describe("NodeDetails.vue", () => {
         let matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
 
+        let matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        let matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        let matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga]
@@ -164,6 +173,15 @@ describe("NodeDetails.vue", () => {
 
         matcher10 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens"
         mock.onGet(matcher10).reply(200, {rewards: []})
+
+        matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {nfts: []})
+
+        matcher12 = "api/v1/tokens"
+        mock.onGet(matcher12).reply(200, { tokens: [] });
+
+        matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts"
+        mock.onGet(matcher13).reply(200, { nfts: [] });
 
         const token2 = SAMPLE_TOKEN_DUDE
         matcher3 = "/api/v1/tokens/" + token2.token_id
