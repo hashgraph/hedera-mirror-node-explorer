@@ -49,7 +49,7 @@
     <span v-if="!isPlaying" class="h-is-text-size-1 h-is-dense mr-2">REFRESH PAUSED</span>
 
     <img v-if="!isPlaying" alt="Play" src="@/assets/play.svg" @click="handleClick">
-    <img v-else alt="Pause" class="" src="@/assets/pause.svg" @click="handleClick">
+    <img v-else alt="Pause" src="@/assets/pause.svg" @click="handleClick">
   </div>
 </template>
 
