@@ -8,7 +8,7 @@
     "dev:http": "npm run install:branding && cp ./networks-config-example.json ./public/networks-config.json  && vite --config nossl.config.ts",
     "build": "run-p type-check build-only",
     "preview": "npm run install:branding && vite preview",
-    "test:unit": "vitest run --sequence.setupFiles list",
+    "test:unit": "vitest run",
     "cover:unit": "vitest run --coverage",
     "test:e2e": "npm run install:branding && START_SERVER_AND_TEST_INSECURE=1 start-server-and-test dev https://localhost:5173 'cypress run --browser chrome --e2e'",
     "test:e2e:dev": "npm run install:branding && START_SERVER_AND_TEST_INSECURE=1 start-server-and-test 'vite dev --port 5173' https://localhost:5173 'cypress open --e2e'",
