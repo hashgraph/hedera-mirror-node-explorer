@@ -98,8 +98,13 @@
         </div>
       </template>
 
-      <template v-slot:control v-if="isMediumScreen">
-        <div v-if="showContractVisible && contractRoute" id="showContractLink" class="is-inline-block ml-3">
+      <template v-slot:control>
+        <button v-if="accountEditable" id="update-button" class="button is-white is-small"
+                @click="onUpdateAccount">UPDATE ACCOUNT…
+        </button>
+
+        <div v-if="isMediumScreen && showContractVisible && contractRoute" id="showContractLink"
+             class="is-inline-block ml-3">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -504,6 +509,8 @@ const downloadController = new DialogController()
 const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
 onMounted(() => nameQuery.mount())
 onBeforeUnmount(() => nameQuery.unmount())
+
+const onUpdateAccount = () => alert('NOT IMPLEMENTED')
 
 const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
