@@ -32,6 +32,7 @@
       <div class="is-flex is-align-items-center">
         <slot name="value"/>
         <img v-if="editable" alt="Edit" class="ml-2"
+             style="height: 14px"
              @click="onEdit"
              src="@/assets/pencil.svg"
         >
