@@ -48,8 +48,8 @@
   <div class="is-flex is-align-items-center">
     <span v-if="!isPlaying" class="h-is-text-size-1 h-is-dense mr-2">REFRESH PAUSED</span>
 
-    <img v-if="!isPlaying" alt="Play" src="@/assets/play.svg" @click="handleClick">
-    <img v-else alt="Pause" src="@/assets/pause.svg" @click="handleClick">
+    <img v-if="!isPlaying" alt="Play" src="@/assets/play.svg" @click="handleClick" data-cy="playButton">
+    <img v-else alt="Pause" src="@/assets/pause.svg" @click="handleClick" data-cy="pauseButton">
   </div>
 </template>
 

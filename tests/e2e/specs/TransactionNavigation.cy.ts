@@ -56,7 +56,11 @@ describe('Transaction Navigation', () => {
             })
 
         cy.get('.box')
-            .find('[data-cy="playPauseButton"]')
+            .find('[data-cy="pauseButton"]')
+            .click()
+
+        cy.get('.box')
+            .find('[data-cy="playButton"]')
             .click()
     })
 
