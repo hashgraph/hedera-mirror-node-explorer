@@ -127,7 +127,11 @@
       </template>
 
       <template v-slot:leftContent>
-        <Property id="stakedTo">
+        <EditableProperty
+            id="stakedTo"
+            :editable="accountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>
             Staked to
           </template>
@@ -148,7 +152,7 @@
             </div>
             <span v-else class="has-text-grey">None</span>
           </template>
-        </Property>
+        </EditableProperty>
 
         <Property id="pendingReward">
           <template v-slot:name>Pending Reward</template>
@@ -165,13 +169,17 @@
             <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
           </template>
         </Property>
-        <Property id="memo">
+        <EditableProperty
+            id="memo"
+            :editable="accountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Memo</template>
           <template v-slot:value>
             <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"
                        :show-base64-as-extra="true"/>
           </template>
-        </Property>
+        </EditableProperty>
 
         <Property id="createTransaction">
           <template v-slot:name>Create Transaction</template>
@@ -188,39 +196,54 @@
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod"
-                  tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant.">
+        <EditableProperty
+            id="autoRenewPeriod"
+            tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant."
+            :editable="accountEditable"
+        >
           <template v-slot:name>
             <span>Auto Renew Period</span>
           </template>
           <template v-slot:value>
             <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
           </template>
-        </Property>
-        <Property id="maxAutoAssociation"
-                  tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0).">
+        </EditableProperty>
+        <EditableProperty
+            id="maxAutoAssociation"
+            tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
+            :editable="accountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Max. Auto. Association</template>
           <template v-slot:value>
             <StringValue :string-value="maxAutoAssociationValue"/>
           </template>
-        </Property>
-        <Property id="receiverSigRequired">
+        </EditableProperty>
+        <EditableProperty
+            id="receiverSigRequired"
+            :editable="accountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Receiver Sig. Required</template>
           <template v-slot:value>
             <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
           </template>
-        </Property>
+        </EditableProperty>
       </template>
 
       <template v-slot:rightContent>
-        <Property id="key">
+        <EditableProperty
+            id="key"
+            :editable="accountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Admin Key</template>
           <template v-slot:value>
             <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key"
                       :key-type="account?.key?._type"
                       :show-none="true"/>
           </template>
-        </Property>
+        </EditableProperty>
 
         <Property v-if="account?.alias" id="alias" :class="{'mb-0':account?.alias}">
           <template v-slot:name>Key Alias</template>
