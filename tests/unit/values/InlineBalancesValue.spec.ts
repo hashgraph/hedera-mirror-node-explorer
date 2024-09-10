@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -173,6 +175,9 @@ describe("InlineBalancesValue.vue", () => {
         expect(wrapper.text()).toContain("100.00000000" + ">")
         expect(wrapper.text()).toContain("years ago")
 
+        balanceAnalyzer.unmount()
+        await flushPromises()
+
         wrapper.unmount()
         await flushPromises()
     });
@@ -225,6 +230,9 @@ describe("InlineBalancesValue.vue", () => {
         expect(wrapper.text()).toContain("100.00000000" + ">")
         expect(wrapper.text()).toContain("years ago")
 
+        balanceAnalyzer.unmount()
+        await flushPromises()
+
         wrapper.unmount()
         await flushPromises()
     });
@@ -275,6 +283,9 @@ describe("InlineBalancesValue.vue", () => {
 
         expect(wrapper.text()).toContain("100.00000000" + ">")
         expect(wrapper.text()).toContain("years ago")
+
+        balanceAnalyzer.unmount()
+        await flushPromises()
 
         wrapper.unmount()
         await flushPromises()
@@ -327,6 +338,9 @@ describe("InlineBalancesValue.vue", () => {
 
         expect(wrapper.text()).toContain("100.00000000" + ">")
         expect(wrapper.text()).toContain("years ago")
+
+        balanceAnalyzer.unmount()
+        await flushPromises()
 
         wrapper.unmount()
         await flushPromises()
