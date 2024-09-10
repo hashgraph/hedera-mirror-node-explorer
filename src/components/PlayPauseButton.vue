@@ -46,14 +46,10 @@
 
 <template>
   <div class="is-flex is-align-items-center">
-    <span v-if="!isPlaying" class="h-is-text-size-1 h-is-dense">REFRESH PAUSED</span>
-    <button
-        class="button is-small has-text-white ml-2"
-        data-cy="playPauseButton"
-        style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0"
-        v-on:click="handleClick()">
-      <i :class="{ 'fa-play': !isPlaying, 'fa-pause': isPlaying}" class="fas" style="background-color: #202532"/>
-    </button>
+    <span v-if="!isPlaying" class="h-is-text-size-1 h-is-dense mr-2">REFRESH PAUSED</span>
+
+    <img v-if="!isPlaying" alt="Play" src="@/assets/play.svg" @click="handleClick">
+    <img v-else alt="Pause" src="@/assets/pause.svg" @click="handleClick">
   </div>
 </template>
 

@@ -18,16 +18,11 @@
  *
  */
 
-import {beforeEach, describe, test, expect} from 'vitest'
+import {beforeEach, describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
-import {
-    SAMPLE_NETWORK_EXCHANGERATE,
-    SAMPLE_NETWORK_SUPPLY,
-    SAMPLE_TOKEN,
-    SAMPLE_TRANSACTIONS
-} from "./Mocks";
+import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
 import App from "@/App.vue";
 import TopNavBar from "@/components/TopNavBar.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
@@ -105,7 +100,7 @@ describe("App.vue", () => {
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(13)
+        expect(logos.length).toBe(16)
         expect(logos[0].attributes('alt')).toBe("")
         expect(logos[1].attributes('alt')).toBe("wallet logo")
         expect(logos[2].attributes('alt')).toBe("wallet logo")
@@ -117,8 +112,11 @@ describe("App.vue", () => {
         expect(logos[8].attributes('alt')).toBe("Modal close icon")
         expect(logos[9].attributes('alt')).toBe("Trend Up")
         expect(logos[10].attributes('alt')).toBe("Trend Up")
-        expect(logos[11].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[12].attributes('alt')).toBe("Sponsor Logo")
+        expect(logos[11].attributes('alt')).toBe("Pause")
+        expect(logos[12].attributes('alt')).toBe("Pause")
+        expect(logos[13].attributes('alt')).toBe("Pause")
+        expect(logos[14].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[15].attributes('alt')).toBe("Sponsor Logo")
 
         mock.restore()
         wrapper.unmount()
