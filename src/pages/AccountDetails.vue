@@ -291,9 +291,9 @@
 
     <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
 
-    <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
+    <MirrorLink :network="network" entityUrl="accounts" :loc="accountId ?? undefined"/>
 
-    <TransactionDownloadDialog :account-id="accountId" :controller="downloadController"/>
+    <TransactionDownloadDialog :account-id="accountId ?? undefined" :controller="downloadController"/>
 
   </section>
 
@@ -305,9 +305,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -326,7 +326,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import router, {routeManager} from "@/router";
+import router, {routeManager, walletManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
@@ -355,241 +355,175 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
+import EditableProperty from "@/components/EditableProperty.vue";
 
-export default defineComponent({
+const props = defineProps({
+  accountId: String,
+  network: String,
+})
 
-  name: 'AccountDetails',
+const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 
-  components: {
-    TokensSection,
-    InfoTooltip,
-    EntityIOL,
-    TransactionDownloadDialog,
-    DownloadButton,
-    AccountCreatedContractsTable,
-    VerifiedContractsTable,
-    EmptyTable,
-    Tabs,
-    DateTimePicker,
-    MirrorLink,
-    InlineBalancesValue,
-    Copyable,
-    AllowancesSection,
-    EVMAddress,
-    AliasValue,
-    TransactionLink,
-    AccountLink,
-    NotificationBanner,
-    Property,
-    TransactionFilterSelect,
-    Footer,
-    BlobValue,
-    HbarAmount,
-    DashboardCard,
-    TransactionTable,
-    PlayPauseButton,
-    TimestampValue,
-    KeyValue,
-    DurationValue,
-    StringValue,
-    StakingRewardsTable
-  },
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+const isTouchDevice = inject('isTouchDevice', false)
 
-  props: {
-    accountId: String,
-    network: String,
-  },
-
-  setup(props) {
-    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
-
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const timeSelection = ref("LATEST")
-    watch(timeSelection, (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        if (timeSelection.value == "LATEST") {
-          transactionTableController.startAutoRefresh() // (1)
-        } else {
-          transactionTableController.stopAutoRefresh()
-        }
-      }
-    })
-
-    function onDateCleared() {
-      timeSelection.value = "LATEST"
-      // (1) will restart auto-refresh
-    }
-
-    //
-    // account
-    //
-    const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const maxAutoAssociationValue = computed(() =>
-        labelForAutomaticTokenAssociation(
-            accountLocParser.accountInfo.value?.max_automatic_token_associations ?? 0
-        ))
-
-    //
-    // BalanceAnalyzer
-    //
-    const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
-    onMounted(() => balanceAnalyzer.mount())
-    onBeforeUnmount(() => balanceAnalyzer.unmount())
-
-    //
-    // contract
-    //
-    const contractLookup = ContractByIdCache.instance.makeLookup(accountLocParser.accountId)
-    onMounted(() => contractLookup.mount())
-    onBeforeUnmount(() => contractLookup.unmount())
-    const showContractVisible = computed(() => {
-      return contractLookup.entity.value != null
-    })
-
-    //
-    // staking
-    //
-    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
-    onMounted(() => stakedNodeAnalyzer.mount())
-    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
-
-    const stakedNodeIcon = computed(() => {
-      let result
-      if (accountLocParser.stakedNodeId.value !== null) {
-        result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const contractRoute = computed(() => {
-      const accountId = accountLocParser.accountId.value
-      return accountId ? routeManager.makeRouteToContract(accountId) : ''
-    })
-
-    const stakedNodeRoute = computed(() => {
-      const stakedNodeId = accountLocParser.stakedNodeId.value
-      return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : ''
-    })
-
-    const operatorNodeRoute = computed(() => {
-      const operatorNodeId = accountLocParser.nodeId.value
-      return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
-    })
-
-    const tabIds = ['transactions', 'contracts', 'rewards']
-    const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
-    const selectedTab = ref<string|null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
-    const handleTabUpdate = (tab: string|null) => {
-      selectedTab.value = tab
-      AppStorage.setAccountOperationTab(tab)
-    }
-    const filterVerified = ref(false)
-
-    //
-    // Table controllers and cache for Recent Account Operations
-    // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
-    //
-    const perPage = ref(isMediumScreen ? 10 : 5)
-    const accountId = accountLocParser.accountId
-
-    const transactionTableController = new TransactionTableControllerXL(
-        router,
-        accountId,
-        perPage,
-        true,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-        "p1", "k1")
-
-    const contractCreateTableController = new TransactionTableController(
-        router,
-        perPage,
-        TransactionType.CONTRACTCREATEINSTANCE,
-        "success",
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-        "p3", "k3",
-        accountId)
-
-    const verifiedContractsController = new VerifiedContractsController(
-        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId),
-        perPage,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
-    )
-
-    const rewardsTableController = new StakingRewardsTableController(
-        router,
-        accountLocParser.accountId,
-        perPage,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-        "p2", "k2")
-
-    //
-    // Transactions download
-    //
-
-    const downloadController = new DialogController()
-
-    //
-    // Naming
-    //
-
-    const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
-    onMounted(() => nameQuery.mount())
-    onBeforeUnmount(() => nameQuery.unmount())
-
-    return {
-      temporaryBanner,
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      transactionTableController,
-      transactionType: transactionTableController.transactionType,
-      contractCreateTableController,
-      verifiedContractsController,
-      loaded: verifiedContractsController.loaded,
-      overflow: verifiedContractsController.overflow,
-      notification: accountLocParser.errorNotification,
-      isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
-      account: accountLocParser.accountInfo,
-      maxAutoAssociationValue,
-      normalizedAccountId: accountLocParser.accountId,
-      accountChecksum: accountLocParser.accountChecksum,
-      accountInfo: accountLocParser.accountDescription,
-      nodeId: accountLocParser.nodeId,
-      ethereumAddress: accountLocParser.ethereumAddress,
-      balanceAnalyzer,
-      showContractVisible,
-      stakePeriodStart: accountLocParser.stakePeriodStart,
-      stakedNodeId: accountLocParser.stakedNodeId,
-      stakedAccountId: accountLocParser.stakedAccountId,
-      stakedNodeDescription: stakedNodeAnalyzer.nodeDescription,
-      stakedNodeIcon,
-      rewardsTableController,
-      contractRoute,
-      stakedNodeRoute,
-      operatorNodeRoute,
-      availableAPI: rewardsTableController.availableAPI,
-      selectedTab,
-      tabIds,
-      tabLabels,
-      handleTabUpdate,
-      filterVerified,
-      downloadController,
-      timeSelection,
-      onDateCleared,
-      domainName: nameQuery.name,
-      domainProviderName: nameQuery.providerName,
-      labelForAutomaticTokenAssociation,
+const timeSelection = ref("LATEST")
+watch(timeSelection, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    if (timeSelection.value == "LATEST") {
+      transactionTableController.startAutoRefresh() // (1)
+    } else {
+      transactionTableController.stopAutoRefresh()
     }
   }
-});
+})
+
+function onDateCleared() {
+  timeSelection.value = "LATEST"
+  // (1) will restart auto-refresh
+}
+
+//
+// account
+//
+const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
+onMounted(() => accountLocParser.mount())
+onBeforeUnmount(() => accountLocParser.unmount())
+
+const maxAutoAssociationValue = computed(() =>
+    labelForAutomaticTokenAssociation(
+        accountLocParser.accountInfo.value?.max_automatic_token_associations ?? 0
+    ))
+
+//
+// BalanceAnalyzer
+//
+const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
+onMounted(() => balanceAnalyzer.mount())
+onBeforeUnmount(() => balanceAnalyzer.unmount())
+
+//
+// contract
+//
+const contractLookup = ContractByIdCache.instance.makeLookup(accountLocParser.accountId)
+onMounted(() => contractLookup.mount())
+onBeforeUnmount(() => contractLookup.unmount())
+const showContractVisible = computed(() => {
+  return contractLookup.entity.value != null
+})
+
+//
+// staking
+//
+const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+onMounted(() => stakedNodeAnalyzer.mount())
+onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
+
+const stakedNodeIcon = computed(() => {
+  let result
+  if (accountLocParser.stakedNodeId.value !== null) {
+    result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
+  } else {
+    result = ""
+  }
+  return result
+})
+
+const contractRoute = computed(() => {
+  const accountId = accountLocParser.accountId.value
+  return accountId ? routeManager.makeRouteToContract(accountId) : ''
+})
+
+const stakedNodeRoute = computed(() => {
+  const stakedNodeId = accountLocParser.stakedNodeId.value
+  return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : ''
+})
+
+const operatorNodeRoute = computed(() => {
+  const operatorNodeId = accountLocParser.nodeId.value
+  return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
+})
+
+const tabIds = ['transactions', 'contracts', 'rewards']
+const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
+const selectedTab = ref<string|null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
+const handleTabUpdate = (tab: string|null) => {
+  selectedTab.value = tab
+  AppStorage.setAccountOperationTab(tab)
+}
+const filterVerified = ref(false)
+
+//
+// Table controllers and cache for Recent Account Operations
+// These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
+//
+const perPage = ref(isMediumScreen ? 10 : 5)
+const accountId = accountLocParser.accountId
+
+const transactionTableController = new TransactionTableControllerXL(
+    router,
+    accountId,
+    perPage,
+    true,
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+    "p1", "k1")
+
+const contractCreateTableController = new TransactionTableController(
+    router,
+    perPage,
+    TransactionType.CONTRACTCREATEINSTANCE,
+    "success",
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+    "p3", "k3",
+    accountId)
+
+const verifiedContractsController = new VerifiedContractsController(
+    VerifiedContractsByAccountIdCache.instance.makeLookup(accountId),
+    perPage,
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
+)
+
+const rewardsTableController = new StakingRewardsTableController(
+    router,
+    accountLocParser.accountId,
+    perPage,
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+    "p2", "k2")
+
+//
+// Transactions download
+//
+
+const downloadController = new DialogController()
+
+//
+// Naming
+//
+
+const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
+onMounted(() => nameQuery.mount())
+onBeforeUnmount(() => nameQuery.unmount())
+
+const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
+const accountEditable = computed(() => isWalletConnected.value && isHederaWallet.value)
+const transactionType = computed(() => transactionTableController.transactionType.value)
+const loaded = computed(() => verifiedContractsController.loaded.value)
+const overflow = computed(() => verifiedContractsController.overflow.value)
+const notification = computed(() => accountLocParser.errorNotification.value)
+const isInactiveEvmAddress = computed(() => accountLocParser.isInactiveEvmAddress.value)
+const account = computed(() => accountLocParser.accountInfo.value)
+const normalizedAccountId = computed(() => accountLocParser.accountId.value)
+const accountChecksum = computed(() => accountLocParser.accountChecksum.value)
+const accountInfo = computed(() => accountLocParser.accountDescription.value)
+const nodeId = computed(() => accountLocParser.nodeId.value)
+const ethereumAddress = computed(() => accountLocParser.ethereumAddress.value)
+const stakePeriodStart = computed(() => accountLocParser.stakePeriodStart.value)
+const stakedAccountId = computed(() => accountLocParser.stakedAccountId.value)
+const stakedNodeDescription = computed(() => stakedNodeAnalyzer.nodeDescription.value)
+const domainName = computed(() => nameQuery.name.value)
+const domainProviderName = computed(() => nameQuery.providerName.value)
 
 </script>
 
