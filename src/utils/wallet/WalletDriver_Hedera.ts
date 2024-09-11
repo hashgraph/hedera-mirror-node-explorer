@@ -50,9 +50,6 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     public async updateAccount(accountId: string, info: AccountInfo) {
         const trans = new AccountUpdateTransaction()
         trans.setAccountId(accountId)
-        if (info.receiver_sig_required != null) {
-            trans.setReceiverSignatureRequired(info.receiver_sig_required)
-        }
         if (info.key != null) {
             let newKey: Key
             switch (info.key._type) {
@@ -68,11 +65,11 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
             }
             trans.setKey(newKey)
         }
+        if (info.receiver_sig_required != null) {
+            trans.setReceiverSignatureRequired(info.receiver_sig_required)
+        }
         if (info.auto_renew_period != null) {
             trans.setAutoRenewPeriod(info.auto_renew_period)
-        }
-        if (info.memo != null) {
-            trans.setAccountMemo(info.memo)
         }
         if (info.memo != null) {
             trans.setAccountMemo(info.memo)
