@@ -71,6 +71,10 @@
         />
       </div>
 
+      <div v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable">
+        <PendingAirdropTable :controller="pendingAirdropTableController"/>
+      </div>
+
     </template>
 
   </DashboardCard>
@@ -102,6 +106,8 @@ import {DialogController} from "@/components/dialog/DialogController";
 import {walletManager} from "@/router";
 import {Nft, Token} from "@/schemas/HederaSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
+import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
+import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
 
 const props = defineProps({
   accountId: {
@@ -116,8 +122,8 @@ const showSection = computed(() =>
 )
 const accountId = computed(() => props.accountId)
 
-const tabIds = ['fungible', 'nfts']
-const tabLabels = ['Fungible', 'NFTs']
+const tabIds = ['fungible', 'nfts', 'pendingAirdrop']
+const tabLabels = ['Fungible', 'NFTs', 'Pending Airdrops']
 const selectedTab = ref<string | null>(AppStorage.getAccountTokenTab() ?? tabIds[0])
 const onSelectTab = (tab: string | null) => {
   selectedTab.value = tab
@@ -149,6 +155,19 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   fungibleTableController.unmount()
+})
+
+const pendingAirdropTableController = new PendingAirdropTableController(
+    useRouter(),
+    accountId,
+    perPage,
+    "pa", "ka"
+)
+onMounted(() => {
+  pendingAirdropTableController.mount()
+})
+onBeforeUnmount(() => {
+  pendingAirdropTableController.unmount()
 })
 
 //
