@@ -327,7 +327,10 @@
 
   <Footer/>
 
-  <UpdateAccountDialog :controller="updateDialogController"/>
+  <UpdateAccountDialog
+      :controller="updateDialogController"
+      @updated="onUpdateCompleted"
+  />
 
 </template>
 
@@ -543,6 +546,8 @@ onBeforeUnmount(() => nameQuery.unmount())
 const updateDialogController = new DialogController()
 
 const onUpdateAccount = () => updateDialogController.visible.value = true
+
+const onUpdateCompleted = () => accountLocParser.remount()
 
 const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
