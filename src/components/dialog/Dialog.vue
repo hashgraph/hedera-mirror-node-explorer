@@ -26,7 +26,7 @@
   <template v-if="controller.visible.value">
     <div class="is-active modal has-text-white">
       <div class="modal-background"/>
-      <div class="modal-content" style="width: 768px; border-radius: 16px">
+      <div class="modal-content" :style="{'width': width+'px'}" style="border-radius: 16px">
         <div class="box">
 
           <div class="is-flex is-justify-content-space-between is-align-items-baseline">
@@ -102,6 +102,10 @@ export default defineComponent({
     controller: {
       type: Object as PropType<DialogController>,
       required: true
+    },
+    width: {
+      type: Number,
+      default: 768
     },
   },
   setup(props) {
