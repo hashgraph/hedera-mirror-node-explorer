@@ -29,7 +29,7 @@ import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import {AccountInfo, ContractResultDetails} from "@/schemas/HederaSchemas";
 
 export class WalletManager {
 
@@ -150,6 +150,18 @@ export class WalletManager {
             }
         } else {
             throw this.activeDriver.callFailure("changeStaking")
+        }
+    }
+
+    public async updateAccount(info: AccountInfo): Promise<string> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.updateAccount(this.accountIdRef.value, info)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("updateAccount")
         }
     }
 

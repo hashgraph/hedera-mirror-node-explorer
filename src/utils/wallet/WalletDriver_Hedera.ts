@@ -24,7 +24,9 @@ import {
     AccountAllowanceDeleteTransaction,
     AccountUpdateTransaction,
     ContractExecuteTransaction,
+    Key,
     NftId,
+    PublicKey,
     Signer,
     TokenAssociateTransaction,
     TokenDissociateTransaction,
@@ -32,7 +34,7 @@ import {
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
+import {AccountInfo, ContractResultDetails, KeyType, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
@@ -44,6 +46,45 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     //
     // Public
     //
+
+    public async updateAccount(accountId: string, info: AccountInfo) {
+        const trans = new AccountUpdateTransaction()
+        trans.setAccountId(accountId)
+        if (info.receiver_sig_required != null) {
+            trans.setReceiverSignatureRequired(info.receiver_sig_required)
+        }
+        if (info.key != null) {
+            let newKey: Key
+            switch (info.key._type) {
+                case KeyType.ECDSA_SECP256K1:
+                    newKey = PublicKey.fromStringECDSA(info.key.key)
+                    break
+                case KeyType.ED25519:
+                    newKey = PublicKey.fromStringED25519(info.key.key)
+                    break
+                case KeyType.ProtobufEncoded:
+                    newKey = PublicKey.fromString(info.key.key)
+                    break
+            }
+            trans.setKey(newKey)
+        }
+        if (info.auto_renew_period != null) {
+            trans.setAutoRenewPeriod(info.auto_renew_period)
+        }
+        if (info.memo != null) {
+            trans.setAccountMemo(info.memo)
+        }
+        if (info.memo != null) {
+            trans.setAccountMemo(info.memo)
+        }
+        if (info.max_automatic_token_associations != null) {
+            trans.setMaxAutomaticTokenAssociations(info.max_automatic_token_associations)
+        }
+
+        const result = await this.executeTransaction(accountId, trans)
+
+        return Promise.resolve(result)
+    }
 
     public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
 

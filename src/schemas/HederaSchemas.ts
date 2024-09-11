@@ -837,8 +837,8 @@ export interface StakingReward {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface Key {
-    _type: KeyType | undefined
-    key: string | undefined
+    _type: KeyType
+    key: string
 }
 
 export enum KeyType {
