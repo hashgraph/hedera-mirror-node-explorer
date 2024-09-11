@@ -51,7 +51,7 @@
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
           <router-link :to="operatorNodeRoute">
-            <span>{{ nodeId }} - {{ accountInfo }}</span>
+            <span>{{ nodeId }} - {{ accountDescription }}</span>
           </router-link>
         </div>
         <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
@@ -99,7 +99,7 @@
       </template>
 
       <template v-slot:control>
-        <button v-if="accountEditable" id="update-button" class="button is-white is-small"
+        <button v-if="isAccountEditable" id="update-button" class="button is-white is-small"
                 @click="onUpdateAccount">UPDATE ACCOUNT…
         </button>
 
@@ -129,7 +129,7 @@
       <template v-slot:leftContent>
         <EditableProperty
             id="stakedTo"
-            :editable="accountEditable"
+            :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
           <template v-slot:name>
@@ -171,7 +171,7 @@
         </Property>
         <EditableProperty
             id="memo"
-            :editable="accountEditable"
+            :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
           <template v-slot:name>Memo</template>
@@ -199,7 +199,7 @@
         <EditableProperty
             id="autoRenewPeriod"
             tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant."
-            :editable="accountEditable"
+            :editable="isAccountEditable"
         >
           <template v-slot:name>
             <span>Auto Renew Period</span>
@@ -211,7 +211,7 @@
         <EditableProperty
             id="maxAutoAssociation"
             tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
-            :editable="accountEditable"
+            :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
           <template v-slot:name>Max. Auto. Association</template>
@@ -221,7 +221,7 @@
         </EditableProperty>
         <EditableProperty
             id="receiverSigRequired"
-            :editable="accountEditable"
+            :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
           <template v-slot:name>Receiver Sig. Required</template>
@@ -234,7 +234,7 @@
       <template v-slot:rightContent>
         <EditableProperty
             id="key"
-            :editable="accountEditable"
+            :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
           <template v-slot:name>Admin Key</template>
@@ -537,7 +537,7 @@ const onUpdateAccount = () => alert('NOT IMPLEMENTED')
 
 const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
-const accountEditable = computed(() => isWalletConnected.value && isHederaWallet.value)
+const isAccountEditable = computed(() => isWalletConnected.value && isHederaWallet.value)
 const transactionType = computed(() => transactionTableController.transactionType.value)
 const loaded = computed(() => verifiedContractsController.loaded.value)
 const overflow = computed(() => verifiedContractsController.overflow.value)
@@ -546,7 +546,7 @@ const isInactiveEvmAddress = computed(() => accountLocParser.isInactiveEvmAddres
 const account = computed(() => accountLocParser.accountInfo.value)
 const normalizedAccountId = computed(() => accountLocParser.accountId.value)
 const accountChecksum = computed(() => accountLocParser.accountChecksum.value)
-const accountInfo = computed(() => accountLocParser.accountDescription.value)
+const accountDescription = computed(() => accountLocParser.accountDescription.value)
 const nodeId = computed(() => accountLocParser.nodeId.value)
 const ethereumAddress = computed(() => accountLocParser.ethereumAddress.value)
 const stakePeriodStart = computed(() => accountLocParser.stakePeriodStart.value)
