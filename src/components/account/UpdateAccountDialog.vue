@@ -38,26 +38,46 @@
       <div class="mb-3"/>
 
       <div class="has-text-weight-light mb-1">
-        Max. Auto. Associations
+        Admin Key
       </div>
-      <input v-model="maxAutoAssociations"
-             class="input is-small has-text-right has-text-white"
-             placeholder="-1, 0, or positive number"
-             style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-             background-color: var(--h-theme-page-background-color); text-align: left;"
+      <input v-model="key"
+             disabled
+             class="input input-field is-small has-text-right has-text-grey"
+             placeholder="0x027936af0fe67d21e15f53abb4c15d7d0a45edd5409b8136d7ae183a116ec4a7ad"
              type="text"
       >
 
-      <div class="mb-3"/>
+      <div class="mb-4"/>
+
+      <div class="has-text-weight-light mb-1">
+        Receiver Signature Required
+      </div>
+      <div class="is-flex">
+        <span class="mr-2">False</span>
+        <o-field>
+          <o-switch class="" v-model="recSigRequired">True</o-switch>
+        </o-field>
+      </div>
+
+      <div class="mb-4"/>
 
       <div class="has-text-weight-light mb-1">
         Account Memo
       </div>
       <input v-model="memo"
-             class="input is-small has-text-right has-text-white"
+             class="input input-field is-small has-text-right has-text-white"
              placeholder="Enter memo string"
-             style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-page-background-color)"
+             type="text"
+      >
+
+      <div class="mb-4"/>
+
+      <div class="has-text-weight-light mb-1">
+        Max. Auto. Associations
+      </div>
+      <input v-model="maxAutoAssociations"
+             class="input input-field is-small has-text-right has-text-white"
+             placeholder="-1, 0, or positive number"
              type="text"
       >
 
@@ -284,4 +304,16 @@ const onUpdate = async () => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+.input-field {
+  height: 38px;
+  margin-top: 1px;
+  border-radius: 4px;
+  border-width: 1px;
+  border-color: grey;
+  background-color: var(--h-theme-page-background-color);
+  text-align: left;
+}
+
+</style>
