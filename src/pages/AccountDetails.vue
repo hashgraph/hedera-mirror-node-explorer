@@ -328,6 +328,7 @@
   <Footer/>
 
   <UpdateAccountDialog
+      :account-info="account"
       :controller="updateDialogController"
       @updated="onUpdateCompleted"
   />
