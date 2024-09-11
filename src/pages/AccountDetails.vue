@@ -340,6 +340,8 @@
 
   <Footer/>
 
+  <UpdateAccountDialog :controller="updateDialogController"/>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -397,6 +399,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
+import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
 
 const props = defineProps({
   accountId: String,
@@ -546,7 +549,13 @@ const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
 onMounted(() => nameQuery.mount())
 onBeforeUnmount(() => nameQuery.unmount())
 
-const onUpdateAccount = () => alert('NOT IMPLEMENTED')
+//
+// Account Update
+//
+
+const updateDialogController = new DialogController()
+
+const onUpdateAccount = () => updateDialogController.visible.value = true
 
 const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
