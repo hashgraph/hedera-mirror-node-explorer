@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="controller" width="624">
+  <Dialog :controller="controller" :width="624">
 
     <!-- title -->
     <template v-slot:dialogTitle>
