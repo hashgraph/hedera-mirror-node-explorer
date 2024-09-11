@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="controller">
+  <Dialog :controller="controller" width="624">
 
     <!-- title -->
     <template v-slot:dialogTitle>
@@ -35,9 +35,33 @@
     <!-- input -->
     <template v-slot:dialogInput>
 
-      <div class="h-is-tertiary-text mb-2">
-        Various input fields
+      <div class="mb-3"/>
+
+      <div class="has-text-weight-light mb-1">
+        Max. Auto. Associations
       </div>
+      <input v-model="maxAutoAssociations"
+             class="input is-small has-text-right has-text-white"
+             placeholder="-1, 0, or positive number"
+             style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+             background-color: var(--h-theme-page-background-color); text-align: left;"
+             type="text"
+      >
+
+      <div class="mb-3"/>
+
+      <div class="has-text-weight-light mb-1">
+        Account Memo
+      </div>
+      <input v-model="memo"
+             class="input is-small has-text-right has-text-white"
+             placeholder="Enter memo string"
+             style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                 background-color: var(--h-theme-page-background-color)"
+             type="text"
+      >
+
+      <div class="mb-4"/>
 
     </template>
 
@@ -83,7 +107,7 @@
 
     <template v-slot:dialogInputButtons>
       <DialogButton :controller="controller">CANCEL</DialogButton>
-      <CommitButton :controller="controller" :enabled="true" @action="onUpdate">UPDATE</CommitButton>
+      <CommitButton :controller="controller" :enabled="isInputValid" @action="onUpdate">UPDATE</CommitButton>
     </template>
 
 
@@ -97,7 +121,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import {waitForTransactionRefresh} from "@/schemas/HederaUtils";
 import {TransactionID} from "@/utils/TransactionID";
@@ -109,6 +133,10 @@ import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 
 const props = defineProps({
+  accountInfo: {
+    type: Object as PropType<AccountInfo | null>,
+    required: true
+  },
   controller: {
     type: Object as PropType<DialogController>,
     required: true
@@ -117,7 +145,7 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"])
 
-const accountInfo = ref<AccountInfo>({
+const accountInfoUpdate = ref<AccountInfo>({
   account: null,
   auto_renew_period: null,
   balance: null,
@@ -138,6 +166,69 @@ const accountInfo = ref<AccountInfo>({
   pending_reward: undefined
 })
 
+const key = ref<string>("")
+const recSigRequired = ref<boolean>(false)
+const autoRenewPeriod = ref<string>("")
+const memo = ref<string>("")
+const maxAutoAssociations = ref<string>("")
+
+let initialKey = ''
+let initialRecSigRequired = false
+let initialAutoRenewPeriod = ''
+let initialMemo = ''
+let initialMaxAutoAssociations = ''
+
+let watchHandle: WatchStopHandle | null = null
+
+onMounted(() => {
+  watchHandle = watch(props.controller?.visible, (newValue) => {
+    if (newValue) {
+      key.value = props.accountInfo?.key?.key ?? ''
+      recSigRequired.value = props.accountInfo?.receiver_sig_required ?? false
+      autoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ''
+      memo.value = props.accountInfo?.memo ?? ''
+      maxAutoAssociations.value = props.accountInfo?.max_automatic_token_associations?.toString() ?? ''
+
+      initialKey = props.accountInfo?.key?.key ?? ''
+      initialRecSigRequired = props.accountInfo?.receiver_sig_required ?? false
+      initialAutoRenewPeriod = props.accountInfo?.auto_renew_period?.toString() ?? ''
+      initialMemo = props.accountInfo?.memo ?? ''
+      initialMaxAutoAssociations = props.accountInfo?.max_automatic_token_associations?.toString() ?? ''
+    } else {
+      key.value = ''
+      recSigRequired.value = false
+      autoRenewPeriod.value = ''
+      memo.value = ''
+      maxAutoAssociations.value = ''
+    }
+  }, {immediate: true})
+
+})
+
+onBeforeUnmount(() => {
+  if (watchHandle !== null) {
+    watchHandle()
+    watchHandle = null
+  }
+})
+
+const isInputValid = computed(() => {
+  const isAccountChanged = (
+      (key.value !== initialKey)
+      || (recSigRequired.value !== initialRecSigRequired)
+      || (autoRenewPeriod.value !== initialAutoRenewPeriod)
+      || (memo.value !== initialMemo)
+      || (maxAutoAssociations.value !== initialMaxAutoAssociations)
+  )
+
+  const isMaxAutoAssociationsValid = (
+      Number.isInteger(Number(maxAutoAssociations.value))
+      && (Number(maxAutoAssociations.value) >= 0 || Number(maxAutoAssociations.value) === -1)
+  )
+
+  return isAccountChanged && isMaxAutoAssociationsValid
+})
+
 const tid = ref<string | null>(null)
 const formattedTransactionId = computed(() =>
     tid.value != null ? TransactionID.normalize(tid.value, true) : null
@@ -151,13 +242,15 @@ const onUpdate = async () => {
   tid.value = null
 
   try {
-
-    // TODO: Remove, this is for testing
-    accountInfo.value.max_automatic_token_associations = -1
-    accountInfo.value.receiver_sig_required = false
+    if (memo.value !== initialMemo) {
+      accountInfoUpdate.value.memo = memo.value
+    }
+    if (maxAutoAssociations.value !== initialMaxAutoAssociations) {
+      accountInfoUpdate.value.max_automatic_token_associations = Number(maxAutoAssociations.value)
+    }
 
     tid.value = TransactionID.normalize(
-        await walletManager.updateAccount(accountInfo.value)
+        await walletManager.updateAccount(accountInfoUpdate.value)
     )
     if (tid.value) {
       await waitForTransactionRefresh(tid.value, 10, 3000)
