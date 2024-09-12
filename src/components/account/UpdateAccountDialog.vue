@@ -312,15 +312,23 @@ const onUpdate = async () => {
   tid.value = null
 
   try {
+
+    const transaction = new AccountUpdateTransaction()
     if (memo.value !== initialMemo) {
-      accountInfoUpdate.value.memo = memo.value
+      transaction.setAccountMemo(memo.value)
     }
     if (maxAutoAssociations.value !== initialMaxAutoAssociations) {
-      accountInfoUpdate.value.max_automatic_token_associations = Number(maxAutoAssociations.value)
+      transaction.setMaxAutomaticTokenAssociations(Number(maxAutoAssociations.value))
+    }
+    if (recSigRequired.value !== initialRecSigRequired) {
+      transaction.setReceiverSignatureRequired(recSigRequired.value)
+    }
+    if (autoRenewPeriod.value !== initialAutoRenewPeriod) {
+      transaction.setAutoRenewPeriod(Number(autoRenewPeriod.value))
     }
 
     tid.value = TransactionID.normalize(
-        await walletManager.updateAccount(accountInfoUpdate.value)
+        await walletManager.updateAccount(transaction)
     )
     if (tid.value) {
       await waitForTransactionRefresh(tid.value, 10, 3000)
