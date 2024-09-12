@@ -29,7 +29,8 @@ import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
-import {AccountInfo, ContractResultDetails} from "@/schemas/HederaSchemas";
+import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 
 export class WalletManager {
 
@@ -153,10 +154,10 @@ export class WalletManager {
         }
     }
 
-    public async updateAccount(info: AccountInfo): Promise<string> {
+    public async updateAccount(transaction: AccountUpdateTransaction): Promise<string> {
         if (this.accountIdRef.value !== null) {
             if (this.activeDriver instanceof WalletDriver_Hedera) {
-                return this.activeDriver.updateAccount(this.accountIdRef.value, info)
+                return this.activeDriver.updateAccount(this.accountIdRef.value, transaction)
             } else {
                 throw this.activeDriver.unsupportedOperation()
             }
