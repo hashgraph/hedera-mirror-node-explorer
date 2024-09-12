@@ -43,6 +43,9 @@
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
+      v-model:checked-rows="checkedRows"
+      :checkable="checkEnabled"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
@@ -110,7 +113,7 @@
 
 <script setup lang="ts">
 
-import {PropType} from 'vue';
+import {PropType, watch} from 'vue';
 import {Airdrop} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
@@ -122,12 +125,23 @@ import {AppStorage} from "@/AppStorage";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 
-defineProps({
+const props = defineProps({
   controller: {
     type: Object as PropType<PendingAirdropTableController>,
     required: true
   },
+  checkEnabled: {
+    type: Boolean,
+    required: true
+  }
 })
+
+const checkedRows = defineModel("checkedAirdrops", {
+  type: Object as PropType<Airdrop[]>,
+  default: [] as Airdrop[]
+})
+
+watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value.splice(0))
 
 const handleClick = (airdrop: Airdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
   routeManager.routeToToken(airdrop.token_id, event)
