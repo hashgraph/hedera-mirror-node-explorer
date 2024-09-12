@@ -45,6 +45,11 @@
           REJECT
         </button>
       </div>
+      <button v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
+              id="approve-button"
+              class="button is-white is-small"
+              @click="handleClaimAll">{{  claimTitle }}
+      </button>
     </template>
 
     <template v-slot:content>
@@ -72,7 +77,10 @@
       </div>
 
       <div v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable">
-        <PendingAirdropTable :controller="pendingAirdropTableController"/>
+        <PendingAirdropTable
+            :controller="pendingAirdropTableController"
+            :check-enabled="claimEnabled"
+            v-model:checked-airdrops="checkedAirdrops"/>
       </div>
 
     </template>
@@ -108,6 +116,8 @@ import {Nft, Token} from "@/schemas/HederaSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
+import {walletManager} from "@/router";
+import {Airdrop} from "@/schemas/HederaSchemas";
 
 const props = defineProps({
   accountId: {
@@ -218,6 +228,36 @@ const rejectButtonEnabled = computed(() =>
 )
 
 const selection = ref<(Token | Nft)[]>([])
+
+//
+// Claim
+//
+
+const handleClaimAll = () => {
+
+}
+
+const claimTitle = computed(() => {
+  let result: string
+  const checkedCount = checkedAirdrops.value.length
+  if (checkedCount >= 2) {
+    result = `Claim ${ checkedCount } Checked Tokens`
+  } else if (checkedCount == 1) {
+    const checkedTokenId = checkedAirdrops.value[0].token_id
+    result = `Claim Token ${ checkedTokenId }`
+  } else {
+    result = "Claim All"
+  }
+  return result
+})
+
+const claimEnabled = computed(() =>
+    walletManager.connected.value &&
+    walletManager.isHederaWallet.value &&
+    walletManager.accountId.value === props.accountId &&
+    pendingAirdropTableController.totalRowCount.value >= 1)
+
+const checkedAirdrops = ref<Airdrop[]>([])
 
 </script>
 
