@@ -37,17 +37,6 @@
 
       <div class="mb-3"/>
 
-      <div class="has-text-weight-light mb-1">
-        Admin Key
-      </div>
-      <input v-model="key"
-             class="input input-field is-small has-text-grey"
-             placeholder="0x027936af0fe67d21e15f53abb4c15d7d0a45edd5409b8136d7ae183a116ec4a7ad"
-             type="text"
-      >
-
-      <div class="mb-4"/>
-
       <div class=" has-text-weight-light mb-1">
         Receiver Signature Required
       </div>
@@ -208,7 +197,6 @@ const accountInfoUpdate = ref<AccountInfo>({
   pending_reward: undefined
 })
 
-const key = ref<string>("")
 const recSigRequired = ref<boolean>(false)
 const autoRenewPeriod = ref<string>("")
 const memo = ref<string>("")
@@ -234,7 +222,6 @@ let modeWatchHandle: WatchStopHandle | null = null
 onMounted(() => {
   visibleWatchHandle = watch(props.controller?.visible, (newValue) => {
     if (newValue) {
-      key.value = props.accountInfo?.key?.key ?? ''
       recSigRequired.value = props.accountInfo?.receiver_sig_required ?? false
       autoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ''
       memo.value = props.accountInfo?.memo ?? ''
@@ -244,13 +231,11 @@ onMounted(() => {
               : (props.accountInfo?.max_automatic_token_associations ?? 0) > 0 ? AutoAssociationMode.LimitedAutoAssociation
                   : AutoAssociationMode.NoAutoAssociation
 
-      initialKey = props.accountInfo?.key?.key ?? ''
       initialRecSigRequired = props.accountInfo?.receiver_sig_required ?? false
       initialAutoRenewPeriod = props.accountInfo?.auto_renew_period?.toString() ?? ''
       initialMemo = props.accountInfo?.memo ?? ''
       initialMaxAutoAssociations = props.accountInfo?.max_automatic_token_associations?.toString() ?? ''
     } else {
-      key.value = ''
       recSigRequired.value = false
       autoRenewPeriod.value = ''
       memo.value = ''
@@ -284,8 +269,7 @@ onBeforeUnmount(() => {
 
 const isInputValid = computed(() => {
   const isAccountChanged = (
-      (key.value !== initialKey)
-      || (recSigRequired.value !== initialRecSigRequired)
+      (recSigRequired.value !== initialRecSigRequired)
       || (autoRenewPeriod.value !== initialAutoRenewPeriod)
       || (memo.value !== initialMemo)
       || (maxAutoAssociations.value !== initialMaxAutoAssociations)
