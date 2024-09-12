@@ -27,7 +27,7 @@
     <div class="is-active modal has-text-white">
       <div class="modal-background"/>
       <div class="modal-content" :style="{'width': width+'px'}" style="border-radius: 16px">
-        <div class="box">
+        <div class="box" style="padding: 32px">
 
           <div class="is-flex is-justify-content-space-between is-align-items-baseline">
             <slot name="dialogTitle"/>
@@ -143,6 +143,7 @@ export default defineComponent({
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   justify-items: stretch;
+  place-items: center;
 }
 
 .dialog-stack div {
