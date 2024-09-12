@@ -37,14 +37,11 @@
 
       <div class="mb-3"/>
 
-      <div class=" has-text-weight-light mb-1">
-        Receiver Signature Required
-      </div>
-      <div class=" is-flex h-is-text-size-4 is-align-items-center">
-        <span class="mr-2">False</span>
-        <o-field>
-          <o-switch class="" v-model="recSigRequired">True</o-switch>
-        </o-field>
+      <div class="is-flex is-align-items-center is-justify-content-space-between">
+        <div class="is-flex has-text-weight-light mb-1">
+          Receiver Signature Required
+        </div>
+        <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
       </div>
 
       <div class="mb-4"/>
@@ -54,7 +51,8 @@
       </div>
       <input v-model="memo"
              class="input input-field is-small has-text-white"
-             placeholder="Enter memo string"
+             style="width: 550px"
+             placeholder="Memo (string)"
              type="text"
       >
 
@@ -63,36 +61,102 @@
       <div class="has-text-weight-light mb-1">
         Max. Auto. Associations
       </div>
-      <div class="columns">
-        <o-field class="column">
-          <o-select v-model="autoAssociationMode"
-                    class="is-small has-text-white"
-                    style="height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
+      <div class="is-flex is-justify-content-flex-start">
+        <o-select v-model="autoAssociationMode"
+                  class="is-small has-text-white"
+                  style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
                     background-color: var(--h-theme-page-background-color);"
-          >
-            <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
-              No Automatic Association
-            </option>
-            <option :key="1" :value="1" style="background-color: var(--h-theme-page-background-color)">
-              Limited Automatic Association
-            </option>
-            <option :key="-1" :value="-1" style="background-color: var(--h-theme-page-background-color)">
-              Unlimited Automatic Association
-            </option>
-          </o-select>
-        </o-field>
-        <o-field class="column"
-                 :class="{'is-invisible':autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation}"
         >
-          <input class="input input-field is-small has-text-white"
-                 v-model="maxAutoAssociations"
-                 placeholder="positive number"
-                 type="text"
-          >
-        </o-field>
+          <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
+            No Automatic Association
+          </option>
+          <option :key="1" :value="1" style="background-color: var(--h-theme-page-background-color)">
+            Limited Automatic Association
+          </option>
+          <option :key="-1" :value="-1" style="background-color: var(--h-theme-page-background-color)">
+            Unlimited Automatic Association
+          </option>
+        </o-select>
+        <input v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
+               class="input input-field is-small has-text-white ml-2"
+               style="width: 100px"
+               :class="{'is-invisible':autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation}"
+               v-model="maxAutoAssociations"
+               placeholder="positive number"
+               type="number"
+        >
+      </div>
+
+      <hr style="height: 1px; background: var(--h-theme-background-color);"/>
+
+      <div class="has-text-weight-light mb-1">
+        Staking
+      </div>
+      <div class="radios h-is-text-size-4">
+        <label class="radio h-radio-button">
+          <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice"/>
+          To Node
+        </label>
+        <label class="radio h-radio-button ml-5">
+          <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice"/>
+          To Account
+        </label>
+        <label class="radio h-radio-button ml-5">
+          <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice"/>
+          Not Staking
+        </label>
       </div>
 
       <div class="mb-4"/>
+
+      <template v-if="stakeChoice===StakeChoice.StakeToNode">
+        <div class="has-text-weight-light mb-1">
+          Staked Node ID
+        </div>
+        <input v-model="stakedNode"
+               class="input input-field is-small has-text-white"
+               style="width: 550px"
+               placeholder="Node ID"
+               type="text"
+        >
+      </template>
+
+      <template v-if="stakeChoice===StakeChoice.StakeToAccount">
+        <div class="has-text-weight-light mb-1">
+          Staked Account ID
+        </div>
+        <input :value="stakedAccount"
+               class="input input-field is-small has-text-white"
+               style="width: 550px"
+               placeholder="Account ID (0.0.1234)"
+               type="text"
+               @input="event => onStakedAccountInput(event)"
+        >
+      </template>
+
+      <div class="mb-4"/>
+
+      <template v-if="stakeChoice !== StakeChoice.NotStaking">
+        <div class="is-flex is-align-items-center is-justify-content-space-between">
+          <div class="is-flex has-text-weight-light mb-1">
+            Decline Rewards
+          </div>
+          <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
+        </div>
+      </template>
+
+      <div class="mb-4"/>
+
+      <div>{{ `Max Auto:  ${maxAutoAssociations}` }}</div>
+      <div>{{ `Staked Choice:  ${stakeChoice}` }}</div>
+      <div>{{ `Staked Account:  ${stakedAccount}` }}</div>
+      <div>{{ `Staked Node:  ${stakedNode}` }}</div>
+      <div>{{ `Decline:  ${declineRewards}` }}</div>
+      <div>{{ `isAccountEdited:  ${isAccountEdited}` }}</div>
+      <div>{{ `isMaxAutoAssociationsValid:  ${isMaxAutoAssociationsValid}` }}</div>
+      <div>{{ `isStakedAccountValid:  ${isStakedAccountValid}` }}</div>
+      <div>{{ `isStakedNodeValid:  ${isStakedNodeValid}` }}</div>
+      <div>{{ `isStakingValid:  ${isStakingValid}` }}</div>
 
     </template>
 
@@ -141,7 +205,6 @@
       <CommitButton :controller="controller" :enabled="isInputValid" @action="onUpdate">UPDATE</CommitButton>
     </template>
 
-
   </Dialog>
 
 </template>
@@ -162,6 +225,9 @@ import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
 import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
+import {EntityID} from "@/utils/EntityID";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {inputEntityID} from "@/utils/InputUtils";
 
 const props = defineProps({
   accountInfo: {
@@ -176,27 +242,6 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"])
 
-const accountInfoUpdate = ref<AccountInfo>({
-  account: null,
-  auto_renew_period: null,
-  balance: null,
-  created_timestamp: null,
-  deleted: null,
-  expiry_timestamp: null,
-  key: null,
-  max_automatic_token_associations: null,
-  memo: null,
-  receiver_sig_required: null,
-  alias: null,
-  ethereum_nonce: null,
-  evm_address: null,
-  decline_reward: null,
-  staked_account_id: null,
-  staked_node_id: null,
-  stake_period_start: null,
-  pending_reward: undefined
-})
-
 const recSigRequired = ref<boolean>(false)
 const autoRenewPeriod = ref<string>("")
 const memo = ref<string>("")
@@ -209,12 +254,25 @@ enum AutoAssociationMode {
 }
 
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
+const stakedNode = ref<string>("")
+const stakedAccount = ref<string>("")
 
-let initialKey = ''
+enum StakeChoice {
+  NotStaking = "not-staking",
+  StakeToNode = "node",
+  StakeToAccount = "account"
+}
+
+const stakeChoice = ref<StakeChoice>(StakeChoice.NotStaking)
+const declineRewards = ref<boolean>(false)
+
 let initialRecSigRequired = false
-let initialAutoRenewPeriod = ''
-let initialMemo = ''
-let initialMaxAutoAssociations = ''
+let initialAutoRenewPeriod = ""
+let initialMemo = ""
+let initialMaxAutoAssociations = ""
+let initialStakedNode = ""
+let initialStakedAccount = ""
+let initialDeclineRewards = false
 
 let visibleWatchHandle: WatchStopHandle | null = null
 let modeWatchHandle: WatchStopHandle | null = null
@@ -223,23 +281,38 @@ onMounted(() => {
   visibleWatchHandle = watch(props.controller?.visible, (newValue) => {
     if (newValue) {
       recSigRequired.value = props.accountInfo?.receiver_sig_required ?? false
-      autoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ''
-      memo.value = props.accountInfo?.memo ?? ''
-      maxAutoAssociations.value = props.accountInfo?.max_automatic_token_associations?.toString() ?? ''
+      autoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ""
+      memo.value = props.accountInfo?.memo ?? ""
+      maxAutoAssociations.value = props.accountInfo?.max_automatic_token_associations?.toString() ?? ""
       autoAssociationMode.value =
           props.accountInfo?.max_automatic_token_associations === -1 ? AutoAssociationMode.UnlimitedAutoAssociation
               : (props.accountInfo?.max_automatic_token_associations ?? 0) > 0 ? AutoAssociationMode.LimitedAutoAssociation
                   : AutoAssociationMode.NoAutoAssociation
+      stakedNode.value = props.accountInfo?.staked_node_id?.toString() ?? ""
+      stakedAccount.value = props.accountInfo?.staked_account_id ?? ""
+      stakeChoice.value =
+          (props.accountInfo?.staked_node_id ?? null) !== null ? StakeChoice.StakeToNode
+              : (props.accountInfo?.staked_account_id ?? null) !== null ? StakeChoice.StakeToAccount
+                  : StakeChoice.NotStaking
+      declineRewards.value = props.accountInfo?.decline_reward ?? false
 
       initialRecSigRequired = props.accountInfo?.receiver_sig_required ?? false
-      initialAutoRenewPeriod = props.accountInfo?.auto_renew_period?.toString() ?? ''
-      initialMemo = props.accountInfo?.memo ?? ''
-      initialMaxAutoAssociations = props.accountInfo?.max_automatic_token_associations?.toString() ?? ''
+      initialAutoRenewPeriod = props.accountInfo?.auto_renew_period?.toString() ?? ""
+      initialMemo = props.accountInfo?.memo ?? ""
+      initialMaxAutoAssociations = props.accountInfo?.max_automatic_token_associations?.toString() ?? ""
+      initialStakedNode = props.accountInfo?.staked_node_id?.toString() ?? ""
+      initialStakedAccount = props.accountInfo?.staked_account_id ?? ""
+      initialDeclineRewards = props.accountInfo?.decline_reward ?? false
     } else {
       recSigRequired.value = false
-      autoRenewPeriod.value = ''
-      memo.value = ''
-      maxAutoAssociations.value = ''
+      autoRenewPeriod.value = ""
+      memo.value = ""
+      maxAutoAssociations.value = ""
+      autoAssociationMode.value = AutoAssociationMode.NoAutoAssociation
+      stakedNode.value = ""
+      stakedAccount.value = ""
+      stakeChoice.value = StakeChoice.NotStaking
+      declineRewards.value = false
     }
   }, {immediate: true})
 
@@ -267,21 +340,44 @@ onBeforeUnmount(() => {
   }
 })
 
-const isInputValid = computed(() => {
-  const isAccountChanged = (
-      (recSigRequired.value !== initialRecSigRequired)
-      || (autoRenewPeriod.value !== initialAutoRenewPeriod)
-      || (memo.value !== initialMemo)
-      || (maxAutoAssociations.value !== initialMaxAutoAssociations)
-  )
-
-  const isMaxAutoAssociationsValid = (
-      Number.isInteger(Number(maxAutoAssociations.value))
-      && (Number(maxAutoAssociations.value) >= 0 || Number(maxAutoAssociations.value) === -1)
-  )
-
-  return isAccountChanged && isMaxAutoAssociationsValid
+const isStakedNodeValid = computed(() => {
+  const node = parseInt(stakedNode.value)
+  return stakeChoice.value === StakeChoice.StakeToNode
+      && !isNaN(node)
+      && (node >= 0)
 })
+
+const isStakedAccountValid = computed(() =>
+    stakeChoice.value === StakeChoice.StakeToAccount
+    && EntityID.parse(stakedAccount.value, true) !== null
+)
+
+const isAccountEdited = computed(() =>
+    (recSigRequired.value !== initialRecSigRequired)
+    || (autoRenewPeriod.value !== initialAutoRenewPeriod)
+    || (memo.value !== initialMemo)
+    || (maxAutoAssociations.value !== initialMaxAutoAssociations)
+    || (stakedNode.value !== initialStakedNode)
+    || (stakedAccount.value !== initialStakedAccount)
+    || (declineRewards.value !== initialDeclineRewards)
+)
+
+const isMaxAutoAssociationsValid = computed(() => {
+  const max = parseInt(maxAutoAssociations.value)
+  return !isNaN(max) && (max >= 0 || max === -1)
+})
+
+const isStakingValid = computed(() =>
+    stakeChoice.value === StakeChoice.NotStaking
+    || isStakedAccountValid.value
+    || isStakedNodeValid.value
+)
+
+const isInputValid = computed(() =>
+    isAccountEdited.value
+    && isMaxAutoAssociationsValid.value
+    && isStakingValid.value
+)
 
 const tid = ref<string | null>(null)
 const formattedTransactionId = computed(() =>
@@ -290,6 +386,14 @@ const formattedTransactionId = computed(() =>
 
 const errorMessage = ref<string | null>(null)
 const errorMessageDetails = ref<string | null>(null)
+
+const onStakedAccountInput = (event: Event) => {
+  const newValue = inputEntityID(event, stakedAccount.value)
+  if (newValue === stakedAccount.value) {
+    stakedAccount.value = ""
+  }
+  stakedAccount.value = newValue ?? ""
+}
 
 const onUpdate = async () => {
   props.controller.mode.value = DialogMode.Busy
@@ -353,6 +457,12 @@ const onUpdate = async () => {
   border-width: 1px;
   border-color: grey;
   background-color: var(--h-theme-page-background-color);
+}
+
+.dialog-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-column-gap: 1rem;
 }
 
 </style>
