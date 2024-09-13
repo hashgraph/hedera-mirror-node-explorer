@@ -147,17 +147,17 @@
 
       <div class="mb-4"/>
 
-<!--      DEBUG OUTPUT         -->
-<!--      <div>{{ `Max Auto:  ${maxAutoAssociations}` }}</div>-->
-<!--      <div>{{ `Staked Choice:  ${stakeChoice}` }}</div>-->
-<!--      <div>{{ `Staked Account:  ${stakedAccount}` }}</div>-->
-<!--      <div>{{ `Staked Node:  ${stakedNode}` }}</div>-->
-<!--      <div>{{ `Decline:  ${declineRewards}` }}</div>-->
-<!--      <div>{{ `isAccountEdited:  ${isAccountEdited}` }}</div>-->
-<!--      <div>{{ `isMaxAutoAssociationsValid:  ${isMaxAutoAssociationsValid}` }}</div>-->
-<!--      <div>{{ `isStakedAccountValid:  ${isStakedAccountValid}` }}</div>-->
-<!--      <div>{{ `isStakedNodeValid:  ${isStakedNodeValid}` }}</div>-->
-<!--      <div>{{ `isStakingValid:  ${isStakingValid}` }}</div>-->
+      <!--      DEBUG OUTPUT         -->
+      <!--      <div>{{ `Max Auto:  ${maxAutoAssociations}` }}</div>-->
+      <!--      <div>{{ `Staked Choice:  ${stakeChoice}` }}</div>-->
+      <!--      <div>{{ `Staked Account:  ${stakedAccount}` }}</div>-->
+      <!--      <div>{{ `Staked Node:  ${stakedNode}` }}</div>-->
+      <!--      <div>{{ `Decline:  ${declineRewards}` }}</div>-->
+      <!--      <div>{{ `isAccountEdited:  ${isAccountEdited}` }}</div>-->
+      <!--      <div>{{ `isMaxAutoAssociationsValid:  ${isMaxAutoAssociationsValid}` }}</div>-->
+      <!--      <div>{{ `isStakedAccountValid:  ${isStakedAccountValid}` }}</div>-->
+      <!--      <div>{{ `isStakedNodeValid:  ${isStakedNodeValid}` }}</div>-->
+      <!--      <div>{{ `isStakingValid:  ${isStakingValid}` }}</div>-->
 
     </template>
 
@@ -272,6 +272,7 @@ let initialRecSigRequired = false
 let initialAutoRenewPeriod = ""
 let initialMemo = ""
 let initialMaxAutoAssociations = ""
+let initialStakeChoice = StakeChoice.NotStaking
 let initialStakedNode = ""
 let initialStakedAccount = ""
 let initialDeclineRewards = false
@@ -302,6 +303,7 @@ onMounted(() => {
       initialAutoRenewPeriod = autoRenewPeriod.value
       initialMemo = memo.value
       initialMaxAutoAssociations = maxAutoAssociations.value
+      initialStakeChoice = stakeChoice.value
       initialStakedNode = stakedNode.value
       initialStakedAccount = stakedAccount.value
       initialDeclineRewards = declineRewards.value
@@ -311,9 +313,9 @@ onMounted(() => {
       memo.value = ""
       maxAutoAssociations.value = ""
       autoAssociationMode.value = AutoAssociationMode.NoAutoAssociation
+      stakeChoice.value = StakeChoice.NotStaking
       stakedNode.value = ""
       stakedAccount.value = ""
-      stakeChoice.value = StakeChoice.NotStaking
       declineRewards.value = false
     }
   }, {immediate: true})
@@ -417,6 +419,25 @@ const onUpdate = async () => {
     if (autoRenewPeriod.value !== initialAutoRenewPeriod) {
       transaction.setAutoRenewPeriod(Number(autoRenewPeriod.value))
     }
+    if (stakeChoice.value !== initialStakeChoice
+        || stakedAccount.value !== initialStakedAccount
+        || stakedNode.value !== initialStakedNode) {
+      switch (stakeChoice.value) {
+        case StakeChoice.StakeToNode:
+          transaction.setStakedNodeId(stakedNode.value)
+          break
+        case StakeChoice.StakeToAccount:
+          transaction.setStakedAccountId(stakedAccount.value!)
+          break
+        case StakeChoice.NotStaking:
+          transaction.setStakedNodeId(-1)
+          transaction.setStakedAccountId("0.0.0")
+          break
+      }
+    }
+    if (declineRewards.value !== initialDeclineRewards) {
+      transaction.setDeclineStakingReward(declineRewards.value)
+    }
 
     tid.value = TransactionID.normalize(
         await walletManager.updateAccount(transaction)
@@ -460,12 +481,6 @@ const onUpdate = async () => {
   border-width: 1px;
   border-color: grey;
   background-color: var(--h-theme-page-background-color);
-}
-
-.dialog-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-column-gap: 1rem;
 }
 
 </style>
