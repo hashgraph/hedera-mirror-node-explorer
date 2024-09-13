@@ -51,6 +51,7 @@
       </div>
       <input v-model="memo"
              class="input input-field is-small has-text-white"
+             style="width: 560px"
              placeholder="Memo (string)"
              type="text"
       >
