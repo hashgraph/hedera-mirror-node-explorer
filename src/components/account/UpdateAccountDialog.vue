@@ -51,7 +51,6 @@
       </div>
       <input v-model="memo"
              class="input input-field is-small has-text-white"
-             style="width: 550px"
              placeholder="Memo (string)"
              type="text"
       >
@@ -113,12 +112,30 @@
         <div class="has-text-weight-light mb-1">
           Staked Node ID
         </div>
-        <input v-model="stakedNode"
-               class="input input-field is-small has-text-white"
-               style="width: 550px"
-               placeholder="Node ID"
-               type="text"
+        <o-select v-model="stakedNode"
+                  :icon="stakedNodeIcon"
+                  class="is-small has-text-white"
+                  style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
+                    background-color: var(--h-theme-page-background-color);"
         >
+          <optgroup label="Hedera council nodes">
+            <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                    style="background-color: var(--h-theme-page-background-color)"
+                    v-show="isCouncilNode(n)"
+            >
+              {{ makeNodeSelectorDescription(n) }}
+            </option>
+          </optgroup>
+          <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
+            <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                    style="background-color: var(--h-theme-page-background-color)"
+                    v-show="!isCouncilNode(n)"
+            >
+              {{ makeNodeSelectorDescription(n) }}
+            </option>
+          </optgroup>
+        </o-select>
+
       </template>
 
       <template v-if="stakeChoice===StakeChoice.StakeToAccount">
@@ -218,10 +235,10 @@
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {isCouncilNode, waitForTransactionRefresh} from "@/schemas/HederaUtils";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {AccountInfo} from "@/schemas/HederaSchemas";
+import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
 import {walletManager} from "@/router";
@@ -230,6 +247,7 @@ import {EntityID} from "@/utils/EntityID";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {inputEntityID} from "@/utils/InputUtils";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 const props = defineProps({
   accountInfo: {
@@ -256,7 +274,7 @@ enum AutoAssociationMode {
 }
 
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
-const stakedNode = ref<string>("")
+const stakedNode = ref<number>(0)
 const stakedAccount = ref<string | null>("")
 
 enum StakeChoice {
@@ -273,7 +291,7 @@ let initialAutoRenewPeriod = ""
 let initialMemo = ""
 let initialMaxAutoAssociations = ""
 let initialStakeChoice = StakeChoice.NotStaking
-let initialStakedNode = ""
+let initialStakedNode = 0
 let initialStakedAccount = ""
 let initialDeclineRewards = false
 
@@ -291,7 +309,7 @@ onMounted(() => {
           props.accountInfo?.max_automatic_token_associations === -1 ? AutoAssociationMode.UnlimitedAutoAssociation
               : (props.accountInfo?.max_automatic_token_associations ?? 0) > 0 ? AutoAssociationMode.LimitedAutoAssociation
                   : AutoAssociationMode.NoAutoAssociation
-      stakedNode.value = props.accountInfo?.staked_node_id?.toString() ?? ""
+      stakedNode.value = props.accountInfo?.staked_node_id ?? 0
       stakedAccount.value = props.accountInfo?.staked_account_id ?? ""
       stakeChoice.value =
           (props.accountInfo?.staked_node_id ?? null) !== null ? StakeChoice.StakeToNode
@@ -314,7 +332,7 @@ onMounted(() => {
       maxAutoAssociations.value = ""
       autoAssociationMode.value = AutoAssociationMode.NoAutoAssociation
       stakeChoice.value = StakeChoice.NotStaking
-      stakedNode.value = ""
+      stakedNode.value = 0
       stakedAccount.value = ""
       declineRewards.value = false
     }
@@ -344,11 +362,12 @@ onBeforeUnmount(() => {
   }
 })
 
+const stakedNodeIcon = computed(() =>
+    isCouncilNode(networkAnalyzer.nodes.value[stakedNode.value]) ? "building" : "users"
+)
+
 const isStakedNodeValid = computed(() => {
-  const node = parseInt(stakedNode.value)
   return stakeChoice.value === StakeChoice.StakeToNode
-      && !isNaN(node)
-      && (node >= 0)
 })
 
 const isStakedAccountValid = computed(() =>
@@ -391,6 +410,10 @@ const formattedTransactionId = computed(() =>
 
 const errorMessage = ref<string | null>(null)
 const errorMessageDetails = ref<string | null>(null)
+
+const networkAnalyzer = new NetworkAnalyzer()
+onMounted(() => networkAnalyzer.mount())
+onBeforeUnmount(() => networkAnalyzer.unmount())
 
 const onStakedAccountInput = (event: Event) => {
   const newValue = inputEntityID(event, stakedAccount.value)
