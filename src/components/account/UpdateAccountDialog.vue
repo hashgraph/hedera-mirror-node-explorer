@@ -147,16 +147,17 @@
 
       <div class="mb-4"/>
 
-      <div>{{ `Max Auto:  ${maxAutoAssociations}` }}</div>
-      <div>{{ `Staked Choice:  ${stakeChoice}` }}</div>
-      <div>{{ `Staked Account:  ${stakedAccount}` }}</div>
-      <div>{{ `Staked Node:  ${stakedNode}` }}</div>
-      <div>{{ `Decline:  ${declineRewards}` }}</div>
-      <div>{{ `isAccountEdited:  ${isAccountEdited}` }}</div>
-      <div>{{ `isMaxAutoAssociationsValid:  ${isMaxAutoAssociationsValid}` }}</div>
-      <div>{{ `isStakedAccountValid:  ${isStakedAccountValid}` }}</div>
-      <div>{{ `isStakedNodeValid:  ${isStakedNodeValid}` }}</div>
-      <div>{{ `isStakingValid:  ${isStakingValid}` }}</div>
+<!--      DEBUG OUTPUT         -->
+<!--      <div>{{ `Max Auto:  ${maxAutoAssociations}` }}</div>-->
+<!--      <div>{{ `Staked Choice:  ${stakeChoice}` }}</div>-->
+<!--      <div>{{ `Staked Account:  ${stakedAccount}` }}</div>-->
+<!--      <div>{{ `Staked Node:  ${stakedNode}` }}</div>-->
+<!--      <div>{{ `Decline:  ${declineRewards}` }}</div>-->
+<!--      <div>{{ `isAccountEdited:  ${isAccountEdited}` }}</div>-->
+<!--      <div>{{ `isMaxAutoAssociationsValid:  ${isMaxAutoAssociationsValid}` }}</div>-->
+<!--      <div>{{ `isStakedAccountValid:  ${isStakedAccountValid}` }}</div>-->
+<!--      <div>{{ `isStakedNodeValid:  ${isStakedNodeValid}` }}</div>-->
+<!--      <div>{{ `isStakingValid:  ${isStakingValid}` }}</div>-->
 
     </template>
 
@@ -228,6 +229,7 @@ import Dialog from "@/components/dialog/Dialog.vue";
 import {EntityID} from "@/utils/EntityID";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {inputEntityID} from "@/utils/InputUtils";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
 
 const props = defineProps({
   accountInfo: {
@@ -255,7 +257,7 @@ enum AutoAssociationMode {
 
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
 const stakedNode = ref<string>("")
-const stakedAccount = ref<string>("")
+const stakedAccount = ref<string | null>("")
 
 enum StakeChoice {
   NotStaking = "not-staking",
@@ -296,13 +298,13 @@ onMounted(() => {
                   : StakeChoice.NotStaking
       declineRewards.value = props.accountInfo?.decline_reward ?? false
 
-      initialRecSigRequired = props.accountInfo?.receiver_sig_required ?? false
-      initialAutoRenewPeriod = props.accountInfo?.auto_renew_period?.toString() ?? ""
-      initialMemo = props.accountInfo?.memo ?? ""
-      initialMaxAutoAssociations = props.accountInfo?.max_automatic_token_associations?.toString() ?? ""
-      initialStakedNode = props.accountInfo?.staked_node_id?.toString() ?? ""
-      initialStakedAccount = props.accountInfo?.staked_account_id ?? ""
-      initialDeclineRewards = props.accountInfo?.decline_reward ?? false
+      initialRecSigRequired = recSigRequired.value
+      initialAutoRenewPeriod = autoRenewPeriod.value
+      initialMemo = memo.value
+      initialMaxAutoAssociations = maxAutoAssociations.value
+      initialStakedNode = stakedNode.value
+      initialStakedAccount = stakedAccount.value
+      initialDeclineRewards = declineRewards.value
     } else {
       recSigRequired.value = false
       autoRenewPeriod.value = ""
@@ -349,7 +351,8 @@ const isStakedNodeValid = computed(() => {
 
 const isStakedAccountValid = computed(() =>
     stakeChoice.value === StakeChoice.StakeToAccount
-    && EntityID.parse(stakedAccount.value, true) !== null
+    && stakedAccount.value !== null
+    && EntityID.parse(networkRegistry.stripChecksum(stakedAccount.value), true) !== null
 )
 
 const isAccountEdited = computed(() =>
@@ -390,9 +393,9 @@ const errorMessageDetails = ref<string | null>(null)
 const onStakedAccountInput = (event: Event) => {
   const newValue = inputEntityID(event, stakedAccount.value)
   if (newValue === stakedAccount.value) {
-    stakedAccount.value = ""
+    stakedAccount.value = null // to force reactivity
   }
-  stakedAccount.value = newValue ?? ""
+  stakedAccount.value = newValue
 }
 
 const onUpdate = async () => {
