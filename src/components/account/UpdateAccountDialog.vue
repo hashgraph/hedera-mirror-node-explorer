@@ -145,7 +145,7 @@
         </div>
         <input :value="stakedAccount"
                class="input input-field is-small has-text-white"
-               style="width: 550px"
+               style="width: 560px"
                placeholder="Account ID (0.0.1234)"
                type="text"
                @input="event => onStakedAccountInput(event)"
