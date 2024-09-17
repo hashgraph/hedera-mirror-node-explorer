@@ -71,7 +71,7 @@
         </o-select>
       </div>
 
-      <hr style="height: 1px; background: var(--h-theme-background-color);"/>
+      <hr class="mt-4 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
 
       <div class="has-text-weight-light mb-1">
         Max. Auto. Associations
@@ -111,7 +111,7 @@
         <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
       </div>
 
-      <hr style="height: 1px; background: var(--h-theme-background-color);"/>
+      <hr class="mt-2 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
 
       <div class="has-text-weight-light mb-2">
         Staking
