@@ -176,16 +176,24 @@
         >
       </template>
 
-      <div class="mb-4"/>
-
-      <template v-if="stakeChoice === StakeChoice.StakeToNode">
-        <div class="is-flex is-align-items-center is-justify-content-space-between">
-          <div class="is-flex has-text-weight-light mb-1">
-            Decline Rewards
-          </div>
-          <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
+      <template v-if="stakeChoice===StakeChoice.NotStaking">
+        <div class="is-invisible mb-1">
+          Filler
+        </div>
+        <div class="input-field is-invisible" style="width: 560px">
+          Filler
         </div>
       </template>
+
+      <div class="mb-4"/>
+
+      <div class="is-flex is-align-items-center is-justify-content-space-between"
+           :class="{'is-invisible':stakeChoice !== StakeChoice.StakeToNode}">
+        <div class="is-flex has-text-weight-light mb-1">
+          Decline Rewards
+        </div>
+        <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
+      </div>
 
       <div class="mb-4"/>
 
