@@ -178,7 +178,7 @@
 
       <div class="mb-4"/>
 
-      <template v-if="stakeChoice !== StakeChoice.NotStaking">
+      <template v-if="stakeChoice === StakeChoice.StakeToNode">
         <div class="is-flex is-align-items-center is-justify-content-space-between">
           <div class="is-flex has-text-weight-light mb-1">
             Decline Rewards
