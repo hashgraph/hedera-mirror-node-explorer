@@ -26,14 +26,14 @@
   <Dialog :controller="controller" :width="624">
 
     <!-- title -->
-    <template v-slot:dialogTitle>
+    <template #dialogTitle>
       <div class="h-is-primary-title">
         Account Update
       </div>
     </template>
 
     <!-- input -->
-    <template v-slot:dialogInput>
+    <template #dialogInput>
 
       <div class="mb-3"/>
 
@@ -192,7 +192,7 @@
     </template>
 
     <!-- busy -->
-    <template v-slot:dialogBusy>
+    <template #dialogBusy>
       <div class="h-is-tertiary-text mb-4">
         Connecting to Hedera Network using your wallet…
       </div>
@@ -202,7 +202,7 @@
     </template>
 
     <!-- success -->
-    <template v-slot:dialogSuccess>
+    <template #dialogSuccess>
       <div class="is-flex is-align-items-baseline">
         <div class="icon is-medium has-text-success ml-0">
           <i class="fas fa-check"/>
@@ -217,7 +217,7 @@
     </template>
 
     <!-- error -->
-    <template v-slot:dialogError>
+    <template #dialogError>
       <div class="is-flex is-align-items-baseline">
         <div class="icon is-medium has-text-danger">
           <span style="font-size: 18px; font-weight: 900">X</span>
@@ -231,7 +231,12 @@
       </div>
     </template>
 
-    <template v-slot:dialogInputButtons>
+    <!-- user feedback -->
+    <template #dialogFeedback>
+      {{ feedbackMessage }}
+    </template>
+
+    <template #dialogInputButtons>
       <DialogButton :controller="controller">CANCEL</DialogButton>
       <CommitButton :controller="controller" :enabled="isInputValid" @action="onUpdate">UPDATE</CommitButton>
     </template>
@@ -254,13 +259,14 @@ import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletD
 import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
-import {walletManager} from "@/router";
+import router, {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
-import {EntityID} from "@/utils/EntityID";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {inputEntityID} from "@/utils/InputUtils";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
+import {EntityID} from "@/utils/EntityID";
+import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 
 const props = defineProps({
   accountInfo: {
@@ -275,9 +281,13 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"])
 
+const network = router.currentRoute.value.params.network as string
+const nr = networkRegistry
+
 const recSigRequired = ref<boolean>(false)
 
 const selectedAutoRenewPeriod = ref<string>("")
+
 enum PeriodUnit {
   Seconds = "seconds",
   Minutes = 'minutes',
@@ -285,27 +295,34 @@ enum PeriodUnit {
   Days = 'days',
   Years = 'years'
 }
+
 const selectedUnit = ref<PeriodUnit>(PeriodUnit.Seconds)
 
 const memo = ref<string>("")
 
 const maxAutoAssociations = ref<string>("")
+
 enum AutoAssociationMode {
   UnlimitedAutoAssociation = -1,
   LimitedAutoAssociation = 1,
   NoAutoAssociation = 0
 }
+
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
 
 const stakedNode = ref<number>(0)
 const stakedAccount = ref<string | null>("")
+
 enum StakeChoice {
   NotStaking = "not-staking",
   StakeToNode = "node",
   StakeToAccount = "account"
 }
+
 const stakeChoice = ref<StakeChoice>(StakeChoice.NotStaking)
 const declineRewards = ref<boolean>(false)
+
+const feedbackMessage = ref<string | null>(null)
 
 let initialRecSigRequired = false
 let initialAutoRenewPeriod: number | null = 0
@@ -319,6 +336,8 @@ let initialDeclineRewards = false
 let visibleWatchHandle: WatchStopHandle | null = null
 let modeWatchHandle: WatchStopHandle | null = null
 let periodWatchHandle: WatchStopHandle | null = null
+let stakedAccountWatchHandle: WatchStopHandle | null = null
+let stakeChoiceWatchHandle: WatchStopHandle | null = null
 
 onMounted(() => {
   visibleWatchHandle = watch(props.controller?.visible, (newValue) => {
@@ -402,6 +421,31 @@ onMounted(() => {
   })
 })
 
+let validationTimerId = -1
+
+onMounted(() => {
+  stakedAccountWatchHandle = watch(stakedAccount, () => {
+    isStakedAccountValid.value = false
+    feedbackMessage.value = null
+    if (validationTimerId != -1) {
+      window.clearTimeout(validationTimerId)
+      validationTimerId = -1
+    }
+    if (stakedAccount.value?.length) {
+      validationTimerId = window.setTimeout(() => validateAccount(), 500)
+    } else {
+      stakedAccount.value = null
+    }
+  })
+
+  stakeChoiceWatchHandle = watch(stakeChoice, (newValue) => {
+    feedbackMessage.value = null
+    if (newValue === StakeChoice.StakeToAccount) {
+      validateAccount()
+    }
+  })
+})
+
 onBeforeUnmount(() => {
   if (visibleWatchHandle !== null) {
     visibleWatchHandle()
@@ -415,6 +459,14 @@ onBeforeUnmount(() => {
     periodWatchHandle()
     periodWatchHandle = null
   }
+  if (stakedAccountWatchHandle !== null) {
+    stakedAccountWatchHandle()
+    stakedAccountWatchHandle = null
+  }
+  if (stakeChoiceWatchHandle !== null) {
+    stakeChoiceWatchHandle()
+    stakeChoiceWatchHandle = null
+  }
 })
 
 const stakedNodeIcon = computed(() =>
@@ -425,11 +477,15 @@ const isStakedNodeValid = computed(() => {
   return stakeChoice.value === StakeChoice.StakeToNode
 })
 
-const isStakedAccountValid = computed(() =>
-    stakeChoice.value === StakeChoice.StakeToAccount
-    && stakedAccount.value !== null
-    && EntityID.parse(networkRegistry.stripChecksum(stakedAccount.value), true) !== null
+const stakedAccountEntity = computed(() =>
+    EntityID.normalize(nr.stripChecksum(stakedAccount.value ?? ""))
 )
+const stakedAccountChecksum = computed(() =>
+    nr.extractChecksum(stakedAccount.value ?? "")
+)
+
+const isStakedAccountValid = ref<boolean>(false)
+
 const isAccountEdited = computed(() =>
     (recSigRequired.value !== initialRecSigRequired)
     || (normalizePeriod(parseInt(selectedAutoRenewPeriod.value), selectedUnit.value) !== initialAutoRenewPeriod)
@@ -566,6 +622,20 @@ const normalizePeriod = (period: number, unit: PeriodUnit) => {
       break
   }
   return result
+}
+
+const validateAccount = async () => {
+  if (stakedAccountEntity.value === null) {
+    feedbackMessage.value = "Invalid Account ID"
+  } else if (stakedAccountChecksum.value === null
+      || nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
+
+    if (await AccountByIdCache.instance.lookup(stakedAccountEntity.value)) {
+      isStakedAccountValid.value = true
+    } else {
+      feedbackMessage.value = "Unknown account ID"
+    }
+  }
 }
 
 </script>
