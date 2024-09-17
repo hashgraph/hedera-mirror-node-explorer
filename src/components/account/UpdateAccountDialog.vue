@@ -37,15 +37,6 @@
 
       <div class="mb-3"/>
 
-      <div class="is-flex is-align-items-center is-justify-content-space-between">
-        <div class="is-flex has-text-weight-light mb-1">
-          Receiver Signature Required
-        </div>
-        <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
-      </div>
-
-      <div class="mb-4"/>
-
       <div class="has-text-weight-light mb-1">
         Account Memo
       </div>
@@ -64,8 +55,8 @@
       <div class="is-flex is-justify-content-flex-start">
         <o-select v-model="autoAssociationMode"
                   class="is-small has-text-white"
-                  style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
+                  style=" height: 38px; border-radius: 2px;border-width: 1px;border-color: grey;
+                  background-color: var(--h-theme-page-background-color);"
         >
           <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
             No Automatic Association
@@ -82,9 +73,42 @@
                style="width: 100px"
                :class="{'is-invisible':autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation}"
                v-model="maxAutoAssociations"
-               placeholder="positive number"
+               placeholder="≥ 0"
                type="number"
         >
+      </div>
+
+      <div class="mb-4"/>
+
+      <div class="has-text-weight-light mb-1">
+        Auto Renew Period
+      </div>
+      <div class="is-flex is-justify-content-flex-start">
+        <input class="input input-field is-small has-text-white"
+               style="width: 130px"
+               v-model="selectedAutoRenewPeriod"
+               placeholder="≥ 0"
+               type="number"
+        >
+        <o-select v-model="selectedUnit"
+                  class="is-small has-text-white ml-2"
+                  style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
+                    background-color: var(--h-theme-page-background-color);"
+        >
+          <option v-for="p in PeriodUnit" :key="p" :value="p"
+                  style="background-color: var(--h-theme-page-background-color)">
+            {{ p }}
+          </option>
+        </o-select>
+      </div>
+
+      <div class="mb-4"/>
+
+      <div class="is-flex is-align-items-center is-justify-content-space-between">
+        <div class="is-flex has-text-weight-light mb-1">
+          Receiver Signature Required
+        </div>
+        <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
       </div>
 
       <hr style="height: 1px; background: var(--h-theme-background-color);"/>
@@ -164,18 +188,6 @@
       </template>
 
       <div class="mb-4"/>
-
-      <!--      DEBUG OUTPUT         -->
-      <!--      <div>{{ `Max Auto:  ${maxAutoAssociations}` }}</div>-->
-      <!--      <div>{{ `Staked Choice:  ${stakeChoice}` }}</div>-->
-      <!--      <div>{{ `Staked Account:  ${stakedAccount}` }}</div>-->
-      <!--      <div>{{ `Staked Node:  ${stakedNode}` }}</div>-->
-      <!--      <div>{{ `Decline:  ${declineRewards}` }}</div>-->
-      <!--      <div>{{ `isAccountEdited:  ${isAccountEdited}` }}</div>-->
-      <!--      <div>{{ `isMaxAutoAssociationsValid:  ${isMaxAutoAssociationsValid}` }}</div>-->
-      <!--      <div>{{ `isStakedAccountValid:  ${isStakedAccountValid}` }}</div>-->
-      <!--      <div>{{ `isStakedNodeValid:  ${isStakedNodeValid}` }}</div>-->
-      <!--      <div>{{ `isStakingValid:  ${isStakingValid}` }}</div>-->
 
     </template>
 
@@ -264,31 +276,39 @@ const props = defineProps({
 const emit = defineEmits(["updated"])
 
 const recSigRequired = ref<boolean>(false)
-const autoRenewPeriod = ref<string>("")
-const memo = ref<string>("")
-const maxAutoAssociations = ref<string>("")
 
+const selectedAutoRenewPeriod = ref<string>("")
+enum PeriodUnit {
+  Seconds = "seconds",
+  Minutes = 'minutes',
+  Hours = 'hours',
+  Days = 'days',
+  Years = 'years'
+}
+const selectedUnit = ref<PeriodUnit>(PeriodUnit.Seconds)
+
+const memo = ref<string>("")
+
+const maxAutoAssociations = ref<string>("")
 enum AutoAssociationMode {
   UnlimitedAutoAssociation = -1,
   LimitedAutoAssociation = 1,
   NoAutoAssociation = 0
 }
-
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
+
 const stakedNode = ref<number>(0)
 const stakedAccount = ref<string | null>("")
-
 enum StakeChoice {
   NotStaking = "not-staking",
   StakeToNode = "node",
   StakeToAccount = "account"
 }
-
 const stakeChoice = ref<StakeChoice>(StakeChoice.NotStaking)
 const declineRewards = ref<boolean>(false)
 
 let initialRecSigRequired = false
-let initialAutoRenewPeriod = ""
+let initialAutoRenewPeriod: number | null = 0
 let initialMemo = ""
 let initialMaxAutoAssociations = ""
 let initialStakeChoice = StakeChoice.NotStaking
@@ -298,12 +318,14 @@ let initialDeclineRewards = false
 
 let visibleWatchHandle: WatchStopHandle | null = null
 let modeWatchHandle: WatchStopHandle | null = null
+let periodWatchHandle: WatchStopHandle | null = null
 
 onMounted(() => {
   visibleWatchHandle = watch(props.controller?.visible, (newValue) => {
     if (newValue) {
       recSigRequired.value = props.accountInfo?.receiver_sig_required ?? false
-      autoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ""
+      selectedAutoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ""
+      selectedUnit.value = PeriodUnit.Seconds
       memo.value = props.accountInfo?.memo ?? ""
       maxAutoAssociations.value = props.accountInfo?.max_automatic_token_associations?.toString() ?? ""
       autoAssociationMode.value =
@@ -319,7 +341,7 @@ onMounted(() => {
       declineRewards.value = props.accountInfo?.decline_reward ?? false
 
       initialRecSigRequired = recSigRequired.value
-      initialAutoRenewPeriod = autoRenewPeriod.value
+      initialAutoRenewPeriod = props.accountInfo?.auto_renew_period ?? null
       initialMemo = memo.value
       initialMaxAutoAssociations = maxAutoAssociations.value
       initialStakeChoice = stakeChoice.value
@@ -328,7 +350,8 @@ onMounted(() => {
       initialDeclineRewards = declineRewards.value
     } else {
       recSigRequired.value = false
-      autoRenewPeriod.value = ""
+      selectedAutoRenewPeriod.value = ""
+      selectedUnit.value = PeriodUnit.Seconds
       memo.value = ""
       maxAutoAssociations.value = ""
       autoAssociationMode.value = AutoAssociationMode.NoAutoAssociation
@@ -338,7 +361,9 @@ onMounted(() => {
       declineRewards.value = false
     }
   }, {immediate: true})
+})
 
+onMounted(() => {
   modeWatchHandle = watch(autoAssociationMode, (newValue) => {
     switch (newValue) {
       case AutoAssociationMode.LimitedAutoAssociation:
@@ -352,6 +377,31 @@ onMounted(() => {
   })
 })
 
+onMounted(() => {
+  periodWatchHandle = watch(selectedUnit, (newValue, oldValue) => {
+    let seconds = normalizePeriod(parseInt(selectedAutoRenewPeriod.value), oldValue)
+    let period
+    switch (newValue) {
+      case PeriodUnit.Seconds:
+        period = seconds
+        break
+      case PeriodUnit.Minutes:
+        period = Math.floor(seconds / 60)
+        break
+      case PeriodUnit.Hours:
+        period = Math.floor(seconds / 3600)
+        break
+      case PeriodUnit.Days:
+        period = Math.floor(seconds / 86400)
+        break
+      case PeriodUnit.Years:
+        period = Math.floor(seconds / 31536000)
+        break
+    }
+    selectedAutoRenewPeriod.value = period.toString()
+  })
+})
+
 onBeforeUnmount(() => {
   if (visibleWatchHandle !== null) {
     visibleWatchHandle()
@@ -360,6 +410,10 @@ onBeforeUnmount(() => {
   if (modeWatchHandle !== null) {
     modeWatchHandle()
     modeWatchHandle = null
+  }
+  if (periodWatchHandle !== null) {
+    periodWatchHandle()
+    periodWatchHandle = null
   }
 })
 
@@ -376,10 +430,9 @@ const isStakedAccountValid = computed(() =>
     && stakedAccount.value !== null
     && EntityID.parse(networkRegistry.stripChecksum(stakedAccount.value), true) !== null
 )
-
 const isAccountEdited = computed(() =>
     (recSigRequired.value !== initialRecSigRequired)
-    || (autoRenewPeriod.value !== initialAutoRenewPeriod)
+    || (normalizePeriod(parseInt(selectedAutoRenewPeriod.value), selectedUnit.value) !== initialAutoRenewPeriod)
     || (memo.value !== initialMemo)
     || (maxAutoAssociations.value !== initialMaxAutoAssociations)
     || (stakedNode.value !== initialStakedNode)
@@ -440,8 +493,9 @@ const onUpdate = async () => {
     if (recSigRequired.value !== initialRecSigRequired) {
       transaction.setReceiverSignatureRequired(recSigRequired.value)
     }
-    if (autoRenewPeriod.value !== initialAutoRenewPeriod) {
-      transaction.setAutoRenewPeriod(Number(autoRenewPeriod.value))
+    const updatedAutoRenewPeriod = normalizePeriod(parseInt(selectedAutoRenewPeriod.value), selectedUnit.value)
+    if (updatedAutoRenewPeriod !== initialAutoRenewPeriod) {
+      transaction.setAutoRenewPeriod(updatedAutoRenewPeriod)
     }
     if (stakeChoice.value !== initialStakeChoice
         || stakedAccount.value !== initialStakedAccount
@@ -490,6 +544,28 @@ const onUpdate = async () => {
     }
 
   }
+}
+
+const normalizePeriod = (period: number, unit: PeriodUnit) => {
+  let result: number
+  switch (unit) {
+    case PeriodUnit.Seconds:
+      result = period
+      break
+    case PeriodUnit.Minutes:
+      result = period * 60
+      break
+    case PeriodUnit.Hours:
+      result = period * 3600
+      break
+    case PeriodUnit.Days:
+      result = period * 86400
+      break
+    case PeriodUnit.Years:
+      result = period * 31536000
+      break
+  }
+  return result
 }
 
 </script>
