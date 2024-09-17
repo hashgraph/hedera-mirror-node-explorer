@@ -626,10 +626,11 @@ const normalizePeriod = (period: number, unit: PeriodUnit) => {
 
 const validateAccount = async () => {
   if (stakedAccountEntity.value === null) {
-    feedbackMessage.value = "Invalid Account ID"
-  } else if (stakedAccountChecksum.value === null
-      || nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
-
+    feedbackMessage.value = "Invalid account ID"
+  } else if (stakedAccountChecksum.value !== null
+      && !nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
+    feedbackMessage.value = "Invalid account checksum"
+  } else {
     if (await AccountByIdCache.instance.lookup(stakedAccountEntity.value)) {
       isStakedAccountValid.value = true
     } else {
