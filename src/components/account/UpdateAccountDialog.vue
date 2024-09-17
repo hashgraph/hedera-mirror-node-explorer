@@ -50,6 +50,30 @@
       <div class="mb-4"/>
 
       <div class="has-text-weight-light mb-1">
+        Auto Renew Period
+      </div>
+      <div class="is-flex is-justify-content-flex-start">
+        <input class="input input-field is-small has-text-white"
+               style="width: 130px"
+               v-model="selectedAutoRenewPeriod"
+               placeholder="≥ 0"
+               type="number"
+        >
+        <o-select v-model="selectedUnit"
+                  class="is-small has-text-white ml-2"
+                  style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
+                    background-color: var(--h-theme-page-background-color);"
+        >
+          <option v-for="p in PeriodUnit" :key="p" :value="p"
+                  style="background-color: var(--h-theme-page-background-color)">
+            {{ p }}
+          </option>
+        </o-select>
+      </div>
+
+      <hr style="height: 1px; background: var(--h-theme-background-color);"/>
+
+      <div class="has-text-weight-light mb-1">
         Max. Auto. Associations
       </div>
       <div class="is-flex is-justify-content-flex-start">
@@ -80,30 +104,6 @@
 
       <div class="mb-4"/>
 
-      <div class="has-text-weight-light mb-1">
-        Auto Renew Period
-      </div>
-      <div class="is-flex is-justify-content-flex-start">
-        <input class="input input-field is-small has-text-white"
-               style="width: 130px"
-               v-model="selectedAutoRenewPeriod"
-               placeholder="≥ 0"
-               type="number"
-        >
-        <o-select v-model="selectedUnit"
-                  class="is-small has-text-white ml-2"
-                  style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
-        >
-          <option v-for="p in PeriodUnit" :key="p" :value="p"
-                  style="background-color: var(--h-theme-page-background-color)">
-            {{ p }}
-          </option>
-        </o-select>
-      </div>
-
-      <div class="mb-4"/>
-
       <div class="is-flex is-align-items-center is-justify-content-space-between">
         <div class="is-flex has-text-weight-light mb-1">
           Receiver Signature Required
@@ -113,7 +113,7 @@
 
       <hr style="height: 1px; background: var(--h-theme-background-color);"/>
 
-      <div class="has-text-weight-light mb-1">
+      <div class="has-text-weight-light mb-2">
         Staking
       </div>
       <div class="radios h-is-text-size-4">
@@ -241,7 +241,9 @@
 
     <!-- user feedback -->
     <template #dialogFeedback>
-      {{ feedbackMessage }}
+      <div class="h-is-property-text">
+        {{ feedbackMessage }}
+      </div>
     </template>
 
     <template #dialogInputButtons>
