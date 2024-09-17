@@ -167,13 +167,19 @@
         <div class="has-text-weight-light mb-1">
           Staked Account ID
         </div>
-        <input :value="stakedAccount"
-               class="input input-field is-small has-text-white"
-               style="width: 560px"
-               placeholder="Account ID (0.0.1234)"
-               type="text"
-               @input="event => onStakedAccountInput(event)"
-        >
+        <div class="is-flex is-align-items-center">
+          <input :value="stakedAccount"
+                 class="input input-field is-small has-text-white"
+                 placeholder="Account ID (0.0.1234)"
+                 type="text"
+                 @input="event => onStakedAccountInput(event)"
+          >
+          <div class="icon is-small ml-2">
+            <i v-if="isStakedAccountValid" class="fas fa-check has-text-success"/>
+            <i v-else-if="feedbackMessage" class="fas fa-xmark has-text-danger"/>
+            <i v-else/>
+          </div>
+        </div>
       </template>
 
       <template v-if="stakeChoice===StakeChoice.NotStaking">
