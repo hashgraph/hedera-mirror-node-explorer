@@ -56,8 +56,8 @@
         <input class="input input-field is-small has-text-white"
                style="width: 130px"
                v-model="selectedAutoRenewPeriod"
-               placeholder="≥ 0"
-               type="number"
+               placeholder="> 0"
+               type="number" min="1" step="1"
         >
         <o-select v-model="selectedUnit"
                   class="is-small has-text-white ml-2"
@@ -283,6 +283,7 @@ import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {isSuccessfulResult} from "@/utils/TransactionTools";
 
 const props = defineProps({
   accountInfo: {
@@ -413,27 +414,28 @@ onMounted(() => {
 })
 
 onMounted(() => {
-  periodWatchHandle = watch(selectedUnit, (newValue, oldValue) => {
-    let seconds = normalizePeriod(parseInt(selectedAutoRenewPeriod.value), oldValue)
-    let period
-    switch (newValue) {
-      case PeriodUnit.Seconds:
-        period = seconds
-        break
-      case PeriodUnit.Minutes:
-        period = Math.floor(seconds / 60)
-        break
-      case PeriodUnit.Hours:
-        period = Math.floor(seconds / 3600)
-        break
-      case PeriodUnit.Days:
-        period = Math.floor(seconds / 86400)
-        break
-      case PeriodUnit.Years:
-        period = Math.floor(seconds / 31536000)
-        break
-    }
-    selectedAutoRenewPeriod.value = period.toString()
+  periodWatchHandle = watch(selectedUnit, () => {
+    // let seconds = normalizePeriod(parseInt(selectedAutoRenewPeriod.value), oldValue)
+    // let period
+    // switch (newValue) {
+    //   case PeriodUnit.Seconds:
+    //     period = seconds
+    //     break
+    //   case PeriodUnit.Minutes:
+    //     period = Math.floor(seconds / 60)
+    //     break
+    //   case PeriodUnit.Hours:
+    //     period = Math.floor(seconds / 3600)
+    //     break
+    //   case PeriodUnit.Days:
+    //     period = Math.floor(seconds / 86400)
+    //     break
+    //   case PeriodUnit.Years:
+    //     period = Math.floor(seconds / 31536000)
+    //     break
+    // }
+    // selectedAutoRenewPeriod.value = period.toString()
+    selectedAutoRenewPeriod.value = ""
   })
 })
 
@@ -525,6 +527,7 @@ const isStakingValid = computed(() =>
 
 const isInputValid = computed(() =>
     isAccountEdited.value
+    && parseInt(selectedAutoRenewPeriod.value) > 0
     && isMaxAutoAssociationsValid.value
     && isStakingValid.value
 )
@@ -593,11 +596,24 @@ const onUpdate = async () => {
         await walletManager.updateAccount(transaction)
     )
     if (tid.value) {
-      await waitForTransactionRefresh(tid.value, 10, 3000)
+      const transaction: any = await waitForTransactionRefresh(tid.value, 10, 3000)
+      if ('result' in transaction) {
+        if (transaction.result != null && isSuccessfulResult(transaction.result)) {
+          props.controller.mode.value = DialogMode.Success
+          emit('updated')
+        } else {
+          props.controller.mode.value = DialogMode.Error
+          errorMessage.value = "Transaction failed"
+          errorMessageDetails.value = transaction.result
+        }
+      } else {
+        props.controller.mode.value = DialogMode.Success
+      }
+    } else {
+      props.controller.mode.value = DialogMode.Error
+      errorMessage.value = "Operation did not complete"
+      errorMessageDetails.value = "Cannot find resulting transaction"
     }
-    props.controller.mode.value = DialogMode.Success
-
-    emit('updated')
 
   } catch (reason) {
 
@@ -643,6 +659,8 @@ const normalizePeriod = (period: number, unit: PeriodUnit) => {
 const validateAccount = async () => {
   if (stakedAccountEntity.value === null) {
     feedbackMessage.value = "Invalid account ID"
+  } else if (stakedAccountEntity.value === walletManager.accountId.value) {
+    feedbackMessage.value = "Need to stake to a different account"
   } else if (stakedAccountChecksum.value !== null
       && !nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
     feedbackMessage.value = "Invalid account checksum"
