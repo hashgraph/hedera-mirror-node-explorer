@@ -26,6 +26,10 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
+    <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
+        <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
+    </div>
+
     <DashboardCard collapsible-key="accountDetails">
       <template v-if="!isInactiveEvmAddress" v-slot:title>
         <span class="h-is-primary-title">Account </span>
@@ -397,6 +401,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
@@ -539,6 +545,7 @@ export default defineComponent({
     onBeforeUnmount(() => nameQuery.unmount())
 
     return {
+      temporaryBanner,
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
