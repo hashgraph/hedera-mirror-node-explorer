@@ -46,7 +46,7 @@
     "jszip": "^3.10.1",
     "multiformats": "^13.2.3",
     "prismjs": "^1.29.0",
-    "vue": "^3.5.4",
+    "vue": "^3.5.6",
     "vue-router": "^4.4.4"
   },
   "devDependencies": {
