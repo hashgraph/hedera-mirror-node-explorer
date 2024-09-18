@@ -55,6 +55,7 @@
       <div class="is-flex is-justify-content-flex-start">
         <input class="input input-field is-small has-text-white"
                style="width: 130px"
+               id="selectedAutoRenewPeriod"
                v-model="selectedAutoRenewPeriod"
                placeholder="> 0"
                type="number" min="1" step="1"
@@ -436,6 +437,7 @@ onMounted(() => {
     // }
     // selectedAutoRenewPeriod.value = period.toString()
     selectedAutoRenewPeriod.value = ""
+    document.getElementById("selectedAutoRenewPeriod")?.focus()
   })
 })
 
