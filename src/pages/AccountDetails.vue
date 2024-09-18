@@ -247,7 +247,7 @@
       <template v-slot:rightContent>
         <EditableProperty
             id="key"
-            :editable="isAccountEditable"
+            :editable="false"
             @edit="onUpdateAccount"
         >
           <template v-slot:name>Admin Key</template>
