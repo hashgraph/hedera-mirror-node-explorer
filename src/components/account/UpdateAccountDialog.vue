@@ -657,7 +657,7 @@ const validateAccount = async () => {
   if (stakedAccountEntity.value === null) {
     feedbackMessage.value = "Invalid account ID"
   } else if (stakedAccountEntity.value === walletManager.accountId.value) {
-    feedbackMessage.value = "Need to stake to a different account"
+    feedbackMessage.value = "Staking needs to be to a different account"
   } else if (stakedAccountChecksum.value !== null
       && !nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
     feedbackMessage.value = "Invalid account checksum"
