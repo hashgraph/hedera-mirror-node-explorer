@@ -328,7 +328,7 @@ enum AutoAssociationMode {
 
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
 
-const stakedNode = ref<number>(0)
+const stakedNode = ref<number | null>(null)
 const stakedAccount = ref<string | null>("")
 
 enum StakeChoice {
@@ -347,7 +347,7 @@ let initialAutoRenewPeriod: number | null = 0
 let initialMemo = ""
 let initialMaxAutoAssociations = ""
 let initialStakeChoice = StakeChoice.NotStaking
-let initialStakedNode = 0
+let initialStakedNode: number | null = null
 let initialStakedAccount = ""
 let initialDeclineRewards = false
 
@@ -369,7 +369,7 @@ onMounted(() => {
           props.accountInfo?.max_automatic_token_associations === -1 ? AutoAssociationMode.UnlimitedAutoAssociation
               : (props.accountInfo?.max_automatic_token_associations ?? 0) > 0 ? AutoAssociationMode.LimitedAutoAssociation
                   : AutoAssociationMode.NoAutoAssociation
-      stakedNode.value = props.accountInfo?.staked_node_id ?? 0
+      stakedNode.value = props.accountInfo?.staked_node_id ?? null
       stakedAccount.value = props.accountInfo?.staked_account_id ?? ""
       stakeChoice.value =
           (props.accountInfo?.staked_node_id ?? null) !== null ? StakeChoice.StakeToNode
@@ -393,7 +393,7 @@ onMounted(() => {
       maxAutoAssociations.value = ""
       autoAssociationMode.value = AutoAssociationMode.NoAutoAssociation
       stakeChoice.value = StakeChoice.NotStaking
-      stakedNode.value = 0
+      stakedNode.value = null
       stakedAccount.value = ""
       declineRewards.value = false
     }
