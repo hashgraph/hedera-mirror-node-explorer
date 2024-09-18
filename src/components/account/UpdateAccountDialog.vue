@@ -139,7 +139,6 @@
           Staked Node ID
         </div>
         <o-select v-model="stakedNode"
-                  :icon="stakedNodeIcon"
                   class="is-small has-text-white"
                   style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
                     background-color: var(--h-theme-page-background-color);"
@@ -488,10 +487,6 @@ onBeforeUnmount(() => {
     stakeChoiceWatchHandle = null
   }
 })
-
-const stakedNodeIcon = computed(() =>
-    isCouncilNode(networkAnalyzer.nodes.value[stakedNode.value]) ? "building" : "users"
-)
 
 const isStakedNodeValid = computed(() => {
   return stakeChoice.value === StakeChoice.StakeToNode
