@@ -18,12 +18,12 @@
  *
  */
 
-import {Airdrop,} from "@/schemas/HederaSchemas";
+import {TokenAirdrop,} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 
-export class PendingAirdropTableController extends TableController<Airdrop, AirdropKey> {
+export class PendingAirdropTableController extends TableController<TokenAirdrop, AirdropKey> {
 
     //
     // Public
@@ -59,8 +59,8 @@ export class PendingAirdropTableController extends TableController<Airdrop, Aird
     private drained = false
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Airdrop[] | null> {
-        let result: Airdrop[] | null
+    public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenAirdrop[] | null> {
+        let result: TokenAirdrop[] | null
 
         if (this.accountId.value === null) {
             result = null
@@ -80,7 +80,7 @@ export class PendingAirdropTableController extends TableController<Airdrop, Aird
                     "token_id": "0.0.4841213"
                 },
                 {
-                    "amount": null,
+                    "amount": 1,
                     "receiver_id": "0.0.1299",
                     "sender_id": "0.0.222",
                     "serial_number": 42,
@@ -91,7 +91,7 @@ export class PendingAirdropTableController extends TableController<Airdrop, Aird
                     "token_id": "0.0.4846884"
                 },
                 {
-                    "amount": null,
+                    "amount": 1,
                     "receiver_id": "0.0.1299",
                     "sender_id": "0.0.222",
                     "serial_number": 888,
@@ -122,7 +122,7 @@ export class PendingAirdropTableController extends TableController<Airdrop, Aird
     //     return result
     // }
 
-    public keyFor(row: Airdrop): AirdropKey {
+    public keyFor(row: TokenAirdrop): AirdropKey {
         return {
             sender_id: row.sender_id,
             token_id: row.token_id,
@@ -135,7 +135,7 @@ export class PendingAirdropTableController extends TableController<Airdrop, Aird
     }
 
     public keyFromString(s: string): AirdropKey | null {
-        let result: AirdropKey|null
+        let result: AirdropKey | null
         const items = s.split("-")
         if (items.length == 3) {
             const serial_number = Number(items[3])
@@ -216,12 +216,12 @@ export class PendingAirdropTableController extends TableController<Airdrop, Aird
 
 }
 
-
 export interface AirdropKey {
-    sender_id: string,
-    token_id: string,
-    serial_number: number|null
+    sender_id: string | null,
+    token_id: string | null,
+    serial_number: number | null | undefined
 }
+
 //
 // interface QueryParams {
 //     limit: number
