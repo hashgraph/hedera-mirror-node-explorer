@@ -47,6 +47,7 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENREVOKEKYC:
         case TransactionType.TOKENFREEZE:
         case TransactionType.TOKENUNFREEZE:
+        case TransactionType.TOKENREJECT:
         case TransactionType.CRYPTOADDLIVEHASH:
         case TransactionType.CRYPTODELETELIVEHASH:
             result = row.entity_id ? "Account ID: " + row.entity_id : ""
@@ -57,7 +58,6 @@ export function makeSummaryLabel(row: Transaction): string {
         case TransactionType.TOKENDELETION:
         case TransactionType.TOKENFEESCHEDULEUPDATE:
         case TransactionType.TOKENPAUSE:
-        case TransactionType.TOKENREJECT:
         case TransactionType.TOKENUNPAUSE:
         case TransactionType.TOKENUPDATE:
         case TransactionType.TOKENUPDATENFTS:
