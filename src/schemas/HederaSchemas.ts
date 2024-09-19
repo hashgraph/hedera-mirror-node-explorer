@@ -462,20 +462,19 @@ export interface Nft {
 //                                               Airdrop
 // ---------------------------------------------------------------------------------------------------------------------
 
-export interface AirdropResponse {
-    airdrops: Airdrop[]
+export interface TokenAirdropsResponse {
+    airdrops: TokenAirdrop[]
     links: Links
 }
 
-export interface Airdrop {
-    amount: number|null,
-    receiver_id: string,
-    sender_id: string,
-    serial_number: number|null,
+export interface TokenAirdrop {
+    amount: number,
+    receiver_id: string | null,
+    sender_id: string | null,
+    serial_number: number | null | undefined,
     timestamp: TimestampRange,
-    token_id: string
+    token_id: string | null
 }
-
 
 // ---------------------------------------------------------------------------------------------------------------------
 //                                               Topic

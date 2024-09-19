@@ -117,7 +117,7 @@ import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
 import {walletManager} from "@/router";
-import {Airdrop} from "@/schemas/HederaSchemas";
+import {TokenAirdrop} from "@/schemas/HederaSchemas";
 
 const props = defineProps({
   accountId: {
@@ -257,7 +257,7 @@ const claimEnabled = computed(() =>
     walletManager.accountId.value === props.accountId &&
     pendingAirdropTableController.totalRowCount.value >= 1)
 
-const checkedAirdrops = ref<Airdrop[]>([])
+const checkedAirdrops = ref<TokenAirdrop[]>([])
 
 </script>
 
