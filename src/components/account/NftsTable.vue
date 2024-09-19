@@ -56,6 +56,7 @@
           :token-id="row.token_id"
           :serial-number="row.serial_number"
           :property="NftCellItem.image"
+          :size="32"
       />
     </o-table-column>
 
