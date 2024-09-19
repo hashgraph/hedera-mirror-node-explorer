@@ -28,7 +28,7 @@
       v-if="property === NftCellItem.image"
       :url="url"
       :type="type"
-      :size="50"
+      :size="size"
       :auto="false"
       :no-anchor="true"
   />
@@ -75,7 +75,11 @@ export default defineComponent({
     property: {
       type: String as PropType<NftCellItem>,
       default: NftCellItem.name
-    }
+    },
+    size: {
+      type: Number,
+      default: 50
+    },
   },
 
   setup(props) {
