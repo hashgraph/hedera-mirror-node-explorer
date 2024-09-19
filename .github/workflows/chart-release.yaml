@@ -27,6 +27,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
 
+      - name: PWD
+        run: pwd
+
+      - name: List directory
+        run: ls -ltr
+
+      - name: list chart directory
+        run: ls -ltr chart
+
       - name: Publish helm chart
         uses: step-security/helm-gh-pages@6a390e89293c1ec8bc5120f6692f3b8a313a9a3d # v1.7.0
         with:
