@@ -48,7 +48,9 @@
       <button v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
               id="approve-button"
               class="button is-white is-small"
-              @click="handleClaimAll">{{  claimTitle }}
+              @click="onClaim"
+      >
+        {{ claimTitle }}
       </button>
     </template>
 
@@ -233,7 +235,7 @@ const selection = ref<(Token | Nft)[]>([])
 // Claim
 //
 
-const handleClaimAll = () => {
+const onClaim = () => {
 
 }
 
@@ -241,10 +243,10 @@ const claimTitle = computed(() => {
   let result: string
   const checkedCount = checkedAirdrops.value.length
   if (checkedCount >= 2) {
-    result = `Claim ${ checkedCount } Checked Tokens`
+    result = `Claim ${checkedCount} Checked Tokens`
   } else if (checkedCount == 1) {
     const checkedTokenId = checkedAirdrops.value[0].token_id
-    result = `Claim Token ${ checkedTokenId }`
+    result = `Claim Token ${checkedTokenId}`
   } else {
     result = "Claim All"
   }
