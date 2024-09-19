@@ -114,7 +114,7 @@
 <script setup lang="ts">
 
 import {PropType, watch} from 'vue';
-import {Airdrop} from "@/schemas/HederaSchemas";
+import {TokenAirdrop} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -137,14 +137,16 @@ const props = defineProps({
 })
 
 const checkedRows = defineModel("checkedAirdrops", {
-  type: Object as PropType<Airdrop[]>,
-  default: [] as Airdrop[]
+  type: Object as PropType<TokenAirdrop[]>,
+  default: [] as TokenAirdrop[]
 })
 
 watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value.splice(0))
 
-const handleClick = (airdrop: Airdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
-  routeManager.routeToToken(airdrop.token_id, event)
+const handleClick = (airdrop: TokenAirdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (airdrop.token_id) {
+    routeManager.routeToToken(airdrop.token_id, event)
+  }
 }
 
 </script>
