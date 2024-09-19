@@ -72,19 +72,30 @@
       <div>{{ props.row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="type" label="Type">
-      <div>{{ props.row.amount !== null ? "Fungible Token" : "NFT" }}</div>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="serial" label="NFT#" position="right">
+    <o-table-column v-slot="props" field="serial" label="NFT #" position="right">
       <div v-if="props.row.serial_number !== null">{{ props.row.serial_number }}</div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-if="props.row.amount !== null"
-                   :amount="BigInt(props.row.amount)"
-                   :token-id="props.row.token_id"
+      <TokenAmount
+          v-if="! props.row.serial_number"
+          :amount="BigInt(props.row.amount)"
+          :token-id="props.row.token_id"
       />
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="image" label="Image" position="right">
+      <div
+          class="is-flex is-justify-content-end"
+          :class="{'is-invisible':!props.row.serial_number}"
+      >
+        <NftCell
+            :token-id="props.row.token_id"
+            :serial-number="props.row.serial_number"
+            :property="NftCellItem.image"
+            :size="32"
+        />
+      </div>
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -124,6 +135,7 @@ import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import TokenAmount from "@/components/values/TokenAmount.vue";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 
 const props = defineProps({
   controller: {
@@ -145,7 +157,11 @@ watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value
 
 const handleClick = (airdrop: TokenAirdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
   if (airdrop.token_id) {
-    routeManager.routeToToken(airdrop.token_id, event)
+    if(airdrop.serial_number) {
+      routeManager.routeToSerial(airdrop.token_id, airdrop.serial_number, event)
+    } else {
+      routeManager.routeToToken(airdrop.token_id, event)
+    }
   }
 }
 
