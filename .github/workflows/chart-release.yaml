@@ -39,6 +39,6 @@ jobs:
       - name: Publish helm chart
         uses: step-security/helm-gh-pages@6a390e89293c1ec8bc5120f6692f3b8a313a9a3d # v1.7.0
         with:
-          charts_dir: chart
+          charts_dir: .
           target_dir: charts
           token: ${{ secrets.GITHUB_TOKEN }}
