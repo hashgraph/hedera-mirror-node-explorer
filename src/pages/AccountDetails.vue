@@ -200,6 +200,7 @@
             id="autoRenewPeriod"
             tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant."
             :editable="isAccountEditable"
+            @edit="onUpdateAccount"
         >
           <template v-slot:name>
             <span>Auto Renew Period</span>
