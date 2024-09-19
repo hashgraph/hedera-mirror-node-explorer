@@ -297,7 +297,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 const props = defineProps({
   accountInfo: {
     type: Object as PropType<AccountInfo | null>,
-    required: true
+    default: null
   },
   controller: {
     type: Object as PropType<DialogController>,
