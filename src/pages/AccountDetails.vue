@@ -188,7 +188,7 @@
           </template>
         </Property>
 
-        <Property id="expiresAt" tooltip="Account expiry is not turned on yet. Value in this field is not relevant.">
+        <Property id="expiresAt" tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being.">
           <template v-slot:name>
             <span>Expires at</span>
           </template>
@@ -198,7 +198,7 @@
         </Property>
         <EditableProperty
             id="autoRenewPeriod"
-            tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant."
+            tooltip="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
             :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
@@ -211,13 +211,13 @@
         </EditableProperty>
         <EditableProperty
             id="maxAutoAssociation"
-            tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
+            tooltip="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
             :editable="isAccountEditable"
             @edit="onUpdateAccount"
         >
-          <template v-slot:name>Max. Auto. Association</template>
+          <template v-slot:name>Max. Auto. Associations</template>
           <template v-slot:value>
-            <StringValue :string-value="maxAutoAssociationValue"/>
+            <StringValue :string-value="maxAutoAssociationsValue"/>
           </template>
         </EditableProperty>
         <EditableProperty
@@ -427,7 +427,7 @@ const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? 
 onMounted(() => accountLocParser.mount())
 onBeforeUnmount(() => accountLocParser.unmount())
 
-const maxAutoAssociationValue = computed(() =>
+const maxAutoAssociationsValue = computed(() =>
     labelForAutomaticTokenAssociation(
         accountLocParser.accountInfo.value?.max_automatic_token_associations ?? 0
     ))
