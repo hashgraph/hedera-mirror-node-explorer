@@ -51,6 +51,10 @@
 
       <div class="has-text-weight-light mb-1">
         Auto Renew Period
+        <span class="ml-1"/>
+        <InfoTooltip
+            label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
+        />
       </div>
       <div class="is-flex is-justify-content-flex-start">
         <input class="input input-field is-small has-text-white"
@@ -76,6 +80,10 @@
 
       <div class="has-text-weight-light mb-1">
         Max. Auto. Associations
+        <span class="ml-1"/>
+        <InfoTooltip
+            label="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+        />
       </div>
       <div class="is-flex is-justify-content-flex-start">
         <o-select v-model="autoAssociationMode"
@@ -284,6 +292,7 @@ import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 const props = defineProps({
   accountInfo: {
