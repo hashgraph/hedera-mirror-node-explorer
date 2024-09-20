@@ -50,12 +50,13 @@ jobs:
 
       - name: Helm package
         run: |
+          export CHART_VERSION=$(grep 'version:' ./chart/Chart.yaml | tail -n1 | awk '{ print $2}')
           helm repo add stable https://charts.helm.sh/stable
           helm repo update
           helm package chart
           
           # show tgz file content without uncompress
-          tar -tvf chart*.tgz
+          tar -tvf hedera-explorer-${CHART_VERSION}.tgz
 
 
       - name: list tgz files
@@ -63,8 +64,6 @@ jobs:
 
       - name: Helm publish
         run: |
-          export CHART_VERSION=$(grep 'version:' ./chart/Chart.yaml | tail -n1 | awk '{ print $2}')
-          
+          export CHART_VERSION=$(grep 'version:' ./chart/Chart.yaml | tail -n1 | awk '{ print $2}')         
           owner="${GITHUB_REPOSITORY_OWNER,,}"
-          # push to ghcr.io
-          helm push chart*-${CHART_VERSION}.tgz oci://ghcr.io/$owner
+          helm push hedera-explorer-${CHART_VERSION}.tgz oci://ghcr.io/$owner
