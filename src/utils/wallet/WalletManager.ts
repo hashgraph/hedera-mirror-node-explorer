@@ -29,7 +29,7 @@ import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop} from "@/schemas/HederaSchemas";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {TokenRejectTransaction} from "@hashgraph/sdk";
 
@@ -141,6 +141,18 @@ export class WalletManager {
             throw this.activeDriver.callFailure("changeAccount")
         }
         return Promise.resolve()
+    }
+
+    public async claimTokenAirdrops(airdrops: TokenAirdrop[]): Promise<string> {
+        if (this.accountIdRef.value !== null) {
+            if (this.activeDriver instanceof WalletDriver_Hedera) {
+                return this.activeDriver.claimTokenAirdrops(this.accountIdRef.value, airdrops)
+            } else {
+                throw this.activeDriver.unsupportedOperation()
+            }
+        } else {
+            throw this.activeDriver.callFailure("claimTokenAirdrops")
+        }
     }
 
     public async changeStaking(nodeId: number | null, accountId: string | null, declineReward: boolean | null): Promise<string> {
