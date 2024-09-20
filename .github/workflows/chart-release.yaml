@@ -36,15 +36,11 @@ jobs:
       - name: list chart directory
         run: ls -ltr chart
 
-      - name: Setup Kind
-        uses: helm/kind-action@0025e74a8c7512023d06dc019c617aa3cf561fde # v1.10.0
+      - name: Setup Helm
+        uses: azure/setup-helm@fe7b79cd5ee1e45176fcad797de68ecaf3ca4814 # v4.2.0
+        if: ${{ inputs.enable-unit-tests && !cancelled() && !failure() }}
         with:
-          install_only: true
-          node_image: kindest/node:v1.27.3@sha256:3966ac761ae0136263ffdb6cfd4db23ef8a83cba8a463690e98317add2c9ba72
-          version: v0.21.0
-          kubectl_version: v1.28.6
-          verbosity: 3
-          wait: 120s
+          version: "v3.12.3" #  helm version
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
