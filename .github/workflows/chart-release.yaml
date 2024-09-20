@@ -48,6 +48,4 @@ jobs:
       - name: Helm publish
         run: |
           export CHART_VERSION=$(grep 'version:' ./chart/Chart.yaml | tail -n1 | awk '{ print $2}')         
-          owner="${GITHUB_REPOSITORY_OWNER,,}"
-          echo "owner: $owner"
-          helm push hedera-explorer-${CHART_VERSION}.tgz oci://ghcr.io/$owner/${{ github.event.repository.name }}
+          helm push hedera-explorer-${CHART_VERSION}.tgz oci://ghcr.io/${{ github.repository_owner }}/${{ github.event.repository.name }}
