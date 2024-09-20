@@ -28,13 +28,14 @@ import {
     NftId,
     Signer,
     TokenAssociateTransaction,
+    TokenClaimAirdropTransaction,
     TokenDissociateTransaction,
     TokenId,
     TokenRejectTransaction,
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
@@ -53,6 +54,43 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         const result = await this.executeTransaction(accountId, transaction)
 
         return Promise.resolve(result)
+    }
+
+    public async claimTokenAirdrops(accountId: string, airdrops: TokenAirdrop[]): Promise<string> {
+
+        const trans = new TokenClaimAirdropTransaction()
+
+        console.log(`Building TokenClaimAirdropTransaction:`)
+
+        for (const airdrop of airdrops) {
+            if (airdrop.sender_id && airdrop.receiver_id && airdrop.token_id) {
+                if (airdrop.serial_number) {
+                    console.log(`  Adding NFT airdrop:`)
+                    console.log(`    senderId: ${airdrop.sender_id}`)
+                    console.log(`    receiverId: ${airdrop.receiver_id}`)
+                    console.log(`    tokenId: ${airdrop.token_id}`)
+                    console.log(`    serial #: ${airdrop.serial_number}`)
+                } else {
+                    console.log(`  Adding Fungible Token airdrop:`)
+                    console.log(`    senderId: ${airdrop.sender_id}`)
+                    console.log(`    receiverId: ${airdrop.receiver_id}`)
+                    console.log(`    tokenId: ${airdrop.token_id}`)
+                }
+
+                // const airdropId = new PendingAirdropId(
+                //     AccountId.fromString(airdrop.sender_id),
+                //     AccountId.fromString(airdrop.receiver_id),
+                //     airdrop.serial_number ? null : TokenId.fromString(airdrop.token_id),
+                //     airdrop.serial_number ? new NftId(TokenId.fromString(airdrop.token_id), airdrop.serial_number) : null
+                // )
+                // trans.addPendingAirdropId(airdropId)
+            }
+        }
+
+        // const result = await this.executeTransaction(accountId, trans)
+        // return Promise.resolve(result)
+
+        return Promise.resolve("")
     }
 
     public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
@@ -206,7 +244,9 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
             | TokenAssociateTransaction
             | TokenDissociateTransaction
             | ContractExecuteTransaction
-            | TokenRejectTransaction): Promise<string> {
+            | TokenClaimAirdropTransaction
+            | TokenRejectTransaction
+    ): Promise<string> {
         let result: Promise<string>
 
         const signer = this.makeSigner(accountId)
