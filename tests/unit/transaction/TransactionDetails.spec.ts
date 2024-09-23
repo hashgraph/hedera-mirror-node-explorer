@@ -176,7 +176,7 @@ describe("TransactionDetails.vue", () => {
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
 
 
-        const param3 = {timestamp: timestamp, internal: true}
+        const param3 = {timestamp: timestamp, internal: true, limit: 1}
         const matcher3 = "/api/v1/contracts/results"
         mock.onGet(matcher3, {params: param3}).reply(200, {
             results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
@@ -279,7 +279,7 @@ describe("TransactionDetails.vue", () => {
         const matcher2 = "/api/v1/contracts/" + contractId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
 
-        const param3 = {timestamp: timestamp, internal: true}
+        const param3 = {timestamp: timestamp, internal: true, limit: 1}
         const matcher3 = "/api/v1/contracts/results"
         mock.onGet(matcher3, {params: param3}).reply(200, {
             results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}

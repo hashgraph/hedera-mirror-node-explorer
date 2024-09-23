@@ -41,7 +41,8 @@ describe("ContractResultByTsCache", () => {
         const matcher1 = "/api/v1/contracts/results"
         const param1 = {
             timestamp: timestamp,
-            internal: true
+            internal: true,
+            limit: 1
         }
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
@@ -80,7 +81,8 @@ describe("ContractResultByTsCache", () => {
         const matcher1 = "/api/v1/contracts/results"
         const param1 = {
             timestamp: timestamp,
-            internal: true
+            internal: true,
+            limit: 1
         }
         mock.onGet(matcher1, {params: param1}).reply(200, SAMPLE_ERROR_RESULTS);
         const ethereumHash = SAMPLE_ERROR_RESULTS.results[0].hash

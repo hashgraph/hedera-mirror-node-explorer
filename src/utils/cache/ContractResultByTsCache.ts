@@ -72,7 +72,8 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
         try {
             const parameters = {
                 timestamp: timestamp,
-                internal: true
+                internal: true,
+                limit: 1
             }
             const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters})
             const results = response.data.results
