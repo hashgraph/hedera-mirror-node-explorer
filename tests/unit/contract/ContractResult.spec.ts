@@ -57,7 +57,7 @@ describe("ContractResult.vue", () => {
 
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = {timestamp: timestamp, internal: true}
+        const param1 = {timestamp: timestamp, internal: true, limit: 1}
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [SAMPLE_CONTRACT_RESULT_DETAILS], "links": {"next": null}
         });
@@ -108,7 +108,7 @@ describe("ContractResult.vue", () => {
 
         const mock = new MockAdapter(axios);
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = {timestamp: timestamp, internal: true}
+        const param1 = {timestamp: timestamp, internal: true, limit: 1}
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [SAMPLE_REVERT_CONTRACT_RESULT_DETAILS], "links": {"next": null}
         });
@@ -149,7 +149,7 @@ describe("ContractResult.vue", () => {
 
         const timestamp = SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.timestamp
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = {timestamp: timestamp, internal: true}
+        const param1 = {timestamp: timestamp, internal: true, limit: 1}
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES], "links": {"next": null}
         });

@@ -38,7 +38,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher0).reply(200, CONTRACT);
 
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = {timestamp: CONTRACT_RESULT.timestamp, internal: true}
+        const param1 = {timestamp: CONTRACT_RESULT.timestamp, internal: true, limit: 1}
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [CONTRACT_RESULT], "links": {"next": null}
         });
@@ -134,7 +134,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         mock.onGet(matcher0).reply(200, CONTRACT);
 
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = {timestamp: CONTRACT_RESULT.timestamp, internal: true}
+        const param1 = {timestamp: CONTRACT_RESULT.timestamp, internal: true, limit: 1}
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [CONTRACT_RESULT], "links": {"next": null}
         });
@@ -227,7 +227,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const mock = new MockAdapter(axios);
 
         const matcher1 = "/api/v1/contracts/results"
-        const param1 = {timestamp: CONTRACT_RESULT_HTS.timestamp, internal: true}
+        const param1 = {timestamp: CONTRACT_RESULT_HTS.timestamp, internal: true, limit: 1}
         mock.onGet(matcher1, {params: param1}).reply(200, {
             results: [CONTRACT_RESULT_HTS], "links": {"next": null}
         });
