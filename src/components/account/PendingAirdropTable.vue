@@ -50,7 +50,6 @@
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
-      customRowKey="token_id"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
       <TokenLink
@@ -157,7 +156,7 @@ watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value
 
 const handleClick = (airdrop: TokenAirdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
   if (airdrop.token_id) {
-    if(airdrop.serial_number) {
+    if (airdrop.serial_number) {
       routeManager.routeToSerial(airdrop.token_id, airdrop.serial_number, event)
     } else {
       routeManager.routeToToken(airdrop.token_id, event)
