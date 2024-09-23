@@ -32,6 +32,7 @@ import {
     TokenTransfer,
     Transaction,
     TransactionByIdResponse,
+    TransactionResponse,
     Transfer,
 } from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
@@ -317,7 +318,7 @@ export function resolveFunctionFragmentForHTSProxyContract(functionFragment: eth
         "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool transferFrom)",
         "function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256 tokenOfOwnerByIndex)",
       ];
-      
+
     const iface = new ethers.Interface(ABI_FOR_SUPPORTED_METHODS)
     return ethers.FunctionFragment.from({...functionFragment, outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs})
 }
@@ -408,5 +409,20 @@ export async function waitForTransactionRefresh(transactionId: string, attemptIn
         result = Promise.resolve(transactionId)
     }
 
+    return result
+}
+
+export async function drainTransactions(r: TransactionResponse, limit: number): Promise<Transaction[]> {
+    let result = r.transactions ?? []
+    let i = 1
+    while (r.links?.next && result.length < limit) {
+        console.log("drain iteration: " + i);
+        i += 1
+        const ar = await axios.get<TransactionResponse>(r.links.next)
+        if (ar.data.transactions) {
+            result = result.concat(ar.data.transactions)
+        }
+        r = ar.data
+    }
     return result
 }
