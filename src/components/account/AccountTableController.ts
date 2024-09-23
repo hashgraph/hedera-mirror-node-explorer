@@ -22,6 +22,7 @@ import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
+import {drainAccounts} from "@/schemas/HederaUtils";
 import {Router} from "vue-router";
 
 export class AccountTableController extends TableController<AccountInfo, string> {
@@ -65,11 +66,10 @@ export class AccountTableController extends TableController<AccountInfo, string>
         if (this.pubKey !== null) {
             params["account.publickey"] = this.pubKey
         }
-        const cb = (r: AxiosResponse<AccountsResponse>): Promise<AccountInfo[] | null> => {
-            return Promise.resolve(r.data.accounts ?? [])
-        }
+        const r = await axios.get<AccountsResponse>("api/v1/accounts", {params: params})
+        const result = await drainAccounts(r.data, params.limit)
 
-        return axios.get<AccountsResponse>("api/v1/accounts", {params: params}).then(cb)
+        return Promise.resolve(result)
     }
 
     public keyFor(row: AccountInfo): string {

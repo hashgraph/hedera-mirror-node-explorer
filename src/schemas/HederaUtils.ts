@@ -20,6 +20,7 @@
 
 import {
     AccountInfo,
+    AccountsResponse,
     HTS_PRECOMPILE_CONTRACT_ID,
     KeyType,
     NetworkNode,
@@ -421,6 +422,21 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions)
+        }
+        r = ar.data
+    }
+    return result
+}
+
+export async function drainAccounts(r: AccountsResponse, limit: number): Promise<AccountInfo[]> {
+    let result = r.accounts ?? []
+    let i = 1
+    while (r.links?.next && result.length < limit) {
+        console.log("drain iteration: " + i);
+        i += 1
+        const ar = await axios.get<AccountsResponse>(r.links.next)
+        if (ar.data.accounts) {
+            result = result.concat(ar.data.accounts)
         }
         r = ar.data
     }
