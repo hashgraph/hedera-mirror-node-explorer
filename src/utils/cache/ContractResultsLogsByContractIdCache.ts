@@ -20,17 +20,17 @@
 
 import axios from 'axios';
 import {EntityCache} from './base/EntityCache';
-import {ContractResultsLogResponse} from '@/schemas/HederaSchemas';
+import {ContractLog} from '@/schemas/HederaSchemas';
 
-export class ContractResultsLogsByContractIdCache extends EntityCache<string, ContractResultsLogResponse | null> {
+export class ContractResultsLogsByContractIdCache extends EntityCache<string, ContractLog[] | null> {
 
     public static readonly instance = new ContractResultsLogsByContractIdCache()
 
     //
     // Cache
     //
-    protected async load(contractId: string): Promise<ContractResultsLogResponse | null> {
-        let result: Promise<ContractResultsLogResponse | null>
+    protected async load(contractId: string): Promise<ContractLog[] | null> {
+        let result: Promise<ContractLog[] | null>
         const params = {
             limit: 100,
             order: "desc",
@@ -38,7 +38,7 @@ export class ContractResultsLogsByContractIdCache extends EntityCache<string, Co
 
         try {
             const response = await axios.get(`api/v1/contracts/${contractId}/results/logs`, {params});
-            result = Promise.resolve(response.data)
+            result = Promise.resolve(response.data.logs)
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
                 result = Promise.resolve(null)
