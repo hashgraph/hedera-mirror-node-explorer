@@ -23,12 +23,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
+  <div v-if="tabIds.length >= 1" class="is-flex is-justify-content-space-between is-align-items-center mt-5 mb-4">
     <div class="tabs is-toggle h-is-property-text mb-1">
       <ul>
-        <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selection === tab}">
-          <a :id="'tab-' + tab" :style="{fontWeight: selection === tab ? 500 : 300}"
-             @click="handleSelect(tab)">
+        <li v-for="(tab, i) in tabIds" :key="tab" :class="{'is-active':selectedTab === tab}">
+          <a :id="'tab-' + tab" :style="{fontWeight: selectedTab === tab ? 500 : 300}"
+             @click="handleSelect(tab, true)">
             <span>{{ tabLabels[i] ?? tab }}</span>
           </a>
         </li>
@@ -41,53 +41,43 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, onMounted, PropType, ref} from "vue";
+import {PropType, ref, watch} from "vue";
 
-export default defineComponent({
-  name: "Tabs",
-
-  props: {
-    selectedTab: {
-      type: String,
-      required: true
-    },
-    tabIds: {
-      type: Array as PropType<string[]>,
-      required: true
-    },
-    tabLabels: {
-      type: Array as PropType<string[]>,
-      default: [] as string[] /* to please eslint */
-    }
+const props = defineProps({
+  tabIds: {
+    type: Array as PropType<string[]>,
+    required: true
   },
-
-  emits: ["update:selectedTab"],
-
-  setup(props, context) {
-
-    const selection = ref('')
-
-    onMounted(() => {
-      if (props.tabIds.includes(props.selectedTab)) {
-        selection.value = props.selectedTab
-      } else {
-        handleSelect(props.tabIds[0])
-      }
-    })
-
-    const handleSelect = (tab: string) => {
-      selection.value = tab
-      context.emit('update:selectedTab', tab)
-    }
-
-    return {
-      selection,
-      handleSelect,
-    }
+  tabLabels: {
+    type: Array as PropType<string[]>,
+    default: [] as string[] /* to please eslint */
   }
-});
+})
+
+const selectedTab = defineModel("selectedTab", {
+  type: String as PropType<string|null>,
+  default: null
+})
+const interactiveSelection = ref<boolean>(true) // true because initial value must be preserved
+
+const handleSelect = (tab: string|null, interactive: boolean) => {
+  selectedTab.value = tab
+  interactiveSelection.value = interactive
+}
+
+const adjustSelectedTab = () => {
+  if (props.tabIds.length >= 1) {
+    if (selectedTab.value === null || props.tabIds.indexOf(selectedTab.value) == -1 || !interactiveSelection.value) {
+      handleSelect(props.tabIds[0], false)
+    } // else selectedTab remains unchanged
+  } else {
+    handleSelect(null, false)
+  }
+}
+
+watch(() => props.tabIds, adjustSelectedTab, {immediate: true})
 
 </script>
 

@@ -83,8 +83,8 @@ const accountId = computed(() => props.accountId)
 
 const tabIds = ['fungible', 'nfts']
 const tabLabels = ['Fungible', 'NFTs']
-const selectedTab = ref(AppStorage.getAccountTokenTab() ?? tabIds[0])
-const onSelectTab = (tab: string) => {
+const selectedTab = ref<string|null>(AppStorage.getAccountTokenTab() ?? tabIds[0])
+const onSelectTab = (tab: string|null) => {
   selectedTab.value = tab
   AppStorage.setAccountTokenTab(tab)
 }

@@ -263,8 +263,8 @@ export default defineComponent({
 
     const tabIds = ['abi', 'source', 'bytecode']
     const tabLabels = ['ABI', 'Source', 'Bytecode']
-    const selectedOption = ref(AppStorage.getContractByteCodeTab() ?? tabIds[0])
-    const handleTabUpdate = (tab: string) => {
+    const selectedOption = ref<string|null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
+    const handleTabUpdate = (tab: string|null) => {
       selectedOption.value = tab
       AppStorage.setContractByteCodeTab(tab)
     }
