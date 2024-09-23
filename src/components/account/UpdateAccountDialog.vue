@@ -56,7 +56,7 @@
             label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
         />
       </div>
-      <div class="is-flex is-justify-content-flex-start">
+      <div class="is-flex is-justify-content-flex-start is-align-items-center">
         <input class="input input-field is-small has-text-white"
                style="width: 130px"
                id="selectedAutoRenewPeriod"
@@ -74,6 +74,11 @@
             {{ p }}
           </option>
         </o-select>
+        <div class="icon is-small ml-2">
+          <i v-if="isAutoRenewPeriodValid" class="fas fa-check has-text-success"/>
+          <i v-else-if="autoRenewPeriodFeedbackMessage" class="fas fa-xmark has-text-danger"/>
+          <i v-else/>
+        </div>
       </div>
 
       <hr class="mt-4 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
@@ -184,7 +189,7 @@
           >
           <div class="icon is-small ml-2">
             <i v-if="isStakedAccountValid" class="fas fa-check has-text-success"/>
-            <i v-else-if="feedbackMessage" class="fas fa-xmark has-text-danger"/>
+            <i v-else-if="stakedAccountFeedbackMessage" class="fas fa-xmark has-text-danger"/>
             <i v-else/>
           </div>
         </div>
@@ -256,7 +261,7 @@
     <!-- user feedback -->
     <template #dialogFeedback>
       <div class="h-is-property-text">
-        {{ feedbackMessage }}
+        {{ stakedAccountFeedbackMessage ?? autoRenewPeriodFeedbackMessage }}
       </div>
     </template>
 
@@ -310,22 +315,55 @@ const emit = defineEmits(["updated"])
 const network = router.currentRoute.value.params.network as string
 const nr = networkRegistry
 
+const autoRenewPeriodFeedbackMessage = ref<string | null>(null)
+const stakedAccountFeedbackMessage = ref<string | null>(null)
+
+//
+// Receiver Signature Required
+//
 const recSigRequired = ref<boolean>(false)
 
+//
+// Auto Renew Period
+//
 const selectedAutoRenewPeriod = ref<string>("")
 
 enum PeriodUnit {
   Seconds = "seconds",
-  Minutes = 'minutes',
-  Hours = 'hours',
   Days = 'days',
-  Years = 'years'
 }
 
 const selectedUnit = ref<PeriodUnit>(PeriodUnit.Seconds)
+let periodWatchHandle: WatchStopHandle | null = null
+let unitWatchHandle: WatchStopHandle | null = null
+onMounted(() => {
+  periodWatchHandle = watch(selectedAutoRenewPeriod, () => {
+    validateAutoRenewPeriod()
+  })
+  unitWatchHandle = watch(selectedUnit, () => {
+    selectedAutoRenewPeriod.value = ""
+    document.getElementById("selectedAutoRenewPeriod")?.focus()
+  })
+})
+onBeforeUnmount(() => {
+  if (periodWatchHandle !== null) {
+    periodWatchHandle()
+    periodWatchHandle = null
+  }
+  if (unitWatchHandle !== null) {
+    unitWatchHandle()
+    unitWatchHandle = null
+  }
+})
 
+//
+// Account Memo
+//
 const memo = ref<string>("")
 
+//
+// Max Auto Association
+//
 const maxAutoAssociations = ref<string>("")
 
 enum AutoAssociationMode {
@@ -335,7 +373,30 @@ enum AutoAssociationMode {
 }
 
 const autoAssociationMode = ref<AutoAssociationMode>(AutoAssociationMode.NoAutoAssociation)
+let modeWatchHandle: WatchStopHandle | null = null
+onMounted(() => {
+  modeWatchHandle = watch(autoAssociationMode, (newValue) => {
+    switch (newValue) {
+      case AutoAssociationMode.LimitedAutoAssociation:
+      case AutoAssociationMode.NoAutoAssociation:
+        maxAutoAssociations.value = "0"
+        break
+      case AutoAssociationMode.UnlimitedAutoAssociation:
+        maxAutoAssociations.value = "-1"
+        break
+    }
+  })
+})
+onBeforeUnmount(() => {
+  if (modeWatchHandle !== null) {
+    modeWatchHandle()
+    modeWatchHandle = null
+  }
+})
 
+//
+// Staking
+//
 const stakedNode = ref<number | null>(null)
 const stakedAccount = ref<string | null>("")
 
@@ -347,9 +408,44 @@ enum StakeChoice {
 
 const stakeChoice = ref<StakeChoice>(StakeChoice.NotStaking)
 const declineRewards = ref<boolean>(false)
+let stakedAccountWatchHandle: WatchStopHandle | null = null
+let stakeChoiceWatchHandle: WatchStopHandle | null = null
+let validationTimerId = -1
+onMounted(() => {
+  stakedAccountWatchHandle = watch(stakedAccount, () => {
+    isStakedAccountValid.value = false
+    stakedAccountFeedbackMessage.value = null
+    if (validationTimerId != -1) {
+      window.clearTimeout(validationTimerId)
+      validationTimerId = -1
+    }
+    if (stakedAccount.value?.length) {
+      validationTimerId = window.setTimeout(() => validateAccount(), 500)
+    } else {
+      stakedAccount.value = null
+    }
+  })
+  stakeChoiceWatchHandle = watch(stakeChoice, (newValue) => {
+    stakedAccountFeedbackMessage.value = null
+    if (newValue === StakeChoice.StakeToAccount) {
+      validateAccount()
+    }
+  })
+})
+onBeforeUnmount(() => {
+  if (stakedAccountWatchHandle !== null) {
+    stakedAccountWatchHandle()
+    stakedAccountWatchHandle = null
+  }
+  if (stakeChoiceWatchHandle !== null) {
+    stakeChoiceWatchHandle()
+    stakeChoiceWatchHandle = null
+  }
+})
 
-const feedbackMessage = ref<string | null>(null)
-
+//
+// Keeping initial values
+//
 let initialRecSigRequired = false
 let initialAutoRenewPeriod: number | null = 0
 let initialMemo = ""
@@ -359,12 +455,10 @@ let initialStakedNode: number | null = null
 let initialStakedAccount = ""
 let initialDeclineRewards = false
 
+//
+// Dialog initialization
+//
 let visibleWatchHandle: WatchStopHandle | null = null
-let modeWatchHandle: WatchStopHandle | null = null
-let periodWatchHandle: WatchStopHandle | null = null
-let stakedAccountWatchHandle: WatchStopHandle | null = null
-let stakeChoiceWatchHandle: WatchStopHandle | null = null
-
 onMounted(() => {
   visibleWatchHandle = watch(props.controller?.visible, (newValue) => {
     if (newValue) {
@@ -407,149 +501,38 @@ onMounted(() => {
     }
   }, {immediate: true})
 })
-
-onMounted(() => {
-  modeWatchHandle = watch(autoAssociationMode, (newValue) => {
-    switch (newValue) {
-      case AutoAssociationMode.LimitedAutoAssociation:
-      case AutoAssociationMode.NoAutoAssociation:
-        maxAutoAssociations.value = "0"
-        break
-      case AutoAssociationMode.UnlimitedAutoAssociation:
-        maxAutoAssociations.value = "-1"
-        break
-    }
-  })
-})
-
-onMounted(() => {
-  periodWatchHandle = watch(selectedUnit, () => {
-    // let seconds = normalizePeriod(parseInt(selectedAutoRenewPeriod.value), oldValue)
-    // let period
-    // switch (newValue) {
-    //   case PeriodUnit.Seconds:
-    //     period = seconds
-    //     break
-    //   case PeriodUnit.Minutes:
-    //     period = Math.floor(seconds / 60)
-    //     break
-    //   case PeriodUnit.Hours:
-    //     period = Math.floor(seconds / 3600)
-    //     break
-    //   case PeriodUnit.Days:
-    //     period = Math.floor(seconds / 86400)
-    //     break
-    //   case PeriodUnit.Years:
-    //     period = Math.floor(seconds / 31536000)
-    //     break
-    // }
-    // selectedAutoRenewPeriod.value = period.toString()
-    selectedAutoRenewPeriod.value = ""
-    document.getElementById("selectedAutoRenewPeriod")?.focus()
-  })
-})
-
-let validationTimerId = -1
-
-onMounted(() => {
-  stakedAccountWatchHandle = watch(stakedAccount, () => {
-    isStakedAccountValid.value = false
-    feedbackMessage.value = null
-    if (validationTimerId != -1) {
-      window.clearTimeout(validationTimerId)
-      validationTimerId = -1
-    }
-    if (stakedAccount.value?.length) {
-      validationTimerId = window.setTimeout(() => validateAccount(), 500)
-    } else {
-      stakedAccount.value = null
-    }
-  })
-
-  stakeChoiceWatchHandle = watch(stakeChoice, (newValue) => {
-    feedbackMessage.value = null
-    if (newValue === StakeChoice.StakeToAccount) {
-      validateAccount()
-    }
-  })
-})
-
 onBeforeUnmount(() => {
   if (visibleWatchHandle !== null) {
     visibleWatchHandle()
     visibleWatchHandle = null
   }
-  if (modeWatchHandle !== null) {
-    modeWatchHandle()
-    modeWatchHandle = null
-  }
-  if (periodWatchHandle !== null) {
-    periodWatchHandle()
-    periodWatchHandle = null
-  }
-  if (stakedAccountWatchHandle !== null) {
-    stakedAccountWatchHandle()
-    stakedAccountWatchHandle = null
-  }
-  if (stakeChoiceWatchHandle !== null) {
-    stakeChoiceWatchHandle()
-    stakeChoiceWatchHandle = null
-  }
 })
 
-const isStakedNodeValid = computed(() => {
-  return stakeChoice.value === StakeChoice.StakeToNode
-})
-
-const stakedAccountEntity = computed(() =>
-    EntityID.normalize(nr.stripChecksum(stakedAccount.value ?? ""))
-)
-const stakedAccountChecksum = computed(() =>
-    nr.extractChecksum(stakedAccount.value ?? "")
-)
-
-const isStakedAccountValid = ref<boolean>(false)
-
+//
+// Validation
+//
 const isAccountEdited = computed(() =>
     (recSigRequired.value !== initialRecSigRequired)
-    || (normalizePeriod(parseInt(selectedAutoRenewPeriod.value), selectedUnit.value) !== initialAutoRenewPeriod)
+    || (autoRenewPeriodInSeconds.value !== initialAutoRenewPeriod)
     || (memo.value !== initialMemo)
     || (maxAutoAssociations.value !== initialMaxAutoAssociations)
     || (stakedNode.value !== initialStakedNode)
     || (stakedAccount.value !== initialStakedAccount)
     || (declineRewards.value !== initialDeclineRewards)
 )
-
-const isMaxAutoAssociationsValid = computed(() => {
-  const max = parseInt(maxAutoAssociations.value)
-  return !isNaN(max) && (max >= 0 || max === -1)
-})
-
-const isStakingValid = computed(() =>
-    stakeChoice.value === StakeChoice.NotStaking
-    || isStakedAccountValid.value
-    || isStakedNodeValid.value
-)
-
 const isInputValid = computed(() =>
     isAccountEdited.value
-    && parseInt(selectedAutoRenewPeriod.value) > 0
+    && isAutoRenewPeriodValid.value
     && isMaxAutoAssociationsValid.value
     && isStakingValid.value
 )
 
-const tid = ref<string | null>(null)
-const formattedTransactionId = computed(() =>
-    tid.value != null ? TransactionID.normalize(tid.value, true) : null
-)
-
-const errorMessage = ref<string | null>(null)
-const errorMessageDetails = ref<string | null>(null)
-
+//
+// StakedAccount validation
+//
 const networkAnalyzer = new NetworkAnalyzer()
 onMounted(() => networkAnalyzer.mount())
 onBeforeUnmount(() => networkAnalyzer.unmount())
-
 const onStakedAccountInput = (event: Event) => {
   const newValue = inputEntityID(event, stakedAccount.value)
   if (newValue === stakedAccount.value) {
@@ -557,7 +540,73 @@ const onStakedAccountInput = (event: Event) => {
   }
   stakedAccount.value = newValue
 }
+const validateAccount = async () => {
+  if (stakedAccountEntity.value === null) {
+    stakedAccountFeedbackMessage.value = "Invalid account ID"
+  } else if (stakedAccountEntity.value === walletManager.accountId.value) {
+    stakedAccountFeedbackMessage.value = "Staking needs to be to a different account"
+  } else if (stakedAccountChecksum.value !== null
+      && !nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
+    stakedAccountFeedbackMessage.value = "Invalid account checksum"
+  } else {
+    if (await AccountByIdCache.instance.lookup(stakedAccountEntity.value)) {
+      isStakedAccountValid.value = true
+    } else {
+      stakedAccountFeedbackMessage.value = "Unknown account ID"
+    }
+  }
+}
+const stakedAccountEntity = computed(() =>
+    EntityID.normalize(nr.stripChecksum(stakedAccount.value ?? ""))
+)
+const stakedAccountChecksum = computed(() =>
+    nr.extractChecksum(stakedAccount.value ?? "")
+)
+const isStakedAccountValid = ref<boolean>(false)
+const isStakingValid = computed(() =>
+    isStakedAccountValid.value || stakeChoice.value !== StakeChoice.StakeToAccount
+)
 
+//
+// MaxAutoAssociation validation
+//
+const isMaxAutoAssociationsValid = computed(() => {
+  const max = parseInt(maxAutoAssociations.value)
+  return !isNaN(max) && (max >= 0 || max === -1)
+})
+
+//
+// AutoRenewPeriod validation
+//
+const MAX_AUTO_RENEW_PERIOD = 8000001 // seconds
+const MIN_AUTO_RENEW_PERIOD = 2592000 // seconds
+const autoRenewPeriodInSeconds = computed(() =>
+    normalizePeriod(parseInt(selectedAutoRenewPeriod.value), selectedUnit.value)
+)
+const isAutoRenewPeriodValid = ref<boolean>(false)
+const validateAutoRenewPeriod = () => {
+  if (autoRenewPeriodInSeconds.value >= MIN_AUTO_RENEW_PERIOD && autoRenewPeriodInSeconds.value <= MAX_AUTO_RENEW_PERIOD) {
+    isAutoRenewPeriodValid.value = true
+    autoRenewPeriodFeedbackMessage.value = null
+  } else {
+    isAutoRenewPeriodValid.value = false
+    if (selectedUnit.value == PeriodUnit.Days) {
+      autoRenewPeriodFeedbackMessage.value = `Auto Renew Period must be comprised between 30 and 92 days.`
+    } else {
+      autoRenewPeriodFeedbackMessage.value = `Auto Renew Period must be comprised between ${MIN_AUTO_RENEW_PERIOD} and ${MAX_AUTO_RENEW_PERIOD} seconds.`
+    }
+  }
+}
+
+//
+// Handling the Account Update Transaction
+//
+const tid = ref<string | null>(null)
+const formattedTransactionId = computed(() =>
+    tid.value != null ? TransactionID.normalize(tid.value, true) : null
+)
+const errorMessage = ref<string | null>(null)
+const errorMessageDetails = ref<string | null>(null)
 const onUpdate = async () => {
   props.controller.mode.value = DialogMode.Busy
   tid.value = null
@@ -640,44 +689,7 @@ const onUpdate = async () => {
   }
 }
 
-const normalizePeriod = (period: number, unit: PeriodUnit) => {
-  let result: number
-  switch (unit) {
-    case PeriodUnit.Seconds:
-      result = period
-      break
-    case PeriodUnit.Minutes:
-      result = period * 60
-      break
-    case PeriodUnit.Hours:
-      result = period * 3600
-      break
-    case PeriodUnit.Days:
-      result = period * 86400
-      break
-    case PeriodUnit.Years:
-      result = period * 31536000
-      break
-  }
-  return result
-}
-
-const validateAccount = async () => {
-  if (stakedAccountEntity.value === null) {
-    feedbackMessage.value = "Invalid account ID"
-  } else if (stakedAccountEntity.value === walletManager.accountId.value) {
-    feedbackMessage.value = "Staking needs to be to a different account"
-  } else if (stakedAccountChecksum.value !== null
-      && !nr.isValidChecksum(stakedAccountEntity.value, stakedAccountChecksum.value, network)) {
-    feedbackMessage.value = "Invalid account checksum"
-  } else {
-    if (await AccountByIdCache.instance.lookup(stakedAccountEntity.value)) {
-      isStakedAccountValid.value = true
-    } else {
-      feedbackMessage.value = "Unknown account ID"
-    }
-  }
-}
+const normalizePeriod = (period: number, unit: PeriodUnit) => unit === PeriodUnit.Days ? period * 86400 : period
 
 </script>
 
