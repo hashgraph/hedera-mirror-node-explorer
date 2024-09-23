@@ -94,6 +94,28 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
                     "amount": 1,
                     "receiver_id": "0.0.1299",
                     "sender_id": "0.0.222",
+                    "serial_number": 2,
+                    "timestamp": {
+                        "from": "1111111111.111111112",
+                        "to": null
+                    },
+                    "token_id": "0.0.4846884"
+                },
+                {
+                    "amount": 1,
+                    "receiver_id": "0.0.1299",
+                    "sender_id": "0.0.222",
+                    "serial_number": 5,
+                    "timestamp": {
+                        "from": "1111111111.111111112",
+                        "to": null
+                    },
+                    "token_id": "0.0.4846884"
+                },
+                {
+                    "amount": 1,
+                    "receiver_id": "0.0.1299",
+                    "sender_id": "0.0.222",
                     "serial_number": 6,
                     "timestamp": {
                         "from": "1111111111.111111113",

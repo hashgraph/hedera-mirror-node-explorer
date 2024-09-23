@@ -101,9 +101,10 @@ describe("TokensSection.vue", () => {
         expect(tab.exists()).toBe(true)
 
         const tabs = tab.findAll('li')
-        expect(tabs.length).toBe(2)
+        expect(tabs.length).toBe(3)
         expect(tabs[0].text()).toBe('Fungible')
         expect(tabs[1].text()).toBe('NFTs')
+        expect(tabs[2].text()).toBe('Pending Airdrops')
 
         wrapper.unmount()
         await flushPromises()

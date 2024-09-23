@@ -45,13 +45,20 @@
           REJECT
         </button>
       </div>
-      <button v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
-              id="approve-button"
-              class="button is-white is-small"
-              @click="onClaim"
+      <div
+          v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
+          class="is-flex is-align-items-baseline"
       >
-        {{ claimTitle }}
-      </button>
+        <span class="mr-2 h-is-property-text">{{ claimButtonHint }}</span>
+        <button
+                id="approve-button"
+                class="button is-white is-small"
+                :disabled=!claimButtonEnabled
+                @click="onClaim"
+        >
+          CLAIM
+        </button>
+      </div>
     </template>
 
     <template v-slot:content>
@@ -95,6 +102,12 @@
       @rejected="onRejectCompleted"
   />
 
+  <ClaimTokenDialog
+      :airdrops="checkedAirdrops"
+      :controller="claimDialogController"
+      @claimed="onClaimCompleted"
+  />
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -120,6 +133,7 @@ import {PendingAirdropTableController} from "@/components/account/PendingAirdrop
 import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
 import {walletManager} from "@/router";
 import {TokenAirdrop} from "@/schemas/HederaSchemas";
+import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 
 const props = defineProps({
   accountId: {
@@ -235,20 +249,31 @@ const selection = ref<(Token | Nft)[]>([])
 // Claim
 //
 
-const onClaim = () => {
+const claimDialogController = new DialogController()
 
+const onClaim = () => {
+  claimDialogController.visible.value = true
+  pendingAirdropTableController.stopAutoRefresh()
 }
 
-const claimTitle = computed(() => {
+const onClaimCompleted = () => {
+  checkedAirdrops.value.splice(0)
+}
+
+const MAX_AIRDROPS_PER_CLAIM = 3
+
+const claimButtonHint = computed(() => {
   let result: string
   const checkedCount = checkedAirdrops.value.length
-  if (checkedCount >= 2) {
-    result = `Claim ${checkedCount} Checked Tokens`
+  if (checkedCount > MAX_AIRDROPS_PER_CLAIM) {
+    result = `${MAX_AIRDROPS_PER_CLAIM} tokens max per claim`
+  } else if (checkedCount >= 2) {
+    result = `Claim ${checkedCount} selected tokens`
   } else if (checkedCount == 1) {
     const checkedTokenId = checkedAirdrops.value[0].token_id
-    result = `Claim Token ${checkedTokenId}`
+    result = `Claim token ${checkedTokenId}`
   } else {
-    result = "Claim All"
+    result = "Select tokens to claim"
   }
   return result
 })
@@ -258,6 +283,11 @@ const claimEnabled = computed(() =>
     walletManager.isHederaWallet.value &&
     walletManager.accountId.value === props.accountId &&
     pendingAirdropTableController.totalRowCount.value >= 1)
+
+const claimButtonEnabled = computed(() =>
+    // checkedAirdrops.value.length >= 1 && checkedAirdrops.value.length <= MAX_AIRDROPS_PER_CLAIM
+    checkedAirdrops.value.length >= 1
+)
 
 const checkedAirdrops = ref<TokenAirdrop[]>([])
 
