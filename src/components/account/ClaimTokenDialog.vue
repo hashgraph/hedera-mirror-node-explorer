@@ -45,10 +45,10 @@
     <!-- busy -->
     <template #dialogBusy>
       <div class="h-is-tertiary-text mb-4">
-        Connecting to Hedera Network using your wallet…
+        {{ busyMessage }}
       </div>
       <div class="h-is-property-text">
-        Check your wallet for any approval request
+        {{ busyMessageDetails }}
       </div>
     </template>
 
@@ -115,7 +115,7 @@ import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 
-const MAX_AIRDROPS_PER_CLAIM = 3
+const MAX_AIRDROPS_PER_CLAIM = 2
 
 const props = defineProps({
   airdrops: {
@@ -138,17 +138,25 @@ const formattedTransactionId = computed(() =>
 const inputMessage = ref<string | null>(null)
 const inputMessageDetails = ref<string | null>(null)
 
+const busyMessage = ref<string | null>(null)
+const busyMessageDetails = ref<string | null>(null)
+
 const errorMessage = ref<string | null>(null)
 const errorMessageDetails = ref<string | null>(null)
+
+const nbRequiredTransactions = computed(() =>
+    props.airdrops ? Math.ceil(props.airdrops.length / MAX_AIRDROPS_PER_CLAIM) : 0
+)
 
 onMounted(() => {
   watch(props.controller.visible, (visible) => {
     if (visible && props.airdrops) {
+      inputMessage.value = `Do you want to claim ${props.airdrops.length} token airdrops?`
       if (props.airdrops.length > MAX_AIRDROPS_PER_CLAIM) {
-        inputMessage.value = `Too many token airdrops (${props.airdrops.length}) selected for a single claim operation.`
-        inputMessageDetails.value = `Please select a maximum of ${MAX_AIRDROPS_PER_CLAIM} tokens.`
+        inputMessageDetails.value =
+            `This will require sending ${nbRequiredTransactions.value} transactions ` +
+            `(maximum of ${MAX_AIRDROPS_PER_CLAIM} tokens claimed per transaction).`
       } else {
-        inputMessage.value = `Do you want to claim ${props.airdrops.length} token airdrops?`
         inputMessageDetails.value = ""
       }
     } else {
@@ -158,33 +166,40 @@ onMounted(() => {
   }, {immediate: true})
 })
 
+//
+// Handle Claim Transaction(s)
+//
 const onClaim = async () => {
+
   props.controller.mode.value = DialogMode.Busy
   tid.value = null
+  let iteration = 0
 
   try {
+    for (iteration = 0; iteration < nbRequiredTransactions.value; iteration++) {
+      busyMessage.value = `Sending transaction #${iteration+1} (out of ${nbRequiredTransactions.value}) to Hedera Network using your wallet…`
+      busyMessageDetails.value = "Check your wallet for any approval request"
 
-    tid.value = TransactionID.normalize(
-        await walletManager.claimTokenAirdrops(props.airdrops!)
-    )
-    if (tid.value) {
-      const transaction: any = await waitForTransactionRefresh(tid.value, 10, 3000)
-      if ('result' in transaction) {
-        if (transaction.result != null && isSuccessfulResult(transaction.result)) {
-          props.controller.mode.value = DialogMode.Success
-          emit('claimed')
-        } else {
-          props.controller.mode.value = DialogMode.Error
-          errorMessage.value = "Transaction failed"
-          errorMessageDetails.value = transaction.result
+      const start = iteration * MAX_AIRDROPS_PER_CLAIM
+      const end = Math.min(props.airdrops!.length, start + MAX_AIRDROPS_PER_CLAIM)
+      const airdrops = props.airdrops!.slice(start, end)
+
+      console.log(`claiming airdrops from ${start} to ${end}`)
+      tid.value = TransactionID.normalize(
+          await walletManager.claimTokenAirdrops(airdrops)
+      )
+      if (tid.value) {
+        const transaction: any = await waitForTransactionRefresh(tid.value, 10, 3000)
+        if ('result' in transaction) {
+          if (transaction.result === null || !isSuccessfulResult(transaction.result)) {
+            errorMessage.value = `Transaction failed: ${transaction.result}`
+            break
+          }
         }
       } else {
-        props.controller.mode.value = DialogMode.Success
+        errorMessage.value = "Operation did not complete"
+        break
       }
-    } else {
-      props.controller.mode.value = DialogMode.Error
-      errorMessage.value = "Operation did not complete"
-      errorMessageDetails.value = "Cannot find resulting transaction"
     }
 
   } catch (reason) {
@@ -193,13 +208,27 @@ const onClaim = async () => {
     if (reason instanceof WalletDriverCancelError) {
       props.controller.handleClose()
     } else {
-      props.controller.mode.value = DialogMode.Error
       if (reason instanceof WalletDriverError) {
-        errorMessage.value = reason.message
-        errorMessageDetails.value = reason.extra
+        errorMessage.value = `${reason.message} (${reason.extra})`
       } else {
-        errorMessage.value = "Operation did not complete"
-        errorMessageDetails.value = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
+        const error = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
+        errorMessage.value = `Operation did not complete: ${error}`
+      }
+    }
+
+  } finally {
+
+    if (iteration >= nbRequiredTransactions.value) {
+      props.controller.mode.value = DialogMode.Success
+      emit('claimed')
+    } else {
+      props.controller.mode.value = DialogMode.Error
+      if (iteration > 0) {
+        const claimed = iteration * MAX_AIRDROPS_PER_CLAIM
+        errorMessageDetails.value = `Only ${claimed} tokens out of ${props.airdrops!.length} were claimed.`
+        emit('claimed')
+      } else {
+        errorMessageDetails.value = `No tokens were claimed.`
       }
     }
 
