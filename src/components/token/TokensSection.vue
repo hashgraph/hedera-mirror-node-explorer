@@ -260,14 +260,10 @@ const onClaimCompleted = () => {
   checkedAirdrops.value.splice(0)
 }
 
-const MAX_AIRDROPS_PER_CLAIM = 3
-
 const claimButtonHint = computed(() => {
   let result: string
   const checkedCount = checkedAirdrops.value.length
-  if (checkedCount > MAX_AIRDROPS_PER_CLAIM) {
-    result = `${MAX_AIRDROPS_PER_CLAIM} tokens max per claim`
-  } else if (checkedCount >= 2) {
+  if (checkedCount >= 2) {
     result = `Claim ${checkedCount} selected tokens`
   } else if (checkedCount == 1) {
     const checkedTokenId = checkedAirdrops.value[0].token_id

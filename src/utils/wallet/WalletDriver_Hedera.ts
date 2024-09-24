@@ -90,7 +90,15 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         // const result = await this.executeTransaction(accountId, trans)
         // return Promise.resolve(result)
 
-        return Promise.resolve("0.0.4885735@1726854267.766000000")
+        // TESTING
+        if (airdrops.length > 0) {
+            const serial = airdrops[airdrops.length - 1].serial_number ?? 0
+            if (serial < 6) {
+                return Promise.resolve("0.0.4885735@1726854267.766000000")
+            }
+        }
+        return Promise.resolve("")
+        // return Promise.resolve("0.0.4885735@1726854267.766000000")
     }
 
     public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
