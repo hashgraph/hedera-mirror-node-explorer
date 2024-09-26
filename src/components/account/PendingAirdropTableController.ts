@@ -43,7 +43,7 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
             pageSize,
             10 * pageSize.value,
             TableController.SLOW_REFRESH_PERIOD,
-            TableController.SLOW_REFRESH_COUNT,
+            0,
             100,
             pageParamName,
             keyParamName
