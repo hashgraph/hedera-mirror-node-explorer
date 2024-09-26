@@ -22,6 +22,7 @@ import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {
     AccountAllowanceApproveTransaction,
     AccountAllowanceDeleteTransaction,
+    AccountId,
     AccountUpdateTransaction,
     ContractExecuteTransaction,
     NftId,
@@ -131,11 +132,10 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    public async rejectTokens(accountId: string, tokenIds: string[]): Promise<string> {
+    public async rejectTokens(accountId: string, transaction: TokenRejectTransaction): Promise<string> {
 
-        const trans = new TokenRejectTransaction()
-        trans.setTokenIds(tokenIds.map(tokenId => TokenId.fromString(tokenId)))
-        const result = await this.executeTransaction(accountId, trans)
+        transaction.setOwnerId(AccountId.fromString(accountId))
+        const result = await this.executeTransaction(accountId, transaction)
 
         return Promise.resolve(result)
     }
