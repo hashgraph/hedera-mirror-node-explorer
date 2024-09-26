@@ -249,7 +249,7 @@ const selection = ref<(Token | Nft)[]>([])
 // Claim
 //
 
-const MAX_AIRDROPS = 10
+const MAX_AIRDROPS = 100 // for CLAIM ALL
 
 const claimDialogController = new DialogController()
 
