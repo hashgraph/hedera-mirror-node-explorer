@@ -253,7 +253,6 @@ const claimDialogController = new DialogController()
 
 const onClaim = () => {
   claimDialogController.visible.value = true
-  pendingAirdropTableController.stopAutoRefresh()
 }
 
 const onClaimCompleted = () => {
