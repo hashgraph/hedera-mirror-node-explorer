@@ -73,7 +73,7 @@
                    @onConfirm="handleConfirm"
                    @onCancel="handleCancel">
       <template v-slot:dialogTitle>
-            <span class="h-is-primary-titlee">
+            <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
       </template>
@@ -135,7 +135,7 @@ import {walletManager} from "@/router";
 import DoneDialog from '../DoneDialog.vue';
 import ConfirmDialog from '../ConfirmDialog.vue';
 import DynamicDialog from '../DynamicDialog.vue';
-import {PropType, computed, defineComponent, ref} from "vue";
+import {computed, defineComponent, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
@@ -248,8 +248,9 @@ export default defineComponent({
     // handleDissociate()
     //
     const handleDissociate = () => {
+      action.value = 'DISSOCIATE'
+
       if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-        action.value = 'DISSOCIATE'
         showConfirmDialog.value = true
         dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
         confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
@@ -263,8 +264,9 @@ export default defineComponent({
     // handleReject()
     //
     const handleReject = () => {
+      action.value = 'REJECT'
+
       if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-        action.value = 'REJECT'
         showConfirmDialog.value = true
         dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
         confirmMessage.value = `Confirm rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
