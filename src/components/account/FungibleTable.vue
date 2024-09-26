@@ -25,17 +25,17 @@
 <template>
 
   <o-table
-      :data="controller.rows.value"
-      :loading="controller.loading.value"
-      :paginated="controller.paginated.value"
+      :data="props.controller.rows.value"
+      :loading="props.controller.loading.value"
+      :paginated="props.controller.paginated.value"
       backend-pagination
       pagination-order="left"
       :range-before="0"
       :range-after="0"
-      :total="controller.totalRowCount.value"
-      :current-page="controller.currentPage.value"
-      :per-page="controller.pageSize.value"
-      @page-change="controller.onPageChange"
+      :total="props.controller.totalRowCount.value"
+      :current-page="props.controller.currentPage.value"
+      :per-page="props.controller.pageSize.value"
+      @page-change="props.controller.onPageChange"
       @cellClick="handleClick"
 
       :hoverable="true"
@@ -57,25 +57,25 @@
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
-      {{ props.row.name }}
+    <o-table-column v-slot="{ row }" field="name" label="Name">
+      {{ row.name }}
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
-      {{ props.row.symbol }}
+    <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
+      {{ row.symbol }}
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+    <o-table-column v-slot="{ row }" field="balance" label="Balance" position="right">
       <TokenCell
-          :account-id="controller.accountId.value"
-          :token-id="props.row.token_id"
+          :account-id="props.controller.accountId.value"
+          :token-id="row.token_id"
           :property="TokenCellItem.tokenBalance"
       />
     </o-table-column>
 
     <template v-slot:bottom-left>
       <TablePageSize
-          v-model:size="controller.pageSize.value"
+          v-model:size="props.controller.pageSize.value"
           :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
     </template>
@@ -83,13 +83,15 @@
   </o-table>
 
   <TablePageSize
-      v-if="!controller.paginated.value && controller.showPageSizeSelector.value"
-      v-model:size="controller.pageSize.value"
+      v-if="!props.controller.paginated.value
+      && props.controller.showPageSizeSelector.value
+      && !props.checkEnabled"
+      v-model:size="props.controller.pageSize.value"
       :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       style="width: 102px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!controller.totalRowCount.value"/>
+  <EmptyTable v-if="!props.controller.totalRowCount.value"/>
 
 </template>
 
@@ -110,7 +112,7 @@ import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
 
-defineProps({
+const props = defineProps({
   controller: {
     type: Object as PropType<FungibleTableController>,
     required: true
