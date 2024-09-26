@@ -37,6 +37,8 @@
       :per-page="props.controller.pageSize.value"
       @page-change="props.controller.onPageChange"
       @cellClick="handleClick"
+      :checkable="props.checkEnabled"
+      v-model:checked-rows="checkedRows"
 
       :hoverable="true"
       :narrowed="true"
@@ -101,8 +103,8 @@
 
 <script setup lang="ts">
 
-import {PropType} from 'vue';
-import {TokenBalance} from "@/schemas/HederaSchemas";
+import {PropType, watch} from 'vue';
+import {Nft, Token, TokenBalance} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -117,7 +119,18 @@ const props = defineProps({
     type: Object as PropType<FungibleTableController>,
     required: true
   },
+  checkEnabled: {
+    type: Boolean,
+    required: true
+  }
 })
+
+const checkedRows = defineModel("checkedTokens", {
+  type: Object as PropType<(Token | Nft)[]>,
+  default: [] as (Token | Nft)[]
+})
+
+watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value.splice(0))
 
 const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, event: MouseEvent) => {
   if (balance.token_id) {
