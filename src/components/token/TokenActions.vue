@@ -42,9 +42,8 @@
            @click="handleReject">TOKEN REJECT
       </div>
 
-      <div v-if="isWatchAssetSupported" id="showStakingDialog"
-           class="is-cursor is-hover-grey  is-full has-cursor-pointer"
-           @click="handleImport">TOKEN IMPORT
+      <div v-if="isAssociated" id="rejectToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+           @click="handleReject">TOKEN REJECT
       </div>
     </div>
 
@@ -57,14 +56,6 @@
             <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
-      </template>
-      <template v-if="showWatchOption && isWatchAssetSupported" v-slot:dialogOption>
-        <div class="is-flex is-align-items-center">
-          <label class="checkbox mr-3">
-            <input type="checkbox" v-model="watchInWallet">
-          </label>
-          <p class="h-is-property-text">Import {{ tokenSymbol }} to {{ walletManager.walletName.value }}</p>
-        </div>
       </template>
     </ConfirmDialog>
 
@@ -138,7 +129,7 @@ import DynamicDialog from '../DynamicDialog.vue';
 import {computed, defineComponent, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
-import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
+import {WalletAdaptorCancelError, WalletAdaptorError} from '@/utils/wallet/WalletAdaptor';
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
@@ -163,7 +154,6 @@ export default defineComponent({
     const serialNumberInputRef = ref(null)
     const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
     const isEthereumWallet = computed(() => walletManager.isEthereumWallet.value)
-    const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
 
     //
     // Token Info States
@@ -204,12 +194,10 @@ export default defineComponent({
     //
     // Confirm dialog states
     //
-    const watchInWallet = ref(false)
     const showConfirmDialog = ref(false)
     const dialogTitle = ref<string | null>(null)
     const confirmMessage = ref<string | null>(null)
     const confirmExtraMessage = ref<string | null>(null)
-    const showWatchOption = computed(() => action.value === 'ASSOCIATE' && props.analyzer.isFungible.value)
 
     //
     // Dynamic dialog states
@@ -278,18 +266,17 @@ export default defineComponent({
     }
 
     //
-    // handleImport()
+    // handleReject()
     //
-    const handleImport = () => {
-      action.value = "IMPORT_TOKEN"
-
-      if (props.analyzer.isFungible.value) {
-        dialogTitle.value = `Import token ${tokenId.value}`
-        handleConfirm();
+    const handleReject = () => {
+      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
+        action.value = 'REJECT'
+        showConfirmDialog.value = true
+        dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
+        confirmMessage.value = `Confirm rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        confirmExtraMessage.value = null
       } else {
-        showDynamicDialog.value = true
-        dialogTitle.value = `Import NFT`
-        dynamicMessage.value = `Importing NFT ${tokenId.value!} (${tokenSymbol.value}) requires serial number of the token.`
+        alertController.visible.value = true
       }
     }
 
@@ -315,8 +302,8 @@ export default defineComponent({
         case "REJECT":
           rejectAction();
           break;
-        case "IMPORT_TOKEN":
-          importTokenAction();
+        case "REJECT":
+          rejectAction();
           break;
       }
     }
@@ -360,14 +347,11 @@ export default defineComponent({
           }
         }
 
-        if (watchInWallet.value) {
-          await importTokenAction()
-        } else {
-          showDoneDialog.value = true
-          dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
-          doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
-          showProgressDialog.value = false
-        }
+        showDoneDialog.value = true
+        dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
+        showProgressDialog.value = false
+
       } catch (reason) {
         handleError(reason)
       }
@@ -426,24 +410,25 @@ export default defineComponent({
     }
 
     //
-    // importTokenAction()
+    // rejectAction()
     //
-    const importTokenAction = async () => {
+    const rejectAction = async () => {
       try {
-        if (props.analyzer.isFungible.value) {
-          progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
-          await walletManager.watchToken(tokenId.value!)
-        } else {
-          dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
-          progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
-          await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
+        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
+          showProgressDialog.value = true
+          showProgressSpinner.value = true
+          progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          try {
+            await walletManager.rejectTokens([tokenId.value!])
+          } finally {
+            props.analyzer.tokenAssociationDidChange()
+            gtagTransaction("reject_token")
+          }
         }
-
-        isActive.value = false
-        showDoneDialog.value = true
         showProgressDialog.value = false
-        dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
-        doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
+        showDoneDialog.value = true
+        dialogTitle.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
       } catch (reason) {
         handleError(reason)
       }
@@ -453,13 +438,13 @@ export default defineComponent({
     // handleError()
     //
     const handleError = (reason: unknown) => {
-      if (reason instanceof WalletDriverCancelError) {
+      if (reason instanceof WalletAdaptorCancelError) {
         showProgressDialog.value = false
       } else {
         showProgressDialog.value = true
         showProgressSpinner.value = false
         progressDialogMode.value = Mode.Error
-        if (reason instanceof WalletDriverError) {
+        if (reason instanceof WalletAdaptorError) {
           progressMainMessage.value = reason.message
           progressExtraMessage.value = reason.extra
         } else {
@@ -477,10 +462,8 @@ export default defineComponent({
       doneMessage,
       handleCancel,
       isAssociated,
-      handleImport,
-      watchInWallet,
       handleConfirm,
-      walletManager,
+      walletConnectController: walletManager,
       isDissociated,
       alertController,
       tooltipLabel,
@@ -489,7 +472,6 @@ export default defineComponent({
       dynamicMessage,
       showDoneDialog,
       handleAssociate,
-      showWatchOption,
       handleDissociate,
       handleReject,
       isEthereumWallet,
@@ -497,7 +479,6 @@ export default defineComponent({
       tokenSerialNumber,
       handleDoneConfirm,
       showConfirmDialog,
-      importTokenAction,
       showProgressDialog,
       progressDialogMode,
       confirmExtraMessage,
@@ -505,7 +486,6 @@ export default defineComponent({
       showProgressSpinner,
       progressExtraMessage,
       serialNumberInputRef,
-      isWatchAssetSupported,
       progressExtraTransactionId,
     }
   }

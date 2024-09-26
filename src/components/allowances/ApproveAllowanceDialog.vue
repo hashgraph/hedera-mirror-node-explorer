@@ -229,7 +229,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletAdaptorCancelError, WalletAdaptorError} from "@/utils/wallet/WalletAdaptor";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {
@@ -724,11 +724,11 @@ export default defineComponent({
       } catch (reason) {
         console.warn("Transaction Error: " + reason)
 
-        if (reason instanceof WalletDriverCancelError) {
+        if (reason instanceof WalletAdaptorCancelError) {
           showProgressDialog.value = false
         } else {
           progressDialogMode.value = Mode.Error
-          if (reason instanceof WalletDriverError) {
+          if (reason instanceof WalletAdaptorError) {
             progressMainMessage.value = reason.message
             progressExtraMessage.value = reason.extra
           } else {

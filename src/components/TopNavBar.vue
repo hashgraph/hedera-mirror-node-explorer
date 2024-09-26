@@ -52,9 +52,6 @@
   </div>
 
   <div v-else class="is-flex is-justify-content-space-between is-align-items-flex-end">
-    <WalletChooser v-model:show-dialog="showWalletChooser" v-on:choose-wallet="handleChooseWallet"/>
-
-    <ConnectWalletDialog :error="connectError" :controller="connectDialogController"/>
 
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
@@ -112,9 +109,9 @@
         </div>
 
         <div id="connect-button">
-          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small"
-                  @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
-            {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
+          <button v-if="connectButtonVisible" :disabled="!connectButtonEnabled" id="connectWalletButton" class="button is-white is-small"
+                  @click="handleConnect" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
+            {{ connectButtonTitle }}
           </button>
 
           <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner"
@@ -126,7 +123,8 @@
                 <img :src="walletIconURL ?? undefined" alt="wallet logo"
                      style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
               </figure>
-              {{ accountId }}
+              <template v-if="accountId">{{ accountId }}</template>
+              <template v-else>No accounts</template>
             </div>
             <div class="is-flex is-align-items-center is-justify-content-center" style="width: 30px;">
               <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
@@ -143,6 +141,7 @@
             :accountId="accountId || undefined"
             :walletIconURL="walletIconURL || undefined"
             @wallet-disconnect="disconnectFromWallet"
+            @wallet-reconnect="reconnectToWallet"
             @change-account="handleChangeAccount"
         />
 
@@ -163,18 +162,13 @@ import {routeManager, walletManager} from "@/router";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import WalletChooser from "@/components/staking/WalletChooser.vue";
-import {WalletDriver} from '@/utils/wallet/WalletDriver';
-import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
-import {defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
-import {DialogController} from "@/components/dialog/DialogController";
-import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
-import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
+import {WalletConnectStatus} from "@/utils/wallet/WalletManagerV3";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {ConnectWalletDialog, AxiosStatus, SearchBarV2, WalletChooser, WalletInfo},
+  components: {AxiosStatus, SearchBarV2, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -187,82 +181,97 @@ export default defineComponent({
 
     const isMobileMenuOpen = ref(false)
 
-    const showWalletChooser = ref(false)
-    const chooseWallet = () => {
-      showWalletChooser.value = true
-    }
-
-    const connecting = ref(false)
-    const walletIconURL = ref("")
     const showWalletInfo = ref(false)
 
-    const connectDialogController = new DialogController()
-    const connectError = ref<unknown>()
+    //
+    // handleConnect
+    //
 
-    //
-    // handleChooseWallet
-    //
-    const handleChooseWallet = (wallet: WalletDriver) => {
-      walletManager.setActiveDriver(wallet)
-      connecting.value = true
-      walletManager
-          .connect()
-          .catch((reason) => {
-            if (!(reason instanceof WalletDriverCancelError)) {
-              console.warn("Failed to connect wallet - reason:" + reason.toString())
-              connectError.value = reason
-              connectDialogController.visible.value = true
-              gtagWalletConnectionFailure(wallet.name)
-            }
-          })
-          .finally(() => connecting.value = false)
-      walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
-      gtagWalletConnect(wallet.name)
+    const handleConnect = () => {
+      switch (walletManager.status.value) {
+        case WalletConnectStatus.disconnected:
+          walletManager.connect()
+          break
+        case WalletConnectStatus.connected:
+          walletManager.disconnect()
+          break
+      }
     }
 
     //
     // handleChangeAccount
     //
     const handleChangeAccount = (chosenAccountId: string) => {
-      walletManager.changeAccount(chosenAccountId)
+      walletManager.accountId.value = chosenAccountId
     }
 
     //
     // disconnectFromWallet
     //
-    const disconnectFromWallet = () => {
-      walletManager
-          .disconnect()
-          .finally(() => {
-            connecting.value = false;
-            showWalletInfo.value = false;
-          })
+    const disconnectFromWallet = async () => {
+      await walletManager.disconnect()
     }
 
+    //
+    // reconnectToWallet
+    //
+    const reconnectToWallet = async () => {
+      await walletManager.disconnect()
+      await walletManager.connect()
+    }
+
+    //
+    // Experimental
+    //
+
+    const connectButtonVisible = computed(
+        () => walletManager.status.value != WalletConnectStatus.connected)
+
+    const connectButtonEnabled = computed(
+        () => walletManager.status.value == WalletConnectStatus.disconnected)
+
+    const connectButtonTitle = computed(() => {
+      let result: string
+      switch(walletManager.status.value) {
+        case WalletConnectStatus.disabled:
+          result = "INITIALIZATION ERROR"
+          break
+        case WalletConnectStatus.initializing:
+          result = "Initializing…"
+          break
+        case WalletConnectStatus.connecting:
+          result = "Connecting…"
+          break
+        case WalletConnectStatus.disconnected:
+          result = "CONNECT WALLET"
+          break
+        case WalletConnectStatus.connected:
+          result = "DISCONNECT WALLET"
+          break
+      }
+      return result
+    })
+
+    const connected = computed(() => walletManager.status.value == WalletConnectStatus.connected)
 
     return {
       buildTime,
-      connecting,
       productName,
       routeManager,
-      chooseWallet,
-      walletIconURL,
       isSmallScreen,
       isTouchDevice,
       isMediumScreen,
       showWalletInfo,
       isStakingEnabled,
       isMobileMenuOpen,
-      showWalletChooser,
-      handleChooseWallet,
+      handleConnect,
       handleChangeAccount,
       disconnectFromWallet,
-      connectDialogController,
-      connectError,
+      reconnectToWallet,
       name: routeManager.currentRoute,
       accountId: walletManager.accountId,
-      connected: walletManager.connected,
       accountIds: walletManager.accountIds,
+      walletIconURL: walletManager.walletIconURL,
       isNodeRoute: routeManager.isNodeRoute,
       isTokenRoute: routeManager.isTokenRoute,
       isTopicRoute: routeManager.isTopicRoute,
@@ -274,6 +283,10 @@ export default defineComponent({
       selectedNetwork: routeManager.selectedNetwork,
       isDashboardRoute: routeManager.isDashboardRoute,
       isTransactionRoute: routeManager.isTransactionRoute,
+      connectButtonVisible,
+      connectButtonEnabled,
+      connectButtonTitle,
+      connected
     }
   },
 })

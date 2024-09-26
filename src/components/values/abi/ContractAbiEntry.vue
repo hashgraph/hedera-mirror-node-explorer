@@ -118,7 +118,7 @@ export default defineComponent({
           running.value = false
         }
       } else {
-        if (props.contractCallBuilder.isReadOnly() || walletManager.connected.value) {
+        if (props.contractCallBuilder.isReadOnly() || walletManager.accountId.value !== null) {
           dialogController.visible.value = true
         } else {
           alertController.visible.value = true

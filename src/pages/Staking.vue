@@ -65,8 +65,8 @@
                      :downloader="downloader"
                      :account-id="accountId"/>
 
-  <WalletChooser v-model:show-dialog="showWalletChooser"
-                 v-on:choose-wallet="handleChooseWallet"/>
+<!--  <WalletChooser v-model:show-dialog="showWalletChooser"-->
+<!--                 v-on:choose-wallet="handleChooseWallet"/>-->
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
@@ -232,9 +232,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
-import WalletChooser from "@/components/staking/WalletChooser.vue";
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
-import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletAdaptorCancelError, WalletAdaptorError} from "@/utils/wallet/WalletAdaptor";
 import {TransactionID} from "@/utils/TransactionID";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
@@ -260,7 +258,6 @@ export default defineComponent({
   components: {
     CSVDownloadDialog,
     DownloadButton,
-    WalletChooser,
     RewardsCalculator,
     AccountLink,
     ConfirmDialog,
@@ -293,39 +290,6 @@ export default defineComponent({
     const showDownloadDialog = ref(false)
 
     const connecting = ref(false)
-
-    const chooseWallet = () => {
-      showWalletChooser.value = true
-    }
-
-    //
-    // handleChooseWallet
-    //
-    const handleChooseWallet = async (wallet: WalletDriver) => {
-      walletManager.setActiveDriver(wallet)
-      connecting.value = true
-      try {
-        await walletManager.connect()
-      } catch (reason) {
-        if (!(reason instanceof WalletDriverCancelError)) {
-          showProgressDialog.value = true
-          progressDialogMode.value = Mode.Error
-          progressDialogTitle.value = "Could not connect wallet"
-          showProgressSpinner.value = false
-          progressExtraTransactionId.value = null
-
-          if (reason instanceof WalletDriverError) {
-            progressMainMessage.value = reason.message
-            progressExtraMessage.value = reason.extra
-          } else {
-            progressMainMessage.value = "Unexpected error"
-            progressExtraMessage.value = JSON.stringify(reason)
-          }
-        }
-      } finally {
-        connecting.value = false
-      }
-    }
 
     //
     // Account
@@ -441,11 +405,11 @@ export default defineComponent({
 
       } catch (error) {
 
-        if (error instanceof WalletDriverCancelError) {
+        if (error instanceof WalletAdaptorCancelError) {
           showProgressDialog.value = false
         } else {
           progressDialogMode.value = Mode.Error
-          if (error instanceof WalletDriverError) {
+          if (error instanceof WalletAdaptorError) {
             progressMainMessage.value = error.message
             progressExtraMessage.value = error.extra
           } else {
@@ -504,9 +468,9 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       connecting,
-      connected: walletManager.connected,
+      // connected: walletManager.connected,
       walletName: walletManager.walletName,
-      walletLogoURL: walletManager.getActiveDriver().logoURL,
+      walletLogoURL: walletManager.walletIconURL,
       accountId: walletManager.accountId,
       isHederaWallet: walletManager.isHederaWallet,
       accountChecksum: accountLocParser.accountChecksum,
@@ -530,8 +494,6 @@ export default defineComponent({
       pendingReward,
       declineReward,
       ignoreReward,
-      chooseWallet,
-      handleChooseWallet,
       handleStopStaking,
       handleChangeStaking,
       showProgressDialog,
