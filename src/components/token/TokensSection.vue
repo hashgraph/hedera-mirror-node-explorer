@@ -31,7 +31,10 @@
     </template>
 
     <template v-slot:control>
-      <div v-if="selectedTab === 'fungible' || selectedTab ==='nfts'" class="is-flex is-align-items-baseline">
+      <div
+          v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled"
+          class="is-flex is-align-items-baseline"
+      >
         <span class="mr-2 h-is-property-text">{{ rejectButtonHint }}</span>
         <button
             id="reject-button"
@@ -160,6 +163,11 @@ const onReject = () => {
 
 const onRejectCompleted = () => {
   selection.value.splice(0)
+  if (selectedTab.value === 'fungible') {
+    fungibleTableController.refresh()
+  } else {
+    nftsTableController.refresh()
+  }
 }
 
 const rejectButtonHint = computed(() => {
