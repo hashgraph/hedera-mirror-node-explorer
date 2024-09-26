@@ -61,7 +61,11 @@
       </div>
 
       <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
-        <NftsTable :controller="nftsTableController"/>
+        <NftsTable
+            :controller="nftsTableController"
+            :check-enabled="rejectEnabled"
+            v-model:checked-nfts="selection"
+        />
       </div>
 
     </template>
