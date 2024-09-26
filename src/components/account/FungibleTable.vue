@@ -33,7 +33,7 @@
       :range-before="0"
       :range-after="0"
       :total="props.controller.totalRowCount.value"
-      :current-page="props.controller.currentPage.value"
+      v-model:current-page="props.controller.currentPage.value"
       :per-page="props.controller.pageSize.value"
       @page-change="props.controller.onPageChange"
       @cellClick="handleClick"
