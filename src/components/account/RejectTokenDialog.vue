@@ -114,6 +114,7 @@ import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 import {Nft, Token} from "@/schemas/HederaSchemas";
+import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 
 const MAX_TOKENS_PER_REJECT = 2
 
@@ -186,11 +187,19 @@ const onReject = async () => {
 
       const start = iteration * MAX_TOKENS_PER_REJECT
       const end = Math.min(props.tokens!.length, start + MAX_TOKENS_PER_REJECT)
-      const rejected = props.tokens!.slice(start, end).map(item => item.token_id!)
-
       console.log(`rejecting tokens from ${start} to ${end}`)
+      const rejected = props.tokens!.slice(start, end)
+      const transaction = new TokenRejectTransaction()
+      for (const t of rejected) {
+        if ((t as Nft).serial_number) {
+          transaction.addNftId(new NftId(TokenId.fromString(t.token_id!), (t as Nft).serial_number))
+        } else {
+          transaction.addTokenId(TokenId.fromString(t.token_id!))
+        }
+      }
+
       tid.value = TransactionID.normalize(
-          await walletManager.rejectTokens(rejected)
+          await walletManager.rejectTokens(transaction)
       )
       if (tid.value) {
         const transaction: any = await waitForTransactionRefresh(tid.value, 10, 3000)

@@ -142,6 +142,7 @@ import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletD
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
+import {TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 
 export default defineComponent({
   name: "TokenActions",
@@ -407,7 +408,9 @@ export default defineComponent({
           showProgressSpinner.value = true
           progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
           try {
-            await walletManager.rejectTokens([tokenId.value!])
+            const transaction = new TokenRejectTransaction()
+            transaction.addTokenId(TokenId.fromString(tokenId.value!))
+            await walletManager.rejectTokens(transaction)
           } finally {
             props.analyzer.tokenAssociationDidChange()
             gtagTransaction("reject_token")

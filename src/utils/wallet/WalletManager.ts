@@ -31,6 +31,7 @@ import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
 import {ContractResultDetails} from "@/schemas/HederaSchemas";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {TokenRejectTransaction} from "@hashgraph/sdk";
 
 export class WalletManager {
 
@@ -242,10 +243,10 @@ export class WalletManager {
         }
     }
 
-    public async rejectTokens(tokenIds: string[]): Promise<string> {
+    public async rejectTokens(transaction: TokenRejectTransaction): Promise<string> {
         if (this.accountIdRef.value !== null) {
             if (this.activeDriver instanceof WalletDriver_Hedera) {
-                return this.activeDriver.rejectTokens(this.accountIdRef.value, tokenIds)
+                return this.activeDriver.rejectTokens(this.accountIdRef.value, transaction)
             } else {
                 throw this.activeDriver.unsupportedOperation()
             }
