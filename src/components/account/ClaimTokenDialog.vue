@@ -177,7 +177,11 @@ const onClaim = async () => {
 
   try {
     for (iteration = 0; iteration < nbRequiredTransactions.value; iteration++) {
-      busyMessage.value = `Sending transaction #${iteration+1} (out of ${nbRequiredTransactions.value}) to Hedera Network using your wallet…`
+      if (nbRequiredTransactions.value > 1) {
+        busyMessage.value = `Sending transaction #${iteration + 1} (out of ${nbRequiredTransactions.value}) to Hedera Network using your wallet…`
+      } else {
+        busyMessage.value = `Sending transaction to Hedera Network using your wallet…`
+      }
       busyMessageDetails.value = "Check your wallet for any approval request"
 
       const start = iteration * MAX_AIRDROPS_PER_CLAIM
