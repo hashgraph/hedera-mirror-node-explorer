@@ -51,12 +51,11 @@
       >
         <span class="mr-2 h-is-property-text">{{ claimButtonHint }}</span>
         <button
-                id="approve-button"
-                class="button is-white is-small"
-                :disabled=!claimButtonEnabled
-                @click="onClaim"
+            id="approve-button"
+            class="button is-white is-small"
+            @click="onClaim"
         >
-          CLAIM
+          {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
         </button>
       </div>
     </template>
@@ -105,6 +104,7 @@
   <ClaimTokenDialog
       :airdrops="checkedAirdrops"
       :controller="claimDialogController"
+      :drained="checkedAirdrops.length < MAX_AIRDROPS"
       @claimed="onClaimCompleted"
   />
 
@@ -249,9 +249,14 @@ const selection = ref<(Token | Nft)[]>([])
 // Claim
 //
 
+const MAX_AIRDROPS = 10
+
 const claimDialogController = new DialogController()
 
-const onClaim = () => {
+const onClaim = async () => {
+  if (checkedAirdrops.value.length === 0) { // CLAIM ALL was chosen
+    checkedAirdrops.value = await pendingAirdropTableController.getAllAirdrops(MAX_AIRDROPS)
+  }
   claimDialogController.visible.value = true
 }
 
@@ -268,7 +273,7 @@ const claimButtonHint = computed(() => {
     const checkedTokenId = checkedAirdrops.value[0].token_id
     result = `Claim token ${checkedTokenId}`
   } else {
-    result = "Select tokens to claim"
+    result = "Select tokens or"
   }
   return result
 })
@@ -278,11 +283,6 @@ const claimEnabled = computed(() =>
     walletManager.isHederaWallet.value &&
     walletManager.accountId.value === props.accountId &&
     pendingAirdropTableController.totalRowCount.value >= 1)
-
-const claimButtonEnabled = computed(() =>
-    // checkedAirdrops.value.length >= 1 && checkedAirdrops.value.length <= MAX_AIRDROPS_PER_CLAIM
-    checkedAirdrops.value.length >= 1
-)
 
 const checkedAirdrops = ref<TokenAirdrop[]>([])
 
