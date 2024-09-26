@@ -25,17 +25,17 @@
 <template>
 
   <o-table
-      :data="controller.rows.value"
-      :loading="controller.loading.value"
-      :paginated="controller.paginated.value"
+      :data="props.controller.rows.value"
+      :loading="props.controller.loading.value"
+      :paginated="props.controller.paginated.value"
       backend-pagination
       pagination-order="left"
       :range-before="0"
       :range-after="0"
-      :total="controller.totalRowCount.value"
-      :current-page="controller.currentPage.value"
-      :per-page="controller.pageSize.value"
-      @page-change="controller.onPageChange"
+      :total="props.controller.totalRowCount.value"
+      :current-page="props.controller.currentPage.value"
+      :per-page="props.controller.pageSize.value"
+      @page-change="props.controller.onPageChange"
       @cellClick="handleClick"
 
       :hoverable="true"
@@ -44,53 +44,53 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
       v-model:checked-rows="checkedRows"
-      :checkable="checkEnabled"
+      :checkable="props.checkEnabled"
 
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
+    <o-table-column v-slot="{ row }" field="token_id" label="Token">
       <TokenLink
           :show-extra="false"
-          :token-id="props.row.token_id"
+          :token-id="row.token_id"
           :no-anchor="true"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
-      <TokenCell class="is-inline-block" :token-id="props.row.token_id" :property="TokenCellItem.tokenName"/>
+    <o-table-column v-slot="{ row }" field="name" label="Name">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
-      <TokenCell class="is-inline-block" :token-id="props.row.token_id" :property="TokenCellItem.tokenSymbol"/>
+    <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="sender" label="Sender">
-      <div>{{ props.row.sender_id }}</div>
+    <o-table-column v-slot="{ row }" field="sender" label="Sender">
+      <div>{{ row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="serial" label="NFT #" position="right">
-      <div v-if="props.row.serial_number !== null">{{ props.row.serial_number }}</div>
+    <o-table-column v-slot="{ row }" field="serial" label="NFT #" position="right">
+      <div v-if="row.serial_number !== null">{{ row.serial_number }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+    <o-table-column v-slot="{ row }" field="balance" label="Balance" position="right">
       <TokenAmount
-          v-if="! props.row.serial_number"
-          :amount="BigInt(props.row.amount)"
-          :token-id="props.row.token_id"
+          v-if="! row.serial_number"
+          :amount="BigInt(row.amount)"
+          :token-id="row.token_id"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="image" label="Image" position="right">
+    <o-table-column v-slot="{ row }" field="image" label="Image" position="right">
       <div
           class="is-flex is-justify-content-end"
-          :class="{'is-invisible':!props.row.serial_number}"
+          :class="{'is-invisible':!row.serial_number}"
       >
         <NftCell
-            :token-id="props.row.token_id"
-            :serial-number="props.row.serial_number"
+            :token-id="row.token_id"
+            :serial-number="row.serial_number"
             :property="NftCellItem.image"
             :size="32"
         />
@@ -99,7 +99,7 @@
 
     <template v-slot:bottom-left>
       <TablePageSize
-          v-model:size="controller.pageSize.value"
+          v-model:size="props.controller.pageSize.value"
           :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
     </template>
@@ -107,13 +107,13 @@
   </o-table>
 
   <TablePageSize
-      v-if="!controller.paginated.value && controller.showPageSizeSelector.value"
-      v-model:size="controller.pageSize.value"
+      v-if="!props.controller.paginated.value && props.controller.showPageSizeSelector.value"
+      v-model:size="props.controller.pageSize.value"
       :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       style="width: 102px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!controller.totalRowCount.value"/>
+  <EmptyTable v-if="!props.controller.totalRowCount.value"/>
 
 </template>
 
