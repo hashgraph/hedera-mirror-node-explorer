@@ -35,9 +35,12 @@
     <!-- input -->
     <template #dialogInput>
       <div class="h-is-tertiary-text mb-4">
-        {{ inputMessage }}
+        {{ inputMessage1 }}
       </div>
-      <div class="h-is-property-text">
+      <div v-if="inputMessage2" class="h-is-tertiary-text mb-4">
+        {{ inputMessage2 }}
+      </div>
+      <div class="h-is-property-text mb-4">
         {{ inputMessageDetails }}
       </div>
     </template>
@@ -47,37 +50,37 @@
       <div class="h-is-tertiary-text mb-4">
         {{ busyMessage }}
       </div>
-      <div class="h-is-property-text">
+      <div class="h-is-property-text mb-4">
         {{ busyMessageDetails }}
       </div>
     </template>
 
     <!-- success -->
     <template #dialogSuccess>
-      <div class="is-flex is-align-items-baseline">
+      <div class="is-flex is-align-items-baseline mb-4">
         <div class="icon is-medium has-text-success ml-0">
           <i class="fas fa-check"/>
         </div>
-        <div class="h-is-tertiary-text mb-4">
+        <div class="h-is-tertiary-text">
           Operation completed
         </div>
       </div>
-      <div v-if="formattedTransactionId" class="h-is-property-text">
+      <div v-if="formattedTransactionId" class="h-is-property-text mb-4">
         {{ 'With transaction ID: ' + formattedTransactionId }}
       </div>
     </template>
 
     <!-- error -->
     <template #dialogError>
-      <div class="is-flex is-align-items-baseline">
+      <div class="is-flex is-align-items-baseline mb-4">
         <div class="icon is-medium has-text-danger">
           <span style="font-size: 18px; font-weight: 900">X</span>
         </div>
-        <div class="h-is-tertiary-text mb-4">
+        <div class="h-is-tertiary-text">
           {{ errorMessage }}
         </div>
       </div>
-      <div class="h-is-property-text">
+      <div class="h-is-property-text mb-4">
         {{ errorMessageDetails }}
       </div>
     </template>
@@ -122,6 +125,10 @@ const props = defineProps({
     type: Object as PropType<TokenAirdrop[] | null>,
     default: null
   },
+  drained: {
+    type: Boolean,
+    default: true
+  },
   controller: {
     type: Object as PropType<DialogController>,
     required: true
@@ -135,7 +142,8 @@ const formattedTransactionId = computed(() =>
     tid.value != null ? TransactionID.normalize(tid.value, true) : null
 )
 
-const inputMessage = ref<string | null>(null)
+const inputMessage1 = ref<string | null>(null)
+const inputMessage2 = ref<string | null>(null)
 const inputMessageDetails = ref<string | null>(null)
 
 const busyMessage = ref<string | null>(null)
@@ -151,7 +159,12 @@ const nbRequiredTransactions = computed(() =>
 onMounted(() => {
   watch(props.controller.visible, (visible) => {
     if (visible && props.airdrops) {
-      inputMessage.value = `Do you want to claim ${props.airdrops.length} token airdrops?`
+      inputMessage1.value = `Do you want to claim ${props.airdrops.length} token airdrops?`
+      if (props.drained) {
+        inputMessage2.value = null
+      } else {
+        inputMessage2.value = "(You might have more but we have limited to the first 100)"
+      }
       if (props.airdrops.length > MAX_AIRDROPS_PER_CLAIM) {
         inputMessageDetails.value =
             `This will require sending ${nbRequiredTransactions.value} transactions ` +
@@ -160,7 +173,8 @@ onMounted(() => {
         inputMessageDetails.value = ""
       }
     } else {
-      inputMessage.value = null
+      inputMessage1.value = null
+      inputMessage2.value = null
       inputMessageDetails.value = null
     }
   }, {immediate: true})
