@@ -69,9 +69,7 @@
 
     <o-table-column v-slot="{ row }" field="token-name" label="Collection">
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
-      (
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
-      )
+      (<TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>)
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="name" label="Name">
