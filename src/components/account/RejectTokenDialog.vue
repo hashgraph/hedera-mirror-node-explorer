@@ -115,8 +115,11 @@ import Dialog from "@/components/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 import {Nft, Token} from "@/schemas/HederaSchemas";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {BalanceCache} from "@/utils/cache/BalanceCache";
+import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
 
-const MAX_TOKENS_PER_REJECT = 2
+const MAX_TOKENS_PER_REJECT = 10
 
 const props = defineProps({
   tokens: {
@@ -145,9 +148,7 @@ const busyMessageDetails = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
 const errorMessageDetails = ref<string | null>(null)
 
-const nbRequiredTransactions = computed(() =>
-    props.tokens ? Math.ceil(props.tokens.length / MAX_TOKENS_PER_REJECT) : 0
-)
+const nbRequiredTransactions = computed(() => Math.ceil(rejectCandidates.value.length / MAX_TOKENS_PER_REJECT))
 
 onMounted(() => {
   watch(props.controller.visible, (visible) => {
@@ -165,6 +166,45 @@ onMounted(() => {
       inputMessageDetails.value = null
     }
   }, {immediate: true})
+})
+
+const rejectCandidates = ref<(Token | Nft)[]>([])
+
+onMounted(() => {
+  watch(() => props.tokens, async (tokens) => {
+    const result = [] as (Token | Nft)[]
+
+    const accountBalances = (await BalanceCache.instance.lookup(walletManager.accountId.value!))?.balances ?? []
+    const tokenBalances = accountBalances.length >= 1 ? accountBalances[0].tokens : []
+    const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
+
+    for (const t of tokens ?? []) {
+      const isTreasury = (await TokenInfoCache.instance.lookup(t.token_id!))?.treasury_account_id === walletManager.accountId.value
+      const isPaused = (await TokenInfoCache.instance.lookup(t.token_id!))?.pause_status === 'PAUSED'
+      let isFrozen = false
+      for (const r of relationships) {
+        if (r.token_id === t.token_id) {
+          isFrozen = r.freeze_status === 'FROZEN'
+          break
+        }
+      }
+      let balance = 0
+      for (const b of tokenBalances) {
+        if (b.token_id === t.token_id) {
+          balance = b.balance
+          break
+        }
+      }
+      if (!isTreasury && !isFrozen && !isPaused && balance > 0) {
+        console.log(`Adding token ${t.token_id} to the TokenRejectTransaction`)
+        result.push(t)
+      } else {
+        console.log(`Filtering ${t.token_id}`)
+      }
+    }
+
+    rejectCandidates.value = result
+  })
 })
 
 //
@@ -186,10 +226,11 @@ const onReject = async () => {
       busyMessageDetails.value = "Check your wallet for any approval request"
 
       const start = iteration * MAX_TOKENS_PER_REJECT
-      const end = Math.min(props.tokens!.length, start + MAX_TOKENS_PER_REJECT)
+      const end = Math.min(rejectCandidates.value.length, start + MAX_TOKENS_PER_REJECT)
       console.log(`rejecting tokens from ${start} to ${end}`)
-      const rejected = props.tokens!.slice(start, end)
+      const rejected = rejectCandidates.value.slice(start, end)
       const transaction = new TokenRejectTransaction()
+
       for (const t of rejected) {
         if ((t as Nft).serial_number) {
           transaction.addNftId(new NftId(TokenId.fromString(t.token_id!), (t as Nft).serial_number))
