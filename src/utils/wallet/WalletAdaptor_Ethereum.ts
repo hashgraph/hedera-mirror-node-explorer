@@ -68,7 +68,7 @@ export class WalletAdapter_Ethereum extends WalletAdaptor {
                 from: accountAddress,
                 to: "0x" + tokenAddress,
                 data: callData,
-                value: "0x0"
+                gas: "0x1E8480" // 2_000_000
             }
             try {
                 result = await this.signClient.signAndExecute_eip155(this.session, this.network, ethParams)
