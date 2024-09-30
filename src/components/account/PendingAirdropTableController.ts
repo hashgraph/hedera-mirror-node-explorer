@@ -18,10 +18,11 @@
  *
  */
 
-import {TokenAirdrop,} from "@/schemas/HederaSchemas";
+import {TokenAirdrop, TokenAirdropsResponse,} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
+import axios from "axios";
 
 export class PendingAirdropTableController extends TableController<TokenAirdrop, AirdropKey> {
 
@@ -61,21 +62,21 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     // TableController
     //
 
-    private drained = false
+    // private drained = false
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenAirdrop[] | null> {
-        let result: TokenAirdrop[] | null
-
-        if (this.accountId.value === null) {
-            result = null
-        } else if (this.drained) {
-            result = []
-        } else {
-            result = PendingAirdropTableController.AIRDROPS_MOCK
-        }
-        return Promise.resolve(result)
-    }
+    // public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenAirdrop[] | null> {
+    //     let result: TokenAirdrop[] | null
+    //
+    //     if (this.accountId.value === null) {
+    //         result = null
+    //     } else if (this.drained) {
+    //         result = []
+    //     } else {
+    //         result = PendingAirdropTableController.AIRDROPS_MOCK
+    //     }
+    //     return Promise.resolve(result)
+    // }
 
     private static AIRDROPS_MOCK = [{
         "amount": 333, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": null, "timestamp": {
@@ -100,21 +101,19 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     }]
 
 
-    //
-    //
-    // public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<Airdrop[] | null> {
-    //     let result
-    //
-    //     if (this.accountId.value === null) {
-    //         result = Promise.resolve(null)
-    //     } else {
-    //         const params = PendingAirdropTableController.makeQueryParams(key, operator, order, limit)
-    //         const url = "api/v1/accounts/" + this.accountId.value + "/airdrops/pending"
-    //         const response = await axios.get<AirdropResponse>(url, {params: params})
-    //         result = Promise.resolve(response.data.airdrops)
-    //     }
-    //     return result
-    // }
+    public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenAirdrop[] | null> {
+        let result
+
+        if (this.accountId.value === null) {
+            result = Promise.resolve(null)
+        } else {
+            const params = PendingAirdropTableController.makeQueryParams(key, operator, order, limit)
+            const url = "api/v1/accounts/" + this.accountId.value + "/airdrops/pending"
+            const response = await axios.get<TokenAirdropsResponse>(url, {params: params})
+            result = Promise.resolve(response.data.airdrops)
+        }
+        return result
+    }
 
     public keyFor(row: TokenAirdrop): AirdropKey {
         return {
@@ -151,62 +150,62 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     //
     // Private
     //
-    //
-    // private static makeQueryParams(key: AirdropKey|null, operator: KeyOperator, order: SortOrder, limit: number): QueryParams {
-    //     let result: QueryParams = {
-    //         limit: limit,
-    //         order: order
-    //     }
-    //
-    //     if (key !== null) {
-    //         if (key.serial_number !== null) {
-    //             switch(operator) {
-    //                 case KeyOperator.lt:
-    //                     result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.lte + ":" + key.token_id
-    //                     result["serialnumber"] = KeyOperator.lt + ":" + key.serial_number
-    //                     break
-    //                 case KeyOperator.lte:
-    //                     result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.lte + ":" + key.token_id
-    //                     result["serialnumber"] = KeyOperator.lte + ":" + key.serial_number
-    //                     break
-    //                 case KeyOperator.gt:
-    //                     result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.gte + ":" + key.token_id
-    //                     result["serialnumber"] = KeyOperator.gt + ":" + key.serial_number
-    //                     break
-    //                 case KeyOperator.gte:
-    //                     result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.gte + ":" + key.token_id
-    //                     result["serialnumber"] = KeyOperator.gte + ":" + key.serial_number
-    //                     break
-    //             }
-    //         } else {
-    //             switch(operator) {
-    //                 case KeyOperator.lt:
-    //                     result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.lt + ":" + key.token_id
-    //                     break
-    //                 case KeyOperator.lte:
-    //                     result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.lte + ":" + key.token_id
-    //                     break
-    //                 case KeyOperator.gt:
-    //                     result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.gt + ":" + key.token_id
-    //                     break
-    //                 case KeyOperator.gte:
-    //                     result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
-    //                     result["token.id"] = KeyOperator.gte + ":" + key.token_id
-    //                     break
-    //             }
-    //             // result["serialnumber"]  is left undefined
-    //         }
-    //     }
-    //
-    //     return result
-    // }
+
+    private static makeQueryParams(key: AirdropKey|null, operator: KeyOperator, order: SortOrder, limit: number): QueryParams {
+        let result: QueryParams = {
+            limit: limit,
+            order: order
+        }
+
+        if (key !== null) {
+            if (key.serial_number !== null) {
+                switch(operator) {
+                    case KeyOperator.lt:
+                        result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.lte + ":" + key.token_id
+                        result["serialnumber"] = KeyOperator.lt + ":" + key.serial_number
+                        break
+                    case KeyOperator.lte:
+                        result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.lte + ":" + key.token_id
+                        result["serialnumber"] = KeyOperator.lte + ":" + key.serial_number
+                        break
+                    case KeyOperator.gt:
+                        result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.gte + ":" + key.token_id
+                        result["serialnumber"] = KeyOperator.gt + ":" + key.serial_number
+                        break
+                    case KeyOperator.gte:
+                        result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.gte + ":" + key.token_id
+                        result["serialnumber"] = KeyOperator.gte + ":" + key.serial_number
+                        break
+                }
+            } else {
+                switch(operator) {
+                    case KeyOperator.lt:
+                        result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.lt + ":" + key.token_id
+                        break
+                    case KeyOperator.lte:
+                        result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.lte + ":" + key.token_id
+                        break
+                    case KeyOperator.gt:
+                        result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.gt + ":" + key.token_id
+                        break
+                    case KeyOperator.gte:
+                        result["sender.id"] = KeyOperator.gte + ":" + key.sender_id
+                        result["token.id"] = KeyOperator.gte + ":" + key.token_id
+                        break
+                }
+                // result["serialnumber"]  is left undefined
+            }
+        }
+
+        return result
+    }
 
 }
 
@@ -216,14 +215,13 @@ export interface AirdropKey {
     serial_number: number | null | undefined
 }
 
-//
-// interface QueryParams {
-//     limit: number
-//     order: string
-//     "sender.id"?: string
-//     "token.id"?: string
-//     "serialnumber"?: string
-// }
+interface QueryParams {
+    limit: number
+    order: string
+    "sender.id"?: string
+    "token.id"?: string
+    "serialnumber"?: string
+}
 
 // create unique index if not exists token_airdrop__sender_id on token_airdrop (
 //      sender_account_id,
