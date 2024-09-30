@@ -144,7 +144,9 @@ const props = defineProps({
 
 const perPage = ref(10)
 const showSection = computed(() =>
-    fungibleTableController.totalRowCount.value > 0 || nftsTableController.totalRowCount.value > 0
+    fungibleTableController.totalRowCount.value >= 1
+    || nftsTableController.totalRowCount.value >= 1
+    || pendingAirdropTableController.totalRowCount.value >= 1
 )
 const accountId = computed(() => props.accountId)
 
