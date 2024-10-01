@@ -86,7 +86,7 @@
       <DialogButton :controller="controller">CANCEL</DialogButton>
       <CommitButton
           :controller="controller"
-          :enabled="tokens !== null && tokens.length >= 1"
+          :enabled="rejectCandidates.length >= 1"
           @action="onReject"
       >
         REJECT
@@ -152,12 +152,23 @@ const nbRequiredTransactions = computed(() => Math.ceil(rejectCandidates.value.l
 
 onMounted(() => {
   watch(props.controller.visible, (visible) => {
-    if (visible && props.tokens) {
-      inputMessage.value = `Do you want to reject ${props.tokens.length} tokens?`
-      if (props.tokens.length > MAX_TOKENS_PER_REJECT) {
+    if (visible) {
+      if (rejectCandidates.value.length === 0) {
+        inputMessage.value = "None of the selected tokens can be rejected."
+      } else {
+        inputMessage.value = `Do you want to reject ${rejectCandidates.value.length} ${rejectCandidates.value.length > 1 ? 'tokens' : 'token'}`
+        if (rejectCandidates.value.length < props.tokens!.length) {
+          inputMessage.value += ` (out of the ${props.tokens!.length} selected)?`
+        } else {
+          inputMessage.value += '?'
+        }
+      }
+      if (nbRequiredTransactions.value > 1) {
         inputMessageDetails.value =
             `This will require sending ${nbRequiredTransactions.value} transactions ` +
             `(maximum of ${MAX_TOKENS_PER_REJECT} tokens rejected per transaction).`
+      } else if (rejectCandidates.value.length < (props.tokens?.length ?? 0)) {
+        inputMessageDetails.value = "Tokens with a zero balance, or with your account as treasury account, or paused, or frozen, cannot be rejected."
       } else {
         inputMessageDetails.value = ""
       }
