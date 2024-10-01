@@ -73,10 +73,6 @@ export class ExplorerSignClient {
         return result
     }
 
-    public getAllSessions(): SessionTypes.Struct[] {
-        return this.signClient.session.getAll()
-    }
-
     public async connect(network: string) : Promise<SessionTypes.Struct> {
         let result: SessionTypes.Struct
 
@@ -93,11 +89,6 @@ export class ExplorerSignClient {
             connectModal.closeModal()
         }
 
-        if (this.signClient.session.getAll().indexOf(result) != -1) {
-            console.log("OK")
-        } else {
-            console.log("KO")
-        }
         return Promise.resolve(result)
     }
 
