@@ -89,7 +89,7 @@ describe("App.vue", () => {
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
         expect(navBar.text()).toBe(
-            "DashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCUSTOMNET1CUSTOMNET2CUSTOMNET3CONNECT WALLET")
+            "DashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCUSTOMNET1CUSTOMNET2CUSTOMNET3CONNECT WALLETDisclaimerPlease don't show me this next timeCANCELAGREE")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 
@@ -100,16 +100,17 @@ describe("App.vue", () => {
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(9)
+        expect(logos.length).toBe(10)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
         expect(logos[1].attributes('alt')).toBe("Modal close icon")
-        expect(logos[2].attributes('alt')).toBe("Trend Up")
+        expect(logos[2].attributes('alt')).toBe("Modal close icon")
         expect(logos[3].attributes('alt')).toBe("Trend Up")
-        expect(logos[4].attributes('alt')).toBe("Pause")
+        expect(logos[4].attributes('alt')).toBe("Trend Up")
         expect(logos[5].attributes('alt')).toBe("Pause")
         expect(logos[6].attributes('alt')).toBe("Pause")
-        expect(logos[7].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[8].attributes('alt')).toBe("Sponsor Logo")
+        expect(logos[7].attributes('alt')).toBe("Pause")
+        expect(logos[8].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[9].attributes('alt')).toBe("Sponsor Logo")
 
         mock.restore()
         wrapper.unmount()

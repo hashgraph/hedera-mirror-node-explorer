@@ -54,10 +54,10 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET")
+            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLETDisclaimerPlease don't show me this next timeCANCELAGREE")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(11)
+        expect(links.length).toBe(12)
 
         wrapper.unmount()
         await flushPromises()
@@ -80,10 +80,10 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET")
+            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLETDisclaimerPlease don't show me this next timeCANCELAGREE")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(11)
+        expect(links.length).toBe(12)
 
         expect(links[0].text()).toBe("")
         expect(links[1].text()).toBe("")
@@ -96,11 +96,12 @@ describe("TopNavBar.vue", () => {
         expect(links[8].text()).toBe("Nodes")
         expect(links[9].text()).toBe("Staking")
         expect(links[10].text()).toBe("Blocks")
+        expect(links[11].text()).toBe("")
 
         expect(wrapper.findComponent(SearchBarV2).exists()).toBe(true)
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(2)
+        expect(logos.length).toBe(3)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
         expect(logos[1].attributes('alt')).toBe("Modal close icon")
 

@@ -145,6 +145,16 @@
             @change-account="handleChangeAccount"
         />
 
+        <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
+                      @onClose="handleCancelDisclaimer"
+                      @onAgree="handleAgreeDisclaimer">
+          <template v-slot:dialogMessage>
+            <span>Disclaimer</span>
+          </template>
+          <template v-slot:dialogDetails>
+            <div v-html="disclaimer"/>
+          </template>
+        </OptOutDialog>
       </div>
     </div>
 
@@ -166,10 +176,11 @@ import {computed, defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {WalletConnectStatus} from "@/utils/wallet/WalletManagerV3";
 import {AppStorage} from "@/AppStorage";
+import OptOutDialog from "@/components/staking/OptOutDialog.vue";
 
 export default defineComponent({
   name: "TopNavBar",
-  components: {AxiosStatus, SearchBarV2, WalletInfo},
+  components: {OptOutDialog, AxiosStatus, SearchBarV2, WalletInfo},
 
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -189,6 +200,14 @@ export default defineComponent({
     //
 
     const handleConnect = () => {
+      if (disclaimer && !AppStorage.getSkipDisclaimer()) {
+        showDisclaimerDialog.value = true
+      } else {
+        connectOrDisconnect()
+      }
+    }
+
+    const connectOrDisconnect = () => {
       switch (walletManager.status.value) {
         case WalletConnectStatus.disconnected:
           walletManager.connect()
@@ -221,6 +240,23 @@ export default defineComponent({
       await walletManager.disconnect()
       await walletManager.connect()
     }
+
+    //
+    // Disclaimer
+    //
+
+    const disclaimer = import.meta.env.VITE_APP_WALLET_CHOOSER_DISCLAIMER_POPUP ?? ""
+    const showDisclaimerDialog = ref(false)
+
+    const handleCancelDisclaimer = () => {
+      showDisclaimerDialog.value = false
+    }
+
+    const handleAgreeDisclaimer = () => {
+      showDisclaimerDialog.value = false
+      connectOrDisconnect()
+    }
+
 
     //
     // Experimental
@@ -287,7 +323,11 @@ export default defineComponent({
       connectButtonVisible,
       connectButtonEnabled,
       connectButtonTitle,
-      connected
+      connected,
+      showDisclaimerDialog,
+      disclaimer,
+      handleAgreeDisclaimer,
+      handleCancelDisclaimer,
     }
   },
 })
