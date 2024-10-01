@@ -165,6 +165,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {WalletConnectStatus} from "@/utils/wallet/WalletManagerV3";
+import {AppStorage} from "@/AppStorage";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -203,6 +204,7 @@ export default defineComponent({
     //
     const handleChangeAccount = (chosenAccountId: string) => {
       walletManager.accountId.value = chosenAccountId
+      AppStorage.setWalletAccountId(chosenAccountId, routeManager.currentNetwork.value)
     }
 
     //

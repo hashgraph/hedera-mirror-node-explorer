@@ -324,6 +324,24 @@ export class AppStorage {
     }
 
     //
+    // wallet account id
+    //
+
+    private static readonly WALLET_ACCOUNT_ID = 'walletAccountId'
+
+    public static getWalletAccountId(network: string): string | null {
+        return this.getLocalStorageItem(this.makeWalletAccountIdKey(network))
+    }
+
+    public static setWalletAccountId(newValue: string | null, network: string) {
+        this.setLocalStorageItem(this.makeWalletAccountIdKey(network), newValue)
+    }
+
+    private static makeWalletAccountIdKey(network: string): string {
+        return this.WALLET_ACCOUNT_ID + "/" + network
+    }
+
+    //
     // Private
     //
 

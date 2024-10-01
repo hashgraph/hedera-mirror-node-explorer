@@ -33,6 +33,7 @@ import {WalletAdaptor, WalletAdaptorError} from "@/utils/wallet/WalletAdaptor";
 import {WalletAdapter_Hedera} from "@/utils/wallet/WalletAdaptor_Hedera";
 import {WalletAdapter_Ethereum} from "@/utils/wallet/WalletAdaptor_Ethereum";
 import {routeManager} from "@/router";
+import {AppStorage} from "@/AppStorage";
 
 
 export enum WalletConnectStatus {
@@ -328,10 +329,13 @@ export class WalletManagerV3 {
 
     private readonly accountIdsDidChange = () => {
         if (this.accountIds.value.length > 0) {
-            if (this.accountId.value === null || this.accountIds.value.indexOf(this.accountId.value) === -1) {
-                this.accountId.value = this.accountIds.value[0]
+            const candidate1 = AppStorage.getWalletAccountId(routeManager.currentNetwork.value)
+            const candidate2 = this.accountIds.value[0]
+            if (candidate1 !== null && this.accountIds.value.indexOf(candidate1) !== -1) {
+                this.accountId.value = candidate1
+            } else {
+                this.accountId.value = candidate2
             }
-            // else leaves this.accountId.value unchanged
         } else {
             this.accountId.value = null
         }
