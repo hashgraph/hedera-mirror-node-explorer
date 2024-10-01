@@ -23,6 +23,7 @@ import {ProposalTypes, SessionTypes, SignClientTypes} from "@walletconnect/types
 import SignClient from "@walletconnect/sign-client";
 import {getSdkError} from '@walletconnect/utils'
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {WalletConnectModal} from "@walletconnect/modal";
 
 export class ExplorerSignClient {
 
@@ -73,8 +74,7 @@ export class ExplorerSignClient {
         return result
     }
 
-    public async connect(network: string) : Promise<SessionTypes.Struct> {
-        let result: SessionTypes.Struct
+    public async connect(network: string) : Promise<SessionTypes.Struct|null> {
 
         const params = {
             optionalNamespaces: ExplorerSignClient.makeNamespaces([network])
@@ -82,13 +82,7 @@ export class ExplorerSignClient {
         const { uri, approval } = await this.signClient.connect(params)
         const {WalletConnectModal} = await import("@walletconnect/modal")
         const connectModal = new WalletConnectModal({ projectId: this.projectId })
-        try {
-            await connectModal.openModal({uri})
-            result = await approval()
-        } finally {
-            connectModal.closeModal()
-        }
-
+        const result = await this.waitForApprovalOrModalClose(uri, approval, connectModal)
         return Promise.resolve(result)
     }
 
@@ -199,6 +193,29 @@ export class ExplorerSignClient {
             console.log(pairing)
         })
 
+    }
+
+    private async waitForApprovalOrModalClose(
+        uri: string|undefined,
+        approval: () => Promise<SessionTypes.Struct>,
+        connectModal: WalletConnectModal): Promise<SessionTypes.Struct|null> {
+
+        return new Promise(async (resolve, reject) => {
+            connectModal.subscribeModal((state: {open: boolean}) => {
+                if (!state.open) {
+                    // User has closed the modal without flashing the QR code
+                    resolve(null)
+                }
+            })
+            try {
+                await connectModal.openModal({uri})
+                resolve(await approval())
+            } catch(reason) {
+                reject(reason)
+            } finally {
+                connectModal.closeModal()
+            }
+        })
     }
 
     private static makeCaChainForEIP155(network: string): string {
