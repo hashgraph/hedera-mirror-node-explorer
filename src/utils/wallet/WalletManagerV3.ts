@@ -41,7 +41,8 @@ export enum WalletConnectStatus {
     initializing,
     disconnected,
     connected,
-    connecting
+    connecting,
+    switching
 }
 
 
@@ -54,6 +55,7 @@ export class WalletManagerV3 {
     private readonly eip155AccountIds = ref<string[]>([])
     private readonly initializing = ref(false)
     private readonly connecting = ref(false)
+    private readonly switching = ref(false)
 
     //
     // Public
@@ -76,6 +78,8 @@ export class WalletManagerV3 {
             result = WalletConnectStatus.initializing
         } else if (this.connecting.value) {
             result = WalletConnectStatus.connecting
+        } else if (this.switching.value) {
+            result = WalletConnectStatus.switching
         } else if (this.signClient.value === null) {
             // signClient initialization failed
             result = WalletConnectStatus.disconnected
@@ -143,6 +147,7 @@ export class WalletManagerV3 {
 
     public async connect(): Promise<void> {
         if (this.signClient.value !== null) {
+            this.connecting.value = true
             try {
                 await this.disconnect()
             } catch {
@@ -154,6 +159,8 @@ export class WalletManagerV3 {
                 if (!ExplorerSignClient.isUserRejectError(reason)) {
                     throw this.makeConnectError(reason)
                 }
+            } finally {
+                this.connecting.value = false
             }
         }
     }
@@ -287,6 +294,7 @@ export class WalletManagerV3 {
 
     private readonly sessionDidChange = async () => {
         if (this.session.value !== null) {
+            this.switching.value = true
             try {
                 this.hederaAccountIds.value = await WalletManagerV3.fetchHederaAccountIds(this.session.value, routeManager.currentNetwork.value)
             } catch {
@@ -297,6 +305,7 @@ export class WalletManagerV3 {
             } catch {
                 this.eip155AccountIds.value = []
             }
+            this.switching.value = false
         } else {
             this.hederaAccountIds.value = []
             this.eip155AccountIds.value = []

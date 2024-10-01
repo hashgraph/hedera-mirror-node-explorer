@@ -239,9 +239,8 @@ export default defineComponent({
           result = "INITIALIZATION ERROR"
           break
         case WalletConnectStatus.initializing:
-          result = "Initializing…"
-          break
         case WalletConnectStatus.connecting:
+        case WalletConnectStatus.switching:
           result = "Connecting…"
           break
         case WalletConnectStatus.disconnected:
