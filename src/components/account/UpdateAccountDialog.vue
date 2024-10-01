@@ -451,7 +451,7 @@ onBeforeUnmount(() => {
 let initialRecSigRequired = false
 let initialAutoRenewPeriod: number | null = 0
 let initialMemo = ""
-let initialMaxAutoAssociations : number | null = null
+let initialMaxAutoAssociations: number | null = null
 let initialStakeChoice = StakeChoice.NotStaking
 let initialStakedNode: number | null = null
 let initialStakedAccount = ""
@@ -573,8 +573,8 @@ const isStakingValid = computed(() =>
 // MaxAutoAssociation validation
 //
 const isMaxAutoAssociationsValid = computed(() => {
-  const max = parseInt(maxAutoAssociations.value)
-  return !isNaN(max) && (max >= 0 || max === -1)
+  const max = maxAutoAssociations.value
+  return max !== null && (max >= 0 || max === -1)
 })
 
 //
