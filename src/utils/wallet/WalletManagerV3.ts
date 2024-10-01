@@ -264,7 +264,6 @@ export class WalletManagerV3 {
             try {
                 this.signClient.value = await ExplorerSignClient.init(projectId)
                 this.session.value = this.signClient.value.getLastSession(routeManager.currentNetwork.value)
-                this.dumpSessions("Sessions after SignClient.init()")
             } catch {
                 this.signClient.value = null
                 this.session.value = null
@@ -355,24 +354,6 @@ export class WalletManagerV3 {
         }
         return result
     })
-
-
-    private dumpSessions(title: string) {
-        console.log(title)
-        if (this.signClient.value !== null) {
-            const sessions = this.signClient.value.getAllSessions()
-            console.log(sessions.length + " session(s)")
-            for (let i = 0; i < sessions.length; i++) {
-                console.log("session["+ i + "].topic=" + sessions[i].topic)
-                for (const [k,v] of Object.entries(sessions[i].namespaces)) {
-                    console.log("session["+ i + "].namespace[" + k + "]=" + JSON.stringify(v))
-                }
-            }
-        } else {
-            console.log("0 session (because signClient is null)")
-        }
-    }
-
     private static async lookupAccount(idOrEvmAddress: string): Promise<AccountBalanceTransactions | null> {
         let result: AccountBalanceTransactions | null
         const accountId = EntityID.parse(idOrEvmAddress)
