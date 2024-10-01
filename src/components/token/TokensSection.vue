@@ -127,12 +127,10 @@ import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
 import {DialogController} from "@/components/dialog/DialogController";
 import {walletManager} from "@/router";
-import {Nft, Token} from "@/schemas/HederaSchemas";
+import {Nft, Token, TokenAirdrop} from "@/schemas/HederaSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
-import {walletManager} from "@/router";
-import {TokenAirdrop} from "@/schemas/HederaSchemas";
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 
 const props = defineProps({
