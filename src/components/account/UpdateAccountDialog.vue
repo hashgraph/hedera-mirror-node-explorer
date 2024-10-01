@@ -364,7 +364,7 @@ const memo = ref<string>("")
 //
 // Max Auto Association
 //
-const maxAutoAssociations = ref<string>("")
+const maxAutoAssociations = ref<number | null>(null)
 
 enum AutoAssociationMode {
   UnlimitedAutoAssociation = -1,
@@ -378,11 +378,13 @@ onMounted(() => {
   modeWatchHandle = watch(autoAssociationMode, (newValue) => {
     switch (newValue) {
       case AutoAssociationMode.LimitedAutoAssociation:
+        maxAutoAssociations.value = initialMaxAutoAssociations
+        break
       case AutoAssociationMode.NoAutoAssociation:
-        maxAutoAssociations.value = "0"
+        maxAutoAssociations.value = 0
         break
       case AutoAssociationMode.UnlimitedAutoAssociation:
-        maxAutoAssociations.value = "-1"
+        maxAutoAssociations.value = -1
         break
     }
   })
@@ -449,7 +451,7 @@ onBeforeUnmount(() => {
 let initialRecSigRequired = false
 let initialAutoRenewPeriod: number | null = 0
 let initialMemo = ""
-let initialMaxAutoAssociations = ""
+let initialMaxAutoAssociations : number | null = null
 let initialStakeChoice = StakeChoice.NotStaking
 let initialStakedNode: number | null = null
 let initialStakedAccount = ""
@@ -466,7 +468,7 @@ onMounted(() => {
       selectedAutoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ""
       selectedUnit.value = PeriodUnit.Seconds
       memo.value = props.accountInfo?.memo ?? ""
-      maxAutoAssociations.value = props.accountInfo?.max_automatic_token_associations?.toString() ?? ""
+      maxAutoAssociations.value = props.accountInfo?.max_automatic_token_associations ?? null
       autoAssociationMode.value =
           props.accountInfo?.max_automatic_token_associations === -1 ? AutoAssociationMode.UnlimitedAutoAssociation
               : (props.accountInfo?.max_automatic_token_associations ?? 0) > 0 ? AutoAssociationMode.LimitedAutoAssociation
@@ -492,7 +494,7 @@ onMounted(() => {
       selectedAutoRenewPeriod.value = ""
       selectedUnit.value = PeriodUnit.Seconds
       memo.value = ""
-      maxAutoAssociations.value = ""
+      maxAutoAssociations.value = null
       autoAssociationMode.value = AutoAssociationMode.NoAutoAssociation
       stakeChoice.value = StakeChoice.NotStaking
       stakedNode.value = null
