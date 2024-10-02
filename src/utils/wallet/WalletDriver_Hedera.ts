@@ -91,14 +91,15 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         // return Promise.resolve(result)
 
         // TESTING
-        if (airdrops.length > 0) {
-            const serial = airdrops[airdrops.length - 1].serial_number ?? 0
-            if (serial < 6) {
-                return Promise.resolve("0.0.4885735@1726854267.766000000")
-            }
-        }
-        return Promise.resolve("")
-        // return Promise.resolve("0.0.4885735@1726854267.766000000")
+        // if (airdrops.length > 0) {
+        //     const serial = airdrops[airdrops.length - 1].serial_number ?? 0
+        //     if (serial < 6) {
+        //         return Promise.resolve("0.0.4885735@1726854267.766000000")
+        //     }
+        // }
+        // return Promise.resolve("")
+
+        return Promise.resolve("0.0.4885735@1726854267.766000000")
     }
 
     public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
