@@ -20,6 +20,11 @@
 
 import {
     AccountInfo,
+    AccountsResponse,
+    ContractLog,
+    ContractResult,
+    ContractResultsLogResponse,
+    ContractResultsResponse,
     HTS_PRECOMPILE_CONTRACT_ID,
     KeyType,
     NetworkNode,
@@ -32,6 +37,7 @@ import {
     TokenTransfer,
     Transaction,
     TransactionByIdResponse,
+    TransactionResponse,
     Transfer,
 } from "@/schemas/HederaSchemas";
 import {ethers} from "ethers";
@@ -317,7 +323,7 @@ export function resolveFunctionFragmentForHTSProxyContract(functionFragment: eth
         "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool transferFrom)",
         "function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256 tokenOfOwnerByIndex)",
       ];
-      
+
     const iface = new ethers.Interface(ABI_FOR_SUPPORTED_METHODS)
     return ethers.FunctionFragment.from({...functionFragment, outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs})
 }
@@ -408,5 +414,65 @@ export async function waitForTransactionRefresh(transactionId: string, attemptIn
         result = Promise.resolve(transactionId)
     }
 
+    return result
+}
+
+export async function drainTransactions(r: TransactionResponse, limit: number): Promise<Transaction[]> {
+    let result = r.transactions ?? []
+    let i = 1
+    while (r.links?.next && result.length < limit) {
+        console.log("drain iteration: " + i);
+        i += 1
+        const ar = await axios.get<TransactionResponse>(r.links.next)
+        if (ar.data.transactions) {
+            result = result.concat(ar.data.transactions)
+        }
+        r = ar.data
+    }
+    return result
+}
+
+export async function drainAccounts(r: AccountsResponse, limit: number): Promise<AccountInfo[]> {
+    let result = r.accounts ?? []
+    let i = 1
+    while (r.links?.next && result.length < limit) {
+        console.log("drain iteration: " + i);
+        i += 1
+        const ar = await axios.get<AccountsResponse>(r.links.next)
+        if (ar.data.accounts) {
+            result = result.concat(ar.data.accounts)
+        }
+        r = ar.data
+    }
+    return result
+}
+
+export async function drainContractResults(r: ContractResultsResponse, limit: number): Promise<ContractResult[]> {
+    let result = r.results ?? []
+    let i = 1
+    while (r.links?.next && result.length < limit) {
+        console.log("drain iteration: " + i);
+        i += 1
+        const ar = await axios.get<ContractResultsResponse>(r.links.next)
+        if (ar.data.results) {
+            result = result.concat(ar.data.results)
+        }
+        r = ar.data
+    }
+    return result
+}
+
+export async function drainContractResultsLogs(r: ContractResultsLogResponse, limit: number): Promise<ContractLog[]> {
+    let result = r.logs ?? []
+    let i = 1
+    while (r.links?.next && result.length < limit) {
+        console.log("drain iteration: " + i);
+        i += 1
+        const ar = await axios.get<ContractResultsLogResponse>(r.links.next)
+        if (ar.data.logs) {
+            result = result.concat(ar.data.logs)
+        }
+        r = ar.data
+    }
     return result
 }

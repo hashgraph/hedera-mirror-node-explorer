@@ -25,6 +25,8 @@ import axios from "axios";
 import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 
+import {drainTransactions} from "@/schemas/HederaUtils";
+
 export class TransactionGroupByBlockCache extends EntityCache<number, Transaction[] | null> {
 
     public static readonly instance = new TransactionGroupByBlockCache()
@@ -43,7 +45,7 @@ export class TransactionGroupByBlockCache extends EntityCache<number, Transactio
                     timestamp: "lte:" + block.timestamp.to
                 }
                 const response = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
-                result = response.data.transactions ?? []
+                result = await drainTransactions(response.data, params.limit)
                 TransactionByHashCache.instance.updateWithTransactions(result)
                 TransactionByTsCache.instance.updateWithTransactions(result)
             } else {

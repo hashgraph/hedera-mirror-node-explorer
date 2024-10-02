@@ -21,6 +21,7 @@
 import {ContractResult, ContractResultDetails, ContractResultsResponse} from "@/schemas/HederaSchemas";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {EntityCache} from "@/utils/cache/base/EntityCache"
+import {drainContractResults} from "@/schemas/HederaUtils";
 import axios from "axios";
 
 export class ContractResultByTsCache extends EntityCache<string, ContractResultDetails | null> {
@@ -76,7 +77,7 @@ export class ContractResultByTsCache extends EntityCache<string, ContractResultD
                 limit: 1
             }
             const response = await axios.get<ContractResultsResponse>("api/v1/contracts/results", {params: parameters})
-            const results = response.data.results
+            const results = await drainContractResults(response.data, parameters.limit)
             result = results && results.length >= 1 ? results[0] : null
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {

@@ -33,6 +33,7 @@ import {
     TransactionByIdResponse,
     TransactionResponse
 } from "@/schemas/HederaSchemas";
+import {drainAccounts} from "@/schemas/HederaUtils";
 import {aliasToBase32, byteToHex, paddedBytes} from "@/utils/B64Utils";
 import axios from "axios";
 import {RouteLocationRaw} from "vue-router";
@@ -151,8 +152,9 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
                 // accountParam is a public key
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
                 const publicKey = byteToHex(accountLoc)
-                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=10")
-                accountInfos = r.data.accounts ?? []
+                const limit = 10
+                const r = await axios.get<AccountsResponse>("api/v1/accounts/?account.publickey=" + publicKey + "&limit=" + limit)
+                accountInfos = await drainAccounts(r.data, limit)
                 drained = (r.data.links?.next ?? null) == null
             } else {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/getAccountByIdOrAliasOrEvmAddress

@@ -20,8 +20,9 @@
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {drainTransactions} from "@/schemas/HederaUtils";
 import {ref, Ref} from "vue";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 import {Router} from "vue-router";
 
 
@@ -90,11 +91,10 @@ export class TransactionTableController extends TableController<Transaction, str
         if (consensusTimestamp !== null) {
             params.timestamp = operator + ":" + consensusTimestamp
         }
-        const cb = (r: AxiosResponse<TransactionResponse>): Promise<Transaction[] | null> => {
-            return Promise.resolve(r.data.transactions ?? [])
-        }
+        const r = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
+        const result = await drainTransactions(r.data, limit)
 
-        return axios.get<TransactionResponse>("api/v1/transactions", {params: params}).then(cb)
+        return Promise.resolve(result)
     }
 
     public keyFor(row: Transaction): string {
@@ -109,3 +109,5 @@ export class TransactionTableController extends TableController<Transaction, str
         return key
     }
 }
+
+
