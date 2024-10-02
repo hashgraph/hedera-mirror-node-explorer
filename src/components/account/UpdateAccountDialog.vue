@@ -90,7 +90,7 @@
             label="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
         />
       </div>
-      <div class="is-flex is-justify-content-flex-start">
+      <div class="is-flex is-justify-content-flex-start is-align-items-center">
         <o-select v-model="autoAssociationMode"
                   class="is-small has-text-white"
                   style=" height: 38px; border-radius: 2px;border-width: 1px;border-color: grey;
@@ -114,6 +114,13 @@
                placeholder="≥ 0"
                type="number"
         >
+        <div v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
+             class="icon is-small ml-2"
+        >
+          <i v-if="isMaxAutoAssociationsValid" class="fas fa-check has-text-success"/>
+          <i v-else-if="maxAutoAssociationsFeedbackMessage" class="fas fa-xmark has-text-danger"/>
+          <i v-else/>
+        </div>
       </div>
 
       <div class="mb-4"/>
@@ -261,7 +268,7 @@
     <!-- user feedback -->
     <template #dialogFeedback>
       <div class="h-is-property-text">
-        {{ stakedAccountFeedbackMessage ?? autoRenewPeriodFeedbackMessage }}
+        {{ stakedAccountFeedbackMessage ?? autoRenewPeriodFeedbackMessage ?? maxAutoAssociationsFeedbackMessage }}
       </div>
     </template>
 
@@ -298,6 +305,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
 
 const props = defineProps({
   accountInfo: {
@@ -316,6 +324,7 @@ const network = router.currentRoute.value.params.network as string
 const nr = networkRegistry
 
 const autoRenewPeriodFeedbackMessage = ref<string | null>(null)
+const maxAutoAssociationsFeedbackMessage = ref<string | null>(null)
 const stakedAccountFeedbackMessage = ref<string | null>(null)
 
 //
@@ -572,9 +581,35 @@ const isStakingValid = computed(() =>
 //
 // MaxAutoAssociation validation
 //
-const isMaxAutoAssociationsValid = computed(() => {
-  const max = maxAutoAssociations.value
-  return max !== null && (max >= 0 || max === -1)
+const isMaxAutoAssociationsValid = ref(false)
+let maxAutoAssociationsWatchHandle: WatchStopHandle | null = null
+onMounted(() => {
+  maxAutoAssociationsWatchHandle = watch(maxAutoAssociations, async (max) => {
+    if (max === null) {
+      isMaxAutoAssociationsValid.value = false
+      maxAutoAssociationsFeedbackMessage.value = null
+    } else {
+      const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
+      let currentAutoAssociationsCount = 0
+      for (const r of relationships) {
+        if (r.automatic_association) {
+          currentAutoAssociationsCount++
+        }
+      }
+      isMaxAutoAssociationsValid.value = max >= currentAutoAssociationsCount || max === -1
+      if (max < currentAutoAssociationsCount) {
+        maxAutoAssociationsFeedbackMessage.value = `Your account currently has ${currentAutoAssociationsCount} automatic associations.`
+      } else {
+        maxAutoAssociationsFeedbackMessage.value = null
+      }
+    }
+  })
+})
+onBeforeUnmount(() => {
+  if (maxAutoAssociationsWatchHandle !== null) {
+    maxAutoAssociationsWatchHandle()
+    maxAutoAssociationsWatchHandle = null
+  }
 })
 
 //
