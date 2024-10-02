@@ -219,12 +219,12 @@ const rejectButtonHint = computed(() => {
   let result: string
   const checkedCount = selection.value.length
   if (checkedCount >= 2) {
-    result = `Reject ${checkedCount} selected tokens`
+    result = `${checkedCount} selected tokens`
   } else if (checkedCount == 1) {
     const checkedTokenId = selection.value[0].token_id
-    result = `Reject token ${checkedTokenId}`
+    result = `${checkedTokenId} selected`
   } else {
-    result = "Select tokens to reject"
+    result = "Select tokens"
   }
   return result
 })
@@ -269,12 +269,12 @@ const claimButtonHint = computed(() => {
   let result: string
   const checkedCount = checkedAirdrops.value.length
   if (checkedCount >= 2) {
-    result = `Claim ${checkedCount} selected tokens`
+    result = `${checkedCount} selected tokens`
   } else if (checkedCount == 1) {
     const checkedTokenId = checkedAirdrops.value[0].token_id
-    result = `Claim token ${checkedTokenId}`
+    result = `${checkedTokenId} selected`
   } else {
-    result = "Select tokens or"
+    result = ""
   }
   return result
 })
