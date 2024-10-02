@@ -289,7 +289,8 @@ export class WalletManagerV3 {
             try {
                 this.signClient.value = await ExplorerSignClient.init(projectId)
                 this.session.value = this.signClient.value.getLastSession(routeManager.currentNetwork.value)
-            } catch {
+            } catch(reason) {
+                console.log("reason=" + JSON.stringify(reason))
                 this.signClient.value = null
                 this.session.value = null
             } finally {

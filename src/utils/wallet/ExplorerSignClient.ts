@@ -35,7 +35,7 @@ export class ExplorerSignClient {
     private static readonly METADATA: SignClientTypes.Metadata = {
         name: ExplorerSignClient.PRODUCT_NAME,
         description: "A ledger explorer for the Hedera network",
-        url: "https://localhost:5173",
+        url: window.location.origin,
         icons: [],
     }
 
