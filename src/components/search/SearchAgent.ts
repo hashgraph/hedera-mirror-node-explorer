@@ -599,7 +599,7 @@ export class NarrowTokenNameSearchAgent extends TokenNameSearchAgent {
     //
 
     public constructor() {
-        super("Top Tokens")
+        super("Popular Tokens")
     }
 
     //
