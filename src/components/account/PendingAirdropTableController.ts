@@ -53,9 +53,8 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
         this.watchAndReload([this.accountId, this.pageSize])
     }
 
-    public getAllAirdrops(limit = 100): Promise<TokenAirdrop[]> {
-        let result = PendingAirdropTableController.AIRDROPS_MOCK
-        return Promise.resolve(result)
+    public async loadAllAirdrops(limit = 100): Promise<TokenAirdrop[] | null> {
+        return this.load(null, KeyOperator.lt, SortOrder.DESC, limit)
     }
 
     //
@@ -78,28 +77,27 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     //     return Promise.resolve(result)
     // }
 
-    private static AIRDROPS_MOCK = [{
-        "amount": 333, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": null, "timestamp": {
-            "from": "1111111111.111111111", "to": null
-        }, "token_id": "0.0.4841213"
-    }, {
-        "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 1, "timestamp": {
-            "from": "1111111111.111111112", "to": null
-        }, "token_id": "0.0.4846884"
-    }, {
-        "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 2, "timestamp": {
-            "from": "1111111111.111111112", "to": null
-        }, "token_id": "0.0.4846884"
-    }, {
-        "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 5, "timestamp": {
-            "from": "1111111111.111111112", "to": null
-        }, "token_id": "0.0.4846884"
-    }, {
-        "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 6, "timestamp": {
-            "from": "1111111111.111111113", "to": null
-        }, "token_id": "0.0.4846882"
-    }]
-
+    // private static AIRDROPS_MOCK = [{
+    //     "amount": 333, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": null, "timestamp": {
+    //         "from": "1111111111.111111111", "to": null
+    //     }, "token_id": "0.0.4841213"
+    // }, {
+    //     "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 1, "timestamp": {
+    //         "from": "1111111111.111111112", "to": null
+    //     }, "token_id": "0.0.4846884"
+    // }, {
+    //     "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 2, "timestamp": {
+    //         "from": "1111111111.111111112", "to": null
+    //     }, "token_id": "0.0.4846884"
+    // }, {
+    //     "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 5, "timestamp": {
+    //         "from": "1111111111.111111112", "to": null
+    //     }, "token_id": "0.0.4846884"
+    // }, {
+    //     "amount": 1, "receiver_id": "0.0.1299", "sender_id": "0.0.222", "serial_number": 6, "timestamp": {
+    //         "from": "1111111111.111111113", "to": null
+    //     }, "token_id": "0.0.4846882"
+    // }]
 
     public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenAirdrop[] | null> {
         let result

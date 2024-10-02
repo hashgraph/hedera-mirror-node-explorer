@@ -255,7 +255,8 @@ const claimDialogController = new DialogController()
 
 const onClaim = async () => {
   if (checkedAirdrops.value.length === 0) { // CLAIM ALL was chosen
-    checkedAirdrops.value = await pendingAirdropTableController.getAllAirdrops(MAX_AIRDROPS)
+    const allAirdrops = await pendingAirdropTableController.loadAllAirdrops(MAX_AIRDROPS)
+    checkedAirdrops.value = allAirdrops ?? []
   }
   claimDialogController.visible.value = true
 }
