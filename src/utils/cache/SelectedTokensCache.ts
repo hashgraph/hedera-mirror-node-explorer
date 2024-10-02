@@ -32,8 +32,9 @@ export class SelectedTokensCache extends SingletonCache<SelectedTokensIndex> {
 
     protected async load(): Promise<SelectedTokensIndex> {
         let selectedTokenEntries: SelectedTokenEntry[]
-        if (routeManager.currentNetwork.value == "mainnet") {
-            const url = window.location.origin + "/selected-tokens.json"
+        const popularTokenIndexURL = import.meta.env.VITE_APP_POPULAR_TOKEN_INDEX_URL ?? null
+        if (routeManager.currentNetwork.value == "mainnet" && popularTokenIndexURL !== null) {
+            const url = window.location.origin + "/" + popularTokenIndexURL
             selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(url)).data
         } else {
             selectedTokenEntries = []

@@ -105,10 +105,10 @@ describe("SearchController.vue", () => {
         {
             // Token search by name
 
-            const abi = require('../../../public/selected-tokens.json')
-            const matcher = "http://localhost:3000/selected-tokens.json"
-            mock.onGet(matcher).reply(200, abi)
-
+            // const abi = require('../../../public/selected-tokens.json')
+            // const matcher = "http://localhost:3000/selected-tokens.json"
+            // mock.onGet(matcher).reply(200, abi)
+            //
             const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100"
             mock.onGet(matcher0).reply(200, {
                 tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
@@ -382,7 +382,6 @@ describe("SearchController.vue", () => {
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
-            "http://localhost:3000/selected-tokens.json",
             "api/v1/tokens/?name=CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ&limit=100",
         ])
 
@@ -828,7 +827,6 @@ describe("SearchController.vue", () => {
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/" + SAMPLE_TOKEN_NAME,
-            "http://localhost:3000/selected-tokens.json",
             "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100",
         ])
 

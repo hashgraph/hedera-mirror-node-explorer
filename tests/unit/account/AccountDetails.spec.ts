@@ -203,7 +203,7 @@ describe("AccountDetails.vue", () => {
         let matcher11 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts"
         mock.onGet(matcher11).reply(200, {nfts: []})
 
-        let matcher12 = "api/v1/tokens"
+        const matcher12 = "api/v1/tokens"
         mock.onGet(matcher12).reply(200, { tokens: [] });
 
         let matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
