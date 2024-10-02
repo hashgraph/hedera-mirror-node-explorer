@@ -23,7 +23,7 @@
 
 import {SessionTypes} from "@walletconnect/types";
 import {computed, ref, shallowRef, watch} from "vue";
-import {AccountBalanceTransactions, ContractResultDetails} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, ContractResultDetails, TokenAirdrop} from "@/schemas/HederaSchemas";
 import {ExplorerSignClient} from "@/utils/wallet/ExplorerSignClient";
 import {EntityID} from "@/utils/EntityID";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
@@ -34,6 +34,7 @@ import {WalletAdapter_Hedera} from "@/utils/wallet/WalletAdaptor_Hedera";
 import {WalletAdapter_Ethereum} from "@/utils/wallet/WalletAdaptor_Ethereum";
 import {routeManager} from "@/router";
 import {AppStorage} from "@/AppStorage";
+import {AccountUpdateTransaction} from "@hashgraph/sdk";
 
 
 export enum WalletConnectStatus {
@@ -255,6 +256,22 @@ export class WalletManagerV3 {
     public async deleteNftAllSerialsAllowance(token: string, spender: string): Promise<string> {
         if (this.adaptor.value instanceof WalletAdapter_Hedera) {
             return this.adaptor.value.deleteNftAllSerialsAllowance(token, spender)
+        } else {
+            throw "bug"
+        }
+    }
+
+    public async updateAccount(transaction: AccountUpdateTransaction) {
+        if (this.adaptor.value instanceof WalletAdapter_Hedera) {
+            return this.adaptor.value.updateAccount(transaction)
+        } else {
+            throw "bug"
+        }
+    }
+
+    public async claimTokenAirdrops(airdrops: TokenAirdrop[]): Promise<string> {
+        if (this.adaptor.value instanceof WalletAdapter_Hedera) {
+            return this.adaptor.value.claimTokenAirdrops(airdrops)
         } else {
             throw "bug"
         }

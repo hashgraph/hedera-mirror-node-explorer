@@ -29,6 +29,7 @@ import {
     ContractExecuteTransaction,
     NftId,
     TokenAssociateTransaction,
+    TokenClaimAirdropTransaction,
     TokenDissociateTransaction,
     TokenId,
     TokenRejectTransaction,
@@ -36,7 +37,7 @@ import {
     TransactionResponse,
     TransactionResponseJSON
 } from "@hashgraph/sdk";
-import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {WalletAdaptor, WalletAdaptorCancelError} from "@/utils/wallet/WalletAdaptor";
@@ -135,6 +136,57 @@ export class WalletAdapter_Hedera extends WalletAdaptor {
         return Promise.resolve(result)
     }
 
+    public async updateAccount(transaction: AccountUpdateTransaction) {
+        transaction.setAccountId(this.accountId)
+        const result = await this.executeTransaction(transaction)
+
+        return Promise.resolve(result)
+    }
+
+    public async claimTokenAirdrops(airdrops: TokenAirdrop[]): Promise<string> {
+
+        const trans = new TokenClaimAirdropTransaction()
+
+        console.log(`Building TokenClaimAirdropTransaction:`)
+
+        for (const airdrop of airdrops) {
+            if (airdrop.sender_id && airdrop.receiver_id && airdrop.token_id) {
+                if (airdrop.serial_number) {
+                    console.log(`  Adding NFT airdrop:`)
+                    console.log(`    senderId: ${airdrop.sender_id}`)
+                    console.log(`    receiverId: ${airdrop.receiver_id}`)
+                    console.log(`    tokenId: ${airdrop.token_id}`)
+                    console.log(`    serial #: ${airdrop.serial_number}`)
+                } else {
+                    console.log(`  Adding Fungible Token airdrop:`)
+                    console.log(`    senderId: ${airdrop.sender_id}`)
+                    console.log(`    receiverId: ${airdrop.receiver_id}`)
+                    console.log(`    tokenId: ${airdrop.token_id}`)
+                }
+
+                // const airdropId = new PendingAirdropId(
+                //     AccountId.fromString(airdrop.sender_id),
+                //     AccountId.fromString(airdrop.receiver_id),
+                //     airdrop.serial_number ? null : TokenId.fromString(airdrop.token_id),
+                //     airdrop.serial_number ? new NftId(TokenId.fromString(airdrop.token_id), airdrop.serial_number) : null
+                // )
+                // trans.addPendingAirdropId(airdropId)
+            }
+        }
+
+        // const result = await this.executeTransaction(trans)
+        // return Promise.resolve(result)
+
+        // TESTING
+        if (airdrops.length > 0) {
+            const serial = airdrops[airdrops.length - 1].serial_number ?? 0
+            if (serial < 6) {
+                return Promise.resolve("0.0.4885735@1726854267.766000000")
+            }
+        }
+        return Promise.resolve("")
+        // return Promise.resolve("0.0.4885735@1726854267.766000000")
+    }
 
     //
     // WalletAdapter
