@@ -118,7 +118,7 @@ import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 
-const MAX_AIRDROPS_PER_CLAIM = 2
+const MAX_AIRDROPS_PER_CLAIM = 10
 
 const props = defineProps({
   airdrops: {
