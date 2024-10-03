@@ -18,11 +18,11 @@
  *
  */
 
-import {TokenAirdrop, TokenAirdropsResponse,} from "@/schemas/HederaSchemas";
+import {TokenAirdrop, TokenAirdropsResponse, TokenType,} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 
 export class PendingAirdropTableController extends TableController<TokenAirdrop, AirdropKey> {
 
@@ -31,10 +31,12 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     //
 
     public readonly accountId: Ref<string | null>
+    public readonly tokenType: TokenType
 
     public constructor(
         router: Router,
         accountId: Ref<string | null>,
+        tokenType: TokenType,
         pageSize: Ref<number>,
         pageParamName = "p",
         keyParamName = "k"
@@ -50,6 +52,7 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
             keyParamName
         )
         this.accountId = accountId
+        this.tokenType = tokenType
         this.watchAndReload([this.accountId, this.pageSize])
     }
 
@@ -100,17 +103,30 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     // }]
 
     public async load(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): Promise<TokenAirdrop[] | null> {
-        let result
+        let result: TokenAirdrop[] | null
 
         if (this.accountId.value === null) {
-            result = Promise.resolve(null)
+            result = null
         } else {
-            const params = PendingAirdropTableController.makeQueryParams(key, operator, order, limit)
-            const url = "api/v1/accounts/" + this.accountId.value + "/airdrops/pending"
-            const response = await axios.get<TokenAirdropsResponse>(url, {params: params})
-            result = Promise.resolve(response.data.airdrops)
+            let params = PendingAirdropTableController.makeQueryParams(key, operator, order, limit)
+            let url: string | null = "api/v1/accounts/" + this.accountId.value + "/airdrops/pending"
+            result = []
+
+            while (url && result.length < limit) {
+                const response: AxiosResponse<TokenAirdropsResponse> =
+                    await axios.get<TokenAirdropsResponse>(url, {params: params})
+                const airdrop = response.data.airdrops ?? []
+                result = result.concat(airdrop.filter(
+                        this.tokenType === TokenType.FUNGIBLE_COMMON
+                            ? PendingAirdropTableController.filterFungible
+                            : PendingAirdropTableController.filterNft
+                    )
+                )
+                url = response.data.links?.next
+                params = {} as QueryParams
+            }
         }
-        return result
+        return Promise.resolve(result)
     }
 
     public keyFor(row: TokenAirdrop): AirdropKey {
@@ -149,7 +165,11 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     // Private
     //
 
-    private static makeQueryParams(key: AirdropKey|null, operator: KeyOperator, order: SortOrder, limit: number): QueryParams {
+    private static filterFungible = (airdrop: TokenAirdrop) => !airdrop.serial_number || airdrop.serial_number === 0
+
+    private static filterNft = (airdrop: TokenAirdrop) => airdrop.serial_number && airdrop.serial_number >= 1
+
+    private static makeQueryParams(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): QueryParams {
         let result: QueryParams = {
             limit: limit,
             order: order
@@ -157,7 +177,7 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
 
         if (key !== null) {
             if (key.serial_number !== null) {
-                switch(operator) {
+                switch (operator) {
                     case KeyOperator.lt:
                         result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
                         result["token.id"] = KeyOperator.lte + ":" + key.token_id
@@ -180,7 +200,7 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
                         break
                 }
             } else {
-                switch(operator) {
+                switch (operator) {
                     case KeyOperator.lt:
                         result["sender.id"] = KeyOperator.lte + ":" + key.sender_id
                         result["token.id"] = KeyOperator.lt + ":" + key.token_id

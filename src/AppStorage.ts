@@ -215,10 +215,11 @@ export class AppStorage {
     }
 
     //
-    // preferred tab in account tokens section
+    // preferred tabs in account tokens section
     //
 
     private static readonly ACCOUNT_TOKEN_TAB_KEY = 'accountTokenTab'
+    private static readonly ACCOUNT_AIRDROP_TAB_KEY = 'accountAirdropTab'
 
     static getAccountTokenTab() {
         return this.getLocalStorageItem(this.ACCOUNT_TOKEN_TAB_KEY)
@@ -226,6 +227,14 @@ export class AppStorage {
 
     static setAccountTokenTab(newValue: string | null) {
         this.setLocalStorageItem(this.ACCOUNT_TOKEN_TAB_KEY, newValue)
+    }
+
+    static getAccountAirdropTab() {
+        return this.getLocalStorageItem(this.ACCOUNT_AIRDROP_TAB_KEY)
+    }
+
+    static setAccountAirdropTab(newValue: string | null) {
+        this.setLocalStorageItem(this.ACCOUNT_AIRDROP_TAB_KEY, newValue)
     }
 
     //
