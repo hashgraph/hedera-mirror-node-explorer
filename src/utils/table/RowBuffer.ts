@@ -205,7 +205,7 @@ export class RowBuffer<R, K> {
                     this.abortedMoveToPageCounter += 1
                 }
 
-            } else if (nextEndIndex > bufferLength + shadowRowCount) {
+            } else if (nextEndIndex > bufferLength + shadowRowCount  && !this.drained.value) {
 
                 // We need to load rows at buffer tail      :\
                 const rowCount = nextEndIndex - bufferLength - shadowRowCount
