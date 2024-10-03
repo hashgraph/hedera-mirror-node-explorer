@@ -85,10 +85,29 @@
       </div>
 
       <div v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable">
-        <PendingAirdropTable
-            :controller="pendingAirdropTableController"
-            :check-enabled="claimEnabled"
-            v-model:checked-airdrops="checkedAirdrops"/>
+        <Tabs
+            :selected-tab="airdropSelectedTab"
+            :tab-ids="airdropTabIds"
+            :tabLabels="airdropTabLabels"
+            :sub-tab="true"
+            @update:selectedTab="onAirdropSelectTab"
+        />
+        <div v-if="airdropSelectedTab === 'nfts'">
+          <PendingAirdropTable
+              :controller="nftsAirdropTableController"
+              :check-enabled="claimEnabled"
+              v-model:checked-airdrops="checkedAirdrops"
+              :type="TokenType.NON_FUNGIBLE_UNIQUE"
+          />
+        </div>
+        <div v-else>
+          <PendingAirdropTable
+              :controller="fungibleAirdropTableController"
+              :check-enabled="claimEnabled"
+              v-model:checked-airdrops="checkedAirdrops"
+              :type="TokenType.FUNGIBLE_COMMON"
+          />
+        </div>
       </div>
 
     </template>
@@ -127,7 +146,7 @@ import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
 import {DialogController} from "@/components/dialog/DialogController";
 import {walletManager} from "@/router";
-import {Nft, Token, TokenAirdrop} from "@/schemas/HederaSchemas";
+import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/HederaSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
@@ -144,7 +163,8 @@ const perPage = ref(10)
 const showSection = computed(() =>
     fungibleTableController.totalRowCount.value >= 1
     || nftsTableController.totalRowCount.value >= 1
-    || pendingAirdropTableController.totalRowCount.value >= 1
+    || fungibleAirdropTableController.totalRowCount.value >= 1
+    || nftsAirdropTableController.totalRowCount.value >= 1
 )
 const accountId = computed(() => props.accountId)
 
@@ -155,8 +175,17 @@ const onSelectTab = (tab: string | null) => {
   selectedTab.value = tab
   AppStorage.setAccountTokenTab(tab)
   selection.value.splice(0)
+  checkedAirdrops.value.splice(0)
 }
 
+const airdropTabIds = ['nfts', 'fungible']
+const airdropTabLabels = ['NFTs', 'Fungible']
+const airdropSelectedTab = ref<string | null>(AppStorage.getAccountAirdropTab() ?? airdropTabIds[0])
+const onAirdropSelectTab = (tab: string | null) => {
+  airdropSelectedTab.value = tab
+  AppStorage.setAccountAirdropTab(tab)
+  checkedAirdrops.value.splice(0)
+}
 const nftsTableController = new NftsTableController(
     useRouter(),
     accountId,
@@ -174,7 +203,7 @@ const fungibleTableController = new FungibleTableController(
     useRouter(),
     accountId,
     perPage,
-    "pr", "kr"
+    "pf", "kf"
 );
 onMounted(() => {
   fungibleTableController.mount()
@@ -183,17 +212,27 @@ onBeforeUnmount(() => {
   fungibleTableController.unmount()
 })
 
-const pendingAirdropTableController = new PendingAirdropTableController(
+const nftsAirdropTableController = new PendingAirdropTableController(
     useRouter(),
     accountId,
+    TokenType.NON_FUNGIBLE_UNIQUE,
     perPage,
     "pa", "ka"
 )
+const fungibleAirdropTableController = new PendingAirdropTableController(
+    useRouter(),
+    accountId,
+    TokenType.FUNGIBLE_COMMON,
+    perPage,
+    "pr", "kr"
+)
 onMounted(() => {
-  pendingAirdropTableController.mount()
+  nftsAirdropTableController.mount()
+  fungibleAirdropTableController.mount()
 })
 onBeforeUnmount(() => {
-  pendingAirdropTableController.unmount()
+  nftsAirdropTableController.unmount()
+  fungibleAirdropTableController.unmount()
 })
 
 //
@@ -255,7 +294,9 @@ const claimDialogController = new DialogController()
 
 const onClaim = async () => {
   if (checkedAirdrops.value.length === 0) { // CLAIM ALL was chosen
-    const allAirdrops = await pendingAirdropTableController.loadAllAirdrops(MAX_AIRDROPS)
+    const allAirdrops = (airdropSelectedTab.value === 'nfts')
+        ? await nftsAirdropTableController.loadAllAirdrops(MAX_AIRDROPS)
+        : await fungibleAirdropTableController.loadAllAirdrops(MAX_AIRDROPS)
     checkedAirdrops.value = allAirdrops ?? []
   }
   claimDialogController.visible.value = true
@@ -283,7 +324,7 @@ const claimEnabled = computed(() =>
     walletManager.connected.value &&
     walletManager.isHederaWallet.value &&
     walletManager.accountId.value === props.accountId &&
-    pendingAirdropTableController.totalRowCount.value >= 1)
+    (nftsAirdropTableController.totalRowCount.value >= 1 || fungibleAirdropTableController.totalRowCount.value >= 1))
 
 const checkedAirdrops = ref<TokenAirdrop[]>([])
 
