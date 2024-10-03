@@ -866,7 +866,7 @@ export enum KeyType {
 }
 
 export interface Links {
-    next: string | null | undefined
+    next: string | null
 }
 
 export const infiniteDuration = 31556888202959784

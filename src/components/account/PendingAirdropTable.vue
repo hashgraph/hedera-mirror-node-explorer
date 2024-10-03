@@ -51,7 +51,11 @@
       aria-page-label="Page"
       aria-previous-label="Previous page"
   >
-    <o-table-column v-slot="{ row }" field="token_id" label="Token">
+    <o-table-column
+        v-slot="{ row }"
+        field="token_id"
+        :label="props.type === TokenType.FUNGIBLE_COMMON ? 'Token' : 'Collection'"
+    >
       <TokenLink
           :show-extra="false"
           :token-id="row.token_id"
@@ -71,11 +75,23 @@
       <div>{{ row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="serial" label="NFT #" position="right">
+    <o-table-column
+        v-if="props.type === TokenType.NON_FUNGIBLE_UNIQUE"
+        v-slot="{ row }"
+        field="serial"
+        label="Serial #"
+        position="right"
+    >
       <div v-if="row.serial_number !== null">{{ row.serial_number }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="balance" label="Balance" position="right">
+    <o-table-column
+        v-else
+        v-slot="{ row }"
+        field="balance"
+        label="Balance"
+        position="right"
+    >
       <TokenAmount
           v-if="! row.serial_number"
           :amount="BigInt(row.amount)"
@@ -83,11 +99,14 @@
       />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="image" label="Image" position="right">
-      <div
-          class="is-flex is-justify-content-end"
-          :class="{'is-invisible':!row.serial_number}"
-      >
+    <o-table-column
+        v-if="props.type === TokenType.NON_FUNGIBLE_UNIQUE"
+        v-slot="{ row }"
+        field="image"
+        label="Image"
+        position="right"
+    >
+      <div class="is-flex is-justify-content-end">
         <NftCell
             :token-id="row.token_id"
             :serial-number="row.serial_number"
@@ -124,7 +143,7 @@
 <script setup lang="ts">
 
 import {PropType, watch} from 'vue';
-import {TokenAirdrop} from "@/schemas/HederaSchemas";
+import {TokenAirdrop, TokenType} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -139,6 +158,10 @@ import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 const props = defineProps({
   controller: {
     type: Object as PropType<PendingAirdropTableController>,
+    required: true
+  },
+  type: {
+    type: String as PropType<TokenType>,
     required: true
   },
   checkEnabled: {
