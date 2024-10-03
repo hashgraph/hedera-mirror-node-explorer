@@ -34,7 +34,7 @@ import {WalletAdapter_Hedera} from "@/utils/wallet/WalletAdaptor_Hedera";
 import {WalletAdapter_Ethereum} from "@/utils/wallet/WalletAdaptor_Ethereum";
 import {routeManager} from "@/router";
 import {AppStorage} from "@/AppStorage";
-import {AccountUpdateTransaction} from "@hashgraph/sdk";
+import {AccountUpdateTransaction, TokenRejectTransaction} from "@hashgraph/sdk";
 
 
 export enum WalletConnectStatus {
@@ -205,9 +205,9 @@ export class WalletManagerV3 {
     // Public (hedera transactions)
     //
 
-    public async rejectTokens(tokenIds: string[]): Promise<string> {
+    public async rejectTokens(transaction: TokenRejectTransaction): Promise<string> {
         if (this.adaptor.value instanceof WalletAdapter_Hedera) {
-            return this.adaptor.value.rejectTokens(tokenIds)
+            return this.adaptor.value.rejectTokens(transaction)
         } else {
             throw "bug"
         }

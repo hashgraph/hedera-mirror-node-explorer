@@ -29,7 +29,6 @@ import {
     ContractExecuteTransaction,
     NftId,
     TokenAssociateTransaction,
-    TokenClaimAirdropTransaction,
     TokenDissociateTransaction,
     TokenId,
     TokenRejectTransaction,
@@ -51,11 +50,9 @@ export class WalletAdapter_Hedera extends WalletAdaptor {
     // Public
     //
 
-    public async rejectTokens(tokenIds: string[]): Promise<string> {
-        const trans = new TokenRejectTransaction()
-        trans.setTokenIds(tokenIds.map(tokenId => TokenId.fromString(tokenId)))
-        trans.setOwnerId(AccountId.fromString(this.accountId))
-        const result = await this.executeTransaction(trans)
+    public async rejectTokens(transaction: TokenRejectTransaction): Promise<string> {
+        transaction.setOwnerId(AccountId.fromString(this.accountId))
+        const result = await this.executeTransaction(transaction)
         await this.waitForTransactionSurfacing(result)
         return Promise.resolve(result)
     }
@@ -145,7 +142,7 @@ export class WalletAdapter_Hedera extends WalletAdaptor {
 
     public async claimTokenAirdrops(airdrops: TokenAirdrop[]): Promise<string> {
 
-        const trans = new TokenClaimAirdropTransaction()
+        // const trans = new TokenClaimAirdropTransaction()
 
         console.log(`Building TokenClaimAirdropTransaction:`)
 

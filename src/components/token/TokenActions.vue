@@ -419,7 +419,9 @@ export default defineComponent({
           showProgressSpinner.value = true
           progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
           try {
-            await walletManager.rejectTokens([tokenId.value!])
+            const transaction = new TokenRejectTransaction()
+            transaction.addTokenId(TokenId.fromString(tokenId.value!))
+            await walletManager.rejectTokens(transaction)
           } finally {
             props.analyzer.tokenAssociationDidChange()
             gtagTransaction("reject_token")
