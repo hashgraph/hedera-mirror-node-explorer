@@ -564,9 +564,11 @@ const onUpdateAccount = () => updateDialogController.visible.value = true
 
 const onUpdateCompleted = () => accountLocParser.remount()
 
-const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
-const isAccountEditable = computed(() => isWalletConnected.value && isHederaWallet.value)
+const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value)
+
 const transactionType = computed(() => transactionTableController.transactionType.value)
 const loaded = computed(() => verifiedContractsController.loaded.value)
 const overflow = computed(() => verifiedContractsController.overflow.value)
