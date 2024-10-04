@@ -32,7 +32,20 @@
 
     <DashboardCard collapsible-key="accountDetails">
       <template v-if="!isInactiveEvmAddress" v-slot:title>
-        <span class="h-is-primary-title">Account </span>
+        <figure
+            v-if="isMyAccount"
+            class="is-flex is-align-items-center"
+            style="height: 40px;"
+        >
+          <img
+              v-if="isMyAccount"
+              :src="walletIconURL ?? undefined"
+              alt="wallet logo"
+              class="mr-3"
+          >
+          <span  class="h-is-primary-title">My Account</span>
+        </figure>
+        <span v-else class="h-is-primary-title">Account</span>
       </template>
       <template v-else v-slot:title>
         <span class="h-is-primary-title">Inactive EVM Address</span>
@@ -43,7 +56,7 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <Copyable :content-to-copy="normalizedAccountId ?? ''">
             <template v-slot:content>
-              <span>{{ normalizedAccountId ?? "" }}</span>
+              <span :class="{'h-is-secondary-title': isMyAccount}">{{ normalizedAccountId ?? "" }}</span>
             </template>
           </Copyable>
           <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
@@ -551,9 +564,11 @@ const onUpdateAccount = () => updateDialogController.visible.value = true
 
 const onUpdateCompleted = () => accountLocParser.remount()
 
-const isWalletConnected = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
-const isAccountEditable = computed(() => isWalletConnected.value && isHederaWallet.value)
+const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value)
+
 const transactionType = computed(() => transactionTableController.transactionType.value)
 const loaded = computed(() => verifiedContractsController.loaded.value)
 const overflow = computed(() => verifiedContractsController.overflow.value)
