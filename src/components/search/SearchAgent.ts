@@ -555,6 +555,8 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
         throw "Must be subclassed"
     }
 
+    protected abstract makeRoute(tokenName: string): RouteLocationRaw
+
     //
     // SearchAgent
     //
@@ -580,9 +582,9 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
                 }
             }
             if (tokens.length > this.limit) {
-                const description = "Only first " + this.limit + " matches are shown"
-                const dummyRoute = routeManager.makeRouteToMainDashboard()
-                const candidate = new SearchCandidate<TokenLike>(description, null, dummyRoute, tokens[0], this, true)
+                const description = "Show more…"
+                const route = this.makeRoute(tokenName)
+                const candidate = new SearchCandidate<TokenLike>(description, null, route, tokens[0], this)
                 result.push(candidate)
             }
         }
@@ -616,6 +618,10 @@ export class NarrowTokenNameSearchAgent extends TokenNameSearchAgent {
         }
         return Promise.resolve(result)
     }
+
+    protected makeRoute(tokenName: string): RouteLocationRaw {
+        return routeManager.makeRouteToTokensByPopularity(tokenName)
+    }
 }
 
 export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
@@ -638,6 +644,10 @@ export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
         const result = r.data.tokens ?? []
         result.sort((t1: TokenLike, t2:TokenLike) => FullTokenNameSearchAgent.compareToken(t1, t2, tokenName))
         return Promise.resolve(result)
+    }
+
+    protected makeRoute(tokenName: string): RouteLocationRaw {
+        return routeManager.makeRouteToTokensByName(tokenName)
     }
 
     //
