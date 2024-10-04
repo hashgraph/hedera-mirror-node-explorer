@@ -266,21 +266,6 @@ export default defineComponent({
     }
 
     //
-    // handleReject()
-    //
-    const handleReject = () => {
-      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-        action.value = 'REJECT'
-        showConfirmDialog.value = true
-        dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
-        confirmMessage.value = `Confirm rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
-        confirmExtraMessage.value = null
-      } else {
-        alertController.visible.value = true
-      }
-    }
-
-    //
     // handleConfirm()
     //
     const handleConfirm = () => {
@@ -298,9 +283,6 @@ export default defineComponent({
           break;
         case "DISSOCIATE":
           dissociateAction();
-          break;
-        case "REJECT":
-          rejectAction();
           break;
         case "REJECT":
           rejectAction();
@@ -377,33 +359,6 @@ export default defineComponent({
         showDoneDialog.value = true
         dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
         doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
-      } catch (reason) {
-        handleError(reason)
-      }
-    }
-
-    //
-    // rejectAction()
-    //
-    const rejectAction = async () => {
-      try {
-        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
-          showProgressDialog.value = true
-          showProgressSpinner.value = true
-          progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
-          try {
-            const transaction = new TokenRejectTransaction()
-            transaction.addTokenId(TokenId.fromString(tokenId.value!))
-            await walletManager.rejectTokens(transaction)
-          } finally {
-            props.analyzer.tokenAssociationDidChange()
-            gtagTransaction("reject_token")
-          }
-        }
-        showProgressDialog.value = false
-        showDoneDialog.value = true
-        dialogTitle.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}`
-        doneMessage.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
       } catch (reason) {
         handleError(reason)
       }

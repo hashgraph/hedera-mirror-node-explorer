@@ -272,8 +272,7 @@ const rejectEnabled = computed(() => {
   const isTableFilled = (selectedTab.value === 'fungible' && fungibleTableController.totalRowCount.value >= 1)
       || (selectedTab.value === 'nfts' && nftsTableController.totalRowCount.value >= 1)
 
-  return walletManager.connected.value
-      && walletManager.isHederaWallet.value
+  return walletManager.isHederaWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
 })
@@ -321,7 +320,6 @@ const claimButtonHint = computed(() => {
 })
 
 const claimEnabled = computed(() =>
-    walletManager.connected.value &&
     walletManager.isHederaWallet.value &&
     walletManager.accountId.value === props.accountId &&
     (nftsAirdropTableController.totalRowCount.value >= 1 || fungibleAirdropTableController.totalRowCount.value >= 1))
