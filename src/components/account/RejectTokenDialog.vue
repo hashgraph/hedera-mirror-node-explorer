@@ -37,16 +37,16 @@
       <div class="h-is-tertiary-text mb-4">
         {{ inputMessage }}
       </div>
-      <div class="h-is-property-text has-text-grey-light mt-4">
+      <div class="h-is-property-text has-text-grey mt-4">
         {{ inputMessageDetails1 }}
       </div>
-      <div v-if="inputMessageDetails2" class="h-is-property-text mt-2 has-text-grey-light">
+      <div v-if="inputMessageDetails2" class="h-is-property-text mt-2 has-text-grey">
         {{ inputMessageDetails2 }}
       </div>
-      <div v-if="inputMessageDetails3" class="h-is-property-text mt-2 has-text-grey-light">
+      <div v-if="inputMessageDetails3" class="h-is-property-text mt-2 has-text-grey">
         {{ inputMessageDetails3 }}
       </div>
-      <div v-if="inputMessageDetails4" class="h-is-property-text mt-2 has-text-grey-light">
+      <div v-if="inputMessageDetails4" class="h-is-property-text mt-2 has-text-grey">
         {{ inputMessageDetails4 }}
       </div>
     </template>
@@ -169,90 +169,113 @@ const zeroBalanceTokens = ref<string[]>([])
 const nbRequiredTransactions = computed(() => Math.ceil(rejectCandidates.value.length / MAX_TOKENS_PER_REJECT))
 
 onMounted(() => {
-  watch(props.controller.visible, (visible) => {
+  watch(props.controller.visible, async (visible) => {
     if (visible) {
-      if (rejectCandidates.value.length === 0) {
-        if (props.tokens!.length > 1) {
-          inputMessage.value = "None of the selected tokens can be rejected."
-        } else {
-          inputMessage.value = "The selected token cannot be rejected."
-        }
-      } else {
-        inputMessage.value = `Do you want to reject ${rejectCandidates.value.length} ${rejectCandidates.value.length > 1 ? 'tokens' : 'token'}`
-        if (rejectCandidates.value.length < props.tokens!.length) {
-          inputMessage.value += ` (out of the ${props.tokens!.length} selected)?`
-        } else {
-          inputMessage.value += '?'
-        }
-      }
-      if (treasuryTokens.value.length >= 1) {
-        inputMessageDetails1.value = `Account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
-      }
-      if (pausedTokens.value.length >= 1) {
-        inputMessageDetails2.value = `These are paused: ${pausedTokens.value.splice(0, 4).join(', ')}`
-      }
-      if (frozenTokens.value.length >= 1) {
-        inputMessageDetails3.value = `These are frozen: ${frozenTokens.value.splice(0, 4).join(', ')}`
-      }
-      if (zeroBalanceTokens.value.length >= 1) {
-        inputMessageDetails4.value = `These have a 0 balance: ${zeroBalanceTokens.value.splice(0, 4).join(', ')}`
-      }
+      await filterSelectedTokens()
+      populateUserFeedback()
     } else {
-      inputMessage.value = null
-      inputMessageDetails1.value = null
-      inputMessageDetails2.value = null
-      inputMessageDetails3.value = null
-      inputMessageDetails4.value = null
+      rejectCandidates.value = []
+      treasuryTokens.value = []
+      pausedTokens.value = []
+      frozenTokens.value = []
+      zeroBalanceTokens.value = []
     }
   }, {immediate: true})
 })
 
-onMounted(() => {
-  watch(() => props.tokens, async (tokens) => {
+const filterSelectedTokens = async () => {
 
-    const accountBalances = (await BalanceCache.instance.lookup(walletManager.accountId.value!))?.balances ?? []
-    const tokenBalances = accountBalances.length >= 1 ? accountBalances[0].tokens : []
-    const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
+  const accountBalances = (await BalanceCache.instance.lookup(walletManager.accountId.value!))?.balances ?? []
+  const tokenBalances = accountBalances.length >= 1 ? accountBalances[0].tokens : []
+  const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
 
-    for (const t of tokens ?? []) {
-      let isTreasury=false
-      let isPaused = false
-      let isFrozen = false
+  for (const t of props.tokens ?? []) {
+    let isTreasury = false
+    let isPaused = false
+    let isFrozen = false
 
-      if ((await TokenInfoCache.instance.lookup(t.token_id!))?.treasury_account_id === walletManager.accountId.value) {
-        isTreasury = true
-        treasuryTokens.value.push(t.token_id!)
-      }
-      if ((await TokenInfoCache.instance.lookup(t.token_id!))?.pause_status === 'PAUSED') {
-        isPaused = true
-        pausedTokens.value.push(t.token_id!)
-      }
-      for (const r of relationships) {
-        if (r.token_id === t.token_id) {
-          isFrozen = r.freeze_status === FreezeStatus.FROZEN
-          break
-        }
-      }
-      if (isFrozen) {
-        frozenTokens.value.push((t.token_id!))
-      }
-      let balance = 0
-      for (const b of tokenBalances) {
-        if (b.token_id === t.token_id) {
-          balance = b.balance
-          break
-        }
-      }
-      if (balance === 0) {
-        zeroBalanceTokens.value.push(t.token_id!)
-      }
-      if (!isTreasury && !isPaused && !isFrozen && balance > 0) {
-        console.log(`Adding token ${t.token_id} to the TokenRejectTransaction`)
-        rejectCandidates.value.push(t)
+    if ((await TokenInfoCache.instance.lookup(t.token_id!))?.treasury_account_id === walletManager.accountId.value) {
+      isTreasury = true
+      treasuryTokens.value.push(t.token_id!)
+    }
+    if ((await TokenInfoCache.instance.lookup(t.token_id!))?.pause_status === 'PAUSED') {
+      isPaused = true
+      pausedTokens.value.push(t.token_id!)
+    }
+    for (const r of relationships) {
+      if (r.token_id === t.token_id) {
+        isFrozen = r.freeze_status === FreezeStatus.FROZEN
+        break
       }
     }
-  })
-})
+    if (isFrozen) {
+      frozenTokens.value.push((t.token_id!))
+    }
+    let balance = 0
+    for (const b of tokenBalances) {
+      if (b.token_id === t.token_id) {
+        balance = b.balance
+        break
+      }
+    }
+    if (balance === 0) {
+      zeroBalanceTokens.value.push(t.token_id!)
+    }
+    if (!isTreasury && !isPaused && !isFrozen && balance > 0) {
+      console.log(`Adding token ${t.token_id} to the TokenRejectTransaction`)
+      rejectCandidates.value.push(t)
+    }
+  }
+}
+
+const populateUserFeedback = () => {
+
+  if (rejectCandidates.value.length === 0) {
+    if (props.tokens!.length > 1) {
+      inputMessage.value = "None of the selected tokens can be rejected."
+    } else {
+      inputMessage.value = "The selected token cannot be rejected."
+    }
+  } else {
+    if (rejectCandidates.value.length === 1) {
+      inputMessage.value = `Do you want to reject token ${rejectCandidates.value[0].token_id}`
+    } else {
+      inputMessage.value = `Do you want to reject ${rejectCandidates.value.length} tokens`
+    }
+    if (rejectCandidates.value.length < props.tokens!.length) {
+      inputMessage.value += ` (out of the ${props.tokens!.length} selected)?`
+    } else {
+      inputMessage.value += '?'
+    }
+  }
+  if (treasuryTokens.value.length >= 1) {
+    inputMessageDetails1.value = `Account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
+    inputMessageDetails1.value += (treasuryTokens.value.length > 4 ? '…' : '')
+  } else {
+    inputMessageDetails1.value = null
+  }
+  if (pausedTokens.value.length >= 1) {
+    inputMessageDetails2.value = pausedTokens.value.length === 1 ? "This token is paused: " : "These are paused: "
+    inputMessageDetails2.value += pausedTokens.value.splice(0, 4).join(', ')
+    inputMessageDetails2.value += (pausedTokens.value.length > 4 ? '…' : '')
+  } else {
+    inputMessageDetails2.value = null
+  }
+  if (frozenTokens.value.length >= 1) {
+    inputMessageDetails3.value = frozenTokens.value.length === 1 ? "This token is frozen: " : "These are frozen: "
+    inputMessageDetails3.value += frozenTokens.value.splice(0, 4).join(', ')
+    inputMessageDetails3.value += (frozenTokens.value.length > 4 ? '…' : '')
+  } else {
+    inputMessageDetails3.value = null
+  }
+  if (zeroBalanceTokens.value.length >= 1) {
+    inputMessageDetails4.value = zeroBalanceTokens.value.length === 1 ? "This token has a 0 balance: " : "These have a 0 balance: "
+    inputMessageDetails4.value += zeroBalanceTokens.value.splice(0, 4).join(', ')
+    inputMessageDetails4.value += (zeroBalanceTokens.value.length > 4 ? '…' : '')
+  } else {
+    inputMessageDetails4.value = null
+  }
+}
 
 //
 // Handle Reject Transaction(s)
