@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="controller" :width="624">
+  <Dialog :controller="controller" :width="700">
 
     <!-- title -->
     <template #dialogTitle>
@@ -37,8 +37,17 @@
       <div class="h-is-tertiary-text mb-4">
         {{ inputMessage }}
       </div>
-      <div class="h-is-property-text">
-        {{ inputMessageDetails }}
+      <div class="h-is-property-text has-text-grey-light mt-4">
+        {{ inputMessageDetails1 }}
+      </div>
+      <div v-if="inputMessageDetails2" class="h-is-property-text mt-2 has-text-grey-light">
+        {{ inputMessageDetails2 }}
+      </div>
+      <div v-if="inputMessageDetails3" class="h-is-property-text mt-2 has-text-grey-light">
+        {{ inputMessageDetails3 }}
+      </div>
+      <div v-if="inputMessageDetails4" class="h-is-property-text mt-2 has-text-grey-light">
+        {{ inputMessageDetails4 }}
       </div>
     </template>
 
@@ -113,7 +122,7 @@ import CommitButton from "@/components/dialog/CommitButton.vue";
 import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
-import {Nft, Token} from "@/schemas/HederaSchemas";
+import {FreezeStatus, Nft, Token} from "@/schemas/HederaSchemas";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {BalanceCache} from "@/utils/cache/BalanceCache";
@@ -140,7 +149,10 @@ const formattedTransactionId = computed(() =>
 )
 
 const inputMessage = ref<string | null>(null)
-const inputMessageDetails = ref<string | null>(null)
+const inputMessageDetails1 = ref<string | null>(null)
+const inputMessageDetails2 = ref<string | null>(null)
+const inputMessageDetails3 = ref<string | null>(null)
+const inputMessageDetails4 = ref<string | null>(null)
 
 const busyMessage = ref<string | null>(null)
 const busyMessageDetails = ref<string | null>(null)
@@ -148,13 +160,23 @@ const busyMessageDetails = ref<string | null>(null)
 const errorMessage = ref<string | null>(null)
 const errorMessageDetails = ref<string | null>(null)
 
+const rejectCandidates = ref<(Token | Nft)[]>([])
+const treasuryTokens = ref<string[]>([])
+const pausedTokens = ref<string[]>([])
+const frozenTokens = ref<string[]>([])
+const zeroBalanceTokens = ref<string[]>([])
+
 const nbRequiredTransactions = computed(() => Math.ceil(rejectCandidates.value.length / MAX_TOKENS_PER_REJECT))
 
 onMounted(() => {
   watch(props.controller.visible, (visible) => {
     if (visible) {
       if (rejectCandidates.value.length === 0) {
-        inputMessage.value = "None of the selected tokens can be rejected."
+        if (props.tokens!.length > 1) {
+          inputMessage.value = "None of the selected tokens can be rejected."
+        } else {
+          inputMessage.value = "The selected token cannot be rejected."
+        }
       } else {
         inputMessage.value = `Do you want to reject ${rejectCandidates.value.length} ${rejectCandidates.value.length > 1 ? 'tokens' : 'token'}`
         if (rejectCandidates.value.length < props.tokens!.length) {
@@ -163,41 +185,56 @@ onMounted(() => {
           inputMessage.value += '?'
         }
       }
-      if (nbRequiredTransactions.value > 1) {
-        inputMessageDetails.value =
-            `This will require sending ${nbRequiredTransactions.value} transactions ` +
-            `(maximum of ${MAX_TOKENS_PER_REJECT} tokens rejected per transaction).`
-      } else if (rejectCandidates.value.length < (props.tokens?.length ?? 0)) {
-        inputMessageDetails.value = "Tokens with a zero balance, or with your account as treasury account, or paused, or frozen, cannot be rejected."
-      } else {
-        inputMessageDetails.value = ""
+      if (treasuryTokens.value.length >= 1) {
+        inputMessageDetails1.value = `Account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
+      }
+      if (pausedTokens.value.length >= 1) {
+        inputMessageDetails2.value = `These are paused: ${pausedTokens.value.splice(0, 4).join(', ')}`
+      }
+      if (frozenTokens.value.length >= 1) {
+        inputMessageDetails3.value = `These are frozen: ${frozenTokens.value.splice(0, 4).join(', ')}`
+      }
+      if (zeroBalanceTokens.value.length >= 1) {
+        inputMessageDetails4.value = `These have a 0 balance: ${zeroBalanceTokens.value.splice(0, 4).join(', ')}`
       }
     } else {
       inputMessage.value = null
-      inputMessageDetails.value = null
+      inputMessageDetails1.value = null
+      inputMessageDetails2.value = null
+      inputMessageDetails3.value = null
+      inputMessageDetails4.value = null
     }
   }, {immediate: true})
 })
 
-const rejectCandidates = ref<(Token | Nft)[]>([])
-
 onMounted(() => {
   watch(() => props.tokens, async (tokens) => {
-    const result = [] as (Token | Nft)[]
 
     const accountBalances = (await BalanceCache.instance.lookup(walletManager.accountId.value!))?.balances ?? []
     const tokenBalances = accountBalances.length >= 1 ? accountBalances[0].tokens : []
     const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
 
     for (const t of tokens ?? []) {
-      const isTreasury = (await TokenInfoCache.instance.lookup(t.token_id!))?.treasury_account_id === walletManager.accountId.value
-      const isPaused = (await TokenInfoCache.instance.lookup(t.token_id!))?.pause_status === 'PAUSED'
+      let isTreasury=false
+      let isPaused = false
       let isFrozen = false
+
+      if ((await TokenInfoCache.instance.lookup(t.token_id!))?.treasury_account_id === walletManager.accountId.value) {
+        isTreasury = true
+        treasuryTokens.value.push(t.token_id!)
+      }
+      if ((await TokenInfoCache.instance.lookup(t.token_id!))?.pause_status === 'PAUSED') {
+        isPaused = true
+        pausedTokens.value.push(t.token_id!)
+      }
       for (const r of relationships) {
         if (r.token_id === t.token_id) {
-          isFrozen = r.freeze_status === 'FROZEN'
+          isFrozen = r.freeze_status === FreezeStatus.FROZEN
           break
         }
+      }
+      if (isFrozen) {
+        frozenTokens.value.push((t.token_id!))
       }
       let balance = 0
       for (const b of tokenBalances) {
@@ -206,15 +243,14 @@ onMounted(() => {
           break
         }
       }
-      if (!isTreasury && !isFrozen && !isPaused && balance > 0) {
+      if (balance === 0) {
+        zeroBalanceTokens.value.push(t.token_id!)
+      }
+      if (!isTreasury && !isPaused && !isFrozen && balance > 0) {
         console.log(`Adding token ${t.token_id} to the TokenRejectTransaction`)
-        result.push(t)
-      } else {
-        console.log(`Filtering ${t.token_id}`)
+        rejectCandidates.value.push(t)
       }
     }
-
-    rejectCandidates.value = result
   })
 })
 
