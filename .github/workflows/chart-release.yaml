@@ -49,6 +49,6 @@ jobs:
           helm package chart
 
       - name: Build and Push the Helm Charts to GitHub Container Registry
-        uses: JimCronqvist/action-helm-chart-repo@0.10
+        uses: JimCronqvist/action-helm-chart-repo@0.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
