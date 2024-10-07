@@ -31,7 +31,6 @@ import {
     FullTokenNameSearchAgent,
     NarrowTokenNameSearchAgent,
     SearchAgent,
-    SearchCandidate,
     TokenSearchAgent,
     TopicSearchAgent,
     TransactionSearchAgent
@@ -169,25 +168,6 @@ export class SearchController {
         let result = 0
         for (const a of this.allAgents) {
             result += a.candidates.value.length
-        }
-        return result
-    })
-
-    public readonly candidates = computed(() => {
-        let result: SearchCandidate<unknown>[] = []
-        for (const a of this.allAgents) {
-            result = result.concat(a.candidates.value)
-        }
-        return result
-    })
-
-    public readonly defaultCandidate = computed(() => {
-        let result: SearchCandidate<unknown>|null = null
-        for (const c of this.candidates.value) {
-            if (!c.nonExistent) {
-                result = c
-                break
-            }
         }
         return result
     })
