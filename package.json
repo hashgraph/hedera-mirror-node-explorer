@@ -40,7 +40,7 @@
     "bulma": "^0.9.4",
     "core-js": "^3.38.1",
     "crypto-js": "4.1.1",
-    "ethers": "^6.13.2",
+    "ethers": "^6.13.3",
     "file-saver": "^2.0.5",
     "hashconnect": "^0.1.10",
     "jszip": "^3.10.1",
