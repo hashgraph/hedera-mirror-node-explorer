@@ -8,7 +8,9 @@ on:
 permissions:
   contents: read
   packages: write
-
+  pages: write
+  id-token: write
+  
 defaults:
   run:
     shell: bash
