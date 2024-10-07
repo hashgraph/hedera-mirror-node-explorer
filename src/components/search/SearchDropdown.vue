@@ -67,7 +67,7 @@ const props = defineProps({
 
 const selectedAgentId = defineModel("selectedAgentId", {
   type: String as PropType<string|null>,
-  required: true
+  default: null
 })
 
 const selectedAgent = computed(() => {
