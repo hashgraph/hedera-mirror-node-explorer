@@ -26,7 +26,7 @@
   <div>
     <template v-for="(c,i) in searchAgent.candidates.value" :key="i">
       <button class="button-as-link h-is-property-text"
-              :class="{'h-is-hoverable': c.route !== null, 'has-text-grey': c.route === null}"
+              :class="{'h-is-hoverable': c.route !== null, 'has-text-grey': c.route === null || c.secondary}"
               @click="navigate(c)" :disabled="c.route === null" style="width: 100%">
         {{ c.description }}
         <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>

@@ -115,7 +115,8 @@ export class SearchCandidate<E> {
                 readonly extra: string|null,
                 readonly route: RouteLocationRaw | null,
                 readonly entity: E,
-                readonly agent: SearchAgent<unknown,E>) {}
+                readonly agent: SearchAgent<unknown,E>,
+                readonly secondary: boolean = false) {}
 }
 
 
@@ -189,25 +190,23 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
                 result = []
             }
         } else if (accountInfos.length >= 2) { // => accountLoc instanceof Uint8Array
-            if (drained) {
-                // We have all the accounts matching accountLoc (10 max) => we display them all
-                result = []
-                for (const a of accountInfos) {
-                    if (a.account !== null) {
-                        const description = a.account
-                        const route = routeManager.makeRouteToAccount(a.account)
-                        const candidate = new SearchCandidate<AccountInfo>(description, null, route, a, this)
-                        result.push(candidate)
-                    }
+            result = []
+            for (const a of accountInfos) {
+                if (a.account !== null) {
+                    const description = a.account
+                    const route = routeManager.makeRouteToAccount(a.account)
+                    const candidate = new SearchCandidate<AccountInfo>(description, null, route, a, this)
+                    result.push(candidate)
                 }
-            } else {
+            }
+            if (!drained) {
                 // There's more than 10 accounts matching accountLoc => we display a navigation link
-                const description = "All accounts with public key above"
+                const description = "Show more…"
                 const key = byteToHex(accountLoc as Uint8Array)
                 const route = routeManager.makeRouteToAccountsWithKey(key)
                 const accountInfo0 = accountInfos[0]
-                const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo0, this)
-                result = [candidate]
+                const candidate = new SearchCandidate<AccountInfo>(description, null, route, accountInfo0, this, true)
+                result.push(candidate)
             }
         } else {
             result = []
@@ -583,7 +582,8 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
             if (tokens.length > this.limit) {
                 const description = "Show more…"
                 const route = this.makeRoute(tokenName)
-                const candidate = new SearchCandidate<TokenLike>(description, null, route, tokens[0], this)
+                const candidate
+                    = new SearchCandidate<TokenLike>(description, null, route, tokens[0], this, true)
                 result.push(candidate)
             }
         }
