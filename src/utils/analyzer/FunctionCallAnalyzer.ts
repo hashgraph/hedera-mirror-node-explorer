@@ -248,7 +248,7 @@ export class FunctionCallAnalyzer {
                     this.functionDecodingFailure.value = null
                     this.is4byteFunctionFragment.value = false
 
-                    // please refer to the ticket below for more information on this logic for redirectForToken(address,bytes) method on HTS System Contract 
+                    // please refer to the ticket below for more information on this logic for redirectForToken(address,bytes) method on HTS System Contract
                     // https://github.com/hashgraph/hedera-mirror-node-explorer/issues/921
                     if (ff !== null && isRedirectForTokenTx(contractId, functionHash)) {
                         this.functionFragment.value = resolveFunctionFragmentForHTSProxyContract(ff, inputArgs)
@@ -378,7 +378,10 @@ export class FunctionCallAnalyzer {
     }
 
     private makeComment(value: unknown, paramType: ethers.ParamType): string | null {
-        if (this.contractAnalyzer.systemContractEntry.value !== null
+        const isSystemContract =
+            this.contractAnalyzer.systemContractEntry.value !== null ||
+            this.contractAnalyzer.tokenInfo.value !== null // Target is a token => IERC20 or IERC721
+        if (isSystemContract
             && paramType.name == "responseCode"
             && typeof value == "bigint") {
             // It's a responseCode from a system contract

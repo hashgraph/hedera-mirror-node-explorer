@@ -35,7 +35,7 @@ export class ContractAnalyzer {
     public readonly contractId: Ref<string | null>
     public readonly byteCodeAnalyzer: ByteCodeAnalyzer
     private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
-    private readonly tokenInfo: Ref<TokenInfo|null> = ref(null)
+    public readonly tokenInfo: Ref<TokenInfo|null> = ref(null)
     public readonly systemContractEntry: Ref<SystemContractEntry | null> = ref(null)
     public readonly sourcifyRecord: Ref<SourcifyRecord | null> = ref(null)
     private readonly abi: Ref<ethers.Fragment[] | null> = ref(null)
