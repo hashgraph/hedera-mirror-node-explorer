@@ -29,7 +29,7 @@
     <DashboardCard>
       <template v-slot:title>
         <span class="h-is-primary-title">Tokens matching </span>
-        <span class="h-is-secondary-text">{{ name }}</span>
+        <span class="h-is-secondary-text">"{{ name }}"</span>
       </template>
       <template v-slot:content>
         <TokensByNameTable :name="name"/>
