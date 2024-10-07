@@ -125,7 +125,7 @@ watch(selectedAgent, () => {
 })
 
 const handleSubmit = () => {
-  if (selectedAgent.value !== null && defaultCandidate.value !== null) {
+  if (selectedAgent.value !== null && defaultCandidate.value?.route) {
     searchedText.value = "" // Hides SearchDropdown
     selectedAgent.value.willNavigate(defaultCandidate.value)
     router.push(defaultCandidate.value.route)

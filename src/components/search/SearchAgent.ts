@@ -113,10 +113,9 @@ export abstract class SearchAgent<L, E> {
 export class SearchCandidate<E> {
     constructor(readonly description: string,
                 readonly extra: string|null,
-                readonly route: RouteLocationRaw,
+                readonly route: RouteLocationRaw | null,
                 readonly entity: E,
-                readonly agent: SearchAgent<unknown,E>,
-                readonly nonExistent: boolean = false) {}
+                readonly agent: SearchAgent<unknown,E>) {}
 }
 
 
@@ -476,9 +475,9 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
                 const description = record.entityId
                 const nonExistent = accountInfo == null
                 const extra = nonExistent ? "non-existent" : null
-                const route = routeManager.makeRouteToAccount(record.entityId)
+                const route = nonExistent ? null : routeManager.makeRouteToAccount(record.entityId)
                 const resolution = new DomainNameResolution(record, accountInfo)
-                result = new SearchCandidate(description, extra, route, resolution, this, nonExistent)
+                result = new SearchCandidate(description, extra, route, resolution, this)
             } else {
                 result = null
             }
