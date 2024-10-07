@@ -81,9 +81,15 @@ export interface TokenRelationship {
     automatic_association: boolean,
     balance: number,
     created_timestamp: string,
-    freeze_status: string, // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
-    kyc_status: string,    // [ NOT_APPLICABLE, GRANTED, REVOKED ]
+    freeze_status: FreezeStatus,    // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
+    kyc_status: string,             // [ NOT_APPLICABLE, GRANTED, REVOKED ]
     token_id: string | null,
+}
+
+export enum FreezeStatus {
+    FROZEN = "FROZEN",
+    UNFROZEN = "UNFROZEN",
+    NOT_APPLICABLE = "NOT_APPLICABLE"
 }
 
 export interface CryptoAllowancesResponse {
