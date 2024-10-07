@@ -878,11 +878,11 @@ describe("SearchController.vue", () => {
         expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
         const candidates = controller.visibleAgents.value[0].candidates.value
         expect(candidates.length).toBe(2)
-        expect(candidates[0].description).toBe(SAMPLE_TOKEN.name)
+        expect(candidates[0].description).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54…")
         expect(candidates[0].extra).toBe(" " + SAMPLE_TOKEN.token_id)
         expect(candidates[0].secondary).toBe(false)
         expect(candidates[0].entity).toStrictEqual(SAMPLE_TOKEN)
-        expect(candidates[1].description).toBe(SAMPLE_TOKEN_DUDE.name)
+        expect(candidates[1].description).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54…")
         expect(candidates[1].extra).toBe(" " + SAMPLE_TOKEN_DUDE.token_id)
         expect(candidates[1].secondary).toBe(false)
         expect(candidates[1].entity).toStrictEqual(SAMPLE_TOKEN_DUDE)
