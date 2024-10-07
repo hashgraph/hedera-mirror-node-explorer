@@ -568,11 +568,15 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
             tokens = []
         }
 
+        const truncate = (value: string, length: number): string => {
+            return value.length > length ? value.slice(0, length) + '…' : value
+        }
+
         const result: SearchCandidate<TokenLike>[] = []
         if (tokens.length >= 1) {
             for (const t of tokens.slice(0, this.limit)) {
                 if (t.token_id !== null) {
-                    const description = t.name
+                    const description = truncate(t.name, 35)
                     const extra = " " + t.token_id
                     const route = routeManager.makeRouteToToken(t.token_id)
                     const candidate = new SearchCandidate<TokenLike>(description, extra, route, t, this)
