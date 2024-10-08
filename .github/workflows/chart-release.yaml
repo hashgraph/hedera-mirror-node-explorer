@@ -50,3 +50,10 @@ jobs:
         uses: JimCronqvist/action-helm-chart-repo@0.1.0
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish helm chart to github pages
+        uses: step-security/helm-gh-pages@6a390e89293c1ec8bc5120f6692f3b8a313a9a3d # v1.7.0
+        with:
+          charts_dir: .
+          target_dir: charts
+          token: ${{ secrets.GITHUB_TOKEN }}
