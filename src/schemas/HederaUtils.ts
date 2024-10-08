@@ -28,9 +28,11 @@ import {
     HTS_PRECOMPILE_CONTRACT_ID,
     KeyType,
     NetworkNode,
+    Nft,
     Nfts,
     NftTransfer,
     REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
+    Token,
     TokenInfo,
     TokenRelationship,
     TokenRelationshipResponse,
@@ -104,6 +106,11 @@ export function formatTokenAmount(rawAmount: bigint, decimalCount: number): stri
         result = amountFormatter.format(rawAmount)
     }
     return result
+}
+
+export function tokenOrNftId(token: Token | Nft): string {
+    const serial = (token as Nft).serial_number
+    return token.token_id + (serial != undefined ? ` #${serial.toString()}` : "")
 }
 
 export function makeNodeDescription(node: NetworkNode): string {
