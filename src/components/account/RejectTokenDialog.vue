@@ -114,7 +114,7 @@
 
 import {computed, onMounted, PropType, ref, watch} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {tokenOrNftId, waitForTransactionRefresh} from "@/schemas/HederaUtils";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import DialogButton from "@/components/dialog/DialogButton.vue";
@@ -148,15 +148,10 @@ const formattedTransactionId = computed(() =>
     tid.value != null ? TransactionID.normalize(tid.value, true) : null
 )
 
-const tokenOrNft = computed(() =>
-    (props.tokens && props.tokens.length >= 1 && (props.tokens[0] as Nft).serial_number)
-        ? 'NFT'
-        : 'token'
-)
-const tokenOrCollection = computed(() =>
-    (props.tokens && props.tokens.length >= 1 && (props.tokens[0] as Nft).serial_number)
-        ? 'collection'
-        : 'token'
+const isNft = computed(() =>
+    props.tokens
+    && props.tokens.length >= 1
+    && (props.tokens[0] as Nft).serial_number != undefined
 )
 
 const inputMessage = ref<string | null>(null)
@@ -243,15 +238,15 @@ const populateUserFeedback = () => {
 
   if (rejectCandidates.value.length === 0) {
     if (props.tokens!.length > 1) {
-      inputMessage.value = `None of the selected ${tokenOrNft} can be rejected.`
+      inputMessage.value = `None of the selected ${isNft.value ? "NFT" : "token"} can be rejected.`
     } else {
-      inputMessage.value = `The selected ${tokenOrNft} cannot be rejected.`
+      inputMessage.value = `The selected ${isNft.value ? "NFT" : "token"} cannot be rejected.`
     }
   } else {
     if (rejectCandidates.value.length === 1) {
-      inputMessage.value = `Do you want to reject ${tokenOrNft.value} ${tokenOrNftId(rejectCandidates.value[0])}`
+      inputMessage.value = `Do you want to reject ${isNft.value ? "NFT" : "token"} ${tokenOrNftId(rejectCandidates.value[0])}`
     } else {
-      inputMessage.value = `Do you want to reject ${rejectCandidates.value.length} ${tokenOrNft.value}s`
+      inputMessage.value = `Do you want to reject ${rejectCandidates.value.length} ${isNft.value ? "NFT" : "token"}s`
     }
     if (rejectCandidates.value.length < props.tokens!.length) {
       inputMessage.value += ` (out of the ${props.tokens!.length} selected)?`
@@ -266,14 +261,14 @@ const populateUserFeedback = () => {
     inputMessageDetails1.value = null
   }
   if (pausedTokens.value.length >= 1) {
-    inputMessageDetails2.value = pausedTokens.value.length === 1 ? `This ${tokenOrCollection.value} is paused: ` : "These are paused: "
+    inputMessageDetails2.value = pausedTokens.value.length === 1 ? `This ${isNft.value ? "collection" : "token"} is paused: ` : "These are paused: "
     inputMessageDetails2.value += pausedTokens.value.splice(0, 4).join(', ')
     inputMessageDetails2.value += (pausedTokens.value.length > 4 ? '…' : '')
   } else {
     inputMessageDetails2.value = null
   }
   if (frozenTokens.value.length >= 1) {
-    inputMessageDetails3.value = frozenTokens.value.length === 1 ? `This ${tokenOrCollection.value} is frozen: ` : "These are frozen: "
+    inputMessageDetails3.value = frozenTokens.value.length === 1 ? `This ${isNft.value ? "collection" : "token"} is frozen: ` : "These are frozen: "
     inputMessageDetails3.value += frozenTokens.value.splice(0, 4).join(', ')
     inputMessageDetails3.value += (frozenTokens.value.length > 4 ? '…' : '')
   } else {
@@ -286,11 +281,6 @@ const populateUserFeedback = () => {
   } else {
     inputMessageDetails4.value = null
   }
-}
-
-const tokenOrNftId = (token: Token | Nft): string => {
-  const serial = (token as Nft).serial_number
-  return  token.token_id + (serial != undefined ? `#${serial.toString()}` : "")
 }
 
 //

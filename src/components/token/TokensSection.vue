@@ -72,7 +72,7 @@
         <FungibleTable
             :controller="fungibleTableController"
             :check-enabled="rejectEnabled"
-            v-model:checked-tokens="selection"
+            v-model:checked-tokens="checkedTokens"
         />
       </div>
 
@@ -80,7 +80,7 @@
         <NftsTable
             :controller="nftsTableController"
             :check-enabled="rejectEnabled"
-            v-model:checked-nfts="selection"
+            v-model:checked-nfts="checkedTokens"
         />
       </div>
 
@@ -115,7 +115,7 @@
   </DashboardCard>
 
   <RejectTokenDialog
-      :tokens="selection"
+      :tokens="checkedTokens"
       :controller="rejectDialogController"
       @rejected="onRejectCompleted"
   />
@@ -151,6 +151,7 @@ import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
+import {tokenOrNftId} from "@/schemas/HederaUtils";
 
 const props = defineProps({
   accountId: {
@@ -174,7 +175,7 @@ const selectedTab = ref<string | null>(AppStorage.getAccountTokenTab() ?? tabIds
 const onSelectTab = (tab: string | null) => {
   selectedTab.value = tab
   AppStorage.setAccountTokenTab(tab)
-  selection.value.splice(0)
+  checkedTokens.value.splice(0)
   checkedAirdrops.value.splice(0)
 }
 
@@ -246,7 +247,7 @@ const onReject = () => {
 }
 
 const onRejectCompleted = () => {
-  selection.value.splice(0)
+  checkedTokens.value.splice(0)
   if (selectedTab.value === 'fungible') {
     fungibleTableController.refresh()
   } else {
@@ -254,14 +255,18 @@ const onRejectCompleted = () => {
   }
 }
 
+const isNftSelection = computed(() =>
+    checkedTokens.value.length >= 1
+    && (checkedTokens.value[0] as Nft).serial_number != undefined
+)
+
 const rejectButtonHint = computed(() => {
   let result: string
-  const checkedCount = selection.value.length
+  const checkedCount = checkedTokens.value.length
   if (checkedCount >= 2) {
-    result = `${checkedCount} selected tokens`
+    result = `${checkedCount} selected ${isNftSelection.value ? "NFT" : "token"}s`
   } else if (checkedCount == 1) {
-    const checkedTokenId = selection.value[0].token_id
-    result = `${checkedTokenId} selected`
+    result = `${tokenOrNftId(checkedTokens.value[0])} selected`
   } else {
     result = "Select tokens"
   }
@@ -279,10 +284,10 @@ const rejectEnabled = computed(() => {
 })
 
 const rejectButtonEnabled = computed(() =>
-    (selection.value.length >= 1)
+    (checkedTokens.value.length >= 1)
 )
 
-const selection = ref<(Token | Nft)[]>([])
+const checkedTokens = ref<(Token | Nft)[]>([])
 
 //
 // Claim
