@@ -89,7 +89,7 @@
             :selected-tab="airdropSelectedTab"
             :tab-ids="airdropTabIds"
             :tabLabels="airdropTabLabels"
-            :sub-tab="true"
+            :sub-tabs="true"
             @update:selectedTab="onAirdropSelectTab"
         />
         <div v-if="airdropSelectedTab === 'nfts'">
