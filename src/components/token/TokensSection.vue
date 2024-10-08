@@ -35,7 +35,7 @@
           v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled"
           class="is-flex is-align-items-baseline"
       >
-        <span class="mr-2 h-is-property-text">{{ rejectButtonHint }}</span>
+        <span class="mr-2 h-is-property-text has-text-grey">{{ rejectButtonHint }}</span>
         <button
             id="reject-button"
             class="button is-white is-small"
@@ -49,7 +49,7 @@
           v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
           class="is-flex is-align-items-baseline"
       >
-        <span class="mr-2 h-is-property-text">{{ claimButtonHint }}</span>
+        <span class="mr-2 h-is-property-text has-text-grey">{{ claimButtonHint }}</span>
         <button
             id="approve-button"
             class="button is-white is-small"
