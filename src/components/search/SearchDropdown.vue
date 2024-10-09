@@ -24,20 +24,17 @@
 
 <template>
   <div style="position: relative" data-cy="searchDropdown">
-    <div v-if="searchController.visible.value" class="box" style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
-      <template v-for="(c,i) in searchController.candidates.value" :key="c.description">
-        <button class="button-as-link h-is-property-text"
-                :class="{'h-is-hoverable': !c.nonExistent, 'has-text-grey': c.nonExistent}"
-                @click="navigate(c)" :disabled="c.nonExistent">
-          {{ c.description }}
-          <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
-          <span v-if="i == 0" style="float: right">&#x23ce;</span>
-        </button>
-      </template>
-      <template v-for="a in searchController.domainNameSearchAgents" :key="a.constructor.name">
-        <div v-if="a.loading.value" class="has-text-grey h-is-property-text">
-          Connecting to {{ a.provider.providerAlias }}…
-        </div>
+    <div v-if="searchController.visible.value"
+         class="box" style="position: absolute; display: flex; flex-direction: column; gap: 4px; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 10px">
+      <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+      <SearchSection v-if="selectedAgent !== null" :search-controller="searchController" :search-agent="selectedAgent"/>
+      <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">
+        <hr v-if="searchController.visibleAgents.value.length >= 1" class="h-card-separator m-0" style="height:1px"/>
+        <template v-for="a in searchController.domainNameSearchAgents" :key="a.id">
+          <div v-if="a.loading.value" class="has-text-grey h-is-property-text">
+            Connecting to {{ a.provider.providerAlias }}…
+          </div>
+        </template>
       </template>
       <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey h-is-property-text">
         No match
@@ -54,10 +51,12 @@
 
 <script setup lang="ts">
 
-import {PropType} from "vue";
+import {computed, PropType} from "vue";
 import {SearchController} from "@/components/search/SearchController";
-import {SearchCandidate} from "@/components/search/SearchAgent";
 import router, {routeManager} from "@/router";
+import SearchTabs from "@/components/search/SearchTabs.vue";
+import SearchSection from "@/components/search/SearchSection.vue";
+import {SearchAgent} from "@/components/search/SearchAgent";
 
 const props = defineProps({
   "searchController": {
@@ -66,16 +65,26 @@ const props = defineProps({
   }
 })
 
-const navigate = (c: SearchCandidate<unknown>) => {
-  props.searchController.inputText.value = "" // Hides SearchDropDown
-  c.agent.willNavigate(c)
-  router.push(c.route)
-}
+const selectedAgentId = defineModel("selectedAgentId", {
+  type: String as PropType<string|null>,
+  default: null
+})
+
+const selectedAgent = computed(() => {
+  let result: SearchAgent<unknown, unknown>|null
+  if (selectedAgentId.value !== null) {
+    result = props.searchController.findAgentById(selectedAgentId.value)
+  } else {
+    result = null
+  }
+  return result
+})
 
 const navigateToHelp = () => {
   props.searchController.inputText.value = "" // Hides SearchDropDown
   router.push(routeManager.makeRouteToSearchHelp())
 }
+
 
 </script>
 
@@ -83,13 +92,4 @@ const navigateToHelp = () => {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-.button-as-link {
-  background: none!important;
-  border: none;
-  padding: 0!important;
-  text-align: left;
-  color: white;
-  cursor: pointer;
-}
-</style>
+<style scoped/>

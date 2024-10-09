@@ -304,6 +304,20 @@ export class RouteManager {
         return result
     }
 
+    public makeRouteToTokensByName(name: string): RouteLocationRaw {
+        return {
+            name: 'TokensByName',
+            params: {name: name, network: this.currentNetwork.value}
+        }
+    }
+
+    public makeRouteToTokensByPopularity(name: string): RouteLocationRaw {
+        return {
+            name: 'TokensByPopularity',
+            params: {name: name, network: this.currentNetwork.value}
+        }
+    }
+
     //
     // Contract
     //

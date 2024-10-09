@@ -35,12 +35,14 @@ import {
     SAMPLE_CONTRACT_AS_ACCOUNT,
     SAMPLE_CONTRACT_RESULT_DETAILS,
     SAMPLE_TOKEN,
+    SAMPLE_TOKEN_DUDE,
     SAMPLE_TOPIC,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {fetchGetURLs} from "../MockUtils";
 import {base64DecToArr, byteToHex} from "../../../src/utils/B64Utils";
+import {SelectedTokensCache} from "../../../src/utils/cache/SelectedTokensCache";
 
 describe("SearchController.vue", () => {
 
@@ -51,6 +53,11 @@ describe("SearchController.vue", () => {
     const SAMPLE_PATCHED_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT))
     const SAMPLE_PATCHED_ACCOUNT_ID = new EntityID(0, 0, SAMPLE_BLOCK.number)
     SAMPLE_PATCHED_ACCOUNT.account = SAMPLE_PATCHED_ACCOUNT_ID.toString()
+
+    // We derive a NAME_PATTERN from SAMPLE_TOKEN.name
+    const SAMPLE_TOKEN_NAME = SAMPLE_TOKEN.name.slice(2, 5)
+    expect(SAMPLE_TOKEN.name.indexOf(SAMPLE_TOKEN_NAME)).not.toBe(-1)
+    expect(SAMPLE_TOKEN_DUDE.name.indexOf(SAMPLE_TOKEN_NAME)).not.toBe(-1)
 
     beforeEach(() => {
 
@@ -96,6 +103,20 @@ describe("SearchController.vue", () => {
         }
 
         {
+            // Token search by name
+
+            // const abi = require('../../../public/selected-tokens.json')
+            // const matcher = "http://localhost:3000/selected-tokens.json"
+            // mock.onGet(matcher).reply(200, abi)
+            //
+            const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100"
+            mock.onGet(matcher0).reply(200, {
+                tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
+                links: {next: null}
+            })
+        }
+
+        {
             // Topic search
             const matcher0 = "api/v1/topics/" + SAMPLE_TOPIC.topic_id
             mock.onGet(matcher0).reply(200, SAMPLE_TOPIC)
@@ -136,6 +157,7 @@ describe("SearchController.vue", () => {
     })
 
     afterEach(() => {
+        SelectedTokensCache.instance.clear()
         mock.reset()
         vi.useRealTimers()
     })
@@ -148,16 +170,16 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(controller.visible.value).toBe(false)
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
     })
 
@@ -176,8 +198,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_ACCOUNT.account
         await nextTick()
@@ -186,8 +208,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -195,8 +217,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.account)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -211,12 +233,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.account)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Account " + SAMPLE_ACCOUNT.account)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
-
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_ACCOUNT.account)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
     })
 
     it("search account with evm address", async () => {
@@ -229,8 +253,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_ACCOUNT.evm_address
         await nextTick()
@@ -239,8 +263,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -248,8 +272,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.evm_address)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -263,11 +287,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.evm_address)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Account " + SAMPLE_ACCOUNT.account)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_ACCOUNT.account)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
 
 
     })
@@ -282,8 +309,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         const PARTIAL_ADDRESS = "0x0b2607"
         inputText.value = PARTIAL_ADDRESS
@@ -293,8 +320,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -302,8 +329,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(PARTIAL_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -317,11 +344,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(PARTIAL_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Account " + SAMPLE_ACCOUNT.account)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_ACCOUNT.account)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
 
     })
 
@@ -335,8 +365,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_ACCOUNT.alias
         await nextTick()
@@ -345,8 +375,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -354,12 +384,13 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.alias)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",
+            "api/v1/tokens/?name=CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ&limit=100",
         ])
 
         expect(vi.getTimerCount()).toBe(0)
@@ -367,11 +398,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.alias)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Account " + SAMPLE_ACCOUNT.account)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_ACCOUNT.account)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
 
     })
 
@@ -385,8 +419,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_ACCOUNT.key.key
         await nextTick()
@@ -395,8 +429,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -404,8 +438,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.key.key)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -418,11 +452,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.key.key)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Account " + SAMPLE_ACCOUNT.account)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_ACCOUNT.account)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
 
     })
 
@@ -441,8 +478,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_CONTRACT.contract_id
         await nextTick()
@@ -451,8 +488,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -460,8 +497,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_CONTRACT.contract_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -476,15 +513,20 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_CONTRACT.contract_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(2)
-        expect(controller.candidates.value[0].description).toBe("Contract " + SAMPLE_CONTRACT.contract_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT)
-        expect(controller.candidates.value[1].description).toBe("Account " + SAMPLE_CONTRACT.contract_id)
-        expect(controller.candidates.value[1].extra).toBeNull()
-        expect(controller.candidates.value[1].nonExistent).toBe(false)
-        expect(controller.candidates.value[1].entity).toStrictEqual(SAMPLE_CONTRACT_AS_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(2)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const agent0 = controller.visibleAgents.value[0]
+        expect(agent0.candidates.value.length).toBe(1)
+        expect(agent0.candidates.value[0].description).toBe(SAMPLE_CONTRACT.contract_id)
+        expect(agent0.candidates.value[0].extra).toBeNull()
+        expect(agent0.candidates.value[0].secondary).toBe(false)
+        expect(agent0.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT)
+        const agent1 = controller.visibleAgents.value[1]
+        expect(agent1.candidates.value.length).toBe(1)
+        expect(agent1.candidates.value[0].description).toBe(SAMPLE_CONTRACT_AS_ACCOUNT.account)
+        expect(agent1.candidates.value[0].extra).toBeNull()
+        expect(agent1.candidates.value[0].secondary).toBe(false)
+        expect(agent1.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT_AS_ACCOUNT)
 
     })
 
@@ -498,8 +540,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_CONTRACT.evm_address
         await nextTick()
@@ -508,8 +550,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -517,8 +559,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_CONTRACT.evm_address)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -532,15 +574,20 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_CONTRACT.evm_address)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(2)
-        expect(controller.candidates.value[0].description).toBe("Contract " + SAMPLE_CONTRACT.contract_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT)
-        expect(controller.candidates.value[1].description).toBe("Account " + SAMPLE_CONTRACT.contract_id)
-        expect(controller.candidates.value[1].extra).toBeNull()
-        expect(controller.candidates.value[1].nonExistent).toBe(false)
-        expect(controller.candidates.value[1].entity).toStrictEqual(SAMPLE_CONTRACT_AS_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(2)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const agent0 = controller.visibleAgents.value[0]
+        expect(agent0.candidates.value.length).toBe(1)
+        expect(agent0.candidates.value[0].description).toBe(SAMPLE_CONTRACT.contract_id)
+        expect(agent0.candidates.value[0].extra).toBeNull()
+        expect(agent0.candidates.value[0].secondary).toBe(false)
+        expect(agent0.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT)
+        const agent1 = controller.visibleAgents.value[1]
+        expect(agent1.candidates.value.length).toBe(1)
+        expect(agent1.candidates.value[0].description).toBe(SAMPLE_CONTRACT_AS_ACCOUNT.account)
+        expect(agent1.candidates.value[0].extra).toBeNull()
+        expect(agent1.candidates.value[0].secondary).toBe(false)
+        expect(agent1.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT_AS_ACCOUNT)
 
     })
 
@@ -554,8 +601,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         const PARTIAL_EVM_ADDRESS = "0x0b70cf"
         inputText.value = PARTIAL_EVM_ADDRESS
@@ -565,8 +612,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -574,8 +621,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(PARTIAL_EVM_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -589,15 +636,20 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(PARTIAL_EVM_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(2)
-        expect(controller.candidates.value[0].description).toBe("Contract " + SAMPLE_CONTRACT.contract_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT)
-        expect(controller.candidates.value[1].description).toBe("Account " + SAMPLE_CONTRACT.contract_id)
-        expect(controller.candidates.value[1].extra).toBeNull()
-        expect(controller.candidates.value[1].nonExistent).toBe(false)
-        expect(controller.candidates.value[1].entity).toStrictEqual(SAMPLE_CONTRACT_AS_ACCOUNT)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(2)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const agent0 = controller.visibleAgents.value[0]
+        expect(agent0.candidates.value.length).toBe(1)
+        expect(agent0.candidates.value[0].description).toBe(SAMPLE_CONTRACT.contract_id)
+        expect(agent0.candidates.value[0].extra).toBeNull()
+        expect(agent0.candidates.value[0].secondary).toBe(false)
+        expect(agent0.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT)
+        const agent1 = controller.visibleAgents.value[1]
+        expect(agent1.candidates.value.length).toBe(1)
+        expect(agent1.candidates.value[0].description).toBe(SAMPLE_CONTRACT_AS_ACCOUNT.account)
+        expect(agent1.candidates.value[0].extra).toBeNull()
+        expect(agent1.candidates.value[0].secondary).toBe(false)
+        expect(agent1.candidates.value[0].entity).toStrictEqual(SAMPLE_CONTRACT_AS_ACCOUNT)
 
     })
 
@@ -616,8 +668,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_TOKEN.token_id
         await nextTick()
@@ -626,8 +678,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -635,8 +687,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN.token_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -651,11 +703,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN.token_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Token " + SAMPLE_TOKEN.token_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TOKEN)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_TOKEN.token_id)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TOKEN)
 
     })
 
@@ -669,8 +724,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         const SAMPLE_TOKEN_EVM_ADDRESS = EntityID.parse(SAMPLE_TOKEN.token_id)!.toAddress()
         inputText.value = SAMPLE_TOKEN_EVM_ADDRESS
@@ -680,8 +735,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -689,8 +744,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN_EVM_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -704,11 +759,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN_EVM_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Token " + SAMPLE_TOKEN.token_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TOKEN)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_TOKEN.token_id)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TOKEN)
 
     })
 
@@ -722,8 +780,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         const PARTIAL_EVM_ADDRESS = "0x01c49eec"
         inputText.value = PARTIAL_EVM_ADDRESS
@@ -733,8 +791,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -742,8 +800,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(PARTIAL_EVM_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -757,10 +815,77 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(PARTIAL_EVM_ADDRESS)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Token " + SAMPLE_TOKEN.token_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_TOKEN.token_id)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TOKEN)
+
+    })
+
+
+    //
+    // Token with name
+    //
+
+    it("search token with name", async () => {
+
+        const inputText = ref<string>("")
+        const controller = new SearchController(inputText)
+        await flushPromises()
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(false)
+        expect(controller.actualInputText.value).toBe("")
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+
+        inputText.value = SAMPLE_TOKEN_NAME
+        await nextTick()
+        expect(vi.getTimerCount()).toBe(1)
+        expect(controller.visible.value).toBe(false)
+        expect(controller.actualInputText.value).toBe("")
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+
+        vi.advanceTimersToNextTimer()
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(true)
+        expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN_NAME)
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+
+        await flushPromises()
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_TOKEN_NAME,
+            "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100",
+        ])
+
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(true)
+        expect(controller.actualInputText.value).toBe(SAMPLE_TOKEN_NAME)
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(2)
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(2)
+        expect(candidates[0].description).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54…")
+        expect(candidates[0].extra).toBe(" " + SAMPLE_TOKEN.token_id)
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TOKEN)
+        expect(candidates[1].description).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54…")
+        expect(candidates[1].extra).toBe(" " + SAMPLE_TOKEN_DUDE.token_id)
+        expect(candidates[1].secondary).toBe(false)
+        expect(candidates[1].entity).toStrictEqual(SAMPLE_TOKEN_DUDE)
 
     })
 
@@ -780,8 +905,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_TOPIC.topic_id
         await nextTick()
@@ -790,8 +915,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -799,8 +924,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TOPIC.topic_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -815,11 +940,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TOPIC.topic_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Topic " + SAMPLE_TOPIC.topic_id)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TOPIC)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_TOPIC.topic_id)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TOPIC)
 
     })
 
@@ -837,8 +965,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_TRANSACTION.transaction_id
         await nextTick()
@@ -847,8 +975,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -856,8 +984,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TRANSACTION.transaction_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -869,11 +997,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TRANSACTION.transaction_id)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Transaction 0.0.29624024@1646025139.152901498")
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe("0.0.29624024@1646025139.152901498")
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
 
     })
 
@@ -887,8 +1018,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_TRANSACTION.consensus_timestamp
         await nextTick()
@@ -897,8 +1028,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -906,8 +1037,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -919,11 +1050,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Transaction 0.0.29624024@1646025139.152901498")
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe("0.0.29624024@1646025139.152901498")
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
 
     })
 
@@ -937,8 +1071,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = TRANSACTION_HASH
         await nextTick()
@@ -947,8 +1081,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -956,8 +1090,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(TRANSACTION_HASH)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -971,11 +1105,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(TRANSACTION_HASH)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Transaction 0.0.29624024-1646025139-152901498")
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe("0.0.29624024@1646025139.152901498")
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
 
     })
 
@@ -989,8 +1126,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         const ETHEREUM_TRANSACTION_HASH = SAMPLE_CONTRACT_RESULT_DETAILS.hash
         expect(SAMPLE_CONTRACT_RESULT_DETAILS.timestamp).toBe(SAMPLE_TRANSACTION.consensus_timestamp)
@@ -1002,8 +1139,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -1011,8 +1148,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(ETHEREUM_TRANSACTION_HASH)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -1026,11 +1163,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(ETHEREUM_TRANSACTION_HASH)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Transaction 0.0.29624024@1646025139.152901498")
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe("0.0.29624024@1646025139.152901498")
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_TRANSACTION)
 
     })
 
@@ -1048,8 +1188,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_BLOCK.number.toString()
         await nextTick()
@@ -1058,8 +1198,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -1067,8 +1207,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_BLOCK.number.toString())
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -1084,15 +1224,20 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_BLOCK.number.toString())
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(2) // SAMPLE_PATCHED_ACCOUNT + SAMPLE_BLOCK
-        expect(controller.candidates.value[0].description).toBe("Account " + SAMPLE_PATCHED_ACCOUNT.account)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_PATCHED_ACCOUNT)
-        expect(controller.candidates.value[1].description).toBe("Block " + SAMPLE_BLOCK.number)
-        expect(controller.candidates.value[1].extra).toBeNull()
-        expect(controller.candidates.value[1].nonExistent).toBe(false)
-        expect(controller.candidates.value[1].entity).toStrictEqual(SAMPLE_BLOCK)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(2)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const agent0 = controller.visibleAgents.value[0]
+        expect(agent0.candidates.value.length).toBe(1)
+        expect(agent0.candidates.value[0].description).toBe(SAMPLE_PATCHED_ACCOUNT.account)
+        expect(agent0.candidates.value[0].extra).toBeNull()
+        expect(agent0.candidates.value[0].secondary).toBe(false)
+        expect(agent0.candidates.value[0].entity).toStrictEqual(SAMPLE_PATCHED_ACCOUNT)
+        const agent1 = controller.visibleAgents.value[1]
+        expect(agent1.candidates.value.length).toBe(1)
+        expect(agent1.candidates.value[0].description).toBe(SAMPLE_BLOCK.number.toString())
+        expect(agent1.candidates.value[0].extra).toBeNull()
+        expect(agent1.candidates.value[0].secondary).toBe(false)
+        expect(agent1.candidates.value[0].entity).toStrictEqual(SAMPLE_BLOCK)
 
     })
 
@@ -1106,8 +1251,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         inputText.value = SAMPLE_BLOCK.hash
         await nextTick()
@@ -1116,8 +1261,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe("")
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         vi.advanceTimersToNextTimer()
         expect(vi.getTimerCount()).toBe(0)
@@ -1125,8 +1270,8 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_BLOCK.hash)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(0)
-        expect(controller.candidates.value).toStrictEqual([])
-        expect(controller.defaultCandidate.value).toBeNull()
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
@@ -1140,11 +1285,14 @@ describe("SearchController.vue", () => {
         expect(controller.actualInputText.value).toBe(SAMPLE_BLOCK.hash)
         expect(controller.loading.value).toBe(false)
         expect(controller.candidateCount.value).toBe(1)
-        expect(controller.candidates.value[0].description).toBe("Block " + SAMPLE_BLOCK.number)
-        expect(controller.candidates.value[0].extra).toBeNull()
-        expect(controller.candidates.value[0].nonExistent).toBe(false)
-        expect(controller.candidates.value[0].entity).toStrictEqual(SAMPLE_BLOCK)
-        expect(controller.defaultCandidate.value).toStrictEqual(controller.candidates.value[0])
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_BLOCK.number.toString())
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_BLOCK)
 
     })
 

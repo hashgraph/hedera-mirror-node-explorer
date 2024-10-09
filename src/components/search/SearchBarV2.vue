@@ -31,10 +31,12 @@
             class="input has-background-white has-text-black"
             style="border-radius: 10px; height: 50px"
             type="text"
+            spellcheck="false"
             v-model="searchedText"
+            ref="inputElement"
         />
       </form>
-      <SearchDropdown :search-controller="searchController"/>
+      <SearchDropdown :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
     </div>
   </div>
 
@@ -47,8 +49,10 @@
             class="input has-text-white h-is-navbar-item"
             style="z-index: 1; height: 40px"
             type="text"
+            spellcheck="false"
             placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
             v-model="searchedText"
+            ref="inputElement"
         />
         <button class="button is-dark" type="submit" value="searchBar"
                 style="border-color: white; border-left: none; height: 40px; z-index: 0; outline: none"
@@ -56,7 +60,7 @@
           <i class="fa fa-search"/>
         </button>
       </form>
-      <SearchDropdown :search-controller="searchController"/>
+      <SearchDropdown :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
     </div>
   </div>
 
@@ -68,10 +72,11 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref} from "vue";
+import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from "vue";
 import SearchDropdown from "@/components/search/SearchDropdown.vue";
 import {SearchController} from "@/components/search/SearchController";
 import router from "@/router";
+import {SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
 
 const isMediumScreen = inject('isMediumScreen', true)
 // const isTouchDevice = inject('isTouchDevice', false)
@@ -79,16 +84,55 @@ const searchedText = ref<string>("")
 
 const searchController = new SearchController(searchedText)
 
-const handleSubmit = (): void => {
-  const defaultCandidate = searchController.defaultCandidate.value
-  if (defaultCandidate !== null) {
+const inputElement = ref<HTMLInputElement|null>(null)
+
+const selectedAgentId = ref<string|null>(null)
+
+const selectedAgent = computed(() => {
+  let result: SearchAgent<unknown, unknown>|null
+  if (selectedAgentId.value !== null) {
+    result = searchController.findAgentById(selectedAgentId.value)
+  } else {
+    result = null
+  }
+  return result
+})
+
+const candidates = computed(() => {
+  let result: SearchCandidate<unknown>[]
+  if (selectedAgent.value !== null) {
+    result = selectedAgent.value.candidates.value
+  } else {
+    result = []
+  }
+  return result
+})
+
+const defaultCandidate = computed(() => {
+  let result: SearchCandidate<unknown>|null
+  if (candidates.value.length >= 1) {
+    result = candidates.value[0]
+  } else {
+    result = null
+  }
+  return result
+})
+
+watch(selectedAgent, () => {
+  if (inputElement.value !== null) {
+    inputElement.value.focus()
+  }
+})
+
+const handleSubmit = () => {
+  if (selectedAgent.value !== null && defaultCandidate.value?.route) {
     searchedText.value = "" // Hides SearchDropdown
-    defaultCandidate.agent.willNavigate(defaultCandidate)
-    router.push(defaultCandidate.route)
+    selectedAgent.value.willNavigate(defaultCandidate.value)
+    router.push(defaultCandidate.value.route)
   }
 }
 
-const submitDisabled = computed(() => searchController.defaultCandidate.value === null)
+const submitDisabled = computed(() => defaultCandidate.value === null)
 
 const root = ref<HTMLElement|null>(null)
 const isInside = (target: Node) => root.value !== null && root.value.contains(target)

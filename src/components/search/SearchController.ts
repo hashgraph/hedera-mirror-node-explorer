@@ -28,8 +28,9 @@ import {
     BlockSearchAgent,
     ContractSearchAgent,
     DomainNameSearchAgent,
+    FullTokenNameSearchAgent,
+    NarrowTokenNameSearchAgent,
     SearchAgent,
-    SearchCandidate,
     TokenSearchAgent,
     TopicSearchAgent,
     TransactionSearchAgent
@@ -96,6 +97,8 @@ export class SearchController {
     private readonly topicSearchAgent = new TopicSearchAgent()
     private readonly transactionSearchAgent = new TransactionSearchAgent()
     private readonly blockSearchAgent = new BlockSearchAgent()
+    private readonly narrowTokenNameSearchAgent = new NarrowTokenNameSearchAgent()
+    public readonly fullTokenNameSearchAgent = new FullTokenNameSearchAgent()
 
     private readonly allAgents: SearchAgent<unknown, unknown>[] = []
     public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []
@@ -107,12 +110,14 @@ export class SearchController {
     public constructor(public readonly inputText: Ref<string>) {
         this.inputChangeController = new InputChangeController(inputText)
         this.allAgents.push(
+            this.narrowTokenNameSearchAgent,
+            this.fullTokenNameSearchAgent,
             this.contractSearchAgent,
             this.accountSearchAgent,
             this.tokenSearchAgent,
             this.topicSearchAgent,
             this.transactionSearchAgent,
-            this.blockSearchAgent
+            this.blockSearchAgent,
         )
         for (const p of nameServiceProviders) {
             const a = new DomainNameSearchAgent(p)
@@ -139,6 +144,26 @@ export class SearchController {
         return result
     })
 
+    public readonly visibleAgents = computed(() => {
+        const result: SearchAgent<unknown, unknown>[] = []
+        for (const a of this.allAgents) {
+            if (a.candidates.value.length >= 1) {
+                result.push(a)
+            }
+        }
+        return result
+    })
+
+    public readonly loadingDomainNameSearchAgents = computed(() => {
+        const result: DomainNameSearchAgent[] = []
+        for (const a of this.domainNameSearchAgents) {
+            if (a.loading.value) {
+                result.push(a)
+            }
+        }
+        return result
+    })
+
     public readonly candidateCount = computed(() => {
         let result = 0
         for (const a of this.allAgents) {
@@ -147,24 +172,16 @@ export class SearchController {
         return result
     })
 
-    public readonly candidates = computed(() => {
-        let result: SearchCandidate<unknown>[] = []
+    public findAgentById(id: string): SearchAgent<unknown, unknown>|null {
+        let result: SearchAgent<unknown, unknown>|null = null
         for (const a of this.allAgents) {
-            result = result.concat(a.candidates.value)
-        }
-        return result
-    })
-
-    public readonly defaultCandidate = computed(() => {
-        let result: SearchCandidate<unknown>|null = null
-        for (const c of this.candidates.value) {
-            if (!c.nonExistent) {
-                result = c
+            if (id == a.id) {
+                result = a
                 break
             }
         }
         return result
-    })
+    }
 
     //
     // Private
@@ -181,12 +198,23 @@ export class SearchController {
         const domainName = /\.[a-zA-Z|ℏ]+$/.test(searchedText) ? searchedText : null
         const blockNb = EntityID.parsePositiveInt(searchedText)
 
+        // const isTokenName = searchedText.length >= 3 && isASCII(searchedText)
+        const isTokenName = searchedText.length >= 3
+            && isASCII(searchedText)
+            && entityID === null
+            && transactionID === null
+            && hexBytes === null
+            && timestamp === null
+        const tokenName = isTokenName ? searchedText : null
+
         this.accountSearchAgent.loc.value = entityID ?? hexBytes ?? alias
         this.contractSearchAgent.loc.value = entityID ?? hexBytes
         this.tokenSearchAgent.loc.value = entityID ?? hexBytes
         this.topicSearchAgent.loc.value = entityID
         this.transactionSearchAgent.loc.value = transactionID ?? timestamp ?? hexBytes
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
+        this.narrowTokenNameSearchAgent.loc.value = tokenName
+        this.fullTokenNameSearchAgent.loc.value = tokenName
 
         for (const a of this.domainNameSearchAgents) {
             a.loc.value = domainName
@@ -227,3 +255,13 @@ class InputChangeController {
     }
 }
 
+function isASCII(s: string): boolean {
+    let result = true
+    for (let i = 0; i < s.length; i += 1) {
+        if (s.charCodeAt(i) > 255) { // 255 … or 127 ?
+            result = false
+            break
+        }
+    }
+    return result
+}
