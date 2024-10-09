@@ -155,7 +155,8 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['rejected'],
+  setup(props, context) {
     //
     // States
     //
@@ -440,6 +441,7 @@ export default defineComponent({
             }
           } finally {
             props.analyzer.tokenAssociationDidChange()
+            context.emit('rejected')
             gtagTransaction("reject_token")
           }
         }
