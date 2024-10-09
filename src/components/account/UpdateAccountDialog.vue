@@ -387,7 +387,9 @@ onMounted(() => {
   modeWatchHandle = watch(autoAssociationMode, (newValue) => {
     switch (newValue) {
       case AutoAssociationMode.LimitedAutoAssociation:
-        maxAutoAssociations.value = initialMaxAutoAssociations
+        maxAutoAssociations.value = initialMaxAutoAssociations && initialMaxAutoAssociations >= 0
+            ? initialMaxAutoAssociations
+            : 0
         break
       case AutoAssociationMode.NoAutoAssociation:
         maxAutoAssociations.value = 0
