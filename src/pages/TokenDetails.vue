@@ -61,7 +61,10 @@
       <template v-slot:control>
         <div v-if="ethereumAddress && isWalletConnected"
              class="h-is-property-text is-flex algin-items-center is-relative">
-          <TokenActions :analyzer="tokenAnalyzer"/>
+          <TokenActions
+              :analyzer="tokenAnalyzer"
+              @rejected="onRejectCompleted"
+          />
         </div>
       </template>
 
@@ -461,6 +464,14 @@ export default defineComponent({
 
     const isWalletConnected = computed(() => walletManager.connected.value)
 
+    const onRejectCompleted = () => {
+      if (tokenAnalyzer.isNft.value) {
+        nftHolderTableController.refresh()
+      }else {
+        nftHolderTableController.refresh()
+      }
+    }
+
     return {
       isSmallScreen,
       isMediumScreen,
@@ -484,6 +495,7 @@ export default defineComponent({
       nftHolderTableController,
       metadata,
       metadataAnalyzer,
+      onRejectCompleted,
     }
   },
 });
