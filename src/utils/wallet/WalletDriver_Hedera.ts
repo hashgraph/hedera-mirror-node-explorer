@@ -88,6 +88,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         }
 
         // const result = await this.executeTransaction(accountId, trans)
+        // await this.waitForTransactionSurfacing(result)
         // return Promise.resolve(result)
 
         // TESTING
@@ -183,6 +184,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
 
         transaction.setOwnerId(AccountId.fromString(accountId))
         const result = await this.executeTransaction(accountId, transaction)
+        await this.waitForTransactionSurfacing(result)
 
         return Promise.resolve(result)
     }
