@@ -597,7 +597,7 @@ onMounted(() => {
         }
       }
       isMaxAutoAssociationsValid.value = max >= currentAutoAssociationsCount || max === -1
-      if (max < currentAutoAssociationsCount) {
+      if (!isMaxAutoAssociationsValid.value) {
         maxAutoAssociationsFeedbackMessage.value = `Your account currently has ${currentAutoAssociationsCount} automatic associations.`
       } else {
         maxAutoAssociationsFeedbackMessage.value = null
