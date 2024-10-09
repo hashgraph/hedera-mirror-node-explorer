@@ -142,7 +142,9 @@ import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletD
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
-import {TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
+import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
+import axios, {AxiosResponse} from "axios";
+import {Nfts} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "TokenActions",
@@ -270,7 +272,11 @@ export default defineComponent({
       if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
         showConfirmDialog.value = true
         dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
-        confirmMessage.value = `Confirm rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        if (tokenType.value === 'NFT') {
+          confirmMessage.value = `Confirm rejecting NFTs of collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        } else {
+          confirmMessage.value = `Confirm rejecting token ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        }
         confirmExtraMessage.value = null
       } else {
         alertController.visible.value = true
@@ -406,11 +412,32 @@ export default defineComponent({
         if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
           showProgressDialog.value = true
           showProgressSpinner.value = true
-          progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          if (tokenType.value === 'NFT') {
+            progressMainMessage.value = `Rejecting NFTs from collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          } else {
+            progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          }
           try {
-            const transaction = new TokenRejectTransaction()
-            transaction.addTokenId(TokenId.fromString(tokenId.value!))
-            await walletManager.rejectTokens(transaction)
+            if (tokenType.value === 'NFT') {
+              let url: string | null = "api/v1/accounts/" + accountId.value + "/nfts?token.id=" + tokenId.value + "&limit=10"
+              let counter = 10
+              while (url !== null && counter > 0) {
+                const response: AxiosResponse<Nfts> = await axios.get<Nfts>(url)
+                if (response.data.nfts) {
+                  const transaction = new TokenRejectTransaction()
+                  for (const nft of response.data.nfts) {
+                    transaction.addNftId(new NftId(TokenId.fromString(nft.token_id!), nft.serial_number))
+                  }
+                  await walletManager.rejectTokens(transaction)
+                }
+                url = response.data.links?.next ?? null
+                counter -= 1
+              }
+            } else {
+              const transaction = new TokenRejectTransaction()
+              transaction.addTokenId(TokenId.fromString(tokenId.value!))
+              await walletManager.rejectTokens(transaction)
+            }
           } finally {
             props.analyzer.tokenAssociationDidChange()
             gtagTransaction("reject_token")
