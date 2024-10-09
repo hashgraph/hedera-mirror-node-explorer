@@ -33,7 +33,7 @@ export class AccountAlias {
         if (bytes === null) {
             bytes = hexToByte(a)
         }
-        return bytes !== null ? new AccountAlias(bytes) : null
+        return bytes !== null && bytes.length >= 32 ? new AccountAlias(bytes) : null
     }
 
     public toString(): string {
