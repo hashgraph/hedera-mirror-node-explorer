@@ -865,7 +865,6 @@ describe("SearchController.vue", () => {
 
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
-            "api/v1/accounts/" + SAMPLE_TOKEN_NAME,
             "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100",
         ])
 

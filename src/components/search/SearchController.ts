@@ -21,7 +21,8 @@
 import {computed, ref, Ref, watch} from "vue";
 import {EntityID} from "@/utils/EntityID";
 import {TransactionID} from "@/utils/TransactionID";
-import {base32ToAlias, hexToByte} from "@/utils/B64Utils";
+import {AccountAlias} from "@/utils/AccountAlias";
+import {hexToByte} from "@/utils/B64Utils";
 import {Timestamp} from "@/utils/Timestamp";
 import {
     AccountSearchAgent,
@@ -193,7 +194,7 @@ export class SearchController {
         const entityID = EntityID.parseWithChecksum(searchedText, true)
         const transactionID = TransactionID.parse(searchedText, true)
         const hexBytes = hexToByte(searchedText)
-        const alias = base32ToAlias(searchedText) != null ? searchedText : null
+        const alias = AccountAlias.parse(searchedText) != null ? searchedText : null
         const timestamp = Timestamp.parse(searchedText)
         const domainName = /\.[a-zA-Z|ℏ]+$/.test(searchedText) ? searchedText : null
         const blockNb = EntityID.parsePositiveInt(searchedText)
