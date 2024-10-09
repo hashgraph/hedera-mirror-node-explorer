@@ -1,0 +1,57 @@
+name: Helm Chart Release
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  packages: write
+  pages: write
+  id-token: write
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  chart:
+    name: Publish charts
+    runs-on: mirror-node-linux-medium
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@91182cccc01eb5e619899d80e4e971d6181294a7 # v2.10.1
+        with:
+          egress-policy: audit
+
+      - name: Checkout Code
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+
+      - name: Setup Helm
+        uses: azure/setup-helm@fe7b79cd5ee1e45176fcad797de68ecaf3ca4814 # v4.2.0
+        with:
+          version: "v3.12.3" #  helm version
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Helm package
+        run: |
+          helm repo add stable https://charts.helm.sh/stable
+          helm repo update
+          helm package chart
+
+      - name: Build and Push the Helm Charts to GitHub Container Registry
+        uses: JimCronqvist/action-helm-chart-repo@0.1.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publish helm chart to github pages
+        uses: step-security/helm-gh-pages@6a390e89293c1ec8bc5120f6692f3b8a313a9a3d # v1.7.0
+        with:
+          charts_dir: .
+          target_dir: charts
+          token: ${{ secrets.GITHUB_TOKEN }}
