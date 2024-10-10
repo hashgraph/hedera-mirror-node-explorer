@@ -93,19 +93,17 @@
             @update:selectedTab="onAirdropSelectTab"
         />
         <div v-if="airdropSelectedTab === 'nfts'">
-          <PendingAirdropTable
+          <PendingNftAirdropTable
               :controller="nftsAirdropTableController"
               :check-enabled="claimEnabled"
               v-model:checked-airdrops="checkedAirdrops"
-              :type="TokenType.NON_FUNGIBLE_UNIQUE"
           />
         </div>
         <div v-else>
-          <PendingAirdropTable
+          <PendingFungibleAirdropTable
               :controller="fungibleAirdropTableController"
               :check-enabled="claimEnabled"
               v-model:checked-airdrops="checkedAirdrops"
-              :type="TokenType.FUNGIBLE_COMMON"
           />
         </div>
       </div>
@@ -149,9 +147,10 @@ import {walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/HederaSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
-import PendingAirdropTable from "@/components/account/PendingAirdropTable.vue";
+import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/HederaUtils";
+import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 
 const props = defineProps({
   accountId: {
