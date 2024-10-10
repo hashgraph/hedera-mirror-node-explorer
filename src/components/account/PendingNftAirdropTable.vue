@@ -53,67 +53,41 @@
   >
     <o-table-column
         v-slot="{ row }"
-        field="token_id"
-        :label="props.type === TokenType.FUNGIBLE_COMMON ? 'Token' : 'Collection'"
+        field="image"
+        label="Image"
     >
-      <TokenLink
-          :show-extra="false"
+      <NftCell
           :token-id="row.token_id"
-          :no-anchor="true"
+          :serial-number="row.serial_number"
+          :property="NftCellItem.image"
+          :size="32"
       />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="Name">
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
+    <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
+      <TokenIOL :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
+    <o-table-column v-slot="{ row }" field="name" label="Collection">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
+      (
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
+      )
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="serial" label="Serial #">
+      {{ row.serial_number }}
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="sender" label="Sender">
       <div>{{ row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column
-        v-if="props.type === TokenType.NON_FUNGIBLE_UNIQUE"
-        v-slot="{ row }"
-        field="serial"
-        label="Serial #"
-        position="right"
-    >
-      <div v-if="row.serial_number !== null">{{ row.serial_number }}</div>
-    </o-table-column>
-
-    <o-table-column
-        v-else
-        v-slot="{ row }"
-        field="balance"
-        label="Balance"
-        position="right"
-    >
-      <TokenAmount
-          v-if="! row.serial_number"
-          :amount="BigInt(row.amount)"
-          :token-id="row.token_id"
+    <o-table-column v-slot="{ row }" field="description" label="Description">
+      <NftCell :token-id="row.token_id"
+               :serial-number="row.serial_number"
+               :property="NftCellItem.description"
       />
-    </o-table-column>
-
-    <o-table-column
-        v-if="props.type === TokenType.NON_FUNGIBLE_UNIQUE"
-        v-slot="{ row }"
-        field="image"
-        label="Image"
-        position="right"
-    >
-      <div class="is-flex is-justify-content-end">
-        <NftCell
-            :token-id="row.token_id"
-            :serial-number="row.serial_number"
-            :property="NftCellItem.image"
-            :size="32"
-        />
-      </div>
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -143,8 +117,7 @@
 <script setup lang="ts">
 
 import {PropType, watch} from 'vue';
-import {TokenAirdrop, TokenType} from "@/schemas/HederaSchemas";
-import TokenLink from "@/components/values/link/TokenLink.vue";
+import {TokenAirdrop} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
@@ -152,16 +125,12 @@ import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
+import TokenIOL from "@/components/values/link/TokenIOL.vue";
 
 const props = defineProps({
   controller: {
     type: Object as PropType<PendingAirdropTableController>,
-    required: true
-  },
-  type: {
-    type: String as PropType<TokenType>,
     required: true
   },
   checkEnabled: {
@@ -178,12 +147,8 @@ const checkedRows = defineModel("checkedAirdrops", {
 watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value.splice(0))
 
 const handleClick = (airdrop: TokenAirdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
-  if (airdrop.token_id) {
-    if (airdrop.serial_number) {
-      routeManager.routeToSerial(airdrop.token_id, airdrop.serial_number, event)
-    } else {
-      routeManager.routeToToken(airdrop.token_id, event)
-    }
+  if (airdrop.token_id && airdrop.serial_number) {
+    routeManager.routeToSerial(airdrop.token_id, airdrop.serial_number, event)
   }
 }
 

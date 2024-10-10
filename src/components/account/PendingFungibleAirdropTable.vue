@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -33,58 +33,45 @@
       :range-before="0"
       :range-after="0"
       :total="props.controller.totalRowCount.value"
-      v-model:current-page="props.controller.currentPage.value"
+      :current-page="props.controller.currentPage.value"
       :per-page="props.controller.pageSize.value"
       @page-change="props.controller.onPageChange"
-      @cell-click="handleClick"
-      :checkable="props.checkEnabled"
-      v-model:checked-rows="checkedRows"
+      @cellClick="handleClick"
 
       :hoverable="true"
       :narrowed="true"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
+      v-model:checked-rows="checkedRows"
+      :checkable="props.checkEnabled"
+
       aria-current-label="Current page"
       aria-next-label="Next page"
       aria-page-label="Page"
       aria-previous-label="Previous page"
   >
-
-    <o-table-column v-slot="{ row }" field="image" label="Image">
-      <NftCell
-          :token-id="row.token_id"
-          :serial-number="row.serial_number"
-          :property="NftCellItem.image"
-          :size="32"
-      />
-    </o-table-column>
-
-    <o-table-column v-slot="{ row }" field="token-id" label="Token ID">
+    <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
       <TokenIOL :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-name" label="Collection">
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
-      (<TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>)
-    </o-table-column>
-
-    <o-table-column v-slot="{ row }" field="serial" label="Serial #">
-      {{ row.serial_number }}
-    </o-table-column>
-
     <o-table-column v-slot="{ row }" field="name" label="Name">
-      <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.name"/>
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="creator" label="Creator">
-      <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.creator"/>
+    <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="description" label="Description">
-      <NftCell :token-id="row.token_id"
-               :serial-number="row.serial_number"
-               :property="NftCellItem.description"
+    <o-table-column v-slot="{ row }" field="sender" label="Sender">
+      <div>{{ row.sender_id }}</div>
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="amount" label="Amount" position="right">
+      <TokenAmount
+          v-if="! row.serial_number"
+          :amount="BigInt(row.amount)"
+          :token-id="row.token_id"
       />
     </o-table-column>
 
@@ -98,9 +85,7 @@
   </o-table>
 
   <TablePageSize
-      v-if="!props.controller.paginated.value
-      && props.controller.showPageSizeSelector.value
-      && !props.checkEnabled"
+      v-if="!props.controller.paginated.value && props.controller.showPageSizeSelector.value"
       v-model:size="props.controller.pageSize.value"
       :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       style="width: 102px; margin-left: 4px"
@@ -117,20 +102,20 @@
 <script setup lang="ts">
 
 import {PropType, watch} from 'vue';
-import {Nft, Token} from "@/schemas/HederaSchemas";
+import {TokenAirdrop} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
-import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
-import {NftsTableController} from "@/components/account/NftsTableController";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
-import {AppStorage} from "@/AppStorage";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import {AppStorage} from "@/AppStorage";
+import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
+import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";
 
 const props = defineProps({
   controller: {
-    type: Object as PropType<NftsTableController>,
+    type: Object as PropType<PendingAirdropTableController>,
     required: true
   },
   checkEnabled: {
@@ -139,18 +124,18 @@ const props = defineProps({
   }
 })
 
-const checkedRows = defineModel("checkedNfts", {
-  type: Object as PropType<(Token | Nft)[]>,
-  default: [] as (Token | Nft)[]
+const checkedRows = defineModel("checkedAirdrops", {
+  type: Object as PropType<TokenAirdrop[]>,
+  default: [] as TokenAirdrop[]
 })
 
 watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value.splice(0))
 
-const handleClick = (nft: Nft, c: unknown, i: number, ci: number, event: MouseEvent,) => {
-  if (nft.token_id && nft.serial_number) {
-    routeManager.routeToSerial(nft.token_id, nft.serial_number, event);
+const handleClick = (airdrop: TokenAirdrop, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (airdrop.token_id) {
+    routeManager.routeToToken(airdrop.token_id, event)
   }
-};
+}
 
 </script>
 

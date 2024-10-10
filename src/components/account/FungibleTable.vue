@@ -52,11 +52,7 @@
       customRowKey="token_id"
   >
     <o-table-column v-slot="props" field="token_id" label="Token">
-      <TokenLink
-          :show-extra="false"
-          :token-id="props.row.token_id"
-          :no-anchor="true"
-      />
+      <TokenIOL :token-id="props.row.token_id"/>
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="name" label="Name">
@@ -105,7 +101,6 @@
 
 import {PropType, watch} from 'vue';
 import {Nft, Token, TokenBalance} from "@/schemas/HederaSchemas";
-import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
@@ -113,6 +108,7 @@ import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
+import TokenIOL from "@/components/values/link/TokenIOL.vue";
 
 const props = defineProps({
   controller: {

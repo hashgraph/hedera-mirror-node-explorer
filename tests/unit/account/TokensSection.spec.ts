@@ -130,11 +130,11 @@ describe("TokensSection.vue", () => {
         await flushPromises()
 
         const nftsTable = tokensSection.get("#nftsTable")
-        expect(nftsTable.find('thead').text()).toBe("Image Token ID # Collection Name Creator Description")
+        expect(nftsTable.find('thead').text()).toBe("Image Token ID Collection Serial # Name Creator Description")
         expect(nftsTable.find('tbody').text()).toBe(
-            "NFT" + "0.0.748383" + "2" + "Ħ Frens Kingdom (ĦFRENSKINGD…) " +
-            "NFT" + "0.0.748383" + "1" + "Ħ Frens Kingdom (ĦFRENSKINGD…) " +
-            "NFT" + "0.0.748383" + "342" + "Ħ Frens Kingdom (ĦFRENSKINGD…)"
+            "NFT0.0.748383Ħ Frens Kingdom (ĦFRENSKINGD…) 2" +
+            "NFT0.0.748383Ħ Frens Kingdom (ĦFRENSKINGD…) 1" +
+            "NFT0.0.748383Ħ Frens Kingdom (ĦFRENSKINGD…) 342"
         )
 
         wrapper.unmount()
