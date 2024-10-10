@@ -67,6 +67,10 @@
       <div>{{ row.sender_id }}</div>
     </o-table-column>
 
+    <o-table-column v-slot="{ row }" field="timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="row.timestamp.from"/>
+    </o-table-column>
+
     <o-table-column v-slot="{ row }" field="amount" label="Amount" position="right">
       <TokenAmount
           v-if="! row.serial_number"
@@ -112,6 +116,7 @@ import {AppStorage} from "@/AppStorage";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";
+import TimestampValue from "@/components/values/TimestampValue.vue";
 
 const props = defineProps({
   controller: {
