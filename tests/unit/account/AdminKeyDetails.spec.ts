@@ -20,7 +20,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -81,7 +81,7 @@ describe("AdminKeyDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch("Account Account ID:" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
+        expect(wrapper.text()).toMatch("AccountAccount ID:" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
         expect(wrapper.get("#keyValue").text()).toBe("Complex Key (6 levels) See details")
 
         mock.restore()
