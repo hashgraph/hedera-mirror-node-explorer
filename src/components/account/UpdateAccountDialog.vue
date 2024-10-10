@@ -62,7 +62,9 @@
                id="selectedAutoRenewPeriod"
                v-model="selectedAutoRenewPeriod"
                placeholder="> 0"
-               type="number" min="1" step="1"
+               type="number"
+               min="1"
+               step="1"
         >
         <o-select v-model="selectedUnit"
                   class="is-small has-text-white ml-2"
@@ -87,7 +89,7 @@
         Max. Auto. Associations
         <span class="ml-1"/>
         <InfoTooltip
-            label="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+            label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
         />
       </div>
       <div class="is-flex is-justify-content-flex-start is-align-items-center">
@@ -113,6 +115,8 @@
                v-model="maxAutoAssociations"
                placeholder="≥ 0"
                type="number"
+               min="1"
+               step="1"
         >
         <div v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
              class="icon is-small ml-2"
@@ -387,9 +391,7 @@ onMounted(() => {
   modeWatchHandle = watch(autoAssociationMode, (newValue) => {
     switch (newValue) {
       case AutoAssociationMode.LimitedAutoAssociation:
-        maxAutoAssociations.value = initialMaxAutoAssociations && initialMaxAutoAssociations >= 0
-            ? initialMaxAutoAssociations
-            : 0
+        maxAutoAssociations.value = Math.max(1, initialMaxAutoAssociations ?? 0, usedAutoAssociations.value)
         break
       case AutoAssociationMode.NoAutoAssociation:
         maxAutoAssociations.value = 0
@@ -473,8 +475,9 @@ let initialDeclineRewards = false
 //
 let visibleWatchHandle: WatchStopHandle | null = null
 onMounted(() => {
-  visibleWatchHandle = watch(props.controller?.visible, (newValue) => {
+  visibleWatchHandle = watch(props.controller?.visible, async (newValue) => {
     if (newValue) {
+      usedAutoAssociations.value = await findUsedAutoAssociations()
       recSigRequired.value = props.accountInfo?.receiver_sig_required ?? false
       selectedAutoRenewPeriod.value = props.accountInfo?.auto_renew_period?.toString() ?? ""
       selectedUnit.value = PeriodUnit.Seconds
@@ -501,6 +504,7 @@ onMounted(() => {
       initialStakedAccount = stakedAccount.value
       initialDeclineRewards = declineRewards.value
     } else {
+      usedAutoAssociations.value = 0
       recSigRequired.value = false
       selectedAutoRenewPeriod.value = ""
       selectedUnit.value = PeriodUnit.Seconds
@@ -520,6 +524,17 @@ onBeforeUnmount(() => {
     visibleWatchHandle = null
   }
 })
+
+const findUsedAutoAssociations = async () : Promise<number> => {
+  let count = 0
+  const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
+  for (const r of relationships) {
+    if (r.automatic_association) {
+      count += 1
+    }
+  }
+  return Promise.resolve(count)
+}
 
 //
 // Validation
@@ -584,6 +599,7 @@ const isStakingValid = computed(() =>
 // MaxAutoAssociation validation
 //
 const isMaxAutoAssociationsValid = ref(false)
+const usedAutoAssociations = ref(0)
 let maxAutoAssociationsWatchHandle: WatchStopHandle | null = null
 onMounted(() => {
   maxAutoAssociationsWatchHandle = watch(maxAutoAssociations, async (max) => {
@@ -591,16 +607,10 @@ onMounted(() => {
       isMaxAutoAssociationsValid.value = false
       maxAutoAssociationsFeedbackMessage.value = null
     } else {
-      const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
-      let currentAutoAssociationsCount = 0
-      for (const r of relationships) {
-        if (r.automatic_association) {
-          currentAutoAssociationsCount++
-        }
-      }
-      isMaxAutoAssociationsValid.value = max >= currentAutoAssociationsCount || max === -1
+      isMaxAutoAssociationsValid.value = max >= usedAutoAssociations.value || max === -1
       if (!isMaxAutoAssociationsValid.value) {
-        maxAutoAssociationsFeedbackMessage.value = `Your account currently has ${currentAutoAssociationsCount} automatic associations.`
+        maxAutoAssociationsFeedbackMessage.value =
+            `Your account currently has ${usedAutoAssociations.value} automatic associations.`
       } else {
         maxAutoAssociationsFeedbackMessage.value = null
       }
