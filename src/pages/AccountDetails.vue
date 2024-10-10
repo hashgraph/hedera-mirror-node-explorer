@@ -32,7 +32,20 @@
 
     <DashboardCard collapsible-key="accountDetails">
       <template v-if="!isInactiveEvmAddress" v-slot:title>
-        <span class="h-is-primary-title">Account </span>
+        <figure
+            v-if="isMyAccount"
+            class="is-flex is-align-items-center"
+            style="height: 40px;"
+        >
+          <img
+              v-if="isMyAccount"
+              :src="walletIconURL ?? undefined"
+              alt="wallet logo"
+              class="mr-3"
+          >
+          <span  class="h-is-primary-title">My Account</span>
+        </figure>
+        <span v-else class="h-is-primary-title">Account</span>
       </template>
       <template v-else v-slot:title>
         <span class="h-is-primary-title">Inactive EVM Address</span>
@@ -43,7 +56,7 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
           <Copyable :content-to-copy="normalizedAccountId ?? ''">
             <template v-slot:content>
-              <span>{{ normalizedAccountId ?? "" }}</span>
+              <span :class="{'h-is-secondary-title': isMyAccount}">{{ normalizedAccountId ?? "" }}</span>
             </template>
           </Copyable>
           <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
@@ -326,7 +339,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import router, {routeManager} from "@/router";
+import router, {routeManager, walletManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
@@ -544,11 +557,16 @@ export default defineComponent({
     onMounted(() => nameQuery.mount())
     onBeforeUnmount(() => nameQuery.unmount())
 
+    const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+    const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
+
     return {
       temporaryBanner,
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      isMyAccount,
+      walletIconURL,
       transactionTableController,
       transactionType: transactionTableController.transactionType,
       contractCreateTableController,

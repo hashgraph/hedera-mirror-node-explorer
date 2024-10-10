@@ -159,7 +159,7 @@
 
 <script lang="ts">
 
-import {routeManager, walletManager} from "@/router";
+import router, {routeManager, walletManager} from "@/router";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -215,7 +215,10 @@ export default defineComponent({
               gtagWalletConnectionFailure(wallet.name)
             }
           })
-          .finally(() => connecting.value = false)
+          .finally(() => {
+            connecting.value = false
+            navigateToMyAccount()
+          })
       walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
       gtagWalletConnect(wallet.name)
     }
@@ -225,6 +228,7 @@ export default defineComponent({
     //
     const handleChangeAccount = (chosenAccountId: string) => {
       walletManager.changeAccount(chosenAccountId)
+      navigateToMyAccount()
     }
 
     //
@@ -239,6 +243,14 @@ export default defineComponent({
           })
     }
 
+    //
+    // navigateToMyAccount
+    //
+    const navigateToMyAccount = () => {
+      if (walletManager.accountId.value) {
+        router.push(routeManager.makeRouteToAccount(walletManager.accountId.value))
+      }
+    }
 
     return {
       buildTime,
