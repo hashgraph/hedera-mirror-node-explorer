@@ -83,11 +83,8 @@
       <div>{{ row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="description" label="Description">
-      <NftCell :token-id="row.token_id"
-               :serial-number="row.serial_number"
-               :property="NftCellItem.description"
-      />
+    <o-table-column v-slot="{ row }" field="timestamp" label="Time">
+      <TimestampValue v-bind:timestamp="row.timestamp.from"/>
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -127,6 +124,7 @@ import {AppStorage} from "@/AppStorage";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";
+import TimestampValue from "@/components/values/TimestampValue.vue";
 
 const props = defineProps({
   controller: {
