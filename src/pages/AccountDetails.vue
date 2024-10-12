@@ -275,7 +275,7 @@
       </template>
     </DashboardCard>
 
-    <TokensSection :account-id="normalizedAccountId"/>
+    <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
     <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
