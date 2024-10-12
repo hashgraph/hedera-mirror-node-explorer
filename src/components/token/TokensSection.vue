@@ -192,12 +192,6 @@ const nftsTableController = new NftsTableController(
     perPage,
     "ps", "ks"
 );
-onMounted(() => {
-  nftsTableController.mount()
-})
-onBeforeUnmount(() => {
-  nftsTableController.unmount()
-})
 
 const fungibleTableController = new FungibleTableController(
     useRouter(),
@@ -205,12 +199,6 @@ const fungibleTableController = new FungibleTableController(
     perPage,
     "pf", "kf"
 );
-onMounted(() => {
-  fungibleTableController.mount()
-})
-onBeforeUnmount(() => {
-  fungibleTableController.unmount()
-})
 
 const nftsAirdropTableController = new PendingAirdropTableController(
     useRouter(),
@@ -226,14 +214,6 @@ const fungibleAirdropTableController = new PendingAirdropTableController(
     perPage,
     "pr", "kr"
 )
-onMounted(() => {
-  nftsAirdropTableController.mount()
-  fungibleAirdropTableController.mount()
-})
-onBeforeUnmount(() => {
-  nftsAirdropTableController.unmount()
-  fungibleAirdropTableController.unmount()
-})
 
 //
 // Reject

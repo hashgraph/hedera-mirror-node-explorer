@@ -116,7 +116,7 @@
 
 <script setup lang="ts">
 
-import {PropType, watch} from 'vue';
+import {onBeforeUnmount, onMounted, PropType, watch} from 'vue';
 import {Nft, Token} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -144,7 +144,16 @@ const checkedRows = defineModel("checkedNfts", {
   default: [] as (Token | Nft)[]
 })
 
-watch([props.controller.rows, () => props.checkEnabled], () => checkedRows.value.splice(0))
+watch([props.controller.rows, () => props.checkEnabled], () =>
+    checkedRows.value.splice(0)
+)
+
+onMounted(() => {
+  props.controller.mount()
+})
+onBeforeUnmount(() => {
+  props.controller.unmount()
+})
 
 const handleClick = (nft: Nft, c: unknown, i: number, ci: number, event: MouseEvent,) => {
   if (nft.token_id && nft.serial_number) {
