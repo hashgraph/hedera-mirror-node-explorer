@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
+  <DashboardCard v-if="accountId" id="tokensSection" collapsible-key="tokens">
 
     <template v-slot:title>
       <span class="h-is-secondary-title">Tokens</span>
@@ -111,6 +111,10 @@
           />
         </div>
       </div>
+
+      <router-link v-if="!props.fullPage" :to="routeManager.makeRouteToTokensByAccount(accountId)">
+        <div class="h-is-property-text h-is-extra-text has-text-centered">Show all tokens</div>
+      </router-link>
 
     </template>
 

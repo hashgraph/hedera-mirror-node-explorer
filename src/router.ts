@@ -53,6 +53,7 @@ import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
 import RoutingSpec from "@/pages/RoutingSpec.vue";
 import {gtagPageView} from "@/gtag";
+import TokensByAccount from "@/pages/TokensByAccount.vue";
 
 const routes: Array<RouteRecordRaw> = [
     {
@@ -160,6 +161,12 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/tokensByPopularity/:name',
         name: 'TokensByPopularity',
         component: TokensByPopularity,
+        props: true
+    },
+    {
+        path: '/:network/tokensByAccount/:accountId',
+        name: 'TokensByAccount',
+        component: TokensByAccount,
         props: true
     },
     {
