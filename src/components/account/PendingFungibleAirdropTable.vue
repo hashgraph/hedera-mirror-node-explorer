@@ -27,7 +27,7 @@
   <o-table
       :data="props.controller.rows.value"
       :loading="props.controller.loading.value"
-      :paginated="props.controller.paginated.value"
+      :paginated="props.controller.paginated.value ?? props.fullPage"
       backend-pagination
       pagination-order="left"
       :range-before="0"
@@ -81,6 +81,7 @@
 
     <template v-slot:bottom-left>
       <TablePageSize
+          v-if="props.fullPage"
           v-model:size="props.controller.pageSize.value"
           :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
@@ -89,7 +90,10 @@
   </o-table>
 
   <TablePageSize
-      v-if="!props.controller.paginated.value && props.controller.showPageSizeSelector.value"
+      v-if="!props.controller.paginated.value
+      && props.controller.showPageSizeSelector.value
+      && !props.checkEnabled
+      && props.fullPage"
       v-model:size="props.controller.pageSize.value"
       :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       style="width: 102px; margin-left: 4px"
@@ -126,7 +130,11 @@ const props = defineProps({
   checkEnabled: {
     type: Boolean,
     required: true
-  }
+  },
+  fullPage: {
+    type: Boolean,
+    default: false
+  },
 })
 
 const checkedRows = defineModel("checkedAirdrops", {

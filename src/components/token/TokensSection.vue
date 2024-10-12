@@ -73,6 +73,7 @@
             :controller="fungibleTableController"
             :check-enabled="rejectEnabled"
             v-model:checked-tokens="checkedTokens"
+            :full-page="props.fullPage"
         />
       </div>
 
@@ -81,6 +82,7 @@
             :controller="nftsTableController"
             :check-enabled="rejectEnabled"
             v-model:checked-nfts="checkedTokens"
+            :full-page="props.fullPage"
         />
       </div>
 
@@ -97,6 +99,7 @@
               :controller="nftsAirdropTableController"
               :check-enabled="claimEnabled"
               v-model:checked-airdrops="checkedAirdrops"
+              :full-page="props.fullPage"
           />
         </div>
         <div v-else>
@@ -104,6 +107,7 @@
               :controller="fungibleAirdropTableController"
               :check-enabled="claimEnabled"
               v-model:checked-airdrops="checkedAirdrops"
+              :full-page="props.fullPage"
           />
         </div>
       </div>
@@ -133,7 +137,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
+import {computed, PropType, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
@@ -143,7 +147,7 @@ import NftsTable from "@/components/account/NftsTable.vue";
 import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
 import {DialogController} from "@/components/dialog/DialogController";
-import {walletManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/HederaSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
@@ -156,16 +160,15 @@ const props = defineProps({
   accountId: {
     type: String as PropType<string | null>,
     default: null
+  },
+  fullPage: {
+    type: Boolean,
+    default: false
   }
 })
 
-const perPage = ref(10)
-const showSection = computed(() =>
-    fungibleTableController.totalRowCount.value >= 1
-    || nftsTableController.totalRowCount.value >= 1
-    || fungibleAirdropTableController.totalRowCount.value >= 1
-    || nftsAirdropTableController.totalRowCount.value >= 1
-)
+const perPage = ref(props.fullPage ? 15 : 6)
+
 const accountId = computed(() => props.accountId)
 
 const tabIds = ['fungible', 'nfts', 'pendingAirdrop']
@@ -186,6 +189,7 @@ const onAirdropSelectTab = (tab: string | null) => {
   AppStorage.setAccountAirdropTab(tab)
   checkedAirdrops.value.splice(0)
 }
+
 const nftsTableController = new NftsTableController(
     useRouter(),
     accountId,
