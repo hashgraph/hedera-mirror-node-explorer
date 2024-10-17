@@ -26,6 +26,7 @@ import {
     AccountUpdateTransaction,
     ContractExecuteTransaction,
     NftId,
+    PendingAirdropId,
     Signer,
     TokenAssociateTransaction,
     TokenClaimAirdropTransaction,
@@ -64,43 +65,31 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
 
         for (const airdrop of airdrops) {
             if (airdrop.sender_id && airdrop.receiver_id && airdrop.token_id) {
+                const airdropId = new PendingAirdropId()
+                    .setSenderid(AccountId.fromString(airdrop.sender_id))
+                    .setReceiverId(AccountId.fromString(airdrop.receiver_id))
+                const tokenId = TokenId.fromString(airdrop.token_id)
                 if (airdrop.serial_number) {
                     console.log(`  Adding NFT airdrop:`)
                     console.log(`    senderId: ${airdrop.sender_id}`)
                     console.log(`    receiverId: ${airdrop.receiver_id}`)
                     console.log(`    tokenId: ${airdrop.token_id}`)
                     console.log(`    serial #: ${airdrop.serial_number}`)
+                    airdropId.setNftId(new NftId(tokenId, airdrop.serial_number))
                 } else {
                     console.log(`  Adding Fungible Token airdrop:`)
                     console.log(`    senderId: ${airdrop.sender_id}`)
                     console.log(`    receiverId: ${airdrop.receiver_id}`)
                     console.log(`    tokenId: ${airdrop.token_id}`)
+                    airdropId.setTokenId(tokenId)
                 }
-
-                // const airdropId = new PendingAirdropId(
-                //     AccountId.fromString(airdrop.sender_id),
-                //     AccountId.fromString(airdrop.receiver_id),
-                //     airdrop.serial_number ? null : TokenId.fromString(airdrop.token_id),
-                //     airdrop.serial_number ? new NftId(TokenId.fromString(airdrop.token_id), airdrop.serial_number) : null
-                // )
-                // trans.addPendingAirdropId(airdropId)
+                trans.addPendingAirdropId(airdropId)
             }
         }
 
-        // const result = await this.executeTransaction(accountId, trans)
-        // await this.waitForTransactionSurfacing(result)
-        // return Promise.resolve(result)
-
-        // TESTING
-        // if (airdrops.length > 0) {
-        //     const serial = airdrops[airdrops.length - 1].serial_number ?? 0
-        //     if (serial < 6) {
-        //         return Promise.resolve("0.0.4885735@1726854267.766000000")
-        //     }
-        // }
-        // return Promise.resolve("")
-
-        return Promise.resolve("0.0.4885735@1726854267.766000000")
+        const result = await this.executeTransaction(accountId, trans)
+        await this.waitForTransactionSurfacing(result)
+        return Promise.resolve(result)
     }
 
     public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
