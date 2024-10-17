@@ -41,11 +41,6 @@
       <div v-if="isAssociated" id="rejectToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
            @click="handleReject">TOKEN REJECT
       </div>
-
-      <div v-if="isWatchAssetSupported" id="showStakingDialog"
-           class="is-cursor is-hover-grey  is-full has-cursor-pointer"
-           @click="handleImport">TOKEN IMPORT
-      </div>
     </div>
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
@@ -138,7 +133,7 @@ import DynamicDialog from '../DynamicDialog.vue';
 import {computed, defineComponent, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
-import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
@@ -265,6 +260,22 @@ export default defineComponent({
     }
 
     //
+    // handleImport()
+    //
+    const handleImport = () => {
+      action.value = "IMPORT_TOKEN"
+
+      if (props.analyzer.isFungible.value) {
+        dialogTitle.value = `Import token ${tokenId.value}`
+        handleConfirm();
+      } else {
+        showDynamicDialog.value = true
+        dialogTitle.value = `Import NFT`
+        dynamicMessage.value = `Importing NFT ${tokenId.value!} (${tokenSymbol.value}) requires serial number of the token.`
+      }
+    }
+
+    //
     // handleReject()
     //
     const handleReject = () => {
@@ -281,22 +292,6 @@ export default defineComponent({
         confirmExtraMessage.value = null
       } else {
         alertController.visible.value = true
-      }
-    }
-
-    //
-    // handleImport()
-    //
-    const handleImport = () => {
-      action.value = "IMPORT_TOKEN"
-
-      if (props.analyzer.isFungible.value) {
-        dialogTitle.value = `Import token ${tokenId.value}`
-        handleConfirm();
-      } else {
-        showDynamicDialog.value = true
-        dialogTitle.value = `Import NFT`
-        dynamicMessage.value = `Importing NFT ${tokenId.value!} (${tokenSymbol.value}) requires serial number of the token.`
       }
     }
 
@@ -375,6 +370,7 @@ export default defineComponent({
           doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
           showProgressDialog.value = false
         }
+
       } catch (reason) {
         handleError(reason)
       }
@@ -400,6 +396,30 @@ export default defineComponent({
         showDoneDialog.value = true
         dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
         doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+      } catch (reason) {
+        handleError(reason)
+      }
+    }
+
+    //
+    // importTokenAction()
+    //
+    const importTokenAction = async () => {
+      try {
+        if (props.analyzer.isFungible.value) {
+          progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
+          await walletManager.watchToken(tokenId.value!)
+        } else {
+          dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
+          progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
+          await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
+        }
+
+        isActive.value = false
+        showDoneDialog.value = true
+        showProgressDialog.value = false
+        dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
       } catch (reason) {
         handleError(reason)
       }
@@ -455,40 +475,16 @@ export default defineComponent({
     }
 
     //
-    // importTokenAction()
-    //
-    const importTokenAction = async () => {
-      try {
-        if (props.analyzer.isFungible.value) {
-          progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
-          await walletManager.watchToken(tokenId.value!)
-        } else {
-          dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
-          progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
-          await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
-        }
-
-        isActive.value = false
-        showDoneDialog.value = true
-        showProgressDialog.value = false
-        dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
-        doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
-      } catch (reason) {
-        handleError(reason)
-      }
-    }
-
-    //
     // handleError()
     //
     const handleError = (reason: unknown) => {
-      if (reason instanceof WalletDriverCancelError) {
+      if (reason instanceof WalletClientRejectError) {
         showProgressDialog.value = false
       } else {
         showProgressDialog.value = true
         showProgressSpinner.value = false
         progressDialogMode.value = Mode.Error
-        if (reason instanceof WalletDriverError) {
+        if (reason instanceof WalletClientError) {
           progressMainMessage.value = reason.message
           progressExtraMessage.value = reason.extra
         } else {
@@ -526,7 +522,6 @@ export default defineComponent({
       tokenSerialNumber,
       handleDoneConfirm,
       showConfirmDialog,
-      importTokenAction,
       showProgressDialog,
       progressDialogMode,
       confirmExtraMessage,

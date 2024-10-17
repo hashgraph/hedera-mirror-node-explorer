@@ -113,7 +113,7 @@ export class ContractCallBuilder {
                 if (this.isReadOnly()) {
                     response = await ContractCallBuilder.executeWithMirrorNode(contractAddress, functionData)
                 } else {
-                    response = await ContractCallBuilder.executeWithWallet(contractId, contractAddress, functionData)
+                    response = await ContractCallBuilder.executeWithWallet(contractId, functionData)
                 }
                 this.lastValue.value = response !== null ? itf.decodeFunctionResult(this.fragment, response) : null
                 this.lastError.value = null
@@ -151,8 +151,8 @@ export class ContractCallBuilder {
     }
 
 
-    private static async executeWithWallet(contractId: string, contractAddress: string, functionData: string): Promise<string | null> {
-        const callResult = await walletManager.callContract(contractId, contractAddress, functionData)
+    private static async executeWithWallet(contractId: string, functionData: string): Promise<string | null> {
+        const callResult = await walletManager.callContract(contractId, functionData)
         return typeof callResult == "string" ? null : callResult.call_result
     }
 

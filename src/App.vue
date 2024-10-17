@@ -45,6 +45,7 @@ import {useRoute} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
+import {walletManager} from "@/router";
 
 export const XLARGE_BREAKPOINT = 1450
 export const LARGE_BREAKPOINT = 1280
@@ -133,6 +134,7 @@ export default defineComponent({
     onMounted(() => {
       windowWidth.value = window.innerWidth
       window.addEventListener('resize', onResizeHandler);
+      walletManager.launch()
     })
 
     onBeforeUnmount(() => {

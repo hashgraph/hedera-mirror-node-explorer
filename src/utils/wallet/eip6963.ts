@@ -19,19 +19,27 @@
  */
 
 
-export class WalletDriverError extends Error {
+//
+// https://github.com/ethereum/EIPs/blob/master/EIPS/eip-6963.md
+//
 
-    public readonly extra: string
+import {EIP1193Provider} from "@/utils/wallet/eip1193";
 
-    public constructor(message: string, extra: string) {
-        super(message)
-        this.extra = extra
-    }
+export interface EIP6963ProviderInfo {
+    rdns: string
+    uuid: string
+    name: string
+    icon: string
 }
 
-export class WalletDriverCancelError extends WalletDriverError {
+export interface EIP6963ProviderDetail {
+    info: EIP6963ProviderInfo
+    provider: EIP1193Provider
+}
 
-    public constructor() {
-        super("User cancelled operation ", "")
+export type EIP6963AnnounceProviderEvent = {
+    detail: {
+        info: EIP6963ProviderInfo
+        provider: Readonly<EIP1193Provider>
     }
 }

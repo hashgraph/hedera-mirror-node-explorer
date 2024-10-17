@@ -361,6 +361,7 @@ import MirrorLink from "@/components/MirrorLink.vue";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import MetadataSection from "@/components/token/MetadataSection.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
+import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 
 export default defineComponent({
 
@@ -462,7 +463,7 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
-    const isWalletConnected = computed(() => walletManager.connected.value)
+    const isWalletConnected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 
     const onRejectCompleted = () => {
       if (tokenAnalyzer.isNft.value) {

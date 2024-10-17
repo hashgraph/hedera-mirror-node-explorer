@@ -45,7 +45,7 @@ import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {AppStorage} from "@/AppStorage";
 import Staking from "@/pages/Staking.vue";
 import {RouteManager} from "@/utils/RouteManager";
-import {WalletManager} from "@/utils/wallet/WalletManager";
+import {WalletManagerV4} from "@/utils/wallet/WalletManagerV4";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import Blocks from "@/pages/Blocks.vue";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
@@ -394,4 +394,4 @@ export function getNetworkEntryFromCurrentRoute(): NetworkEntry {
 }
 
 export const routeManager = new RouteManager(router)
-export const walletManager = new WalletManager(routeManager)
+export const walletManager = new WalletManagerV4(routeManager)

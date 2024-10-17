@@ -295,7 +295,7 @@ import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHan
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import {isCouncilNode, waitForTransactionRefresh} from "@/schemas/HederaUtils";
 import {TransactionID} from "@/utils/TransactionID";
-import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
@@ -722,11 +722,11 @@ const onUpdate = async () => {
   } catch (reason) {
 
     console.warn("Transaction Error: " + reason)
-    if (reason instanceof WalletDriverCancelError) {
+    if (reason instanceof WalletClientRejectError) {
       props.controller.handleClose()
     } else {
       props.controller.mode.value = DialogMode.Error
-      if (reason instanceof WalletDriverError) {
+      if (reason instanceof WalletClientError) {
         errorMessage.value = reason.message
         errorMessageDetails.value = reason.extra
       } else {
