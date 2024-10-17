@@ -63,7 +63,10 @@ import TokenExtra from "@/components/values/link/TokenExtra.vue";
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
   TransactionType.TOKENBURN,
-  TransactionType.TOKENMINT
+  TransactionType.TOKENMINT,
+  TransactionType.TOKENREJECT,
+  TransactionType.TOKENAIRDROP,
+  TransactionType.TOKENCLAIMAIRDROP
 ]
 
 export default defineComponent({

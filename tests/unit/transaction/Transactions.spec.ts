@@ -46,8 +46,6 @@ describe("Transactions.vue", () => {
 
     test("no props", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: true});
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios)
@@ -190,49 +188,6 @@ describe("Transactions.vue", () => {
             "20 per page" +
             "50 per pag" +
             "e100 per page")
-
-        mock.restore()
-        wrapper.unmount()
-        await flushPromises()
-    });
-
-    test("type selector takes VITE_APP_ENABLE_AIRDROP into account", async () => {
-
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: false});
-
-        await router.push("/") // To avoid "missing required param 'network'" error
-
-        const mock = new MockAdapter(axios)
-
-        const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS)
-
-        const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
-        mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
-
-        const wrapper = mount(Transactions, {
-            global: {
-                plugins: [router, Oruga]
-            },
-            props: {},
-        });
-
-        await flushPromises()
-        // console.log(wrapper.text())
-
-        const select = wrapper.findComponent(TransactionFilterSelect)
-        expect(select.exists()).toBe(true)
-        expect(select.text()).toBe(
-            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE HASH" +
-            "CRYPTO APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCE" +
-            "CRYPTO DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE APPEND" +
-            "FILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGE" +
-            "HCS UPDATE TOPICNODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATE" +
-            "SCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETE" +
-            "TOKEN ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETE" +
-            "TOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN KYC GRANTTOKEN KYC REVOKE" +
-            "TOKEN MINTTOKEN PAUSETOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN UPDATETOKEN UPDATE NFTS" +
-            "TOKEN WIPEUNCHECKED SUBMIT")
 
         mock.restore()
         wrapper.unmount()
