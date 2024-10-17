@@ -151,12 +151,13 @@ describe("TokensSection.vue", () => {
         await flushPromises()
 
         const nftsTable = tokensSection.get("#nftsTable")
-        expect(nftsTable.find('thead').text()).toBe("Image Token ID Collection Serial # Name Creator Description")
+        expect(nftsTable.find('thead').text()).toBe("Image Token ID Serial # Collection Name Symbol NFT Name Creator")
         expect(nftsTable.find('tbody').text()).toBe(
-            "NFT0.0.748383Ħ Frens Kingdom (ĦFRENSKINGD…) 2" +
-            "NFT0.0.748383Ħ Frens Kingdom (ĦFRENSKINGD…) 1" +
-            "NFT0.0.748383Ħ Frens Kingdom (ĦFRENSKINGD…) 342"
+            "NFT0.0.7483832Ħ Frens KingdomĦFRENSKINGD…" +
+            "NFT0.0.7483831Ħ Frens KingdomĦFRENSKINGD…" +
+            "NFT0.0.748383342Ħ Frens KingdomĦFRENSKINGD…"
         )
+
 
         wrapper.unmount()
         await flushPromises()
@@ -182,7 +183,7 @@ describe("TokensSection.vue", () => {
         await flushPromises()
 
         const associationsTable = tokensSection.get("#fungibleTable")
-        expect(associationsTable.find('thead').text()).toBe("Token Name Symbol Balance")
+        expect(associationsTable.find('thead').text()).toBe("Token ID Name Symbol Balance")
         expect(associationsTable.find('tbody').text()).toBe(
             "0.0.34332104" + "HSUITE" + "HSuite" + "42.0000" +
             "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "42.00000000"

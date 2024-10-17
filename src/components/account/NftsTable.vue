@@ -64,28 +64,24 @@
       <TokenIOL :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-name" label="Collection">
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
-      (<TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>)
-    </o-table-column>
-
     <o-table-column v-slot="{ row }" field="serial" label="Serial #">
       {{ row.serial_number }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="Name">
+    <o-table-column v-slot="{ row }" field="token-name" label="Collection Name">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="token-name" label="Symbol">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="name" label="NFT Name">
       <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.name"/>
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="creator" label="Creator">
       <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.creator"/>
-    </o-table-column>
-
-    <o-table-column v-slot="{ row }" field="description" label="Description">
-      <NftCell :token-id="row.token_id"
-               :serial-number="row.serial_number"
-               :property="NftCellItem.description"
-      />
     </o-table-column>
 
     <template v-slot:bottom-left>

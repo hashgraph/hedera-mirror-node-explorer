@@ -63,20 +63,20 @@
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="sender" label="Sender">
-      <div>{{ row.sender_id }}</div>
-    </o-table-column>
-
-    <o-table-column v-slot="{ row }" field="timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="row.timestamp.from"/>
-    </o-table-column>
-
-    <o-table-column v-slot="{ row }" field="amount" label="Amount" position="right">
+    <o-table-column v-slot="{ row }" field="amount" label="Amount">
       <TokenAmount
           v-if="! row.serial_number"
           :amount="BigInt(row.amount)"
           :token-id="row.token_id"
       />
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="sender" label="Sender">
+      <div>{{ row.sender_id }}</div>
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="timestamp" label=" Airdrop Time">
+      <TimestampValue v-bind:timestamp="row.timestamp.from"/>
     </o-table-column>
 
     <template v-slot:bottom-left>
