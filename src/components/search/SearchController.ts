@@ -249,7 +249,7 @@ class InputChangeController {
             this.outputText.value = this.inputText.value
         } else {
             this.timeoutID = window.setTimeout(() => {
-                this.outputText.value = this.inputText.value
+                this.outputText.value = this.inputText.value.trim()
                 this.timeoutID = -1
             }, this.millis)
         }

@@ -183,6 +183,53 @@ describe("SearchController.vue", () => {
 
     })
 
+    it("should trim leading/trailing whitespaces from the search input text", async () => {
+        const inputText = ref<string>("")
+        const controller = new SearchController(inputText)
+    
+        await flushPromises()
+    
+        expect(vi.getTimerCount()).toBe(0)
+        expect(controller.visible.value).toBe(false)
+        expect(controller.actualInputText.value).toBe("")
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+    
+        inputText.value = `   ${SAMPLE_ACCOUNT.account}   `        
+        await nextTick()
+        expect(vi.getTimerCount()).toBe(1)
+        vi.advanceTimersToNextTimer()
+        expect(controller.visible.value).toBe(true)
+        expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.account)  // Text should be trimmed
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(0)
+        expect(controller.visibleAgents.value.length).toBe(0)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+    
+        await flushPromises()
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/0.0.730631",
+            "api/v1/contracts/0.0.730631",
+            "api/v1/tokens/0.0.730631",
+            "api/v1/topics/0.0.730631",
+        ])
+    
+        expect(controller.visible.value).toBe(true)
+        expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.account)
+        expect(controller.loading.value).toBe(false)
+        expect(controller.candidateCount.value).toBe(1)
+        expect(controller.visibleAgents.value.length).toBe(1)
+        expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
+        const candidates = controller.visibleAgents.value[0].candidates.value
+        expect(candidates.length).toBe(1)
+        expect(candidates[0].description).toBe(SAMPLE_ACCOUNT.account)
+        expect(candidates[0].extra).toBeNull()
+        expect(candidates[0].secondary).toBe(false)
+        expect(candidates[0].entity).toStrictEqual(SAMPLE_ACCOUNT)
+    })
+
 
     //
     // Account
