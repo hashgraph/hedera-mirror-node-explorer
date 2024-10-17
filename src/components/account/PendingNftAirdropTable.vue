@@ -51,11 +51,8 @@
       aria-page-label="Page"
       aria-previous-label="Previous page"
   >
-    <o-table-column
-        v-slot="{ row }"
-        field="image"
-        label="Image"
-    >
+
+    <o-table-column v-slot="{ row }" field="image" label="Image">
       <NftCell
           :token-id="row.token_id"
           :serial-number="row.serial_number"
@@ -68,22 +65,23 @@
       <TokenIOL :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="Collection">
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
-      (
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
-      )
-    </o-table-column>
-
     <o-table-column v-slot="{ row }" field="serial" label="Serial #">
       {{ row.serial_number }}
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="name" label="Collection Name">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
+    </o-table-column>
+
+    <o-table-column v-slot="{ row }" field="name" label="Symbol">
+      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="sender" label="Sender">
       <div>{{ row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="timestamp" label="Time">
+    <o-table-column v-slot="{ row }" field="timestamp" label="Airdrop Time">
       <TimestampValue v-bind:timestamp="row.timestamp.from"/>
     </o-table-column>
 
