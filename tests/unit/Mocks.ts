@@ -2262,6 +2262,27 @@ export const SAMPLE_TOKEN_ASSOCIATIONS = {
     }
 }
 
+export const SAMPLE_TOKEN_ASSOCIATIONS_2 = {
+    "tokens": [{
+        "automatic_association": false,
+        "balance": 2342647909,
+        "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
+    }, {
+        "automatic_association": false,
+        "balance": 31669471,
+        "created_timestamp": "1671648712.150557003",
+        "freeze_status": "UNFROZEN",
+        "kyc_status": "NOT_APPLICABLE",
+        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
+    }],
+    "links": {
+        next: null
+    }
+}
+
 //
 // Account inspired from: https://mainnet-public.mirrornode.hedera.com/api/v1/accounts/0.0.730631
 //
