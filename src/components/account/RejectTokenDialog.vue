@@ -28,7 +28,7 @@
     <!-- title -->
     <template #dialogTitle>
       <div class="h-is-primary-title">
-        Reject Tokens
+        {{ isNft ? 'Reject NFTs' : 'Reject Tokens' }}
       </div>
     </template>
 
@@ -38,16 +38,19 @@
         {{ inputMessage }}
       </div>
       <div class="h-is-property-text has-text-grey mt-4">
-        {{ inputMessageDetails1 }}
+        {{ inputMessageDetails0 }}
+      </div>
+      <div v-if="inputMessageDetails1" class="h-is-property-text has-text-grey mt-2">
+        • {{ inputMessageDetails1 }}
       </div>
       <div v-if="inputMessageDetails2" class="h-is-property-text mt-2 has-text-grey">
-        {{ inputMessageDetails2 }}
+        • {{ inputMessageDetails2 }}
       </div>
       <div v-if="inputMessageDetails3" class="h-is-property-text mt-2 has-text-grey">
-        {{ inputMessageDetails3 }}
+        • {{ inputMessageDetails3 }}
       </div>
       <div v-if="inputMessageDetails4" class="h-is-property-text mt-2 has-text-grey">
-        {{ inputMessageDetails4 }}
+        • {{ inputMessageDetails4 }}
       </div>
     </template>
 
@@ -155,6 +158,18 @@ const isNft = computed(() =>
 )
 
 const inputMessage = ref<string | null>(null)
+
+const inputMessageDetails0 = computed(() => {
+  let result: string | null
+  if (inputMessageDetails1 || inputMessageDetails2 || inputMessageDetails3 || inputMessageDetails4) {
+    result = (rejectCandidates.value.length >= 1)
+        ? `The remaining selected ${isNft ? 'NFTs' : 'tokens'} cannot be rejected because:`
+        : 'This is because:'
+  } else {
+    result = null
+  }
+  return result
+})
 const inputMessageDetails1 = ref<string | null>(null)
 const inputMessageDetails2 = ref<string | null>(null)
 const inputMessageDetails3 = ref<string | null>(null)
@@ -255,7 +270,7 @@ const populateUserFeedback = () => {
     }
   }
   if (treasuryTokens.value.length >= 1) {
-    inputMessageDetails1.value = `Account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
+    inputMessageDetails1.value = `Your account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
     inputMessageDetails1.value += (treasuryTokens.value.length > 4 ? '…' : '')
   } else {
     inputMessageDetails1.value = null
