@@ -51,7 +51,7 @@
       aria-previous-label="Previous page"
       customRowKey="token_id"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
+    <o-table-column v-slot="props" field="token_id" label="Token ID">
       <TokenIOL :token-id="props.row.token_id"/>
     </o-table-column>
 
@@ -63,7 +63,7 @@
       {{ row.symbol }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="balance" label="Balance" position="right">
+    <o-table-column v-slot="{ row }" field="balance" label="Balance">
       <TokenCell
           :account-id="props.controller.accountId.value"
           :token-id="row.token_id"
