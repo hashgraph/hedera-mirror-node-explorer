@@ -20,7 +20,7 @@
 
 import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
 import {Ref} from "vue";
-import axios, {AxiosResponse} from "axios";
+import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {drainAccounts} from "@/schemas/HederaUtils";
 import {Router} from "vue-router";

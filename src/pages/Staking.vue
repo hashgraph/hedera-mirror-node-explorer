@@ -65,9 +65,6 @@
                      :downloader="downloader"
                      :account-id="accountId"/>
 
-  <WalletChooser v-model:show-dialog="showWalletChooser"
-                 v-on:choose-wallet="handleChooseWallet"/>
-
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <DashboardCard collapsible-key="stakingDetails">
@@ -232,8 +229,6 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
-import WalletChooser from "@/components/staking/WalletChooser.vue";
-import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TransactionID} from "@/utils/TransactionID";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
@@ -260,7 +255,6 @@ export default defineComponent({
   components: {
     CSVDownloadDialog,
     DownloadButton,
-    WalletChooser,
     RewardsCalculator,
     AccountLink,
     ConfirmDialog,
@@ -281,7 +275,6 @@ export default defineComponent({
 
     const stakingDialogVisible = ref(false)
     const stopConfirmDialogVisible = ref(false)
-    const showWalletChooser = ref(false)
     const showErrorDialog = ref(false)
     const showProgressDialog = ref(false)
     const progressDialogMode = ref(Mode.Busy)
@@ -293,39 +286,6 @@ export default defineComponent({
     const showDownloadDialog = ref(false)
 
     const connecting = ref(false)
-
-    const chooseWallet = () => {
-      showWalletChooser.value = true
-    }
-
-    //
-    // handleChooseWallet
-    //
-    const handleChooseWallet = async (wallet: WalletDriver) => {
-      walletManager.setActiveDriver(wallet)
-      connecting.value = true
-      try {
-        await walletManager.connect()
-      } catch (reason) {
-        if (!(reason instanceof WalletDriverCancelError)) {
-          showProgressDialog.value = true
-          progressDialogMode.value = Mode.Error
-          progressDialogTitle.value = "Could not connect wallet"
-          showProgressSpinner.value = false
-          progressExtraTransactionId.value = null
-
-          if (reason instanceof WalletDriverError) {
-            progressMainMessage.value = reason.message
-            progressExtraMessage.value = reason.extra
-          } else {
-            progressMainMessage.value = "Unexpected error"
-            progressExtraMessage.value = JSON.stringify(reason)
-          }
-        }
-      } finally {
-        connecting.value = false
-      }
-    }
 
     //
     // Account
@@ -517,7 +477,6 @@ export default defineComponent({
       stakingDialogVisible,
       showStopConfirmDialog,
       stopConfirmDialogVisible,
-      showWalletChooser,
       showErrorDialog,
       showDownloadDialog,
       isStakedToNode,
@@ -530,8 +489,6 @@ export default defineComponent({
       pendingReward,
       declineReward,
       ignoreReward,
-      chooseWallet,
-      handleChooseWallet,
       handleStopStaking,
       handleChangeStaking,
       showProgressDialog,

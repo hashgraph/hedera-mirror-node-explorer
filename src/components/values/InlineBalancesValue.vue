@@ -43,7 +43,6 @@
 
 import {computed, defineComponent, inject, PropType, ref} from 'vue';
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import TokenAmount from "@/components/values/TokenAmount.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 
 export default defineComponent({
@@ -51,7 +50,6 @@ export default defineComponent({
   name: 'InlineBalancesValue',
 
   components: {
-    TokenAmount,
     HbarAmount,
   },
 
