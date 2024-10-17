@@ -64,8 +64,6 @@ export default defineComponent({
   },
 
   setup(props, context) {
-    const isAirdropEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
-
     const makeFilterLabel = (filterValue: string): string => {
       return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
     }
@@ -91,13 +89,6 @@ export default defineComponent({
               || el ===TransactionType.TOKENCLAIMAIRDROP
               || el ===TransactionType.TOKENREJECT
               || el ===TransactionType.TOKENDELETION;
-        })
-      }
-      if (!isAirdropEnabled) {
-        result = result.filter(el => {
-          return el !== TransactionType.TOKENAIRDROP
-              && el !== TransactionType.TOKENCANCELAIRDROP
-              && el !== TransactionType.TOKENCLAIMAIRDROP;
         })
       }
       result.splice(0, 0, "")
