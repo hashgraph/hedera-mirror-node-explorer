@@ -40,8 +40,6 @@ HMSF.forceUTC = true
 describe("NftDetails.vue", () => {
 
     it("Should display details of NFT", async () => {
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: true});
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);

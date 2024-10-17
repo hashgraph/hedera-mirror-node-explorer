@@ -64,8 +64,6 @@ describe("AccountDetails.vue", () => {
     const ALIAS_HEX = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
 
     it("Should display account details", async () => {
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: true});
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);

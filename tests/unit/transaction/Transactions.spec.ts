@@ -46,8 +46,6 @@ describe("Transactions.vue", () => {
 
     test("no props", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_AIRDROP: true});
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios)
