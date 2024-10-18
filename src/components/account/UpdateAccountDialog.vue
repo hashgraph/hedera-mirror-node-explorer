@@ -118,7 +118,7 @@
                min="1"
                step="1"
         >
-        <div v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
+        <div v-if="autoAssociationMode!=AutoAssociationMode.UnlimitedAutoAssociation"
              class="icon is-small ml-2"
         >
           <i v-if="isMaxAutoAssociationsValid" class="fas fa-check has-text-success"/>
@@ -610,7 +610,7 @@ onMounted(() => {
       isMaxAutoAssociationsValid.value = max >= usedAutoAssociations.value || max === -1
       if (!isMaxAutoAssociationsValid.value) {
         maxAutoAssociationsFeedbackMessage.value =
-            `Your account currently has ${usedAutoAssociations.value} automatic associations.`
+            `Your account already uses ${usedAutoAssociations.value} automatic associations.`
       } else {
         maxAutoAssociationsFeedbackMessage.value = null
       }
