@@ -26,8 +26,10 @@
 
   <button
       class="button is-small has-text-white ml-2"
+      title="Download Transaction History"
       data-cy="downloadButton"
-      style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0">
+      style="background-color: #202532; border:1px solid white; border-radius: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; height: 26px;">
+    <span style="margin-right: 8px;"> Download Transaction History</span>
     <i class="fas fa-download"></i>
   </button>
 

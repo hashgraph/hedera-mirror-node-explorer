@@ -62,7 +62,8 @@
 
     <template v-slot:dialogInputButtons>
       <DialogButton :controller="controller">CANCEL</DialogButton>
-      <CommitButton :controller="controller" :enabled="downloadEnabled" @action="handleDownload">DOWNLOAD</CommitButton>
+      <CommitButton title=" Download the transaction history of account exported as a CSV file. This is useful for record keeping and tax reporting." 
+      :controller="controller" :enabled="downloadEnabled" @action="handleDownload">DOWNLOAD</CommitButton>
     </template>
 
 

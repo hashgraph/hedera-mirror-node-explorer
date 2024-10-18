@@ -27,7 +27,12 @@
 
     <!-- title -->
     <template v-slot:dialogTitle>
-      <DialogTitle>{{ dialogTitle }}</DialogTitle>
+      <div class="dialog-title-container">
+    <DialogTitle>{{ dialogTitle }}</DialogTitle>
+    <span class="dialog-subtitle">
+      Download the transaction history of the account exported as a CSV file. <br />This is useful for record keeping and tax reporting.
+    </span>
+  </div>
     </template>
 
     <!-- input -->
@@ -298,6 +303,16 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
+.dialog-title-container {
+  text-align: center;
+}
+.dialog-subtitle {
+  display: block; 
+  text-align: center; 
+  font-size: 0.9rem; 
+  color: #666; 
+  margin-top: 0.5rem; 
+}
 .dp__theme_dark {
   --dp-background-color: var(--h-theme-box-background-color);
   --dp-primary-color: #575757;
@@ -312,4 +327,5 @@ export default defineComponent({
   --dp-font-size: 11px;
   --dp-input-padding: 3.5px 30px 3.5px 12px
 }
+
 </style>
