@@ -567,7 +567,9 @@ const onUpdateCompleted = () => accountLocParser.remount()
 const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
 const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
-const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value)
+const airdropsEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
+const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value && airdropsEnabled
+)
 
 const transactionType = computed(() => transactionTableController.transactionType.value)
 const loaded = computed(() => verifiedContractsController.loaded.value)

@@ -181,7 +181,11 @@ const perPage = ref(props.fullPage ? 15 : 6)
 
 const accountId = computed(() => props.accountId)
 
-const tabIds = ['fungible', 'nfts', 'pendingAirdrop']
+const airdropsEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
+const tabIds = airdropsEnabled
+    ? ['fungible', 'nfts', 'pendingAirdrop']
+    : ['fungible', 'nfts']
+
 const tabLabels = ['Fungible', 'NFTs', 'Pending Airdrops']
 const selectedTab = ref<string | null>(AppStorage.getAccountTokenTab() ?? tabIds[0])
 const onSelectTab = (tab: string | null) => {
@@ -274,6 +278,7 @@ const rejectEnabled = computed(() => {
       && walletManager.isHederaWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
+      && airdropsEnabled
 })
 
 const rejectButtonEnabled = computed(() =>
