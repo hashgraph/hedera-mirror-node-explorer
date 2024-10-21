@@ -48,8 +48,8 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import TokenAmount from "@/components/values/TokenAmount.vue";
-import {BalanceCache} from "@/utils/cache/BalanceCache";
 import {TokenType} from "@/schemas/HederaSchemas";
+import { TokenRelationshipCache } from "@/utils/cache/TokenRelationshipCache";
 
 export enum TokenCellItem {
   tokenName = "tokenName",
@@ -90,15 +90,15 @@ export default defineComponent({
     onMounted(() => infoLookup.mount())
     onBeforeUnmount(() => infoLookup.unmount())
 
-    const balanceLookup = BalanceCache.instance.makeLookup(accountId)
+    const balanceLookup = TokenRelationshipCache.instance.makeLookup(accountId)
     onMounted(() => balanceLookup.mount())
     onBeforeUnmount(() => balanceLookup.unmount())
 
     const tokenBalance = computed(() => {
       let result
-      if (balanceLookup.entity.value !== null && balanceLookup.entity.value.balances.length >= 1) {
+      if (balanceLookup.entity.value !== null) {
         result = null
-        for (const t of balanceLookup.entity.value.balances[0].tokens) {
+        for (const t of balanceLookup.entity.value) { 
           if (t.token_id === props.tokenId) {
             result = t.balance
             break

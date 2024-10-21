@@ -26,7 +26,8 @@ import {
     SAMPLE_ASSOCIATED_TOKEN,
     SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_NFTS,
-    SAMPLE_NONFUNGIBLE
+    SAMPLE_NONFUNGIBLE,
+    SAMPLE_TOKEN_ASSOCIATIONS_2
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -53,29 +54,6 @@ describe("TokensSection.vue", () => {
             SAMPLE_ASSOCIATED_TOKEN_2
         ]
     }
-    const SAMPLE_BALANCES = {
-        "timestamp": "1646728200.821070000",
-        "balances": [
-            {
-                "account": accountId,
-                "balance": 42,
-                "tokens": [
-                    {
-                        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id,
-                        "balance": 420000
-                    },
-                    {
-                        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id,
-                        "balance": 4200000000
-                    },
-                    {
-                        "token_id": "0.0.34332104",
-                        "balance": 0
-                    }
-                ]
-            }
-        ]
-    }
 
     const mock = new MockAdapter(axios);
 
@@ -93,8 +71,9 @@ describe("TokensSection.vue", () => {
         mock.onGet(matcher4).reply(200, SAMPLE_ASSOCIATED_TOKEN)
         const matcher5 = "/api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id
         mock.onGet(matcher5).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
-        const matcher6 = "/api/v1/balances"
-        mock.onGet(matcher6).reply(200, SAMPLE_BALANCES)
+        const matcher6 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?limit=100"
+        mock.onGet(matcher6).reply(200, SAMPLE_TOKEN_ASSOCIATIONS_2)
+
     })
 
     afterAll(() => {
@@ -182,9 +161,10 @@ describe("TokensSection.vue", () => {
 
         const associationsTable = tokensSection.get("#fungibleTable")
         expect(associationsTable.find('thead').text()).toBe("Token Name Symbol Balance")
+        console.log(associationsTable.find('tbody').text())
         expect(associationsTable.find('tbody').text()).toBe(
-            "0.0.34332104" + "HSUITE" + "HSuite" + "42.0000" +
-            "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "42.00000000"
+            "0.0.34332104" + "HSUITE" + "HSuite" + "234,264.7909" +
+            "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "0.31669471"
         )
 
         wrapper.unmount()
