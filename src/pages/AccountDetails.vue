@@ -40,6 +40,7 @@
           <img
               v-if="isMyAccount"
               :src="walletIconURL ?? undefined"
+              style="height: 100%"
               alt="wallet logo"
               class="mr-3"
           >
