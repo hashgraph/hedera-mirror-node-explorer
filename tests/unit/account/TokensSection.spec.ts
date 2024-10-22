@@ -27,6 +27,8 @@ import {
     SAMPLE_ASSOCIATED_TOKEN_2,
     SAMPLE_NFTS,
     SAMPLE_NONFUNGIBLE,
+    SAMPLE_NONFUNGIBLE_DUDE,
+    SAMPLE_PENDING_AIRDROPS,
     SAMPLE_TOKEN_ASSOCIATIONS_2
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -73,6 +75,22 @@ describe("TokensSection.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
         const matcher6 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?limit=100"
         mock.onGet(matcher6).reply(200, SAMPLE_TOKEN_ASSOCIATIONS_2)
+
+        // For Pending Airdrops tab / NFTs sub-tab
+        const matcher10 = `/api/v1/accounts/${accountId}/airdrops/pending`
+        mock.onGet(matcher10).reply(200, SAMPLE_PENDING_AIRDROPS)
+        const matcher11 = "/api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[0].token_id
+        mock.onGet(matcher11).reply(200, SAMPLE_NONFUNGIBLE)
+        const matcher12 = "/api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[3].token_id
+        mock.onGet(matcher12).reply(200, SAMPLE_NONFUNGIBLE_DUDE)
+
+        // For Pending Airdrops tab / Fungible sub-tab
+        const matcher20 = `/api/v1/accounts/${accountId}/airdrops/pending`
+        mock.onGet(matcher20).reply(200, SAMPLE_PENDING_AIRDROPS)
+        const matcher21 = "/api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[1].token_id
+        mock.onGet(matcher21).reply(200, SAMPLE_ASSOCIATED_TOKEN)
+        const matcher22 = "/api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[2].token_id
+        mock.onGet(matcher22).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
     })
 
     afterAll(() => {
@@ -104,6 +122,37 @@ describe("TokensSection.vue", () => {
         expect(tabs[0].text()).toBe('Fungible')
         expect(tabs[1].text()).toBe('NFTs')
         expect(tabs[2].text()).toBe('Pending Airdrops')
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    test("Airdrops sub-tabs are present", async () => {
+
+        const wrapper = mount(TokensSection, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: accountId
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        const tokensSection = wrapper.find("#tokensSection")
+        expect(tokensSection.exists()).toBe(true)
+
+        const tab = tokensSection.get('#tab-pendingAirdrop')
+        await tab.trigger('click')
+
+        const table = tokensSection.get('#pendingAirdropTable')
+
+        const subtabs = table.findAll('li')
+        expect(subtabs.length).toBe(2)
+        expect(subtabs[0].text()).toBe('NFTs')
+        expect(subtabs[1].text()).toBe('Fungible')
 
         wrapper.unmount()
         await flushPromises()
@@ -164,6 +213,53 @@ describe("TokensSection.vue", () => {
         expect(associationsTable.find('tbody').text()).toBe(
             "0.0.34332104" + "HSUITE" + "HSuite" + "234,264.7909" +
             "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "0.31669471"
+        )
+
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    test("Content of Pending Airdrops tab", async () => {
+
+        const wrapper = mount(TokensSection, {
+            global: {
+                plugins: [router, Oruga]
+            },
+            props: {
+                accountId: accountId
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        const tokensSection = wrapper.find("#tokensSection")
+        const tab = tokensSection.get('#tab-pendingAirdrop')
+        await tab.trigger('click')
+        await flushPromises()
+
+        const table = tokensSection.get('#pendingAirdropTable')
+
+        let subtab = table.get('#tab-nfts')
+        await subtab.trigger('click')
+        await flushPromises()
+
+        const pendingNfts = table.get("#pendingNftsTable")
+        expect(pendingNfts.find('thead').text()).toBe("Image Token ID Serial # Collection Name Symbol Sender Airdrop Time")
+        expect(pendingNfts.find('tbody').text()).toBe(
+            "NFT" + "0.0.4901646" + "2" + "Token SymbolA7" + "TokenA7" + "0.0.1437" + "9:29:10.6225 AMOct 3, 2024, UTC" +
+            "NFT" + "0.0.4901646" + "1" + "Token SymbolA7" + "TokenA7" + "0.0.1437" + "9:28:57.7817 AMOct 3, 2024, UTC"
+        )
+
+        subtab = table.get('#tab-fungible')
+        await subtab.trigger('click')
+        await flushPromises()
+
+        const pendingFungible = table.get("#pendingFungibleTable")
+        expect(pendingFungible.find('thead').text()).toBe("Token ID Name Symbol Amount Sender  Airdrop Time")
+        expect(pendingFungible.find('tbody').text()).toBe(
+            "0.0.4943664" + "Ħ Frens Kingdom" + "ĦFRENSKINGD…" + "84" + "0.0.1437" + "2:21:33.5553 PMOct 10, 2024, UTC" +
+            "0.0.2255333" + "Ħ Frens Kingdom Dude" + "ĦFRENSKINGD…4,200" + "0.0.1437" + "2:27:26.2113 PMOct 10, 2024, UTC"
         )
 
         wrapper.unmount()

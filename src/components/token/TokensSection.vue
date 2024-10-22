@@ -100,7 +100,7 @@
             :sub-tabs="true"
             @update:selectedTab="onAirdropSelectTab"
         />
-        <div v-if="airdropSelectedTab === 'nfts'">
+        <div v-if="airdropSelectedTab === 'nfts'" id="pendingNftsTable">
           <PendingNftAirdropTable
               :controller="nftsAirdropTableController"
               :check-enabled="claimEnabled"
@@ -108,7 +108,7 @@
               :full-page="props.fullPage"
           />
         </div>
-        <div v-else>
+        <div v-else id="pendingFungibleTable">
           <PendingFungibleAirdropTable
               :controller="fungibleAirdropTableController"
               :check-enabled="claimEnabled"

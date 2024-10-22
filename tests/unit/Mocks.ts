@@ -529,6 +529,44 @@ export const SAMPLE_NFTS = {
     ]
 }
 
+export const SAMPLE_PENDING_AIRDROPS = {
+    "airdrops": [
+        {
+            "amount": 84,
+            "receiver_id": "0.0.1306",
+            "sender_id": "0.0.1437",
+            "serial_number": null,
+            "timestamp": {"from": "1728570093.555349851", "to": null},
+            "token_id": "0.0.4943664"
+        },
+        {
+            "amount": null,
+            "receiver_id": "0.0.1306",
+            "sender_id": "0.0.1437",
+            "serial_number": 2,
+            "timestamp": {"from": "1727947750.622560000", "to": null},
+            "token_id": "0.0.4901646"
+        },
+        {
+            "amount": null,
+            "receiver_id": "0.0.1306",
+            "sender_id": "0.0.1437",
+            "serial_number": 1,
+            "timestamp": {"from": "1727947737.781781000", "to": null},
+            "token_id": "0.0.4901646"
+        },
+        {
+            "amount": 4200,
+            "receiver_id": "0.0.1306",
+            "sender_id": "0.0.1437",
+            "serial_number": null,
+            "timestamp": {"from": "1728570446.211307000", "to": null},
+            "token_id": "0.0.2255333"
+        }
+    ],
+    "links": {"next": null}
+}
+
 export const IPFS_GATEWAY_PREFIX = 'https://gateway.pinata.cloud/ipfs/'
 
 export const CID_METADATA = "UW1QSjhnbTFIOFY3Ym9SR1JiV3ZyWloxSkMyeXFzajNoYkJKeUJhTFBnSG5ROA=="
