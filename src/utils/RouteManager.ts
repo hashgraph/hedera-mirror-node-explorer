@@ -131,6 +131,7 @@ export class RouteManager {
             || r === 'AccountDetails'
             || r === 'AccountsWithKey'
             || r === 'AdminKeyDetails'
+            || r === 'TokensByAccount'
     }
 
     public testNodeRoute(route: string | null = null): boolean {
