@@ -26,17 +26,26 @@ export function inputEntityID(event: Event, entityID: string | null): string | n
     let isValidInput = true
     let isValidID = false
     let isPastDash = false
+    let isPreviousDigit = false
+    let pastDots = 0
 
     const value = (event.target as HTMLInputElement).value
     for (const c of value) {
-        if ((c >= '0' && c <= '9') || c === '.') {
+        if (c >= '0' && c <= '9') {
             if (isPastDash) {
                 isValidInput = false
                 break
             } else {
-                isValidID = EntityID.parse(networkRegistry.stripChecksum(value)) !== null
+                isPreviousDigit = true
+                isValidID = EntityID.parse(networkRegistry.stripChecksum(value),true) !== null
             }
+        } else if (c === '.') {
+            pastDots++
+            isValidInput = isPreviousDigit && pastDots <= 2
+            isPreviousDigit = false
+            isValidID = false
         } else if (c === '-') {
+            isPreviousDigit = false
             if (!isValidID || isPastDash) {
                 isValidInput = false
                 break

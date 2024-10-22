@@ -81,9 +81,15 @@ export interface TokenRelationship {
     automatic_association: boolean,
     balance: number,
     created_timestamp: string,
-    freeze_status: string, // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
-    kyc_status: string,    // [ NOT_APPLICABLE, GRANTED, REVOKED ]
+    freeze_status: FreezeStatus,    // [ NOT_APPLICABLE, FROZEN, UNFROZEN ]
+    kyc_status: string,             // [ NOT_APPLICABLE, GRANTED, REVOKED ]
     token_id: string | null,
+}
+
+export enum FreezeStatus {
+    FROZEN = "FROZEN",
+    UNFROZEN = "UNFROZEN",
+    NOT_APPLICABLE = "NOT_APPLICABLE"
 }
 
 export interface CryptoAllowancesResponse {
@@ -456,6 +462,24 @@ export interface Nft {
     serial_number: number
     spender: string | null
     token_id: string | null // Network entity ID in the format of shard.realm.num
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+//                                               Airdrop
+// ---------------------------------------------------------------------------------------------------------------------
+
+export interface TokenAirdropsResponse {
+    airdrops: TokenAirdrop[]
+    links: Links
+}
+
+export interface TokenAirdrop {
+    amount: number,
+    receiver_id: string | null,
+    sender_id: string | null,
+    serial_number: number | null | undefined,
+    timestamp: TimestampRange,
+    token_id: string | null
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
@@ -837,8 +861,8 @@ export interface StakingReward {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface Key {
-    _type: KeyType | undefined
-    key: string | undefined
+    _type: KeyType
+    key: string
 }
 
 export enum KeyType {
@@ -848,7 +872,7 @@ export enum KeyType {
 }
 
 export interface Links {
-    next: string | null | undefined
+    next: string | null
 }
 
 export const infiniteDuration = 31556888202959784

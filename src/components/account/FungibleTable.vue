@@ -25,18 +25,20 @@
 <template>
 
   <o-table
-      :data="controller.rows.value"
-      :loading="controller.loading.value"
-      :paginated="controller.paginated.value"
+      :data="props.controller.rows.value"
+      :loading="props.controller.loading.value"
+      :paginated="props.controller.paginated.value && props.fullPage"
       backend-pagination
       pagination-order="left"
       :range-before="0"
       :range-after="0"
-      :total="controller.totalRowCount.value"
-      :current-page="controller.currentPage.value"
-      :per-page="controller.pageSize.value"
-      @page-change="controller.onPageChange"
+      :total="props.controller.totalRowCount.value"
+      v-model:current-page="props.controller.currentPage.value"
+      :per-page="props.controller.pageSize.value"
+      @page-change="props.controller.onPageChange"
       @cellClick="handleClick"
+      :checkable="props.checkEnabled"
+      v-model:checked-rows="checkedRows"
 
       :hoverable="true"
       :narrowed="true"
@@ -49,33 +51,30 @@
       aria-previous-label="Previous page"
       customRowKey="token_id"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
-      <TokenLink
-          :show-extra="false"
-          :token-id="props.row.token_id"
-          :no-anchor="true"
-      />
+    <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
+      <TokenIOL :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
-      {{ props.row.name }}
+    <o-table-column v-slot="{ row }" field="name" label="Name">
+      {{ row.name }}
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
-      {{ props.row.symbol }}
+    <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
+      {{ row.symbol }}
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+    <o-table-column v-slot="{ row }" field="balance" label="Balance">
       <TokenCell
-          :account-id="controller.accountId.value"
-          :token-id="props.row.token_id"
+          :account-id="props.controller.accountId.value"
+          :token-id="row.token_id"
           :property="TokenCellItem.tokenBalance"
       />
     </o-table-column>
 
     <template v-slot:bottom-left>
       <TablePageSize
-          v-model:size="controller.pageSize.value"
+          v-if="props.fullPage"
+          v-model:size="props.controller.pageSize.value"
           :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
     </template>
@@ -83,13 +82,16 @@
   </o-table>
 
   <TablePageSize
-      v-if="!controller.paginated.value && controller.showPageSizeSelector.value"
-      v-model:size="controller.pageSize.value"
+      v-if="!props.controller.paginated.value
+      && props.controller.showPageSizeSelector.value
+      && !props.checkEnabled
+      && props.fullPage"
+      v-model:size="props.controller.pageSize.value"
       :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       style="width: 102px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!controller.totalRowCount.value"/>
+  <EmptyTable v-if="!props.controller.totalRowCount.value"/>
 
 </template>
 
@@ -99,9 +101,8 @@
 
 <script setup lang="ts">
 
-import {PropType} from 'vue';
-import {TokenBalance} from "@/schemas/HederaSchemas";
-import TokenLink from "@/components/values/link/TokenLink.vue";
+import {onBeforeUnmount, onMounted, PropType, watch} from 'vue';
+import {Nft, Token, TokenBalance} from "@/schemas/HederaSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
@@ -109,12 +110,37 @@ import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
+import TokenIOL from "@/components/values/link/TokenIOL.vue";
 
-defineProps({
+const props = defineProps({
   controller: {
     type: Object as PropType<FungibleTableController>,
     required: true
   },
+  checkEnabled: {
+    type: Boolean,
+    required: true
+  },
+  fullPage: {
+    type: Boolean,
+    default: false
+  },
+})
+
+const checkedRows = defineModel("checkedTokens", {
+  type: Object as PropType<(Token | Nft)[]>,
+  default: [] as (Token | Nft)[]
+})
+
+watch([props.controller.rows, () => props.checkEnabled], () =>
+    checkedRows.value.splice(0)
+)
+
+onMounted(() => {
+  props.controller.mount()
+})
+onBeforeUnmount(() => {
+  props.controller.unmount()
 })
 
 const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, event: MouseEvent) => {

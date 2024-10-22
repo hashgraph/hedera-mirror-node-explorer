@@ -46,6 +46,13 @@ $select-height: 26px;
 $select-line-height: 1;
 $select-padding: 0 8px;
 $switch-active-background-color: $h-background-color;
+
+$checkbox-border-color: $h-highlight-color;
+$checkbox-background-color: $h-box-background-color;
+$checkbox-border-width: 1px;
+$checkbox-active-background-color: $h-highlight-color;
+$checkbox-checkmark-color: $h-box-background-color;
+
 // Import Oruga
 @import '../../../node_modules/@oruga-ui/oruga-next/src/scss/oruga-full-vars';
 

@@ -28,9 +28,11 @@ import {
     HTS_PRECOMPILE_CONTRACT_ID,
     KeyType,
     NetworkNode,
+    Nft,
     Nfts,
     NftTransfer,
     REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
+    Token,
     TokenInfo,
     TokenRelationship,
     TokenRelationshipResponse,
@@ -71,7 +73,7 @@ export function makeEthAddressForToken(token: TokenInfo): string | null {
     return result
 }
 
-export function makeTokenName(token: TokenInfo | null, maxLength: number=40): string {
+export function makeTokenName(token: TokenInfo | null, maxLength: number = 40): string {
     let result = token?.name ?? '?'
     if (result.length > maxLength) {
         result = result.slice(0, maxLength) + '…'
@@ -79,7 +81,7 @@ export function makeTokenName(token: TokenInfo | null, maxLength: number=40): st
     return result
 }
 
-export function makeTokenSymbol(token: TokenInfo | null, maxLength: number=11): string {
+export function makeTokenSymbol(token: TokenInfo | null, maxLength: number = 11): string {
     let result = token?.symbol ?? '?'
     if (result.length > maxLength) {
         result = result.slice(0, maxLength) + '…'
@@ -104,6 +106,11 @@ export function formatTokenAmount(rawAmount: bigint, decimalCount: number): stri
         result = amountFormatter.format(rawAmount)
     }
     return result
+}
+
+export function tokenOrNftId(token: Token | Nft): string {
+    const serial = (token as Nft).serial_number
+    return token.token_id + (serial != undefined ? ` #${serial.toString()}` : "")
 }
 
 export function makeNodeDescription(node: NetworkNode): string {
@@ -322,10 +329,13 @@ export function resolveFunctionFragmentForHTSProxyContract(functionFragment: eth
         "function isApprovedForAll(address _owner, address _operator) external view returns (bool isApprovedForAll)",
         "function transferFrom(address sender, address recipient, uint256 amount) external returns (bool transferFrom)",
         "function tokenOfOwnerByIndex(address _owner, uint256 _index) external view returns (uint256 tokenOfOwnerByIndex)",
-      ];
+    ];
 
     const iface = new ethers.Interface(ABI_FOR_SUPPORTED_METHODS)
-    return ethers.FunctionFragment.from({...functionFragment, outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs})
+    return ethers.FunctionFragment.from({
+        ...functionFragment,
+        outputs: iface.getFunction(encodedFunction4BytesSignature)?.outputs
+    })
 }
 
 export function isRedirectForTokenTx(contractId: string, functionHash: string): boolean {

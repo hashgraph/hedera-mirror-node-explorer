@@ -131,6 +131,7 @@ export class RouteManager {
             || r === 'AccountDetails'
             || r === 'AccountsWithKey'
             || r === 'AdminKeyDetails'
+            || r === 'TokensByAccount'
     }
 
     public testNodeRoute(route: string | null = null): boolean {
@@ -315,6 +316,13 @@ export class RouteManager {
         return {
             name: 'TokensByPopularity',
             params: {name: name, network: this.currentNetwork.value}
+        }
+    }
+
+    public makeRouteToTokensByAccount(accountId: string): RouteLocationRaw {
+        return {
+            name: 'TokensByAccount',
+            params: {accountId: accountId, network: this.currentNetwork.value}
         }
     }
 

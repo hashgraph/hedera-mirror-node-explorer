@@ -25,17 +25,21 @@
 <template>
   <div>
     <!-- <div class="is-relative"> -->
-    <button v-if="isEthereumWallet" id="showStakingDialog" class="button is-white is-small"
+    <button id="showTokenActions" class="button is-white is-small"
             @click="() => isActive = !isActive">TOKEN ACTIONS
     </button>
 
     <div v-if="isActive" class="token-actions-wrapper is-flex is-flex-direction-column box">
-      <div v-if="isDissociated" id="showStakingDialog" class="is-cursor is-hover-grey is-full has-cursor-pointer"
+      <div v-if="isDissociated" id="associateToken" class="is-cursor is-hover-grey is-full has-cursor-pointer"
            @click="handleAssociate">TOKEN ASSOCIATE
       </div>
 
-      <div v-if="isAssociated" id="showStakingDialog" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+      <div v-if="isAssociated" id="dissociateToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
            @click="handleDissociate">TOKEN DISSOCIATE
+      </div>
+
+      <div v-if="isAssociated" id="rejectToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+           @click="handleReject">TOKEN REJECT
       </div>
 
       <div v-if="isWatchAssetSupported" id="showStakingDialog"
@@ -43,11 +47,6 @@
            @click="handleImport">TOKEN IMPORT
       </div>
     </div>
-
-    <button v-if="isHederaWallet" id="showStakingDialog" class="button is-white is-small"
-            @click="() => isDissociated ? handleAssociate() : handleDissociate()">
-      {{ isDissociated ? `TOKEN ASSOCIATE` : `TOKEN DISSOCIATE` }}
-    </button>
 
     <ConfirmDialog :show-dialog="showConfirmDialog"
                    :main-message="confirmMessage"
@@ -74,7 +73,7 @@
                    @onConfirm="handleConfirm"
                    @onCancel="handleCancel">
       <template v-slot:dialogTitle>
-            <span class="h-is-primary-titlee">
+            <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
       </template>
@@ -136,13 +135,16 @@ import {walletManager} from "@/router";
 import DoneDialog from '../DoneDialog.vue';
 import ConfirmDialog from '../ConfirmDialog.vue';
 import DynamicDialog from '../DynamicDialog.vue';
-import {PropType, computed, defineComponent, ref} from "vue";
+import {computed, defineComponent, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
+import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
+import axios, {AxiosResponse} from "axios";
+import {Nfts} from "@/schemas/HederaSchemas";
 
 export default defineComponent({
   name: "TokenActions",
@@ -153,7 +155,8 @@ export default defineComponent({
       required: true
     }
   },
-  setup(props) {
+  emits: ['rejected'],
+  setup(props, context) {
     //
     // States
     //
@@ -178,8 +181,27 @@ export default defineComponent({
     // Alert dialog states
     const alertController = new DialogController()
     const tooltipLabel = computed(
-        () => "Token " + tokenSymbol.value + " cannot be dissociated because "
-            + walletManager.accountId.value + " is its treasury account."
+        () => {
+          let result: string
+          switch (action.value) {
+            case "ASSOCIATE":
+              result = "Token " + tokenSymbol.value + " cannot be associated because "
+                  + walletManager.accountId.value + " is its treasury account."
+              break
+            case "DISSOCIATE":
+              result = "Token " + tokenSymbol.value + " cannot be dissociated because "
+                  + walletManager.accountId.value + " is its treasury account."
+              break
+            case "REJECT":
+              result = "Token " + tokenSymbol.value + " cannot be rejected because "
+                  + walletManager.accountId.value + " is its treasury account."
+              break
+            default:
+              result = "?"
+              break
+          }
+          return result
+        }
     )
 
     //
@@ -230,11 +252,32 @@ export default defineComponent({
     // handleDissociate()
     //
     const handleDissociate = () => {
+      action.value = 'DISSOCIATE'
+
       if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-        action.value = 'DISSOCIATE'
         showConfirmDialog.value = true
         dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
         confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        confirmExtraMessage.value = null
+      } else {
+        alertController.visible.value = true
+      }
+    }
+
+    //
+    // handleReject()
+    //
+    const handleReject = () => {
+      action.value = 'REJECT'
+
+      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
+        showConfirmDialog.value = true
+        dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
+        if (tokenType.value === 'NFT') {
+          confirmMessage.value = `Confirm rejecting NFTs of collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        } else {
+          confirmMessage.value = `Confirm rejecting token ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+        }
         confirmExtraMessage.value = null
       } else {
         alertController.visible.value = true
@@ -275,6 +318,9 @@ export default defineComponent({
           break;
         case "DISSOCIATE":
           dissociateAction();
+          break;
+        case "REJECT":
+          rejectAction();
           break;
         case "IMPORT_TOKEN":
           importTokenAction();
@@ -360,6 +406,55 @@ export default defineComponent({
     }
 
     //
+    // rejectAction()
+    //
+    const rejectAction = async () => {
+      try {
+        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
+          showProgressDialog.value = true
+          showProgressSpinner.value = true
+          if (tokenType.value === 'NFT') {
+            progressMainMessage.value = `Rejecting NFTs from collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          } else {
+            progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+          }
+          try {
+            if (tokenType.value === 'NFT') {
+              let url: string | null = "api/v1/accounts/" + accountId.value + "/nfts?token.id=" + tokenId.value + "&limit=10"
+              let counter = 10
+              while (url !== null && counter > 0) {
+                const response: AxiosResponse<Nfts> = await axios.get<Nfts>(url)
+                if (response.data.nfts) {
+                  const transaction = new TokenRejectTransaction()
+                  for (const nft of response.data.nfts) {
+                    transaction.addNftId(new NftId(TokenId.fromString(nft.token_id!), nft.serial_number))
+                  }
+                  await walletManager.rejectTokens(transaction)
+                }
+                url = response.data.links?.next ?? null
+                counter -= 1
+              }
+            } else {
+              const transaction = new TokenRejectTransaction()
+              transaction.addTokenId(TokenId.fromString(tokenId.value!))
+              await walletManager.rejectTokens(transaction)
+            }
+          } finally {
+            props.analyzer.tokenAssociationDidChange()
+            context.emit('rejected')
+            gtagTransaction("reject_token")
+          }
+        }
+        showProgressDialog.value = false
+        showDoneDialog.value = true
+        dialogTitle.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}`
+        doneMessage.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+      } catch (reason) {
+        handleError(reason)
+      }
+    }
+
+    //
     // importTokenAction()
     //
     const importTokenAction = async () => {
@@ -425,6 +520,7 @@ export default defineComponent({
       handleAssociate,
       showWatchOption,
       handleDissociate,
+      handleReject,
       isEthereumWallet,
       showDynamicDialog,
       tokenSerialNumber,

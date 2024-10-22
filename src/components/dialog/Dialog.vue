@@ -26,8 +26,8 @@
   <template v-if="controller.visible.value">
     <div class="is-active modal has-text-white">
       <div class="modal-background"/>
-      <div class="modal-content" style="width: 768px; border-radius: 16px">
-        <div class="box">
+      <div class="modal-content" :style="{'width': width+'px'}" style="border-radius: 16px">
+        <div class="box" style="padding: 32px">
 
           <div class="is-flex is-justify-content-space-between is-align-items-baseline">
             <slot name="dialogTitle"/>
@@ -52,30 +52,34 @@
             </div>
           </div>
 
-          <div class="is-flex is-justify-content-space-between column-gap-1">
-            <div class="is-flex is-justify-content-flex-start column-gap-1">
-              <template v-if="dialogInputVisible || dialogBusyVisible">
-                <slot name="dialogInputControls"/>
-              </template>
+          <div class="is-flex is-align-items-center is-justify-content-space-between column-gap-1">
+            <div class="has-text-danger">
+              <slot name="dialogFeedback"/>
             </div>
-            <div class="is-flex is-justify-content-flex-end column-gap-1">
-              <template v-if="dialogInputVisible || dialogBusyVisible">
-                <slot name="dialogInputButtons">
-                  <DialogButton :controller="controller">Close</DialogButton>
-                </slot>
-              </template>
-              <template v-else-if="dialogSuccessVisible">
-                <slot name="dialogSuccessButtons">
-                  <DialogButton :controller="controller">Close</DialogButton>
-                </slot>
-              </template>
-              <template v-else-if="dialogErrorVisible">
-                <slot name="dialogErrorButtons">
-                  <DialogButton :controller="controller">Close</DialogButton>
-                </slot>
-              </template>
+            <div class="is-flex is-justify-content-space-between column-gap-1">
+              <div class="is-flex is-justify-content-flex-start column-gap-1">
+                <template v-if="dialogInputVisible || dialogBusyVisible">
+                  <slot name="dialogInputControls"/>
+                </template>
+              </div>
+              <div class="is-flex is-justify-content-flex-end column-gap-1">
+                <template v-if="dialogInputVisible || dialogBusyVisible">
+                  <slot name="dialogInputButtons">
+                    <DialogButton :controller="controller">Close</DialogButton>
+                  </slot>
+                </template>
+                <template v-else-if="dialogSuccessVisible">
+                  <slot name="dialogSuccessButtons">
+                    <DialogButton :controller="controller">Close</DialogButton>
+                  </slot>
+                </template>
+                <template v-else-if="dialogErrorVisible">
+                  <slot name="dialogErrorButtons">
+                    <DialogButton :controller="controller">Close</DialogButton>
+                  </slot>
+                </template>
+              </div>
             </div>
-
           </div>
 
         </div>
@@ -102,6 +106,10 @@ export default defineComponent({
     controller: {
       type: Object as PropType<DialogController>,
       required: true
+    },
+    width: {
+      type: Number,
+      default: 768
     },
   },
   setup(props) {
@@ -139,6 +147,7 @@ export default defineComponent({
   grid-template-columns: 1fr;
   grid-template-rows: 1fr;
   justify-items: stretch;
+  place-items: stretch;
 }
 
 .dialog-stack div {

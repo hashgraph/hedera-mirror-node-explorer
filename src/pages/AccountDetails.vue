@@ -27,7 +27,7 @@
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-        <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
+      <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
     </div>
 
     <DashboardCard collapsible-key="accountDetails">
@@ -40,10 +40,11 @@
           <img
               v-if="isMyAccount"
               :src="walletIconURL ?? undefined"
+              style="height: 100%"
               alt="wallet logo"
               class="mr-3"
           >
-          <span  class="h-is-primary-title">My Account</span>
+          <span class="h-is-primary-title">My Account</span>
         </figure>
         <span v-else class="h-is-primary-title">Account</span>
       </template>
@@ -64,7 +65,7 @@
         <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
           <router-link :to="operatorNodeRoute">
-            <span>{{ nodeId }} - {{ accountInfo }}</span>
+            <span>{{ nodeId }} - {{ accountDescription }}</span>
           </router-link>
         </div>
         <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
@@ -100,7 +101,7 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:
           </div>
           <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountId"/>
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountIdRef"/>
           </div>
         </div>
 
@@ -111,8 +112,13 @@
         </div>
       </template>
 
-      <template v-slot:control v-if="isMediumScreen">
-        <div v-if="showContractVisible && contractRoute" id="showContractLink" class="is-inline-block ml-3">
+      <template v-slot:control>
+        <button v-if="isAccountEditable" id="update-button" class="button is-white is-small"
+                @click="onUpdateAccount">UPDATE ACCOUNT…
+        </button>
+
+        <div v-if="isMediumScreen && showContractVisible && contractRoute" id="showContractLink"
+             class="is-inline-block ml-3">
           <router-link :to="contractRoute">
             <span class="h-is-property-text">Show associated contract</span>
           </router-link>
@@ -135,7 +141,11 @@
       </template>
 
       <template v-slot:leftContent>
-        <Property id="stakedTo">
+        <EditableProperty
+            id="stakedTo"
+            :editable="isAccountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>
             Staked to
           </template>
@@ -156,7 +166,7 @@
             </div>
             <span v-else class="has-text-grey">None</span>
           </template>
-        </Property>
+        </EditableProperty>
 
         <Property id="pendingReward">
           <template v-slot:name>Pending Reward</template>
@@ -173,13 +183,17 @@
             <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
           </template>
         </Property>
-        <Property id="memo">
+        <EditableProperty
+            id="memo"
+            :editable="isAccountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Memo</template>
           <template v-slot:value>
             <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"
                        :show-base64-as-extra="true"/>
           </template>
-        </Property>
+        </EditableProperty>
 
         <Property id="createTransaction">
           <template v-slot:name>Create Transaction</template>
@@ -188,7 +202,10 @@
           </template>
         </Property>
 
-        <Property id="expiresAt" tooltip="Account expiry is not turned on yet. Value in this field is not relevant.">
+        <Property
+            id="expiresAt"
+            tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being."
+        >
           <template v-slot:name>
             <span>Expires at</span>
           </template>
@@ -196,39 +213,55 @@
             <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod"
-                  tooltip="Account auto-renew is not turned on yet. Value in this field is not relevant.">
+        <EditableProperty
+            id="autoRenewPeriod"
+            tooltip="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
+            :editable="isAccountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>
             <span>Auto Renew Period</span>
           </template>
           <template v-slot:value>
             <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
           </template>
-        </Property>
-        <Property id="maxAutoAssociation"
-                  tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0).">
-          <template v-slot:name>Max. Auto. Association</template>
+        </EditableProperty>
+        <EditableProperty
+            id="maxAutoAssociation"
+            tooltip="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+            :editable="isAccountEditable"
+            @edit="onUpdateAccount"
+        >
+          <template v-slot:name>Max. Auto. Associations</template>
           <template v-slot:value>
-            <StringValue :string-value="maxAutoAssociationValue"/>
+            <StringValue :string-value="maxAutoAssociationsValue"/>
           </template>
-        </Property>
-        <Property id="receiverSigRequired">
+        </EditableProperty>
+        <EditableProperty
+            id="receiverSigRequired"
+            :editable="isAccountEditable"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Receiver Sig. Required</template>
           <template v-slot:value>
             <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
           </template>
-        </Property>
+        </EditableProperty>
       </template>
 
       <template v-slot:rightContent>
-        <Property id="key">
+        <EditableProperty
+            id="key"
+            :editable="false"
+            @edit="onUpdateAccount"
+        >
           <template v-slot:name>Admin Key</template>
           <template v-slot:value>
             <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key"
                       :key-type="account?.key?._type"
                       :show-none="true"/>
           </template>
-        </Property>
+        </EditableProperty>
 
         <Property v-if="account?.alias" id="alias" :class="{'mb-0':account?.alias}">
           <template v-slot:name>Key Alias</template>
@@ -246,7 +279,7 @@
       </template>
     </DashboardCard>
 
-    <TokensSection :account-id="normalizedAccountId"/>
+    <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
     <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
       <template v-slot:title>
@@ -304,13 +337,19 @@
 
     <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
 
-    <MirrorLink :network="network" entityUrl="accounts" :loc="accountId"/>
+    <MirrorLink :network="network" entityUrl="accounts" :loc="accountIdRef ?? undefined"/>
 
-    <TransactionDownloadDialog :account-id="accountId" :controller="downloadController"/>
+    <TransactionDownloadDialog :account-id="accountIdRef ?? undefined" :controller="downloadController"/>
 
   </section>
 
   <Footer/>
+
+  <UpdateAccountDialog
+      :account-info="account"
+      :controller="updateDialogController"
+      @updated="onUpdateCompleted"
+  />
 
 </template>
 
@@ -318,9 +357,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
@@ -368,246 +407,190 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
+import EditableProperty from "@/components/EditableProperty.vue";
+import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
 
-export default defineComponent({
+const props = defineProps({
+  accountId: String,
+  network: String,
+})
 
-  name: 'AccountDetails',
+const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 
-  components: {
-    TokensSection,
-    InfoTooltip,
-    EntityIOL,
-    TransactionDownloadDialog,
-    DownloadButton,
-    AccountCreatedContractsTable,
-    VerifiedContractsTable,
-    EmptyTable,
-    Tabs,
-    DateTimePicker,
-    MirrorLink,
-    InlineBalancesValue,
-    Copyable,
-    AllowancesSection,
-    EVMAddress,
-    AliasValue,
-    TransactionLink,
-    AccountLink,
-    NotificationBanner,
-    Property,
-    TransactionFilterSelect,
-    Footer,
-    BlobValue,
-    HbarAmount,
-    DashboardCard,
-    TransactionTable,
-    PlayPauseButton,
-    TimestampValue,
-    KeyValue,
-    DurationValue,
-    StringValue,
-    StakingRewardsTable
-  },
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+const isTouchDevice = inject('isTouchDevice', false)
 
-  props: {
-    accountId: String,
-    network: String,
-  },
-
-  setup(props) {
-    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
-
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const timeSelection = ref("LATEST")
-    watch(timeSelection, (newValue, oldValue) => {
-      if (newValue !== oldValue) {
-        if (timeSelection.value == "LATEST") {
-          transactionTableController.startAutoRefresh() // (1)
-        } else {
-          transactionTableController.stopAutoRefresh()
-        }
-      }
-    })
-
-    function onDateCleared() {
-      timeSelection.value = "LATEST"
-      // (1) will restart auto-refresh
-    }
-
-    //
-    // account
-    //
-    const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const maxAutoAssociationValue = computed(() =>
-        labelForAutomaticTokenAssociation(
-            accountLocParser.accountInfo.value?.max_automatic_token_associations ?? 0
-        ))
-
-    //
-    // BalanceAnalyzer
-    //
-    const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
-    onMounted(() => balanceAnalyzer.mount())
-    onBeforeUnmount(() => balanceAnalyzer.unmount())
-
-    //
-    // contract
-    //
-    const contractLookup = ContractByIdCache.instance.makeLookup(accountLocParser.accountId)
-    onMounted(() => contractLookup.mount())
-    onBeforeUnmount(() => contractLookup.unmount())
-    const showContractVisible = computed(() => {
-      return contractLookup.entity.value != null
-    })
-
-    //
-    // staking
-    //
-    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
-    onMounted(() => stakedNodeAnalyzer.mount())
-    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
-
-    const stakedNodeIcon = computed(() => {
-      let result
-      if (accountLocParser.stakedNodeId.value !== null) {
-        result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const contractRoute = computed(() => {
-      const accountId = accountLocParser.accountId.value
-      return accountId ? routeManager.makeRouteToContract(accountId) : ''
-    })
-
-    const stakedNodeRoute = computed(() => {
-      const stakedNodeId = accountLocParser.stakedNodeId.value
-      return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : ''
-    })
-
-    const operatorNodeRoute = computed(() => {
-      const operatorNodeId = accountLocParser.nodeId.value
-      return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
-    })
-
-    const tabIds = ['transactions', 'contracts', 'rewards']
-    const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
-    const selectedTab = ref<string|null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
-    const handleTabUpdate = (tab: string|null) => {
-      selectedTab.value = tab
-      AppStorage.setAccountOperationTab(tab)
-    }
-    const filterVerified = ref(false)
-
-    //
-    // Table controllers and cache for Recent Account Operations
-    // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
-    //
-    const perPage = ref(isMediumScreen ? 10 : 5)
-    const accountId = accountLocParser.accountId
-
-    const transactionTableController = new TransactionTableControllerXL(
-        router,
-        accountId,
-        perPage,
-        true,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-        "p1", "k1")
-
-    const contractCreateTableController = new TransactionTableController(
-        router,
-        perPage,
-        TransactionType.CONTRACTCREATEINSTANCE,
-        "success",
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-        "p3", "k3",
-        accountId)
-
-    const verifiedContractsController = new VerifiedContractsController(
-        VerifiedContractsByAccountIdCache.instance.makeLookup(accountId),
-        perPage,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
-    )
-
-    const rewardsTableController = new StakingRewardsTableController(
-        router,
-        accountLocParser.accountId,
-        perPage,
-        AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-        "p2", "k2")
-
-    //
-    // Transactions download
-    //
-
-    const downloadController = new DialogController()
-
-    //
-    // Naming
-    //
-
-    const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
-    onMounted(() => nameQuery.mount())
-    onBeforeUnmount(() => nameQuery.unmount())
-
-    const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
-    const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
-
-    return {
-      temporaryBanner,
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      isMyAccount,
-      walletIconURL,
-      transactionTableController,
-      transactionType: transactionTableController.transactionType,
-      contractCreateTableController,
-      verifiedContractsController,
-      loaded: verifiedContractsController.loaded,
-      overflow: verifiedContractsController.overflow,
-      notification: accountLocParser.errorNotification,
-      isInactiveEvmAddress: accountLocParser.isInactiveEvmAddress,
-      account: accountLocParser.accountInfo,
-      maxAutoAssociationValue,
-      normalizedAccountId: accountLocParser.accountId,
-      accountChecksum: accountLocParser.accountChecksum,
-      accountInfo: accountLocParser.accountDescription,
-      nodeId: accountLocParser.nodeId,
-      ethereumAddress: accountLocParser.ethereumAddress,
-      balanceAnalyzer,
-      showContractVisible,
-      stakePeriodStart: accountLocParser.stakePeriodStart,
-      stakedNodeId: accountLocParser.stakedNodeId,
-      stakedAccountId: accountLocParser.stakedAccountId,
-      stakedNodeDescription: stakedNodeAnalyzer.nodeDescription,
-      stakedNodeIcon,
-      rewardsTableController,
-      contractRoute,
-      stakedNodeRoute,
-      operatorNodeRoute,
-      availableAPI: rewardsTableController.availableAPI,
-      selectedTab,
-      tabIds,
-      tabLabels,
-      handleTabUpdate,
-      filterVerified,
-      downloadController,
-      timeSelection,
-      onDateCleared,
-      domainName: nameQuery.name,
-      domainProviderName: nameQuery.providerName,
-      labelForAutomaticTokenAssociation,
+const timeSelection = ref("LATEST")
+watch(timeSelection, (newValue, oldValue) => {
+  if (newValue !== oldValue) {
+    if (timeSelection.value == "LATEST") {
+      transactionTableController.startAutoRefresh() // (1)
+    } else {
+      transactionTableController.stopAutoRefresh()
     }
   }
-});
+})
+
+function onDateCleared() {
+  timeSelection.value = "LATEST"
+  // (1) will restart auto-refresh
+}
+
+//
+// account
+//
+const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
+onMounted(() => accountLocParser.mount())
+onBeforeUnmount(() => accountLocParser.unmount())
+
+const maxAutoAssociationsValue = computed(() =>
+    labelForAutomaticTokenAssociation(
+        accountLocParser.accountInfo.value?.max_automatic_token_associations ?? 0
+    ))
+
+//
+// BalanceAnalyzer
+//
+const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
+onMounted(() => balanceAnalyzer.mount())
+onBeforeUnmount(() => balanceAnalyzer.unmount())
+
+//
+// contract
+//
+const contractLookup = ContractByIdCache.instance.makeLookup(accountLocParser.accountId)
+onMounted(() => contractLookup.mount())
+onBeforeUnmount(() => contractLookup.unmount())
+const showContractVisible = computed(() => {
+  return contractLookup.entity.value != null
+})
+
+//
+// staking
+//
+const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+onMounted(() => stakedNodeAnalyzer.mount())
+onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
+
+const stakedNodeIcon = computed(() => {
+  let result
+  if (accountLocParser.stakedNodeId.value !== null) {
+    result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
+  } else {
+    result = ""
+  }
+  return result
+})
+
+const contractRoute = computed(() => {
+  const accountId = accountLocParser.accountId.value
+  return accountId ? routeManager.makeRouteToContract(accountId) : ''
+})
+
+const stakedNodeRoute = computed(() => {
+  const stakedNodeId = accountLocParser.stakedNodeId.value
+  return stakedNodeId !== null ? routeManager.makeRouteToNode(stakedNodeId) : ''
+})
+
+const operatorNodeRoute = computed(() => {
+  const operatorNodeId = accountLocParser.nodeId.value
+  return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
+})
+
+const tabIds = ['transactions', 'contracts', 'rewards']
+const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
+const selectedTab = ref<string | null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
+const handleTabUpdate = (tab: string | null) => {
+  selectedTab.value = tab
+  AppStorage.setAccountOperationTab(tab)
+}
+const filterVerified = ref(false)
+
+//
+// Table controllers and cache for Recent Account Operations
+// These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
+//
+const perPage = ref(isMediumScreen ? 10 : 5)
+const accountIdRef = accountLocParser.accountId
+
+const transactionTableController = new TransactionTableControllerXL(
+    router,
+    accountIdRef,
+    perPage,
+    true,
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+    "p1", "k1")
+
+const contractCreateTableController = new TransactionTableController(
+    router,
+    perPage,
+    TransactionType.CONTRACTCREATEINSTANCE,
+    "success",
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+    "p3", "k3",
+    accountIdRef)
+
+const verifiedContractsController = new VerifiedContractsController(
+    VerifiedContractsByAccountIdCache.instance.makeLookup(accountIdRef),
+    perPage,
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
+)
+
+const rewardsTableController = new StakingRewardsTableController(
+    router,
+    accountLocParser.accountId,
+    perPage,
+    AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
+    "p2", "k2")
+
+//
+// Transactions download
+//
+
+const downloadController = new DialogController()
+
+//
+// Naming
+//
+
+const nameQuery = new NameQuery(computed(() => props.accountId ?? null))
+onMounted(() => nameQuery.mount())
+onBeforeUnmount(() => nameQuery.unmount())
+
+//
+// Account Update
+//
+
+const updateDialogController = new DialogController()
+
+const onUpdateAccount = () => updateDialogController.visible.value = true
+
+const onUpdateCompleted = () => accountLocParser.remount()
+
+const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
+const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
+const airdropsEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
+const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value && airdropsEnabled
+)
+
+const transactionType = computed(() => transactionTableController.transactionType.value)
+const loaded = computed(() => verifiedContractsController.loaded.value)
+const overflow = computed(() => verifiedContractsController.overflow.value)
+const notification = computed(() => accountLocParser.errorNotification.value)
+const isInactiveEvmAddress = computed(() => accountLocParser.isInactiveEvmAddress.value)
+const account = computed(() => accountLocParser.accountInfo.value)
+const normalizedAccountId = computed(() => accountLocParser.accountId.value)
+const accountChecksum = computed(() => accountLocParser.accountChecksum.value)
+const accountDescription = computed(() => accountLocParser.accountDescription.value)
+const nodeId = computed(() => accountLocParser.nodeId.value)
+const ethereumAddress = computed(() => accountLocParser.ethereumAddress.value)
+const stakePeriodStart = computed(() => accountLocParser.stakePeriodStart.value)
+const stakedAccountId = computed(() => accountLocParser.stakedAccountId.value)
+const stakedNodeDescription = computed(() => stakedNodeAnalyzer.nodeDescription.value)
+const domainName = computed(() => nameQuery.name.value)
+const domainProviderName = computed(() => nameQuery.providerName.value)
 
 </script>
 

@@ -22,17 +22,21 @@ import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {
     AccountAllowanceApproveTransaction,
     AccountAllowanceDeleteTransaction,
+    AccountId,
     AccountUpdateTransaction,
     ContractExecuteTransaction,
     NftId,
+    PendingAirdropId,
     Signer,
     TokenAssociateTransaction,
+    TokenClaimAirdropTransaction,
     TokenDissociateTransaction,
     TokenId,
+    TokenRejectTransaction,
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
@@ -44,6 +48,49 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
     //
     // Public
     //
+
+    public async updateAccount(accountId: string, transaction: AccountUpdateTransaction) {
+
+        transaction.setAccountId(accountId)
+        const result = await this.executeTransaction(accountId, transaction)
+
+        return Promise.resolve(result)
+    }
+
+    public async claimTokenAirdrops(accountId: string, airdrops: TokenAirdrop[]): Promise<string> {
+
+        const trans = new TokenClaimAirdropTransaction()
+
+        console.log(`Building TokenClaimAirdropTransaction:`)
+
+        for (const airdrop of airdrops) {
+            if (airdrop.sender_id && airdrop.receiver_id && airdrop.token_id) {
+                const airdropId = new PendingAirdropId()
+                    .setSenderid(AccountId.fromString(airdrop.sender_id))
+                    .setReceiverId(AccountId.fromString(airdrop.receiver_id))
+                const tokenId = TokenId.fromString(airdrop.token_id)
+                if (airdrop.serial_number) {
+                    // console.log(`  Adding NFT airdrop:`)
+                    // console.log(`    senderId: ${airdrop.sender_id}`)
+                    // console.log(`    receiverId: ${airdrop.receiver_id}`)
+                    // console.log(`    tokenId: ${airdrop.token_id}`)
+                    // console.log(`    serial #: ${airdrop.serial_number}`)
+                    airdropId.setNftId(new NftId(tokenId, airdrop.serial_number))
+                } else {
+                    // console.log(`  Adding Fungible Token airdrop:`)
+                    // console.log(`    senderId: ${airdrop.sender_id}`)
+                    // console.log(`    receiverId: ${airdrop.receiver_id}`)
+                    // console.log(`    tokenId: ${airdrop.token_id}`)
+                    airdropId.setTokenId(tokenId)
+                }
+                trans.addPendingAirdropId(airdropId)
+            }
+        }
+
+        const result = await this.executeTransaction(accountId, trans)
+        await this.waitForTransactionSurfacing(result)
+        return Promise.resolve(result)
+    }
 
     public async changeStaking(accountId: string, stakedNodeId: number | null, stakedAccountId: string | null, declineReward: boolean | null): Promise<string> {
 
@@ -122,6 +169,15 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
+    public async rejectTokens(accountId: string, transaction: TokenRejectTransaction): Promise<string> {
+
+        transaction.setOwnerId(AccountId.fromString(accountId))
+        const result = await this.executeTransaction(accountId, transaction)
+        await this.waitForTransactionSurfacing(result)
+
+        return Promise.resolve(result)
+    }
+
     //
     // Public (to be subclassed)
     //
@@ -187,7 +243,10 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
             | AccountAllowanceDeleteTransaction
             | TokenAssociateTransaction
             | TokenDissociateTransaction
-            | ContractExecuteTransaction): Promise<string> {
+            | ContractExecuteTransaction
+            | TokenClaimAirdropTransaction
+            | TokenRejectTransaction
+    ): Promise<string> {
         let result: Promise<string>
 
         const signer = this.makeSigner(accountId)
