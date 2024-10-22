@@ -135,7 +135,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["claimed", "cancelled"])
+const emit = defineEmits(["claimed"])
 
 const tid = ref<string | null>(null)
 const formattedTransactionId = computed(() =>
@@ -202,7 +202,7 @@ const onClaim = async () => {
       const end = Math.min(props.airdrops!.length, start + MAX_AIRDROPS_PER_CLAIM)
       const airdrops = props.airdrops!.slice(start, end)
 
-      console.log(`claiming airdrops from ${start} to ${end}`)
+      // console.log(`claiming airdrops from ${start} to ${end}`)
       tid.value = TransactionID.normalize(
           await walletManager.claimTokenAirdrops(airdrops)
       )

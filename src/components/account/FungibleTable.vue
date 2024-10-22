@@ -51,8 +51,8 @@
       aria-previous-label="Previous page"
       customRowKey="token_id"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token ID">
-      <TokenIOL :token-id="props.row.token_id"/>
+    <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
+      <TokenIOL :token-id="row.token_id"/>
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="name" label="Name">

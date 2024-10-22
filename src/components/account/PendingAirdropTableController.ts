@@ -132,7 +132,7 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
     private static filterNft = (airdrop: TokenAirdrop) => airdrop.serial_number && airdrop.serial_number >= 1
 
     private static makeQueryParams(key: AirdropKey | null, operator: KeyOperator, order: SortOrder, limit: number): QueryParams {
-        let result: QueryParams = {
+        const result: QueryParams = {
             limit: limit,
             order: order
         }

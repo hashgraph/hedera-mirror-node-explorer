@@ -27,7 +27,7 @@
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
     <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-        <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
+      <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
     </div>
 
     <DashboardCard collapsible-key="accountDetails">
@@ -43,7 +43,7 @@
               alt="wallet logo"
               class="mr-3"
           >
-          <span  class="h-is-primary-title">My Account</span>
+          <span class="h-is-primary-title">My Account</span>
         </figure>
         <span v-else class="h-is-primary-title">Account</span>
       </template>
@@ -100,7 +100,7 @@
           <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:
           </div>
           <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountId"/>
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountIdRef"/>
           </div>
         </div>
 
@@ -201,7 +201,10 @@
           </template>
         </Property>
 
-        <Property id="expiresAt" tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being.">
+        <Property
+            id="expiresAt"
+            tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being."
+        >
           <template v-slot:name>
             <span>Expires at</span>
           </template>
@@ -333,9 +336,9 @@
 
     <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
 
-    <MirrorLink :network="network" entityUrl="accounts" :loc="accountId ?? undefined"/>
+    <MirrorLink :network="network" entityUrl="accounts" :loc="accountIdRef ?? undefined"/>
 
-    <TransactionDownloadDialog :account-id="accountId ?? undefined" :controller="downloadController"/>
+    <TransactionDownloadDialog :account-id="accountIdRef ?? undefined" :controller="downloadController"/>
 
   </section>
 
@@ -496,8 +499,8 @@ const operatorNodeRoute = computed(() => {
 
 const tabIds = ['transactions', 'contracts', 'rewards']
 const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
-const selectedTab = ref<string|null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
-const handleTabUpdate = (tab: string|null) => {
+const selectedTab = ref<string | null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
+const handleTabUpdate = (tab: string | null) => {
   selectedTab.value = tab
   AppStorage.setAccountOperationTab(tab)
 }
@@ -508,11 +511,11 @@ const filterVerified = ref(false)
 // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
 //
 const perPage = ref(isMediumScreen ? 10 : 5)
-const accountId = accountLocParser.accountId
+const accountIdRef = accountLocParser.accountId
 
 const transactionTableController = new TransactionTableControllerXL(
     router,
-    accountId,
+    accountIdRef,
     perPage,
     true,
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
@@ -525,10 +528,10 @@ const contractCreateTableController = new TransactionTableController(
     "success",
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
     "p3", "k3",
-    accountId)
+    accountIdRef)
 
 const verifiedContractsController = new VerifiedContractsController(
-    VerifiedContractsByAccountIdCache.instance.makeLookup(accountId),
+    VerifiedContractsByAccountIdCache.instance.makeLookup(accountIdRef),
     perPage,
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
 )

@@ -459,7 +459,7 @@ onBeforeUnmount(() => {
 })
 
 //
-// Keeping initial values
+// Saving initial values
 //
 let initialRecSigRequired = false
 let initialAutoRenewPeriod: number | null = 0

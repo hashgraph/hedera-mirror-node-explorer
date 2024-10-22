@@ -38,12 +38,9 @@
         {{ inputMessage }}
       </div>
       <div class="h-is-property-text has-text-grey mt-4">
-        {{ inputMessageDetails0 }}
+        {{ inputMessageDetails1 }}
       </div>
-      <div v-if="inputMessageDetails1" class="h-is-property-text has-text-grey mt-2">
-        • {{ inputMessageDetails1 }}
-      </div>
-      <div v-if="inputMessageDetails2" class="h-is-property-text mt-2 has-text-grey">
+      <div v-if="inputMessageDetails2" class="h-is-property-text has-text-grey mt-2">
         • {{ inputMessageDetails2 }}
       </div>
       <div v-if="inputMessageDetails3" class="h-is-property-text mt-2 has-text-grey">
@@ -51,6 +48,9 @@
       </div>
       <div v-if="inputMessageDetails4" class="h-is-property-text mt-2 has-text-grey">
         • {{ inputMessageDetails4 }}
+      </div>
+      <div v-if="inputMessageDetails5" class="h-is-property-text mt-2 has-text-grey">
+        • {{ inputMessageDetails5 }}
       </div>
     </template>
 
@@ -144,7 +144,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["rejected", "cancelled"])
+const emit = defineEmits(["rejected"])
 
 const tid = ref<string | null>(null)
 const formattedTransactionId = computed(() =>
@@ -159,21 +159,25 @@ const isNft = computed(() =>
 
 const inputMessage = ref<string | null>(null)
 
-const inputMessageDetails0 = computed(() => {
+const inputMessageDetails1 = computed(() => {
   let result: string | null
-  if (inputMessageDetails1 || inputMessageDetails2 || inputMessageDetails3 || inputMessageDetails4) {
+  if (inputMessageDetails2.value
+      || inputMessageDetails3.value
+      || inputMessageDetails4.value
+      || inputMessageDetails5.value
+  ) {
     result = (rejectCandidates.value.length >= 1)
-        ? `The remaining selected ${isNft ? 'NFTs' : 'tokens'} cannot be rejected because:`
+        ? `The remaining selected ${isNft.value ? 'NFTs' : 'tokens'} cannot be rejected because:`
         : 'This is because:'
   } else {
     result = null
   }
   return result
 })
-const inputMessageDetails1 = ref<string | null>(null)
 const inputMessageDetails2 = ref<string | null>(null)
 const inputMessageDetails3 = ref<string | null>(null)
 const inputMessageDetails4 = ref<string | null>(null)
+const inputMessageDetails5 = ref<string | null>(null)
 
 const busyMessage = ref<string | null>(null)
 const busyMessageDetails = ref<string | null>(null)
@@ -270,31 +274,31 @@ const populateUserFeedback = () => {
     }
   }
   if (treasuryTokens.value.length >= 1) {
-    inputMessageDetails1.value = `Your account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
-    inputMessageDetails1.value += (treasuryTokens.value.length > 4 ? '…' : '')
-  } else {
-    inputMessageDetails1.value = null
-  }
-  if (pausedTokens.value.length >= 1) {
-    inputMessageDetails2.value = pausedTokens.value.length === 1 ? `This ${isNft.value ? "collection" : "token"} is paused: ` : "These are paused: "
-    inputMessageDetails2.value += pausedTokens.value.splice(0, 4).join(', ')
-    inputMessageDetails2.value += (pausedTokens.value.length > 4 ? '…' : '')
+    inputMessageDetails2.value = `Your account is treasury for: ${treasuryTokens.value.splice(0, 4).join(', ')}`
+    inputMessageDetails2.value += (treasuryTokens.value.length > 4 ? '…' : '')
   } else {
     inputMessageDetails2.value = null
   }
-  if (frozenTokens.value.length >= 1) {
-    inputMessageDetails3.value = frozenTokens.value.length === 1 ? `This ${isNft.value ? "collection" : "token"} is frozen: ` : "These are frozen: "
-    inputMessageDetails3.value += frozenTokens.value.splice(0, 4).join(', ')
-    inputMessageDetails3.value += (frozenTokens.value.length > 4 ? '…' : '')
+  if (pausedTokens.value.length >= 1) {
+    inputMessageDetails3.value = pausedTokens.value.length === 1 ? `This ${isNft.value ? "collection" : "token"} is paused: ` : "These are paused: "
+    inputMessageDetails3.value += pausedTokens.value.splice(0, 4).join(', ')
+    inputMessageDetails3.value += (pausedTokens.value.length > 4 ? '…' : '')
   } else {
     inputMessageDetails3.value = null
   }
-  if (zeroBalanceTokens.value.length >= 1) {
-    inputMessageDetails4.value = zeroBalanceTokens.value.length === 1 ? "This token has a 0 balance: " : "These have a 0 balance: "
-    inputMessageDetails4.value += zeroBalanceTokens.value.splice(0, 4).join(', ')
-    inputMessageDetails4.value += (zeroBalanceTokens.value.length > 4 ? '…' : '')
+  if (frozenTokens.value.length >= 1) {
+    inputMessageDetails4.value = frozenTokens.value.length === 1 ? `This ${isNft.value ? "collection" : "token"} is frozen: ` : "These are frozen: "
+    inputMessageDetails4.value += frozenTokens.value.splice(0, 4).join(', ')
+    inputMessageDetails4.value += (frozenTokens.value.length > 4 ? '…' : '')
   } else {
     inputMessageDetails4.value = null
+  }
+  if (zeroBalanceTokens.value.length >= 1) {
+    inputMessageDetails5.value = zeroBalanceTokens.value.length === 1 ? "This token has a 0 balance: " : "These have a 0 balance: "
+    inputMessageDetails5.value += zeroBalanceTokens.value.splice(0, 4).join(', ')
+    inputMessageDetails5.value += (zeroBalanceTokens.value.length > 4 ? '…' : '')
+  } else {
+    inputMessageDetails5.value = null
   }
 }
 
