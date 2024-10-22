@@ -26,11 +26,15 @@
   <div v-if="props.tabIds.length >= 1" class="is-flex is-align-items-center">
     <div class="tabs" :class="tabClass">
       <ul>
-        <li v-for="(tab, i) in props.tabIds" :key="tab" :class="{'is-active':selectedTab === tab}">
-          <a :id="'tab-' + tab" :style="{fontWeight: selectedTab === tab ? 500 : 300}"
-             @click="handleSelect(tab, true)">
-            <span>{{ props.tabLabels[i] ?? tab }}</span>
-          </a>
+        <li
+            v-for="(tab, i) in props.tabIds"
+            :key="tab"
+            :id="'tab-' + tab"
+            :class="{'is-active':selectedTab === tab}"
+            :style="{fontWeight: selectedTab === tab ? 500 : 300}"
+            @click="handleSelect(tab, true)"
+        >
+          <a>{{ props.tabLabels[i] ?? tab }}</a>
         </li>
       </ul>
     </div>
