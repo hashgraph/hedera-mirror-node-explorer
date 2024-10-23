@@ -56,13 +56,22 @@
           class="is-flex is-align-items-baseline"
       >
         <span class="mr-2 h-is-property-text has-text-grey">{{ claimButtonHint }}</span>
-        <button
-            id="approve-button"
-            class="button is-white is-small"
-            @click="onClaim"
-        >
-          {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
-        </button>
+        <o-tooltip
+            id="claim-button-tooltip"
+            :active="!claimActionEnabled"
+            label="Coming soon"
+            delay="200"
+            position="top"
+            class="h-tooltip">
+          <button
+              id="claim-button"
+              class="button is-white is-small"
+              :disabled="!claimActionEnabled"
+              @click="onClaim"
+          >
+            {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
+          </button>
+        </o-tooltip>
       </div>
     </template>
 
@@ -182,6 +191,8 @@ const perPage = ref(props.fullPage ? 15 : 6)
 const accountId = computed(() => props.accountId)
 
 const airdropsEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
+const claimActionEnabled = import.meta.env.VITE_APP_ENABLE_CLAIM_ACTION === 'true'
+
 const tabIds = airdropsEnabled
     ? ['fungible', 'nfts', 'pendingAirdrop']
     : ['fungible', 'nfts']
