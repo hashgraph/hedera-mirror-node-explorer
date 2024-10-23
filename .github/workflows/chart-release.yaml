@@ -59,7 +59,7 @@ jobs:
   # publish chart to gh-pages, required for helm install in solo
   prepare-release:
     name: Release / Prepare
-    runs-on: solo-linux-medium
+    runs-on: mirror-node-linux-medium
     outputs:
       version: ${{ steps.tag.outputs.version }}
     steps:
@@ -96,7 +96,7 @@ jobs:
 
   publish-helm-charts:
     name: Publish / Helm Charts
-    runs-on: solo-linux-medium
+    runs-on: mirror-node-linux-medium
     needs:
       - prepare-release
     steps:
@@ -117,7 +117,7 @@ jobs:
 
   create-github-release:
     name: Github / Release
-    runs-on: solo-linux-medium
+    runs-on: mirror-node-linux-medium
     needs:
       - publish-helm-charts
     steps:
