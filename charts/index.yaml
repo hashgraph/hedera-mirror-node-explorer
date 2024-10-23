@@ -3,9 +3,9 @@ entries:
   hedera-explorer:
   - apiVersion: v2
     appVersion: 23.8.0
-    created: "2024-10-08T21:31:59.457701587Z"
+    created: "2024-10-23T21:30:14.984247674Z"
     description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
-    digest: 08c838bf0b5e8e7c2a03d6cc8a2b57a00f8de5a222bd42365c8d93617287a253
+    digest: ce9c757ecbd62986537e4e9878e77ed5e235dfb0c3aee6348d1c98362ada5fc4
     home: https://github.com/hashgraph/hedera-mirror-node-explorer
     name: hedera-explorer
     sources:
@@ -13,4 +13,4 @@ entries:
     urls:
     - https://hashgraph.github.io/hedera-mirror-node-explorer/charts/hedera-explorer-0.2.0.tgz
     version: 0.2.0
-generated: "2024-10-08T21:31:59.456909916Z"
+generated: "2024-10-23T21:30:14.982296471Z"
