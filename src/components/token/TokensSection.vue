@@ -334,11 +334,15 @@ const claimButtonHint = computed(() => {
   return result
 })
 
-const claimEnabled = computed(() =>
-    walletManager.connected.value &&
-    walletManager.isHederaWallet.value &&
-    walletManager.accountId.value === props.accountId &&
-    (nftsAirdropTableController.totalRowCount.value >= 1 || fungibleAirdropTableController.totalRowCount.value >= 1))
+const claimEnabled = computed(() => {
+  const isTableFilled = (airdropSelectedTab.value === 'fungible' && fungibleAirdropTableController.totalRowCount.value >= 1)
+      || (airdropSelectedTab.value === 'nfts' && nftsAirdropTableController.totalRowCount.value >= 1)
+
+  return walletManager.connected.value
+      && walletManager.isHederaWallet.value
+      && walletManager.accountId.value === props.accountId
+      && isTableFilled
+})
 
 const checkedAirdrops = ref<TokenAirdrop[]>([])
 
