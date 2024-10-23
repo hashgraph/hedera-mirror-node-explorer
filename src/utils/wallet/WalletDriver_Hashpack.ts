@@ -61,10 +61,6 @@ export class WalletDriver_Hashpack extends WalletDriver_Hedera {
         return Promise.resolve()
     }
 
-    public isConnected(): boolean {
-        return this.hashConnect !== null
-    }
-
 
     //
     // WalletDriver_Hedera

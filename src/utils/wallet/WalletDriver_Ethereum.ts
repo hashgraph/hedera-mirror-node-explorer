@@ -21,21 +21,36 @@
 import {HederaLogo, WalletDriver} from "@/utils/wallet/WalletDriver";
 import {routeManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
-import {BrowserProvider, ethers} from "ethers";
-import {NetworkEntry} from "@/schemas/NetworkRegistry";
+import {ethers} from "ethers";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
-import {markRaw} from "vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {
+    AddEthereumChainParameter,
+    EIP1193Provider,
+    eth_chainId,
+    eth_isUnrecognizedChainId,
+    eth_isUnsupportedMethod,
+    eth_isUserReject,
+    eth_requestAccounts,
+    wallet_addEthereumChain,
+    wallet_revokePermissions,
+    wallet_switchEthereumChain,
+    wallet_watchAsset,
+    WatchAssetParameters
+} from "@/utils/wallet/eip1193";
+import {EIP6963Agent} from "@/utils/wallet/EIP6963Agent";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 
 export abstract class WalletDriver_Ethereum extends WalletDriver {
 
-    protected provider: BrowserProvider | null = null
+    protected providerDN: string
 
     //
     // Public
@@ -43,10 +58,10 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
 
     public async watchToken(accountId: string, tokenId: string, serialNumber?: string): Promise<void> {
         const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
-        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
+        if (accountId !== null && tokenAddress !== null) {
             const tokenInfo = await TokenInfoCache.instance.lookup(tokenId)
             const symbol = makeTokenSymbol(tokenInfo, 11)
-            let params = {}
+            let params: WatchAssetParameters
 
             if (serialNumber) {
                 params = {
@@ -64,14 +79,14 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                     "options": {
                         "address": `0x${tokenAddress}`,
                         "symbol": symbol,
-                        "decimals": tokenInfo?.decimals,
+                        "decimals": tokenInfo?.decimals ? Number(tokenInfo?.decimals) : 0,
                         "image": HederaLogo
                     }
                 }
             }
 
             try {
-                await this.provider.send("wallet_watchAsset", params)
+                await wallet_watchAsset(this.fetchProvider(), params)
             } catch (reason) {
                 throw this.makeCallFailure(reason, `${(reason as ethers.EthersError).error?.message || `Unknown Error`}.`)
             }
@@ -82,20 +97,10 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
     //
-    // Public (to be subclassed)
-    //
-
-    public async isExpectedProvider(provider: object): Promise<boolean> {
-        console.log("provider=" + JSON.stringify(provider))
-        throw this.toBeImplemented("isExpectedProvider()")
-    }
-
-    //
     // WalletDriver
     //
 
     public async connect(network: string): Promise<string[]> {
-        let result: string[]
 
         // Sanity check
         const networkEntry = routeManager.currentNetworkEntry.value
@@ -103,122 +108,99 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
             throw this.connectFailure("Network inconsistency: bug")
         }
 
-        let provider: BrowserProvider | null = null
-        for (const p of this.fetchEthereumProviders()) {
-            if (await this.isExpectedProvider(p)) {
-                provider = new BrowserProvider(p as ethers.Eip1193Provider)
-                break
-            }
-        }
-
-        if (provider !== null) {
-
-            // Switch wallet to network if needed
-            await this.switchToNetwork(provider, networkEntry)
-
-            // Collects account ids
-            result = await this.fetchAccountIds(provider)
-            if (result.length == 0) {
-                // Did the user cancel connection from the wallet ?
-                throw this.connectFailure("No account found")
-            }
-
-            this.provider = markRaw(provider)
-            // await this.provider.once('chainChanged', this.handleDisconnect);
-        } else {
-            throw this.extensionNotFound()
+        // Collects account ids
+        const result = await this.fetchAccountIds()
+        if (result.length == 0) {
+            // Did the user cancel connection from the wallet ?
+            throw this.connectFailure("No account found")
         }
 
         return Promise.resolve(result)
     }
 
     public async disconnect(): Promise<void> {
-        // this.provider?.off("chainChanged", this.handleDisconnect)
-        this.provider = null
+        const provider = this.fetchProvider()
+
+        // Tries calling wallet_revokePermissions() method
+        // This one is not supported by Coinbase => in that case, we hide the exception
+        try {
+            await wallet_revokePermissions(provider)
+        } catch(reason) {
+            if (eth_isUnsupportedMethod(reason)) {
+                // See above
+            } else {
+                throw reason
+            }
+        }
     }
 
     public async associateToken(accountId: string, tokenId: string): Promise<string> {
-        let result: string
-
-        // https://stackoverflow.com/questions/76980638/how-do-you-associate-dissociate-an-hts-token-using-evm-transaction
-
-        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
-        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
-
-            const abi = ["function associate()"]
-            const signer = await this.provider.getSigner()
-            const contract = new ethers.Contract("0x" + tokenAddress, abi, signer)
-            try {
-                const transactionResult = await contract.associate();
-                const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
-                result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
-            } catch (reason) {
-                throw this.makeCallFailure(reason, "associateToken")
-            }
-        } else {
-            throw this.callFailure("Invalid arguments")
-        }
-
+        const abi = ["function associate()"]
+        const iface = new ethers.Interface(abi)
+        const callData = iface.encodeFunctionData("associate", [])
+        const result = await this.executeCall(accountId, tokenId, callData)
         return Promise.resolve(result)
     }
 
     public async dissociateToken(accountId: string, tokenId: string): Promise<string> {
-        let result: string
-
-        // https://stackoverflow.com/questions/76980638/how-do-you-associate-dissociate-an-hts-token-using-evm-transaction
-
-        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
-        if (accountId !== null && tokenAddress !== null && this.provider !== null) {
-
-            const abi = ["function dissociate()"];
-            const signer = await this.provider.getSigner()
-            const contract = new ethers.Contract("0x" + tokenAddress, abi, signer)
-            try {
-                const transactionResult = await contract.dissociate();
-                const hederaTransaction = await this.waitForTransactionSurfacing(transactionResult.hash)
-                result = typeof hederaTransaction == "string" ? hederaTransaction : hederaTransaction.transaction_id
-            } catch (reason) {
-                throw this.makeCallFailure(reason, "dissociateToken")
-            }
-        } else {
-            throw this.callFailure("Invalid arguments")
-        }
-
+        const abi = ["function dissociate()"];
+        const iface = new ethers.Interface(abi)
+        const callData = iface.encodeFunctionData("dissociate", [])
+        const result = await this.executeCall(accountId, tokenId, callData)
         return Promise.resolve(result)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
+    public async callContract(contractId: string, callData: string, accountId: string): Promise<ContractResultDetails | string> {
         let result: ContractResultDetails | string
 
-        if (this.provider !== null) {
-            const signer = await this.provider.getSigner()
-            const transaction: ethers.TransactionRequest = {
-                to: contractAddress,
-                data: functionData
+        const accountAddress = await AccountByIdCache.instance.findAccountAddress(accountId)
+        const contractAddress = await ContractByIdCache.instance.findContractAddress(contractId)
+        if (accountAddress !== null && contractAddress !== null) {
+            // 1) Checks current chain and tries to setup if needed
+            if (!await this.isChainOK()) {
+                await this.trySetupChain()
             }
+            // 2) Sends transaction
             try {
-                const response = await signer.sendTransaction(transaction)
-                result = await this.waitForContractResultSurfacing(response.hash)
+                result = await this.sendTransaction(accountAddress, "0x" + contractAddress, callData)
             } catch (reason) {
-                throw this.makeCallFailure(reason, "callContract")
+                if (eth_isUserReject(reason)) {
+                    throw new WalletDriverCancelError()
+                } else {
+                    throw reason
+                }
             }
+            // 3) Waits for transaction to appear in mirror node
+            try {
+                result = await this.waitForContractResultSurfacing(result)
+            } catch {
+                // Accurately ignored
+            }
+
         } else {
             throw this.callFailure("Invalid arguments")
         }
+
         return result
     }
 
-    public isConnected(): boolean {
-        return this.provider !== null
+
+    //
+    // Private
+    //
+
+    protected constructor(name: string, logoURL: string | null, iconURL: string | null, providerDN: string) {
+        super(name, logoURL, iconURL)
+        this.providerDN = providerDN
     }
 
     //
-    // Protected (for subclasses usage)
+    // Private
     //
 
-    protected makeCallFailure(reason: unknown, extra: string): WalletDriverError {
-        if (this.isCancelError(reason)) {
+
+    private makeCallFailure(reason: unknown, extra: string): WalletDriverError {
+        if (eth_isUserReject(reason)) {
             throw new WalletDriverCancelError()
         } else {
             console.log("WalletDriver_Ethereum.makeCallFailure: " + JSON.stringify(reason))
@@ -227,134 +209,15 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         }
     }
 
-    protected isCancelError(reason: unknown): boolean {
-        return (reason as ethers.EthersError).code == "ACTION_REJECTED"
-    }
-
-    protected isChainMissing(reason: unknown): boolean {
-        const providerError = (reason as ethers.EthersError).error
-        return typeof providerError == "object" && "code" in providerError && providerError.code == 4902
-    }
-
-    protected fetchEthereumProviders(): object[] {
-        // See https://docs.cloud.coinbase.com/wallet-sdk/docs/injected-provider-guidance
-
-        let result: object[]
-        if ("ethereum" in window && typeof window.ethereum === "object" && window.ethereum !== null) {
-            const ethereum = window.ethereum as Object
-            if ("providers" in ethereum && Array.isArray(ethereum.providers)) {
-                result = ethereum.providers
-            } else {
-                result = [ethereum]
-            }
-        } else {
-            result = []
-        }
-
-        return result
-    }
-
-    //
-    // Protected (to be altered by subclass if needed)
-    //
-
-    protected async switchToNetwork(provider: BrowserProvider, networkEntry: NetworkEntry): Promise<void> {
-
-        const chainId = networkEntry.sourcifySetup?.hexChainID()
-        if (chainId == null) {
-            throw this.connectFailure("Network " + networkEntry.name + " is not setup for use with wallet")
-        }
-
-        // Make sure that chainId is the current chain in Metamask
-        const walletChainId = await provider.send('eth_chainId', [])
-        if (walletChainId !== chainId) {
-            try {
-                // Try to switch
-                await provider.send("wallet_switchEthereumChain", [{chainId: chainId}])
-            } catch (reason) {
-                if (this.isCancelError(reason)) {
-                    throw new WalletDriverCancelError()
-                } else if (this.isChainMissing(reason)) {
-                    // Try to add chain et retry
-                    try {
-                        await this.addHederaChain(provider, chainId)
-                    } catch {
-                        throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
-                    }
-                    // With some wallets, wallet_addEthereumChain also implies wallet_switchEthereumChain
-                    // Not sure this behavior is standard => we switch if needed
-                    const newWalletChainId = await provider.send('eth_chainId', [])
-                    if (newWalletChainId !== chainId) {
-                        await provider.send("wallet_switchEthereumChain", [{chainId: chainId}])
-                    }
-                } else {
-                    throw this.connectFailure("Make sure that 'Hedera " + networkEntry.name + "' network is added to " + this.name)
-                }
-            }
-        }
-    }
-
-    protected async addHederaChain(provider: BrowserProvider, desiredChainId: string): Promise<void> {
-        const NETWORK_CONFIG = {
-            rpcUrls: [""],
-            chainName: "",
-            blockExplorerUrls: [""],
-        }
-
-        switch (desiredChainId) {
-            case "0x127":
-                NETWORK_CONFIG.chainName = "Hedera Mainnet"
-                NETWORK_CONFIG.rpcUrls = ["https://mainnet.hashio.io/api"]
-                NETWORK_CONFIG.blockExplorerUrls = ["https://hashscan.io/mainnet/dashboard"]
-                break;
-            case "0x128":
-                NETWORK_CONFIG.chainName = "Hedera Testnet"
-                NETWORK_CONFIG.rpcUrls = ["https://testnet.hashio.io/api"]
-                NETWORK_CONFIG.blockExplorerUrls = ["https://hashscan.io/testnet/dashboard"]
-                break;
-            case "0x129":
-                NETWORK_CONFIG.chainName = "Hedera Previewnet"
-                NETWORK_CONFIG.rpcUrls = ["https://previewnet.hashio.io/api"]
-                NETWORK_CONFIG.blockExplorerUrls = ["https://hashscan.io/preview/dashboard"]
-                break;
-        }
-
-        try {
-            await provider.send(
-                'wallet_addEthereumChain',
-                [{
-                    chainId: desiredChainId,
-                    rpcUrls: NETWORK_CONFIG.rpcUrls,
-                    chainName: NETWORK_CONFIG.chainName,
-                    nativeCurrency: {name: 'HBAR', decimals: 18, symbol: 'HBAR'},
-                    blockExplorerUrls: NETWORK_CONFIG.blockExplorerUrls,
-                    iconUrls: [HederaLogo],
-                }],
-            )
-        } catch (reason: any) {
-            if (this.isCancelError(reason)) {
-                throw new WalletDriverCancelError()
-            } else {
-                throw this.connectFailure(reason)
-            }
-        }
-    }
-
-    protected async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
+    private async fetchAccountIds(): Promise<string[]> {
         const result: string[] = []
 
+        const provider = this.fetchProvider()
+
         try {
-            // We do this in two steps:
-            //  1) wallet_requestPermissions first : this forces wallet to interact with user
-            //  2) eth_requestAccounts to get accounts chosen by user
-            // See reference discussion here:
-            //  https://github.com/MetaMask/metamask-extension/issues/8990#issuecomment-980489771
 
-            // 1)
-            await provider.send("wallet_requestPermissions", [{eth_accounts: {}}])
-
-            // 2)
-            const accountResponse = await provider.send("eth_requestAccounts", [])
+            // Requests accounts
+            const accountResponse = await eth_requestAccounts(provider)
 
             // Fetches info for each return accounts
             for (const address of accountResponse ?? []) {
@@ -364,7 +227,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
                 }
             }
         } catch (reason) {
-            if (this.isCancelError(reason)) {
+            if (eth_isUserReject(reason)) {
                 throw new WalletDriverCancelError()
             } else {
                 throw this.connectFailure("Check " + this.name + " extension for details")
@@ -375,7 +238,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
 
-    protected async waitForTransactionSurfacing(ethereumHash: ethers.BytesLike): Promise<Transaction | string> {
+    private async waitForTransactionSurfacing(ethereumHash: ethers.BytesLike): Promise<Transaction | string> {
         let result: Promise<Transaction | string>
 
         const hash = ethers.hexlify(ethereumHash)
@@ -401,7 +264,7 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
     }
 
 
-    protected async waitForContractResultSurfacing(ethereumHash: ethers.BytesLike): Promise<ContractResultDetails | string> {
+    private async waitForContractResultSurfacing(ethereumHash: ethers.BytesLike): Promise<ContractResultDetails | string> {
         let result: Promise<ContractResultDetails | string>
 
         const hash = ethers.hexlify(ethereumHash)
@@ -421,5 +284,202 @@ export abstract class WalletDriver_Ethereum extends WalletDriver {
         return result
     }
 
+    private fetchProvider(): EIP1193Provider {
+        const p = EIP6963Agent.instance.findProviderDetails(this.providerDN)
+        if (p == null) {
+            throw this.extensionNotFound()
+        }
+        return p.provider
+    }
 
+    private async executeCall(accountId: string, tokenId: string, callData: string): Promise<string> {
+        let result: string
+
+        const accountAddress = await AccountByIdCache.instance.findAccountAddress(accountId)
+        const tokenAddress = EntityID.parse(tokenId)?.toAddress() ?? null
+        if (accountAddress !== null && tokenAddress !== null) {
+            // 1) Checks current chain and tries to setup if needed
+            if (!await this.isChainOK()) {
+                await this.trySetupChain()
+            }
+            // 2) Sends transaction
+            try {
+                result = await this.sendTransaction(accountAddress, "0x" + tokenAddress, callData)
+            } catch (reason) {
+                if (eth_isUserReject(reason)) {
+                    throw new WalletDriverCancelError()
+                } else {
+                    throw reason
+                }
+            }
+            // 3) Waits for transaction to appear in mirror node
+            try {
+                await this.waitForTransactionSurfacing(result)
+            } catch {
+                // Accurately ignored
+            }
+
+        } else {
+            throw this.callFailure("Invalid arguments")
+        }
+
+        return result
+    }
+
+    private async sendTransaction(fromAddress: string, toAddress: string, callData: string): Promise<string> {
+        const ethParams = {
+            from: fromAddress,
+            to: toAddress,
+            data: callData,
+            gas: "0x1E8480", // 2_000_000
+            gasPrice: "0x1D1A94A2000" // 2_000_000_000_000
+        }
+        const request = {
+            method: "eth_sendTransaction",
+            params: [ethParams]
+        }
+        return await this.fetchProvider().request(request) as string
+    }
+
+    private async trySetupChain(): Promise<void> {
+
+        try {
+            await this.trySwitchingChain()
+            if (!await this.isChainOK()) {
+                await this.tryAddingChain()
+            }
+        } catch(reason) {
+            if (eth_isUserReject(reason)) {
+                throw new WalletDriverCancelError()
+            // } else if (eth_isUnsupportedMethod(reason)) {
+            //     throw new WalletClientSetupRequiredError()
+            } else {
+                throw reason
+            }
+        }
+        if (!await this.isChainOK()) {
+            throw this.networkSetupFailure(routeManager.currentNetwork.value)
+        }
+    }
+
+
+    private targetChainId(): string {
+        const result = networkToChainId(routeManager.currentNetwork.value)
+        if (result === null) {
+            throw "bug"
+        }
+        return result
+    }
+
+
+    private async isChainOK(): Promise<boolean> {
+        const currentChainId = await eth_chainId(this.fetchProvider())
+        return this.targetChainId() == currentChainId
+    }
+
+    private async trySwitchingChain(): Promise<void> {
+        try {
+            await wallet_switchEthereumChain(this.fetchProvider(), this.targetChainId())
+        } catch(reason) {
+            if (!eth_isUnsupportedMethod(reason) && !eth_isUnrecognizedChainId(reason)) {
+                throw reason
+            }
+        }
+    }
+
+    private async tryAddingChain(): Promise<void> {
+        const chainParam = this.makeChainParam()
+        if (chainParam !== null) {
+            await wallet_addEthereumChain(this.fetchProvider(), chainParam)
+        } else {
+            throw "bug"
+        }
+    }
+
+    private makeChainParam(): AddEthereumChainParameter|null {
+        let result: AddEthereumChainParameter|null
+
+        switch(routeManager.currentNetwork.value) {
+            case "mainnet":
+                result = CHAIN_PARAM_MAINNET
+                break
+            case "testnet":
+                result = CHAIN_PARAM_TESTNET
+                break
+            case "previewnet":
+                result = CHAIN_PARAM_PREVIEWNET
+                break
+            default:
+                result = null
+                break
+        }
+        return result
+    }
+
+    private networkSetupFailure(network: string): WalletDriverError {
+        const extra = "Make sure that 'Hedera " + network + "' network is added to " + this.name
+        return this.connectFailure(extra)
+    }
+
+}
+
+
+const HEDERA_LOGO =
+    'data:image/svg+xml;utf8,<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">' +
+    '<path d="M20 0a20 20 0 1 0 20 20A20 20 0 0 0 20 0" fill="black"></path>' +
+    '<path d="M28.13 28.65h-2.54v-5.4H14.41v5.4h-2.54V11.14h2.54v5.27h11.18v-5.27h2.54zm-13.6-7.42h11.18v-2.79H14.53z" fill="white"></path>' +
+    '</svg>'
+
+
+const NATIVE_CURRENCY = {
+    name: 'HBAR',
+    decimals: 18,
+    symbol: 'HBAR'
+}
+
+const CHAIN_PARAM_MAINNET: AddEthereumChainParameter = {
+    chainId: "0x127",
+    blockExplorerUrls: [ "https://hashscan.io/mainnet/dashboard" ],
+    chainName: "Hedera Mainnet",
+    iconUrls: [ HEDERA_LOGO ],
+    nativeCurrency: NATIVE_CURRENCY,
+    rpcUrls: [ "https://mainnet.hashio.io/api" ]
+}
+
+const CHAIN_PARAM_TESTNET: AddEthereumChainParameter = {
+    chainId: "0x128",
+    blockExplorerUrls: [ "https://hashscan.io/testnet/dashboard" ],
+    chainName: "Hedera Testnet",
+    iconUrls: [ HEDERA_LOGO ],
+    nativeCurrency: NATIVE_CURRENCY,
+    rpcUrls: [ "https://testnet.hashio.io/api" ]
+}
+
+const CHAIN_PARAM_PREVIEWNET: AddEthereumChainParameter = {
+    chainId: "0x129",
+    blockExplorerUrls: [ "https://hashscan.io/previewnet/dashboard" ],
+    chainName: "Hedera Previewnet",
+    iconUrls: [ HEDERA_LOGO ],
+    nativeCurrency: NATIVE_CURRENCY,
+    rpcUrls: [ "https://previewnet.hashio.io/api" ]
+}
+
+function networkToChainId(network: string): string|null {
+    let result: string|null
+    // https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay
+    switch(network) {
+        case "mainnet":
+            result = "0x127"
+            break
+        case "testnet":
+            result = "0x128"
+            break
+        case "previewnet":
+            result = "0x129"
+            break
+        default:
+            result = null
+            break
+    }
+    return result
 }

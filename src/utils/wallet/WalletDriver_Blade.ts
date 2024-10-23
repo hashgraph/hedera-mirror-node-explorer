@@ -100,10 +100,6 @@ export class WalletDriver_Blade extends WalletDriver_Hedera {
         }
     }
 
-    public isConnected(): boolean {
-        return this.connector !== null
-    }
-
     //
     // WalletDriver_Hedera
     //
