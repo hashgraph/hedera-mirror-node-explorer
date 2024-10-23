@@ -25,6 +25,7 @@ import {ContractCallRequest, ContractCallResponse} from "@/schemas/HederaSchemas
 import {walletManager} from "@/router";
 import axios from "axios";
 import {ABIController} from "@/components/contract/ABIController";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 
 export class ContractCallBuilder {
 
@@ -104,16 +105,15 @@ export class ContractCallBuilder {
 
     public async execute(): Promise<void> {
         const contractId = this.abiController.abiAnalyzer.contractAnalyzer.contractId.value
-        const contractAddress = this.abiController.abiAnalyzer.contractAnalyzer.contractAddress.value
         const itf = this.abiController.targetInterface.value
         const functionData = this.functionData.value
-        if (contractId !== null && contractAddress !== null && itf !== null && functionData !== null) {
+        if (contractId !== null && itf !== null && functionData !== null) {
             try {
                 let response: string | null
                 if (this.isReadOnly()) {
-                    response = await ContractCallBuilder.executeWithMirrorNode(contractAddress, functionData)
+                    response = await ContractCallBuilder.executeWithMirrorNode(contractId, functionData)
                 } else {
-                    response = await ContractCallBuilder.executeWithWallet(contractId, contractAddress, functionData)
+                    response = await ContractCallBuilder.executeWithWallet(contractId, functionData)
                 }
                 this.lastValue.value = response !== null ? itf.decodeFunctionResult(this.fragment, response) : null
                 this.lastError.value = null
@@ -140,8 +140,9 @@ export class ContractCallBuilder {
     // Private
     //
 
-    private static async executeWithMirrorNode(contractAddress: string, functionData: string): Promise<string> {
+    private static async executeWithMirrorNode(contractId: string, functionData: string): Promise<string> {
         const url = "api/v1/contracts/call"
+        const contractAddress = await ContractByIdCache.instance.findContractAddress(contractId) ?? contractId
         const body: ContractCallRequest = {
             data: functionData,
             to: contractAddress,
@@ -151,8 +152,8 @@ export class ContractCallBuilder {
     }
 
 
-    private static async executeWithWallet(contractId: string, contractAddress: string, functionData: string): Promise<string | null> {
-        const callResult = await walletManager.callContract(contractId, contractAddress, functionData)
+    private static async executeWithWallet(contractId: string, functionData: string): Promise<string | null> {
+        const callResult = await walletManager.callContract(contractId, functionData)
         return typeof callResult == "string" ? null : callResult.call_result
     }
 

@@ -30,8 +30,6 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
     public readonly account: AccountBalanceTransactions
     public readonly transactionId: string
 
-    private connected = false
-
     public updateAccountCounter = 0
 
     //
@@ -65,10 +63,6 @@ export class WalletDriver_Mock extends WalletDriver_Hedera {
         if (this.connected) {
             this.connected = false
         }
-    }
-
-    isConnected(): boolean {
-        return this.connected
     }
 
     //

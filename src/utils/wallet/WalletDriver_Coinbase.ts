@@ -19,9 +19,6 @@
  */
 
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
-import {BrowserProvider} from "ethers";
-import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
-import {WalletDriverCancelError} from "@/utils/wallet/WalletDriverError";
 
 export class WalletDriver_Coinbase extends WalletDriver_Ethereum {
 
@@ -36,42 +33,8 @@ export class WalletDriver_Coinbase extends WalletDriver_Ethereum {
     public constructor() {
         super("Coinbase Wallet",
             "https://logodownload.org/wp-content/uploads/2021/04/coinbase-logo-1-2048x430.png",
-            "https://logosarchive.com/wp-content/uploads/2021/12/Coinbase-icon-symbol-1.svg")
-    }
-
-    //
-    // WalletDriver_Ethereum
-    //
-
-    public async isExpectedProvider(provider: object): Promise<boolean> {
-        const result = "isCoinbaseWallet" in provider && provider.isCoinbaseWallet == true
-        return Promise.resolve(result)
-    }
-
-    protected async fetchAccountIds(provider: BrowserProvider): Promise<string[]> {
-        const result: string[] = []
-
-        try {
-            // Coinbase does not support wallet_requestPermissions request
-            // => we run eth_requestAccounts only
-            const accountResponse = await provider.send("eth_requestAccounts", [])
-
-            // Fetches info for each return accounts
-            for (const address of accountResponse ?? []) {
-                const accountInfo = address ? await AccountByAddressCache.instance.lookup(address) : null
-                if (accountInfo?.account) {
-                    result.push(accountInfo.account)
-                }
-            }
-        } catch (reason) {
-            if (this.isCancelError(reason)) {
-                throw new WalletDriverCancelError()
-            } else {
-                throw this.connectFailure("Check " + this.name + " extension for details")
-            }
-        }
-
-        return Promise.resolve(result)
+            "https://logosarchive.com/wp-content/uploads/2021/12/Coinbase-icon-symbol-1.svg",
+            "com.coinbase.wallet")
     }
 
 
