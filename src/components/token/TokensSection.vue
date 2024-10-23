@@ -142,7 +142,7 @@
   />
 
   <ClaimTokenDialog
-      :airdrops="checkedAirdrops"
+      :airdrops="candidateAirdrops"
       :controller="claimDialogController"
       :drained="checkedAirdrops.length < MAX_AIRDROPS"
       @claimed="onClaimCompleted"
@@ -311,7 +311,9 @@ const onClaim = async () => {
     const allAirdrops = (airdropSelectedTab.value === 'nfts')
         ? await nftsAirdropTableController.loadAllAirdrops(MAX_AIRDROPS)
         : await fungibleAirdropTableController.loadAllAirdrops(MAX_AIRDROPS)
-    checkedAirdrops.value = allAirdrops ?? []
+    candidateAirdrops.value = allAirdrops ?? []
+  } else {
+    candidateAirdrops.value = checkedAirdrops.value
   }
   claimDialogController.visible.value = true
 }
@@ -334,13 +336,19 @@ const claimButtonHint = computed(() => {
   return result
 })
 
-const claimEnabled = computed(() =>
-    walletManager.connected.value &&
-    walletManager.isHederaWallet.value &&
-    walletManager.accountId.value === props.accountId &&
-    (nftsAirdropTableController.totalRowCount.value >= 1 || fungibleAirdropTableController.totalRowCount.value >= 1))
+const claimEnabled = computed(() => {
+  const isTableFilled = (airdropSelectedTab.value === 'fungible' && fungibleAirdropTableController.totalRowCount.value >= 1)
+      || (airdropSelectedTab.value === 'nfts' && nftsAirdropTableController.totalRowCount.value >= 1)
+
+  return walletManager.connected.value
+      && walletManager.isHederaWallet.value
+      && walletManager.accountId.value === props.accountId
+      && isTableFilled
+})
 
 const checkedAirdrops = ref<TokenAirdrop[]>([])
+
+const candidateAirdrops = ref<TokenAirdrop[]>([])
 
 </script>
 
