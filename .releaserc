@@ -21,8 +21,7 @@
       "@semantic-release/git",
       {
         "assets": [
-          "charts/solo-deployment/Chart.yaml",
-          "charts/solo-cluster-setup/Chart.yaml"
+          "chart/Chart.yaml",
         ]
       }
     ]
