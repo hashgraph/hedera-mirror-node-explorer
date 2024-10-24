@@ -38,7 +38,7 @@
            @click="handleDissociate">TOKEN DISSOCIATE
       </div>
 
-      <div v-if="isAssociated" id="rejectToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
+      <div v-if="isRejectEnabled" id="rejectToken" class="is-cursor is-hover-grey  is-full has-cursor-pointer"
            @click="handleReject">TOKEN REJECT
       </div>
 
@@ -135,7 +135,7 @@ import {walletManager} from "@/router";
 import DoneDialog from '../DoneDialog.vue';
 import ConfirmDialog from '../ConfirmDialog.vue';
 import DynamicDialog from '../DynamicDialog.vue';
-import {computed, defineComponent, PropType, ref} from "vue";
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
@@ -145,6 +145,7 @@ import {gtagTransaction} from "@/gtag";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
 import {Nfts} from "@/schemas/HederaSchemas";
+import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export default defineComponent({
   name: "TokenActions",
@@ -177,6 +178,21 @@ export default defineComponent({
     const tokenSymbol = computed(() => props.analyzer.tokenSymbol.value)
     const isAssociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Associated)
     const isDissociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated)
+
+    const associationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(walletManager.accountId, tokenId)
+    onMounted((() => associationLookup.mount()))
+    onBeforeUnmount((() => associationLookup.unmount()))
+
+    const isRejectEnabled = computed(() => {
+      let result: boolean
+      const associations = associationLookup.entity.value
+      if (associations && associations.length >= 1) {
+        result = (associations[0].balance > 0) && isHederaWallet.value && isAssociated.value
+      } else {
+        result = false
+      }
+      return result
+    })
 
     // Alert dialog states
     const alertController = new DialogController()
@@ -515,6 +531,7 @@ export default defineComponent({
       handleConfirm,
       walletManager,
       isDissociated,
+      isRejectEnabled,
       alertController,
       tooltipLabel,
       confirmMessage,
