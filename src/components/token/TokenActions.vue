@@ -156,7 +156,7 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['rejected'],
+  emits: ['completed'],
   setup(props, context) {
     //
     // States
@@ -378,6 +378,7 @@ export default defineComponent({
           try {
             await walletManager.associateToken(tokenId.value!)
           } finally {
+            context.emit('completed')
             props.analyzer.tokenAssociationDidChange()
             gtagTransaction("associate_token")
           }
@@ -408,6 +409,7 @@ export default defineComponent({
           try {
             await walletManager.dissociateToken(tokenId.value!)
           } finally {
+            context.emit('completed')
             props.analyzer.tokenAssociationDidChange()
             gtagTransaction("dissociate_token")
           }
@@ -457,7 +459,7 @@ export default defineComponent({
             }
           } finally {
             props.analyzer.tokenAssociationDidChange()
-            context.emit('rejected')
+            context.emit('completed')
             gtagTransaction("reject_token")
           }
         }

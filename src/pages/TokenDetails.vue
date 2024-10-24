@@ -63,7 +63,7 @@
              class="h-is-property-text is-flex algin-items-center is-relative">
           <TokenActions
               :analyzer="tokenAnalyzer"
-              @rejected="onRejectCompleted"
+              @completed="onActionCompleted"
           />
         </div>
       </template>
@@ -464,7 +464,7 @@ export default defineComponent({
 
     const isWalletConnected = computed(() => walletManager.connected.value)
 
-    const onRejectCompleted = () => {
+    const onActionCompleted = () => {
       if (tokenAnalyzer.isNft.value) {
         nftHolderTableController.refresh()
       } else {
@@ -495,7 +495,7 @@ export default defineComponent({
       nftHolderTableController,
       metadata,
       metadataAnalyzer,
-      onRejectCompleted,
+      onActionCompleted,
     }
   },
 });
