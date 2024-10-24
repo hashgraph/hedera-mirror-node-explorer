@@ -409,8 +409,9 @@ export default defineComponent({
           try {
             await walletManager.dissociateToken(tokenId.value!)
           } finally {
-            context.emit('completed')
+            TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, tokenId.value!)
             props.analyzer.tokenAssociationDidChange()
+            context.emit('completed')
             gtagTransaction("dissociate_token")
           }
         }
@@ -458,6 +459,7 @@ export default defineComponent({
               await walletManager.rejectTokens(transaction)
             }
           } finally {
+            TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, tokenId.value!)
             props.analyzer.tokenAssociationDidChange()
             context.emit('completed')
             gtagTransaction("reject_token")
