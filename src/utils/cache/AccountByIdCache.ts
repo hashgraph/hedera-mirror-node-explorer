@@ -23,6 +23,7 @@ import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
+import {EntityID} from "@/utils/EntityID";
 
 export class AccountByIdCache extends EntityCache<string, AccountBalanceTransactions | null> {
 
@@ -31,6 +32,17 @@ export class AccountByIdCache extends EntityCache<string, AccountBalanceTransact
     //
     // Public
     //
+
+    public async findAccountAddress(accountId: string): Promise<string|null> {
+        let result: string|null
+        const accountInfo = await this.lookup(accountId)
+        if (accountInfo !== null) {
+            result = accountInfo.evm_address ?? EntityID.parse(accountId)?.toAddress() ?? null
+        } else {
+            result = null
+        }
+        return result
+    }
 
     public updateWithAccountInfo(accountInfo: AccountBalanceTransactions): void {
         if (accountInfo.account) {
