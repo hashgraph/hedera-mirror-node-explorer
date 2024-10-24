@@ -467,8 +467,8 @@ export default defineComponent({
     const onRejectCompleted = () => {
       if (tokenAnalyzer.isNft.value) {
         nftHolderTableController.refresh()
-      }else {
-        nftHolderTableController.refresh()
+      } else {
+        tokenBalanceTableController.refresh()
       }
     }
 
