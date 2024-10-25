@@ -29,7 +29,8 @@ import {
     SAMPLE_NONFUNGIBLE,
     SAMPLE_NONFUNGIBLE_DUDE,
     SAMPLE_PENDING_AIRDROPS,
-    SAMPLE_TOKEN_ASSOCIATIONS_2
+    SAMPLE_TOKEN_RELATIONSHIP_1,
+    SAMPLE_TOKEN_RELATIONSHIP_2
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -73,8 +74,14 @@ describe("TokensSection.vue", () => {
         mock.onGet(matcher4).reply(200, SAMPLE_ASSOCIATED_TOKEN)
         const matcher5 = "/api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id
         mock.onGet(matcher5).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
-        const matcher6 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?limit=100"
-        mock.onGet(matcher6).reply(200, SAMPLE_TOKEN_ASSOCIATIONS_2)
+        const token1 = SAMPLE_TOKEN_RELATIONSHIP_1.token_id
+        const response1 = { tokens: [SAMPLE_TOKEN_RELATIONSHIP_1]}
+        const matcher6 = "/api/v1/accounts/" + accountId + "/tokens?token.id=" + token1 + "&limit=1"
+        mock.onGet(matcher6).reply(200, response1)
+        const token2 = SAMPLE_TOKEN_RELATIONSHIP_2.token_id
+        const response2 = { tokens: [SAMPLE_TOKEN_RELATIONSHIP_2]}
+        const matcher7 = "/api/v1/accounts/" + accountId + "/tokens?token.id=" + token2 + "&limit=1"
+        mock.onGet(matcher7).reply(200, response2)
 
         // For Pending Airdrops tab / NFTs sub-tab
         const matcher10 = `/api/v1/accounts/${accountId}/airdrops/pending`
