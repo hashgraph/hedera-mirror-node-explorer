@@ -6,4 +6,8 @@ name: hedera-explorer
 sources:
   - https://github.com/hashgraph/hedera-mirror-node-explorer
 version: 0.2.0
-
+dependencies:
+  - name: acme-cluster-issuer
+    version: 0.3.1
+    repository: https://swirldslabs.github.io/swirldslabs-helm-charts
+    condition: cloud.acmeClusterIssuer.enabled
