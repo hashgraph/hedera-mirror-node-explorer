@@ -2279,43 +2279,29 @@ export const SAMPLE_ASSOCIATED_TOKEN_2 = {
 // Inspired from https://testnet.mirrornode.hedera.com/api/v1/accounts/0.0.642949/tokens
 //
 
-export const SAMPLE_TOKEN_ASSOCIATIONS = {
-    "tokens": [{
-        "automatic_association": false,
-        "balance": 0,
-        "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
-        "freeze_status": "UNFROZEN",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
-    }, {
-        "automatic_association": false,
-        "balance": 0,
-        "created_timestamp": "1671648712.150557003",
-        "freeze_status": "UNFROZEN",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
-    }],
-    "links": {
-        next: null
-    }
+export const SAMPLE_TOKEN_RELATIONSHIP_1 = {
+    "automatic_association": false,
+    "balance": 2342647909,
+    "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
+    "freeze_status": "UNFROZEN",
+    "kyc_status": "NOT_APPLICABLE",
+    "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
 }
 
-export const SAMPLE_TOKEN_ASSOCIATIONS_2 = {
-    "tokens": [{
-        "automatic_association": false,
-        "balance": 2342647909,
-        "created_timestamp": SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.consensus_timestamp,
-        "freeze_status": "UNFROZEN",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": SAMPLE_ASSOCIATED_TOKEN.token_id
-    }, {
-        "automatic_association": false,
-        "balance": 31669471,
-        "created_timestamp": "1671648712.150557003",
-        "freeze_status": "UNFROZEN",
-        "kyc_status": "NOT_APPLICABLE",
-        "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
-    }],
+export const SAMPLE_TOKEN_RELATIONSHIP_2 = {
+    "automatic_association": false,
+    "balance": 31669471,
+    "created_timestamp": "1671648712.150557003",
+    "freeze_status": "UNFROZEN",
+    "kyc_status": "NOT_APPLICABLE",
+    "token_id": SAMPLE_ASSOCIATED_TOKEN_2.token_id
+}
+
+export const SAMPLE_TOKEN_RELATIONSHIP_RESPONSE = {
+    "tokens": [
+        SAMPLE_TOKEN_RELATIONSHIP_1,
+        SAMPLE_TOKEN_RELATIONSHIP_2
+    ],
     "links": {
         next: null
     }
