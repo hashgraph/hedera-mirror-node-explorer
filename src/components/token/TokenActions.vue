@@ -472,7 +472,11 @@ export default defineComponent({
         showDoneDialog.value = true
         showProgressDialog.value = false
         dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
-        doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) ${!props.analyzer.isFungible.value && `#${tokenSerialNumber.value}`} to ${walletManager.walletName.value}`
+        if (props.analyzer.isFungible.value) {
+          doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to ${walletManager.walletName.value}`
+        } else {
+          doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) #${tokenSerialNumber.value} to ${walletManager.walletName.value}`
+        }
       } catch (reason) {
         handleError(reason)
       }

@@ -52,11 +52,9 @@ export abstract class WalletDriver {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
+    public async callContract(contractId: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
         throw this.toBeImplemented("callContract")
     }
-
-    public abstract isConnected(): boolean
 
     //
     // Public (utilities)
