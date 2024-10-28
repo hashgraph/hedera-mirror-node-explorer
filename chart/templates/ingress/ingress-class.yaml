@@ -1,0 +1,8 @@
+{{- if $.Values.cloud.haproxyIngressController.enabled }}
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: {{ .Values.global.ingressClassName }}
+spec:
+  controller: haproxy-ingress.github.io/controller
+{{- end }}
