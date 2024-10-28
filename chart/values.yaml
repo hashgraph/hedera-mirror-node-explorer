@@ -1,10 +1,10 @@
 selfSignedCertClusterIssuer: '{{ .Values.global.namespaceOverride | default .Release.Namespace | printf "%s-self-signed-cluster-issuer" }}'
 certClusterIssuerType: "self-signed" # "acme-staging", "acme-prod", or "self-signed"
-cloud:
-  acmeClusterIssuer:
-    enabled: false
-  haproxyIngressController:
-    enabled: false
+ingressClassName: "" # if set, takes precedence over the .Values.ingress.className
+acmeClusterIssuer:
+  enabled: false
+haproxyIngressController:
+  enabled: false
 
 # lets encrypt acme cluster issuer configuration
 acme-cluster-issuer:
@@ -65,7 +65,6 @@ fullnameOverride: ""
 
 global:
   namespaceOverride: ""
-  ingressClassName: "" # if set, takes precedence over the .Values.ingress.className
 
 image:
   pullPolicy: IfNotPresent
