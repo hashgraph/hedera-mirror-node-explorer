@@ -3,6 +3,27 @@ entries:
   hedera-explorer:
   - apiVersion: v2
     appVersion: 23.8.0
+    created: "2024-10-28T17:11:55.866748686Z"
+    dependencies:
+    - condition: acmeClusterIssuer.enabled
+      name: acme-cluster-issuer
+      repository: https://swirldslabs.github.io/swirldslabs-helm-charts
+      version: 0.3.1
+    - condition: haproxyIngressController.enabled
+      name: haproxy-ingress
+      repository: https://haproxy-ingress.github.io/charts
+      version: 0.14.5
+    description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
+    digest: 8b4429fed43acd0f1f3793816ee3bd3d6e28bb245ac76708a431157a2a08801e
+    home: https://github.com/hashgraph/hedera-mirror-node-explorer
+    name: hedera-explorer
+    sources:
+    - https://github.com/hashgraph/hedera-mirror-node-explorer
+    urls:
+    - https://hashgraph.github.io/hedera-mirror-node-explorer/charts/hedera-explorer-0.2.1.tgz
+    version: 0.2.1
+  - apiVersion: v2
+    appVersion: 23.8.0
     created: "2024-10-23T21:37:11.694217754Z"
     description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
     digest: fb315eed9ab49ad51cc4af57e5788f295e5b7a96043005946903bada92fb2ce4
@@ -13,4 +34,4 @@ entries:
     urls:
     - https://hashgraph.github.io/hedera-mirror-node-explorer/charts/hedera-explorer-0.2.0.tgz
     version: 0.2.0
-generated: "2024-10-23T21:37:11.693401761Z"
+generated: "2024-10-28T17:11:55.863453099Z"
