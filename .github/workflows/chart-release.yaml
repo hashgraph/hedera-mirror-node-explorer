@@ -43,6 +43,7 @@ jobs:
           helm repo add stable https://charts.helm.sh/stable
           helm repo update
           helm package chart
+          helm dependency update chart
 
       - name: Build and Push the Helm Charts to GitHub Container Registry
         uses: JimCronqvist/action-helm-chart-repo@583db84dfb460a9dd462e2d7d803b82872b8978e # v0.1.0
