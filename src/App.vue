@@ -35,9 +35,9 @@
 
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
@@ -47,110 +47,95 @@ import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
 
-export default defineComponent({
-  name: 'App',
-  components: {CookiesDialog, TopNavBar},
+const route = useRoute()
+const onMainDashboardPage = computed(() => {
+  return route.name == "MainDashboard"
+})
 
-  setup() {
-    const route = useRoute()
-    const onMainDashboardPage = computed(() => {
-      return route.name == "MainDashboard"
-    })
+const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
+provide('buildRelease', buildRelease)
 
-    const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
-    provide('buildRelease', buildRelease)
+const buildShortCommitHash = import.meta.env.VITE_BUILD_SHORTCOMMITHASH ?? "not available"
+provide('buildShortCommitHash', buildShortCommitHash)
 
-    const buildShortCommitHash = import.meta.env.VITE_BUILD_SHORTCOMMITHASH ?? "not available"
-    provide('buildShortCommitHash', buildShortCommitHash)
+const buildTime = import.meta.env.VITE_BUILD_TIME_UTC ?? "not available"
+provide('buildTime', buildTime)
 
-    const buildTime = import.meta.env.VITE_BUILD_TIME_UTC ?? "not available"
-    provide('buildTime', buildTime)
+const isTouchDevice = ('ontouchstart' in window)
+provide('isTouchDevice', isTouchDevice)
 
-    const isTouchDevice = ('ontouchstart' in window)
-    provide('isTouchDevice', isTouchDevice)
+const windowWidth = ref(window.screen.width)
+provide('windowWidth', windowWidth)
 
-    const windowWidth = ref(window.screen.width)
-    provide('windowWidth', windowWidth)
+const isSmallScreen = computed(() => {
+  return windowWidth.value > SMALL_BREAKPOINT
+})
+provide('isSmallScreen', isSmallScreen)
 
-    const isSmallScreen = computed(() => {
-      return windowWidth.value > SMALL_BREAKPOINT
-    })
-    provide('isSmallScreen', isSmallScreen)
+const isMediumScreen = computed(() => {
+  return windowWidth.value >= MEDIUM_BREAKPOINT
+})
+provide('isMediumScreen', isMediumScreen)
 
-    const isMediumScreen = computed(() => {
-      return windowWidth.value >= MEDIUM_BREAKPOINT
-    })
-    provide('isMediumScreen', isMediumScreen)
+const isLargeScreen = computed(() => {
+  return windowWidth.value >= LARGE_BREAKPOINT
+})
+provide('isLargeScreen', isLargeScreen)
 
-    const isLargeScreen = computed(() => {
-      return windowWidth.value >= LARGE_BREAKPOINT
-    })
-    provide('isLargeScreen', isLargeScreen)
+const isXLargeScreen = computed(() => {
+  return windowWidth.value >= XLARGE_BREAKPOINT
+})
+provide('isXLargeScreen', isXLargeScreen)
 
-    const isXLargeScreen = computed(() => {
-      return windowWidth.value >= XLARGE_BREAKPOINT
-    })
-    provide('isXLargeScreen', isXLargeScreen)
+const onResizeHandler = () => {
+  windowWidth.value = window.innerWidth
+}
 
-    const onResizeHandler = () => {
-      windowWidth.value = window.innerWidth
-    }
+const showCookiesDialog = ref(false)
 
-    const showCookiesDialog = ref(false)
+const acceptCookies = ref<boolean | null>(null)
+watch(acceptCookies, (value) => {
+  if (value != null && value) {
+    insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
+  }
+})
 
-    const acceptCookies = ref<boolean | null>(null)
-    watch(acceptCookies, (value) => {
-      if (value != null && value) {
-        insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
-      }
-    })
+provide(loadingKey, AxiosMonitor.instance.loading)
+provide(initialLoadingKey, AxiosMonitor.instance.initialLoading)
+provide(errorKey, AxiosMonitor.instance.error)
+provide(explanationKey, AxiosMonitor.instance.explanation)
+provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
-    provide(loadingKey, AxiosMonitor.instance.loading)
-    provide(initialLoadingKey, AxiosMonitor.instance.initialLoading)
-    provide(errorKey, AxiosMonitor.instance.error)
-    provide(explanationKey, AxiosMonitor.instance.explanation)
-    provide(suggestionKey, AxiosMonitor.instance.suggestion)
+onBeforeMount(() => {
+  const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
+  if (tagId != undefined && tagId.length > 0) {
+    acceptCookies.value = AppStorage.getAcceptCookiePolicy()
+    showCookiesDialog.value = (acceptCookies.value == null)
+  } else {
+    acceptCookies.value = null
+    showCookiesDialog.value = false
+  }
+  networkRegistry.readCustomConfig()
+})
 
-    onBeforeMount(() => {
-      const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
-      if (tagId != undefined && tagId.length > 0) {
-        acceptCookies.value = AppStorage.getAcceptCookiePolicy()
-        showCookiesDialog.value = (acceptCookies.value == null)
-      } else {
-        acceptCookies.value = null
-        showCookiesDialog.value = false
-      }
-      networkRegistry.readCustomConfig()
-    })
+onMounted(() => {
+  windowWidth.value = window.innerWidth
+  window.addEventListener('resize', onResizeHandler);
+})
 
-    onMounted(() => {
-      windowWidth.value = window.innerWidth
-      window.addEventListener('resize', onResizeHandler);
-    })
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResizeHandler);
+})
 
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', onResizeHandler);
-    })
+const handleChooseRejectCookies = () => {
+  acceptCookies.value = false
+  AppStorage.setAcceptCookiePolicy(false)
+}
 
-    const handleChooseRejectCookies = () => {
-      acceptCookies.value = false
-      AppStorage.setAcceptCookiePolicy(false)
-    }
-
-    const handleChooseAcceptCookies = () => {
-      acceptCookies.value = true
-      AppStorage.setAcceptCookiePolicy(true)
-    }
-
-    return {
-      isMediumScreen,
-      onMainDashboardPage,
-      showCookiesDialog,
-      handleChooseRejectCookies,
-      handleChooseAcceptCookies,
-    }
-  },
-});
+const handleChooseAcceptCookies = () => {
+  acceptCookies.value = true
+  AppStorage.setAcceptCookiePolicy(true)
+}
 
 function insertGoogleTag(tagId: string) {
   const src1 = `https://www.googletagmanager.com/gtag/js?id=${tagId}`
