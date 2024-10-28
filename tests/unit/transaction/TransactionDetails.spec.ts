@@ -53,8 +53,8 @@ import {
     SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS,
     SAMPLE_TOKEN,
     SAMPLE_TOKEN_ASSOCIATE_TRANSACTION,
-    SAMPLE_TOKEN_ASSOCIATIONS,
     SAMPLE_TOKEN_CALL_TRANSACTIONS,
+    SAMPLE_TOKEN_RELATIONSHIP_RESPONSE,
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
@@ -786,7 +786,7 @@ describe("TransactionDetails.vue", () => {
             }
         });
         const matcher3 = "/api/v1/accounts/" + transaction.entity_id + "/tokens?limit=100"
-        mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_ASSOCIATIONS);
+        mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_RELATIONSHIP_RESPONSE);
         const matcher4 = "/api/v1/tokens/" + token1.token_id
         mock.onGet(matcher4).reply(200, token1);
         const matcher5 = "/api/v1/tokens/" + token2.token_id

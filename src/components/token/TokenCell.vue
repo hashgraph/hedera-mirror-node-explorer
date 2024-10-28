@@ -49,7 +49,7 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {TokenType} from "@/schemas/HederaSchemas";
-import { TokenRelationshipCache } from "@/utils/cache/TokenRelationshipCache";
+import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export enum TokenCellItem {
   tokenName = "tokenName",
@@ -90,27 +90,16 @@ export default defineComponent({
     onMounted(() => infoLookup.mount())
     onBeforeUnmount(() => infoLookup.unmount())
 
-    const balanceLookup = TokenRelationshipCache.instance.makeLookup(accountId)
-    onMounted(() => balanceLookup.mount())
-    onBeforeUnmount(() => balanceLookup.unmount())
+    const associationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(accountId, tokenId)
+    onMounted(() => associationLookup.mount())
+    onBeforeUnmount(() => associationLookup.unmount())
 
     const tokenBalance = computed(() => {
-      let result
-      if (balanceLookup.entity.value !== null) {
-        result = null
-        for (const t of balanceLookup.entity.value) { 
-          if (t.token_id === props.tokenId) {
-            result = t.balance
-            break
-          }
-        }
-      } else {
-        result = null
-      }
-      return result
+      const associations = associationLookup.entity.value
+      return associations ? associations[0].balance : null
     })
 
-    const propertyValue = computed( () => {
+    const propertyValue = computed(() => {
       let result: string | null
       switch (props.property) {
         case TokenCellItem.tokenName:

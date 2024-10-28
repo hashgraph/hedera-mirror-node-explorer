@@ -214,7 +214,7 @@ export abstract class WalletDriver_Hedera extends WalletDriver {
         return Promise.resolve(result)
     }
 
-    public async callContract(contractId: string, contractAddress: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
+    public async callContract(contractId: string, functionData: string, payerId: string): Promise<ContractResultDetails | string> {
         let result: string | ContractResultDetails
 
         const fp = hexToByte(functionData)

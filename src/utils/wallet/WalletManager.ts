@@ -279,10 +279,9 @@ export class WalletManager {
         }
     }
 
-    public async callContract(contractId: string, contractAddress: string, functionData: string): Promise<ContractResultDetails | string> {
+    public async callContract(contractId: string, functionData: string): Promise<ContractResultDetails | string> {
         if (this.accountIdRef.value !== null) {
-            return this.activeDriver.callContract(contractId, contractAddress, functionData,
-                this.accountIdRef.value)
+            return this.activeDriver.callContract(contractId, functionData, this.accountIdRef.value)
         } else {
             throw this.activeDriver.callFailure("callContract")
         }

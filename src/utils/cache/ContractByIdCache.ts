@@ -22,6 +22,7 @@ import {ContractResponse} from "@/schemas/HederaSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
+import {EntityID} from "@/utils/EntityID";
 
 export class ContractByIdCache extends EntityCache<string, ContractResponse | null> {
 
@@ -30,6 +31,17 @@ export class ContractByIdCache extends EntityCache<string, ContractResponse | nu
     //
     // Public
     //
+
+    public async findContractAddress(contractId: string): Promise<string|null> {
+        let result: string|null
+        const contractInfo = await this.lookup(contractId)
+        if (contractInfo !== null) {
+            result = contractInfo.evm_address ?? EntityID.parse(contractId)?.toAddress() ?? null
+        } else {
+            result = null
+        }
+        return result
+    }
 
     public updateWithContractResponse(contractResponse: ContractResponse): void {
         if (contractResponse.contract_id) {

@@ -128,8 +128,7 @@ import {isSuccessfulResult} from "@/utils/TransactionTools";
 import {FreezeStatus, Nft, Token} from "@/schemas/HederaSchemas";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {BalanceCache} from "@/utils/cache/BalanceCache";
-import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
+import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 const MAX_TOKENS_PER_REJECT = 10
 
@@ -210,14 +209,9 @@ onMounted(() => {
 
 const filterSelectedTokens = async () => {
 
-  const accountBalances = (await BalanceCache.instance.lookup(walletManager.accountId.value!))?.balances ?? []
-  const tokenBalances = accountBalances.length >= 1 ? accountBalances[0].tokens : []
-  const relationships = (await TokenRelationshipCache.instance.lookup(walletManager.accountId.value!)) ?? []
-
   for (const t of props.tokens ?? []) {
     let isTreasury = false
     let isPaused = false
-    let isFrozen = false
 
     if ((await TokenInfoCache.instance.lookup(t.token_id!))?.treasury_account_id === walletManager.accountId.value) {
       isTreasury = true
@@ -227,22 +221,14 @@ const filterSelectedTokens = async () => {
       isPaused = true
       pausedTokens.value.push(t.token_id!)
     }
-    for (const r of relationships) {
-      if (r.token_id === t.token_id) {
-        isFrozen = r.freeze_status === FreezeStatus.FROZEN
-        break
-      }
-    }
+    const associations = await TokenAssociationCache.instance.lookup(
+        TokenAssociationCache.makeAssociationKey(walletManager.accountId.value!, t.token_id!)
+    )
+    const isFrozen = associations && associations.length >= 1 && associations[0].freeze_status === FreezeStatus.FROZEN
     if (isFrozen) {
       frozenTokens.value.push((t.token_id!))
     }
-    let balance = 0
-    for (const b of tokenBalances) {
-      if (b.token_id === t.token_id) {
-        balance = b.balance
-        break
-      }
-    }
+    const balance = (associations && associations.length >= 1) ? associations[0].balance : 0
     if (balance === 0) {
       zeroBalanceTokens.value.push(t.token_id!)
     }
@@ -332,6 +318,7 @@ const onReject = async () => {
         } else {
           transaction.addTokenId(TokenId.fromString(t.token_id!))
         }
+        TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, t.token_id!)
       }
 
       tid.value = TransactionID.normalize(
