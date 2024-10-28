@@ -85,7 +85,7 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import {Token} from '@/schemas/HederaSchemas';
 import {routeManager} from "@/router";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import TokenIOL from "@/components/values/link/TokenIOL.vue";

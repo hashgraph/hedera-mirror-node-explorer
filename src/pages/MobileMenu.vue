@@ -102,7 +102,7 @@
 
 import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import router, {routeManager} from "@/router";
-import {MEDIUM_BREAKPOINT} from "@/App.vue";
+import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import Footer from "@/components/Footer.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 

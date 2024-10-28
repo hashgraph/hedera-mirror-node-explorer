@@ -45,14 +45,7 @@ import {useRoute} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
-
-export const XLARGE_BREAKPOINT = 1450
-export const LARGE_BREAKPOINT = 1280
-export const MEDIUM_BREAKPOINT = 1080
-export const SMALL_BREAKPOINT = 768
-export const FINAL_BREAKPOINT = 640
-
-export const ORUGA_MOBILE_BREAKPOINT = "1080px"
+import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
 
 export default defineComponent({
   name: 'App',

@@ -94,7 +94,7 @@ import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";

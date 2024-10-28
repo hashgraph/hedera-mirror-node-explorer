@@ -94,7 +94,7 @@ import {ComputedRef, defineComponent, onBeforeUnmount, onMounted, PropType, Ref}
 import {Transaction} from "@/schemas/HederaSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import ContractName from "@/components/values/ContractName.vue";

@@ -90,7 +90,7 @@ import {Contract} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import ContractName from "@/components/values/ContractName.vue";
