@@ -3,7 +3,7 @@ entries:
   hedera-explorer:
   - apiVersion: v2
     appVersion: 23.8.0
-    created: "2024-10-28T17:11:55.866748686Z"
+    created: "2024-10-28T19:21:06.921537724Z"
     dependencies:
     - condition: acmeClusterIssuer.enabled
       name: acme-cluster-issuer
@@ -14,7 +14,7 @@ entries:
       repository: https://haproxy-ingress.github.io/charts
       version: 0.14.5
     description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
-    digest: 8b4429fed43acd0f1f3793816ee3bd3d6e28bb245ac76708a431157a2a08801e
+    digest: d44582f8231b469a2fbf968ab618807e414d3c366a420e3361213aa61dda28d6
     home: https://github.com/hashgraph/hedera-mirror-node-explorer
     name: hedera-explorer
     sources:
@@ -34,4 +34,4 @@ entries:
     urls:
     - https://hashgraph.github.io/hedera-mirror-node-explorer/charts/hedera-explorer-0.2.0.tgz
     version: 0.2.0
-generated: "2024-10-28T17:11:55.863453099Z"
+generated: "2024-10-28T19:21:06.919002875Z"
