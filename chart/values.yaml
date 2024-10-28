@@ -1,5 +1,11 @@
 selfSignedCertClusterIssuer: '{{ .Values.global.namespaceOverride | default .Release.Namespace | printf "%s-self-signed-cluster-issuer" }}'
 certClusterIssuerType: "self-signed" # "acme-staging", "acme-prod", or "self-signed"
+ingressClassName: "" # if set, takes precedence over the .Values.ingress.className
+acmeClusterIssuer:
+  enabled: false
+haproxyIngressController:
+  enabled: false
+
 # lets encrypt acme cluster issuer configuration
 acme-cluster-issuer:
   issuers:
@@ -12,6 +18,10 @@ acme-cluster-issuer:
   solvers: # TODO change in: https://github.com/hashgraph/full-stack-testing/issues/631
     http01:
       solverType: "ingress"
+haproxy-ingress:
+  controller:
+    service:
+      loadBalancerIP: "" # the external IP address of the hedera mirror node explorer
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
@@ -55,7 +65,6 @@ fullnameOverride: ""
 
 global:
   namespaceOverride: ""
-  ingressClassName: "" # if set, takes precedence over the .Values.ingress.className
 
 image:
   pullPolicy: IfNotPresent

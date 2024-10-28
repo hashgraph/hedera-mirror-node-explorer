@@ -10,4 +10,8 @@ dependencies:
   - name: acme-cluster-issuer
     version: 0.3.1
     repository: https://swirldslabs.github.io/swirldslabs-helm-charts
-    condition: cloud.acmeClusterIssuer.enabled
+    condition: acmeClusterIssuer.enabled
+  - name: haproxy-ingress
+    version: 0.14.5
+    repository: https://haproxy-ingress.github.io/charts
+    condition: haproxyIngressController.enabled
