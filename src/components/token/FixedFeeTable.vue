@@ -65,7 +65,7 @@
 import {defineComponent, PropType} from 'vue';
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";

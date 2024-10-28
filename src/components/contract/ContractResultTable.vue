@@ -97,7 +97,7 @@
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {ContractResult} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";

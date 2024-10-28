@@ -123,7 +123,7 @@
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {TokenBalance, TokenRelationship} from "@/schemas/HederaSchemas";
 import TokenLink from "@/components/values/link/TokenLink.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import {TokenRelationshipsTableController} from "@/components/account/TokenRelationshipsTableController";

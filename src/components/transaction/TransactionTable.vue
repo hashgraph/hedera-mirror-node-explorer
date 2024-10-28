@@ -105,7 +105,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import EmptyTable from "@/components/EmptyTable.vue";
 import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue";

@@ -95,7 +95,7 @@ import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TopicMessage} from "@/schemas/HederaSchemas";
 import {routeManager} from "@/router";

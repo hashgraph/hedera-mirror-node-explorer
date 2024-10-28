@@ -109,7 +109,7 @@ import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {Block} from '@/schemas/HederaSchemas';
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";

@@ -35,9 +35,9 @@
 
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
 import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
@@ -45,119 +45,97 @@ import {useRoute} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
+import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
 
-export const XLARGE_BREAKPOINT = 1450
-export const LARGE_BREAKPOINT = 1280
-export const MEDIUM_BREAKPOINT = 1080
-export const SMALL_BREAKPOINT = 768
-export const FINAL_BREAKPOINT = 640
+const route = useRoute()
+const onMainDashboardPage = computed(() => {
+  return route.name == "MainDashboard"
+})
 
-export const ORUGA_MOBILE_BREAKPOINT = "1080px"
+const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
+provide('buildRelease', buildRelease)
 
-export default defineComponent({
-  name: 'App',
-  components: {CookiesDialog, TopNavBar},
+const buildShortCommitHash = import.meta.env.VITE_BUILD_SHORTCOMMITHASH ?? "not available"
+provide('buildShortCommitHash', buildShortCommitHash)
 
-  setup() {
-    const route = useRoute()
-    const onMainDashboardPage = computed(() => {
-      return route.name == "MainDashboard"
-    })
+const buildTime = import.meta.env.VITE_BUILD_TIME_UTC ?? "not available"
+provide('buildTime', buildTime)
 
-    const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
-    provide('buildRelease', buildRelease)
+const isTouchDevice = ('ontouchstart' in window)
+provide('isTouchDevice', isTouchDevice)
 
-    const buildShortCommitHash = import.meta.env.VITE_BUILD_SHORTCOMMITHASH ?? "not available"
-    provide('buildShortCommitHash', buildShortCommitHash)
+const windowWidth = ref(window.screen.width)
+provide('windowWidth', windowWidth)
 
-    const buildTime = import.meta.env.VITE_BUILD_TIME_UTC ?? "not available"
-    provide('buildTime', buildTime)
+const isSmallScreen = computed(() => {
+  return windowWidth.value > SMALL_BREAKPOINT
+})
+provide('isSmallScreen', isSmallScreen)
 
-    const isTouchDevice = ('ontouchstart' in window)
-    provide('isTouchDevice', isTouchDevice)
+const isMediumScreen = computed(() => {
+  return windowWidth.value >= MEDIUM_BREAKPOINT
+})
+provide('isMediumScreen', isMediumScreen)
 
-    const windowWidth = ref(window.screen.width)
-    provide('windowWidth', windowWidth)
+const isLargeScreen = computed(() => {
+  return windowWidth.value >= LARGE_BREAKPOINT
+})
+provide('isLargeScreen', isLargeScreen)
 
-    const isSmallScreen = computed(() => {
-      return windowWidth.value > SMALL_BREAKPOINT
-    })
-    provide('isSmallScreen', isSmallScreen)
+const isXLargeScreen = computed(() => {
+  return windowWidth.value >= XLARGE_BREAKPOINT
+})
+provide('isXLargeScreen', isXLargeScreen)
 
-    const isMediumScreen = computed(() => {
-      return windowWidth.value >= MEDIUM_BREAKPOINT
-    })
-    provide('isMediumScreen', isMediumScreen)
+const onResizeHandler = () => {
+  windowWidth.value = window.innerWidth
+}
 
-    const isLargeScreen = computed(() => {
-      return windowWidth.value >= LARGE_BREAKPOINT
-    })
-    provide('isLargeScreen', isLargeScreen)
+const showCookiesDialog = ref(false)
 
-    const isXLargeScreen = computed(() => {
-      return windowWidth.value >= XLARGE_BREAKPOINT
-    })
-    provide('isXLargeScreen', isXLargeScreen)
+const acceptCookies = ref<boolean | null>(null)
+watch(acceptCookies, (value) => {
+  if (value != null && value) {
+    insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
+  }
+})
 
-    const onResizeHandler = () => {
-      windowWidth.value = window.innerWidth
-    }
+provide(loadingKey, AxiosMonitor.instance.loading)
+provide(initialLoadingKey, AxiosMonitor.instance.initialLoading)
+provide(errorKey, AxiosMonitor.instance.error)
+provide(explanationKey, AxiosMonitor.instance.explanation)
+provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
-    const showCookiesDialog = ref(false)
+onBeforeMount(() => {
+  const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
+  if (tagId != undefined && tagId.length > 0) {
+    acceptCookies.value = AppStorage.getAcceptCookiePolicy()
+    showCookiesDialog.value = (acceptCookies.value == null)
+  } else {
+    acceptCookies.value = null
+    showCookiesDialog.value = false
+  }
+  networkRegistry.readCustomConfig()
+})
 
-    const acceptCookies = ref<boolean | null>(null)
-    watch(acceptCookies, (value) => {
-      if (value != null && value) {
-        insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
-      }
-    })
+onMounted(() => {
+  windowWidth.value = window.innerWidth
+  window.addEventListener('resize', onResizeHandler);
+})
 
-    provide(loadingKey, AxiosMonitor.instance.loading)
-    provide(initialLoadingKey, AxiosMonitor.instance.initialLoading)
-    provide(errorKey, AxiosMonitor.instance.error)
-    provide(explanationKey, AxiosMonitor.instance.explanation)
-    provide(suggestionKey, AxiosMonitor.instance.suggestion)
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResizeHandler);
+})
 
-    onBeforeMount(() => {
-      const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
-      if (tagId != undefined && tagId.length > 0) {
-        acceptCookies.value = AppStorage.getAcceptCookiePolicy()
-        showCookiesDialog.value = (acceptCookies.value == null)
-      } else {
-        acceptCookies.value = null
-        showCookiesDialog.value = false
-      }
-      networkRegistry.readCustomConfig()
-    })
+const handleChooseRejectCookies = () => {
+  acceptCookies.value = false
+  AppStorage.setAcceptCookiePolicy(false)
+}
 
-    onMounted(() => {
-      windowWidth.value = window.innerWidth
-      window.addEventListener('resize', onResizeHandler);
-    })
-
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', onResizeHandler);
-    })
-
-    const handleChooseRejectCookies = () => {
-      acceptCookies.value = false
-      AppStorage.setAcceptCookiePolicy(false)
-    }
-
-    const handleChooseAcceptCookies = () => {
-      acceptCookies.value = true
-      AppStorage.setAcceptCookiePolicy(true)
-    }
-
-    return {
-      isMediumScreen,
-      onMainDashboardPage,
-      showCookiesDialog,
-      handleChooseRejectCookies,
-      handleChooseAcceptCookies,
-    }
-  },
-});
+const handleChooseAcceptCookies = () => {
+  acceptCookies.value = true
+  AppStorage.setAcceptCookiePolicy(true)
+}
 
 function insertGoogleTag(tagId: string) {
   const src1 = `https://www.googletagmanager.com/gtag/js?id=${tagId}`

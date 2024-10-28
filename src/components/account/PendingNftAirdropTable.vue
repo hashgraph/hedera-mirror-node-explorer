@@ -117,7 +117,7 @@
 
 import {onBeforeUnmount, onMounted, PropType, watch} from 'vue';
 import {TokenAirdrop} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";

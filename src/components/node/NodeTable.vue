@@ -140,7 +140,7 @@
 
 import {defineComponent, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
 import {NetworkNode} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StakeRange from "@/components/node/StakeRange.vue";

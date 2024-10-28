@@ -90,7 +90,7 @@ import {defineComponent, inject, PropType} from 'vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";

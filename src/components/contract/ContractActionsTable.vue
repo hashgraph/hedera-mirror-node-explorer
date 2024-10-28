@@ -115,7 +115,7 @@
 
 import {computed, defineComponent, inject, PropType} from 'vue';
 import {ContractAction} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import ContractActionDetails from "@/components/contract/ContractActionDetails.vue";

@@ -48,7 +48,7 @@
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {useRoute} from "vue-router";
 import router from "@/router";
-import {MEDIUM_BREAKPOINT} from "@/App.vue";
+import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import Footer from "@/components/Footer.vue";
 

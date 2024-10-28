@@ -117,7 +117,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import {ContractAction} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/App.vue";
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";

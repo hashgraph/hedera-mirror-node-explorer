@@ -92,7 +92,7 @@
 
 import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
 import {CryptoAllowance} from "@/schemas/HederaSchemas";
-import {ORUGA_MOBILE_BREAKPOINT} from '@/App.vue';
+import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
