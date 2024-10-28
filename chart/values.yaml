@@ -5,6 +5,8 @@ acmeClusterIssuer:
   enabled: false
 haproxyIngressController:
   enabled: false
+selfSignedClusterIssuer:
+  enabled: false
 
 # lets encrypt acme cluster issuer configuration
 acme-cluster-issuer:
