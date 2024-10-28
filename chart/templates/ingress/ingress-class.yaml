@@ -2,7 +2,7 @@
 apiVersion: networking.k8s.io/v1
 kind: IngressClass
 metadata:
-  name: {{ .Values.global.ingressClassName }}
+  name: {{ .Values.ingressClassName }}
 spec:
   controller: haproxy-ingress.github.io/controller
 {{- end }}
