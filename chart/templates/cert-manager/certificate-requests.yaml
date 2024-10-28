@@ -1,0 +1,26 @@
+{{- if (index $.Values "certClusterIssuerType" | ne "self-signed" ) }}
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ca-secret-hedera-explorer
+  namespace: {{ default $.Release.Namespace $.Values.global.namespaceOverride }}
+spec:
+  isCA: false
+  commonName: {{ index $.Values "ingress" "hosts" 0 "host" }}
+  dnsNames:
+    - {{ index $.Values "ingress" "hosts" 0 "host" }}
+  secretName: ca-secret-hedera-explorer
+  privateKey:
+    algorithm: RSA
+    size: 3072
+  issuerRef:
+    {{- if index .Values "certClusterIssuerType" | eq "self-signed"}}
+    name: {{ tpl (index .Values "selfSignedCertClusterIssuer") . }}
+    {{- else if index .Values "certClusterIssuerType" | eq "acme-staging" }}
+    name: {{ tpl (index .Values "acme-cluster-issuer" "issuers" "staging" "name") . }}
+    {{- else if index .Values "certClusterIssuerType" | eq "acme-prod" }}
+    name: {{ tpl (index .Values "acme-cluster-issuer" "issuers" "production" "name") . }}
+    {{- end }}
+    kind: ClusterIssuer
+    group: cert-manager.io
+{{- end }}

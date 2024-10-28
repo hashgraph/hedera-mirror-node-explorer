@@ -1,3 +1,17 @@
+selfSignedCertClusterIssuer: '{{ .Values.global.namespaceOverride | default .Release.Namespace | printf "%s-self-signed-cluster-issuer" }}'
+certClusterIssuerType: "self-signed" # "acme-staging", "acme-prod", or "self-signed"
+# lets encrypt acme cluster issuer configuration
+acme-cluster-issuer:
+  issuers:
+    staging:
+      email: ""
+      name: '{{ .Values.global.namespaceOverride | default .Release.Namespace | printf "%s-letsencrypt-staging" }}'
+    production:
+      email: ""
+      name: '{{ .Values.global.namespaceOverride | default .Release.Namespace | printf "%s-letsencrypt-prod" }}'
+  solvers: # TODO change in: https://github.com/hashgraph/full-stack-testing/issues/631
+    http01:
+      solverType: "ingress"
 affinity:
   podAntiAffinity:
     preferredDuringSchedulingIgnoredDuringExecution:
