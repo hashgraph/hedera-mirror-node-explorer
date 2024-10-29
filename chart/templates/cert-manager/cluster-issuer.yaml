@@ -1,3 +1,4 @@
+{{- if $.Values.selfSignedClusterIssuer.enabled }}
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -8,3 +9,4 @@ metadata:
     helm.sh/hook-weight: "2"
 spec:
   selfSigned: {}
+{{- end }}

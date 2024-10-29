@@ -1,4 +1,4 @@
-{{- if (index $.Values "certClusterIssuerType" | ne "self-signed" ) }}
+{{- if or $.Values.selfSignedClusterIssuer.enabled (index $.Values "certClusterIssuerType" | ne "self-signed" ) }}
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:

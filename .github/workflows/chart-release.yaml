@@ -42,6 +42,7 @@ jobs:
         run: |
           helm repo add stable https://charts.helm.sh/stable
           helm repo update
+          helm dependency update chart
           helm package chart
 
       - name: Build and Push the Helm Charts to GitHub Container Registry

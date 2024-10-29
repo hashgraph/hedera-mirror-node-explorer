@@ -5,7 +5,7 @@ home: https://github.com/hashgraph/hedera-mirror-node-explorer
 name: hedera-explorer
 sources:
   - https://github.com/hashgraph/hedera-mirror-node-explorer
-version: 0.2.0
+version: 0.2.1
 dependencies:
   - name: acme-cluster-issuer
     version: 0.3.1
