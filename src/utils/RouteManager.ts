@@ -22,7 +22,6 @@ import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Rout
 import {Transaction} from "@/schemas/HederaSchemas";
 import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {computed, ref, watch, WatchStopHandle} from "vue";
-import router from "@/router";
 import {AppStorage} from "@/AppStorage";
 import axios from "axios";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
@@ -81,10 +80,10 @@ export class RouteManager {
         }
         this.selectedNetwork.value = this.currentNetwork.value
         this.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
-            router.push({
+            this.router.push({
                 name: "MainDashboard",
                 params: {network: selection}
-            })
+            }).catch()
         })
     }
 
