@@ -67,9 +67,6 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
-    public currentVerifierUrl = computed(
-        () => this.currentNetworkEntry.value.sourcifySetup?.verifierURL)
-
     public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
 
     public selectedNetworkWatchHandle: WatchStopHandle | undefined
@@ -288,18 +285,6 @@ export class RouteManager {
             result = Promise.resolve()
         } else {
             result = this.router.push(this.makeRouteToSerial(tokenId, serialNumber))
-        }
-        return result
-    }
-
-    public routeToCollection(accountId: string, tokenId: string, event: MouseEvent): Promise<NavigationFailure | void | undefined> {
-        let result: Promise<NavigationFailure | void | undefined>
-        if (event.ctrlKey || event.metaKey || event.button === 1) {
-            const routeData = this.router.resolve(this.makeRouteToCollection(accountId, tokenId))
-            window.open(routeData.href, '_blank')
-            result = Promise.resolve()
-        } else {
-            result = this.router.push(this.makeRouteToCollection(accountId, tokenId))
         }
         return result
     }
