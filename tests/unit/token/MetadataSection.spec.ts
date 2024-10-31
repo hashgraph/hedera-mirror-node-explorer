@@ -21,7 +21,7 @@
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import axios from "axios";
-import {IPFS_METADATA, IPFS_METADATA_CONTENT, IPFS_METADATA_CONTENT_URL,} from "../Mocks";
+import {IPFS_GATEWAY_PREFIX, IPFS_METADATA, IPFS_METADATA_CONTENT, IPFS_METADATA_CONTENT_URL,} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "../../../src/utils/HMSF";
@@ -51,7 +51,7 @@ describe("MetadataSection.vue", () => {
 
         const metadata = ref(IPFS_METADATA)
         const decodedMetadata = atob(IPFS_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
 
         const wrapper = mount(MetadataSection, {
@@ -97,7 +97,7 @@ describe("MetadataSection.vue", () => {
 
         const UNUSABLE_METADATA = '==AA'
         const metadata = ref(UNUSABLE_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
 
         const wrapper = mount(MetadataSection, {

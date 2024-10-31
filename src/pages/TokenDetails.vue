@@ -361,6 +361,7 @@ import MirrorLink from "@/components/MirrorLink.vue";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import MetadataSection from "@/components/token/MetadataSection.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
 
@@ -418,8 +419,9 @@ export default defineComponent({
     onMounted(() => tokenAnalyzer.mount())
     onBeforeUnmount(() => tokenAnalyzer.unmount())
 
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
     const metadata = computed(() => tokenLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata)
+    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix)
     onMounted(() => metadataAnalyzer.mount())
     onBeforeUnmount(() => metadataAnalyzer.unmount())
 

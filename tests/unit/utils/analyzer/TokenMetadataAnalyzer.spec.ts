@@ -57,7 +57,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
 
         // 1) new
         const metadata = ref<string>('')
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         expect(analyzer.rawMetadata.value).toBe('')
         expect(analyzer.imageUrl.value).toBeNull()
         expect(analyzer.creator.value).toBeNull()
@@ -145,7 +145,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         const metadata = ref(CID_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
@@ -184,7 +184,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.onGet(HTTPS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         const metadata = ref(HTTPS_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
@@ -223,7 +223,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
 
         const metadata = ref(HCS_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
@@ -252,7 +252,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
 
         const metadata = ref(TOPIC_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
@@ -282,7 +282,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.onGet(matcher).reply(200, TIMESTAMP_SUBMIT_MESSAGE)
 
         const metadata = ref(TIMESTAMP_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
@@ -320,7 +320,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
 
         const arbitraryMetadata = btoa("/unknown-path/unavailable-image.jpg")
         const metadata = ref(arbitraryMetadata)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
@@ -348,7 +348,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, NON_STD_METADATA_CONTENT)
 
         const metadata = ref(IPFS_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 

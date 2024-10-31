@@ -51,6 +51,7 @@ import {NftBySerialCache} from "@/utils/cache/NftBySerialCache";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import BlobValue from "@/components/values/BlobValue.vue";
 import NftPreview from "@/components/token/NftPreview.vue";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export enum NftCellItem {
   name = "name",
@@ -90,8 +91,9 @@ export default defineComponent({
     onMounted(() => nftLookup.mount())
     onBeforeUnmount(() => nftLookup.unmount())
 
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
     const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata)
+    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix)
     onMounted(() => metadataAnalyzer.mount())
     onBeforeUnmount(() => metadataAnalyzer.unmount())
 
