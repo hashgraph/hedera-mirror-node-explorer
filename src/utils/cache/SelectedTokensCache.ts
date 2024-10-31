@@ -26,16 +26,25 @@ export class SelectedTokensCache extends SingletonCache<SelectedTokensIndex> {
 
     public static readonly instance = new SelectedTokensCache()
 
+    private popularTokenIndexURL: string|null = null
+
+    //
+    // Public
+    //
+
+    public setup(popularTokenIndexURL: string|null) {
+        this.popularTokenIndexURL = popularTokenIndexURL
+        this.clear()
+    }
+
     //
     // Cache
     //
 
     protected async load(): Promise<SelectedTokensIndex> {
         let selectedTokenEntries: SelectedTokenEntry[]
-        const popularTokenIndexURL = import.meta.env.VITE_APP_POPULAR_TOKEN_INDEX_URL ?? null
-        if (routeManager.currentNetwork.value == "mainnet" && popularTokenIndexURL !== null) {
-            const url = window.location.origin + "/" + popularTokenIndexURL
-            selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(url)).data
+        if (routeManager.currentNetwork.value == "mainnet" && this.popularTokenIndexURL !== null) {
+            selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(this.popularTokenIndexURL)).data
         } else {
             selectedTokenEntries = []
         }

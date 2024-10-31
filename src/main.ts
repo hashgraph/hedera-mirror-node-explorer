@@ -34,6 +34,7 @@ import "./assets/styles/explorer-oruga.css";
 import "./assets/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import {CoreConfig} from "@/config/CoreConfig";
+import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
 
 library.add(faForward);
 export default FontAwesomeIcon;
@@ -55,6 +56,7 @@ const createAndMount = async () => {
     const coreConfig = await loadCoreConfig()
     if (coreConfig instanceof CoreConfig) {
         routeManager.configure(coreConfig)
+        SelectedTokensCache.instance.setup(coreConfig.popularTokenIndexURL)
     }
     const app = createApp(Root, { coreConfig })
     app.component("font-awesome-icon", FontAwesomeIcon)
