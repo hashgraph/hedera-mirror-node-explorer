@@ -78,7 +78,7 @@ export class CoreConfig {
         public readonly termsOfUseURL: string|null,
 
         // The HTML content of the disclaimer notice displayed on the Rewards Estimator
-        public readonly estimatorNotice: string|null,
+        public readonly estimatorNotice: string|null, // Unused when enabledStaking is false
 
         // The HTML content of the disclaimer popup dialog displayed by the Wallet Chooser
         public readonly walletChooserDisclaimerPopup: string|null,
