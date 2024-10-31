@@ -105,8 +105,8 @@ const showCookiesDialog = ref(false)
 
 const acceptCookies = ref<boolean | null>(null)
 watch(acceptCookies, (value) => {
-  if (value != null && value) {
-    insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
+  if (value != null && value && props.coreConfig.googleTagID !== null) {
+    insertGoogleTag(props.coreConfig.googleTagID)
   }
 })
 
@@ -117,7 +117,7 @@ provide(explanationKey, AxiosMonitor.instance.explanation)
 provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
 onBeforeMount(() => {
-  const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
+  const tagId = props.coreConfig.googleTagID
   if (tagId != undefined && tagId.length > 0) {
     acceptCookies.value = AppStorage.getAcceptCookiePolicy()
     showCookiesDialog.value = (acceptCookies.value == null)
