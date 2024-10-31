@@ -80,6 +80,7 @@ import {walletManager} from "@/router";
 import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import OptOutDialog from "@/components/staking/OptOutDialog.vue";
 import {AppStorage} from "@/AppStorage";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: "WalletChooser",
@@ -96,7 +97,7 @@ export default defineComponent({
   setup(props, context) {
     const chosenWallet = ref<WalletDriver | null>(null)
     const showDisclaimerDialog = ref(false)
-    const disclaimer = import.meta.env.VITE_APP_WALLET_CHOOSER_DISCLAIMER_POPUP ?? ""
+    const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup ?? ""
 
     const handleConnect = () => {
       context.emit('update:showDialog', false)
