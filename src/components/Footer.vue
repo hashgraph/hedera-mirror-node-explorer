@@ -70,6 +70,7 @@
 <script lang="ts">
 
 import {defineComponent, inject} from "vue";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: "Footer",
@@ -102,9 +103,11 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
 
-    const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const sponsorURL = import.meta.env.VITE_APP_SPONSOR_URL ?? ""
-    const termsOfUseURL = import.meta.env.VITE_APP_TERMS_OF_USE_URL ? '/' + import.meta.env.VITE_APP_TERMS_OF_USE_URL : ""
+    const coreConfig = CoreConfig.inject()
+    const productName = coreConfig.productName
+    const sponsorURL = coreConfig.sponsorURL
+    const termsOfUseURL = coreConfig.termsOfUseURL
+
 
     return {
       buildRelease,

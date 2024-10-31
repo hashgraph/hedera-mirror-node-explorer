@@ -184,7 +184,6 @@ export default defineComponent({
     const buildTime = inject('buildTime', "not available")
     const coreConfig = CoreConfig.inject()
 
-    const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
     const isStakingEnabled = coreConfig.enableStaking
 
     const isMobileMenuOpen = ref(false)
@@ -257,7 +256,6 @@ export default defineComponent({
     return {
       buildTime,
       connecting,
-      productName,
       routeManager,
       chooseWallet,
       walletIconURL,
