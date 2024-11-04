@@ -266,11 +266,6 @@ body {
   font-variant-numeric: tabular-nums;
 }
 
-.has-hbar:after {
-  content: "\210F";
-  color: darkgrey;
-}
-
 .h-is-json {
   white-space: pre-wrap;
 }

@@ -96,7 +96,10 @@ export class CoreConfig {
         public readonly ipfsGatewayUrlPrefix: string,
 
         // The URL of the popular token index
-        public readonly popularTokenIndexURL: string|null
+        public readonly popularTokenIndexURL: string|null,
+
+        // The HTML content used as crypto unit symbol
+        public readonly cryptoSymbol: string|null
 
     ) {}
 
@@ -116,7 +119,8 @@ export class CoreConfig {
             fetchString(obj, "walletChooserDisclaimerPopup"),
             fetchString(obj, "googleTagID"),
             fetchURL(obj, "ipfsGatewayUrlPrefix") ?? "https://gateway.pinata.cloud/ipfs/",
-            fetchURL(obj, "popularTokenIndexURL")
+            fetchURL(obj, "popularTokenIndexURL"),
+            fetchString(obj, "cryptoSymbol")
         )
     }
 }
