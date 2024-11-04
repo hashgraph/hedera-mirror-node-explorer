@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -92,21 +92,21 @@ describe("Nodes.vue", () => {
         expect(wrapper.get('tbody').text()).toBe(
             "0" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "6,000,000" +
+            tooltipStake + "6,000,000ℏ" +
             tooltipPercentage + "25%" +
-            "Rewarded:5,000,000Not Rewarded:1,000,000Min:1,000,000Max:30,000,000" +
+            "Rewarded:5,000,000ℏNot Rewarded:1,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
             tooltipRewardRate + "1%" +
             "1" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "9,000,000" +
+            tooltipStake + "9,000,000ℏ" +
             tooltipPercentage + "37.5%" +
-            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
             tooltipRewardRate + "2%" +
             "2" +
             "Hosted by Hedera | Central, USA" +
-            tooltipStake + "9,000,000" +
+            tooltipStake + "9,000,000ℏ" +
             tooltipPercentage + "37.5%" +
-            "Rewarded:7,000,000Not Rewarded:2,000,000Min:1,000,000Max:30,000,000" +
+            "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
             tooltipRewardRate + "3%"
         )
 

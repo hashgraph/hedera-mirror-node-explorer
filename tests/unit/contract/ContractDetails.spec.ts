@@ -107,7 +107,7 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
-        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909$5.76369")
+        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
@@ -205,7 +205,7 @@ describe("ContractDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
-        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909$5.76369")
+        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
@@ -311,13 +311,13 @@ describe("ContractDetails.vue", () => {
         expect(cells[0].text()).toBe("9:11:37.9739 AMFeb 3, 2023, UTC")
         expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ec(0.0.1260)")
         expect(cells[2].text()).toBe("None")
-        expect(cells[3].text()).toBe("0.00000000")
+        expect(cells[3].text()).toBe("0.00000000ℏ")
 
         cells = rows[1].findAll('td')
         expect(cells[0].text()).toBe("9:09:24.5852 AMFeb 3, 2023, UTC")
         expect(cells[1].text()).toBe("0x00000000000000000000000000000000000004ec(0.0.1260)")
         expect(cells[2].text()).toBe("None")
-        expect(cells[3].text()).toBe("0.00000000")
+        expect(cells[3].text()).toBe("0.00000000ℏ")
 
         mock.restore()
         wrapper.unmount()

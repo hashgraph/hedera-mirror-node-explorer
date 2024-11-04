@@ -121,9 +121,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC
         expect(wrapper.get("#transactionHashValue").text()).toBe("a012 9612 32ed 7d28 4283 6e95 f7e9 c435 6fdf e2de 0819 9091 701a 969c 1d1f d936 71d3 078e e83b 28fb 460a 88b4 cbd8 ecd2Copy")
         expect(wrapper.get("#blockNumberValue").text()).toBe("25175998")
-        expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065$0.00116")
+        expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065ℏ$0.00116")
         expect(wrapper.get("#maxFeeName").text()).toBe("Max Fee")
-        expect(wrapper.get("#maxFeeValue").text()).toBe("1.00000000$0.24603")
+        expect(wrapper.get("#maxFeeValue").text()).toBe("1.00000000ℏ$0.24603")
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#operatorAccountValue").text()).toBe("0.0.29624024")
@@ -137,9 +137,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
-            "Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065-$0.00116\n\n" +
-            "0.0.40.00022028$0.00005Node fee (Hedera)\n\n" +
-            "0.0.980.00448037$0.00110Hedera fee collection account")
+            "Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065ℏ-$0.00116\n\n" +
+            "0.0.40.00022028ℏ$0.00005Node fee (Hedera)\n\n" +
+            "0.0.980.00448037ℏ$0.00110Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
             "Token TransfersAccountToken AmountAccountToken Amount0.0.29624024-123423\n\n" +
@@ -226,9 +226,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.get("#durationValue").text()).toBe("None")
 
         expect(wrapper.get("#chargedFeeName").text()).toBe("Charged Fee")
-        expect(wrapper.get("#chargedFeeValue").text()).toBe("0.95515604$0.23500")
+        expect(wrapper.get("#chargedFeeValue").text()).toBe("0.95515604ℏ$0.23500")
         expect(wrapper.get("#maxFeeName").text()).toBe("Max FeeMax Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM.")
-        expect(wrapper.get("#maxFeeValue").text()).toBe("0.20000000$0.04921")
+        expect(wrapper.get("#maxFeeValue").text()).toBe("0.20000000ℏ$0.04921")
 
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
@@ -825,9 +825,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
         expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
 
-        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210-$0.28517\n\n" +
-            "0.0.30.05805847$0.01428Node fee (Hedera)\n\n" +
-            "0.0.981.10099363$0.27088Hedera fee collection account")
+        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210ℏ-$0.28517\n\n" +
+            "0.0.30.05805847ℏ$0.01428Node fee (Hedera)\n\n" +
+            "0.0.981.10099363ℏ$0.27088Hedera fee collection account")
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
 

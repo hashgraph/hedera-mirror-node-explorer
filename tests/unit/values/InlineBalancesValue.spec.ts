@@ -172,7 +172,7 @@ describe("InlineBalancesValue.vue", () => {
         balanceAnalyzer.mount()
         await flushPromises()
 
-        expect(wrapper.text()).toContain("100.00000000" + ">")
+        expect(wrapper.text()).toContain("100.00000000ℏ" + ">")
         expect(wrapper.text()).toContain("years ago")
 
         balanceAnalyzer.unmount()
@@ -227,7 +227,7 @@ describe("InlineBalancesValue.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toContain("100.00000000" + ">")
+        expect(wrapper.text()).toContain("100.00000000ℏ" + ">")
         expect(wrapper.text()).toContain("years ago")
 
         balanceAnalyzer.unmount()
@@ -281,7 +281,7 @@ describe("InlineBalancesValue.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toContain("100.00000000" + ">")
+        expect(wrapper.text()).toContain("100.00000000ℏ" + ">")
         expect(wrapper.text()).toContain("years ago")
 
         balanceAnalyzer.unmount()
@@ -336,7 +336,7 @@ describe("InlineBalancesValue.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toContain("100.00000000" + ">")
+        expect(wrapper.text()).toContain("100.00000000ℏ" + ">")
         expect(wrapper.text()).toContain("years ago")
 
         balanceAnalyzer.unmount()

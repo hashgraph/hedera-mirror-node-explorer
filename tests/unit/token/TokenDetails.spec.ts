@@ -486,7 +486,7 @@ describe("TokenDetails.vue", () => {
             "5" + "0.0.2966295623423" + "0.0.617888" +
             "1" + "0.0.2966295623423" + "0.0.617889" +
             "2" + "0.0.2966295623423" + "0.0.617890" +
-            "1.00000000" + "$0.24603" + "HBAR" + "0.0.617888")
+            "1.00000000ℏ" + "$0.24603" + "HBAR" + "0.0.617888")
 
         const fractionalFee = customFees.findComponent(FractionalFeeTable)
         expect(fractionalFee.exists()).toBe(true)
@@ -547,7 +547,7 @@ describe("TokenDetails.vue", () => {
             "5" + "0.0.748383" + testTokenSymbol + "0.0.617888" +
             "1" + "0.0.748383" + testTokenSymbol + "0.0.617889" +
             "2" + "0.0.748383" + testTokenSymbol + "0.0.617890" +
-            "1.00000000" + "$0.24603" + "HBAR" + "0.0.617888")
+            "1.00000000ℏ" + "$0.24603" + "HBAR" + "0.0.617888")
 
         expect(customFees.findComponent(FractionalFeeTable).exists()).toBe(false)
 

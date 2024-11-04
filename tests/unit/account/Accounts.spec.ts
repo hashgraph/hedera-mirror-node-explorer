@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -76,7 +76,7 @@ describe("Accounts.vue", () => {
             "5:12:31.6676 AMFeb 28, 2022, UTC" +
             "1023423" +
             "None" +
-            "23.42647909"
+            "23.42647909ℏ"
         )
 
         mock.restore()

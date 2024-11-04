@@ -20,7 +20,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router, {walletManager} from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
@@ -159,7 +159,7 @@ describe("Staking.vue", () => {
         expect(stakingModals.length).toBeGreaterThanOrEqual(2)
         const stakingModal = stakingModals[1]
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471ℏ$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.5")
         const buttons = stakingModal.findAll("button")
         expect(buttons.length).toBe(2) // Cancel and Change
@@ -233,7 +233,7 @@ describe("Staking.vue", () => {
 
         // 3.2) Checks StakingDialog content
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471ℏ$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Account 0.0.7")
         expect(changeButton.text()).toBe("CHANGE")
         // expect(changeButton.attributes("disabled")).toBeDefined()
@@ -285,7 +285,7 @@ describe("Staking.vue", () => {
 
         // 4.2) Checks StakingDialog content
         expect(stakingModal.element.classList.contains("is-active")).toBeTruthy()
-        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471$0.07792")
+        expect(stakingModal.get("#amountStakedValue").text()).toBe("0.31669471ℏ$0.07792")
         expect(stakingModal.get("#currentlyStakedToValue").text()).toBe("Node 2 - Hosted by Hedera")
         expect(changeButton.text()).toBe("CHANGE")
         // expect(changeButton.attributes("disabled")).toBeDefined()

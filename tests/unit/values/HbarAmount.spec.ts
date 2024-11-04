@@ -48,7 +48,7 @@ describe("HbarAmount.vue ", () => {
     test("with amount set", async () => {
 
         const testTinybarAmount = 42
-        const expectedHbarAmount = "0.00000042"
+        const expectedHbarAmount = "0.00000042ℏ"
 
         const wrapper = mount(HbarAmount, {
             props: {
@@ -57,7 +57,7 @@ describe("HbarAmount.vue ", () => {
         });
 
         expect(wrapper.text()).toBe(expectedHbarAmount)
-        expect(wrapper.get('.has-hbar').classes('has-text-grey')).toBe(false)
+        expect(wrapper.get('#hbar-amount').classes('has-text-grey')).toBe(false)
 
         wrapper.unmount()
     });
@@ -65,7 +65,7 @@ describe("HbarAmount.vue ", () => {
     test("with amount set and showExtra", async () => {
 
         const testTinybarAmount = 42
-        const expectedHbarAmount = "0.00000042"
+        const expectedHbarAmount = "0.00000042ℏ"
         const expectedDollarAmount = "$0.00001"
 
         const wrapper = mount(HbarAmount, {
@@ -89,7 +89,7 @@ describe("HbarAmount.vue ", () => {
     test("with amount set and showExtra and not smallExtra", async () => {
 
         const testTinybarAmount = 42
-        const expectedHbarAmount = "0.00000042"
+        const expectedHbarAmount = "0.00000042ℏ"
         const expectedDollarAmount = "$0.00001"
 
         const wrapper = mount(HbarAmount, {
