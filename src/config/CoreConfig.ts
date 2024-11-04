@@ -62,6 +62,9 @@ export class CoreConfig {
         // The name of the product as shown in the footer tagline
         public readonly productName: string,
 
+        // The URL of the product logo located at the left of the top navigation bar
+        public readonly productLogoURL: string|null,
+
         // The prefix used in the document title
         public readonly documentTitleSuffix: string|null,
 
@@ -99,6 +102,7 @@ export class CoreConfig {
         return new CoreConfig(
             fetchBoolean(obj, "enableStaking") ?? true,
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
+            fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitleSuffix"),
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),

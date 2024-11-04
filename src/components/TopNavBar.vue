@@ -58,7 +58,8 @@
 
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
-        <img id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+        <img v-if="productLogoURL" id="product-logo" alt="Product Logo" class="image" :src="productLogoURL">
+        <img v-else id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </router-link>
       <AxiosStatus/>
     </div>
@@ -185,6 +186,7 @@ export default defineComponent({
     const coreConfig = CoreConfig.inject()
 
     const isStakingEnabled = coreConfig.enableStaking
+    const productLogoURL = coreConfig.productLogoURL
 
     const isMobileMenuOpen = ref(false)
 
@@ -264,6 +266,7 @@ export default defineComponent({
       isMediumScreen,
       showWalletInfo,
       isStakingEnabled,
+      productLogoURL,
       isMobileMenuOpen,
       showWalletChooser,
       handleChooseWallet,
