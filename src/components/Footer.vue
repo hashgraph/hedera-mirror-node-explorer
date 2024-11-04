@@ -52,10 +52,12 @@
       <span class="is-flex-grow-1"/>
 
       <a v-if="sponsorURL" :href="sponsorURL" class="ml-4">
-        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
+        <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" style="max-width: 104px;">
+        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
       </a>
       <div v-else class="ml-4" style="line-height: 1">
-        <img alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
+        <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" style="max-width: 104px;">
+        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
       </div>
 
     </div>
@@ -105,6 +107,7 @@ export default defineComponent({
 
     const coreConfig = CoreConfig.inject()
     const productName = coreConfig.productName
+    const sponsorLogoURL = coreConfig.sponsorLogoURL
     const sponsorURL = coreConfig.sponsorURL
     const termsOfUseURL = coreConfig.termsOfUseURL
 
@@ -117,6 +120,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       productName,
+      sponsorLogoURL,
       sponsorURL,
       termsOfUseURL
     }

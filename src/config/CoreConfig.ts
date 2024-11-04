@@ -74,6 +74,9 @@ export class CoreConfig {
         // The content of meta tag: property="og:url"
         public readonly metaURL: string|null,
 
+        // The URL of the sponsor logo located at the right of the footer
+        public readonly sponsorLogoURL: string|null,
+
         // The URL to which a click on the bottom-right sponsor logo will navigate
         public readonly sponsorURL: string|null,
 
@@ -106,6 +109,7 @@ export class CoreConfig {
             fetchString(obj, "documentTitleSuffix"),
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),
+            fetchURL(obj, "sponsorLogoURL"),
             fetchURL(obj, "sponsorURL"),
             fetchURL(obj, "termsOfUseURL"),
             fetchString(obj, "estimatorNotice"),
