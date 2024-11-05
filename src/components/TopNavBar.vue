@@ -115,7 +115,7 @@
         <div v-if="walletSupported" id="connect-button">
           <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small"
                   @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
-            {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
+            {{ connecting ? "Connecting…" : "CONNECT WALLET…" }}
           </button>
 
           <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner"

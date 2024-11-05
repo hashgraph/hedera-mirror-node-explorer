@@ -92,7 +92,7 @@ describe("App.vue", () => {
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
         expect(navBar.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCUSTOMNET1CUSTOMNET2CUSTOMNET3CONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCUSTOMNET1CUSTOMNET2CUSTOMNET3CONNECT WALLET…")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 
