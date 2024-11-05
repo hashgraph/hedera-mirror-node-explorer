@@ -59,6 +59,9 @@ export class CoreConfig {
         // When set to 'true', this variable will enable the 'Staking' page
         public readonly enableStaking: boolean,
 
+        // When set to 'true', this variable will enable the market dashboard
+        public readonly enableMarket: boolean,
+
         // The name of the product as shown in the footer tagline
         public readonly productName: string,
 
@@ -107,6 +110,7 @@ export class CoreConfig {
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
             fetchBoolean(obj, "enableStaking") ?? true,
+            fetchBoolean(obj, "enableMarket") ?? true,
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitleSuffix"),

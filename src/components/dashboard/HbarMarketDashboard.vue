@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="isMainNetwork" class="h-has-background-color">
+  <div v-if="isMainNetwork && enableMarket" class="h-has-background-color">
 
     <div v-if="isLargeScreen">
       <div class="is-flex is-flex-wrap-wrap is-justify-content-space-evenly pt-1 pb-2">
@@ -85,6 +85,7 @@ import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
 import {HederaMetricsLoader} from "@/components/dashboard/metrics/HederaMetricsLoader";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
 
@@ -95,6 +96,9 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
+
+    const coreConfig = CoreConfig.inject()
+    const enableMarket = coreConfig.enableMarket
 
     const isMainNetwork = computed(() => routeManager.currentNetwork.value == NetworkRegistry.MAIN_NETWORK)
 
@@ -115,6 +119,7 @@ export default defineComponent({
       currentNetworkDisplayName,
       isSmallScreen,
       isLargeScreen,
+      enableMarket,
       hbarPriceLabel,
       hbarMarketCapLabel,
       hbarReleasedLabel,
