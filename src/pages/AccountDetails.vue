@@ -142,6 +142,7 @@
 
       <template v-slot:leftContent>
         <EditableProperty
+            v-if="enableStaking"
             id="stakedTo"
             :editable="isAccountEditable"
             @edit="onUpdateAccount"
@@ -168,7 +169,7 @@
           </template>
         </EditableProperty>
 
-        <Property id="pendingReward">
+        <Property v-if="enableStaking" id="pendingReward">
           <template v-slot:name>Pending Reward</template>
           <template v-slot:value>
             <HbarAmount :amount="account?.pending_reward" :show-extra="true" timestamp="0"/>
@@ -177,7 +178,7 @@
             </div>
           </template>
         </Property>
-        <Property v-if="account?.staked_node_id != null" id="declineReward">
+        <Property v-if="enableStaking && account?.staked_node_id != null" id="declineReward">
           <template v-slot:name>Rewards</template>
           <template v-slot:value>
             <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
@@ -409,6 +410,7 @@ import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
+import {CoreConfig} from "@/config/CoreConfig";
 
 const props = defineProps({
   accountId: String,
@@ -420,6 +422,9 @@ const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
+
+const coreConfig = CoreConfig.inject()
+const enableStaking = coreConfig.enableStaking
 
 const timeSelection = ref("LATEST")
 watch(timeSelection, (newValue, oldValue) => {
@@ -498,8 +503,8 @@ const operatorNodeRoute = computed(() => {
   return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
 })
 
-const tabIds = ['transactions', 'contracts', 'rewards']
-const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
+const tabIds = enableStaking ? ['transactions', 'contracts', 'rewards'] : ['transactions', 'contracts']
+const tabLabels = enableStaking ? ['Transactions', 'Created Contracts', 'Staking Rewards'] : ['Transactions', 'Created Contracts']
 const selectedTab = ref<string | null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
 const handleTabUpdate = (tab: string | null) => {
   selectedTab.value = tab
