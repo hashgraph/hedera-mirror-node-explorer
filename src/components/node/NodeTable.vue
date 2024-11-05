@@ -48,7 +48,7 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-if="false" v-slot="props" field="node_account_id" label="Account">
+      <o-table-column v-if="!enableStaking" v-slot="props" field="node_account_id" label="Account">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_account_id }}
         </div>
@@ -61,7 +61,7 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="stake" label="Stake for Consensus" position="right">
+      <o-table-column v-if="enableStaking" v-slot="props" field="stake" label="Stake for Consensus" position="right">
         <o-tooltip :label="tooltipStake"
                    multiline
                    :delay="tooltipDelay"
@@ -72,7 +72,7 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="percentage" label="%" position="right">
+      <o-table-column v-if="enableStaking" v-slot="props" field="percentage" label="%" position="right">
         <o-tooltip :delay="tooltipDelay"
                    :label="tooltipPercentage"
                    class="h-tooltip"
@@ -83,8 +83,11 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
-                      style="padding-bottom: 2px; padding-top: 12px;">
+      <o-table-column
+          v-if="enableStaking"
+          id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
+          style="padding-bottom: 2px; padding-top: 12px;"
+      >
         <o-tooltip :delay="tooltipDelay" class="h-tooltip">
           <StakeRange :node="props.row" :network-analyzer="networkAnalyzer"/>
           <template #content>
@@ -114,7 +117,7 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="last_reward_rate" label="Reward Rate" position="right">
+      <o-table-column v-if="enableStaking" v-slot="props" field="last_reward_rate" label="Reward Rate" position="right">
         <o-tooltip :label="tooltipRewardRate"
                    multiline
                    :delay="tooltipDelay"
@@ -154,6 +157,7 @@ import {
   makeStakePercentage
 } from "@/schemas/HederaUtils";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
+import {CoreConfig} from "@/config/CoreConfig";
 
 
 //
@@ -178,6 +182,8 @@ export default defineComponent({
 
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
+    const coreConfig = CoreConfig.inject()
+    const enableStaking = coreConfig.enableStaking
 
     const networkAnalyzer = new NetworkAnalyzer()
     onMounted(() => networkAnalyzer.mount())
@@ -200,6 +206,7 @@ export default defineComponent({
       tooltipRewardRate,
       isTouchDevice,
       isMediumScreen,
+      enableStaking,
       networkAnalyzer,
       isCouncilNode,
       makeNodeDescriptionPrefix,

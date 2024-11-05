@@ -26,7 +26,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard collapsible-key="networkDetails">
+    <DashboardCard v-if="enableStaking" collapsible-key="networkDetails">
       <template v-slot:title>
         <span class="h-is-primary-title">Network</span>
       </template>
@@ -101,6 +101,7 @@ import {formatSeconds} from "@/utils/Duration";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {makeAnnualizedRate} from "@/schemas/HederaUtils";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: 'Nodes',
@@ -120,6 +121,9 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const coreConfig = CoreConfig.inject()
+    const enableStaking = coreConfig.enableStaking
+
     const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
     const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
     const maxStakeRewardedTooltip = "Maximum amount of HBAR that can be staked for reward while still achieving the maximum reward rate."
@@ -149,6 +153,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      enableStaking,
       stakeTotalTooltip,
       stakeRewardedTotalTooltip,
       maxStakeRewardedTooltip,
