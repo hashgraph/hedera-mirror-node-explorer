@@ -102,7 +102,7 @@
           <SearchBarV2/>
         </div>
 
-        <div id="drop-down-menu">
+        <div v-if="nbNetworks > 1" id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
@@ -188,8 +188,6 @@ export default defineComponent({
     const isStakingEnabled = coreConfig.enableStaking
     const productLogoURL = coreConfig.productLogoURL
 
-    const walletSupported = routeManager.walletSupported
-
     const isMobileMenuOpen = ref(false)
 
     const showWalletChooser = ref(false)
@@ -269,7 +267,6 @@ export default defineComponent({
       showWalletInfo,
       isStakingEnabled,
       productLogoURL,
-      walletSupported,
       isMobileMenuOpen,
       showWalletChooser,
       handleChooseWallet,
@@ -278,6 +275,8 @@ export default defineComponent({
       connectDialogController,
       connectError,
       name: routeManager.currentRoute,
+      walletSupported: routeManager.walletSupported,
+      nbNetworks: routeManager.nbNetworks,
       accountId: walletManager.accountId,
       connected: walletManager.connected,
       accountIds: walletManager.accountIds,
