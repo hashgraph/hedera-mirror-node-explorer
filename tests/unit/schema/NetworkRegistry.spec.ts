@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises} from "@vue/test-utils"
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
@@ -44,6 +44,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
+                "walletSupported": true,
                 "sourcifySetup": {
                     "activate": true,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -82,7 +83,8 @@ describe("NetworkRegistry.ts", () => {
                 "name": "customnet",
                 "displayName": "A WayTooLongNetworkDisplayName",
                 "url": "",
-                "ledgerID": "FF"
+                "ledgerID": "FF",
+                "walletSupported": true,
             }
         ]
 
@@ -108,6 +110,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
+                "walletSupported": true,
                 "sourcifySetup": {
                     "activate": false,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -139,6 +142,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
+                "walletSupported": true,
                 "sourcifySetup": null
             }
         ]
@@ -163,7 +167,8 @@ describe("NetworkRegistry.ts", () => {
                 "name": "mainnet",
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
-                "ledgerID": "00"
+                "ledgerID": "00",
+                "walletSupported": true,
             }
         ]
         const mock = new MockAdapter(axios);

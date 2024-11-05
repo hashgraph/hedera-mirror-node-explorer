@@ -113,7 +113,7 @@
         </div>
 
         <div id="connect-button">
-          <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small"
+          <button v-if="!connected" :disabled="connecting || !walletSupported" id="connectWalletButton" class="button is-white is-small"
                   @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
             {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
           </button>
@@ -187,6 +187,8 @@ export default defineComponent({
 
     const isStakingEnabled = coreConfig.enableStaking
     const productLogoURL = coreConfig.productLogoURL
+
+    const walletSupported = routeManager.walletSupported
 
     const isMobileMenuOpen = ref(false)
 
@@ -267,6 +269,7 @@ export default defineComponent({
       showWalletInfo,
       isStakingEnabled,
       productLogoURL,
+      walletSupported,
       isMobileMenuOpen,
       showWalletChooser,
       handleChooseWallet,

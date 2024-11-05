@@ -101,6 +101,10 @@ export class RouteManager {
 
     public readonly currentNetwork = computed(() => this.currentNetworkEntry.value.name)
 
+    public readonly walletSupported = computed(() => {
+        return this.currentNetworkEntry.value.walletSupported
+    })
+
     public readonly currentNetworkEntry = computed(() => {
         let networkName: string | null
         const networkParam = this.router.currentRoute.value?.params?.network

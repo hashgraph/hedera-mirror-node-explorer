@@ -65,9 +65,9 @@ describe("App.vue", () => {
 
         const matcher10 = window.location.origin + '/networks-config.json'
         mock.onGet(matcher10).reply(200, [
-            {name: "customnet1", url: "/testurl1", ledgerID: "01", sourcifySetup: null},
-            {name: "customnet2", url: "/testurl2", ledgerID: "02", sourcifySetup: null},
-            {name: "customnet3", url: "/testurl3", ledgerID: "03", sourcifySetup: null}
+            {name: "customnet1", url: "/testurl1", ledgerID: "01", walletSupported: true,  sourcifySetup: null},
+            {name: "customnet2", url: "/testurl2", ledgerID: "02", walletSupported: true,  sourcifySetup: null},
+            {name: "customnet3", url: "/testurl3", ledgerID: "03", walletSupported: true,  sourcifySetup: null}
         ]);
         expect(routeManager.currentNetwork.value).toBe("mainnet")
 
