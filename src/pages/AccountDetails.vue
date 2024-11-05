@@ -575,22 +575,22 @@ const airdropsEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
 const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value && airdropsEnabled
 )
 
-const transactionType = computed(() => transactionTableController.transactionType.value)
-const loaded = computed(() => verifiedContractsController.loaded.value)
-const overflow = computed(() => verifiedContractsController.overflow.value)
-const notification = computed(() => accountLocParser.errorNotification.value)
-const isInactiveEvmAddress = computed(() => accountLocParser.isInactiveEvmAddress.value)
-const account = computed(() => accountLocParser.accountInfo.value)
-const normalizedAccountId = computed(() => accountLocParser.accountId.value)
-const accountChecksum = computed(() => accountLocParser.accountChecksum.value)
-const accountDescription = computed(() => accountLocParser.accountDescription.value)
-const nodeId = computed(() => accountLocParser.nodeId.value)
-const ethereumAddress = computed(() => accountLocParser.ethereumAddress.value)
-const stakePeriodStart = computed(() => accountLocParser.stakePeriodStart.value)
-const stakedAccountId = computed(() => accountLocParser.stakedAccountId.value)
-const stakedNodeDescription = computed(() => stakedNodeAnalyzer.nodeDescription.value)
-const domainName = computed(() => nameQuery.name.value)
-const domainProviderName = computed(() => nameQuery.providerName.value)
+const transactionType = transactionTableController.transactionType
+const loaded = verifiedContractsController.loaded
+const overflow = verifiedContractsController.overflow
+const notification = accountLocParser.errorNotification
+const isInactiveEvmAddress = accountLocParser.isInactiveEvmAddress
+const account = accountLocParser.accountInfo
+const normalizedAccountId = accountLocParser.accountId
+const accountChecksum = accountLocParser.accountChecksum
+const accountDescription = accountLocParser.accountDescription
+const nodeId = accountLocParser.nodeId
+const ethereumAddress = accountLocParser.ethereumAddress
+const stakePeriodStart = accountLocParser.stakePeriodStart
+const stakedAccountId = accountLocParser.stakedAccountId
+const stakedNodeDescription = stakedNodeAnalyzer.nodeDescription
+const domainName = nameQuery.name
+const domainProviderName = nameQuery.providerName
 
 </script>
 
