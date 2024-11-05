@@ -98,9 +98,9 @@
       </div>
 
       <div id="navbar-grid">
-        <div id="search-bar">
-          <SearchBarV2/>
-        </div>
+        <div v-if="nbNetworks === 1 && !walletSupported" id="search-bar" class="search-bar-L"><SearchBarV2/></div>
+        <div v-else-if="nbNetworks === 1 || !walletSupported" id="search-bar" class="search-bar-M"><SearchBarV2/></div>
+        <div v-else id="search-bar" class="search-bar-S"><SearchBarV2/></div>
 
         <div v-if="nbNetworks > 1" id="drop-down-menu">
           <o-field>
@@ -303,24 +303,33 @@ export default defineComponent({
 
 <style>
 
+#navbar-grid {
+  position: relative;
+  display: grid;
+  column-gap: 1.2rem;
+}
+
 @media (min-width: 1450px) {
   #product-logo {
     max-width: 242px;
   }
 
   #navbar-grid {
-    position: relative;
-    display: grid;
-    column-gap: 1.2rem;
     grid-template-columns:repeat(20, minmax(0, 35px));
   }
 
-  #search-bar {
-    grid-column: span 13;
+  .search-bar-S {
+    grid-column: span 12;
+  }
+  .search-bar-M {
+    grid-column: span 16;
+  }
+  .search-bar-L {
+    grid-column: span 20;
   }
 
   #drop-down-menu {
-    grid-column: span 3;
+    grid-column: span 4;
   }
 
   #connect-button {
@@ -334,18 +343,21 @@ export default defineComponent({
   }
 
   #navbar-grid {
-    position: relative;
-    display: grid;
-    column-gap: 1.2rem;
     grid-template-columns:repeat(17, minmax(0, 35px));
   }
 
-  #search-bar {
-    grid-column: span 10;
+  .search-bar-S {
+    grid-column: span 9;
+  }
+  .search-bar-M {
+    grid-column: span 13;
+  }
+  .search-bar-L {
+    grid-column: span 17;
   }
 
   #drop-down-menu {
-    grid-column: span 3;
+    grid-column: span 4;
   }
 
   #connect-button {
@@ -359,18 +371,21 @@ export default defineComponent({
   }
 
   #navbar-grid {
-    position: relative;
-    display: grid;
-    column-gap: 1.2rem;
     grid-template-columns:repeat(18, minmax(0, 24px));
   }
 
-  #search-bar {
-    grid-column: span 9;
+  .search-bar-S {
+    grid-column: span 8;
+  }
+  .search-bar-M {
+    grid-column: span 13;
+  }
+  .search-bar-L {
+    grid-column: span 18;
   }
 
   #drop-down-menu {
-    grid-column: span 4;
+    grid-column: span 5;
   }
 
   #connect-button {
