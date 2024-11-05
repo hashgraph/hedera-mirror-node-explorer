@@ -83,13 +83,13 @@
             <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
           </template>
         </Property>
-        <Property id="publicKey">
+        <Property v-if="enableStaking" id="publicKey">
           <template v-slot:name>Public Key</template>
           <template v-slot:value>
             <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
           </template>
         </Property>
-        <Property id="nodeCertHash">
+        <Property v-if="enableStaking" id="nodeCertHash">
           <template v-slot:name>Certificate Hash</template>
           <template v-slot:value>
             <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
@@ -97,7 +97,7 @@
         </Property>
       </template>
 
-      <template v-slot:rightContent>
+      <template v-if="enableStaking" v-slot:rightContent>
         <div>
           <NetworkDashboardItem
               id="yearlyRate"
@@ -175,6 +175,21 @@
         </div>
       </template>
 
+      <template v-else v-slot:rightContent>
+        <Property id="publicKey">
+          <template v-slot:name>Public Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
+          </template>
+        </Property>
+        <Property id="nodeCertHash">
+          <template v-slot:name>Certificate Hash</template>
+          <template v-slot:value>
+            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
+          </template>
+        </Property>
+      </template>
+
     </DashboardCard>
 
   </section>
@@ -207,6 +222,7 @@ import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {makeStakePercentage} from "@/schemas/HederaUtils";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
 
@@ -238,6 +254,8 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const coreConfig = CoreConfig.inject()
+    const enableStaking = coreConfig.enableStaking
 
     const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
     const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
@@ -282,6 +300,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      enableStaking,
       nodeIdNb,
       node: nodeAnalyzer.node,
       annualizedRate: nodeAnalyzer.annualizedRate,
