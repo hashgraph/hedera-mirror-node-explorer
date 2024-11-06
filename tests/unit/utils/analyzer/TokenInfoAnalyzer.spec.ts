@@ -107,7 +107,7 @@ describe("TokenInfoAnalyzer.spec.ts", () => {
         expect(analyzer.fractionalFees.value).toStrictEqual(SAMPLE_ASSOCIATED_TOKEN.custom_fees.fractional_fees)
         expect(analyzer.royaltyFees.value).toBeUndefined()
         expect(analyzer.customFees.value).toStrictEqual(SAMPLE_ASSOCIATED_TOKEN.custom_fees)
-        expect(analyzer.tokenChecksum.value).toBe("ehfmb")
+        expect(analyzer.tokenChecksum.value).toBe("vnoku")
         expect(analyzer.associationStatus.value).toBe(TokenAssociationStatus.Unknown)
 
         // 4) Connect wallet => walletManager.accountId becomes not null
@@ -126,7 +126,7 @@ describe("TokenInfoAnalyzer.spec.ts", () => {
         expect(analyzer.fractionalFees.value).toStrictEqual(SAMPLE_ASSOCIATED_TOKEN.custom_fees.fractional_fees)
         expect(analyzer.royaltyFees.value).toBeUndefined()
         expect(analyzer.customFees.value).toStrictEqual(SAMPLE_ASSOCIATED_TOKEN.custom_fees)
-        expect(analyzer.tokenChecksum.value).toBe("ehfmb")
+        expect(analyzer.tokenChecksum.value).toBe("vnoku")
         expect(analyzer.associationStatus.value).toBe(TokenAssociationStatus.Associated)
 
         // 5) Disconnect wallet => walletManager.accountId becomes null
@@ -145,7 +145,7 @@ describe("TokenInfoAnalyzer.spec.ts", () => {
         expect(analyzer.fractionalFees.value).toStrictEqual(SAMPLE_ASSOCIATED_TOKEN.custom_fees.fractional_fees)
         expect(analyzer.royaltyFees.value).toBeUndefined()
         expect(analyzer.customFees.value).toStrictEqual(SAMPLE_ASSOCIATED_TOKEN.custom_fees)
-        expect(analyzer.tokenChecksum.value).toBe("ehfmb")
+        expect(analyzer.tokenChecksum.value).toBe("vnoku")
         expect(analyzer.associationStatus.value).toBe(TokenAssociationStatus.Unknown)
 
         // 6) Unset token info
