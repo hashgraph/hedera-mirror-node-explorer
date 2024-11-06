@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev": "npm run install:branding && cp ./networks-config-https-example.json ./public/networks-config.json && vite --host",
+    "dev": "npm run install:branding && vite --host",
     "dev:http": "npm run install:branding && cp ./networks-config-example.json ./public/networks-config.json  && vite --config nossl.config.ts",
     "build": "run-p type-check build-only",
     "preview": "npm run install:branding && vite preview",
