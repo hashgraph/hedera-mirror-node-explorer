@@ -29,7 +29,22 @@
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
       <router-link :to="routeManager.makeRouteToMainDashboard()" class="mr-3">
-        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
+        <img
+            v-if="productLogoURL"
+            id="product-logo"
+            alt="Product Logo"
+            class="image"
+            style="max-width: 165px; max-height: 49px"
+            :src="productLogoURL"
+        >
+        <img
+            v-else
+            id="product-logo"
+            alt="Product Logo"
+            class="image"
+            style="max-width: 165px; max-height: 49px"
+            src="@/assets/branding/brand-product-logo.png"
+        >
       </router-link>
       <AxiosStatus/>
     </span>
