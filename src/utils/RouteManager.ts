@@ -68,6 +68,7 @@ import {CoreConfig} from "@/config/CoreConfig";
 export class RouteManager {
 
     public readonly router: Router
+    private coreConfig = CoreConfig.FALLBACK
 
     //
     // Public
@@ -124,6 +125,12 @@ export class RouteManager {
 
     public configure(coreConfig: CoreConfig) {
 
+        this.coreConfig = coreConfig
+
+        //
+        // Rebuilds route array
+        //
+
         this.router.clearRoutes()
 
         const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkRegistry.getDefaultEntry().name
@@ -139,7 +146,7 @@ export class RouteManager {
             this.router.addRoute(r)
         }
 
-        if (!coreConfig.enableStaking) {
+        if (!this.coreConfig.enableStaking) {
             this.router.removeRoute("Staking")
         }
 
@@ -646,8 +653,7 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
-        const description =
-            import.meta.env.VITE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+        const description = this.coreConfig.productDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
         const url = import.meta.env.VITE_APP_META_URL
 
         this.createOrUpdateTagName('description', description)

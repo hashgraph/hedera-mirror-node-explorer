@@ -36,8 +36,8 @@
 
       <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
         <span class="h-is-property-text pb-1" style="font-weight:300; color: #DBDBDB">
-          <span>{{ productName }}</span>
-          <span v-if="!isTouchDevice && isMediumScreen"> is a ledger explorer for the Hedera network.</span>
+          <span v-if="!isTouchDevice && isMediumScreen">{{ productDescription }}</span>
+          <span v-else>{{ productName }}</span>
         </span>
         <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
           Release <a :href="buildReleaseUrl">{{ buildRelease }}</a> built {{ buildTime }}
@@ -107,6 +107,7 @@ export default defineComponent({
 
     const coreConfig = CoreConfig.inject()
     const productName = coreConfig.productName
+    const productDescription = coreConfig.productDescription
     const sponsorLogoURL = coreConfig.sponsorLogoURL
     const sponsorURL = coreConfig.sponsorURL
     const termsOfUseURL = coreConfig.termsOfUseURL
@@ -120,6 +121,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       productName,
+      productDescription,
       sponsorLogoURL,
       sponsorURL,
       termsOfUseURL

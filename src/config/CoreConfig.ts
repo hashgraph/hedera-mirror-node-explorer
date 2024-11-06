@@ -72,7 +72,7 @@ export class CoreConfig {
         public readonly documentTitleSuffix: string|null,
 
         // The content of meta tag: name="description"
-        public readonly metaDescription: string|null,
+        public readonly productDescription: string|null,
 
         // The content of meta tag: property="og:url"
         public readonly metaURL: string|null,
@@ -114,7 +114,7 @@ export class CoreConfig {
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitleSuffix"),
-            fetchString(obj, "metaDescription"),
+            fetchString(obj, "productDescription"),
             fetchURL(obj, "metaURL"),
             fetchURL(obj, "sponsorLogoURL"),
             fetchURL(obj, "sponsorURL"),

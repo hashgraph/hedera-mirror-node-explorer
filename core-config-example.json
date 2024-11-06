@@ -1,6 +1,7 @@
 {
   "enableStaking": true,
-  "productName": "Nathan's Mirror Node Explorer",
-  "metaDescription": "Nathan Mirror Node Explorer is a ledger explorer for the Nathan network",
+  "enableMarket": true,
+  "productName": "ACME Mirror Node Explorer",
+  "productDescription": "ACME Mirror Node Explorer is a ledger explorer for the ACME network",
   "sponsorURL": "https://hedera.com"
 }
