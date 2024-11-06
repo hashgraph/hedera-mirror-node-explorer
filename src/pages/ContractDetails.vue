@@ -217,7 +217,7 @@ import Property from "@/components/Property.vue";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {ContractLocParser} from "@/utils/parser/ContractLocParser";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router, {routeManager} from "@/router";
+import {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractByteCodeSection from "@/components/contract/ContractByteCodeSection.vue";
@@ -310,7 +310,7 @@ export default defineComponent({
     const accountChecksum = computed(() =>
         contractLocParser.contractId.value ? networkRegistry.computeChecksum(
             contractLocParser.contractId.value,
-            router.currentRoute.value.params.network as string
+            routeManager.currentNetwork.value
         ) : null)
 
     //

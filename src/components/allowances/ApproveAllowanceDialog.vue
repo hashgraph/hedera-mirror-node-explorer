@@ -223,7 +223,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
-import router, {walletManager} from "@/router";
+import router, {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -282,7 +282,7 @@ export default defineComponent({
 
   setup(props, context) {
     const nr = networkRegistry
-    const network = router.currentRoute.value.params.network as string
+    const network = routeManager.currentNetwork.value
 
     const selectedSpender = ref<string | null>(null)
     const normalizedSpender = computed(() => EntityID.normalize(nr.stripChecksum(selectedSpender.value ?? "")))

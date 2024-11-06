@@ -133,7 +133,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import {routeManager} from "@/router";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import Property from "@/components/Property.vue";
@@ -182,7 +182,7 @@ export default defineComponent({
     const topicChecksum = computed(() =>
         normalizedTopicId.value ? networkRegistry.computeChecksum(
             normalizedTopicId.value,
-            router.currentRoute.value.params.network as string
+            routeManager.currentNetwork.value
         ) : null)
 
     const notification = computed(() => {

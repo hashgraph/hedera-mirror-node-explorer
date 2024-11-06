@@ -299,7 +299,7 @@ import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletD
 import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
-import router, {walletManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {inputEntityID} from "@/utils/InputUtils";
@@ -324,7 +324,7 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"])
 
-const network = router.currentRoute.value.params.network as string
+const network = routeManager.currentNetwork.value
 const nr = networkRegistry
 
 const autoRenewPeriodFeedbackMessage = ref<string | null>(null)
