@@ -30,6 +30,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {routeManager} from "../../src/router";
 
 /*
     Bookmarks
@@ -71,6 +72,7 @@ describe("App.vue", () => {
             {name: "customnet2", url: "/testurl2", ledgerID: "02", sourcifySetup: null},
             {name: "customnet3", url: "/testurl3", ledgerID: "03", sourcifySetup: null}
         ]);
+        expect(routeManager.currentNetwork.value).toBe("mainnet")
 
         const wrapper = mount(App, {
             global: {
@@ -80,6 +82,8 @@ describe("App.vue", () => {
         });
 
         await flushPromises()
+        expect(routeManager.currentNetwork.value).toBe("customnet1")
+
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
@@ -100,7 +104,7 @@ describe("App.vue", () => {
         expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(16)
+        expect(logos.length).toBe(14)
         expect(logos[0].attributes('alt')).toBe("")
         expect(logos[1].attributes('alt')).toBe("wallet logo")
         expect(logos[2].attributes('alt')).toBe("wallet logo")
@@ -110,13 +114,11 @@ describe("App.vue", () => {
         expect(logos[6].attributes('alt')).toBe("Modal close icon")
         expect(logos[7].attributes('alt')).toBe("Product Logo")
         expect(logos[8].attributes('alt')).toBe("Modal close icon")
-        expect(logos[9].attributes('alt')).toBe("Trend Up")
-        expect(logos[10].attributes('alt')).toBe("Trend Up")
+        expect(logos[9].attributes('alt')).toBe("Pause")
+        expect(logos[10].attributes('alt')).toBe("Pause")
         expect(logos[11].attributes('alt')).toBe("Pause")
-        expect(logos[12].attributes('alt')).toBe("Pause")
-        expect(logos[13].attributes('alt')).toBe("Pause")
-        expect(logos[14].attributes('alt')).toBe("Built On Hedera")
-        expect(logos[15].attributes('alt')).toBe("Sponsor Logo")
+        expect(logos[12].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[13].attributes('alt')).toBe("Sponsor Logo")
 
         mock.restore()
         wrapper.unmount()

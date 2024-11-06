@@ -82,8 +82,8 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
-import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import {NetworkRegistry} from "@/schemas/NetworkRegistry";
+import {routeManager} from "@/router";
 import {HederaMetricsLoader} from "@/components/dashboard/metrics/HederaMetricsLoader";
 
 export default defineComponent({
@@ -96,17 +96,9 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
 
-    const isMainNetwork = computed(() => router.currentRoute.value.params.network == NetworkRegistry.MAIN_NETWORK)
+    const isMainNetwork = computed(() => routeManager.currentNetwork.value == NetworkRegistry.MAIN_NETWORK)
 
-    const currentNetworkDisplayName = computed(() => {
-      let displayName
-      if (Array.isArray(router.currentRoute.value.params.network)) {
-        displayName = networkRegistry.lookup(router.currentRoute.value.params.network[0])?.displayName
-      } else {
-        displayName = networkRegistry.lookup(router.currentRoute.value.params.network)?.displayName
-      }
-      return displayName
-    })
+    const currentNetworkDisplayName = computed(() => routeManager.currentNetworkEntry.value.displayName)
 
     const hbarPriceLabel = 'HBAR PRICE'
     const hbarMarketCapLabel = 'HBAR MARKET CAP'
