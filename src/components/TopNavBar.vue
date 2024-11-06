@@ -113,9 +113,9 @@
       </div>
 
       <div id="navbar-grid">
-        <div v-if="nbNetworks === 1 && !walletSupported" id="search-bar" class="search-bar-L"><SearchBarV2/></div>
-        <div v-else-if="nbNetworks === 1 || !walletSupported" id="search-bar" class="search-bar-M"><SearchBarV2/></div>
-        <div v-else id="search-bar" class="search-bar-S"><SearchBarV2/></div>
+        <div id="search-bar" :class="searchBarClass">
+          <SearchBarV2/>
+        </div>
 
         <div v-if="nbNetworks > 1" id="drop-down-menu">
           <o-field>
@@ -182,7 +182,7 @@ import {networkRegistry} from "@/schemas/NetworkRegistry";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
-import {defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
@@ -216,6 +216,18 @@ export default defineComponent({
 
     const connectDialogController = new DialogController()
     const connectError = ref<unknown>()
+
+    const searchBarClass = computed(() => {
+      let result: string
+      if (routeManager.nbNetworks.value === 1 && !routeManager.walletSupported.value) {
+        result = "search-bar-L"
+      } else if (routeManager.nbNetworks.value === 1 || !routeManager.walletSupported.value) {
+        result = "search-bar-M"
+      } else {
+        result = "search-bar-S"
+      }
+      return result
+    })
 
     //
     // handleChooseWallet
@@ -289,6 +301,7 @@ export default defineComponent({
       disconnectFromWallet,
       connectDialogController,
       connectError,
+      searchBarClass,
       name: routeManager.currentRoute,
       walletSupported: routeManager.walletSupported,
       nbNetworks: routeManager.nbNetworks,
@@ -322,34 +335,32 @@ export default defineComponent({
   position: relative;
   display: grid;
   column-gap: 1.2rem;
+  grid-template-columns:repeat(20, minmax(0, 35px));
 }
 
-@media (min-width: 1450px) {
-  #product-logo {
-    max-width: 242px;
-  }
+#product-logo {
+  max-width: 242px;
+  max-height: 72px;
+}
 
-  #navbar-grid {
-    grid-template-columns:repeat(20, minmax(0, 35px));
-  }
+.search-bar-S {
+  grid-column: span 12;
+}
 
-  .search-bar-S {
-    grid-column: span 12;
-  }
-  .search-bar-M {
-    grid-column: span 16;
-  }
-  .search-bar-L {
-    grid-column: span 20;
-  }
+.search-bar-M {
+  grid-column: span 16;
+}
 
-  #drop-down-menu {
-    grid-column: span 4;
-  }
+.search-bar-L {
+  grid-column: span 20;
+}
 
-  #connect-button {
-    grid-column: span 4;
-  }
+#drop-down-menu {
+  grid-column: span 4;
+}
+
+#connect-button {
+  grid-column: span 4;
 }
 
 @media (max-width: 1449px) {
