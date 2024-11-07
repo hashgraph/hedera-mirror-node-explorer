@@ -77,6 +77,12 @@ export class CoreConfig {
         // The content of meta tag: property="og:url"
         public readonly metaURL: string|null,
 
+        // The URL of the 'BUILT ON' logo located at the left of the footer
+        public readonly builtOnLogoURL: string|null,
+
+        // The URL to which a click on the bottom-left 'BUILT ON' logo will navigate
+        public readonly builtOnURL: string|null,
+
         // The URL of the sponsor logo located at the right of the footer
         public readonly sponsorLogoURL: string|null,
 
@@ -116,6 +122,8 @@ export class CoreConfig {
             fetchString(obj, "documentTitleSuffix"),
             fetchString(obj, "productDescription"),
             fetchURL(obj, "metaURL"),
+            fetchURL(obj, "builtOnLogoURL"),
+            fetchURL(obj, "builtOnURL"),
             fetchURL(obj, "sponsorLogoURL"),
             fetchURL(obj, "sponsorURL"),
             fetchURL(obj, "termsOfUseURL"),

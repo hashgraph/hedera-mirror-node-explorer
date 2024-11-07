@@ -116,7 +116,7 @@ describe("App.vue", () => {
         expect(logos[9].attributes('alt')).toBe("Pause")
         expect(logos[10].attributes('alt')).toBe("Pause")
         expect(logos[11].attributes('alt')).toBe("Pause")
-        expect(logos[12].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[12].attributes('alt')).toBe("Built On Logo")
         expect(logos[13].attributes('alt')).toBe("Sponsor Logo")
 
         mock.restore()

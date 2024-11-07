@@ -30,9 +30,14 @@
 
     <div class="is-flex is-align-items-center">
 
-      <a href="https://hedera.com" style="line-height: 1">
-        <img alt="Built On Hedera" src="@/assets/built-on-hedera-white.svg" style="min-width: 104px;">
+      <a v-if="builtOnURL" :href="builtOnURL" style="line-height: 1;">
+        <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
+        <img v-else alt="Built On Logo" src="@/assets/built-on-hedera-white.svg" class="footer-logo">
       </a>
+      <div v-else style="line-height: 1;">
+        <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
+        <img v-else alt="Built On Logo" src="@/assets/built-on-hedera-white.svg" class="footer-logo">
+      </div>
 
       <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
         <span class="h-is-property-text pb-1" style="font-weight:300; color: #DBDBDB">
@@ -51,13 +56,13 @@
 
       <span class="is-flex-grow-1"/>
 
-      <a v-if="sponsorURL" :href="sponsorURL" class="ml-4">
-        <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" style="max-width: 104px;">
-        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
+      <a v-if="sponsorURL" :href="sponsorURL" class="ml-4" style="line-height: 1;">
+        <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" class="footer-logo">
+        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" class="footer-logo">
       </a>
-      <div v-else class="ml-4" style="line-height: 1">
+      <div v-else class="ml-4" style="line-height: 1;">
         <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" style="max-width: 104px;">
-        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" style="max-width: 104px;">
+        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" class="footer-logo">
       </div>
 
     </div>
@@ -108,6 +113,8 @@ export default defineComponent({
     const coreConfig = CoreConfig.inject()
     const productName = coreConfig.productName
     const productDescription = coreConfig.productDescription
+    const builtOnLogoURL = coreConfig.builtOnLogoURL
+    const builtOnURL = coreConfig.builtOnURL
     const sponsorLogoURL = coreConfig.sponsorLogoURL
     const sponsorURL = coreConfig.sponsorURL
     const termsOfUseURL = coreConfig.termsOfUseURL
@@ -122,6 +129,8 @@ export default defineComponent({
       isTouchDevice,
       productName,
       productDescription,
+      builtOnLogoURL,
+      builtOnURL,
       sponsorLogoURL,
       sponsorURL,
       termsOfUseURL
@@ -135,5 +144,10 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+.footer-logo {
+  width: 100%;
+  max-width: 104px;
+  max-height: 48px;
+}
 </style>
