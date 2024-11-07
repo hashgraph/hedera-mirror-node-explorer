@@ -52,6 +52,9 @@ export class NetworkEntry {
     // When set to 'true', this variable will enable properties related to account/contract expiry
     public readonly enableExpiry: boolean
 
+    // When set to 'true', this variable will enable the market dashboard
+    public readonly enableMarket: boolean
+
     public readonly sourcifySetup: SourcifySetup | null
 
     constructor(
@@ -62,6 +65,7 @@ export class NetworkEntry {
         enableWallet: boolean,
         enableStaking: boolean,
         enableExpiry: boolean,
+        enableMarket: boolean,
         sourcifySetup: SourcifySetup | null
     ) {
         this.name = name
@@ -71,6 +75,7 @@ export class NetworkEntry {
         this.enableWallet = enableWallet
         this.enableStaking = enableStaking
         this.enableExpiry = enableExpiry
+        this.enableMarket = enableMarket
         this.sourcifySetup = sourcifySetup
     }
 
@@ -84,6 +89,7 @@ export class NetworkEntry {
         const enableWallet = encoding["enableWallet"]
         const enableStaking = encoding["enableStaking"]
         const enableExpiry = encoding["enableExpiry"]
+        const enableMarket = encoding["enableMarket"]
         const sourcifySetupEncoding = encoding["sourcifySetup"]
 
         if (typeof name == "string" &&
@@ -93,6 +99,7 @@ export class NetworkEntry {
             typeof enableWallet == "boolean" &&
             typeof enableStaking == "boolean" &&
             typeof enableExpiry == "boolean" &&
+            typeof enableMarket == "boolean" &&
             (typeof sourcifySetupEncoding == "object" || typeof sourcifySetupEncoding == "undefined")) {
 
             let tidyDisplayName = (displayName ?? name).toUpperCase()
@@ -111,6 +118,7 @@ export class NetworkEntry {
                         enableWallet,
                         enableStaking,
                         enableExpiry,
+                        enableMarket,
                         sourcifySetup
                     )
                 } else {
@@ -125,6 +133,7 @@ export class NetworkEntry {
                     enableWallet,
                     enableStaking,
                     enableExpiry,
+                    enableMarket,
                     null
                 )
             }
@@ -219,6 +228,7 @@ export class NetworkRegistry {
             enableWallet: true,
             enableStaking: true,
             enableExpiry: true,
+            enableMarket: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x127)
         },
         {
@@ -229,6 +239,7 @@ export class NetworkRegistry {
             enableWallet: true,
             enableStaking: true,
             enableExpiry: false,
+            enableMarket: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x128)
         },
         {
@@ -239,6 +250,7 @@ export class NetworkRegistry {
             enableWallet: false,
             enableStaking: true,
             enableExpiry: false,
+            enableMarket: false,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x129)
         }
     ])
@@ -270,7 +282,17 @@ export class NetworkRegistry {
                         `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`)
 
                     this.entries.value.push(
-                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', false, true, false, null)
+                        new NetworkEntry(
+                            'devnet',
+                            localNodeMenuName,
+                            localNodeURL,
+                            'FF',
+                            false,
+                            true,
+                            false,
+                            false,
+                            null
+                        )
                     )
                 }
             })

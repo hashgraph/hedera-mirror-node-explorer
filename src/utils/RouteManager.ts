@@ -114,6 +114,10 @@ export class RouteManager {
         return this.currentNetworkEntry.value.enableExpiry
     })
 
+    public readonly enableMarket = computed(() => {
+        return this.currentNetworkEntry.value.enableMarket
+    })
+
     public readonly nbNetworks = computed(() => {
         return networkRegistry.entries.value.length
     })

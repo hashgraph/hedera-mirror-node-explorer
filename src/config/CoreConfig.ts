@@ -19,7 +19,7 @@
  */
 
 import axios from "axios";
-import {fetchBoolean, fetchString, fetchURL} from "@/config/ConfigUtils";
+import {fetchString, fetchURL} from "@/config/ConfigUtils";
 import {inject} from "vue";
 import {coreConfigKey} from "@/AppKeys";
 
@@ -56,9 +56,6 @@ export class CoreConfig {
     //
 
     private constructor(
-        // When set to 'true', this variable will enable the market dashboard
-        public readonly enableMarket: boolean,
-
         // The name of the product as shown in the short form of the footer tagline
         public readonly productName: string,
 
@@ -115,7 +112,6 @@ export class CoreConfig {
 
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
-            fetchBoolean(obj, "enableMarket") ?? true,
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitleSuffix"),

@@ -47,6 +47,7 @@ describe("NetworkRegistry.ts", () => {
                 "enableWallet": true,
                 "enableStaking": true,
                 "enableExpiry": true,
+                "enableMarket": true,
                 "sourcifySetup": {
                     "activate": true,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -89,6 +90,7 @@ describe("NetworkRegistry.ts", () => {
                 "enableWallet": true,
                 "enableStaking": true,
                 "enableExpiry": true,
+                "enableMarket": true,
             }
         ]
 
@@ -117,6 +119,7 @@ describe("NetworkRegistry.ts", () => {
                 "enableWallet": true,
                 "enableStaking": true,
                 "enableExpiry": true,
+                "enableMarket": true,
                 "sourcifySetup": {
                     "activate": false,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -151,6 +154,7 @@ describe("NetworkRegistry.ts", () => {
                 "enableWallet": true,
                 "enableStaking": true,
                 "enableExpiry": true,
+                "enableMarket": true,
                 "sourcifySetup": null
             }
         ]
@@ -179,6 +183,7 @@ describe("NetworkRegistry.ts", () => {
                 "enableWallet": true,
                 "enableStaking": true,
                 "enableExpiry": true,
+                "enableMarket": true,
             }
         ]
         const mock = new MockAdapter(axios);
