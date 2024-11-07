@@ -18,43 +18,89 @@
  *
  */
 
-import {NavigationFailure, RouteLocationNormalizedLoaded, RouteLocationRaw, Router} from "vue-router";
-import {Transaction} from "@/schemas/HederaSchemas";
-import {NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
-import {computed, ref, watch, WatchStopHandle} from "vue";
+import {
+    createRouter,
+    createWebHistory,
+    NavigationFailure,
+    RouteLocationNormalized,
+    RouteLocationNormalizedLoaded,
+    RouteLocationRaw,
+    Router,
+    RouteRecordRaw
+} from "vue-router";
+import {App, computed, ref, watch, WatchStopHandle} from "vue";
 import {AppStorage} from "@/AppStorage";
+import PageNotFound from "@/pages/PageNotFound.vue";
+import MainDashboard from "@/pages/MainDashboard.vue";
+import RoutingSpec from "@/pages/RoutingSpec.vue";
+import Transactions from "@/pages/Transactions.vue";
+import TransactionsById from "@/pages/TransactionsById.vue";
+import TransactionDetails from "@/pages/TransactionDetails.vue";
+import Accounts from "@/pages/Accounts.vue";
+import AccountsWithKey from "@/pages/AccountsWithKey.vue";
+import AccountDetails from "@/pages/AccountDetails.vue";
+import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
+import AddressDetails from "@/pages/AddressDetails.vue";
+import Tokens from "@/pages/Tokens.vue";
+import TokenDetails from "@/pages/TokenDetails.vue";
+import NftDetails from "@/pages/NftDetails.vue";
+import TokensByName from "@/pages/TokensByName.vue";
+import TokensByPopularity from "@/pages/TokensByPopularity.vue";
+import TokensByAccount from "@/pages/TokensByAccount.vue";
+import Contracts from "@/pages/Contracts.vue";
+import ContractDetails from "@/pages/ContractDetails.vue";
+import Topics from "@/pages/Topics.vue";
+import TopicDetails from "@/pages/TopicDetails.vue";
+import Nodes from "@/pages/Nodes.vue";
+import NodeDetails from "@/pages/NodeDetails.vue";
+import Staking from "@/pages/Staking.vue";
+import Blocks from "@/pages/Blocks.vue";
+import BlockDetails from "@/pages/BlockDetails.vue";
+import SearchHelp from "@/pages/SearchHelp.vue";
+import MobileMenu from "@/pages/MobileMenu.vue";
+import MobileSearch from "@/pages/MobileSearch.vue";
+import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import axios from "axios";
+import {Transaction} from "@/schemas/HederaSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 
 export class RouteManager {
 
-    private readonly router: Router
+    public readonly router: Router
 
     //
     // Public
     //
 
-    public constructor(router: Router) {
-        this.router = router
+    public constructor() {
+
+        this.router = createRouter({
+            history: createWebHistory(),
+            routes: [] // Will be set by this.configure()
+        })
+
+        this.router.beforeEach(this.checkNetwork)
+        this.router.beforeEach(this.setupTitleAndHeaders)
+
         watch(this.currentNetwork, () => {
-            AppStorage.setLastNetwork(this.currentNetworkEntry.value)
+            AppStorage.setLastNetwork(this.currentNetwork.value)
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             this.switchThemes()
         }, {immediate: true})
+
         watch(this.currentNetwork, () => {
-            RouteManager.resetSingletons()
+            CacheUtils.clearAll()
         })
+
+        this.configure()
     }
 
     public readonly currentRoute = computed(() => this.router.currentRoute.value?.name)
 
-    public readonly currentNetwork = computed(() => {
-        return this.currentNetworkEntry.value.name
-    })
+    public readonly currentNetwork = computed(() => this.currentNetworkEntry.value.name)
 
     public readonly currentNetworkEntry = computed(() => {
-
         let networkName: string | null
         const networkParam = this.router.currentRoute.value?.params?.network
         if (Array.isArray(networkParam)) {
@@ -66,6 +112,32 @@ export class RouteManager {
 
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
+
+    public configure() {
+
+        const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkRegistry.getDefaultEntry().name
+        this.router.addRoute({
+            path: '/',
+            redirect: '/' + defaultNetwork + '/dashboard'
+        })
+        this.router.addRoute({
+            path: '/page-not-found',
+            redirect: '/' + defaultNetwork + '/page-not-found'
+        })
+        for (const r of routes) {
+            this.router.addRoute(r)
+        }
+
+        const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
+        if (!isStakingEnabled) {
+            this.router.removeRoute("Staking")
+        }
+
+    }
+
+    //
+    // Public (selectedNetwork)
+    //
 
     public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
 
@@ -84,7 +156,17 @@ export class RouteManager {
         })
     }
 
+    //
+    // To be moved to MobileMenu.vue
+    //
+
     public readonly previousRoute = computed(() => (this.router.currentRoute.value?.query.from as string))
+
+
+
+    //
+    // Public (routeToXXX)
+    //
 
     public readonly isDashboardRoute = computed(() => this.testDashboardRoute())
     public readonly isTransactionRoute = computed(() => this.testTransactionRoute())
@@ -460,8 +542,139 @@ export class RouteManager {
         }
     }
 
+
+
+    //
+    // App plugin
+    //
+
+    public install(app: App): void {
+        this.router.install(app)
+    }
+
+
     //
     // Private
+    //
+
+    private readonly checkNetwork = (to: RouteLocationNormalized): boolean|string => {
+        let result: boolean | string
+
+        if (this.getNetworkEntryFromRoute(to) === null) { // Unknown network)
+            result = "/page-not-found"
+        } else {
+            result = true
+        }
+        return result
+    }
+
+    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
+        const envTitleSuffix = import.meta.env.VITE_APP_DOCUMENT_TITLE_SUFFIX
+        const titleSuffix = envTitleSuffix !== null ? " | " + envTitleSuffix : ""
+
+        switch (to.name as string) {
+            case "MainDashboard":
+                document.title = "Hedera Dashboard" + titleSuffix
+                break;
+            case "TransactionDetails":
+                document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+                break;
+            case "TransactionDetails3091":
+                document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
+                break;
+            case "TokenDetails":
+                document.title = "Hedera Token " + to.params.tokenId + titleSuffix
+                break;
+            case "TopicDetails":
+                document.title = "Hedera Topic " + to.params.topicId + titleSuffix
+                break;
+            case "ContractDetails":
+                document.title = "Hedera Contract " + to.params.contractId + titleSuffix
+                break;
+            case "AccountDetails":
+                document.title = "Hedera Account " + to.params.accountId + titleSuffix
+                break;
+            case "AdminKeyDetails":
+                document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
+                break;
+            case "NodeDetails":
+                document.title = "Hedera Node " + to.params.nodeId + titleSuffix
+                break;
+            case "BlockDetails":
+                document.title = "Hedera Block " + to.params.blockHon + titleSuffix
+                break;
+            case "SearchHelp":
+                document.title = "Search Results" + titleSuffix
+                break;
+            case "PageNotFound":
+                document.title = "Page Not Found" + titleSuffix
+                break;
+            default:
+                document.title = "Hedera " + (to.name as string) + titleSuffix
+        }
+
+        this.addMetaTags()
+    }
+
+    private getNetworkEntryFromRoute(r: RouteLocationNormalized): NetworkEntry | null {
+
+        let networkName: string | null
+        const networkParam = r.params.network
+        if (Array.isArray(networkParam)) {
+            networkName = networkParam.length >= 1 ? networkParam[0] : null
+        } else {
+            networkName = networkParam
+        }
+
+        return networkName !== null ? networkRegistry.lookup(networkName) : null
+    }
+
+    //
+    // Private (addMetaTags)
+    //
+
+    private addMetaTags(): void {
+
+        const title = document.title
+        const description =
+            import.meta.env.VITE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+        const url = import.meta.env.VITE_APP_META_URL
+
+        this.createOrUpdateTagName('description', description)
+        this.createOrUpdateTagProperty('og:title', title)
+        if (url) {
+            this.createOrUpdateTagProperty('og:url', url)
+        }
+    }
+
+    private createOrUpdateTagName(name: string, content: string): void {
+        const header = document.getElementsByTagName('head')[0]
+        for (const tag of document.getElementsByTagName('meta')) {
+            if (tag.getAttribute('name') === name) {
+                header.removeChild(tag)
+            }
+        }
+        const newTag = document.createElement('meta')
+        newTag.name = name
+        newTag.setAttribute('content', content)
+        header.appendChild(newTag)
+    }
+
+    private createOrUpdateTagProperty(property: string, content: string): void {
+        const header = document.getElementsByTagName('head')[0]
+        for (const tag of document.getElementsByTagName('meta')) {
+            if (tag.getAttribute('property') === property) {
+                header.removeChild(tag)
+            }
+        }
+        const newTag = document.createElement('meta')
+        newTag.setAttribute('property', property)
+        newTag.setAttribute('content', content)
+        header.appendChild(newTag)
+    }
+
+    //
+    // Private (switchThemes)
     //
 
     private switchThemes() {
@@ -486,9 +699,6 @@ export class RouteManager {
         }
     }
 
-    private static resetSingletons() {
-        CacheUtils.clearAll()
-    }
 }
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string | null {
@@ -513,3 +723,214 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
     }
     return result
 }
+
+
+
+
+
+//
+// Route table
+// ===========
+//
+
+
+const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/',
+        redirect: '/' + AppStorage.getLastNetwork().name + '/dashboard'
+    },
+    {
+        path: '/page-not-found',
+        redirect: '/' + AppStorage.getLastNetwork().name + '/page-not-found'
+    },
+    {
+        path: '/:network/page-not-found',
+        name: 'PageNotFound',
+        component: PageNotFound
+    },
+    {
+        path: '/:network',
+        redirect: {name: 'MainDashboard'}
+    },
+    {
+        path: '/:network/dashboard',
+        name: 'MainDashboard',
+        component: MainDashboard,
+        props: true
+    },
+    {
+        path: '/:network/spec',
+        name: 'RoutingSpec',
+        component: RoutingSpec,
+    },
+    {
+        path: '/:network/transactions',
+        name: 'Transactions',
+        component: Transactions,
+        props: true
+    },
+    {
+        path: '/:network/transactionsById/:transactionId',
+        name: 'TransactionsById',
+        component: TransactionsById,
+        props: true
+    },
+    {
+        path: '/:network/transaction/:transactionLoc',
+        name: 'TransactionDetails',
+        component: TransactionDetails,
+        props: true
+    },
+    {
+        path: '/:network/accounts',
+        name: 'Accounts',
+        component: Accounts,
+        props: true
+    },
+    {
+        path: '/:network/accountsWithKey/:pubKey',
+        name: 'AccountsWithKey',
+        component: AccountsWithKey,
+        props: true
+    },
+    {
+        path: '/:network/account/:accountId',
+        name: 'AccountDetails',
+        component: AccountDetails,
+        props: true
+    },
+    {
+        path: '/:network/adminKey/:accountId',
+        name: 'AdminKeyDetails',
+        component: AdminKeyDetails,
+        props: true
+    },
+    {
+        // EIP 3091 Support
+        path: '/:network/address/:accountAddress',
+        name: 'AddressDetails',
+        component: AddressDetails,
+        props: true
+    },
+    {
+        path: '/:network/tokens',
+        name: 'Tokens',
+        component: Tokens,
+        props: true
+    },
+    {
+        path: '/:network/token/:tokenId',
+        name: 'TokenDetails',
+        component: TokenDetails,
+        props: true
+    },
+    {
+        path: '/:network/token/:tokenId/:serialNumber',
+        name: 'NftDetails',
+        component: NftDetails,
+        props: true
+    },
+    {
+        path: '/:network/tokensByName/:name',
+        name: 'TokensByName',
+        component: TokensByName,
+        props: true
+    },
+    {
+        path: '/:network/tokensByPopularity/:name',
+        name: 'TokensByPopularity',
+        component: TokensByPopularity,
+        props: true
+    },
+    {
+        path: '/:network/tokensByAccount/:accountId',
+        name: 'TokensByAccount',
+        component: TokensByAccount,
+        props: true
+    },
+    {
+        path: '/:network/contracts',
+        name: 'Contracts',
+        component: Contracts,
+        props: true
+    },
+    {
+        path: '/:network/contract/:contractId',
+        name: 'ContractDetails',
+        component: ContractDetails,
+        props: true
+    },
+    {
+        path: '/:network/topics',
+        name: 'Topics',
+        component: Topics,
+        props: true
+    },
+    {
+        path: '/:network/topic/:topicId',
+        name: 'TopicDetails',
+        component: TopicDetails,
+        props: true
+    },
+    {
+        path: '/:network/nodes',
+        name: 'Nodes',
+        component: Nodes,
+        props: true
+    },
+    {
+        path: '/:network/node/:nodeId',
+        name: 'NodeDetails',
+        component: NodeDetails,
+        props: true
+    },
+    {
+        path: '/:network/staking',
+        name: 'Staking',
+        component: Staking,
+        props: true
+    },
+    {
+        path: '/:network/blocks',
+        name: 'Blocks',
+        component: Blocks,
+        props: true
+    },
+    {
+        path: '/:network/block/:blockHon',
+        name: 'BlockDetails',
+        component: BlockDetails,
+        props: true
+    },
+    {
+        // EIP 3091 Support
+        path: '/:network/tx/:transactionLoc',
+        name: 'TransactionDetails3091',
+        component: TransactionDetails,
+        props: true
+    },
+    {
+        path: '/:network/search-help',
+        name: 'SearchHelp',
+        component: SearchHelp,
+        props: true
+    },
+    {
+        path: '/:network/mobile-menu',
+        name: 'MobileMenu',
+        component: MobileMenu,
+        props: true
+    },
+    {
+        path: '/:network/mobile-search',
+        name: 'MobileSearch',
+        component: MobileSearch,
+        props: true
+    },
+    {
+        path: "/:catchAll(.*)",
+        redirect: '/page-not-found'
+    },
+]
+
+
