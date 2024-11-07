@@ -22,7 +22,7 @@ import {computed, Ref} from "vue";
 import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfo, TokenType} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router, {walletManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export class TokenInfoAnalyzer {
@@ -95,7 +95,7 @@ export class TokenInfoAnalyzer {
     public readonly tokenChecksum = computed(() =>
         this.tokenInfo.value?.token_id ? networkRegistry.computeChecksum(
             this.tokenInfo.value?.token_id,
-            router.currentRoute.value.params.network as string
+            routeManager.currentNetwork.value
         ) : null)
 
     public readonly associationStatus = computed(() => {

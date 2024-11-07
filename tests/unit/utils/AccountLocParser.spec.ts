@@ -35,7 +35,7 @@ describe("AccountLocParser.ts", () => {
 
     const SAMPLE_ACCOUNT_ALIAS_HEX = AccountAlias.parse(SAMPLE_ACCOUNT.alias)!.toHexString()
     const SAMPLE_ACCOUNT_ADDRESS = makeEthAddressForAccount(SAMPLE_ACCOUNT as AccountInfo)
-    const SAMPLE_ACCOUNT_CHECKSUM = "irkir"
+    const SAMPLE_ACCOUNT_CHECKSUM = "zxthk"
 
     //
     // mount + set/unset account loc + unmount

@@ -26,7 +26,7 @@ import {AccountAlias} from "@/utils/AccountAlias";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
@@ -100,7 +100,7 @@ export class AccountLocParser {
     public readonly accountChecksum: ComputedRef<string | null> = computed(() =>
         this.accountId.value ? networkRegistry.computeChecksum(
             this.accountId.value,
-            router.currentRoute.value.params.network as string
+            routeManager.currentNetwork.value
         ) : null)
 
     public readonly balance: ComputedRef<number | null> = computed(() => this.accountInfo.value?.balance?.balance ?? null)

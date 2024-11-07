@@ -46,8 +46,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {useRoute} from "vue-router";
-import router from "@/router";
+import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import Footer from "@/components/Footer.vue";
@@ -62,13 +61,8 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const route = useRoute()
-    const network = computed(() => {
-      return route.params.network
-    })
-    const name = computed(() => {
-      return route.query.from
-    })
+    const network = routeManager.currentNetwork
+    const name = routeManager.previousRoute
 
     const selectedNetwork = ref(network.value)
     watch(selectedNetwork, (selection) => {

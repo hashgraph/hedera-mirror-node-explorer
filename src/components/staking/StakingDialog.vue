@@ -186,7 +186,7 @@ import axios from "axios";
 import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router from "@/router";
+import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {isCouncilNode, makeDefaultNodeDescription} from "@/schemas/HederaUtils";
 
@@ -210,7 +210,7 @@ export default defineComponent({
   emits: ["changeStaking", "update:showDialog"],
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
-    const network = router.currentRoute.value.params.network as string
+    const network = routeManager.currentNetwork.value
     const nr = networkRegistry
 
     const showConfirmDialog = ref(false)
