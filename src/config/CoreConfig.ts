@@ -62,6 +62,9 @@ export class CoreConfig {
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
 
+        // When set to 'true', this variable will enable properties related to account expiry
+        public readonly enableExpiry: boolean,
+
         // The name of the product as shown in the short form of the footer tagline
         public readonly productName: string,
 
@@ -120,6 +123,7 @@ export class CoreConfig {
         return new CoreConfig(
             fetchBoolean(obj, "enableStaking") ?? true,
             fetchBoolean(obj, "enableMarket") ?? true,
+            fetchBoolean(obj, "enableExpiry") ?? true,
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitleSuffix"),

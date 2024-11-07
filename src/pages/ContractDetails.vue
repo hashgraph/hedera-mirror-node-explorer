@@ -105,7 +105,11 @@
             <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
           </template>
         </Property>
-        <Property id="expiresAt" tooltip="Contract expiry is not turned on yet. Value in this field is not relevant.">
+        <Property
+            v-if="enableExpiry"
+            id="expiresAt"
+            tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+        >
           <template v-slot:name>
             <span>Expires at</span>
           </template>
@@ -113,8 +117,11 @@
             <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod"
-                  tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property
+            v-if="enableExpiry"
+            id="autoRenewPeriod"
+            tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+        >
           <template v-slot:name>
             <span>Auto Renew Period</span>
           </template>
@@ -122,8 +129,11 @@
             <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
-        <Property id="autoRenewAccount"
-                  tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property
+            v-if="enableExpiry"
+            id="autoRenewAccount"
+            tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+        >
           <template v-slot:name>
             <span>Auto Renew Account</span>
           </template>
@@ -234,6 +244,7 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
 
@@ -272,6 +283,9 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+
+    const coreConfig = CoreConfig.inject()
+    const enableExpiry = coreConfig.enableExpiry
 
     //
     // basic computed's
@@ -355,6 +369,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      enableExpiry,
       contract: contractLocParser.entity,
       maxAutoAssociationValue,
       balanceAnalyzer,

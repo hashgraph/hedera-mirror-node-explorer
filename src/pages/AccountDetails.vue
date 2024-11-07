@@ -204,6 +204,7 @@
         </Property>
 
         <Property
+            v-if="enableExpiry"
             id="expiresAt"
             tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being."
         >
@@ -215,6 +216,7 @@
           </template>
         </Property>
         <EditableProperty
+            v-if="enableExpiry"
             id="autoRenewPeriod"
             tooltip="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
             :editable="isAccountEditable"
@@ -425,6 +427,7 @@ const isTouchDevice = inject('isTouchDevice', false)
 
 const coreConfig = CoreConfig.inject()
 const enableStaking = coreConfig.enableStaking
+const enableExpiry = coreConfig.enableExpiry
 
 const timeSelection = ref("LATEST")
 watch(timeSelection, (newValue, oldValue) => {
