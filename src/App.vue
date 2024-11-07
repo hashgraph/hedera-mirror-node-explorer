@@ -24,7 +24,7 @@
     <TopNavBar/>
   </section>
 
-  <hr v-if="!onMainDashboardPage || !props.coreConfig.enableMarket" class="h-has-background-color" style="margin: 0; height: 4px"/>
+  <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
 
   <router-view/>
 
