@@ -653,7 +653,7 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
-        const description = this.coreConfig.productDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+        const description = this.coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
         const url = import.meta.env.VITE_APP_META_URL
 
         this.createOrUpdateTagName('description', description)

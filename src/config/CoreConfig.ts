@@ -62,7 +62,7 @@ export class CoreConfig {
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
 
-        // The name of the product as shown in the footer tagline
+        // The name of the product as shown in the short form of the footer tagline
         public readonly productName: string,
 
         // The URL of the product logo located at the left of the top navigation bar
@@ -71,8 +71,11 @@ export class CoreConfig {
         // The prefix used in the document title
         public readonly documentTitleSuffix: string|null,
 
-        // The content of meta tag: name="description"
+        // The description of the product as shown in the long form of the footer tagline
         public readonly productDescription: string|null,
+
+        // The content of meta tag: name="description"
+        public readonly metaDescription: string|null,
 
         // The content of meta tag: property="og:url"
         public readonly metaURL: string|null,
@@ -121,6 +124,7 @@ export class CoreConfig {
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitleSuffix"),
             fetchString(obj, "productDescription"),
+            fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),
             fetchURL(obj, "builtOnLogoURL"),
             fetchURL(obj, "builtOnURL"),
