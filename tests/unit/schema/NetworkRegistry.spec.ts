@@ -44,7 +44,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
-                "walletSupported": true,
+                "enableWallet": true,
                 "sourcifySetup": {
                     "activate": true,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -84,7 +84,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "A WayTooLongNetworkDisplayName",
                 "url": "",
                 "ledgerID": "FF",
-                "walletSupported": true,
+                "enableWallet": true,
             }
         ]
 
@@ -110,7 +110,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
-                "walletSupported": true,
+                "enableWallet": true,
                 "sourcifySetup": {
                     "activate": false,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -142,7 +142,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
-                "walletSupported": true,
+                "enableWallet": true,
                 "sourcifySetup": null
             }
         ]
@@ -168,7 +168,7 @@ describe("NetworkRegistry.ts", () => {
                 "displayName": "MAINNET",
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
-                "walletSupported": true,
+                "enableWallet": true,
             }
         ]
         const mock = new MockAdapter(axios);

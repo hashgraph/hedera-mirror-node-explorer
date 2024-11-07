@@ -67,7 +67,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard v-if="walletSupported" collapsible-key="stakingDetails">
+    <DashboardCard v-if="enableWallet" collapsible-key="stakingDetails">
       <template v-slot:title>
         <div>
           <span class="h-is-primary-title">My Staking </span>
@@ -463,7 +463,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
-      walletSupported: routeManager.walletSupported,
+      enableWallet: routeManager.enableWallet,
       connecting,
       connected: walletManager.connected,
       walletName: walletManager.walletName,

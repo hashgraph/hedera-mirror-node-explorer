@@ -127,7 +127,7 @@
           </o-field>
         </div>
 
-        <div v-if="walletSupported" id="connect-button">
+        <div v-if="enableWallet" id="connect-button">
           <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small"
                   @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
             {{ connecting ? "Connecting…" : "CONNECT WALLET…" }}
@@ -219,9 +219,9 @@ export default defineComponent({
 
     const searchBarClass = computed(() => {
       let result: string
-      if (routeManager.nbNetworks.value === 1 && !routeManager.walletSupported.value) {
+      if (routeManager.nbNetworks.value === 1 && !routeManager.enableWallet.value) {
         result = "search-bar-L"
-      } else if (routeManager.nbNetworks.value === 1 || !routeManager.walletSupported.value) {
+      } else if (routeManager.nbNetworks.value === 1 || !routeManager.enableWallet.value) {
         result = "search-bar-M"
       } else {
         result = "search-bar-S"
@@ -303,7 +303,7 @@ export default defineComponent({
       connectError,
       searchBarClass,
       name: routeManager.currentRoute,
-      walletSupported: routeManager.walletSupported,
+      enableWallet: routeManager.enableWallet,
       nbNetworks: routeManager.nbNetworks,
       accountId: walletManager.accountId,
       connected: walletManager.connected,
