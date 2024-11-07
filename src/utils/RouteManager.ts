@@ -586,7 +586,7 @@ export class RouteManager {
     }
 
     private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
-        const envTitleSuffix = import.meta.env.VITE_APP_DOCUMENT_TITLE_SUFFIX
+        const envTitleSuffix = this.coreConfig.documentTitleSuffix
         const titleSuffix = envTitleSuffix !== null ? " | " + envTitleSuffix : ""
 
         switch (to.name as string) {
@@ -654,7 +654,7 @@ export class RouteManager {
 
         const title = document.title
         const description = this.coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
-        const url = import.meta.env.VITE_APP_META_URL
+        const url = this.coreConfig.metaURL
 
         this.createOrUpdateTagName('description', description)
         this.createOrUpdateTagProperty('og:title', title)
