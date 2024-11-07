@@ -21,13 +21,19 @@
  */
 
 import {describe, expect, test} from 'vitest'
-import {makeRouter} from "@/router";
+import {RouteManager} from "@/utils/RouteManager";
 import {computed, ref} from "vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import {Router} from "vue-router";
 import {SAMPLE_CONTRACTCALL_TRANSACTIONS} from "../Mocks";
+
+function makeRouter(): Router {
+    const routeManager = new RouteManager()
+    return routeManager.router
+}
 
 describe("TransactionTableController.ts", () => {
 

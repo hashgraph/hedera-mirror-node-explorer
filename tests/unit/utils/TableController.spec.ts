@@ -24,7 +24,8 @@ import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest'
 import {computed, nextTick, Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {KeyOperator, SortOrder, TableController} from "../../../src/utils/table/TableController";
-import {makeRouter} from "../../../src/router";
+import {RouteManager} from "../../../src/utils/RouteManager";
+import {Router} from "vue-router";
 
 describe("TableController.ts", () => {
 
@@ -682,6 +683,11 @@ describe("TableController.ts", () => {
         expect(currentRoute.value.query).toStrictEqual({})
     })
 })
+
+function makeRouter(): Router {
+    const routeManager = new RouteManager()
+    return routeManager.router
+}
 
 class TestTableController extends TableController<number, number> {
 
