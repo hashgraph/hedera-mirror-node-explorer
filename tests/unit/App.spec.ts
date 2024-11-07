@@ -65,9 +65,9 @@ describe("App.vue", () => {
 
         const matcher10 = window.location.origin + '/networks-config.json'
         mock.onGet(matcher10).reply(200, [
-            {name: "customnet1", url: "/testurl1", ledgerID: "01", enableWallet: true,  sourcifySetup: null},
-            {name: "customnet2", url: "/testurl2", ledgerID: "02", enableWallet: true,  sourcifySetup: null},
-            {name: "customnet3", url: "/testurl3", ledgerID: "03", enableWallet: true,  sourcifySetup: null}
+            {name: "customnet1", url: "/testurl1", ledgerID: "01", enableWallet: true, enableStaking: false,  sourcifySetup: null},
+            {name: "customnet2", url: "/testurl2", ledgerID: "02", enableWallet: true, enableStaking: false,  sourcifySetup: null},
+            {name: "customnet3", url: "/testurl3", ledgerID: "03", enableWallet: true, enableStaking: false,  sourcifySetup: null}
         ]);
         expect(routeManager.currentNetwork.value).toBe("mainnet")
 
@@ -76,7 +76,7 @@ describe("App.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                coreConfig: CoreConfig.makeWithStakingDisabled(),
+                coreConfig: CoreConfig.make(),
             },
         });
 

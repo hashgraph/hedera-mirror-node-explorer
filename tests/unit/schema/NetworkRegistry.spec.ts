@@ -45,6 +45,7 @@ describe("NetworkRegistry.ts", () => {
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
                 "enableWallet": true,
+                "enableStaking": true,
                 "sourcifySetup": {
                     "activate": true,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -85,6 +86,7 @@ describe("NetworkRegistry.ts", () => {
                 "url": "",
                 "ledgerID": "FF",
                 "enableWallet": true,
+                "enableStaking": true,
             }
         ]
 
@@ -111,6 +113,7 @@ describe("NetworkRegistry.ts", () => {
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
                 "enableWallet": true,
+                "enableStaking": true,
                 "sourcifySetup": {
                     "activate": false,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -143,6 +146,7 @@ describe("NetworkRegistry.ts", () => {
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
                 "enableWallet": true,
+                "enableStaking": true,
                 "sourcifySetup": null
             }
         ]
@@ -169,6 +173,7 @@ describe("NetworkRegistry.ts", () => {
                 "url": "https://mainnet-public.mirrornode.hedera.com/",
                 "ledgerID": "00",
                 "enableWallet": true,
+                "enableStaking": true,
             }
         ]
         const mock = new MockAdapter(axios);

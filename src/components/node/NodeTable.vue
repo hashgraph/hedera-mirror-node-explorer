@@ -157,7 +157,6 @@ import {
   makeStakePercentage
 } from "@/schemas/HederaUtils";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
-import {CoreConfig} from "@/config/CoreConfig";
 
 
 //
@@ -182,8 +181,8 @@ export default defineComponent({
 
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
-    const coreConfig = CoreConfig.inject()
-    const enableStaking = coreConfig.enableStaking
+
+    const enableStaking = routeManager.enableStaking
 
     const networkAnalyzer = new NetworkAnalyzer()
     onMounted(() => networkAnalyzer.mount())

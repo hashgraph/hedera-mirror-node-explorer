@@ -30,6 +30,7 @@ import {HMSF} from "@/utils/HMSF";
 import Nodes from "@/pages/Nodes.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
+import {networkRegistry, NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
 
 /*
     Bookmarks
@@ -49,10 +50,24 @@ describe("Nodes.vue", () => {
 
     it("should display the nodes pages containing the node table", async () => {
 
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
+
+        const config = [
+            {
+                "name": "mainnet",
+                "displayName": "MAINNET",
+                "url": "https://mainnet-public.mirrornode.hedera.com/",
+                "ledgerID": "00",
+                "enableWallet": true,
+                "enableStaking": true,
+                "sourcifySetup": null
+            }
+        ]
+        const configUrl = NetworkRegistry.NETWORKS_CONFIG_URL
+        mock.onGet(configUrl).reply(200, config)
+        networkRegistry.readCustomConfig()
 
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);

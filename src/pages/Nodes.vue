@@ -101,7 +101,7 @@ import {formatSeconds} from "@/utils/Duration";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {makeAnnualizedRate} from "@/schemas/HederaUtils";
-import {CoreConfig} from "@/config/CoreConfig";
+import {routeManager} from "@/router";
 
 export default defineComponent({
   name: 'Nodes',
@@ -121,8 +121,6 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const coreConfig = CoreConfig.inject()
-    const enableStaking = coreConfig.enableStaking
 
     const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
     const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
@@ -153,7 +151,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      enableStaking,
+      enableStaking: routeManager.enableStaking,
       stakeTotalTooltip,
       stakeRewardedTotalTooltip,
       maxStakeRewardedTooltip,

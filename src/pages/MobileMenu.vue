@@ -73,7 +73,7 @@
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
                      :class="{'is-rimmed': isNodeRoute(previousRoute)}">Nodes
         </router-link>
-        <router-link v-if="isStakingEnabled"
+        <router-link v-if="enableStaking"
                      :to="routeManager.makeRouteToStaking()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
@@ -105,7 +105,6 @@ import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import Footer from "@/components/Footer.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: 'MobileMenu',
@@ -117,8 +116,6 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const coreConfig = CoreConfig.inject()
-    const isStakingEnabled = coreConfig.enableStaking
 
     const onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -135,7 +132,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      isStakingEnabled,
+      enableStaking: routeManager.enableStaking,
       selectedNetwork: routeManager.selectedNetwork,
       previousRoute: routeManager.previousRoute,
       isDashboardRoute: routeManager.testDashboardRoute,

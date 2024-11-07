@@ -103,7 +103,7 @@
         <router-link :to="routeManager.makeRouteToNodes()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
-        <router-link v-if="isStakingEnabled"
+        <router-link v-if="enableStaking"
                      :to="routeManager.makeRouteToStaking()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
@@ -200,7 +200,7 @@ export default defineComponent({
     const buildTime = inject('buildTime', "not available")
     const coreConfig = CoreConfig.inject()
 
-    const isStakingEnabled = coreConfig.enableStaking
+    const enableStaking = routeManager.enableStaking
     const productLogoURL = coreConfig.productLogoURL
 
     const isMobileMenuOpen = ref(false)
@@ -292,7 +292,7 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       showWalletInfo,
-      isStakingEnabled,
+      enableStaking,
       productLogoURL,
       isMobileMenuOpen,
       showWalletChooser,

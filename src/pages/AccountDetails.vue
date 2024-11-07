@@ -426,8 +426,8 @@ const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
 
 const coreConfig = CoreConfig.inject()
-const enableStaking = coreConfig.enableStaking
 const enableExpiry = coreConfig.enableExpiry
+const enableStaking = routeManager.enableStaking
 
 const timeSelection = ref("LATEST")
 watch(timeSelection, (newValue, oldValue) => {

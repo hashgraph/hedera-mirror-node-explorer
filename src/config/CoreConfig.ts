@@ -47,8 +47,8 @@ export class CoreConfig {
         return inject<CoreConfig>(coreConfigKey, this.FALLBACK)
     }
 
-    public static makeWithStakingDisabled(): CoreConfig { // For unit testing
-        return CoreConfig.parse({ enableStaking: false })
+    public static make(): CoreConfig { // For unit testing
+        return CoreConfig.parse({ })
     }
 
     //
@@ -56,9 +56,6 @@ export class CoreConfig {
     //
 
     private constructor(
-        // When set to 'true', this variable will enable the 'Staking' page
-        public readonly enableStaking: boolean,
-
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
 
@@ -121,7 +118,6 @@ export class CoreConfig {
 
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
-            fetchBoolean(obj, "enableStaking") ?? true,
             fetchBoolean(obj, "enableMarket") ?? true,
             fetchBoolean(obj, "enableExpiry") ?? true,
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",

@@ -49,6 +49,7 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {networkRegistry, NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
 
 /*
     Bookmarks
@@ -428,6 +429,21 @@ describe("AccountDetails.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
+
+        const config = [
+            {
+                "name": "mainnet",
+                "displayName": "MAINNET",
+                "url": "https://mainnet-public.mirrornode.hedera.com/",
+                "ledgerID": "00",
+                "enableWallet": true,
+                "enableStaking": true,
+                "sourcifySetup": null
+            }
+        ]
+        const configUrl = NetworkRegistry.NETWORKS_CONFIG_URL
+        mock.onGet(configUrl).reply(200, config)
+        networkRegistry.readCustomConfig()
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_ACCOUNT);

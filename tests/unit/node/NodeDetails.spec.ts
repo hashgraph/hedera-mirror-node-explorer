@@ -40,6 +40,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
+import {networkRegistry, NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
 
 /*
     Bookmarks
@@ -56,7 +57,23 @@ describe("NodeDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const config = [
+            {
+                "name": "mainnet",
+                "displayName": "MAINNET",
+                "url": "https://mainnet-public.mirrornode.hedera.com/",
+                "ledgerID": "00",
+                "enableWallet": true,
+                "enableStaking": true,
+                "sourcifySetup": null
+            }
+        ]
+
         const mock = new MockAdapter(axios);
+
+        const configUrl = NetworkRegistry.NETWORKS_CONFIG_URL
+        mock.onGet(configUrl).reply(200, config)
+        networkRegistry.readCustomConfig()
 
         const node = 0
         const matcher1 = "api/v1/network/nodes"

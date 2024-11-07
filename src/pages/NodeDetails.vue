@@ -222,7 +222,7 @@ import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {makeStakePercentage} from "@/schemas/HederaUtils";
-import {CoreConfig} from "@/config/CoreConfig";
+import {routeManager} from "@/router";
 
 export default defineComponent({
 
@@ -254,8 +254,6 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const coreConfig = CoreConfig.inject()
-    const enableStaking = coreConfig.enableStaking
 
     const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
     const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
@@ -300,7 +298,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      enableStaking,
+      enableStaking: routeManager.enableStaking,
       nodeIdNb,
       node: nodeAnalyzer.node,
       annualizedRate: nodeAnalyzer.annualizedRate,
