@@ -244,7 +244,6 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
-import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
 
@@ -283,9 +282,6 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-
-    const coreConfig = CoreConfig.inject()
-    const enableExpiry = coreConfig.enableExpiry
 
     //
     // basic computed's
@@ -369,7 +365,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
-      enableExpiry,
+      enableExpiry: routeManager.enableExpiry,
       contract: contractLocParser.entity,
       maxAutoAssociationValue,
       balanceAnalyzer,

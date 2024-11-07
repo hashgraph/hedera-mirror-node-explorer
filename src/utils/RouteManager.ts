@@ -110,6 +110,10 @@ export class RouteManager {
         return this.currentNetworkEntry.value.enableStaking
     })
 
+    public readonly enableExpiry = computed(() => {
+        return this.currentNetworkEntry.value.enableExpiry
+    })
+
     public readonly nbNetworks = computed(() => {
         return networkRegistry.entries.value.length
     })

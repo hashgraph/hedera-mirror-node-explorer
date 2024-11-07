@@ -46,6 +46,7 @@ describe("NetworkRegistry.ts", () => {
                 "ledgerID": "00",
                 "enableWallet": true,
                 "enableStaking": true,
+                "enableExpiry": true,
                 "sourcifySetup": {
                     "activate": true,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -87,6 +88,7 @@ describe("NetworkRegistry.ts", () => {
                 "ledgerID": "FF",
                 "enableWallet": true,
                 "enableStaking": true,
+                "enableExpiry": true,
             }
         ]
 
@@ -114,6 +116,7 @@ describe("NetworkRegistry.ts", () => {
                 "ledgerID": "00",
                 "enableWallet": true,
                 "enableStaking": true,
+                "enableExpiry": true,
                 "sourcifySetup": {
                     "activate": false,
                     "repoURL": "http://localhost:10000/contracts/",
@@ -147,6 +150,7 @@ describe("NetworkRegistry.ts", () => {
                 "ledgerID": "00",
                 "enableWallet": true,
                 "enableStaking": true,
+                "enableExpiry": true,
                 "sourcifySetup": null
             }
         ]
@@ -174,6 +178,7 @@ describe("NetworkRegistry.ts", () => {
                 "ledgerID": "00",
                 "enableWallet": true,
                 "enableStaking": true,
+                "enableExpiry": true,
             }
         ]
         const mock = new MockAdapter(axios);

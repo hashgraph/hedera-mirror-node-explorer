@@ -412,7 +412,6 @@ import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
-import {CoreConfig} from "@/config/CoreConfig";
 
 const props = defineProps({
   accountId: String,
@@ -425,8 +424,7 @@ const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
 
-const coreConfig = CoreConfig.inject()
-const enableExpiry = coreConfig.enableExpiry
+const enableExpiry = routeManager.enableExpiry
 const enableStaking = routeManager.enableStaking
 
 const timeSelection = ref("LATEST")

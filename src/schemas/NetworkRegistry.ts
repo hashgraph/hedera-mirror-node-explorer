@@ -42,8 +42,16 @@ export class NetworkEntry {
     public readonly displayName: string
     public readonly url: string
     public readonly ledgerID: string
+
+    // When set to 'true', this variable will enable connecting a wallet
     public readonly enableWallet: boolean
+
+    // When set to 'true', this variable will enable staking feature
     public readonly enableStaking: boolean
+
+    // When set to 'true', this variable will enable properties related to account/contract expiry
+    public readonly enableExpiry: boolean
+
     public readonly sourcifySetup: SourcifySetup | null
 
     constructor(
@@ -53,6 +61,7 @@ export class NetworkEntry {
         ledgerID: string,
         enableWallet: boolean,
         enableStaking: boolean,
+        enableExpiry: boolean,
         sourcifySetup: SourcifySetup | null
     ) {
         this.name = name
@@ -61,6 +70,7 @@ export class NetworkEntry {
         this.ledgerID = ledgerID
         this.enableWallet = enableWallet
         this.enableStaking = enableStaking
+        this.enableExpiry = enableExpiry
         this.sourcifySetup = sourcifySetup
     }
 
@@ -73,6 +83,7 @@ export class NetworkEntry {
         const ledgerID = encoding["ledgerID"]
         const enableWallet = encoding["enableWallet"]
         const enableStaking = encoding["enableStaking"]
+        const enableExpiry = encoding["enableExpiry"]
         const sourcifySetupEncoding = encoding["sourcifySetup"]
 
         if (typeof name == "string" &&
@@ -81,6 +92,7 @@ export class NetworkEntry {
             typeof ledgerID == "string" &&
             typeof enableWallet == "boolean" &&
             typeof enableStaking == "boolean" &&
+            typeof enableExpiry == "boolean" &&
             (typeof sourcifySetupEncoding == "object" || typeof sourcifySetupEncoding == "undefined")) {
 
             let tidyDisplayName = (displayName ?? name).toUpperCase()
@@ -91,12 +103,30 @@ export class NetworkEntry {
             if (sourcifySetupEncoding !== undefined && sourcifySetupEncoding !== null) {
                 const sourcifySetup = SourcifySetup.decode(sourcifySetupEncoding as Record<string, unknown>)
                 if (sourcifySetup !== null) {
-                    result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, enableStaking, sourcifySetup)
+                    result = new NetworkEntry(
+                        name,
+                        tidyDisplayName,
+                        url,
+                        ledgerID,
+                        enableWallet,
+                        enableStaking,
+                        enableExpiry,
+                        sourcifySetup
+                    )
                 } else {
                     result = null
                 }
             } else {
-                result = new NetworkEntry(name, tidyDisplayName, url, ledgerID, enableWallet, enableStaking, null)
+                result = new NetworkEntry(
+                    name,
+                    tidyDisplayName,
+                    url,
+                    ledgerID,
+                    enableWallet,
+                    enableStaking,
+                    enableExpiry,
+                    null
+                )
             }
         } else {
             result = null
@@ -188,6 +218,7 @@ export class NetworkRegistry {
             ledgerID: '00',
             enableWallet: true,
             enableStaking: true,
+            enableExpiry: true,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x127)
         },
         {
@@ -197,6 +228,7 @@ export class NetworkRegistry {
             ledgerID: '01',
             enableWallet: true,
             enableStaking: true,
+            enableExpiry: false,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x128)
         },
         {
@@ -206,6 +238,7 @@ export class NetworkRegistry {
             ledgerID: '02',
             enableWallet: false,
             enableStaking: true,
+            enableExpiry: false,
             sourcifySetup: new SourcifySetup(true, "", "", "", 0x129)
         }
     ])
@@ -237,7 +270,7 @@ export class NetworkRegistry {
                         `Defining an additional network with URL: ${localNodeURL} and name: ${localNodeMenuName} \n`)
 
                     this.entries.value.push(
-                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', false, true, null)
+                        new NetworkEntry('devnet', localNodeMenuName, localNodeURL, 'FF', false, true, false, null)
                     )
                 }
             })
