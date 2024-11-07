@@ -49,7 +49,6 @@ describe("Nodes.vue", () => {
 
     it("should display the nodes pages containing the node table", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

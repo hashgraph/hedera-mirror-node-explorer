@@ -171,6 +171,7 @@ import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -181,9 +182,10 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
+    const coreConfig = CoreConfig.inject()
 
     const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
+    const isStakingEnabled = coreConfig.enableStaking
 
     const isMobileMenuOpen = ref(false)
 

@@ -46,8 +46,6 @@ describe("NodeTable.vue", () => {
 
     it("should list the 3 nodes in the table", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
-
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);

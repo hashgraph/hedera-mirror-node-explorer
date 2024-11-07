@@ -105,6 +105,7 @@ import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import Footer from "@/components/Footer.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: 'MobileMenu',
@@ -116,7 +117,8 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
+    const coreConfig = CoreConfig.inject()
+    const isStakingEnabled = coreConfig.enableStaking
 
     const onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {

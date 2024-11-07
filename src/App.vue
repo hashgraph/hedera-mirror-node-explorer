@@ -37,15 +37,23 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, PropType, provide, ref, watch} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
-import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
+import {coreConfigKey, errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import {useRoute} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
+import {CoreConfig} from "@/config/CoreConfig";
+
+const props = defineProps({
+  "coreConfig": {
+    type: Object as PropType<CoreConfig>,
+    required: true
+  }
+})
 
 const route = useRoute()
 const onMainDashboardPage = computed(() => {
@@ -90,6 +98,8 @@ provide('isXLargeScreen', isXLargeScreen)
 const onResizeHandler = () => {
   windowWidth.value = window.innerWidth
 }
+
+provide(coreConfigKey, props.coreConfig)
 
 const showCookiesDialog = ref(false)
 

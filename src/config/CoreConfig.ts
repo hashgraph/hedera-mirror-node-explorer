@@ -47,6 +47,9 @@ export class CoreConfig {
         return inject<CoreConfig>(coreConfigKey, this.FALLBACK)
     }
 
+    public static makeWithStakingDisabled(): CoreConfig { // For unit testing
+        return CoreConfig.parse({ enableStaking: false })
+    }
 
     //
     // Private
@@ -91,7 +94,7 @@ export class CoreConfig {
 
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
-            fetchBoolean(obj, "enableStaking") ?? false,
+            fetchBoolean(obj, "enableStaking") ?? true,
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
             fetchString(obj, "documentTitleSuffix"),
             fetchString(obj, "metaDescription"),

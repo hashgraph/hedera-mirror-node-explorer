@@ -63,6 +63,7 @@ import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkR
 import axios from "axios";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export class RouteManager {
 
@@ -93,7 +94,7 @@ export class RouteManager {
             CacheUtils.clearAll()
         })
 
-        this.configure()
+        this.configure(CoreConfig.FALLBACK)
     }
 
     public readonly currentRoute = computed(() => this.router.currentRoute.value?.name)
@@ -113,7 +114,9 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
-    public configure() {
+    public configure(coreConfig: CoreConfig) {
+
+        this.router.clearRoutes()
 
         const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkRegistry.getDefaultEntry().name
         this.router.addRoute({
@@ -128,8 +131,7 @@ export class RouteManager {
             this.router.addRoute(r)
         }
 
-        const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
-        if (!isStakingEnabled) {
+        if (!coreConfig.enableStaking) {
             this.router.removeRoute("Staking")
         }
 

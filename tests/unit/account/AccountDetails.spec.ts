@@ -364,7 +364,6 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to node", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: false});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -426,7 +425,6 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to account", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);

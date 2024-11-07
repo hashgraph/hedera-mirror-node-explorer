@@ -18,7 +18,7 @@
  *
  */
 
-import {beforeEach, describe, expect, test} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -30,6 +30,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {CoreConfig} from "../../src/config/CoreConfig";
 import {routeManager} from "../../src/router";
 
 /*
@@ -42,10 +43,6 @@ import {routeManager} from "../../src/router";
 HMSF.forceUTC = true
 
 describe("App.vue", () => {
-
-    beforeEach(() => {
-        Object.assign(import.meta.env, {VITE_APP_ENABLE_STAKING: false});
-    })
 
     test("normal screen", async () => {
 
@@ -78,7 +75,9 @@ describe("App.vue", () => {
             global: {
                 plugins: [router, Oruga]
             },
-            props: {},
+            props: {
+                coreConfig: CoreConfig.makeWithStakingDisabled(),
+            },
         });
 
         await flushPromises()
