@@ -31,20 +31,20 @@ export function fetchBoolean(obj: any, key: string): boolean|null {
     }
     return result
 }
-//
-// export function fetchNumber(obj: any, key: string): number|null {
-//     let result: number|null
-//     if (key in obj) {
-//         if (typeof obj[key] === 'number') {
-//             result = obj[key]
-//         } else {
-//             throw new TypeError('Expected ' + key + ' to be number, got ' + typeof key)
-//         }
-//     } else {
-//         result = null
-//     }
-//     return result
-// }
+
+export function fetchNumber(obj: any, key: string): number|null {
+    let result: number|null
+    if (key in obj) {
+        if (typeof obj[key] === 'number') {
+            result = obj[key]
+        } else {
+            throw new TypeError('Expected ' + key + ' to be number, got ' + typeof key)
+        }
+    } else {
+        result = null
+    }
+    return result
+}
 
 export function fetchString(obj: any, key: string): string|null {
     let result: string|null
@@ -64,6 +64,24 @@ export function fetchURL(obj: any, key: string): string|null {
     const result = fetchString(obj, key)
     if (result !== null && new URL(result, window.location.origin) === null) {
         throw new TypeError('Expected ' + key + ' to be URL')
+    }
+    return result
+}
+
+export function fetchObject(obj: any, key: string): object|null {
+    let result: object|null
+    if (key in obj) {
+        if (typeof obj[key] === 'object') {
+            if (obj[key] !== null) {
+                result = obj[key]
+            } else {
+                throw new TypeError('Expected ' + key + ' to be object, got null')
+            }
+        } else {
+            throw new TypeError('Expected ' + key + ' to be object, got ' + typeof key)
+        }
+    } else {
+        result = null
     }
     return result
 }

@@ -39,7 +39,15 @@
 
 import {computed, onBeforeMount, onBeforeUnmount, onMounted, PropType, provide, ref, watch} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
-import {coreConfigKey, errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
+import {
+  coreConfigKey,
+  errorKey,
+  explanationKey,
+  initialLoadingKey,
+  loadingKey,
+  networkConfigKey,
+  suggestionKey
+} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import {useRoute} from "vue-router";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
@@ -47,10 +55,15 @@ import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
 import {CoreConfig} from "@/config/CoreConfig";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 const props = defineProps({
   "coreConfig": {
     type: Object as PropType<CoreConfig>,
+    required: true
+  },
+  networkConfig: {
+    type: Object as PropType<NetworkConfig>,
     required: true
   }
 })
@@ -100,6 +113,7 @@ const onResizeHandler = () => {
 }
 
 provide(coreConfigKey, props.coreConfig)
+provide(networkConfigKey, props.networkConfig)
 
 const showCookiesDialog = ref(false)
 

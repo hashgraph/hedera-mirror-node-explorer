@@ -64,11 +64,13 @@ import axios from "axios";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {CoreConfig} from "@/config/CoreConfig";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 export class RouteManager {
 
     public readonly router: Router
     private coreConfig = CoreConfig.FALLBACK
+    private networkConfig = NetworkConfig.FALLBACK
 
     //
     // Public
@@ -95,7 +97,7 @@ export class RouteManager {
             CacheUtils.clearAll()
         })
 
-        this.configure(CoreConfig.FALLBACK)
+        this.configure(CoreConfig.FALLBACK, NetworkConfig.FALLBACK)
     }
 
     public readonly currentRoute = computed(() => this.router.currentRoute.value?.name)
@@ -135,9 +137,10 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
     })
 
-    public configure(coreConfig: CoreConfig) {
+    public configure(coreConfig: CoreConfig, networkConfig: NetworkConfig) {
 
         this.coreConfig = coreConfig
+        this.networkConfig = networkConfig
 
         //
         // Rebuilds route array
@@ -145,7 +148,7 @@ export class RouteManager {
 
         this.router.clearRoutes()
 
-        const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkRegistry.getDefaultEntry().name
+        const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkConfig.entries[0].name
         this.router.addRoute({
             path: '/',
             redirect: '/' + defaultNetwork + '/dashboard'
