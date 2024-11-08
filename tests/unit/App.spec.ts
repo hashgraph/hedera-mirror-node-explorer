@@ -95,10 +95,8 @@ describe("App.vue", () => {
                 sourcifySetup: null
             }
         ]);
-        // expect(routeManager.currentNetwork.value).toBe("mainnet")
         routeManager.configure(routeManager.coreConfig, networkConfig)
-        await routeManager.router.isReady()
-        expect(routeManager.currentNetwork.value).toBe("customnet1")
+        await router.push("/")
 
         const wrapper = mount(App, {
             global: {
@@ -106,9 +104,10 @@ describe("App.vue", () => {
             },
             props: {
                 coreConfig: routeManager.coreConfig,
-                networkConfig: networkConfig
+                networkConfig: routeManager.networkConfig
             },
         });
+        expect(routeManager.currentNetwork.value).toBe("customnet1")
 
         await flushPromises()
 

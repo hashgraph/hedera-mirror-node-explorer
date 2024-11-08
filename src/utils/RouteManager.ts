@@ -90,8 +90,7 @@ export class RouteManager {
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             this.switchThemes()
-        }, {immediate: true})
-
+        } /*  {immediate: true} causes a infinite loop (?) */)
         watch(this.currentNetwork, () => {
             CacheUtils.clearAll()
         })
