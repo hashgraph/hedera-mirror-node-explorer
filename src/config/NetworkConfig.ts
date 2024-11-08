@@ -22,6 +22,7 @@ import axios from "axios";
 import {fetchBoolean, fetchNumber, fetchObject, fetchString, fetchURL} from "@/config/ConfigUtils";
 import {inject} from "vue";
 import {networkConfigKey} from "@/AppKeys";
+import {hip15checksum} from "@/schemas/HederaUtils";
 
 export class SourcifySetup {
 
@@ -248,6 +249,19 @@ export class NetworkConfig {
 
     public static make(): NetworkConfig { // For unit testing
         return NetworkConfig.parse({ })
+    }
+
+    public lookup(name: string): NetworkEntry | null {
+        return this.entries.find(element => element.name === name) ?? null
+    }
+
+    public isValidChecksum(id: string, checksum: string, network: string): boolean {
+        return this.computeChecksum(id, network) == checksum
+    }
+
+    public computeChecksum(id: string, network: string): string {
+        const ledgerID = this.lookup(network)?.ledgerID
+        return hip15checksum(ledgerID ?? 'FF', id)
     }
 
     //
