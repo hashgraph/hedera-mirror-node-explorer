@@ -30,7 +30,6 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
-import {CoreConfig} from "../../src/config/CoreConfig";
 import {NetworkConfig} from "../../src/config/NetworkConfig";
 import {routeManager} from "../../src/router";
 

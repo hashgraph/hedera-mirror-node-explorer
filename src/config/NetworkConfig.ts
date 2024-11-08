@@ -306,7 +306,7 @@ export class NetworkConfig {
 
 
     public static parse(obj: object): NetworkConfig {
-        let entries: NetworkEntry[] = []
+        const entries: NetworkEntry[] = []
         if (Array.isArray(obj)) {
             if (obj.length > 0) {
                 for (const item of obj) {

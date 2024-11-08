@@ -32,8 +32,6 @@ import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import router from "@/router";
-import {NetworkConfig} from "../../../src/config/NetworkConfig";
-import {routeManager} from "../../../src/router";
 
 describe("HbarMarketDashboard.vue ", () => {
 
