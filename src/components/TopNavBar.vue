@@ -178,7 +178,7 @@
 import router, {routeManager, walletManager} from "@/router";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
@@ -199,6 +199,7 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
     const coreConfig = CoreConfig.inject()
+    const networkConfig = NetworkConfig.inject()
 
     const enableStaking = routeManager.enableStaking
     const productLogoURL = coreConfig.productLogoURL
@@ -311,7 +312,7 @@ export default defineComponent({
       isNodeRoute: routeManager.isNodeRoute,
       isTokenRoute: routeManager.isTokenRoute,
       isTopicRoute: routeManager.isTopicRoute,
-      networkEntries: networkRegistry.entries,
+      networkEntries: networkConfig.entries,
       isBlocksRoute: routeManager.isBlocksRoute,
       isStakingRoute: routeManager.isStakingRoute,
       isAccountRoute: routeManager.isAccountRoute,
