@@ -1,7 +1,12 @@
 {
-  "enableStaking": true,
-  "enableMarket": true,
-  "productName": "ACME Mirror Node Explorer",
-  "productDescription": "ACME Mirror Node Explorer is a ledger explorer for the ACME network",
-  "sponsorURL": "https://hedera.com"
+  "productName": "Mirror Node Explorer",
+  "productLogoURL": "/brand-product-logo.svg",
+  "documentTitleSuffix": "Mirror Node Explorer",
+  "productDescription": "Mirror Node Explorer is a ledger explorer for the Hedera network",
+  "builtOnLogoURL": "",
+  "builtOnURL": "https://hedera.com",
+  "sponsorLogoURL": "/brand-sponsor-logo.png",
+  "sponsorURL": "https://github.com/hashgraph",
+  "ipfsGatewayUrlPrefix": "https://gateway.pinata.cloud/ipfs/",
+  "popularTokenIndexURL": "popular-tokens.json"
 }
