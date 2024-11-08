@@ -75,7 +75,7 @@ export function fetchObject(obj: any, key: string): object|null {
             if (obj[key] !== null) {
                 result = obj[key]
             } else {
-                throw new TypeError('Expected ' + key + ' to be object, got null')
+                result = null
             }
         } else {
             throw new TypeError('Expected ' + key + ' to be object, got ' + typeof key)

@@ -82,7 +82,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
-import {NetworkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {HederaMetricsLoader} from "@/components/dashboard/metrics/HederaMetricsLoader";
 
@@ -96,7 +96,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
 
-    const isMainNetwork = computed(() => routeManager.currentNetwork.value == NetworkRegistry.MAIN_NETWORK)
+    const isMainNetwork = computed(() => routeManager.currentNetwork.value == NetworkConfig.MAIN_NETWORK)
 
     const currentNetworkDisplayName = computed(() => routeManager.currentNetworkEntry.value.displayName)
 

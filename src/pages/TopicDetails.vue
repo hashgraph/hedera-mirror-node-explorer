@@ -132,7 +132,7 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import AccountLink from "@/components/values/link/AccountLink.vue";
@@ -171,6 +171,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const initialLoading = inject(initialLoadingKey, ref(false))
+    const networkConfig = NetworkConfig.inject()
 
     const validEntityId = computed(() => {
       return props.topicId ? EntityID.parse(props.topicId, true) != null : false
@@ -180,7 +181,7 @@ export default defineComponent({
     })
 
     const topicChecksum = computed(() =>
-        normalizedTopicId.value ? networkRegistry.computeChecksum(
+        normalizedTopicId.value ? networkConfig.computeChecksum(
             normalizedTopicId.value,
             routeManager.currentNetwork.value
         ) : null)

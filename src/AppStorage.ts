@@ -18,7 +18,6 @@
  *
  */
 
-import {NetworkEntry, networkRegistry} from "@/schemas/NetworkRegistry";
 import {NameRecord} from "@/utils/name_service/NameService";
 import {ref} from "vue";
 
@@ -32,15 +31,12 @@ export class AppStorage {
 
     private static readonly LAST_USED_NETWORK_KEY = 'network'
 
-    public static getLastNetwork(): NetworkEntry {
-        const item = this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
-        const result = item != null ? networkRegistry.lookup(item) : null
-        return result ?? networkRegistry.getDefaultEntry()
+    public static getLastNetwork(): string|null {
+        return this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
     }
 
-    public static setLastNetwork(newValue: string | NetworkEntry): void {
-        const newItem = typeof newValue == "string" ? newValue : newValue.name
-        this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newItem)
+    public static setLastNetwork(newValue: string | null): void {
+        this.setLocalStorageItem(this.LAST_USED_NETWORK_KEY, newValue)
     }
 
     //

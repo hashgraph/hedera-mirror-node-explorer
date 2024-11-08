@@ -63,6 +63,7 @@ import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 export default defineComponent({
 
@@ -84,13 +85,14 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const networkConfig = NetworkConfig.inject()
 
     //
     // account
     //
 
     const accountLocator = computed(() => props.accountId ?? null)
-    const accountLocParser = new AccountLocParser(accountLocator)
+    const accountLocParser = new AccountLocParser(accountLocator, networkConfig)
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
 

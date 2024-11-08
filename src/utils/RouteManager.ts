@@ -59,12 +59,11 @@ import BlockDetails from "@/pages/BlockDetails.vue";
 import SearchHelp from "@/pages/SearchHelp.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
-import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import axios from "axios";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {CoreConfig} from "@/config/CoreConfig";
-import {NetworkConfig} from "@/config/NetworkConfig";
+import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
 
 export class RouteManager {
 
@@ -121,7 +120,7 @@ export class RouteManager {
     })
 
     public readonly nbNetworks = computed(() => {
-        return networkRegistry.entries.value.length
+        return this.networkConfig.entries.length
     })
 
     public readonly currentNetworkEntry = computed(() => {
@@ -132,9 +131,9 @@ export class RouteManager {
         } else {
             networkName = networkParam
         }
-        const networkEntry = networkName != null ? networkRegistry.lookup(networkName) : null
+        const networkEntry = networkName != null ? this.networkConfig.lookup(networkName) : null
 
-        return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
+        return networkEntry != null ? networkEntry : this.networkConfig.entries[0]
     })
 
     public configure(coreConfig: CoreConfig, networkConfig: NetworkConfig) {
@@ -148,7 +147,7 @@ export class RouteManager {
 
         this.router.clearRoutes()
 
-        const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkConfig.entries[0].name
+        const defaultNetwork = AppStorage.getLastNetwork() ?? networkConfig.entries[0].name
         this.router.addRoute({
             path: '/',
             redirect: '/' + defaultNetwork + '/dashboard'
@@ -167,7 +166,7 @@ export class RouteManager {
     // Public (selectedNetwork)
     //
 
-    public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
+    public selectedNetwork = ref(this.networkConfig.entries[0].name)
 
     public selectedNetworkWatchHandle: WatchStopHandle | undefined
 
@@ -654,7 +653,7 @@ export class RouteManager {
             networkName = networkParam
         }
 
-        return networkName !== null ? networkRegistry.lookup(networkName) : null
+        return networkName !== null ? this.networkConfig.lookup(networkName) : null
     }
 
     //
@@ -705,13 +704,13 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        if (this.currentNetworkEntry.value.name == NetworkRegistry.TEST_NETWORK) {
+        if (this.currentNetworkEntry.value.name == NetworkConfig.TEST_NETWORK) {
             document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
             document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
             document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
             document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
             document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-        } else if (this.currentNetworkEntry.value.name == NetworkRegistry.PREVIEW_NETWORK) {
+        } else if (this.currentNetworkEntry.value.name == NetworkConfig.PREVIEW_NETWORK) {
             document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
             document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
             document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
@@ -764,11 +763,11 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        redirect: '/' + AppStorage.getLastNetwork().name + '/dashboard'
+        redirect: '/' + AppStorage.getLastNetwork() + '/dashboard'
     },
     {
         path: '/page-not-found',
-        redirect: '/' + AppStorage.getLastNetwork().name + '/page-not-found'
+        redirect: '/' + AppStorage.getLastNetwork() + '/page-not-found'
     },
     {
         path: '/:network/page-not-found',

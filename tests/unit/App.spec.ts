@@ -31,6 +31,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import {CoreConfig} from "../../src/config/CoreConfig";
+import {NetworkConfig} from "../../src/config/NetworkConfig";
 import {routeManager} from "../../src/router";
 
 /*
@@ -63,8 +64,7 @@ describe("App.vue", () => {
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
-        const matcher10 = window.location.origin + '/networks-config.json'
-        mock.onGet(matcher10).reply(200, [
+        const networkConfig = NetworkConfig.parse([
             {
                 name: "customnet1",
                 url: "/testurl1",
@@ -96,19 +96,22 @@ describe("App.vue", () => {
                 sourcifySetup: null
             }
         ]);
-        expect(routeManager.currentNetwork.value).toBe("mainnet")
+        // expect(routeManager.currentNetwork.value).toBe("mainnet")
+        routeManager.configure(routeManager.coreConfig, networkConfig)
+        await routeManager.router.isReady()
+        expect(routeManager.currentNetwork.value).toBe("customnet1")
 
         const wrapper = mount(App, {
             global: {
                 plugins: [router, Oruga]
             },
             props: {
-                coreConfig: CoreConfig.make(),
+                coreConfig: routeManager.coreConfig,
+                networkConfig: networkConfig
             },
         });
 
         await flushPromises()
-        expect(routeManager.currentNetwork.value).toBe("customnet1")
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())

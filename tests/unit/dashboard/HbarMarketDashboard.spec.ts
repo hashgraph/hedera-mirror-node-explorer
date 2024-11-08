@@ -25,59 +25,56 @@
 
  */
 
-import {beforeEach, describe, expect, it} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import router from "@/router";
-import {networkRegistry, NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
+import {NetworkConfig} from "../../../src/config/NetworkConfig";
+import {routeManager} from "../../../src/router";
 
 describe("HbarMarketDashboard.vue ", () => {
 
-    const config = [
-        {
-            "name": "mainnet",
-            "displayName": "MAINNET",
-            "url": "https://mainnet-public.mirrornode.hedera.com/",
-            "ledgerID": "00",
-            "enableWallet": true,
-            "enableStaking": true,
-            "enableExpiry": true,
-            "enableMarket": true,
-        },
-        {
-            "name": "testnet",
-            "displayName": "TESTNET",
-            "url": "https://testnet.mirrornode.hedera.com/",
-            "ledgerID": "01",
-            "enableWallet": true,
-            "enableStaking": false,
-            "enableExpiry": false,
-            "enableMarket": false,
-            "sourcifySetup": null
-        },
-        {
-            "name": "previewnet",
-            "displayName": "PREVIEWNET",
-            "url": "https://previewnet.mirrornode.hedera.com/",
-            "ledgerID": "02",
-            "enableWallet": false,
-            "enableStaking": false,
-            "enableExpiry": false,
-            "enableMarket": false,
-            "sourcifySetup": null
-        }
-    ]
+    // const config = [
+    //     {
+    //         "name": "mainnet",
+    //         "displayName": "MAINNET",
+    //         "url": "https://mainnet-public.mirrornode.hedera.com/",
+    //         "ledgerID": "00",
+    //         "enableWallet": true,
+    //         "enableStaking": true,
+    //         "enableExpiry": true,
+    //         "enableMarket": true,
+    //     },
+    //     {
+    //         "name": "testnet",
+    //         "displayName": "TESTNET",
+    //         "url": "https://testnet.mirrornode.hedera.com/",
+    //         "ledgerID": "01",
+    //         "enableWallet": true,
+    //         "enableStaking": false,
+    //         "enableExpiry": false,
+    //         "enableMarket": false,
+    //         "sourcifySetup": null
+    //     },
+    //     {
+    //         "name": "previewnet",
+    //         "displayName": "PREVIEWNET",
+    //         "url": "https://previewnet.mirrornode.hedera.com/",
+    //         "ledgerID": "02",
+    //         "enableWallet": false,
+    //         "enableStaking": false,
+    //         "enableExpiry": false,
+    //         "enableMarket": false,
+    //         "sourcifySetup": null
+    //     }
+    // ]
+    // const networkConfig = NetworkConfig.parse(config)
+    // routeManager.configure(routeManager.coreConfig, networkConfig)
 
     const mock = new MockAdapter(axios);
-    const configUrl = NetworkRegistry.NETWORKS_CONFIG_URL
-
-    beforeEach(() => {
-        mock.onGet(configUrl).reply(200, config)
-        networkRegistry.readCustomConfig()
-    })
 
     it("should display the market dashboard banner", async () => {
 

@@ -23,6 +23,8 @@ import {fetchBoolean, fetchNumber, fetchObject, fetchString, fetchURL} from "@/c
 import {inject} from "vue";
 import {networkConfigKey} from "@/AppKeys";
 import {hip15checksum} from "@/schemas/HederaUtils";
+import {EntityID} from "@/utils/EntityID";
+import {EthereumAddress} from "@/utils/EthereumAddress";
 
 export class SourcifySetup {
 
@@ -61,6 +63,32 @@ export class SourcifySetup {
             verifierURL,
             chainID
         )
+    }
+
+    // https://docs.sourcify.dev/docs/api/repository/get-file-static/
+
+    makeRequestURL(contractAddress: string): string {
+        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
+        return this.serverURL + "files/any/" + this.chainID + "/" + normalizedAddress
+    }
+
+    makeContractSourceURL(contractAddress: string, full: boolean): string {
+        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
+        const matchPrefix = full ? "full_match/" : "partial_match/"
+        return this.repoURL + matchPrefix + this.chainID + "/" + normalizedAddress
+    }
+
+    makeCheckAllByAddressURL(): string {
+        return this.serverURL + "check-all-by-addresses"
+    }
+
+    makeContractLookupURL(contractAddress: string): string {
+        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
+        return this.verifierURL + "lookup/" + normalizedAddress
+    }
+
+    hexChainID(): string {
+        return "0x" + this.chainID.toString(16)
     }
 
     //
@@ -117,16 +145,13 @@ export class NetworkEntry {
         if (enableMarket === null) {
             throw this.missingPropertyError("enableMarket")
         }
-        if (sourcifySetupObj === null) {
-            throw this.missingPropertyError("sourcifySetupObj")
-        }
 
         let tidyDisplayName = (displayName ?? name).toUpperCase()
         if (tidyDisplayName.length > this.NETWORK_NAME_MAX_LENGTH) {
             tidyDisplayName = tidyDisplayName.slice(0, this.NETWORK_NAME_MAX_LENGTH) + '…'
         }
 
-        const sourcifySetup = SourcifySetup.parse(sourcifySetupObj)
+        const sourcifySetup = sourcifySetupObj !== null ? SourcifySetup.parse(sourcifySetupObj) : null
 
         return new NetworkEntry(
             name,
@@ -171,6 +196,10 @@ export class NetworkEntry {
 
 export class NetworkConfig {
 
+    public static readonly MAIN_NETWORK = 'mainnet'
+    public static readonly TEST_NETWORK = 'testnet'
+    public static readonly PREVIEW_NETWORK = 'previewnet'
+
     public static FALLBACK = NetworkConfig.parse([
         {
             activate: true,
@@ -180,7 +209,7 @@ export class NetworkConfig {
             ledgerID: '00',
             enableWallet: true,
             enableStaking: true,
-            enableExpiry: false,
+            enableExpiry: true,
             enableMarket: true,
             sourcifySetup: SourcifySetup.parse({
                 activate: true,
@@ -259,6 +288,11 @@ export class NetworkConfig {
         return this.computeChecksum(id, network) == checksum
     }
 
+    public makeAddressWithChecksum(address: string, network: string): string | null {
+        const entity = EntityID.normalize(address)
+        return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null
+    }
+
     public computeChecksum(id: string, network: string): string {
         const ledgerID = this.lookup(network)?.ledgerID
         return hip15checksum(ledgerID ?? 'FF', id)
@@ -271,7 +305,7 @@ export class NetworkConfig {
     private constructor(public readonly entries: NetworkEntry[]) {}
 
 
-    private static parse(obj: object): NetworkConfig {
+    public static parse(obj: object): NetworkConfig {
         let entries: NetworkEntry[] = []
         if (Array.isArray(obj)) {
             if (obj.length > 0) {

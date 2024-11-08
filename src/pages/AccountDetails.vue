@@ -412,6 +412,7 @@ import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 const props = defineProps({
   accountId: String,
@@ -423,6 +424,7 @@ const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
+const networkConfig = NetworkConfig.inject()
 
 const enableExpiry = routeManager.enableExpiry
 const enableStaking = routeManager.enableStaking
@@ -446,7 +448,7 @@ function onDateCleared() {
 //
 // account
 //
-const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
+const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null), networkConfig)
 onMounted(() => accountLocParser.mount())
 onBeforeUnmount(() => accountLocParser.unmount())
 

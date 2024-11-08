@@ -50,7 +50,6 @@ import {
 } from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import {useRoute} from "vue-router";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
@@ -139,7 +138,6 @@ onBeforeMount(() => {
     acceptCookies.value = null
     showCookiesDialog.value = false
   }
-  networkRegistry.readCustomConfig()
 })
 
 onMounted(() => {

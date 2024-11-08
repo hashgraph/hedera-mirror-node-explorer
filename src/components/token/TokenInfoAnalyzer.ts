@@ -21,20 +21,22 @@
 import {computed, Ref} from "vue";
 import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
 import {TokenInfo, TokenType} from "@/schemas/HederaSchemas";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager, walletManager} from "@/router";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export class TokenInfoAnalyzer {
 
     private readonly tokenInfo: Ref<TokenInfo | null>
+    private readonly networkConfig: NetworkConfig
 
     //
     // Public
     //
 
-    public constructor(tokenInfo: Ref<TokenInfo | null>) {
+    public constructor(tokenInfo: Ref<TokenInfo | null>, networkConfig: NetworkConfig) {
         this.tokenInfo = tokenInfo
+        this.networkConfig = networkConfig
     }
 
     public mount() {
@@ -93,7 +95,7 @@ export class TokenInfoAnalyzer {
     public readonly treasuryAccount = computed(() => this.tokenInfo.value?.treasury_account_id)
 
     public readonly tokenChecksum = computed(() =>
-        this.tokenInfo.value?.token_id ? networkRegistry.computeChecksum(
+        this.tokenInfo.value?.token_id ? this.networkConfig.computeChecksum(
             this.tokenInfo.value?.token_id,
             routeManager.currentNetwork.value
         ) : null)

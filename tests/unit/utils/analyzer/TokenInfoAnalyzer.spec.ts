@@ -30,6 +30,7 @@ import {SAMPLE_ACCOUNT, SAMPLE_ASSOCIATED_TOKEN} from "../../Mocks";
 import {WalletDriver_Mock} from "../../staking/WalletDriver_Mock";
 import {walletManager} from "@/router";
 import {TokenInfo} from "@/schemas/HederaSchemas";
+import {NetworkConfig} from "../../../../src/config/NetworkConfig";
 
 describe("TokenInfoAnalyzer.spec.ts", () => {
 
@@ -56,7 +57,7 @@ describe("TokenInfoAnalyzer.spec.ts", () => {
 
         // 1) new
         const tokenInfo = ref<TokenInfo | null>(null)
-        const analyzer = new TokenInfoAnalyzer(tokenInfo)
+        const analyzer = new TokenInfoAnalyzer(tokenInfo, NetworkConfig.FALLBACK)
         expect(analyzer.tokenId.value).toBeNull()
         expect(analyzer.ethereumAddress.value).toBeNull()
         expect(analyzer.tokenSymbol.value).toBe("?")

@@ -49,7 +49,8 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {networkRegistry, NetworkRegistry} from "../../../src/schemas/NetworkRegistry";
+import {NetworkConfig} from "../../../src/config/NetworkConfig";
+import {networkConfigKey} from "../../../src/AppKeys";
 
 /*
     Bookmarks
@@ -438,12 +439,12 @@ describe("AccountDetails.vue", () => {
                 "ledgerID": "00",
                 "enableWallet": true,
                 "enableStaking": true,
+                "enableExpiry": true,
+                "enableMarket": true,
                 "sourcifySetup": null
             }
         ]
-        const configUrl = NetworkRegistry.NETWORKS_CONFIG_URL
-        mock.onGet(configUrl).reply(200, config)
-        networkRegistry.readCustomConfig()
+        const networkConfig = NetworkConfig.parse(config)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_ACCOUNT);
@@ -480,7 +481,8 @@ describe("AccountDetails.vue", () => {
 
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { [networkConfigKey]: networkConfig }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined

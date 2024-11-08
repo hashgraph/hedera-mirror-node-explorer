@@ -226,7 +226,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {ContractLocParser} from "@/utils/parser/ContractLocParser";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
@@ -282,6 +282,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const networkConfig = NetworkConfig.inject()
 
     //
     // basic computed's
@@ -318,7 +319,7 @@ export default defineComponent({
     })
 
     const accountChecksum = computed(() =>
-        contractLocParser.contractId.value ? networkRegistry.computeChecksum(
+        contractLocParser.contractId.value ? networkConfig.computeChecksum(
             contractLocParser.contractId.value,
             routeManager.currentNetwork.value
         ) : null)
