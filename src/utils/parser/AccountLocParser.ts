@@ -26,7 +26,7 @@ import {AccountAlias} from "@/utils/AccountAlias";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
-import router, {routeManager} from "@/router";
+import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {base32ToAlias, byteToHex} from "@/utils/B64Utils";

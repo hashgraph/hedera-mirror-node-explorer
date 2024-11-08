@@ -293,7 +293,7 @@
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {isCouncilNode, waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {extractChecksum, isCouncilNode, stripChecksum, waitForTransactionRefresh} from "@/schemas/HederaUtils";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
@@ -585,10 +585,10 @@ const validateAccount = async () => {
   }
 }
 const stakedAccountEntity = computed(() =>
-    EntityID.normalize(nr.stripChecksum(stakedAccount.value ?? ""))
+    EntityID.normalize(stripChecksum(stakedAccount.value ?? ""))
 )
 const stakedAccountChecksum = computed(() =>
-    nr.extractChecksum(stakedAccount.value ?? "")
+    extractChecksum(stakedAccount.value ?? "")
 )
 const isStakedAccountValid = ref<boolean>(false)
 const isStakingValid = computed(() =>
