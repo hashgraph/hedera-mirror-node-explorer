@@ -188,7 +188,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {isCouncilNode, makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/HederaUtils";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -252,9 +252,9 @@ export default defineComponent({
 
     const selectedAccount = ref<string | null>(null)
     const selectedAccountEntity = computed(
-        () => EntityID.normalize(nr.stripChecksum(selectedAccount.value ?? "")))
+        () => EntityID.normalize(stripChecksum(selectedAccount.value ?? "")))
     const selectedAccountChecksum = computed(
-        () => nr.extractChecksum(selectedAccount.value ?? ""))
+        () => extractChecksum(selectedAccount.value ?? ""))
     const isSelectedAccountValid = ref(false)
     const inputFeedbackMessage = ref<string | null>(null)
 
@@ -325,7 +325,7 @@ export default defineComponent({
 
     const handleConfirmChange = () => {
       const stakedNode = isNodeSelected.value ? selectedNode.value : null
-      const stakedAccount = isAccountSelected.value ? nr.stripChecksum(selectedAccount.value ?? "") : null
+      const stakedAccount = isAccountSelected.value ? stripChecksum(selectedAccount.value ?? "") : null
       const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
       context.emit("changeStaking", stakedNode, stakedAccount, declineReward)
     }
@@ -352,7 +352,7 @@ export default defineComponent({
             isValidInput = false
             break
           } else {
-            isValidID = EntityID.parse(nr.stripChecksum(value)) !== null
+            isValidID = EntityID.parse(stripChecksum(value)) !== null
           }
         } else if (c === '-') {
           if (!isValidID || isPastDash) {

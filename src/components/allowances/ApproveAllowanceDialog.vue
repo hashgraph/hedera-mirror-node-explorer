@@ -223,7 +223,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
-import router, {routeManager, walletManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {networkRegistry} from "@/schemas/NetworkRegistry";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
@@ -233,10 +233,11 @@ import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletD
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {
+  extractChecksum,
   formatTokenAmount,
   isOwnedSerials,
   isValidAssociation,
-  makeTokenName,
+  makeTokenName, stripChecksum,
   waitForTransactionRefresh
 } from "@/schemas/HederaUtils";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
@@ -285,12 +286,12 @@ export default defineComponent({
     const network = routeManager.currentNetwork.value
 
     const selectedSpender = ref<string | null>(null)
-    const normalizedSpender = computed(() => EntityID.normalize(nr.stripChecksum(selectedSpender.value ?? "")))
+    const normalizedSpender = computed(() => EntityID.normalize(stripChecksum(selectedSpender.value ?? "")))
 
     const selectedHbarAmount = ref<string | null>(null)
 
     const selectedToken = ref<string | null>(null)
-    const normalizedToken = computed(() => EntityID.normalize(nr.stripChecksum(selectedToken.value ?? "")))
+    const normalizedToken = computed(() => EntityID.normalize(stripChecksum(selectedToken.value ?? "")))
     const tokenInfoLookup = TokenInfoCache.instance.makeLookup(normalizedToken)
     onMounted(() => tokenInfoLookup.mount())
     onBeforeUnmount(() => tokenInfoLookup.unmount())
@@ -312,7 +313,7 @@ export default defineComponent({
     )
 
     const selectedNft = ref<string | null>(null)
-    const normalizedNFT = computed(() => EntityID.normalize(nr.stripChecksum(selectedNft.value ?? "")))
+    const normalizedNFT = computed(() => EntityID.normalize(stripChecksum(selectedNft.value ?? "")))
     const nftInfoLookup = TokenInfoCache.instance.makeLookup(normalizedNFT)
     onMounted(() => nftInfoLookup.mount())
     onBeforeUnmount(() => nftInfoLookup.unmount())
@@ -465,7 +466,7 @@ export default defineComponent({
 
     const validateSpender = async () => {
       isSpenderValid.value = false
-      const checksum = nr.extractChecksum(selectedSpender.value ?? "")
+      const checksum = extractChecksum(selectedSpender.value ?? "")
       const isValidChecksum = checksum ? nr.isValidChecksum(normalizedSpender.value ?? "", checksum, network) : true
 
       if (normalizedSpender.value === null) {
@@ -499,7 +500,7 @@ export default defineComponent({
     const validateToken = async () => {
       isTokenValid.value = false
 
-      const checksum = nr.extractChecksum(selectedToken.value ?? "")
+      const checksum = extractChecksum(selectedToken.value ?? "")
       const isValidChecksum = checksum ? nr.isValidChecksum(normalizedToken.value ?? "", checksum, network) : true
 
       if (normalizedToken.value === null) {
@@ -535,7 +536,7 @@ export default defineComponent({
     const validateNft = async () => {
       isNftValid.value = false
 
-      const checksum = nr.extractChecksum(selectedNft.value ?? "")
+      const checksum = extractChecksum(selectedNft.value ?? "")
       const isValidChecksum = checksum ? nr.isValidChecksum(normalizedNFT.value ?? "", checksum, network) : true
 
       if (normalizedNFT.value === null) {

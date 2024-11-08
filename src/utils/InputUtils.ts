@@ -19,7 +19,7 @@
  */
 
 import {EntityID} from "@/utils/EntityID";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {stripChecksum} from "@/schemas/HederaUtils";
 
 export function inputEntityID(event: Event, entityID: string | null): string | null {
     let result: string | null
@@ -37,7 +37,7 @@ export function inputEntityID(event: Event, entityID: string | null): string | n
                 break
             } else {
                 isPreviousDigit = true
-                isValidID = EntityID.parse(networkRegistry.stripChecksum(value),true) !== null
+                isValidID = EntityID.parse(stripChecksum(value),true) !== null
             }
         } else if (c === '.') {
             pastDots++

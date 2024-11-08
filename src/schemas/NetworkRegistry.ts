@@ -239,16 +239,6 @@ export class NetworkRegistry {
         return hip15checksum(ledgerID ?? 'FF', id)
     }
 
-    public stripChecksum(address: string): string {
-        const dash = address.indexOf('-')
-        return dash != -1 ? address.substring(0, dash) : address
-    }
-
-    public extractChecksum(address: string): string | null {
-        const dash = address.indexOf('-')
-        return dash != -1 ? address.substring(dash + 1) : null
-    }
-
     public makeAddressWithChecksum(address: string, network: string): string | null {
         const entity = EntityID.normalize(address)
         return entity ? (entity + '-' + this.computeChecksum(entity, network)) : null

@@ -553,3 +553,13 @@ export function hip15checksum(ledgerId: string, addr: string) {
 
     return answer;
 }
+
+export function stripChecksum(address: string): string {
+    const dash = address.indexOf('-')
+    return dash != -1 ? address.substring(0, dash) : address
+}
+
+export function extractChecksum(address: string): string | null {
+    const dash = address.indexOf('-')
+    return dash != -1 ? address.substring(dash + 1) : null
+}
