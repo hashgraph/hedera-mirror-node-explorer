@@ -341,6 +341,7 @@ export default defineComponent({
 #product-logo {
   max-width: 242px;
   max-height: 72px;
+  width: 100%
 }
 
 .search-bar-S {
