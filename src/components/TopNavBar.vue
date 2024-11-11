@@ -182,24 +182,19 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
-import {computed, defineComponent, inject, ref} from "vue";
+import {computed, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
 import {CoreConfig} from "@/config/CoreConfig";
 
-const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
-const isTouchDevice = inject('isTouchDevice', false)
-const buildTime = inject('buildTime', "not available")
 const coreConfig = CoreConfig.inject()
 const networkConfig = NetworkConfig.inject()
 
 const enableStaking = routeManager.enableStaking
 const productLogoURL = coreConfig.productLogoURL
-
-const isMobileMenuOpen = ref(false)
 
 const showWalletChooser = ref(false)
 const chooseWallet = () => {
