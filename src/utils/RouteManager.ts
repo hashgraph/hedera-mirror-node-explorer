@@ -595,48 +595,48 @@ export class RouteManager {
     }
 
     private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
-        const envTitleSuffix = this.coreConfig.documentTitleSuffix
-        const titleSuffix = envTitleSuffix !== null ? " | " + envTitleSuffix : ""
+        const envTitlePrefix = this.coreConfig.documentTitlePrefix
+        const titlePrefix = envTitlePrefix !== null ? envTitlePrefix + " " : ""
 
         switch (to.name as string) {
             case "MainDashboard":
-                document.title = "Hedera Dashboard" + titleSuffix
+                document.title = titlePrefix + "Dashboard"
                 break;
             case "TransactionDetails":
-                document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+                document.title = titlePrefix + "Transaction " + (to.query.tid ?? to.params.transactionLoc)
                 break;
             case "TransactionDetails3091":
-                document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
+                document.title = titlePrefix + "Transaction " + to.params.transactionLoc
                 break;
             case "TokenDetails":
-                document.title = "Hedera Token " + to.params.tokenId + titleSuffix
+                document.title = titlePrefix + "Token " + to.params.tokenId
                 break;
             case "TopicDetails":
-                document.title = "Hedera Topic " + to.params.topicId + titleSuffix
+                document.title = titlePrefix + "Topic " + to.params.topicId
                 break;
             case "ContractDetails":
-                document.title = "Hedera Contract " + to.params.contractId + titleSuffix
+                document.title = titlePrefix + "Contract " + to.params.contractId
                 break;
             case "AccountDetails":
-                document.title = "Hedera Account " + to.params.accountId + titleSuffix
+                document.title = titlePrefix + "Account " + to.params.accountId
                 break;
             case "AdminKeyDetails":
-                document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
+                document.title = titlePrefix + "Admin Key for Account " + to.params.accountId
                 break;
             case "NodeDetails":
-                document.title = "Hedera Node " + to.params.nodeId + titleSuffix
+                document.title = titlePrefix + "Node " + to.params.nodeId
                 break;
             case "BlockDetails":
-                document.title = "Hedera Block " + to.params.blockHon + titleSuffix
+                document.title = titlePrefix + "Block " + to.params.blockHon
                 break;
             case "SearchHelp":
-                document.title = "Search Results" + titleSuffix
+                document.title = "Search Results"
                 break;
             case "PageNotFound":
-                document.title = "Page Not Found" + titleSuffix
+                document.title = "Page Not Found"
                 break;
             default:
-                document.title = "Hedera " + (to.name as string) + titleSuffix
+                document.title = titlePrefix + (to.name as string)
         }
 
         this.addMetaTags()

@@ -63,7 +63,7 @@ export class CoreConfig {
         public readonly productLogoURL: string|null,
 
         // The prefix used in the document title
-        public readonly documentTitleSuffix: string|null,
+        public readonly documentTitlePrefix: string|null,
 
         // The description of the product as shown in the long form of the footer tagline
         public readonly productDescription: string|null,
@@ -114,7 +114,7 @@ export class CoreConfig {
         return new CoreConfig(
             fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
-            fetchString(obj, "documentTitleSuffix"),
+            fetchString(obj, "documentTitlePrefix"),
             fetchString(obj, "productDescription"),
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),

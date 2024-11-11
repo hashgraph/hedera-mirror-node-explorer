@@ -1,7 +1,7 @@
 {
   "productName": "Mirror Node Explorer",
   "productLogoURL": "/brand-product-logo.svg",
-  "documentTitleSuffix": "Mirror Node Explorer",
+  "documentTitlePrefix": "Hedera",
   "productDescription": "Mirror Node Explorer is a ledger explorer for the Hedera network",
   "builtOnLogoURL": "",
   "builtOnURL": "https://hedera.com",
