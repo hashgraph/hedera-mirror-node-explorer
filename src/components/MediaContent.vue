@@ -146,8 +146,9 @@ export default defineComponent({
 
     const contentStyle = computed(() => {
       return {
+        'width': '100%',
         'max-width': props.size - 2 + 'px',
-        'max-height': props.size - 2 + "px"
+        'max-height': props.size - 2 + 'px'
       }
     })
 
