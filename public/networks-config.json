@@ -1,0 +1,53 @@
+[
+  {
+    "name": "mainnet",
+    "displayName": "MAINNET",
+    "url": "https://mainnet-public.mirrornode.hedera.com/",
+    "ledgerID": "00",
+    "enableWallet": true,
+    "enableStaking": true,
+    "enableExpiry": true,
+    "enableMarket": true,
+    "sourcifySetup": {
+      "activate": true,
+      "repoURL": "https://repository.local/contracts/",
+      "serverURL": "https://localhost/server/",
+      "verifierURL": "https://localhost/#/",
+      "chainID": 295
+    }
+  },
+  {
+    "name": "testnet",
+    "displayName": "TESTNET",
+    "url": "https://testnet.mirrornode.hedera.com/",
+    "ledgerID": "01",
+    "enableWallet": true,
+    "enableStaking": true,
+    "enableExpiry": false,
+    "enableMarket": false,
+    "sourcifySetup": {
+      "activate": true,
+      "repoURL": "https://repository.local/contracts/",
+      "serverURL": "https://localhost/server/",
+      "verifierURL": "https://localhost/#/",
+      "chainID": 296
+    }
+  },
+  {
+    "name": "previewnet",
+    "displayName": "PREVIEWNET",
+    "url": "https://previewnet.mirrornode.hedera.com/",
+    "ledgerID": "02",
+    "enableWallet": false,
+    "enableStaking": false,
+    "enableExpiry": false,
+    "enableMarket": false,
+    "sourcifySetup": {
+      "activate": true,
+      "repoURL": "https://repository.local/contracts/",
+      "serverURL": "https://localhost/server/",
+      "verifierURL": "https://localhost/#/",
+      "chainID": 297
+    }
+  }
+]

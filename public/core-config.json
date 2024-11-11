@@ -1,0 +1,7 @@
+{
+  "productName": "Mirror Node Explorer",
+  "documentTitlePrefix": "Hedera",
+  "productDescription": "Mirror Node Explorer is a ledger explorer for the Hedera network",
+  "ipfsGatewayUrlPrefix": "https://gateway.pinata.cloud/ipfs/",
+  "popularTokenIndexURL": "popular-tokens.json"
+}
