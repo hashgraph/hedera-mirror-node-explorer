@@ -111,10 +111,6 @@ describe("EVMAddress", () => {
 
     test("Constructing with Hedera ID and EVM address", async () => {
 
-        const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + evmAddress
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
-
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {
             global: {
@@ -134,10 +130,6 @@ describe("EVMAddress", () => {
     })
 
     test("Constructing with Hedera ID and EVM address, not showing ID and showing type", async () => {
-
-        const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + evmAddress
-        mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
         await router.push("/") // To avoid "missing required param 'network'" error
         const wrapper = mount(EVMAddress, {

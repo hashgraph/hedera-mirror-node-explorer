@@ -85,15 +85,17 @@ export class RouteManager {
         this.router.beforeEach(this.checkNetwork)
         this.router.beforeEach(this.setupTitleAndHeaders)
 
-        watch(this.currentNetwork, () => {
-            AppStorage.setLastNetwork(this.currentNetwork.value)
+        const currentNetworkDidChange = () => {
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             this.switchThemes()
-        } /*  {immediate: true} causes a infinite loop (?) */)
+        }
         watch(this.currentNetwork, () => {
+            currentNetworkDidChange()
+            AppStorage.setLastNetwork(this.currentNetwork.value)
             CacheUtils.clearAll()
-        })
+        }) // watch({ immediate: true }) causes a infinite loop
+        currentNetworkDidChange()
 
         this.configure(CoreConfig.FALLBACK, NetworkConfig.FALLBACK)
     }
