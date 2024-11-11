@@ -98,58 +98,47 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {onBeforeUnmount, onMounted} from 'vue';
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import Footer from "@/components/Footer.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 
-export default defineComponent({
-  name: 'MobileMenu',
-  components: {Footer},
-  props: {
-    "searchedId": String,
-    "network": String
-  },
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const networkConfig = NetworkConfig.inject()
-
-    const onResizeHandler = () => {
-      if (window.innerWidth >= MEDIUM_BREAKPOINT) {
-        router.back()
-      }
+defineProps(
+    {
+      "network": String
     }
-    onMounted(() => {
-      window.addEventListener('resize', onResizeHandler);
-    })
-    onBeforeUnmount(() => {
-      window.removeEventListener('resize', onResizeHandler);
-    })
+)
 
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      enableStaking: routeManager.enableStaking,
-      selectedNetwork: routeManager.selectedNetwork,
-      previousRoute: routeManager.previousRoute,
-      isDashboardRoute: routeManager.testDashboardRoute,
-      isTransactionRoute: routeManager.testTransactionRoute,
-      isTokenRoute: routeManager.testTokenRoute,
-      isTopicRoute: routeManager.testTopicRoute,
-      isContractRoute: routeManager.testContractRoute,
-      isAccountRoute: routeManager.testAccountRoute,
-      isNodeRoute: routeManager.testNodeRoute,
-      isStakingRoute: routeManager.testStakingRoute,
-      isBlocksRoute: routeManager.testBlocksRoute,
-      networkEntries: networkConfig.entries,
-      routeManager
-    }
+const networkConfig = NetworkConfig.inject()
+
+const onResizeHandler = () => {
+  if (window.innerWidth >= MEDIUM_BREAKPOINT) {
+    router.back()
   }
+}
+onMounted(() => {
+  window.addEventListener('resize', onResizeHandler);
 })
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResizeHandler);
+})
+
+const enableStaking = routeManager.enableStaking
+const selectedNetwork = routeManager.selectedNetwork
+const previousRoute = routeManager.previousRoute
+const isDashboardRoute = routeManager.testDashboardRoute
+const isTransactionRoute = routeManager.testTransactionRoute
+const isTokenRoute = routeManager.testTokenRoute
+const isTopicRoute = routeManager.testTopicRoute
+const isContractRoute = routeManager.testContractRoute
+const isAccountRoute = routeManager.testAccountRoute
+const isNodeRoute = routeManager.testNodeRoute
+const isStakingRoute = routeManager.testStakingRoute
+const isBlocksRoute = routeManager.testBlocksRoute
+const networkEntries = networkConfig.entries
 
 </script>
 
