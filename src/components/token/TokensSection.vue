@@ -190,12 +190,9 @@ const perPage = ref(props.fullPage ? 15 : 6)
 
 const accountId = computed(() => props.accountId)
 
-const airdropsEnabled = import.meta.env.VITE_APP_ENABLE_AIRDROP === 'true'
 const claimActionEnabled = import.meta.env.VITE_APP_ENABLE_CLAIM_ACTION === 'true'
 
-const tabIds = airdropsEnabled
-    ? ['fungible', 'nfts', 'pendingAirdrop']
-    : ['fungible', 'nfts']
+const tabIds = ['fungible', 'nfts', 'pendingAirdrop']
 
 const tabLabels = ['Fungible', 'NFTs', 'Pending Airdrops']
 const selectedTab = ref<string | null>(AppStorage.getAccountTokenTab() ?? tabIds[0])
@@ -289,7 +286,6 @@ const rejectEnabled = computed(() => {
       && walletManager.isHederaWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
-      && airdropsEnabled
 })
 
 const rejectButtonEnabled = computed(() =>
