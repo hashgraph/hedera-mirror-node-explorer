@@ -97,6 +97,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {isCouncilNode, makeNodeDescription} from "@/schemas/HederaUtils";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -113,7 +114,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = import.meta.env.VITE_APP_ESTIMATOR_NOTICE ?? ""
+    const htmlNotice = CoreConfig.inject().estimatorNotice ?? ""
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)

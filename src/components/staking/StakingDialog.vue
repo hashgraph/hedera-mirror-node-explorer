@@ -185,7 +185,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
 import {EntityID} from "@/utils/EntityID";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/HederaUtils";
@@ -211,7 +211,7 @@ export default defineComponent({
   setup(props, context) {
     const accountId = computed(() => props.account?.account)
     const network = routeManager.currentNetwork.value
-    const nr = networkRegistry
+    const nr = NetworkConfig.inject()
 
     const showConfirmDialog = ref(false)
     const confirmMessage = computed(() => {

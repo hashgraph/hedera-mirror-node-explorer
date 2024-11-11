@@ -225,7 +225,7 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/HederaSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
@@ -282,7 +282,7 @@ export default defineComponent({
   emits: ["update:showDialog", "allowanceApproved"],
 
   setup(props, context) {
-    const nr = networkRegistry
+    const nr = NetworkConfig.inject()
     const network = routeManager.currentNetwork.value
 
     const selectedSpender = ref<string | null>(null)

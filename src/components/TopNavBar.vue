@@ -29,7 +29,22 @@
 
     <span class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0">
       <router-link :to="routeManager.makeRouteToMainDashboard()" class="mr-3">
-        <img alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png" style="max-width: 165px;">
+        <img
+            v-if="productLogoURL"
+            id="product-logo"
+            alt="Product Logo"
+            class="image"
+            style="max-width: 165px; max-height: 49px"
+            :src="productLogoURL"
+        >
+        <img
+            v-else
+            id="product-logo"
+            alt="Product Logo"
+            class="image"
+            style="max-width: 165px; max-height: 49px"
+            src="@/assets/branding/brand-product-logo.png"
+        >
       </router-link>
       <AxiosStatus/>
     </span>
@@ -58,7 +73,8 @@
 
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
-        <img id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+        <img v-if="productLogoURL" id="product-logo" alt="Product Logo" class="image" :src="productLogoURL">
+        <img v-else id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
       </router-link>
       <AxiosStatus/>
     </div>
@@ -87,7 +103,7 @@
         <router-link :to="routeManager.makeRouteToNodes()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
-        <router-link v-if="isStakingEnabled"
+        <router-link v-if="enableStaking"
                      :to="routeManager.makeRouteToStaking()"
                      class="button is-ghost h-is-navbar-item h-is-dense"
                      :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
@@ -97,11 +113,11 @@
       </div>
 
       <div id="navbar-grid">
-        <div id="search-bar">
+        <div id="search-bar" :class="searchBarClass">
           <SearchBarV2/>
         </div>
 
-        <div id="drop-down-menu">
+        <div v-if="nbNetworks > 1" id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
               <option v-for="network in networkEntries" :key="network.name" :value="network.name">
@@ -111,10 +127,10 @@
           </o-field>
         </div>
 
-        <div id="connect-button">
+        <div v-if="enableWallet" id="connect-button">
           <button v-if="!connected" :disabled="connecting" id="connectWalletButton" class="button is-white is-small"
                   @click="chooseWallet" style="outline: none; height: 40px; width: 100%; font-size: 0.8rem;">
-            {{ connecting ? "Connecting..." : "CONNECT WALLET..." }}
+            {{ connecting ? "Connecting…" : "CONNECT WALLET…" }}
           </button>
 
           <div v-else @click="showWalletInfo = !showWalletInfo" id="walletInfoBanner"
@@ -162,15 +178,16 @@
 import router, {routeManager, walletManager} from "@/router";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
-import {defineComponent, inject, ref} from "vue";
+import {computed, defineComponent, inject, ref} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: "TopNavBar",
@@ -181,9 +198,11 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
     const buildTime = inject('buildTime', "not available")
+    const coreConfig = CoreConfig.inject()
+    const networkConfig = NetworkConfig.inject()
 
-    const productName = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
-    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
+    const enableStaking = routeManager.enableStaking
+    const productLogoURL = coreConfig.productLogoURL
 
     const isMobileMenuOpen = ref(false)
 
@@ -198,6 +217,18 @@ export default defineComponent({
 
     const connectDialogController = new DialogController()
     const connectError = ref<unknown>()
+
+    const searchBarClass = computed(() => {
+      let result: string
+      if (routeManager.nbNetworks.value === 1 && !routeManager.enableWallet.value) {
+        result = "search-bar-L"
+      } else if (routeManager.nbNetworks.value === 1 || !routeManager.enableWallet.value) {
+        result = "search-bar-M"
+      } else {
+        result = "search-bar-S"
+      }
+      return result
+    })
 
     //
     // handleChooseWallet
@@ -255,7 +286,6 @@ export default defineComponent({
     return {
       buildTime,
       connecting,
-      productName,
       routeManager,
       chooseWallet,
       walletIconURL,
@@ -263,7 +293,8 @@ export default defineComponent({
       isTouchDevice,
       isMediumScreen,
       showWalletInfo,
-      isStakingEnabled,
+      enableStaking,
+      productLogoURL,
       isMobileMenuOpen,
       showWalletChooser,
       handleChooseWallet,
@@ -271,14 +302,17 @@ export default defineComponent({
       disconnectFromWallet,
       connectDialogController,
       connectError,
+      searchBarClass,
       name: routeManager.currentRoute,
+      enableWallet: routeManager.enableWallet,
+      nbNetworks: routeManager.nbNetworks,
       accountId: walletManager.accountId,
       connected: walletManager.connected,
       accountIds: walletManager.accountIds,
       isNodeRoute: routeManager.isNodeRoute,
       isTokenRoute: routeManager.isTokenRoute,
       isTopicRoute: routeManager.isTopicRoute,
-      networkEntries: networkRegistry.entries,
+      networkEntries: networkConfig.entries,
       isBlocksRoute: routeManager.isBlocksRoute,
       isStakingRoute: routeManager.isStakingRoute,
       isAccountRoute: routeManager.isAccountRoute,
@@ -298,29 +332,37 @@ export default defineComponent({
 
 <style>
 
-@media (min-width: 1450px) {
-  #product-logo {
-    max-width: 242px;
-  }
+#navbar-grid {
+  position: relative;
+  display: grid;
+  column-gap: 1.2rem;
+  grid-template-columns:repeat(20, minmax(0, 35px));
+}
 
-  #navbar-grid {
-    position: relative;
-    display: grid;
-    column-gap: 1.2rem;
-    grid-template-columns:repeat(20, minmax(0, 35px));
-  }
+#product-logo {
+  max-width: 242px;
+  max-height: 72px;
+  width: 100%
+}
 
-  #search-bar {
-    grid-column: span 13;
-  }
+.search-bar-S {
+  grid-column: span 12;
+}
 
-  #drop-down-menu {
-    grid-column: span 3;
-  }
+.search-bar-M {
+  grid-column: span 16;
+}
 
-  #connect-button {
-    grid-column: span 4;
-  }
+.search-bar-L {
+  grid-column: span 20;
+}
+
+#drop-down-menu {
+  grid-column: span 4;
+}
+
+#connect-button {
+  grid-column: span 4;
 }
 
 @media (max-width: 1449px) {
@@ -329,18 +371,21 @@ export default defineComponent({
   }
 
   #navbar-grid {
-    position: relative;
-    display: grid;
-    column-gap: 1.2rem;
     grid-template-columns:repeat(17, minmax(0, 35px));
   }
 
-  #search-bar {
-    grid-column: span 10;
+  .search-bar-S {
+    grid-column: span 9;
+  }
+  .search-bar-M {
+    grid-column: span 13;
+  }
+  .search-bar-L {
+    grid-column: span 17;
   }
 
   #drop-down-menu {
-    grid-column: span 3;
+    grid-column: span 4;
   }
 
   #connect-button {
@@ -354,18 +399,21 @@ export default defineComponent({
   }
 
   #navbar-grid {
-    position: relative;
-    display: grid;
-    column-gap: 1.2rem;
     grid-template-columns:repeat(18, minmax(0, 24px));
   }
 
-  #search-bar {
-    grid-column: span 9;
+  .search-bar-S {
+    grid-column: span 8;
+  }
+  .search-bar-M {
+    grid-column: span 13;
+  }
+  .search-bar-L {
+    grid-column: span 18;
   }
 
   #drop-down-menu {
-    grid-column: span 4;
+    grid-column: span 5;
   }
 
   #connect-button {

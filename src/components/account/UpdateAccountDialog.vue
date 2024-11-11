@@ -305,7 +305,7 @@ import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {inputEntityID} from "@/utils/InputUtils";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {EntityID} from "@/utils/EntityID";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 import InfoTooltip from "@/components/InfoTooltip.vue";
@@ -325,7 +325,7 @@ const props = defineProps({
 const emit = defineEmits(["updated"])
 
 const network = routeManager.currentNetwork.value
-const nr = networkRegistry
+const nr = NetworkConfig.inject()
 
 const autoRenewPeriodFeedbackMessage = ref<string | null>(null)
 const maxAutoAssociationsFeedbackMessage = ref<string | null>(null)

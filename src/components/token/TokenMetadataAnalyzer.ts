@@ -26,8 +26,6 @@ import {Timestamp} from "@/utils/Timestamp";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {CID} from "multiformats";
 
-const ipfsGatewayPrefix = import.meta.env.VITE_APP_IPFS_GATEWAY_URL_PREFIX
-
 export interface NftAttribute {
     trait_type: string
     display_type: string | undefined
@@ -56,9 +54,11 @@ export class TokenMetadataAnalyzer {
     //
 
     public readonly rawMetadata: Ref<string>
+    public readonly ipfsGatewayPrefix: string
 
-    public constructor(rawMetadata: Ref<string>) {
+    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string) {
         this.rawMetadata = rawMetadata
+        this.ipfsGatewayPrefix = ipfsGatewayPrefix
     }
 
     public mount(): void {
@@ -156,7 +156,7 @@ export class TokenMetadataAnalyzer {
                 if (file.uri != undefined && file.type != undefined) {
                     let url
                     if (file.uri.startsWith("ipfs://") && file.uri.length > 7) {
-                        url = `${ipfsGatewayPrefix}${file.uri.substring(7)}`
+                        url = `${this.ipfsGatewayPrefix}${file.uri.substring(7)}`
                     } else {
                         url = file.uri
                     }
@@ -199,7 +199,7 @@ export class TokenMetadataAnalyzer {
             let result = this.getProperty('image') ?? this.getProperty(('picture'))
 
             if (result != null && result.startsWith("ipfs://") && result.length > 7) {
-                result = `${ipfsGatewayPrefix}${result.substring(7)}`
+                result = `${this.ipfsGatewayPrefix}${result.substring(7)}`
             }
             return result
         })
@@ -244,7 +244,7 @@ export class TokenMetadataAnalyzer {
 
         if (metadata.value !== null) {
             if (metadata.value.startsWith('ipfs://')) {
-                content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata.value.substring(7)}`)
+                content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value.substring(7)}`)
             } else if (metadata.value.startsWith('hcs://')) {
                 const i = metadata.value.lastIndexOf('/');
                 const id = metadata.value.substring(i + 1);
@@ -262,7 +262,7 @@ export class TokenMetadataAnalyzer {
             } else {
                 try {
                     CID.parse(metadata.value)
-                    content.value = await this.readMetadataFromUrl(`${ipfsGatewayPrefix}${metadata.value}`)
+                    content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value}`)
                 } catch {
                     content.value = null
                 }

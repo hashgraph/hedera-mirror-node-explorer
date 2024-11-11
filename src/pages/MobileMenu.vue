@@ -73,7 +73,7 @@
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
                      :class="{'is-rimmed': isNodeRoute(previousRoute)}">Nodes
         </router-link>
-        <router-link v-if="isStakingEnabled"
+        <router-link v-if="enableStaking"
                      :to="routeManager.makeRouteToStaking()" replace
                      id="dashboard-menu-item"
                      class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
@@ -104,7 +104,7 @@ import {defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import Footer from "@/components/Footer.vue";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 export default defineComponent({
   name: 'MobileMenu',
@@ -116,7 +116,7 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
-    const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
+    const networkConfig = NetworkConfig.inject()
 
     const onResizeHandler = () => {
       if (window.innerWidth >= MEDIUM_BREAKPOINT) {
@@ -133,7 +133,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
-      isStakingEnabled,
+      enableStaking: routeManager.enableStaking,
       selectedNetwork: routeManager.selectedNetwork,
       previousRoute: routeManager.previousRoute,
       isDashboardRoute: routeManager.testDashboardRoute,
@@ -145,7 +145,7 @@ export default defineComponent({
       isNodeRoute: routeManager.testNodeRoute,
       isStakingRoute: routeManager.testStakingRoute,
       isBlocksRoute: routeManager.testBlocksRoute,
-      networkEntries: networkRegistry.entries,
+      networkEntries: networkConfig.entries,
       routeManager
     }
   }

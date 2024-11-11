@@ -25,7 +25,7 @@ import {EthereumAddress} from "@/utils/EthereumAddress";
 import {AccountAlias} from "@/utils/AccountAlias";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AccountBalanceTransactions, Key, TokenBalance} from "@/schemas/HederaSchemas";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
@@ -36,6 +36,7 @@ import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 export class AccountLocParser {
 
     public readonly accountLoc: Ref<string | null>
+    public readonly networkConfig: NetworkConfig
     public readonly accountInfo: Ref<AccountBalanceTransactions | null> = ref(null)
 
     private watchHandle: Ref<WatchStopHandle | null> = ref(null)
@@ -46,8 +47,9 @@ export class AccountLocParser {
     // Public
     //
 
-    public constructor(accountLoc: Ref<string | null>) {
+    public constructor(accountLoc: Ref<string | null>, networkConfig: NetworkConfig) {
         this.accountLoc = accountLoc
+        this.networkConfig = networkConfig
         this.nodeAnalyzer = new NodeAnalyzer(this.accountId)
     }
 
@@ -98,7 +100,7 @@ export class AccountLocParser {
         = computed(() => this.accountInfo.value?.account ?? null)
 
     public readonly accountChecksum: ComputedRef<string | null> = computed(() =>
-        this.accountId.value ? networkRegistry.computeChecksum(
+        this.accountId.value ? this.networkConfig.computeChecksum(
             this.accountId.value,
             routeManager.currentNetwork.value
         ) : null)

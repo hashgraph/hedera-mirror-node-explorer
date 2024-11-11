@@ -49,6 +49,8 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import {NetworkConfig} from "../../../src/config/NetworkConfig";
+import {networkConfigKey} from "../../../src/AppKeys";
 
 /*
     Bookmarks
@@ -122,7 +124,7 @@ describe("AccountDetails.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toMatch("AccountAccount ID:" + SAMPLE_ACCOUNT.account)
-        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909$5.76369")
+        expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe(
             "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
             "Copy" +
@@ -364,7 +366,6 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to node", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: false});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
@@ -416,7 +417,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Node 1 - Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678$0.03037Period Started Nov 11, 2022, 00:00 UTC")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.12345678ℏ$0.03037Period Started Nov 11, 2022, 00:00 UTC")
         expect(wrapper.get("#declineRewardValue").text()).toBe("Accepted")
 
         mock.restore()
@@ -426,10 +427,24 @@ describe("AccountDetails.vue", () => {
 
     it("Should display account staking to account", async () => {
 
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const mock = new MockAdapter(axios);
+
+        const config = [
+            {
+                "name": "mainnet",
+                "displayName": "MAINNET",
+                "url": "https://mainnet-public.mirrornode.hedera.com/",
+                "ledgerID": "00",
+                "enableWallet": true,
+                "enableStaking": true,
+                "enableExpiry": true,
+                "enableMarket": true,
+                "sourcifySetup": null
+            }
+        ]
+        const networkConfig = NetworkConfig.parse(config)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_ACCOUNT);
@@ -466,7 +481,8 @@ describe("AccountDetails.vue", () => {
 
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { [networkConfigKey]: networkConfig }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
@@ -478,7 +494,7 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")
-        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000$0.00000")
+        expect(wrapper.get("#pendingRewardValue").text()).toBe("0.00000000ℏ$0.00000")
         expect(wrapper.find("#declineRewardValue").exists()).toBe(false)
 
         mock.restore()

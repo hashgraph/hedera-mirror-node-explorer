@@ -85,8 +85,7 @@
 
 import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-
-const ipfsGatewayPrefix = import.meta.env.VITE_APP_IPFS_GATEWAY_URL_PREFIX
+import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
   name: "BlobValue",
@@ -195,6 +194,8 @@ export default defineComponent({
       }
       return result
     })
+
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
 
     const ipfsAddress = computed(() => {
       if (decodedValue.value.startsWith("ipfs://") && decodedValue.value.length > 7) {

@@ -37,15 +37,35 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeMount, onBeforeUnmount, onMounted, provide, ref, watch} from 'vue';
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, PropType, provide, ref, watch} from 'vue';
 import TopNavBar from "@/components/TopNavBar.vue";
-import {errorKey, explanationKey, initialLoadingKey, loadingKey, suggestionKey} from "@/AppKeys"
+import {
+  coreConfigKey,
+  errorKey,
+  explanationKey,
+  initialLoadingKey,
+  loadingKey,
+  networkConfigKey,
+  suggestionKey
+} from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import {useRoute} from "vue-router";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
+import {CoreConfig} from "@/config/CoreConfig";
+import {NetworkConfig} from "@/config/NetworkConfig";
+
+const props = defineProps({
+  "coreConfig": {
+    type: Object as PropType<CoreConfig>,
+    required: true
+  },
+  networkConfig: {
+    type: Object as PropType<NetworkConfig>,
+    required: true
+  }
+})
 
 const route = useRoute()
 const onMainDashboardPage = computed(() => {
@@ -91,12 +111,15 @@ const onResizeHandler = () => {
   windowWidth.value = window.innerWidth
 }
 
+provide(coreConfigKey, props.coreConfig)
+provide(networkConfigKey, props.networkConfig)
+
 const showCookiesDialog = ref(false)
 
 const acceptCookies = ref<boolean | null>(null)
 watch(acceptCookies, (value) => {
-  if (value != null && value) {
-    insertGoogleTag(import.meta.env.VITE_APP_GOOGLE_TAG_ID)
+  if (value != null && value && props.coreConfig.googleTagID !== null) {
+    insertGoogleTag(props.coreConfig.googleTagID)
   }
 })
 
@@ -107,7 +130,7 @@ provide(explanationKey, AxiosMonitor.instance.explanation)
 provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
 onBeforeMount(() => {
-  const tagId = import.meta.env.VITE_APP_GOOGLE_TAG_ID
+  const tagId = props.coreConfig.googleTagID
   if (tagId != undefined && tagId.length > 0) {
     acceptCookies.value = AppStorage.getAcceptCookiePolicy()
     showCookiesDialog.value = (acceptCookies.value == null)
@@ -115,7 +138,6 @@ onBeforeMount(() => {
     acceptCookies.value = null
     showCookiesDialog.value = false
   }
-  networkRegistry.readCustomConfig()
 })
 
 onMounted(() => {

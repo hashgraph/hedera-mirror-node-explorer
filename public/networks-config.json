@@ -49,22 +49,5 @@
       "verifierURL": "https://localhost/#/",
       "chainID": 297
     }
-  },
-  {
-    "name": "localnode",
-    "displayName": "LOCAL NODE",
-    "url": "http://127.0.0.1:5551",
-    "ledgerID": "FF",
-    "enableWallet": false,
-    "enableStaking": false,
-    "enableExpiry": false,
-    "enableMarket": false,
-    "sourcifySetup": {
-      "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
-      "chainID": 298
-    }
   }
 ]

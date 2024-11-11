@@ -67,7 +67,7 @@
 
   <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard collapsible-key="stakingDetails">
+    <DashboardCard v-if="enableWallet" collapsible-key="stakingDetails">
       <template v-slot:title>
         <div>
           <span class="h-is-primary-title">My Staking </span>
@@ -240,6 +240,7 @@ import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {gtagTransaction} from "@/gtag";
 import {AppStorage} from "@/AppStorage";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 export default defineComponent({
   name: 'Staking',
@@ -270,6 +271,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const networkConfig = NetworkConfig.inject()
 
     const router = useRouter()
 
@@ -290,7 +292,7 @@ export default defineComponent({
     //
     // Account
     //
-    const accountLocParser = new AccountLocParser(walletManager.accountId)
+    const accountLocParser = new AccountLocParser(walletManager.accountId,networkConfig)
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
 
@@ -463,6 +465,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      enableWallet: routeManager.enableWallet,
       connecting,
       connected: walletManager.connected,
       walletName: walletManager.walletName,

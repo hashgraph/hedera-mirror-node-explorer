@@ -23,6 +23,8 @@ import {flushPromises, mount} from "@vue/test-utils"
 import BlobValue from '../../../src/components/values/BlobValue.vue';
 import {IPFS_GATEWAY_PREFIX} from "../Mocks";
 import router from "../../../src/router";
+import {CoreConfig} from "../../../src/config/CoreConfig";
+import {coreConfigKey} from "../../../src/AppKeys";
 
 describe("BlobValue.vue", () => {
 
@@ -263,7 +265,8 @@ describe("BlobValue.vue", () => {
 
         const wrapper = mount(BlobValue, {
             global: {
-                plugins: [router]
+                plugins: [router],
+                provide: { [coreConfigKey]: CoreConfig.FALLBACK }
             },
             props: {
                 blobValue: encodedUrl,

@@ -8,4 +8,5 @@ services:
     ports:
       - "8080:8080"
     volumes:
-      - ./networks-config.json:/app/networks-config.json
+      - ./public/networks-config.json:/app/networks-config.json
+      - ./public/core-config.json:/app/core-config.json

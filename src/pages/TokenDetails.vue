@@ -361,6 +361,8 @@ import MirrorLink from "@/components/MirrorLink.vue";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import MetadataSection from "@/components/token/MetadataSection.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
+import {CoreConfig} from "@/config/CoreConfig";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 export default defineComponent({
 
@@ -403,6 +405,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const networkConfig = NetworkConfig.inject()
 
     const normalizedTokenId = computed(() => {
       const result = EntityID.parse(props.tokenId) ?? EntityID.fromAddress(props.tokenId)
@@ -414,12 +417,13 @@ export default defineComponent({
     onMounted(() => tokenLookup.mount())
     onBeforeUnmount(() => tokenLookup.unmount())
 
-    const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity)
+    const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity, networkConfig)
     onMounted(() => tokenAnalyzer.mount())
     onBeforeUnmount(() => tokenAnalyzer.unmount())
 
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
     const metadata = computed(() => tokenLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata)
+    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix)
     onMounted(() => metadataAnalyzer.mount())
     onBeforeUnmount(() => metadataAnalyzer.unmount())
 

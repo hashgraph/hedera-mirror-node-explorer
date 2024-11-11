@@ -113,6 +113,7 @@ import {AccountLocParser} from '@/utils/parser/AccountLocParser';
 import {BalanceAnalyzer} from '@/utils/analyzer/BalanceAnalyzer';
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import AccountLink from "@/components/values/link/AccountLink.vue";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 
 export default defineComponent({
@@ -148,11 +149,12 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const chosenAccountId = computed(() => props.accountId)
     const showAccountIdsModal = ref(false)
+    const networkConfig = NetworkConfig.inject()
 
     //
     // Account
     //
-    const accountLocParser = new AccountLocParser(walletManager.accountId)
+    const accountLocParser = new AccountLocParser(walletManager.accountId, networkConfig)
     onMounted(() => accountLocParser.mount())
     onBeforeUnmount(() => accountLocParser.unmount())
 

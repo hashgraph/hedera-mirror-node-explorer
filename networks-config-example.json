@@ -4,6 +4,10 @@
     "displayName": "MAINNET",
     "url": "https://mainnet-public.mirrornode.hedera.com/",
     "ledgerID": "00",
+    "enableWallet": true,
+    "enableStaking": true,
+    "enableExpiry": true,
+    "enableMarket": true,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "http://localhost:10000/contracts/",
@@ -17,6 +21,10 @@
     "displayName": "TESTNET",
     "url": "https://testnet.mirrornode.hedera.com/",
     "ledgerID": "01",
+    "enableWallet": true,
+    "enableStaking": true,
+    "enableExpiry": false,
+    "enableMarket": false,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "http://localhost:10000/contracts/",
@@ -30,6 +38,10 @@
     "displayName": "PREVIEWNET",
     "url": "https://previewnet.mirrornode.hedera.com/",
     "ledgerID": "02",
+    "enableWallet": true,
+    "enableStaking": false,
+    "enableExpiry": false,
+    "enableMarket": false,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "http://localhost:10000/contracts/",

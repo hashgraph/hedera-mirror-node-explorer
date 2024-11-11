@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
 import {Transaction, TransactionDetail} from "@/schemas/HederaSchemas";
@@ -111,9 +111,9 @@ describe("RewardTransferGraph.vue", () => {
             "Reward AccountAccountAmount Rewarded" +
             "0.0.800\n\n" +
             "0.0.788887" +
-            "2.10704256" + "$0.51840\n\n" +
+            "2.10704256ℏ" + "$0.51840\n\n" +
             "0.0.2254995" +
-            "22.89378672" + "$5.63263")
+            "22.89378672ℏ" + "$5.63263")
 
         mock.restore()
         wrapper.unmount()

@@ -142,6 +142,7 @@
 
       <template v-slot:leftContent>
         <EditableProperty
+            v-if="enableStaking"
             id="stakedTo"
             :editable="isAccountEditable"
             @edit="onUpdateAccount"
@@ -168,7 +169,7 @@
           </template>
         </EditableProperty>
 
-        <Property id="pendingReward">
+        <Property v-if="enableStaking" id="pendingReward">
           <template v-slot:name>Pending Reward</template>
           <template v-slot:value>
             <HbarAmount :amount="account?.pending_reward" :show-extra="true" timestamp="0"/>
@@ -177,7 +178,7 @@
             </div>
           </template>
         </Property>
-        <Property v-if="account?.staked_node_id != null" id="declineReward">
+        <Property v-if="enableStaking && account?.staked_node_id != null" id="declineReward">
           <template v-slot:name>Rewards</template>
           <template v-slot:value>
             <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
@@ -203,6 +204,7 @@
         </Property>
 
         <Property
+            v-if="enableExpiry"
             id="expiresAt"
             tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being."
         >
@@ -214,6 +216,7 @@
           </template>
         </Property>
         <EditableProperty
+            v-if="enableExpiry"
             id="autoRenewPeriod"
             tooltip="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
             :editable="isAccountEditable"
@@ -409,6 +412,7 @@ import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 const props = defineProps({
   accountId: String,
@@ -420,6 +424,10 @@ const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
+const networkConfig = NetworkConfig.inject()
+
+const enableExpiry = routeManager.enableExpiry
+const enableStaking = routeManager.enableStaking
 
 const timeSelection = ref("LATEST")
 watch(timeSelection, (newValue, oldValue) => {
@@ -440,7 +448,7 @@ function onDateCleared() {
 //
 // account
 //
-const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null))
+const accountLocParser = new AccountLocParser(computed(() => props.accountId ?? null), networkConfig)
 onMounted(() => accountLocParser.mount())
 onBeforeUnmount(() => accountLocParser.unmount())
 
@@ -498,8 +506,8 @@ const operatorNodeRoute = computed(() => {
   return operatorNodeId != null ? routeManager.makeRouteToNode(operatorNodeId) : ''
 })
 
-const tabIds = ['transactions', 'contracts', 'rewards']
-const tabLabels = ['Transactions', 'Created Contracts', 'Staking Rewards']
+const tabIds = enableStaking ? ['transactions', 'contracts', 'rewards'] : ['transactions', 'contracts']
+const tabLabels = enableStaking ? ['Transactions', 'Created Contracts', 'Staking Rewards'] : ['Transactions', 'Created Contracts']
 const selectedTab = ref<string | null>(AppStorage.getAccountOperationTab() ?? tabIds[0])
 const handleTabUpdate = (tab: string | null) => {
   selectedTab.value = tab

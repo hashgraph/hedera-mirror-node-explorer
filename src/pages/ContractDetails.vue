@@ -105,7 +105,11 @@
             <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
           </template>
         </Property>
-        <Property id="expiresAt" tooltip="Contract expiry is not turned on yet. Value in this field is not relevant.">
+        <Property
+            v-if="enableExpiry"
+            id="expiresAt"
+            tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+        >
           <template v-slot:name>
             <span>Expires at</span>
           </template>
@@ -113,8 +117,11 @@
             <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
           </template>
         </Property>
-        <Property id="autoRenewPeriod"
-                  tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property
+            v-if="enableExpiry"
+            id="autoRenewPeriod"
+            tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+        >
           <template v-slot:name>
             <span>Auto Renew Period</span>
           </template>
@@ -122,8 +129,11 @@
             <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
           </template>
         </Property>
-        <Property id="autoRenewAccount"
-                  tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant.">
+        <Property
+            v-if="enableExpiry"
+            id="autoRenewAccount"
+            tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+        >
           <template v-slot:name>
             <span>Auto Renew Account</span>
           </template>
@@ -216,7 +226,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {ContractLocParser} from "@/utils/parser/ContractLocParser";
-import {networkRegistry} from "@/schemas/NetworkRegistry";
+import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
@@ -272,6 +282,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const networkConfig = NetworkConfig.inject()
 
     //
     // basic computed's
@@ -308,7 +319,7 @@ export default defineComponent({
     })
 
     const accountChecksum = computed(() =>
-        contractLocParser.contractId.value ? networkRegistry.computeChecksum(
+        contractLocParser.contractId.value ? networkConfig.computeChecksum(
             contractLocParser.contractId.value,
             routeManager.currentNetwork.value
         ) : null)
@@ -355,6 +366,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      enableExpiry: routeManager.enableExpiry,
       contract: contractLocParser.entity,
       maxAutoAssociationValue,
       balanceAnalyzer,

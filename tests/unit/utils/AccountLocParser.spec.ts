@@ -30,6 +30,7 @@ import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {AccountAlias} from "@/utils/AccountAlias";
 import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
 import {AccountInfo} from "@/schemas/HederaSchemas";
+import {NetworkConfig} from "../../../src/config/NetworkConfig";
 
 describe("AccountLocParser.ts", () => {
 
@@ -50,7 +51,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -187,7 +188,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -324,7 +325,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -461,7 +462,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -597,7 +598,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -734,7 +735,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -872,7 +873,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -1010,7 +1011,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -1148,7 +1149,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()
@@ -1287,7 +1288,7 @@ describe("AccountLocParser.ts", () => {
 
         // 0) Creates parser
         const accountLoc: Ref<string | null> = ref(null)
-        const parser = new AccountLocParser(accountLoc)
+        const parser = new AccountLocParser(accountLoc, NetworkConfig.FALLBACK)
         await flushPromises()
         expect(parser.accountLoc.value).toBeNull()
         expect(parser.accountInfo.value).toBeNull()

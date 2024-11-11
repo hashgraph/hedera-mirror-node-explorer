@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import SearchBarV2 from "../../src/components/search/SearchBarV2.vue";
@@ -38,7 +38,6 @@ HMSF.forceUTC = true
 describe("TopNavBar.vue", () => {
 
     it("Should display page links without Staking and Blocks", async () => {
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -54,7 +53,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET…")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(18)
@@ -64,7 +63,6 @@ describe("TopNavBar.vue", () => {
     })
 
     it("Should display logos, page links and full search bar", async () => {
-        process.env = Object.assign(process.env, {VITE_APP_ENABLE_STAKING: true});
 
         await router.push("/") // To avoid "missing required param 'network'" error
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
@@ -80,7 +78,7 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET…")
 
         const links = wrapper.findAll("a")
         expect(links.length).toBe(18)

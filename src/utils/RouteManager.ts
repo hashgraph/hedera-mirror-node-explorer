@@ -59,14 +59,17 @@ import BlockDetails from "@/pages/BlockDetails.vue";
 import SearchHelp from "@/pages/SearchHelp.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
-import {NetworkEntry, NetworkRegistry, networkRegistry} from "@/schemas/NetworkRegistry";
 import axios from "axios";
 import {Transaction} from "@/schemas/HederaSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import {CoreConfig} from "@/config/CoreConfig";
+import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
 
 export class RouteManager {
 
     public readonly router: Router
+    private coreConfig = CoreConfig.FALLBACK
+    private networkConfig = NetworkConfig.FALLBACK
 
     //
     // Public
@@ -82,23 +85,44 @@ export class RouteManager {
         this.router.beforeEach(this.checkNetwork)
         this.router.beforeEach(this.setupTitleAndHeaders)
 
-        watch(this.currentNetwork, () => {
-            AppStorage.setLastNetwork(this.currentNetwork.value)
+        const currentNetworkDidChange = () => {
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
             this.updateSelectedNetworkSilently()
             this.switchThemes()
-        }, {immediate: true})
-
+        }
         watch(this.currentNetwork, () => {
+            currentNetworkDidChange()
+            AppStorage.setLastNetwork(this.currentNetwork.value)
             CacheUtils.clearAll()
-        })
+        }) // watch({ immediate: true }) causes a infinite loop
+        currentNetworkDidChange()
 
-        this.configure()
+        this.configure(CoreConfig.FALLBACK, NetworkConfig.FALLBACK)
     }
 
     public readonly currentRoute = computed(() => this.router.currentRoute.value?.name)
 
     public readonly currentNetwork = computed(() => this.currentNetworkEntry.value.name)
+
+    public readonly enableWallet = computed(() => {
+        return this.currentNetworkEntry.value.enableWallet
+    })
+
+    public readonly enableStaking = computed(() => {
+        return this.currentNetworkEntry.value.enableStaking
+    })
+
+    public readonly enableExpiry = computed(() => {
+        return this.currentNetworkEntry.value.enableExpiry
+    })
+
+    public readonly enableMarket = computed(() => {
+        return this.currentNetworkEntry.value.enableMarket
+    })
+
+    public readonly nbNetworks = computed(() => {
+        return this.networkConfig.entries.length
+    })
 
     public readonly currentNetworkEntry = computed(() => {
         let networkName: string | null
@@ -108,14 +132,23 @@ export class RouteManager {
         } else {
             networkName = networkParam
         }
-        const networkEntry = networkName != null ? networkRegistry.lookup(networkName) : null
+        const networkEntry = networkName != null ? this.networkConfig.lookup(networkName) : null
 
-        return networkEntry != null ? networkEntry : networkRegistry.getDefaultEntry()
+        return networkEntry != null ? networkEntry : this.networkConfig.entries[0]
     })
 
-    public configure() {
+    public configure(coreConfig: CoreConfig, networkConfig: NetworkConfig) {
 
-        const defaultNetwork = AppStorage.getLastNetwork()?.name ?? networkRegistry.getDefaultEntry().name
+        this.coreConfig = coreConfig
+        this.networkConfig = networkConfig
+
+        //
+        // Rebuilds route array
+        //
+
+        this.router.clearRoutes()
+
+        const defaultNetwork = AppStorage.getLastNetwork() ?? networkConfig.entries[0].name
         this.router.addRoute({
             path: '/',
             redirect: '/' + defaultNetwork + '/dashboard'
@@ -128,18 +161,13 @@ export class RouteManager {
             this.router.addRoute(r)
         }
 
-        const isStakingEnabled = import.meta.env.VITE_APP_ENABLE_STAKING === 'true'
-        if (!isStakingEnabled) {
-            this.router.removeRoute("Staking")
-        }
-
     }
 
     //
     // Public (selectedNetwork)
     //
 
-    public selectedNetwork = ref(networkRegistry.getDefaultEntry().name)
+    public selectedNetwork = ref(this.networkConfig.entries[0].name)
 
     public selectedNetworkWatchHandle: WatchStopHandle | undefined
 
@@ -569,48 +597,48 @@ export class RouteManager {
     }
 
     private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
-        const envTitleSuffix = import.meta.env.VITE_APP_DOCUMENT_TITLE_SUFFIX
-        const titleSuffix = envTitleSuffix !== null ? " | " + envTitleSuffix : ""
+        const envTitlePrefix = this.coreConfig.documentTitlePrefix
+        const titlePrefix = envTitlePrefix !== null ? envTitlePrefix + " " : ""
 
         switch (to.name as string) {
             case "MainDashboard":
-                document.title = "Hedera Dashboard" + titleSuffix
+                document.title = titlePrefix + "Dashboard"
                 break;
             case "TransactionDetails":
-                document.title = "Hedera Transaction " + (to.query.tid ?? to.params.transactionLoc) + titleSuffix
+                document.title = titlePrefix + "Transaction " + (to.query.tid ?? to.params.transactionLoc)
                 break;
             case "TransactionDetails3091":
-                document.title = "Hedera Transaction " + to.params.transactionLoc + titleSuffix
+                document.title = titlePrefix + "Transaction " + to.params.transactionLoc
                 break;
             case "TokenDetails":
-                document.title = "Hedera Token " + to.params.tokenId + titleSuffix
+                document.title = titlePrefix + "Token " + to.params.tokenId
                 break;
             case "TopicDetails":
-                document.title = "Hedera Topic " + to.params.topicId + titleSuffix
+                document.title = titlePrefix + "Topic " + to.params.topicId
                 break;
             case "ContractDetails":
-                document.title = "Hedera Contract " + to.params.contractId + titleSuffix
+                document.title = titlePrefix + "Contract " + to.params.contractId
                 break;
             case "AccountDetails":
-                document.title = "Hedera Account " + to.params.accountId + titleSuffix
+                document.title = titlePrefix + "Account " + to.params.accountId
                 break;
             case "AdminKeyDetails":
-                document.title = "Hedera Admin Key for Account " + to.params.accountId + titleSuffix
+                document.title = titlePrefix + "Admin Key for Account " + to.params.accountId
                 break;
             case "NodeDetails":
-                document.title = "Hedera Node " + to.params.nodeId + titleSuffix
+                document.title = titlePrefix + "Node " + to.params.nodeId
                 break;
             case "BlockDetails":
-                document.title = "Hedera Block " + to.params.blockHon + titleSuffix
+                document.title = titlePrefix + "Block " + to.params.blockHon
                 break;
             case "SearchHelp":
-                document.title = "Search Results" + titleSuffix
+                document.title = "Search Results"
                 break;
             case "PageNotFound":
-                document.title = "Page Not Found" + titleSuffix
+                document.title = "Page Not Found"
                 break;
             default:
-                document.title = "Hedera " + (to.name as string) + titleSuffix
+                document.title = titlePrefix + (to.name as string)
         }
 
         this.addMetaTags()
@@ -626,7 +654,7 @@ export class RouteManager {
             networkName = networkParam
         }
 
-        return networkName !== null ? networkRegistry.lookup(networkName) : null
+        return networkName !== null ? this.networkConfig.lookup(networkName) : null
     }
 
     //
@@ -636,9 +664,8 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
-        const description =
-            import.meta.env.VITE_APP_META_DESCRIPTION ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
-        const url = import.meta.env.VITE_APP_META_URL
+        const description = this.coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+        const url = this.coreConfig.metaURL
 
         this.createOrUpdateTagName('description', description)
         this.createOrUpdateTagProperty('og:title', title)
@@ -678,13 +705,13 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        if (this.currentNetworkEntry.value.name == NetworkRegistry.TEST_NETWORK) {
+        if (this.currentNetworkEntry.value.name == NetworkConfig.TEST_NETWORK) {
             document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
             document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
             document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
             document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
             document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-        } else if (this.currentNetworkEntry.value.name == NetworkRegistry.PREVIEW_NETWORK) {
+        } else if (this.currentNetworkEntry.value.name == NetworkConfig.PREVIEW_NETWORK) {
             document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
             document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
             document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
@@ -737,11 +764,11 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
 const routes: Array<RouteRecordRaw> = [
     {
         path: '/',
-        redirect: '/' + AppStorage.getLastNetwork().name + '/dashboard'
+        redirect: '/' + AppStorage.getLastNetwork() + '/dashboard'
     },
     {
         path: '/page-not-found',
-        redirect: '/' + AppStorage.getLastNetwork().name + '/page-not-found'
+        redirect: '/' + AppStorage.getLastNetwork() + '/page-not-found'
     },
     {
         path: '/:network/page-not-found',

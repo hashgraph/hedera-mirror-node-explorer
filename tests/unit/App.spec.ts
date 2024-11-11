@@ -18,7 +18,7 @@
  *
  */
 
-import {beforeEach, describe, expect, test} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
@@ -30,6 +30,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {NetworkConfig} from "../../src/config/NetworkConfig";
 import {routeManager} from "../../src/router";
 
 /*
@@ -42,10 +43,6 @@ import {routeManager} from "../../src/router";
 HMSF.forceUTC = true
 
 describe("App.vue", () => {
-
-    beforeEach(() => {
-        Object.assign(import.meta.env, {VITE_APP_ENABLE_STAKING: false});
-    })
 
     test("normal screen", async () => {
 
@@ -66,23 +63,53 @@ describe("App.vue", () => {
         const matcher4 = "/api/v1/network/exchangerate"
         mock.onGet(matcher4).reply(200, SAMPLE_NETWORK_EXCHANGERATE);
 
-        const matcher10 = window.location.origin + '/networks-config.json'
-        mock.onGet(matcher10).reply(200, [
-            {name: "customnet1", url: "/testurl1", ledgerID: "01", sourcifySetup: null},
-            {name: "customnet2", url: "/testurl2", ledgerID: "02", sourcifySetup: null},
-            {name: "customnet3", url: "/testurl3", ledgerID: "03", sourcifySetup: null}
+        const networkConfig = NetworkConfig.parse([
+            {
+                name: "customnet1",
+                url: "/testurl1",
+                ledgerID: "01",
+                enableWallet: true,
+                enableStaking: false,
+                enableExpiry: true,
+                enableMarket: false,
+                sourcifySetup: null
+            },
+            {
+                name: "customnet2",
+                url: "/testurl2",
+                ledgerID: "02",
+                enableWallet: true,
+                enableStaking: false,
+                enableExpiry: true,
+                enableMarket: false,
+                sourcifySetup: null
+            },
+            {
+                name: "customnet3",
+                url: "/testurl3",
+                ledgerID: "03",
+                enableWallet: true,
+                enableStaking: false,
+                enableExpiry: true,
+                enableMarket: false,
+                sourcifySetup: null
+            }
         ]);
-        expect(routeManager.currentNetwork.value).toBe("mainnet")
+        routeManager.configure(routeManager.coreConfig, networkConfig)
+        await router.push("/")
 
         const wrapper = mount(App, {
             global: {
                 plugins: [router, Oruga]
             },
-            props: {},
+            props: {
+                coreConfig: routeManager.coreConfig,
+                networkConfig: routeManager.networkConfig
+            },
         });
+        expect(routeManager.currentNetwork.value).toBe("customnet1")
 
         await flushPromises()
-        expect(routeManager.currentNetwork.value).toBe("customnet1")
 
         // console.log(wrapper.html())
         // console.log(wrapper.text())
@@ -93,7 +120,7 @@ describe("App.vue", () => {
         const navBar = wrapper.findComponent(TopNavBar)
         expect(navBar.exists()).toBe(true)
         expect(navBar.text()).toBe(
-            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCUSTOMNET1CUSTOMNET2CUSTOMNET3CONNECT WALLET...")
+            "Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCUSTOMNET1CUSTOMNET2CUSTOMNET3CONNECT WALLET…")
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 
@@ -117,7 +144,7 @@ describe("App.vue", () => {
         expect(logos[9].attributes('alt')).toBe("Pause")
         expect(logos[10].attributes('alt')).toBe("Pause")
         expect(logos[11].attributes('alt')).toBe("Pause")
-        expect(logos[12].attributes('alt')).toBe("Built On Hedera")
+        expect(logos[12].attributes('alt')).toBe("Built On Logo")
         expect(logos[13].attributes('alt')).toBe("Sponsor Logo")
 
         mock.restore()

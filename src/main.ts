@@ -19,8 +19,8 @@
  */
 
 import {createApp} from 'vue'
-import App from './App.vue'
-import router from './router'
+import Root from './Root.vue'
+import router, {routeManager} from './router'
 import axios from 'axios'
 import Oruga from '@oruga-ui/oruga-next'
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
@@ -33,14 +33,50 @@ import "./assets/styles/explorer-bulma.css";
 import "./assets/styles/explorer-oruga.css";
 import "./assets/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
+import {CoreConfig} from "@/config/CoreConfig";
+import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 library.add(faForward);
 export default FontAwesomeIcon;
 
 AxiosMonitor.instance.setTargetAxios(axios)
 
-const app = createApp(App)
-app.component("font-awesome-icon", FontAwesomeIcon)
-app.use(router)
-app.use(Oruga, {iconPack: 'fas'})
-app.mount('#app')
+const loadCoreConfig = async () => {
+    let result: CoreConfig|unknown
+    const coreConfigURL = window.location.origin + '/core-config.json'
+    try {
+        result = await CoreConfig.load(coreConfigURL)
+    } catch(error) {
+        result = error
+    }
+    return result
+}
+
+const loadNetworkConfig = async () => {
+    let result: NetworkConfig|unknown
+    const url = window.location.origin + '/networks-config.json'
+    try {
+        result = await NetworkConfig.load(url)
+    } catch(error) {
+        result = error
+    }
+    return result
+}
+
+const createAndMount = async () => {
+    const coreConfig = await loadCoreConfig()
+    const networkConfig = await loadNetworkConfig()
+    if (coreConfig instanceof CoreConfig && networkConfig instanceof NetworkConfig) {
+        routeManager.configure(coreConfig, networkConfig)
+        SelectedTokensCache.instance.setup(coreConfig.popularTokenIndexURL)
+    }
+    const app = createApp(Root, { coreConfig, networkConfig })
+    app.component("font-awesome-icon", FontAwesomeIcon)
+    app.use(router)
+    app.use(Oruga, {iconPack: 'fas'})
+    app.mount('#app')
+}
+
+(async () => createAndMount())()
+
