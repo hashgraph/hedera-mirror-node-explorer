@@ -173,7 +173,7 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
 import router, {routeManager, walletManager} from "@/router";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
@@ -189,140 +189,112 @@ import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
 import {CoreConfig} from "@/config/CoreConfig";
 
-export default defineComponent({
-  name: "TopNavBar",
-  components: {ConnectWalletDialog, AxiosStatus, SearchBarV2, WalletChooser, WalletInfo},
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+const isTouchDevice = inject('isTouchDevice', false)
+const buildTime = inject('buildTime', "not available")
+const coreConfig = CoreConfig.inject()
+const networkConfig = NetworkConfig.inject()
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const buildTime = inject('buildTime', "not available")
-    const coreConfig = CoreConfig.inject()
-    const networkConfig = NetworkConfig.inject()
+const enableStaking = routeManager.enableStaking
+const productLogoURL = coreConfig.productLogoURL
 
-    const enableStaking = routeManager.enableStaking
-    const productLogoURL = coreConfig.productLogoURL
+const isMobileMenuOpen = ref(false)
 
-    const isMobileMenuOpen = ref(false)
+const showWalletChooser = ref(false)
+const chooseWallet = () => {
+  showWalletChooser.value = true
+}
 
-    const showWalletChooser = ref(false)
-    const chooseWallet = () => {
-      showWalletChooser.value = true
-    }
+const connecting = ref(false)
+const walletIconURL = ref("")
+const showWalletInfo = ref(false)
 
-    const connecting = ref(false)
-    const walletIconURL = ref("")
-    const showWalletInfo = ref(false)
+const connectDialogController = new DialogController()
+const connectError = ref<unknown>()
 
-    const connectDialogController = new DialogController()
-    const connectError = ref<unknown>()
-
-    const searchBarClass = computed(() => {
-      let result: string
-      if (routeManager.nbNetworks.value === 1 && !routeManager.enableWallet.value) {
-        result = "search-bar-L"
-      } else if (routeManager.nbNetworks.value === 1 || !routeManager.enableWallet.value) {
-        result = "search-bar-M"
-      } else {
-        result = "search-bar-S"
-      }
-      return result
-    })
-
-    //
-    // handleChooseWallet
-    //
-    const handleChooseWallet = (wallet: WalletDriver) => {
-      walletManager.setActiveDriver(wallet)
-      connecting.value = true
-      walletManager
-          .connect()
-          .catch((reason) => {
-            if (!(reason instanceof WalletDriverCancelError)) {
-              console.warn("Failed to connect wallet - reason:" + reason.toString())
-              connectError.value = reason
-              connectDialogController.visible.value = true
-              gtagWalletConnectionFailure(wallet.name)
-            }
-          })
-          .finally(() => {
-            connecting.value = false
-            navigateToMyAccount()
-          })
-      walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
-      gtagWalletConnect(wallet.name)
-    }
-
-    //
-    // handleChangeAccount
-    //
-    const handleChangeAccount = (chosenAccountId: string) => {
-      walletManager.changeAccount(chosenAccountId)
-      navigateToMyAccount()
-    }
-
-    //
-    // disconnectFromWallet
-    //
-    const disconnectFromWallet = () => {
-      walletManager
-          .disconnect()
-          .finally(() => {
-            connecting.value = false;
-            showWalletInfo.value = false;
-          })
-    }
-
-    //
-    // navigateToMyAccount
-    //
-    const navigateToMyAccount = () => {
-      if (walletManager.accountId.value) {
-        router.push(routeManager.makeRouteToAccount(walletManager.accountId.value))
-      }
-    }
-
-    return {
-      buildTime,
-      connecting,
-      routeManager,
-      chooseWallet,
-      walletIconURL,
-      isSmallScreen,
-      isTouchDevice,
-      isMediumScreen,
-      showWalletInfo,
-      enableStaking,
-      productLogoURL,
-      isMobileMenuOpen,
-      showWalletChooser,
-      handleChooseWallet,
-      handleChangeAccount,
-      disconnectFromWallet,
-      connectDialogController,
-      connectError,
-      searchBarClass,
-      name: routeManager.currentRoute,
-      enableWallet: routeManager.enableWallet,
-      nbNetworks: routeManager.nbNetworks,
-      accountId: walletManager.accountId,
-      connected: walletManager.connected,
-      accountIds: walletManager.accountIds,
-      isNodeRoute: routeManager.isNodeRoute,
-      isTokenRoute: routeManager.isTokenRoute,
-      isTopicRoute: routeManager.isTopicRoute,
-      networkEntries: networkConfig.entries,
-      isBlocksRoute: routeManager.isBlocksRoute,
-      isStakingRoute: routeManager.isStakingRoute,
-      isAccountRoute: routeManager.isAccountRoute,
-      isContractRoute: routeManager.isContractRoute,
-      selectedNetwork: routeManager.selectedNetwork,
-      isDashboardRoute: routeManager.isDashboardRoute,
-      isTransactionRoute: routeManager.isTransactionRoute,
-    }
-  },
+const searchBarClass = computed(() => {
+  let result: string
+  if (routeManager.nbNetworks.value === 1 && !routeManager.enableWallet.value) {
+    result = "search-bar-L"
+  } else if (routeManager.nbNetworks.value === 1 || !routeManager.enableWallet.value) {
+    result = "search-bar-M"
+  } else {
+    result = "search-bar-S"
+  }
+  return result
 })
+
+//
+// handleChooseWallet
+//
+const handleChooseWallet = (wallet: WalletDriver) => {
+  walletManager.setActiveDriver(wallet)
+  connecting.value = true
+  walletManager
+      .connect()
+      .catch((reason) => {
+        if (!(reason instanceof WalletDriverCancelError)) {
+          console.warn("Failed to connect wallet - reason:" + reason.toString())
+          connectError.value = reason
+          connectDialogController.visible.value = true
+          gtagWalletConnectionFailure(wallet.name)
+        }
+      })
+      .finally(() => {
+        connecting.value = false
+        navigateToMyAccount()
+      })
+  walletIconURL.value = walletManager.getActiveDriver().iconURL || ""
+  gtagWalletConnect(wallet.name)
+}
+
+//
+// handleChangeAccount
+//
+const handleChangeAccount = (chosenAccountId: string) => {
+  walletManager.changeAccount(chosenAccountId)
+  navigateToMyAccount()
+}
+
+//
+// disconnectFromWallet
+//
+const disconnectFromWallet = () => {
+  walletManager
+      .disconnect()
+      .finally(() => {
+        connecting.value = false;
+        showWalletInfo.value = false;
+      })
+}
+
+//
+// navigateToMyAccount
+//
+const navigateToMyAccount = () => {
+  if (walletManager.accountId.value) {
+    router.push(routeManager.makeRouteToAccount(walletManager.accountId.value))
+  }
+}
+
+const name = routeManager.currentRoute
+const enableWallet = routeManager.enableWallet
+const nbNetworks = routeManager.nbNetworks
+const accountId = walletManager.accountId
+const connected = walletManager.connected
+const accountIds = walletManager.accountIds
+const isNodeRoute = routeManager.isNodeRoute
+const isTokenRoute = routeManager.isTokenRoute
+const networkEntries = networkConfig.entries
+const isBlocksRoute = routeManager.isBlocksRoute
+const isStakingRoute = routeManager.isStakingRoute
+const isTopicRoute = routeManager.isTopicRoute
+const isAccountRoute = routeManager.isAccountRoute
+const isContractRoute = routeManager.isContractRoute
+const selectedNetwork = routeManager.selectedNetwork
+const isDashboardRoute = routeManager.isDashboardRoute
+const isTransactionRoute = routeManager.isTransactionRoute
 
 </script>
 
