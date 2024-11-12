@@ -178,9 +178,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
+import {computed, ComputedRef, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -205,207 +205,154 @@ import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
 
-export default defineComponent({
-  name: 'ContractByteCodeSection',
 
-  components: {
-    AccountLink,
-    Tabs,
-    ContractAbiValue,
-    DownloadButton,
-    SourceCodeValue,
-    DisassembledCodeValue,
-    ContractVerificationDialog,
-    InfoTooltip,
-    Property,
-    StringValue,
-    ByteCodeValue,
-    DashboardCard
-  },
+const props = defineProps({
+  contractAnalyzer: {
+    type: Object as PropType<ContractAnalyzer>,
+    required: true
+  }
+})
 
-  props: {
-    contractAnalyzer: {
-      type: Object as PropType<ContractAnalyzer>,
-      required: true
+const isSmallScreen = inject('isSmallScreen', true)
+
+const isVerified = computed(() => props.contractAnalyzer.sourcifyURL.value != null)
+
+const isFullMatch = computed(() => props.contractAnalyzer.fullMatch.value)
+
+const contractName = computed(
+    () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
+
+// True when the verification is ENABLED by configuration and the current verification STATUS is known, which
+// enables to decide which option to present to the user
+const isVerificationAvailable = computed(() => {
+  const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
+  return sourcifySetup?.activate
+      && sourcifySetup?.serverURL.length
+})
+
+const showVerifyDialog = ref(false)
+const verifyDidComplete = () => {
+  props.contractAnalyzer.verifyDidComplete()
+}
+
+const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
+
+const showHexaOpcode = ref(false)
+onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
+watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
+
+const tabIds = ['abi', 'source', 'bytecode']
+const tabLabels = ['ABI', 'Source', 'Bytecode']
+const selectedOption = ref<string|null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
+const handleTabUpdate = (tab: string|null) => {
+  selectedOption.value = tab
+  AppStorage.setContractByteCodeTab(tab)
+}
+
+const selectedSource = ref('')
+watch(props.contractAnalyzer.contractFileName,
+    () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
+
+const isImportFile = (file: SourcifyResponseItem): boolean => {
+  return file.name !== props.contractAnalyzer.contractFileName.value
+}
+
+const relevantPath = (fullPath: string): string => {
+  return fullPath.substring(fullPath.indexOf('sources') + 8)
+}
+
+const handleDownload = async () => {
+  const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
+  if (selectedSource.value === '') {
+    const zip = new JSZip();
+    for (const file of props.contractAnalyzer.sourceFiles.value) {
+      const filePath = file.path.substring(file.path.indexOf('match') + 10)
+      zip.file(filePath, file.content);
     }
-  },
+    zip.generateAsync({type: "blob"})
+        .then(function (content: any) {
+          const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
+          saveAs(content, zipName);
+        });
+  } else {
+    for (const file of props.contractAnalyzer.solidityFiles.value) {
+      if (file.name === selectedSource.value) {
+        const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
+        const filePath = file.path.substring(file.path.indexOf('contracts'))
+        const fileURL = URLPrefix + filePath
 
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const isVerified = computed(() => props.contractAnalyzer.sourcifyURL.value != null)
-
-    const isFullMatch = computed(() => props.contractAnalyzer.fullMatch.value)
-
-    const contractName = computed(
-        () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
-
-    // True when the verification is ENABLED by configuration and the current verification STATUS is known, which
-    // enables to decide which option to present to the user
-    const isVerificationAvailable = computed(() => {
-      const sourcifySetup = routeManager.currentNetworkEntry.value.sourcifySetup
-      return sourcifySetup?.activate
-          && sourcifySetup?.serverURL.length
-    })
-
-    const showVerifyDialog = ref(false)
-    const verifyDidComplete = () => {
-      props.contractAnalyzer.verifyDidComplete()
-    }
-
-    const tooltipText = computed(() => isFullMatch.value ? FULL_MATCH_TOOLTIP : PARTIAL_MATCH_TOOLTIP)
-
-    const showHexaOpcode = ref(false)
-    onMounted(() => showHexaOpcode.value = AppStorage.getShowHexaOpcode())
-    watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? showHexaOpcode.value : null))
-
-    const tabIds = ['abi', 'source', 'bytecode']
-    const tabLabels = ['ABI', 'Source', 'Bytecode']
-    const selectedOption = ref<string|null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
-    const handleTabUpdate = (tab: string|null) => {
-      selectedOption.value = tab
-      AppStorage.setContractByteCodeTab(tab)
-    }
-
-    const selectedSource = ref('')
-    watch(props.contractAnalyzer.contractFileName,
-        () => selectedSource.value = props.contractAnalyzer.contractFileName.value ?? '', {immediate: true})
-
-    const isImportFile = (file: SourcifyResponseItem): boolean => {
-      return file.name !== props.contractAnalyzer.contractFileName.value
-    }
-
-    const relevantPath = (fullPath: string): string => {
-      return fullPath.substring(fullPath.indexOf('sources') + 8)
-    }
-
-    const handleDownload = async () => {
-      const contractURL = props.contractAnalyzer.sourcifyURL.value ?? ''
-      if (selectedSource.value === '') {
-        const zip = new JSZip();
-        for (const file of props.contractAnalyzer.sourceFiles.value) {
-          const filePath = file.path.substring(file.path.indexOf('match') + 10)
-          zip.file(filePath, file.content);
-        }
-        zip.generateAsync({type: "blob"})
-            .then(function (content: any) {
-              const zipName = props.contractAnalyzer.contractAddress.value + '.zip'
-              saveAs(content, zipName);
-            });
-      } else {
-        for (const file of props.contractAnalyzer.solidityFiles.value) {
-          if (file.name === selectedSource.value) {
-            const URLPrefix = contractURL.substring(0, contractURL.indexOf('contracts'))
-            const filePath = file.path.substring(file.path.indexOf('contracts'))
-            const fileURL = URLPrefix + filePath
-
-            const a = document.createElement('a')
-            a.setAttribute('href', fileURL)
-            a.setAttribute('download', file.name);
-            a.click()
-          }
-        }
-      }
-    }
-
-    const selectedType = ref<string>(FragmentType.ALL)
-    onMounted(() => {
-      const preferredType = AppStorage.getFragmentType()
-      if (preferredType && Object.values(FragmentType).includes(preferredType as FragmentType)) {
-        selectedType.value = preferredType
-      } else {
-        AppStorage.setFragmentType(null)
-        selectedType.value = FragmentType.ALL
-      }
-    })
-    watch(selectedType, () => AppStorage.setFragmentType(selectedType.value))
-
-    const abiBlob = computed(() => {
-      let result: Blob | null
-      const itf = abiController.targetInterface.value
-      if (itf !== null) {
-        result = new Blob([itf.formatJson()], {type: "text/json"})
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const handleDownloadABI = () => {
-      if (abiBlob.value !== null) {
-        const url = window.URL.createObjectURL(abiBlob.value)
-        const outputName = abiController.targetContractName.value + ".json"
         const a = document.createElement('a')
-        a.setAttribute('href', url)
-        a.setAttribute('download', outputName);
+        a.setAttribute('href', fileURL)
+        a.setAttribute('download', file.name);
         a.click()
       }
     }
-
-    const abiAnalyzer  = new ABIAnalyzer(props.contractAnalyzer)
-    onMounted(() => abiAnalyzer.mount())
-    onBeforeUnmount(() => abiAnalyzer.unmount())
-
-    const logicContractId = computed(() => {
-      return abiAnalyzer.logicContractId.value ?? undefined
-    })
-
-    const adminContractId = computed(() => {
-      return abiAnalyzer.adminContractId.value ?? undefined
-    })
-
-    const showLogicABI = ref(AppStorage.getShowLogicABI())
-    watch(showLogicABI, () => {
-      AppStorage.setShowLogicABI(showLogicABI.value)
-    })
-
-    const mode: ComputedRef<ABIMode> = computed(() => {
-      return showLogicABI.value && abiController.logicModeAvailable.value ? ABIMode.Logic : ABIMode.Normal
-    })
-    const abiController = new ABIController(abiAnalyzer, mode)
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      byteCode: props.contractAnalyzer.byteCodeAnalyzer.byteCode,
-      solcVersion: props.contractAnalyzer.byteCodeAnalyzer.solcVersion,
-      contractName,
-      isVerificationAvailable,
-      tooltipText,
-      sourcifyURL: props.contractAnalyzer.sourcifyURL,
-      isVerified,
-      showVerifyDialog,
-      contractId: props.contractAnalyzer.contractId,
-      byteCodeAnalyzer: props.contractAnalyzer.byteCodeAnalyzer,
-      solidityFiles: props.contractAnalyzer.solidityFiles,
-      sourceFileName: props.contractAnalyzer.sourceFileName,
-      contractFileName: props.contractAnalyzer.contractFileName,
-      logicContractId,
-      adminContractId,
-      verifyDidComplete,
-      isFullMatch,
-      showHexaOpcode,
-      selectedOption,
-      tabIds,
-      tabLabels,
-      handleTabUpdate,
-      selectedSource,
-      isImportFile,
-      relevantPath,
-      handleDownload,
-      selectedType,
-      handleDownloadABI,
-      abiController,
-      logicModeAvailable: abiController.logicModeAvailable,
-      FragmentType,
-      showLogicABI,
-      ABIMode,
-    }
   }
-});
+}
+
+const selectedType = ref<string>(FragmentType.ALL)
+onMounted(() => {
+  const preferredType = AppStorage.getFragmentType()
+  if (preferredType && Object.values(FragmentType).includes(preferredType as FragmentType)) {
+    selectedType.value = preferredType
+  } else {
+    AppStorage.setFragmentType(null)
+    selectedType.value = FragmentType.ALL
+  }
+})
+watch(selectedType, () => AppStorage.setFragmentType(selectedType.value))
+
+const abiBlob = computed(() => {
+  let result: Blob | null
+  const itf = abiController.targetInterface.value
+  if (itf !== null) {
+    result = new Blob([itf.formatJson()], {type: "text/json"})
+  } else {
+    result = null
+  }
+  return result
+})
+
+const handleDownloadABI = () => {
+  if (abiBlob.value !== null) {
+    const url = window.URL.createObjectURL(abiBlob.value)
+    const outputName = abiController.targetContractName.value + ".json"
+    const a = document.createElement('a')
+    a.setAttribute('href', url)
+    a.setAttribute('download', outputName);
+    a.click()
+  }
+}
+
+const abiAnalyzer  = new ABIAnalyzer(props.contractAnalyzer)
+onMounted(() => abiAnalyzer.mount())
+onBeforeUnmount(() => abiAnalyzer.unmount())
+
+const logicContractId = computed(() => {
+  return abiAnalyzer.logicContractId.value ?? undefined
+})
+
+const adminContractId = computed(() => {
+  return abiAnalyzer.adminContractId.value ?? undefined
+})
+
+const showLogicABI = ref(AppStorage.getShowLogicABI())
+watch(showLogicABI, () => {
+  AppStorage.setShowLogicABI(showLogicABI.value)
+})
+
+const mode: ComputedRef<ABIMode> = computed(() => {
+  return showLogicABI.value && abiController.logicModeAvailable.value ? ABIMode.Logic : ABIMode.Normal
+})
+const abiController = new ABIController(abiAnalyzer, mode)
+
+const byteCode = props.contractAnalyzer.byteCodeAnalyzer.byteCode
+const solcVersion = props.contractAnalyzer.byteCodeAnalyzer.solcVersion
+const contractId = props.contractAnalyzer.contractId
+const solidityFiles = props.contractAnalyzer.solidityFiles
+const sourceFileName = props.contractAnalyzer.sourceFileName
+const contractFileName = props.contractAnalyzer.contractFileName
+const logicModeAvailable = abiController.logicModeAvailable
 
 </script>
 
