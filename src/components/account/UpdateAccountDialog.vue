@@ -136,94 +136,96 @@
         <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
       </div>
 
-      <hr class="mt-2 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
+      <template v-if="enableStaking">
+        <hr class="mt-2 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
 
-      <div class="has-text-weight-light mb-2">
-        Staking
-      </div>
-      <div class="radios h-is-text-size-4">
-        <label class="radio h-radio-button">
-          <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice"/>
-          To Node
-        </label>
-        <label class="radio h-radio-button ml-5">
-          <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice"/>
-          To Account
-        </label>
-        <label class="radio h-radio-button ml-5">
-          <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice"/>
-          Not Staking
-        </label>
-      </div>
-
-      <div class="mb-4"/>
-
-      <template v-if="stakeChoice===StakeChoice.StakeToNode">
-        <div class="has-text-weight-light mb-1">
-          Staked Node ID
+        <div class="has-text-weight-light mb-2">
+          Staking
         </div>
-        <o-select v-model="stakedNode"
-                  class="is-small has-text-white"
-                  style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
-        >
-          <optgroup label="Hedera council nodes">
-            <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                    style="background-color: var(--h-theme-page-background-color)"
-                    v-show="isCouncilNode(n)"
-            >
-              {{ makeNodeSelectorDescription(n) }}
-            </option>
-          </optgroup>
-          <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
-            <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                    style="background-color: var(--h-theme-page-background-color)"
-                    v-show="!isCouncilNode(n)"
-            >
-              {{ makeNodeSelectorDescription(n) }}
-            </option>
-          </optgroup>
-        </o-select>
-
-      </template>
-
-      <template v-if="stakeChoice===StakeChoice.StakeToAccount">
-        <div class="has-text-weight-light mb-1">
-          Staked Account ID
+        <div class="radios h-is-text-size-4">
+          <label class="radio h-radio-button">
+            <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice"/>
+            To Node
+          </label>
+          <label class="radio h-radio-button ml-5">
+            <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice"/>
+            To Account
+          </label>
+          <label class="radio h-radio-button ml-5">
+            <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice"/>
+            Not Staking
+          </label>
         </div>
-        <div class="is-flex is-align-items-center">
-          <input :value="stakedAccount"
-                 class="input input-field is-small has-text-white"
-                 placeholder="Account ID (0.0.1234)"
-                 type="text"
-                 @input="event => onStakedAccountInput(event)"
-          >
-          <div class="icon is-small ml-2">
-            <i v-if="isStakedAccountValid" class="fas fa-check has-text-success"/>
-            <i v-else-if="stakedAccountFeedbackMessage" class="fas fa-xmark has-text-danger"/>
-            <i v-else/>
+
+        <div class="mb-4"/>
+
+        <template v-if="stakeChoice===StakeChoice.StakeToNode">
+          <div class="has-text-weight-light mb-1">
+            Staked Node ID
           </div>
+          <o-select v-model="stakedNode"
+                    class="is-small has-text-white"
+                    style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
+                    background-color: var(--h-theme-page-background-color);"
+          >
+            <optgroup label="Hedera council nodes">
+              <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                      style="background-color: var(--h-theme-page-background-color)"
+                      v-show="isCouncilNode(n)"
+              >
+                {{ makeNodeSelectorDescription(n) }}
+              </option>
+            </optgroup>
+            <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
+              <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                      style="background-color: var(--h-theme-page-background-color)"
+                      v-show="!isCouncilNode(n)"
+              >
+                {{ makeNodeSelectorDescription(n) }}
+              </option>
+            </optgroup>
+          </o-select>
+
+        </template>
+
+        <template v-if="stakeChoice===StakeChoice.StakeToAccount">
+          <div class="has-text-weight-light mb-1">
+            Staked Account ID
+          </div>
+          <div class="is-flex is-align-items-center">
+            <input :value="stakedAccount"
+                   class="input input-field is-small has-text-white"
+                   placeholder="Account ID (0.0.1234)"
+                   type="text"
+                   @input="event => onStakedAccountInput(event)"
+            >
+            <div class="icon is-small ml-2">
+              <i v-if="isStakedAccountValid" class="fas fa-check has-text-success"/>
+              <i v-else-if="stakedAccountFeedbackMessage" class="fas fa-xmark has-text-danger"/>
+              <i v-else/>
+            </div>
+          </div>
+        </template>
+
+        <template v-if="stakeChoice===StakeChoice.NotStaking">
+          <div class="is-invisible mb-1">
+            Filler
+          </div>
+          <div class="input-field is-invisible" style="width: 560px">
+            Filler
+          </div>
+        </template>
+
+        <div class="mb-4"/>
+
+        <div class="is-flex is-align-items-center is-justify-content-space-between"
+             :class="{'is-invisible':stakeChoice !== StakeChoice.StakeToNode}">
+          <div class="is-flex has-text-weight-light mb-1">
+            Decline Rewards
+          </div>
+          <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
         </div>
       </template>
-
-      <template v-if="stakeChoice===StakeChoice.NotStaking">
-        <div class="is-invisible mb-1">
-          Filler
-        </div>
-        <div class="input-field is-invisible" style="width: 560px">
-          Filler
-        </div>
-      </template>
-
-      <div class="mb-4"/>
-
-      <div class="is-flex is-align-items-center is-justify-content-space-between"
-           :class="{'is-invisible':stakeChoice !== StakeChoice.StakeToNode}">
-        <div class="is-flex has-text-weight-light mb-1">
-          Decline Rewards
-        </div>
-        <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
-      </div>
 
       <div class="mb-4"/>
 
@@ -324,9 +326,9 @@ const props = defineProps({
 
 const emit = defineEmits(["updated"])
 
+const enableStaking = routeManager.enableStaking
 const network = routeManager.currentNetwork.value
 const nr = NetworkConfig.inject()
-
 const autoRenewPeriodFeedbackMessage = ref<string | null>(null)
 const maxAutoAssociationsFeedbackMessage = ref<string | null>(null)
 const stakedAccountFeedbackMessage = ref<string | null>(null)
