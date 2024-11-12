@@ -100,7 +100,7 @@
 
 <script setup lang="ts">
 
-import {onBeforeUnmount, onMounted} from 'vue';
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import Footer from "@/components/Footer.vue";
@@ -126,8 +126,21 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', onResizeHandler);
 })
 
+//
+// Public (selectedNetwork)
+//
+
+const selectedNetwork = ref(routeManager.currentNetwork.value)
+watch(routeManager.currentNetwork, (newNetwork) => {
+  selectedNetwork.value = newNetwork // Checked : does not trigger any watch when value is unchanged
+})
+watch(selectedNetwork, (newNetwork) => {
+  if (newNetwork !== routeManager.currentNetwork.value) {
+    routeManager.routeToMainDashboard(newNetwork)
+  }
+})
+
 const enableStaking = routeManager.enableStaking
-const selectedNetwork = routeManager.selectedNetwork
 const previousRoute = routeManager.previousRoute
 const isDashboardRoute = routeManager.testDashboardRoute
 const isTransactionRoute = routeManager.testTransactionRoute

@@ -182,7 +182,7 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver} from '@/utils/wallet/WalletDriver';
 import {WalletDriverCancelError} from '@/utils/wallet/WalletDriverError';
-import {computed, inject, ref} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import WalletInfo from '@/components/wallet/WalletInfo.vue'
 import {DialogController} from "@/components/dialog/DialogController";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
@@ -218,6 +218,20 @@ const searchBarClass = computed(() => {
     result = "search-bar-S"
   }
   return result
+})
+
+//
+// Public (selectedNetwork)
+//
+
+const selectedNetwork = ref(routeManager.currentNetwork.value)
+watch(routeManager.currentNetwork, (newNetwork) => {
+  selectedNetwork.value = newNetwork // Checked : does not trigger any watch when value is unchanged
+})
+watch(selectedNetwork, (newNetwork) => {
+  if (newNetwork !== routeManager.currentNetwork.value) {
+    routeManager.routeToMainDashboard(newNetwork)
+  }
 })
 
 //
@@ -287,7 +301,6 @@ const isStakingRoute = routeManager.isStakingRoute
 const isTopicRoute = routeManager.isTopicRoute
 const isAccountRoute = routeManager.isAccountRoute
 const isContractRoute = routeManager.isContractRoute
-const selectedNetwork = routeManager.selectedNetwork
 const isDashboardRoute = routeManager.isDashboardRoute
 const isTransactionRoute = routeManager.isTransactionRoute
 
