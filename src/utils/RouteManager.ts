@@ -28,7 +28,7 @@ import {
     Router,
     RouteRecordRaw
 } from "vue-router";
-import {App, computed, ref, watch, WatchStopHandle} from "vue";
+import {App, computed, watch} from "vue";
 import {AppStorage} from "@/AppStorage";
 import PageNotFound from "@/pages/PageNotFound.vue";
 import MainDashboard from "@/pages/MainDashboard.vue";
@@ -87,7 +87,6 @@ export class RouteManager {
 
         const currentNetworkDidChange = () => {
             axios.defaults.baseURL = this.currentNetworkEntry.value.url
-            this.updateSelectedNetworkSilently()
             this.switchThemes()
         }
         watch(this.currentNetwork, () => {
@@ -161,27 +160,6 @@ export class RouteManager {
             this.router.addRoute(r)
         }
 
-    }
-
-    //
-    // Public (selectedNetwork)
-    //
-
-    public selectedNetwork = ref(this.networkConfig.entries[0].name)
-
-    public selectedNetworkWatchHandle: WatchStopHandle | undefined
-
-    public updateSelectedNetworkSilently(): void {
-        if (this.selectedNetworkWatchHandle) {
-            this.selectedNetworkWatchHandle()
-        }
-        this.selectedNetwork.value = this.currentNetwork.value
-        this.selectedNetworkWatchHandle = watch(this.selectedNetwork, (selection) => {
-            this.router.push({
-                name: "MainDashboard",
-                params: {network: selection}
-            }).catch()
-        })
     }
 
     //
@@ -514,12 +492,12 @@ export class RouteManager {
     // Main Pages
     //
 
-    public makeRouteToMainDashboard(): RouteLocationRaw {
-        return {name: 'MainDashboard', params: {network: this.currentNetwork.value}}
+    public makeRouteToMainDashboard(network: string|null = null): RouteLocationRaw {
+        return {name: 'MainDashboard', params: {network: network ??  this.currentNetwork.value}}
     }
 
-    public routeToMainDashboard(): Promise<NavigationFailure | void | undefined> {
-        return this.router.push(this.makeRouteToMainDashboard())
+    public routeToMainDashboard(network: string|null = null): Promise<NavigationFailure | void | undefined> {
+        return this.router.push(this.makeRouteToMainDashboard(network))
     }
 
     public makeRouteToTransactions(): RouteLocationRaw {
