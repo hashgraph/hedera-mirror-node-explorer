@@ -55,6 +55,10 @@
     "displayName": "LOCAL NODE",
     "url": "http://127.0.0.1:5551",
     "ledgerID": "FF",
+    "enableWallet": true,
+    "enableStaking": false,
+    "enableExpiry": false,
+    "enableMarket": false,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "http://localhost:10000/contracts/",
