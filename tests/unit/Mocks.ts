@@ -3236,7 +3236,7 @@ export const SAMPLE_NETWORK_NODES = {
             "memo": "0.0.3",
             "node_id": 0,
             "node_account_id": "0.0.3",
-            "node_cert_hash": "0xffd6ada74a3a34a9",
+            "node_cert_hash": "0xa171e3ba83476747aeb2e2ac4d0e115caaab918203b0dfe1cdeab443438fc289abc8ba8a6aff83db5f1b334046da88c8",
             "public_key": "0x308201a2300d0609",
             "reward_rate_start": 2740,
             "service_endpoints": [
@@ -3278,7 +3278,7 @@ export const SAMPLE_NETWORK_NODES = {
             "memo": "0.0.4",
             "node_id": 1,
             "node_account_id": "0.0.4",
-            "node_cert_hash": "0xffd6ada74a3a34a9",
+            "node_cert_hash": "0x7409dec2e494b627ee49c69b294be1ceaebca3fdcaf36789e88fc7d5b0eef5561f52b82d35191a39c2fbed6027267166",
             "public_key": "0x308201a2300d0609",
             "reward_rate_start": 5479,
             "service_endpoints": [
@@ -3307,7 +3307,7 @@ export const SAMPLE_NETWORK_NODES = {
             "memo": "0.0.5",
             "node_id": 2,
             "node_account_id": "0.0.5",
-            "node_cert_hash": "0xffd6ada74a3a34a9",
+            "node_cert_hash": "0x9b1416584a4a380bb86a6c7d7207d8aeddbc3b63ea305998255bce8351ba4b5dca52c9282a54a6bed60de63ce03aaa24",
             "public_key": "0x308201a2300d0609",
             "reward_rate_start": 8219,
             "service_endpoints": [
