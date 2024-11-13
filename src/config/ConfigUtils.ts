@@ -27,7 +27,7 @@ export function fetchBoolean(obj: any, key: string): boolean|null {
         } else if (typeof value === 'boolean') {
             result = value
         } else {
-            throw new TypeError('Expected ' + key + ' to be boolean, got ' + typeof key)
+            throw new TypeError('Expected ' + key + ' to be boolean, got ' + typeof value)
         }
     } else {
         result = null
@@ -44,7 +44,7 @@ export function fetchNumber(obj: any, key: string): number|null {
         } else if (typeof value === 'number') {
             result = value
         } else {
-            throw new TypeError('Expected ' + key + ' to be number, got ' + typeof key)
+            throw new TypeError('Expected ' + key + ' to be number, got ' + typeof value)
         }
     } else {
         result = null
@@ -61,7 +61,7 @@ export function fetchString(obj: any, key: string): string|null {
         } else if (typeof value === 'string') {
             result = value
         } else {
-            throw new TypeError('Expected ' + key + ' to be string, got ' + typeof key)
+            throw new TypeError('Expected ' + key + ' to be string, got ' + typeof value)
         }
     } else {
         result = null
@@ -94,7 +94,7 @@ export function fetchObject(obj: any, key: string): object|null {
         } else if (typeof value === 'object') {
             result = value
         } else {
-            throw new TypeError('Expected ' + key + ' to be object, got ' + typeof key)
+            throw new TypeError('Expected ' + key + ' to be object, got ' + typeof value)
         }
     } else {
         result = null
