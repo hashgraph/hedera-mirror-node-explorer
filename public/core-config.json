@@ -1,7 +1,19 @@
 {
-  "productName": "Mirror Node Explorer",
-  "documentTitlePrefix": "Hedera",
-  "productDescription": "Mirror Node Explorer is a ledger explorer for the Hedera network",
-  "ipfsGatewayUrlPrefix": "https://gateway.pinata.cloud/ipfs/",
-  "popularTokenIndexURL": "popular-tokens.json"
+  "productName": null,
+  "productLogoURL": null,
+  "documentTitlePrefix": null,
+  "productDescription": null,
+  "metaDescription": null,
+  "metaURL": null,
+  "builtOnLogoURL": null,
+  "builtOnURL": null,
+  "sponsorLogoURL": null,
+  "sponsorURL": null,
+  "termsOfUseURL": null,
+  "estimatorNotice": null,
+  "walletChooserDisclaimerPopup": null,
+  "googleTagID": null,
+  "ipfsGatewayUrlPrefix": null,
+  "popularTokenIndexURL": null,
+  "cryptoSymbol": null
 }
