@@ -8,25 +8,25 @@ Mirror Node Explorer can be configured using two files:
 
 The following configuration parameters can be set in `core-config.json`:
 
-| Parameter Key                  | Type     | Default                              |
-|--------------------------------|----------|--------------------------------------|
-| `productName`                  | `string` | `Mirror Node Explorer`               |
-| `productLogoURL`               | `url`    |                                      |
-| `documentTitlePrefix`          | `string` | `""`                                 |
-| `productDescription`           | `string` |                                      |
-| `metaDescription`              | `string` |                                      |
-| `metaURL`                      | `url`    |                                      |
-| `builtOnLogoURL`               | `url`    |                                      |
-| `builtOnURL`                   | `url`    |                                      |
-| `sponsorLogoURL`               | `url`    |                                      |
-| `sponsorURL`                   | `url`    |                                      |
-| `termsOfUseURL`                | `url`    |                                      |
-| `estimatorNotice`              | `string` |                                      |
-| `walletChooserDisclaimerPopup` | `string` |                                      |
-| `googleTagID`                  | `string` |                                      |
-| `ipfsGatewayUrlPrefix`         | `string` | `https://gateway.pinata.cloud/ipfs/` |
-| `popularTokenIndexURL`         | `url`    |                                      |
-| `cryptoSymbol`                 | `string` |                                      |
+| Parameter Key                  | Type     | When `undefined` or `null`                                               | Comment                    |
+|--------------------------------|----------|--------------------------------------------------------------------------|----------------------------|
+| `productName`                  | `string` | `Mirror Node Explorer` is displayed                                      |                            |
+| `productLogoURL`               | `url`    | [brand-product-logo.png](src/assets/brand-product-logo.png) is displayed |                            |
+| `documentTitlePrefix`          | `string` | `Hiero` is displayed                                                     | Set to `""` to hide prefix |
+| `productDescription`           | `string` |                                                                          |                            |
+| `metaDescription`              | `string` |                                                                          |                            |
+| `metaURL`                      | `url`    |                                                                          |                            |
+| `builtOnLogoURL`               | `url`    |                                                                          |                            |
+| `builtOnURL`                   | `url`    |                                                                          |                            |
+| `sponsorLogoURL`               | `url`    |                                                                          |                            |
+| `sponsorURL`                   | `url`    |                                                                          |                            |
+| `termsOfUseURL`                | `url`    |                                                                          |                            |
+| `estimatorNotice`              | `string` |                                                                          |                            |
+| `walletChooserDisclaimerPopup` | `string` |                                                                          |                            |
+| `googleTagID`                  | `string` |                                                                          |                            |
+| `ipfsGatewayUrlPrefix`         | `string` | `https://gateway.pinata.cloud/ipfs/`                                     |                            |
+| `popularTokenIndexURL`         | `url`    |                                                                          |                            |
+| `cryptoSymbol`                 | `string` |                                                                          |                            |
 
 Note: relative url are resolved against deployment root directory.
 
