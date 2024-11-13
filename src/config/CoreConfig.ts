@@ -112,7 +112,7 @@ export class CoreConfig {
 
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
-            fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
+            fetchString(obj, "productName") ??  "Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitlePrefix"),
             fetchString(obj, "productDescription"),
