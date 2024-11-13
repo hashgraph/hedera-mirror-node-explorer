@@ -576,7 +576,7 @@ export class RouteManager {
 
     private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
         const envTitlePrefix = this.coreConfig.documentTitlePrefix
-        const titlePrefix = envTitlePrefix !== null ? envTitlePrefix + " " : ""
+        const titlePrefix = envTitlePrefix !== "" ? envTitlePrefix + " " : ""
 
         switch (to.name as string) {
             case "MainDashboard":
