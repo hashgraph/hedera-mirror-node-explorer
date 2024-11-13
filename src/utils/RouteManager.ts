@@ -642,9 +642,12 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
+        const productName = this.coreConfig.productName
         const description = this.coreConfig.metaDescription
         const url = this.coreConfig.metaURL
 
+        this.createOrUpdateTagName('application-name', productName)
+        this.createOrUpdateTagProperty('og:site_name', productName)
         if (description) {
             this.createOrUpdateTagName('description', description)
         }
