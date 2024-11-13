@@ -642,10 +642,12 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
-        const description = this.coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+        const description = this.coreConfig.metaDescription
         const url = this.coreConfig.metaURL
 
-        this.createOrUpdateTagName('description', description)
+        if (description) {
+            this.createOrUpdateTagName('description', description)
+        }
         this.createOrUpdateTagProperty('og:title', title)
         if (url) {
             this.createOrUpdateTagProperty('og:url', url)

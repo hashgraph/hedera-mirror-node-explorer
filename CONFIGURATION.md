@@ -8,25 +8,25 @@ Mirror Node Explorer can be configured using two files:
 
 The following configuration parameters can be set in `core-config.json`:
 
-| Parameter Key                  | Type     | When `undefined` or `null`                                               | Comment                    |
-|--------------------------------|----------|--------------------------------------------------------------------------|----------------------------|
-| `productName`                  | `string` | `Mirror Node Explorer` is displayed                                      |                            |
-| `productLogoURL`               | `url`    | [brand-product-logo.png](src/assets/brand-product-logo.png) is displayed |                            |
-| `documentTitlePrefix`          | `string` | `Hiero` is displayed                                                     | Set to `""` to hide prefix |
-| `productDescription`           | `string` |                                                                          |                            |
-| `metaDescription`              | `string` |                                                                          |                            |
-| `metaURL`                      | `url`    |                                                                          |                            |
-| `builtOnLogoURL`               | `url`    |                                                                          |                            |
-| `builtOnURL`                   | `url`    |                                                                          |                            |
-| `sponsorLogoURL`               | `url`    |                                                                          |                            |
-| `sponsorURL`                   | `url`    |                                                                          |                            |
-| `termsOfUseURL`                | `url`    |                                                                          |                            |
-| `estimatorNotice`              | `string` |                                                                          |                            |
-| `walletChooserDisclaimerPopup` | `string` |                                                                          |                            |
-| `googleTagID`                  | `string` |                                                                          |                            |
-| `ipfsGatewayUrlPrefix`         | `string` | `https://gateway.pinata.cloud/ipfs/`                                     |                            |
-| `popularTokenIndexURL`         | `url`    |                                                                          |                            |
-| `cryptoSymbol`                 | `string` |                                                                          |                            |
+| Parameter Key                  | Type     | When `undefined` or `null`                                                        | Comment                    |
+|--------------------------------|----------|-----------------------------------------------------------------------------------|----------------------------|
+| `productName`                  | `string` | `Mirror Node Explorer` is displayed                                               |                            |
+| `productLogoURL`               | `url`    | [brand-product-logo.png](src/assets/brand-product-logo.png) is displayed          |                            |
+| `documentTitlePrefix`          | `string` | `Hiero` is displayed                                                              | Set to `""` to hide prefix |
+| `productDescription`           | `string` | No product description is displayed                                               |                            |
+| `metaDescription`              | `string` | Meta tag `name="description"` is unset                                            |                            |
+| `metaURL`                      | `url`    | Meta tag `property="og:url"` is unset                                             |                            |
+| `builtOnLogoURL`               | `url`    | [built-on-hedera-white.svg](src/assets/built-on-hedera-white.svg) is displayed    |                            |
+| `builtOnURL`                   | `url`    | Disable navigation                                                                |                            |
+| `sponsorLogoURL`               | `url`    | [brand-sponsor-logo.png](src/assets/branding/brand-sponsor-logo.png) is displayed |                            |
+| `sponsorURL`                   | `url`    | Disable navigation                                                                |                            |
+| `termsOfUseURL`                | `url`    | No terms of use are displayed                                                     |                            |
+| `estimatorNotice`              | `string` | No estimator notice is displayed                                                  |                            |
+| `walletChooserDisclaimerPopup` | `string` | No wallet chooser disclaimer popup is displayed                                   |                            |
+| `googleTagID`                  | `string` | Google Tag is disabled                                                            |                            |
+| `ipfsGatewayUrlPrefix`         | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
+| `popularTokenIndexURL`         | `url`    | Popular token search is disabled                                                  |                            |
+| `cryptoSymbol`                 | `string` | `<span style="color: darkgrey">ℏ</span>` is displayed                             |                            |
 
 Note: relative url are resolved against deployment root directory.
 
