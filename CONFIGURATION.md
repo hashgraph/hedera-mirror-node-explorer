@@ -17,7 +17,7 @@ The following configuration parameters can be set in `core-config.json`:
 
 | Parameter Key                  | Type     | When `undefined` or `null`                                                        | Comment                    |
 |--------------------------------|----------|-----------------------------------------------------------------------------------|----------------------------|
-| `productName`                  | `string` | `Mirror Node Explorer` is displayed                                               |                            |
+| `productName`                  | `string` | `Hiero Mirror Node Explorer` is displayed                                         |                            |
 | `productLogoURL`               | `url`    | [brand-product-logo.png](src/assets/brand-product-logo.png) is displayed          |                            |
 | `documentTitlePrefix`          | `string` | `Hiero` is displayed                                                              | Set to `""` to hide prefix |
 | `productDescription`           | `string` | No product description is displayed                                               |                            |
