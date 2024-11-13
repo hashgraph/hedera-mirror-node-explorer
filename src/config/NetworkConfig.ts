@@ -34,7 +34,7 @@ export class SourcifySetup {
 
     static parse(obj: object): SourcifySetup {
 
-        const activate = fetchBoolean(obj, "activate")
+        const activate = fetchBoolean(obj, "activate") ?? true
         const repoURL = fetchURL(obj, "repoURL")
         const serverURL = fetchURL(obj, "serverURL")
         const verifierURL = fetchURL(obj, "verifierURL")
@@ -118,10 +118,10 @@ export class NetworkEntry {
         const displayName = fetchString(obj, "displayName")
         const url = fetchURL(obj, "url")
         const ledgerID = fetchString(obj, "ledgerID")
-        const enableWallet = fetchBoolean(obj, "enableWallet")
-        const enableStaking = fetchBoolean(obj, "enableStaking")
-        const enableExpiry = fetchBoolean(obj, "enableExpiry")
-        const enableMarket = fetchBoolean(obj, "enableMarket")
+        const enableWallet = fetchBoolean(obj, "enableWallet") ?? false
+        const enableStaking = fetchBoolean(obj, "enableStaking") ?? false
+        const enableExpiry = fetchBoolean(obj, "enableExpiry") ?? false
+        const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
         if (name === null) {
@@ -132,18 +132,6 @@ export class NetworkEntry {
         }
         if (ledgerID === null) {
             throw this.missingPropertyError("ledgerID")
-        }
-        if (enableWallet === null) {
-            throw this.missingPropertyError("enableWallet")
-        }
-        if (enableStaking === null) {
-            throw this.missingPropertyError("enableStaking")
-        }
-        if (enableExpiry === null) {
-            throw this.missingPropertyError("enableExpiry")
-        }
-        if (enableMarket === null) {
-            throw this.missingPropertyError("enableMarket")
         }
 
         let tidyDisplayName = (displayName ?? name).toUpperCase()
