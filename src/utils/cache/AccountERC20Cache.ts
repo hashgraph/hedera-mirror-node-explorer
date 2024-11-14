@@ -31,6 +31,34 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
     public static readonly instance = new AccountERC20Cache()
 
     //
+    // Public
+    //
+
+    public async forgetContract(accountId: string, contractId: string) {
+        if (this.contains(accountId)) {
+            let newPromise: Promise<AccountERC20[]>
+            try {
+                const accountERC20s = await this.lookup(accountId)
+                const newAccountERC20s: AccountERC20[] = []
+                for (const accountERC20 of accountERC20s) {
+                    let newAccountERC20: AccountERC20
+                    if (accountERC20.erc20.contractId === contractId) {
+                        const newBalance = this.getBalance(contractId, accountId)
+                        newAccountERC20 = { balance: newBalance.toString(), erc20: accountERC20.erc20}
+                    } else {
+                        newAccountERC20 = accountERC20
+                    }
+                    newAccountERC20s.push(newAccountERC20)
+                }
+                newPromise = Promise.resolve(newAccountERC20s)
+            } catch(reason) {
+                newPromise = Promise.reject(reason)
+            }
+            this.mutate(accountId, newPromise)
+        }
+    }
+
+    //
     // Cache
     //
 
