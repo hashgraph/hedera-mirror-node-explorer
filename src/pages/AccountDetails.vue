@@ -282,6 +282,8 @@
       </template>
     </DashboardCard>
 
+    <ERCTokensSection :account-id="normalizedAccountId" :full-page="false"/>
+
     <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
     <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
@@ -413,6 +415,7 @@ import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import ERCTokensSection from "@/components/token/ERCTokensSection.vue";
 
 const props = defineProps({
   accountId: String,
