@@ -112,10 +112,10 @@ export class CoreConfig {
 
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
-            fetchString(obj, "productName") ??  "Hiero Mirror Node Explorer",
+            fetchString(obj, "productName") ?? "Hiero Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
             fetchString(obj, "documentTitlePrefix") ?? "Hiero",
-            fetchString(obj, "productDescription"),
+            fetchString(obj, "productDescription") ?? "Hiero Mirror Node Explorer",
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),
             fetchURL(obj, "builtOnLogoURL"),
