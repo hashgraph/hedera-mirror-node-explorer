@@ -66,7 +66,7 @@
 
     <o-table-column v-slot="{ row }" field="refresh" position="right">
       <span class="h-is-property-text icon is-small">
-        <i class="fas fa-sync" @click.stop="refreshBalance"></i>
+        <i class="fas fa-sync" @click.stop="refreshBalance(row)"></i>
       </span>
     </o-table-column>
 
@@ -110,7 +110,11 @@ const handleClick = (row: AccountERC20, c: unknown, i: number, ci: number, event
 
 const formatErcBalance = (rawAmount: string, decimalCount: number) => formatUnits(rawAmount, decimalCount)
 
-const refreshBalance = () => console.log('Individual ERC20 refresh not implemented')
+const emit = defineEmits(["refresh"])
+
+const refreshBalance = (row: AccountERC20) => {
+  emit("refresh", row)
+}
 
 </script>
 
