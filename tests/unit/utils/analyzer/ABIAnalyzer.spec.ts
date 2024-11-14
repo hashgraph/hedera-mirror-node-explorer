@@ -36,6 +36,7 @@ import {fetchGetURLs} from "../../MockUtils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {ABIController, ABIMode} from "../../../../src/components/contract/ABIController";
+import {routeManager} from "../../../../src/router";
 
 
 describe("ABIAnalyzer.ts", async () => {
@@ -137,6 +138,8 @@ describe("ABIAnalyzer.ts", async () => {
 
     it("Unverified proxy and logic contracts", async () => {
 
+        const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
+
         const mock = new MockAdapter(axios)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
@@ -237,16 +240,18 @@ describe("ABIAnalyzer.ts", async () => {
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
             "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.evm_address,
-            "files/any/295/" + SAMPLE_CONTRACT.evm_address,
+            sourcifyURL + "files/any/295/" + SAMPLE_CONTRACT.evm_address,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
-            "files/any/295/0x00000000000000000000000000000000000C41Df",
+            sourcifyURL + "files/any/295/0x00000000000000000000000000000000000C41Df",
             "api/v1/contracts/" + SAMPLE_CONTRACT_WITH_SWARM_HASH.evm_address,
-            "files/any/295/0x000000000000000000000000000000000002294A",
+            sourcifyURL + "files/any/295/0x000000000000000000000000000000000002294A",
         ])
 
     })
 
     it("Verified proxy and logic contracts", async () => {
+
+        const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
         const mock = new MockAdapter(axios)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
@@ -264,10 +269,10 @@ describe("ABIAnalyzer.ts", async () => {
         const matcher4 = "api/v1/contracts/" + SAMPLE_CONTRACT_WITH_SWARM_HASH.evm_address
         mock.onGet(matcher4).reply(200, SAMPLE_CONTRACT_WITH_SWARM_HASH);
 
-        const matcher5 = "files/any/295/0x00000000000000000000000000000000000b70cf"
+        const matcher5 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000000b70cf"
         mock.onGet(matcher5).reply(200, PROXY_SOURCIFY_RESPONSE);
 
-        const matcher6 = "files/any/295/0x00000000000000000000000000000000000C41Df"
+        const matcher6 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000000C41Df"
         mock.onGet(matcher6).reply(200, LOGIC_SOURCIFY_RESPONSE);
 
 
@@ -360,11 +365,11 @@ describe("ABIAnalyzer.ts", async () => {
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
             "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.evm_address,
-            "files/any/295/" + SAMPLE_CONTRACT.evm_address,
+            sourcifyURL + "files/any/295/" + SAMPLE_CONTRACT.evm_address,
             "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
-            "files/any/295/0x00000000000000000000000000000000000C41Df",
+            sourcifyURL + "files/any/295/0x00000000000000000000000000000000000C41Df",
             "api/v1/contracts/" + SAMPLE_CONTRACT_WITH_SWARM_HASH.evm_address,
-            "files/any/295/0x000000000000000000000000000000000002294A",
+            sourcifyURL + "files/any/295/0x000000000000000000000000000000000002294A",
         ])
 
     })

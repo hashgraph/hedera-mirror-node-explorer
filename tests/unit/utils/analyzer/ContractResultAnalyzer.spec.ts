@@ -27,10 +27,13 @@ import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {fetchGetURLs} from "../../MockUtils";
+import {routeManager} from "../../../../src/router";
 
 describe("ContractResultAnalyzer.spec.ts", () => {
 
     test("new + mount + setup + unmount", async () => {
+
+        const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
         const mock = new MockAdapter(axios);
 
@@ -46,7 +49,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const matcher2 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id + "/results/" + CONTRACT_RESULT.timestamp
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS);
 
-        const matcher3 = "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
+        const matcher3 = sourcifyURL + "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
         mock.onGet(matcher3).reply(200, SOURCIFY_RESPONSE);
 
         // 1) new
@@ -119,7 +122,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
             "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
             "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x5d123e3f",
             "api/v1/contracts/0.0.6810663",
-            "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
+            sourcifyURL + "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
         ])
 
         mock.restore()
@@ -127,6 +130,8 @@ describe("ContractResultAnalyzer.spec.ts", () => {
     })
 
     test("new + setup + mount + unmount", async () => {
+
+        const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
         const mock = new MockAdapter(axios);
 
@@ -142,7 +147,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
         const matcher2 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id + "/results/" + CONTRACT_RESULT.timestamp
         mock.onGet(matcher2).reply(200, CONTRACT_RESULT_DETAILS);
 
-        const matcher3 = "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
+        const matcher3 = sourcifyURL + "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F"
         mock.onGet(matcher3).reply(200, SOURCIFY_RESPONSE);
 
         // 1) new
@@ -215,7 +220,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
             "api/v1/contracts/0.0.6810663/results/1704186823.658538003",
             // "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x5d123e3f", WHY ?
             "api/v1/contracts/0.0.6810663",
-            "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
+            sourcifyURL + "files/any/295/0x06a50d1f642cA50284EFb59988AF9b60683FAD3F",
         ])
 
         mock.restore()
