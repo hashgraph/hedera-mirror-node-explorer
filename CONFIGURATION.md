@@ -32,13 +32,13 @@ The following configuration parameters can be set in `core-config.json`:
 | `walletChooserDisclaimerPopup` | `string` | No wallet chooser disclaimer popup is displayed                                   |                            |
 | `googleTagID`                  | `string` | Google Tag is disabled                                                            |                            |
 | `ipfsGatewayUrlPrefix`         | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
-| `popularTokenIndexURL`         | `url`    | Popular token search is disabled                                                  |                            |
+| `cryptoName`                   | `string` | `HBAR` is displayed                                                               |                            |
 | `cryptoSymbol`                 | `string` | `<span style="color: darkgrey">ℏ</span>` is displayed                             |                            |
 
 
 ### `productName`
 This parameter is displayed on bottom left of the page when screen size is small.
-Default value is `Mirror Node Explorer`
+Default value is `Hiero Mirror Node Explorer`
 
 ### `productLogoURL`
 This provides the location of an image to be used as a replacement for the default product logo at the top left of the page.
@@ -52,7 +52,7 @@ When not specified, no prefix appears.
 
 ### `productDescription`
 This parameter is displayed on bottom left of the page when screen size is large.
-Default value is `Mirror Node Explorer`
+Default value is `Hiero Mirror Node Explorer`
 
 ### `metaDescription`
 This parameter will be inserted as the meta tag `name="description"` in index.html.
@@ -104,9 +104,73 @@ be actually used only if the user has agreed.
 This provides the URL prefix of the public IPFS gateway to use to resolve the IPFS URLs used in the token metadata.
 By default the Pinata public IPFS gateway is used.
 
+### `cryptoName`
+This provides the name of the crypto, as a replacement of the default name which is 'HBAR'.
+
+### `cryptoSymbol`
+This provides the HTML content to be used as a replacement of the default crypto symbol `ℏ`.
+For instance, the default value for this parameter is equivalent to providing:
+`<span style="color: darkgrey">ℏ</span>`
+
+## networks-config.json
+
+This files contains an array of network configuration objects.
+Explorer checks that this array contains at least one item and aborts otherwise.
+
+### Network Configuration Object
+
+| Parameter Key           | Type     | When `undefined` or `null`         | Comments                            |
+|-------------------------|----------|------------------------------------|-------------------------------------|
+| `name`                  | `string` | n/a                                | This parameter is mandatory         |
+| `displayName`           | `string` | `name` is used                     |                                     |
+| `url`                   | `url`    | n/a                                | This parameter is mandatory         |
+| `ledgerID`              | `string` | n/a                                | This parameter is mandatory         |
+| `enableWallet`          | `string` | Wallet connection is disabled      |                                     |
+| `enableStaking`         | `string` | Staking features are disabled      |                                     |
+| `enableExpiry`          | `url`    | Expiry related info are hidden     |                                     |
+| `enableMarket`          | `url`    | Market data are hidden             |                                     |
+| `popularTokenIndexURL`  | `url`    | Popular token search is disabled   |                                     |
+| `sourcifySetup`         | `object` | Contract verification is disabled  | See below for `sourcifySetup` spec. |
+
+### `name`
+This provides the official name of the network (e.g. 'testnet').
+
+### `displayName`
+The user friendly name of the network, as displayed in the network selector and the banner on top of the page.
+
+### `url`
+The URL of the mirror-node REST API for this network.
+
+### `ledgerID`
+The ledger ID is an hexadecimal value, as defined by [HIP-198](https://hips.hedera.com/hip/hip-198), which 
+uniquely identifies the network.
+
+### `enableWallet`
+When set to `true` this parameter enables the `CONNECT WALLET` button, which allows the user to connect a wallet
+and perform certain transactions on her account.
+
+### `enableStaking`
+When set to `true` this parameter enables the `STAKING` feature, and in particular:
+- makes the `Staking` page available
+- displays information and properties related to Staking on the various pages
+- allow the user to change the Staking for her account
+
+### `enableExpiry`
+When set to `true` this parameter enables the display of certain properties related
+to the expiry and renewal of accounts and contracts, such as:
+- `Expires at`
+- `Auto Renew Period`
+- `Auto Renew Account`
+
+### `enableMarket`
+When set to `true` this parameter enables the display of market related information in the top banner 
+of the Dashboard page
+
 ### `popularTokenIndexURL`
-This provides the location of a file containing a list of 'popular' tokens. When searching for a token name, this list 
-will be searched separately from the rest of the network tokens, and results will be presented in a separate section.
+This provides the location of a file containing a list of 'popular' tokens for the network.
+When searching for a token name, this list will be searched separately from the rest of the network tokens,
+and the results will be presented in a separate section.
+
 The content of the file is an array of the following structure:
 ```
 [
@@ -121,29 +185,6 @@ The content of the file is an array of the following structure:
     …
 ]
 ```
-
-### `cryptoSymbol`
-This provides the HTML content to be used as a replacement of the default crypto unit symbol `ℏ`
-
-
-## networks-config.json
-
-This files contains an array of network configuration objects.
-Explorer checks that this array contains at least one item and aborts otherwise.
-
-### Network Configuration Object
-
-| Parameter Key   | Type     | When `undefined` or `null`        | Comments                            |
-|-----------------|----------|-----------------------------------|-------------------------------------|
-| `name`          | `string` | n/a                               | This parameter is mandatory         |
-| `displayName`   | `string` | `name` is used                    |                                     |
-| `url`           | `url`    | n/a                               | This parameter is mandatory         |
-| `ledgerID`      | `string` | n/a                               | This parameter is mandatory         |
-| `enableWallet`  | `string` | Wallet connection is disabled     |                                     |
-| `enableStaking` | `string` | Staking features are disabled     |                                     |
-| `enableExpiry`  | `url`    | Expiry related info are hidden    |                                     |
-| `enableMarket`  | `url`    | Market data are hidden            |                                     |
-| `sourcifySetup` | `object` | Contract verification is disabled | See below for `sourcifySetup` spec. |
 
 
 ### Sourcify Setup Object
