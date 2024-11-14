@@ -27,6 +27,7 @@ import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {SignatureCache} from "@/utils/cache/SignatureCache";
+import {routeManager} from "@/router";
 
 describe("FunctionCallAnalyzer.spec.ts", () => {
 
@@ -180,8 +181,10 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
     test("Call to verified contract: new + mount + setup + unmount", async () => {
 
+        const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
+
         const mock = new MockAdapter(axios);
-        const matcher1 = "files/any/295/0x00000000000000000000000000000000002E7A5D"
+        const matcher1 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000002E7A5D"
         mock.onGet(matcher1).reply(200, SOURCIFY_RESPONSE)
         const matcher2 = "api/v1/contracts/" + CONTRACT_DETAILS.contract_id
         mock.onGet(matcher2).reply(200, CONTRACT_DETAILS)
@@ -272,8 +275,10 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
     test("Call to verified contract: new + setup + mount + unmount", async () => {
 
+        const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
+
         const mock = new MockAdapter(axios);
-        const matcher1 = "files/any/295/0x00000000000000000000000000000000002E7A5D"
+        const matcher1 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000002E7A5D"
         mock.onGet(matcher1).reply(200, SOURCIFY_RESPONSE)
         const matcher2 = "api/v1/contracts/" + CONTRACT_DETAILS.contract_id
         mock.onGet(matcher2).reply(200, CONTRACT_DETAILS)

@@ -144,7 +144,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
 
         // None of the elements related to contract verification should be present in this context
-        expect(wrapper.find('#verify-button').exists()).toBe(false)
+        expect(wrapper.find('#verify-button').exists()).toBe(true)
         expect(wrapper.find('#showSource').exists()).toBe(false)
         expect(wrapper.find('#verificationStatus').exists()).toBe(false)
         expect(wrapper.find('#contractName').exists()).toBe(false)
@@ -242,7 +242,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
 
         // None of the elements related to contract verification should be present in this context
-        expect(wrapper.find('#verify-button').exists()).toBe(false)
+        expect(wrapper.find('#verify-button').exists()).toBe(true)
         expect(wrapper.find('#showSource').exists()).toBe(false)
         expect(wrapper.find('#verificationStatus').exists()).toBe(false)
         expect(wrapper.find('#contractName').exists()).toBe(false)
