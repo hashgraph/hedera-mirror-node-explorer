@@ -43,7 +43,7 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
                 for (const accountERC20 of accountERC20s) {
                     let newAccountERC20: AccountERC20
                     if (accountERC20.erc20.contractId === contractId) {
-                        const newBalance = this.getBalance(contractId, accountId)
+                        const newBalance = await this.getBalance(contractId, accountId)
                         newAccountERC20 = { balance: newBalance.toString(), erc20: accountERC20.erc20}
                     } else {
                         newAccountERC20 = accountERC20
