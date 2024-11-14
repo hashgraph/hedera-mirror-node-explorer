@@ -62,6 +62,7 @@
         <ERC20Table
             :tokens="tokens"
             :full-page="props.fullPage"
+            @refresh="onRefreshRow"
         />
       </div>
 
@@ -85,7 +86,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import {routeManager} from "@/router";
-import {AccountERC20Cache} from "@/utils/cache/AccountERC20Cache";
+import {AccountERC20, AccountERC20Cache} from "@/utils/cache/AccountERC20Cache";
 import ERC20Table from "@/components/account/ERC20Table.vue";
 
 const props = defineProps({
@@ -123,6 +124,12 @@ const onRefresh = () => {
   AccountERC20Cache.instance.clear()
   lookup.unmount()
   lookup.mount()
+}
+
+const onRefreshRow = async (row: AccountERC20): Promise<void> => {
+  if (accountId.value) {
+    await AccountERC20Cache.instance.forgetContract(accountId.value, row.erc20.contractId)
+  }
 }
 
 </script>
