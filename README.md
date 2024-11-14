@@ -54,7 +54,7 @@ Explorer to start:
 - `/public/core-config.json`
 - `/public/networks-config.json`
 
-Details for these configuration files can be found in [CONFIGURATION.md](https://github.com/hashgraph/.github/blob/configuration/CONFIGURATION.md).
+Details for these configuration files can be found in [CONFIGURATION.md](https://github.com/hashgraph/hedera-mirror-node-explorer/blob/main/CONFIGURATION.md).
 
 ## Run in Docker
 
@@ -89,7 +89,7 @@ helm upgrade --install hedera-explorer chart/
 ### Configure custom networks 
 
 Core configuration and network configuration need to be provided to the Explorer in the `values.yaml` file 
-(see [CONFIGURATION.md](https://github.com/hashgraph/.github/blob/main/CONFIGURATION.md) for 
+(see [CONFIGURATION.md](https://github.com/hashgraph/hedera-mirror-node-explorer/blob/main/CONFIGURATION.md) for 
 details on configuration parameters).
 
 If the network configuration is empty, by default the Explorer will support MAINNET, PREVIEWNET and TESTNET. But a 
