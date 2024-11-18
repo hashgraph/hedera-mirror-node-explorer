@@ -26,25 +26,20 @@ export class SelectedTokensCache extends SingletonCache<SelectedTokensIndex> {
 
     public static readonly instance = new SelectedTokensCache()
 
-    private popularTokenIndexURL: string|null = null
-
-    //
-    // Public
-    //
-
-    public setup(popularTokenIndexURL: string|null) {
-        this.popularTokenIndexURL = popularTokenIndexURL
-        this.clear()
-    }
-
     //
     // Cache
     //
 
     protected async load(): Promise<SelectedTokensIndex> {
         let selectedTokenEntries: SelectedTokenEntry[]
-        if (routeManager.currentNetwork.value == "mainnet" && this.popularTokenIndexURL !== null) {
-            selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(this.popularTokenIndexURL)).data
+        const popularTokenIndexURL = routeManager.currentNetworkEntry.value.popularTokenIndexURL
+        if (popularTokenIndexURL !== null) {
+            try {
+                selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(popularTokenIndexURL)).data
+            } catch(reason) {
+                console.log("reason=" + reason)
+                throw reason
+            }
         } else {
             selectedTokenEntries = []
         }

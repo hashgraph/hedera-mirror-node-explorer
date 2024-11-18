@@ -8,6 +8,7 @@
     "enableStaking": true,
     "enableExpiry": true,
     "enableMarket": true,
+    "popularTokenIndexURL": "popular-tokens.json",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",

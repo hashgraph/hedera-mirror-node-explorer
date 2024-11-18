@@ -123,6 +123,7 @@ export class NetworkEntry {
         const enableExpiry = fetchBoolean(obj, "enableExpiry") ?? false
         const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
+        const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
 
         if (name === null) {
             throw this.missingPropertyError("name")
@@ -150,6 +151,7 @@ export class NetworkEntry {
             enableStaking,
             enableExpiry,
             enableMarket,
+            popularTokenIndexURL,
             sourcifySetup
         )
     }
@@ -173,6 +175,9 @@ export class NetworkEntry {
 
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
+
+        // The URL of the popular token index
+        public readonly popularTokenIndexURL: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}

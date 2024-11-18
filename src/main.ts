@@ -34,7 +34,6 @@ import "./assets/styles/explorer-oruga.css";
 import "./assets/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import {CoreConfig} from "@/config/CoreConfig";
-import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
 import {NetworkConfig} from "@/config/NetworkConfig";
 
 library.add(faForward);
@@ -69,7 +68,6 @@ const createAndMount = async () => {
     const networkConfig = await loadNetworkConfig()
     if (coreConfig instanceof CoreConfig && networkConfig instanceof NetworkConfig) {
         routeManager.configure(coreConfig, networkConfig)
-        SelectedTokensCache.instance.setup(coreConfig.popularTokenIndexURL)
     }
     const app = createApp(Root, { coreConfig, networkConfig })
     app.component("font-awesome-icon", FontAwesomeIcon)
