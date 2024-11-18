@@ -37,7 +37,6 @@ export class SourcifySetup {
         const activate = fetchBoolean(obj, "activate") ?? true
         const repoURL = fetchURL(obj, "repoURL")
         const serverURL = fetchURL(obj, "serverURL")
-        const verifierURL = fetchURL(obj, "verifierURL")
         const chainID = fetchNumber(obj, "chainID")
 
         if (activate === null) {
@@ -49,9 +48,6 @@ export class SourcifySetup {
         if (serverURL === null) {
             throw this.missingPropertyError("serverURL")
         }
-        if (verifierURL === null) {
-            throw this.missingPropertyError("verifierURL")
-        }
         if (chainID === null) {
             throw this.missingPropertyError("chainID")
         }
@@ -60,7 +56,6 @@ export class SourcifySetup {
             activate,
             repoURL,
             serverURL,
-            verifierURL,
             chainID
         )
     }
@@ -82,15 +77,6 @@ export class SourcifySetup {
         return this.serverURL + "check-all-by-addresses"
     }
 
-    makeContractLookupURL(contractAddress: string): string {
-        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
-        return this.verifierURL + "lookup/" + normalizedAddress
-    }
-
-    hexChainID(): string {
-        return "0x" + this.chainID.toString(16)
-    }
-
     //
     // Private
     //
@@ -99,7 +85,6 @@ export class SourcifySetup {
         public readonly activate: boolean,
         public readonly repoURL: string,
         public readonly serverURL: string,
-        public readonly verifierURL: string,
         public readonly chainID: number,
     ) {}
 
