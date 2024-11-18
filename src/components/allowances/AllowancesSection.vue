@@ -116,9 +116,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router, {walletManager} from "@/router";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
@@ -138,256 +138,204 @@ import {DialogController} from "@/components/dialog/DialogController";
 import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 
-export default defineComponent({
-  name: 'AllowancesSection',
+const props = defineProps({
+  accountId: String,
+})
 
-  components: {
-    DeleteNftAllowanceDialog,
-    NftAllSerialsAllowanceTable,
-    NftAllowanceTable,
-    Tabs,
-    ProgressDialog,
-    ApproveAllowanceDialog,
-    TokenAllowanceTable,
-    HbarAllowanceTable,
-    DashboardCard
-  },
+const isMediumScreen = inject('isMediumScreen', true)
 
-  props: {
-    accountId: String,
-  },
+const computedAccountId = computed(() => props.accountId || null)
+const isWalletConnected = computed(
+    () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
+const showApproveAllowanceDialog = ref(false)
 
-    const computedAccountId = computed(() => props.accountId || null)
-    const isWalletConnected = computed(
-        () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+watch(showApproveAllowanceDialog, (newValue) => {
+  if (!newValue) {
+    cleanUpRouteQuery()
+  }
+})
 
-    const showApproveAllowanceDialog = ref(false)
-
-    watch(showApproveAllowanceDialog, (newValue) => {
-      if (!newValue) {
-        cleanUpRouteQuery()
-      }
-    })
-
-    const tabIds = ['hbar', 'token', 'nft']
-    const tabLabels = ['HBAR', 'Tokens', 'NFTs']
-    const selectedTab = ref<string|null>(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
-    const onUpdate = (tab: string|null) => {
-      selectedTab.value = tab
-      AppStorage.setAccountAllowanceTab(tab)
-      switch (selectedTab.value) {
-        case 'hbar':
-          hbarAllowanceTableController.refresh()
-          break
-        case 'token':
-          tokenAllowanceTableController.refresh()
-          break
-        case 'nft':
-          if (selectApprovedForAll.value) {
-            nftAllSerialsAllowanceTableController.refresh()
-          } else {
-            nftAllowanceTableController.refresh()
-          }
-          break
-        default:
-          //should not happen
-      }
-    }
-
-    const selectApprovedForAll = ref(false)
-    onMounted(() => selectApprovedForAll.value = AppStorage.getSelectApprovedForAll())
-    watch(selectApprovedForAll, (value) => {
-      AppStorage.setSelectApprovedForAll(value)
-      value ? nftAllSerialsAllowanceTableController.refresh() : nftAllowanceTableController.refresh()
-    })
-
-    const perPage = ref(isMediumScreen ? 10 : 5)
-
-    const currentHbarAllowance = ref<CryptoAllowance | null>(null)
-    const currentTokenAllowance = ref<TokenAllowance | null>(null)
-    const tokenDecimals = ref<string | null>(null)
-    const currentNftAllowance = ref<Nft | null>(null)
-    const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
-
-    //
-    // HBAR Allowances Table Controller
-    //
-    const hbarAllowanceTableController = new HbarAllowanceTableController(
-        router,
-        computedAccountId,
-        perPage,
-        "ph", "kh"
-    )
-    onMounted(() => hbarAllowanceTableController.mount())
-    onBeforeUnmount(() => hbarAllowanceTableController.unmount())
-
-    //
-    // Token Allowances Table Controller
-    //
-    const tokenAllowanceTableController = new TokenAllowanceTableController(
-        router,
-        computedAccountId,
-        perPage,
-        "pt", "kt"
-    )
-    onMounted(() => tokenAllowanceTableController.mount())
-    onBeforeUnmount(() => tokenAllowanceTableController.unmount())
-
-    //
-    // NFT Allowances Table Controllers
-    //
-    const nftAllowanceTableController = new NftAllowanceTableController(
-        router,
-        computedAccountId,
-        perPage,
-        "pn", "kn"
-    )
-    const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
-        router,
-        computedAccountId,
-        perPage,
-        "pc", "kc"
-    )
-    onMounted(() => {
-      nftAllowanceTableController.mount()
-      nftAllSerialsAllowanceTableController.mount()
-    })
-    onBeforeUnmount(() => {
-      nftAllowanceTableController.unmount()
-      nftAllSerialsAllowanceTableController.unmount()
-    })
-
-    const deleteDialogController = new DialogController()
-
-    const notWithMetamaskDialogVisible = ref(false)
-
-    const onClick = () => {
-      if (walletManager.isHederaWallet.value) {
-        showApproveAllowanceDialog.value = true
-        currentHbarAllowance.value = null
-        currentTokenAllowance.value = null
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
-
-    const onAllowanceApproved = () => {
+const tabIds = ['hbar', 'token', 'nft']
+const tabLabels = ['HBAR', 'Tokens', 'NFTs']
+const selectedTab = ref<string | null>(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
+const onUpdate = (tab: string | null) => {
+  selectedTab.value = tab
+  AppStorage.setAccountAllowanceTab(tab)
+  switch (selectedTab.value) {
+    case 'hbar':
       hbarAllowanceTableController.refresh()
+      break
+    case 'token':
       tokenAllowanceTableController.refresh()
-      nftAllowanceTableController.refresh()
-      nftAllSerialsAllowanceTableController.refresh()
-    }
-
-    const onEditHbar = (allowance: CryptoAllowance) => {
-      // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
-      if (walletManager.isHederaWallet.value) {
-        currentHbarAllowance.value = allowance
-        currentTokenAllowance.value = null
-        showApproveAllowanceDialog.value = true
+      break
+    case 'nft':
+      if (selectApprovedForAll.value) {
+        nftAllSerialsAllowanceTableController.refresh()
       } else {
-        notWithMetamaskDialogVisible.value = true
+        nftAllowanceTableController.refresh()
       }
-    }
+      break
+    default:
+      //should not happen
+  }
+}
 
-    const onEditToken = async (allowance: TokenAllowance) => {
-      // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
-      if (walletManager.isHederaWallet.value) {
-        const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
-        tokenDecimals.value = info?.decimals ?? null
-        currentHbarAllowance.value = null
-        currentTokenAllowance.value = allowance
-        showApproveAllowanceDialog.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
+const selectApprovedForAll = ref(false)
+onMounted(() => selectApprovedForAll.value = AppStorage.getSelectApprovedForAll())
+watch(selectApprovedForAll, (value) => {
+  AppStorage.setSelectApprovedForAll(value)
+  value ? nftAllSerialsAllowanceTableController.refresh() : nftAllowanceTableController.refresh()
+})
 
-    const onDeleteNft = async (nft: Nft) => {
-      // console.log("Delete NFT Allowance: " + JSON.stringify(nft))
-      if (walletManager.isHederaWallet.value) {
-        currentNftAllowance.value = nft
-        currentNftAllSerialsAllowance.value = null
-        deleteDialogController.visible.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
+const perPage = ref(isMediumScreen ? 10 : 5)
 
-    const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
-      // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
-      if (walletManager.isHederaWallet.value) {
-        currentNftAllowance.value = null
-        currentNftAllSerialsAllowance.value = allowance
-        deleteDialogController.visible.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
+const currentHbarAllowance = ref<CryptoAllowance | null>(null)
+const currentTokenAllowance = ref<TokenAllowance | null>(null)
+const tokenDecimals = ref<string | null>(null)
+const currentNftAllowance = ref<Nft | null>(null)
+const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
 
-    const onNftDeleted = () => {
-      nftAllowanceTableController.refresh()
-      nftAllSerialsAllowanceTableController.refresh()
-    }
+//
+// HBAR Allowances Table Controller
+//
+const hbarAllowanceTableController = new HbarAllowanceTableController(
+    router,
+    computedAccountId,
+    perPage,
+    "ph", "kh"
+)
+onMounted(() => hbarAllowanceTableController.mount())
+onBeforeUnmount(() => hbarAllowanceTableController.unmount())
 
-    const cleanUpRouteQuery = async () => {
-      const query = {...router.currentRoute.value.query}
-      if (query.app) {
-        delete query.app
+//
+// Token Allowances Table Controller
+//
+const tokenAllowanceTableController = new TokenAllowanceTableController(
+    router,
+    computedAccountId,
+    perPage,
+    "pt", "kt"
+)
+onMounted(() => tokenAllowanceTableController.mount())
+onBeforeUnmount(() => tokenAllowanceTableController.unmount())
 
-        const failure = await router.replace({query: query})
-        if (failure && failure.type != 8 && failure.type != 16) {
-          console.warn(failure.message)
-        }
-      }
-    }
+//
+// NFT Allowances Table Controllers
+//
+const nftAllowanceTableController = new NftAllowanceTableController(
+    router,
+    computedAccountId,
+    perPage,
+    "pn", "kn"
+)
+const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
+    router,
+    computedAccountId,
+    perPage,
+    "pc", "kc"
+)
+onMounted(() => {
+  nftAllowanceTableController.mount()
+  nftAllSerialsAllowanceTableController.mount()
+})
+onBeforeUnmount(() => {
+  nftAllowanceTableController.unmount()
+  nftAllSerialsAllowanceTableController.unmount()
+})
 
-    const onChangeApprovedForAll = (event: Event) => {
-      const checked = (event.target as HTMLInputElement).checked
-      selectApprovedForAll.value = checked
-      AppStorage.setSelectApprovedForAll(checked)
-    }
+const deleteDialogController = new DialogController()
 
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      selectedTab,
-      tabIds,
-      tabLabels,
-      onUpdate,
-      showApproveAllowanceDialog,
-      isWalletConnected,
-      isHederaWallet: walletManager.isHederaWallet,
-      hbarAllowanceTableController,
-      tokenAllowanceTableController,
-      nftAllowanceTableController,
-      nftAllSerialsAllowanceTableController,
-      tokenDecimals,
-      currentTokenAllowance,
-      currentHbarAllowance,
-      currentNftAllowance,
-      currentNftAllSerialsAllowance,
-      onClick,
-      onAllowanceApproved,
-      ownerAccountId: walletManager.accountId,
-      onEditHbar,
-      onEditToken,
-      onDeleteNft,
-      onDeleteAllSerialsNft,
-      onNftDeleted,
-      deleteDialogController,
-      notWithMetamaskDialogVisible,
-      Mode,
-      selectApprovedForAll,
-      onChangeApprovedForAll
+const notWithMetamaskDialogVisible = ref(false)
+
+const onClick = () => {
+  if (walletManager.isHederaWallet.value) {
+    showApproveAllowanceDialog.value = true
+    currentHbarAllowance.value = null
+    currentTokenAllowance.value = null
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const onAllowanceApproved = () => {
+  hbarAllowanceTableController.refresh()
+  tokenAllowanceTableController.refresh()
+  nftAllowanceTableController.refresh()
+  nftAllSerialsAllowanceTableController.refresh()
+}
+
+const onEditHbar = (allowance: CryptoAllowance) => {
+  // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
+  if (walletManager.isHederaWallet.value) {
+    currentHbarAllowance.value = allowance
+    currentTokenAllowance.value = null
+    showApproveAllowanceDialog.value = true
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const onEditToken = async (allowance: TokenAllowance) => {
+  // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
+  if (walletManager.isHederaWallet.value) {
+    const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
+    tokenDecimals.value = info?.decimals ?? null
+    currentHbarAllowance.value = null
+    currentTokenAllowance.value = allowance
+    showApproveAllowanceDialog.value = true
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const onDeleteNft = async (nft: Nft) => {
+  // console.log("Delete NFT Allowance: " + JSON.stringify(nft))
+  if (walletManager.isHederaWallet.value) {
+    currentNftAllowance.value = nft
+    currentNftAllSerialsAllowance.value = null
+    deleteDialogController.visible.value = true
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
+  // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
+  if (walletManager.isHederaWallet.value) {
+    currentNftAllowance.value = null
+    currentNftAllSerialsAllowance.value = allowance
+    deleteDialogController.visible.value = true
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const onNftDeleted = () => {
+  nftAllowanceTableController.refresh()
+  nftAllSerialsAllowanceTableController.refresh()
+}
+
+const cleanUpRouteQuery = async () => {
+  const query = {...router.currentRoute.value.query}
+  if (query.app) {
+    delete query.app
+
+    const failure = await router.replace({query: query})
+    if (failure && failure.type != 8 && failure.type != 16) {
+      console.warn(failure.message)
     }
   }
-});
+}
+
+const onChangeApprovedForAll = (event: Event) => {
+  const checked = (event.target as HTMLInputElement).checked
+  selectApprovedForAll.value = checked
+  AppStorage.setSelectApprovedForAll(checked)
+}
+
+const isHederaWallet = walletManager.isHederaWallet
+const ownerAccountId = walletManager.accountId
 
 </script>
 
