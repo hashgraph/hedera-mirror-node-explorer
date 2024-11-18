@@ -197,5 +197,19 @@ The content of the file is an array of the following structure:
 | `verifierURL` | `string`  | n/a                        | This parameter is mandatory |
 | `chainID`     | `string`  | n/a                        | This parameter is mandatory |
 
+### `activate`
+When set to `false`, this sourcify setup becomes inactive. Contract verification features are hidden for this network.
+
+### `repoURL`
+This provides the URL of the Sourcify repository.
+
+### `serverURL`
+This provides the URL of the Sourcify server.
+
+### `verifierURL`
+This provides the URL of the Sourcify verifier.
+
+### `chainID`
+This provides the integer ID of the chain as a hexadecimal string, as per [EIP-155](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md).
 
 
