@@ -189,25 +189,27 @@ The content of the file is an array of the following structure:
 
 ### Sourcify Setup Object
 
+This setup configures the use of a _contract verification server_ based on the
+[hedera-sourcify](https://github.com/hashgraph/hedera-sourcify) project.
+
 | Parameter Key | Type      | When `undefined` or `null` | Comments                    |
 |---------------|-----------|----------------------------|-----------------------------|
 | `activate`    | `boolean` | Network is activated       |                             |
 | `repoURL`     | `string`  | n/a                        | This parameter is mandatory |
 | `serverURL`   | `url`     | n/a                        | This parameter is mandatory |
-| `verifierURL` | `string`  | n/a                        | This parameter is mandatory |
 | `chainID`     | `string`  | n/a                        | This parameter is mandatory |
 
 ### `activate`
 When set to `false`, this sourcify setup becomes inactive. Contract verification features are hidden for this network.
 
 ### `repoURL`
-This provides the URL of the Sourcify repository.
+This provides the URL of the _repository_ service of the contract verification server. This _repository_ service provides REST
+endpoints allowing to retrieve the sources files of a verified contract.
 
 ### `serverURL`
-This provides the URL of the Sourcify server.
-
-### `verifierURL`
-This provides the URL of the Sourcify verifier.
+This provides the URL of the _server_ service of the contract verification server. This _server_ service provides REST
+endpoints allowing to check the verification status of a contract, perform the verification process as well as store 
+the verification result along with the source files of a contract.
 
 ### `chainID`
 This provides the integer ID of the chain as a hexadecimal string, as per [EIP-155](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md).
