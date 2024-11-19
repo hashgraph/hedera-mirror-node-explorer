@@ -237,11 +237,13 @@ import {
   formatTokenAmount,
   isOwnedSerials,
   isValidAssociation,
-  makeTokenName, stripChecksum,
+  makeTokenName,
+  stripChecksum,
   waitForTransactionRefresh
 } from "@/schemas/HederaUtils";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
 import {TransactionID} from "@/utils/TransactionID";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 const VALID_ACCOUNT_MESSAGE = "Account found"
 const UNKNOWN_ACCOUNT_MESSAGE = "Unknown account"
@@ -282,6 +284,7 @@ export default defineComponent({
   emits: ["update:showDialog", "allowanceApproved"],
 
   setup(props, context) {
+    const cryptoName = CoreConfig.inject().cryptoName
     const nr = NetworkConfig.inject()
     const network = routeManager.currentNetwork.value
 
@@ -388,7 +391,7 @@ export default defineComponent({
       let result: string | null
       if (props.currentHbarAllowance) {
         result = "Previous allowance was for "
-            + props.currentHbarAllowance.amount_granted / 100000000 + " hbars"
+            + props.currentHbarAllowance.amount_granted / 100000000 + ` ${cryptoName}`
       } else if (props.currentTokenAllowance) {
         result = "Previous allowance was for "
             + initialTokenAmount.value
@@ -588,7 +591,7 @@ export default defineComponent({
         if (Number(selectedHbarAmount.value) === 0) {
           result = "Do you want to remove the hbar allowance?"
         } else {
-          result = "Do you want to approve an allowance for " + (selectedHbarAmount.value ?? 0 / 100000000) + " hbars?"
+          result = "Do you want to approve an allowance for " + (selectedHbarAmount.value ?? 0 / 100000000) + ` ${cryptoName}?`
         }
       } else if (allowanceChoice.value === 'token') {
         if (rawTokenAmount.value === 0) {

@@ -99,7 +99,7 @@
               </NetworkDashboardItem>
 
               <NetworkDashboardItem class="ml-4"
-                                    :name="stakedAmount ? 'HBAR' : ''"
+                                    :name="stakedAmount ? cryptoName : ''"
                                     title="My Stake"
                                     :value="stakedAmount"/>
 
@@ -110,7 +110,7 @@
               <NetworkDashboardItem v-else
                                     class="ml-4"
                                     title="Pending Reward"
-                                    :name="pendingReward ? 'HBAR' : ''"
+                                    :name="pendingReward ? cryptoName : ''"
                                     :value="pendingReward"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
@@ -141,7 +141,7 @@
               <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
                                     title="Staked to" :value="stakedTo ?? undefined"/>
               <div class="mt-4"/>
-              <NetworkDashboardItem :name="stakedAmount ? 'HBAR' : ''" title="My Stake" :value="stakedAmount"/>
+              <NetworkDashboardItem :name="stakedAmount ? cryptoName : ''" title="My Stake" :value="stakedAmount"/>
               <div class="mt-4"/>
 
               <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
@@ -149,7 +149,7 @@
                                     value="Declined"/>
               <NetworkDashboardItem v-else
                                     title="Pending Reward"
-                                    name="HBAR"
+                                    :name=cryptoName
                                     :value="undefined"
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
 
@@ -241,6 +241,7 @@ import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {gtagTransaction} from "@/gtag";
 import {AppStorage} from "@/AppStorage";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
   name: 'Staking',
@@ -271,6 +272,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const cryptoName = CoreConfig.inject().cryptoName
     const networkConfig = NetworkConfig.inject()
 
     const router = useRouter()
@@ -465,6 +467,7 @@ export default defineComponent({
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,
+      cryptoName,
       enableWallet: routeManager.enableWallet,
       connecting,
       connected: walletManager.connected,

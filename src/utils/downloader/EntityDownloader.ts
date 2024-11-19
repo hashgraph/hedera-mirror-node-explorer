@@ -134,10 +134,10 @@ export abstract class EntityDownloader<E, R> {
         return result
     })
 
-    public getOutputName(): string {
+    public getOutputName(cryptoName: string): string {
         let result: string
         if (this.startDate.value !== null) {
-            result = this.makeOutputPrefix()
+            result = this.makeOutputPrefix(cryptoName)
                 + " " + this.dateFormat.format(this.startDate.value)
                 + " to " + this.dateFormat.format(this.endDate.value ?? this.now)
                 + ".csv"
@@ -186,7 +186,7 @@ export abstract class EntityDownloader<E, R> {
 
     protected abstract makeCSVEncoder(dateFormat: Intl.DateTimeFormat): CSVEncoder<E>
 
-    protected abstract makeOutputPrefix(): string
+    protected abstract makeOutputPrefix(cryptoName: string): string
 
     protected filter(entities: E[]): E[] {
         return entities

@@ -63,7 +63,7 @@ export class CoreConfig {
         public readonly productLogoURL: string|null,
 
         // The prefix used in the document title
-        public readonly documentTitlePrefix: string|null,
+        public readonly documentTitlePrefix: string,
 
         // The description of the product as shown in the long form of the footer tagline
         public readonly productDescription: string|null,
@@ -101,8 +101,8 @@ export class CoreConfig {
         // The URL prefix of the IPFS gateway
         public readonly ipfsGatewayUrlPrefix: string,
 
-        // The URL of the popular token index
-        public readonly popularTokenIndexURL: string|null,
+        // The HTML content used as crypto unit symbol
+        public readonly cryptoName: string,
 
         // The HTML content used as crypto unit symbol
         public readonly cryptoSymbol: string|null
@@ -112,10 +112,10 @@ export class CoreConfig {
 
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
-            fetchString(obj, "productName") ??  "Hedera Mirror Node Explorer",
+            fetchString(obj, "productName") ?? "Hiero Mirror Node Explorer",
             fetchURL(obj, "productLogoURL"),
-            fetchString(obj, "documentTitlePrefix"),
-            fetchString(obj, "productDescription"),
+            fetchString(obj, "documentTitlePrefix") ?? "Hiero",
+            fetchString(obj, "productDescription") ?? "Hiero Mirror Node Explorer",
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),
             fetchURL(obj, "builtOnLogoURL"),
@@ -127,7 +127,7 @@ export class CoreConfig {
             fetchString(obj, "walletChooserDisclaimerPopup"),
             fetchString(obj, "googleTagID"),
             fetchURL(obj, "ipfsGatewayUrlPrefix") ?? "https://gateway.pinata.cloud/ipfs/",
-            fetchURL(obj, "popularTokenIndexURL"),
+            fetchString(obj, "cryptoName") ?? "HBAR",
             fetchString(obj, "cryptoSymbol")
         )
     }

@@ -45,7 +45,7 @@
     <o-table-column v-slot="props" field="amount" label="Fee Currency">
       <TokenLink v-if="props.row.denominating_token_id"
                  :show-extra="true" :token-id="props.row.denominating_token_id"/>
-      <div v-else>HBAR</div>
+      <div v-else>{{ cryptoName }}</div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="account_id" label="Collector Account">
@@ -69,6 +69,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
 
@@ -89,7 +90,10 @@ export default defineComponent({
   },
 
   setup(props) {
+    const cryptoName = CoreConfig.inject().cryptoName
+
     return {
+      cryptoName,
       fees: props.analyzer.fixedFees,
       ORUGA_MOBILE_BREAKPOINT
     }

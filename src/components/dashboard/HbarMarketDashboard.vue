@@ -85,6 +85,7 @@ import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {HederaMetricsLoader} from "@/components/dashboard/metrics/HederaMetricsLoader";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
 
@@ -95,15 +96,16 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
+    const cryptoName = CoreConfig.inject().cryptoName
 
     const isMainNetwork = computed(() => routeManager.currentNetwork.value == NetworkConfig.MAIN_NETWORK)
 
     const currentNetworkDisplayName = computed(() => routeManager.currentNetworkEntry.value.displayName)
 
-    const hbarPriceLabel = 'HBAR PRICE'
-    const hbarMarketCapLabel = 'HBAR MARKET CAP'
-    const hbarReleasedLabel = 'HBAR RELEASED'
-    const hbarTotalLabel = 'HBAR TOTAL'
+    const hbarPriceLabel = `${cryptoName} PRICE`
+    const hbarMarketCapLabel = `${cryptoName} MARKET CAP`
+    const hbarReleasedLabel = `${cryptoName} RELEASED`
+    const hbarTotalLabel = `${cryptoName} TOTAL`
 
     // Hedera Metrics
     const hederaMetricsLoader = new HederaMetricsLoader()

@@ -8,11 +8,11 @@
     "enableStaking": true,
     "enableExpiry": true,
     "enableMarket": true,
+    "popularTokenIndexURL": null,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
       "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
       "chainID": 295
     }
   },
@@ -29,7 +29,6 @@
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
       "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
       "chainID": 296
     }
   },
@@ -46,7 +45,6 @@
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
       "serverURL": "https://localhost/server/",
-      "verifierURL": "https://localhost/#/",
       "chainID": 297
     }
   }

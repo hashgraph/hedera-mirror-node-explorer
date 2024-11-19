@@ -68,6 +68,7 @@ import {defineComponent, inject, ref} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
   name: 'RoutingSpec',
@@ -77,6 +78,7 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const cryptoName = CoreConfig.inject().cryptoName
 
     const isOpen = ref<number[]>([])
 
@@ -84,12 +86,12 @@ export default defineComponent({
       {
         title: "/{network}/dashboard",
         subtitle: "Dashboard",
-        description: "Displays general information about HBAR and tables showing recent transfers, contract calls, and HCS messages.",
+        description: `Displays general information about ${cryptoName} and tables showing recent transfers, contract calls, and HCS messages.`,
         data: [
-          "Hbar Price",
-          "Hbar Market Cap",
-          "Hbar Released",
-          "Hbar Total",
+          cryptoName + " Price",
+          cryptoName + " Market Cap",
+          cryptoName + " Released",
+          cryptoName + " Total",
           "Recent Cypto Transfers",
           "Recent Smart Contract Calls",
           "Recent HCS Messages",
@@ -113,7 +115,7 @@ export default defineComponent({
           "Valid Duration",
           "Transaction Nonce",
           "Scheduled",
-          "Hbar Transfers",
+          cryptoName + " Transfers",
           "Additional data is displayed based on transaction type"
         ]
       },

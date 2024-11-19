@@ -57,8 +57,8 @@
         </div>
         <div class="column">
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-            <p v-if="isMediumScreen" class="h-is-property-text mb-3">Enter the number of hbars you want to stake</p>
-            <p v-else class="h-is-text-size-3 mb-1">Enter number of hbars you want to stake</p>
+            <p v-if="isMediumScreen" class="h-is-property-text mb-3">{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
+            <p v-else class="h-is-text-size-3 mb-1">{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
             <input class="input is-small has-text-right" type="text" placeholder="0"
                    :value="amountStaked"
                    @input="handleInput"
@@ -69,11 +69,11 @@
       </div>
 
       <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem id="currentReward" name="HBAR" title="Current 24h Period Reward"
+        <NetworkDashboardItem id="currentReward" :name=cryptoName title="Current 24h Period Reward"
                               :value="currentReward.toString()"/>
-        <NetworkDashboardItem id="monthlyReward" name="HBAR" title="Approx Monthly Reward"
+        <NetworkDashboardItem id="monthlyReward" :name=cryptoName title="Approx Monthly Reward"
                               :value="monthlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyReward" name="HBAR" title="Approx Yearly Reward"
+        <NetworkDashboardItem id="yearlyReward" :name=cryptoName title="Approx Yearly Reward"
                               :value="yearlyReward.toString()"/>
         <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="annualizedRate"/>
       </div>
@@ -114,7 +114,9 @@ export default defineComponent({
   },
 
   setup(props) {
-    const htmlNotice = CoreConfig.inject().estimatorNotice ?? ""
+    const coreConfig = CoreConfig.inject()
+    const htmlNotice = coreConfig.estimatorNotice ?? ""
+    const cryptoName = coreConfig.cryptoName
 
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
@@ -166,6 +168,7 @@ export default defineComponent({
 
     return {
       htmlNotice,
+      cryptoName,
       isSmallScreen,
       isMediumScreen,
       isTouchDevice,

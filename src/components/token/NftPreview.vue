@@ -33,7 +33,7 @@
       @on-load-error="onLoadError"
   >
     <template #placeHolder>
-      <img v-if="size >= 100" src="../../assets/hedera-hashgraph-hbar.svg" alt=""
+      <img v-if="size >= 100" src="../../assets/nft-image-placeholder.svg" alt=""
            style="height: 32px"
            class="mr-3"/>
       <span>

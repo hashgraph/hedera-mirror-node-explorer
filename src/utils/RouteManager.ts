@@ -86,7 +86,7 @@ export class RouteManager {
         this.router.beforeEach(this.setupTitleAndHeaders)
 
         const currentNetworkDidChange = () => {
-            axios.defaults.baseURL = this.currentNetworkEntry.value.url
+            axios.defaults.baseURL = this.currentNetworkEntry.value.mirrorNodeURL
             this.switchThemes()
         }
         watch(this.currentNetwork, () => {
@@ -576,7 +576,7 @@ export class RouteManager {
 
     private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
         const envTitlePrefix = this.coreConfig.documentTitlePrefix
-        const titlePrefix = envTitlePrefix !== null ? envTitlePrefix + " " : ""
+        const titlePrefix = envTitlePrefix !== "" ? envTitlePrefix + " " : ""
 
         switch (to.name as string) {
             case "MainDashboard":
@@ -642,10 +642,15 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
-        const description = this.coreConfig.metaDescription ?? "Hedera Mirror Node Explorer is a ledger explorer for the Hedera network"
+        const productName = this.coreConfig.productName
+        const description = this.coreConfig.metaDescription
         const url = this.coreConfig.metaURL
 
-        this.createOrUpdateTagName('description', description)
+        this.createOrUpdateTagName('application-name', productName)
+        this.createOrUpdateTagProperty('og:site_name', productName)
+        if (description) {
+            this.createOrUpdateTagName('description', description)
+        }
         this.createOrUpdateTagProperty('og:title', title)
         if (url) {
             this.createOrUpdateTagProperty('og:url', url)

@@ -137,12 +137,14 @@ import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAl
 import {DialogController} from "@/components/dialog/DialogController";
 import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 const props = defineProps({
   accountId: String,
 })
 
 const isMediumScreen = inject('isMediumScreen', true)
+const cryptoName = CoreConfig.inject().cryptoName
 
 const computedAccountId = computed(() => props.accountId || null)
 const isWalletConnected = computed(
@@ -157,7 +159,7 @@ watch(showApproveAllowanceDialog, (newValue) => {
 })
 
 const tabIds = ['hbar', 'token', 'nft']
-const tabLabels = ['HBAR', 'Tokens', 'NFTs']
+const tabLabels = [cryptoName, 'Tokens', 'NFTs']
 const selectedTab = ref<string | null>(AppStorage.getAccountAllowanceTab() ?? tabIds[0])
 const onUpdate = (tab: string | null) => {
   selectedTab.value = tab

@@ -34,10 +34,9 @@ export class SourcifySetup {
 
     static parse(obj: object): SourcifySetup {
 
-        const activate = fetchBoolean(obj, "activate")
+        const activate = fetchBoolean(obj, "activate") ?? true
         const repoURL = fetchURL(obj, "repoURL")
         const serverURL = fetchURL(obj, "serverURL")
-        const verifierURL = fetchURL(obj, "verifierURL")
         const chainID = fetchNumber(obj, "chainID")
 
         if (activate === null) {
@@ -49,9 +48,6 @@ export class SourcifySetup {
         if (serverURL === null) {
             throw this.missingPropertyError("serverURL")
         }
-        if (verifierURL === null) {
-            throw this.missingPropertyError("verifierURL")
-        }
         if (chainID === null) {
             throw this.missingPropertyError("chainID")
         }
@@ -60,7 +56,6 @@ export class SourcifySetup {
             activate,
             repoURL,
             serverURL,
-            verifierURL,
             chainID
         )
     }
@@ -82,15 +77,6 @@ export class SourcifySetup {
         return this.serverURL + "check-all-by-addresses"
     }
 
-    makeContractLookupURL(contractAddress: string): string {
-        const normalizedAddress = EthereumAddress.normalizeEIP55(contractAddress)
-        return this.verifierURL + "lookup/" + normalizedAddress
-    }
-
-    hexChainID(): string {
-        return "0x" + this.chainID.toString(16)
-    }
-
     //
     // Private
     //
@@ -99,7 +85,6 @@ export class SourcifySetup {
         public readonly activate: boolean,
         public readonly repoURL: string,
         public readonly serverURL: string,
-        public readonly verifierURL: string,
         public readonly chainID: number,
     ) {}
 
@@ -118,11 +103,12 @@ export class NetworkEntry {
         const displayName = fetchString(obj, "displayName")
         const url = fetchURL(obj, "url")
         const ledgerID = fetchString(obj, "ledgerID")
-        const enableWallet = fetchBoolean(obj, "enableWallet")
-        const enableStaking = fetchBoolean(obj, "enableStaking")
-        const enableExpiry = fetchBoolean(obj, "enableExpiry")
-        const enableMarket = fetchBoolean(obj, "enableMarket")
+        const enableWallet = fetchBoolean(obj, "enableWallet") ?? false
+        const enableStaking = fetchBoolean(obj, "enableStaking") ?? false
+        const enableExpiry = fetchBoolean(obj, "enableExpiry") ?? false
+        const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
+        const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
 
         if (name === null) {
             throw this.missingPropertyError("name")
@@ -132,18 +118,6 @@ export class NetworkEntry {
         }
         if (ledgerID === null) {
             throw this.missingPropertyError("ledgerID")
-        }
-        if (enableWallet === null) {
-            throw this.missingPropertyError("enableWallet")
-        }
-        if (enableStaking === null) {
-            throw this.missingPropertyError("enableStaking")
-        }
-        if (enableExpiry === null) {
-            throw this.missingPropertyError("enableExpiry")
-        }
-        if (enableMarket === null) {
-            throw this.missingPropertyError("enableMarket")
         }
 
         let tidyDisplayName = (displayName ?? name).toUpperCase()
@@ -162,6 +136,7 @@ export class NetworkEntry {
             enableStaking,
             enableExpiry,
             enableMarket,
+            popularTokenIndexURL,
             sourcifySetup
         )
     }
@@ -173,7 +148,7 @@ export class NetworkEntry {
     private constructor(
         public readonly name: string,
         public readonly displayName: string,
-        public readonly url: string,
+        public readonly mirrorNodeURL: string,
         public readonly ledgerID: string,
 
         // When set to 'true', this variable will enable connecting a wallet
@@ -185,6 +160,9 @@ export class NetworkEntry {
 
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
+
+        // The URL of the popular token index
+        public readonly popularTokenIndexURL: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}
