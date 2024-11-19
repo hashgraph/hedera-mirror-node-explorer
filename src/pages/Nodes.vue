@@ -43,19 +43,19 @@
           </div>
           <div v-if="!isSmallScreen" class="mt-4"/>
           <div :class="{'is-flex-direction-column':isSmallScreen}">
-            <NetworkDashboardItem name="HBAR" title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"
+            <NetworkDashboardItem :name=cryptoName title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"
                                   :tooltip-label="stakeTotalTooltip"/>
             <div class="mt-4"/>
-            <NetworkDashboardItem name="HBAR" title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"
+            <NetworkDashboardItem :name=cryptoName title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"
                                   :tooltip-label="stakeRewardedTotalTooltip"/>
             <div class="mt-4"/>
-            <NetworkDashboardItem name="HBAR" title="Maximum Staked for Reward"
+            <NetworkDashboardItem :name=cryptoName title="Maximum Staked for Reward"
                                   :value="makeFloorHbarAmount(maxStakeRewarded)"
                                   :tooltip-label="maxStakeRewardedTooltip"/>
           </div>
           <div v-if="!isSmallScreen" class="mt-4"/>
           <div :class="{'is-flex-direction-column':isSmallScreen}">
-            <NetworkDashboardItem name="HBAR" title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"
+            <NetworkDashboardItem :name=cryptoName title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"
                                   :tooltip-label="totalRewardedTooltip"/>
             <div class="mt-4"/>
             <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"
@@ -102,6 +102,7 @@ import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {makeAnnualizedRate} from "@/schemas/HederaUtils";
 import {routeManager} from "@/router";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
   name: 'Nodes',
@@ -121,11 +122,12 @@ export default defineComponent({
   setup() {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const cryptoName = CoreConfig.inject().cryptoName
 
-    const stakeTotalTooltip = "Total amount of HBAR staked to all validators for consensus."
-    const stakeRewardedTotalTooltip = "Total amount of HBAR staked for reward."
-    const maxStakeRewardedTooltip = "Maximum amount of HBAR that can be staked for reward while still achieving the maximum reward rate."
-    const totalRewardedTooltip = "Total amount of HBAR paid in reward for the last period."
+    const stakeTotalTooltip = `Total amount of ${cryptoName} staked to all validators for consensus.`
+    const stakeRewardedTotalTooltip = `Total amount of ${cryptoName} staked for reward.`
+    const maxStakeRewardedTooltip = `Maximum amount of ${cryptoName} that can be staked for reward while still achieving the maximum reward rate.`
+    const totalRewardedTooltip = `Total amount of ${cryptoName} paid in reward for the last period.`
     const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
     const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
@@ -151,6 +153,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      cryptoName,
       enableStaking: routeManager.enableStaking,
       stakeTotalTooltip,
       stakeRewardedTotalTooltip,

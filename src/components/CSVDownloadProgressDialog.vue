@@ -69,6 +69,7 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
   name: "CSVDownloadProgressDialog",
@@ -89,6 +90,7 @@ export default defineComponent({
 
   setup(props, context) {
 
+    const cryptoName = CoreConfig.inject().cryptoName
     const enableSaveButton = computed(() => props.downloader.csvBlob.value !== null)
 
     const statusMessage = computed(() => {
@@ -133,7 +135,7 @@ export default defineComponent({
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.setAttribute('href', url)
-        a.setAttribute('download', props.downloader.getOutputName());
+        a.setAttribute('download', props.downloader.getOutputName(cryptoName));
         a.click()
       }
       context.emit('update:showProgressDialog', false)

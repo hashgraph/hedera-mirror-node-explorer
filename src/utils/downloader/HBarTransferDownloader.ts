@@ -63,8 +63,8 @@ export class HbarTransferDownloader extends AbstractTransactionDownloader {
         return new HbarTransferEncoder(this.entities.value, dateFormat)
     }
 
-    protected makeOutputPrefix(): string {
-        return this.accountId.value !== null ? "Hedera Hbar Transfers" : ""
+    protected makeOutputPrefix(cryptoName: string): string {
+        return this.accountId.value !== null ? `Hedera ${cryptoName} Transfers` : ""
     }
 }
 

@@ -102,6 +102,9 @@ export class CoreConfig {
         public readonly ipfsGatewayUrlPrefix: string,
 
         // The HTML content used as crypto unit symbol
+        public readonly cryptoName: string,
+
+        // The HTML content used as crypto unit symbol
         public readonly cryptoSymbol: string|null
 
     ) {}
@@ -124,6 +127,7 @@ export class CoreConfig {
             fetchString(obj, "walletChooserDisclaimerPopup"),
             fetchString(obj, "googleTagID"),
             fetchURL(obj, "ipfsGatewayUrlPrefix") ?? "https://gateway.pinata.cloud/ipfs/",
+            fetchString(obj, "cryptoName") ?? "HBAR",
             fetchString(obj, "cryptoSymbol")
         )
     }

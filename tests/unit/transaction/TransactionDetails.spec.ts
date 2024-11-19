@@ -227,7 +227,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#chargedFeeName").text()).toBe("Charged Fee")
         expect(wrapper.get("#chargedFeeValue").text()).toBe("0.95515604ℏ$0.23500")
-        expect(wrapper.get("#maxFeeName").text()).toBe("Max FeeMax Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM.")
+        expect(wrapper.get("#maxFeeName").text()).toBe("Max FeeMax Fee limit does not include the HBAR cost of gas consumed by transactions executed on the EVM.")
         expect(wrapper.get("#maxFeeValue").text()).toBe("0.20000000ℏ$0.04921")
 
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)

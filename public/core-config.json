@@ -14,5 +14,6 @@
   "walletChooserDisclaimerPopup": null,
   "googleTagID": null,
   "ipfsGatewayUrlPrefix": null,
+  "cryptoName": null,
   "cryptoSymbol": null
 }

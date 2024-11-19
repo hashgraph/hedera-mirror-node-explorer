@@ -111,7 +111,7 @@
           <NetworkDashboardItem
               id="consensusStake"
               :value="makeFloorHbarAmount(stake)"
-              name="HBAR"
+              :name=cryptoName
               title="Stake for Consensus"
               :info-label="stakeLabel"
           />
@@ -124,7 +124,7 @@
           <NetworkDashboardItem
               id="rewarded"
               :value="makeFloorHbarAmount(stakeRewarded)"
-              name="HBAR"
+              :name=cryptoName
               title="Staked for Reward"
           />
           <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
@@ -136,7 +136,7 @@
           <NetworkDashboardItem
               id="notRewarded"
               :value="makeFloorHbarAmount(stakeUnrewarded)"
-              name="HBAR"
+              :name=cryptoName
               title="Staked For No Reward"
           />
           <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
@@ -148,7 +148,7 @@
           <NetworkDashboardItem
               id="minStake"
               :value="makeFloorHbarAmount(minStake)"
-              name="HBAR"
+              :name=cryptoName
               title="Min Stake"
           />
         </div>
@@ -157,7 +157,7 @@
           <NetworkDashboardItem
               id="maxStake"
               :value="makeFloorHbarAmount(maxStake)"
-              name="HBAR"
+              :name=cryptoName
               title="Max Stake"
           />
         </div>
@@ -223,6 +223,7 @@ import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {NetworkNode} from "@/schemas/HederaSchemas";
 import {makeStakePercentage} from "@/schemas/HederaUtils";
 import {routeManager} from "@/router";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
 
@@ -254,6 +255,7 @@ export default defineComponent({
   setup(props) {
     const isSmallScreen = inject('isSmallScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const cryptoName = CoreConfig.inject().cryptoName
 
     const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
     const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
@@ -298,6 +300,7 @@ export default defineComponent({
     return {
       isSmallScreen,
       isTouchDevice,
+      cryptoName,
       enableStaking: routeManager.enableStaking,
       nodeIdNb,
       node: nodeAnalyzer.node,

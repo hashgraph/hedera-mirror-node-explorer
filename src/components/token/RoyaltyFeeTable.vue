@@ -54,7 +54,7 @@
     <o-table-column v-slot="props" field="fallbackToken" label="Fee Currency">
       <TokenLink v-if="props.row.fallback_fee?.denominating_token_id"
                  :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true"/>
-      <div v-else-if="props.row.fallback_fee?.amount">HBAR</div>
+      <div v-else-if="props.row.fallback_fee?.amount">{{ cryptoName }}</div>
     </o-table-column>
 
   </o-table>
@@ -76,6 +76,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
 
@@ -97,6 +98,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const cryptoName = CoreConfig.inject().cryptoName
+
     const makeAmount = (fraction: FractionAmount): string => {
       let result: string
       const formatter = new Intl.NumberFormat("en-US", {
@@ -112,6 +115,7 @@ export default defineComponent({
     }
 
     return {
+      cryptoName,
       fees: props.analyzer.royaltyFees,
       makeAmount,
       ORUGA_MOBILE_BREAKPOINT

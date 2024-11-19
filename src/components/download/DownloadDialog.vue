@@ -82,6 +82,7 @@ import CommitButton from "@/components/dialog/CommitButton.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
   name: "DownloadDialog",
@@ -102,13 +103,15 @@ export default defineComponent({
   },
   setup(props) {
 
+    const cryptoName = CoreConfig.inject().cryptoName
+
     const handleSave = () => {
       const blob = props.downloader.csvBlob.value
       if (blob !== null) {
         const url = window.URL.createObjectURL(blob)
         const a = document.createElement('a')
         a.setAttribute('href', url)
-        a.setAttribute('download', props.downloader.getOutputName());
+        a.setAttribute('download', props.downloader.getOutputName(cryptoName));
         a.click()
       }
     }

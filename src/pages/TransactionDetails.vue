@@ -164,7 +164,7 @@
         </Property>
         <Property id="maxFee"
                   :tooltip="showMaxFeeTooltip
-                  ? 'Max Fee limit does not include the hbar cost of gas consumed by transactions executed on the EVM.'
+                  ? `Max Fee limit does not include the ${cryptoName} cost of gas consumed by transactions executed on the EVM.`
                   : undefined">
           <template v-slot:name>
             <span>Max Fee</span>
@@ -301,6 +301,7 @@ import MirrorLink from "@/components/MirrorLink.vue";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -335,6 +336,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
     const isLargeScreen = inject('isLargeScreen', true)
     const isTouchDevice = inject('isTouchDevice', false)
+    const cryptoName = CoreConfig.inject().cryptoName
 
     const txIdForm = ref(TransactionID.useAtForm.value ? 'atForm' : 'dashForm')
     watch(txIdForm, () => TransactionID.setUseAtForm(txIdForm.value === 'atForm'))
@@ -463,6 +465,7 @@ export default defineComponent({
       isMediumScreen,
       isLargeScreen,
       isTouchDevice,
+      cryptoName,
       txIdForm,
       showMaxFeeTooltip,
       transactionId: transactionLocParser.transactionId,
