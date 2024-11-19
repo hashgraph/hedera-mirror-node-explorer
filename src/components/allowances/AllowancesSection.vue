@@ -31,7 +31,7 @@
     </template>
 
     <template v-slot:control>
-      <button v-if="isWalletConnected && isHederaWallet" id="approve-button" class="button is-white is-small"
+      <button v-if="isWalletConnected && isHieroWallet" id="approve-button" class="button is-white is-small"
               @click="onClick">APPROVE ALLOWANCE…
       </button>
     </template>
@@ -336,7 +336,7 @@ const onChangeApprovedForAll = (event: Event) => {
   AppStorage.setSelectApprovedForAll(checked)
 }
 
-const isHederaWallet = walletManager.isHieroWallet
+const isHieroWallet = walletManager.isHieroWallet
 const ownerAccountId = walletManager.accountId
 
 </script>
