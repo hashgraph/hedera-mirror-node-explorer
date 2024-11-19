@@ -76,7 +76,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token' + tooltipText)
         const hbarLogo = wrapper.find('img')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/hedera-hashgraph-hbar.svg')
+        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
 
         const tooltip = wrapper.find('#info-tooltip')
         expect(tooltip.exists()).toBe(true)
@@ -110,7 +110,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token')
         const hbarLogo = wrapper.find('img')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/hedera-hashgraph-hbar.svg')
+        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
@@ -145,7 +145,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token')
         const hbarLogo = wrapper.find('img')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/hedera-hashgraph-hbar.svg')
+        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
@@ -180,7 +180,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token')
         const hbarLogo = wrapper.find('img')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/hedera-hashgraph-hbar.svg')
+        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
