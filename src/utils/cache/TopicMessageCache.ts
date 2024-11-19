@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {TopicMessage} from "@/schemas/HederaSchemas";
+import {TopicMessage} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 
 export class TopicMessageCache extends EntityCache<string, TopicMessage | null> {

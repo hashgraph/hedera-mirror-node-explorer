@@ -39,7 +39,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, PropType} from "vue"
-import {NftTransactionTransfer} from "@/schemas/HederaSchemas"
+import {NftTransactionTransfer} from "@/schemas/MirrorNodeSchemas"
 import NftDetailsTransferGraph from "@/components/transfer_graphs/NftDetailsTransferGraph.vue"
 
 export default defineComponent({

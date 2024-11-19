@@ -196,7 +196,7 @@ import ContractResultsSection from "@/components/contract/ContractResultsSection
 import NftTransactionTable from "@/components/transaction/NftTransactionTable.vue"
 import {NftTransactionTableController} from "@/components/transaction/NftTransactionTableController"
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue"
-import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import MetadataSection from "@/components/token/MetadataSection.vue";

@@ -18,9 +18,9 @@
  *
  */
 
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {CSVEncoder} from "@/utils/CSVEncoder";
-import {lookupNFTTransfer} from "@/schemas/HederaUtils";
+import {lookupNFTTransfer} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenTransferDownloader} from "@/utils/downloader/TokenTransferDownloader";
 
 export class NFTTransferDownloader extends TokenTransferDownloader {

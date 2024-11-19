@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
-import {ContractResponse} from "@/schemas/HederaSchemas";
+import {ContractResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityID} from "@/utils/EntityID";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 import {PathParam} from "@/utils/PathParam";

@@ -48,7 +48,7 @@
 import {computed, defineComponent, inject, ref} from "vue";
 import {formatSeconds} from "@/utils/Duration";
 import {initialLoadingKey} from "@/AppKeys";
-import {infiniteDuration} from "@/schemas/HederaSchemas";
+import {infiniteDuration} from "@/schemas/MirrorNodeSchemas";
 
 export default defineComponent({
   name: "DurationValue",

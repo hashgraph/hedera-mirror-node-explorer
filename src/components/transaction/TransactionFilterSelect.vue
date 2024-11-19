@@ -46,7 +46,7 @@
 <script lang="ts">
 
 import {computed, defineComponent} from "vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
 
 export default defineComponent({

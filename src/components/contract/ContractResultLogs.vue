@@ -75,7 +75,7 @@
 import {computed, defineComponent, onMounted, PropType, Ref, ref, watch} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import ContractResultLogEntry from "@/components/contract/ContractResultLogEntry.vue";
-import {ContractLog} from "@/schemas/HederaSchemas";
+import {ContractLog} from "@/schemas/MirrorNodeSchemas";
 import {AppStorage} from "@/AppStorage";
 
 const DEFAULT_PAGE_SIZE = 3

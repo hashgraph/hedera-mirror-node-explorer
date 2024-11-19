@@ -116,7 +116,7 @@
 //
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import {ContractAction} from "@/schemas/HederaSchemas";
+import {ContractAction} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";

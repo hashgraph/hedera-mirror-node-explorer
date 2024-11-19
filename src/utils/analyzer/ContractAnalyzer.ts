@@ -25,7 +25,7 @@ import {AssetCache} from "@/utils/cache/AssetCache";
 import {SourcifyCache, SourcifyRecord, SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import {SolcMetadata} from "@/utils/solc/SolcMetadata";
 import {ByteCodeAnalyzer} from "@/utils/analyzer/ByteCodeAnalyzer";
-import {ContractResponse, TokenInfo, TokenType} from "@/schemas/HederaSchemas";
+import {ContractResponse, TokenInfo, TokenType} from "@/schemas/MirrorNodeSchemas";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {EntityID} from "@/utils/EntityID";

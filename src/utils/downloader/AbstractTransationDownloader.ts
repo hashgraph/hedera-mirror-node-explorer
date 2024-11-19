@@ -18,7 +18,7 @@
  *
  */
 
-import {Transaction, TransactionResponse, TransactionType} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionResponse, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import axios, {AxiosResponse} from "axios";
 import {Ref, watch} from "vue";

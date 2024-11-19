@@ -100,7 +100,7 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Nft} from "@/schemas/HederaSchemas";
+import {Nft} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";

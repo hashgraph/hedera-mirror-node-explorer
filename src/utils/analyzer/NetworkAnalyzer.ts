@@ -20,7 +20,7 @@
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {StakingPeriod} from "@/utils/StakingPeriod";
-import {isCouncilNode} from "@/schemas/HederaUtils";
+import {isCouncilNode} from "@/schemas/MirrorNodeUtils.ts";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 
 

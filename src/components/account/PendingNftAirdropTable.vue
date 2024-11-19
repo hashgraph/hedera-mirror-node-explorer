@@ -116,7 +116,7 @@
 <script setup lang="ts">
 
 import {onBeforeUnmount, onMounted, PropType, watch} from 'vue';
-import {TokenAirdrop} from "@/schemas/HederaSchemas";
+import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";

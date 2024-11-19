@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
-import {NftTransactionTransfer, TokenRelationship, TransactionType,} from "@/schemas/HederaSchemas"
+import {NftTransactionTransfer, TokenRelationship, TransactionType,} from "@/schemas/MirrorNodeSchemas"
 import {EntityDescriptor} from "@/utils/EntityDescriptor"
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache"
 

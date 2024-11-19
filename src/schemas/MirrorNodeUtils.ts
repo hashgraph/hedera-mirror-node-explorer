@@ -41,7 +41,7 @@ import {
     TransactionByIdResponse,
     TransactionResponse,
     Transfer,
-} from "@/schemas/HederaSchemas";
+} from "@/schemas/MirrorNodeSchemas";
 import {ethers} from "ethers";
 import {EntityID} from "@/utils/EntityID";
 import * as hashgraph from "@hashgraph/proto";

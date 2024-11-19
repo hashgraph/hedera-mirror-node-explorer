@@ -18,7 +18,7 @@
  *
  */
 
-import {NetworkNode, NetworkNodesResponse} from "@/schemas/HederaSchemas";
+import {NetworkNode, NetworkNodesResponse} from "@/schemas/MirrorNodeSchemas";
 import {SingletonCache} from "@/utils/cache/base/SingletonCache";
 import axios, {AxiosResponse} from "axios";
 

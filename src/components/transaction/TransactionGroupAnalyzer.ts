@@ -19,7 +19,7 @@
  */
 
 import {computed, Ref} from "vue";
-import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionDetail, TransactionType} from "@/schemas/MirrorNodeSchemas";
 
 export class TransactionGroupAnalyzer {
 

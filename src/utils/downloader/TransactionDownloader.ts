@@ -18,7 +18,7 @@
  *
  */
 
-import {compareTransferByAccount, Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {compareTransferByAccount, Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CSVEncoder} from "@/utils/CSVEncoder";
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
 import {Ref} from "vue";

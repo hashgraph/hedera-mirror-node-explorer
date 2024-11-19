@@ -20,8 +20,8 @@
 
 import axios from 'axios';
 import {EntityCache} from './base/EntityCache';
-import {ContractLog} from '@/schemas/HederaSchemas';
-import {drainContractResultsLogs} from "@/schemas/HederaUtils";
+import {ContractLog} from '@/schemas/MirrorNodeSchemas.ts';
+import {drainContractResultsLogs} from "@/schemas/MirrorNodeUtils.ts";
 
 export class ContractResultsLogsByContractIdCache extends EntityCache<string, ContractLog[] | null> {
 

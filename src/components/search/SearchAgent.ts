@@ -33,8 +33,8 @@ import {
     Transaction,
     TransactionByIdResponse,
     TransactionResponse
-} from "@/schemas/HederaSchemas";
-import {drainAccounts} from "@/schemas/HederaUtils";
+} from "@/schemas/MirrorNodeSchemas";
+import {drainAccounts} from "@/schemas/MirrorNodeUtils.ts";
 import {aliasToBase32, byteToHex, paddedBytes} from "@/utils/B64Utils";
 import axios from "axios";
 import {RouteLocationRaw} from "vue-router";

@@ -68,7 +68,7 @@ import {computed, defineComponent, inject, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import {TopicMessage} from "@/schemas/HederaSchemas";
+import {TopicMessage} from "@/schemas/MirrorNodeSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
 
 export default defineComponent({

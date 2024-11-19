@@ -44,7 +44,7 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
-import {ContractStateResponse} from "../../../src/schemas/HederaSchemas";
+import {ContractStateResponse} from "../../../src/schemas/MirrorNodeSchemas";
 
 /*
     Bookmarks

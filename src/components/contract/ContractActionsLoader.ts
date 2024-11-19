@@ -18,7 +18,7 @@
  *
  */
 
-import {ContractAction, ContractActionsResponse} from "@/schemas/HederaSchemas";
+import {ContractAction, ContractActionsResponse} from "@/schemas/MirrorNodeSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref, watch, WatchStopHandle} from "vue";
 import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";

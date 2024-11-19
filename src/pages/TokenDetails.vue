@@ -352,7 +352,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contract/ContractResultsSection.vue";

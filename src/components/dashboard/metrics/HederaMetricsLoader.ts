@@ -20,7 +20,7 @@
 
 import axios from "axios";
 import {computed} from "vue";
-import {NetworkExchangeRateSetResponse, NetworkSupplyResponse} from "@/schemas/HederaSchemas";
+import {NetworkExchangeRateSetResponse, NetworkSupplyResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
 
 export class HederaMetricsLoader extends EntityLoaderV2<HederaMetrics> {

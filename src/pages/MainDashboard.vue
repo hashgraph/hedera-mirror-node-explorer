@@ -98,7 +98,7 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";

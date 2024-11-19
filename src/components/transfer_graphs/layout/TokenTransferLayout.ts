@@ -23,7 +23,7 @@ import {
     compareTransferByAccount,
     TokenTransfer,
     Transaction
-} from "@/schemas/HederaSchemas";
+} from "@/schemas/MirrorNodeSchemas";
 
 export class TokenTransferLayout {
 

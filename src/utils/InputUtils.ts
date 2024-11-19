@@ -19,7 +19,7 @@
  */
 
 import {EntityID} from "@/utils/EntityID";
-import {stripChecksum} from "@/schemas/HederaUtils";
+import {stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
 export function inputEntityID(event: Event, entityID: string | null): string | null {
     let result: string | null

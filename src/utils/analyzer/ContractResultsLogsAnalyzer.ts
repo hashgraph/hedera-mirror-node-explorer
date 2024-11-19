@@ -19,7 +19,7 @@
  */
 
 import {computed, Ref} from 'vue';
-import {ContractLog} from '@/schemas/HederaSchemas'
+import {ContractLog} from '@/schemas/MirrorNodeSchemas.ts'
 import {ContractResultsLogsByContractIdCache} from '../cache/ContractResultsLogsByContractIdCache';
 import {EntityLookup} from "@/utils/cache/base/EntityCache";
 

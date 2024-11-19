@@ -19,7 +19,7 @@
  */
 
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer"
-import {ContractResultDetails} from "@/schemas/HederaSchemas"
+import {ContractResultDetails} from "@/schemas/MirrorNodeSchemas"
 import {EntityID} from "@/utils/EntityID"
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue"
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";

@@ -85,7 +85,7 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, PropType} from 'vue';
-import {Contract} from "@/schemas/HederaSchemas";
+import {Contract} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";

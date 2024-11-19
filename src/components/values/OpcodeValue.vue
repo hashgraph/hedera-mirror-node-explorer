@@ -54,7 +54,7 @@ import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import ContractLink from "@/components/values/link/ContractLink.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import {AccountBalanceTransactions, ContractResponse} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions, ContractResponse} from "@/schemas/MirrorNodeSchemas";
 
 export default defineComponent({
   name: 'OpcodeValue',

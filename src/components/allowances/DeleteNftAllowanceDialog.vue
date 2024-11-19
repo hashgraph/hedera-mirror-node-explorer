@@ -133,9 +133,9 @@ import CommitButton from "@/components/dialog/CommitButton.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import {walletManager} from "@/router";
-import {Nft, NftAllowance} from "@/schemas/HederaSchemas";
+import {Nft, NftAllowance} from "@/schemas/MirrorNodeSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {makeTokenName, waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {makeTokenName, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 

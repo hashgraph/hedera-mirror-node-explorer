@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import {ContractResultDetails} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 import {ContractResultByTsCache} from "@/utils/cache/ContractResultByTsCache";
 

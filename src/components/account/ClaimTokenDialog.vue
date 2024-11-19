@@ -108,10 +108,10 @@
 
 import {computed, onMounted, PropType, ref, watch} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {TokenAirdrop} from "@/schemas/HederaSchemas";
+import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
 import {walletManager} from "@/router";

@@ -18,10 +18,10 @@
  *
  */
 
-import {ContractResult, ContractResultDetails, ContractResultsResponse} from "@/schemas/HederaSchemas";
+import {ContractResult, ContractResultDetails, ContractResultsResponse} from "@/schemas/MirrorNodeSchemas";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {drainContractResults} from "@/schemas/HederaUtils";
+import {drainContractResults} from "@/schemas/MirrorNodeUtils.ts";
 import axios from "axios";
 
 export class ContractResultByTsCache extends EntityCache<string, ContractResultDetails | null> {

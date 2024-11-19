@@ -18,7 +18,7 @@
  *
  */
 
-import {compareNftTransfer, NftTransfer, TransactionDetail} from "@/schemas/HederaSchemas";
+import {compareNftTransfer, NftTransfer, TransactionDetail} from "@/schemas/MirrorNodeSchemas";
 
 export class NFTTransferLayout {
 

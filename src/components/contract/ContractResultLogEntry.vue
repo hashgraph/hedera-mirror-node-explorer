@@ -108,7 +108,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
-import {ContractLog} from "@/schemas/HederaSchemas";
+import {ContractLog} from "@/schemas/MirrorNodeSchemas";
 import PropertyVertical from "@/components/PropertyVertical.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";

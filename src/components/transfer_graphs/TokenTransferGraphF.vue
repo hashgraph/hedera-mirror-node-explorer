@@ -137,7 +137,7 @@ import TokenAmount from "@/components/values/TokenAmount.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {TokenTransferLayout} from "@/components/transfer_graphs/layout/TokenTransferLayout";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 
 export default defineComponent({
   name: "TokenTransferGraphF",

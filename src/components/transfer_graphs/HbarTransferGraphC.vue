@@ -84,7 +84,7 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "v
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 

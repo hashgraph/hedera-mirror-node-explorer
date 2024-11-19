@@ -23,7 +23,7 @@
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {ContractStateResponse, KeyType} from "../../src/schemas/HederaSchemas";
+import {ContractStateResponse, KeyType} from "../../src/schemas/MirrorNodeSchemas";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,

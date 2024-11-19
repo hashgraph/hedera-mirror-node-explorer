@@ -126,7 +126,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
-import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/MirrorNodeSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";

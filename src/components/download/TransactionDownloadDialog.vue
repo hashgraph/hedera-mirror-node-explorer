@@ -113,7 +113,7 @@ import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import DownloadDialog from "@/components/download/DownloadDialog.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import Datepicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css';
 import {TokenTransferDownloader} from "@/utils/downloader/TokenTransferDownloader";

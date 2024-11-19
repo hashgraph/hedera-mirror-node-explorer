@@ -29,7 +29,7 @@ import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
-import {ContractResultDetails, TokenAirdrop} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop} from "@/schemas/MirrorNodeSchemas";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {TokenRejectTransaction} from "@hashgraph/sdk";
 

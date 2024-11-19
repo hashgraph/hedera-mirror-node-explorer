@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
-import {Block} from "@/schemas/HederaSchemas";
+import {Block} from "@/schemas/MirrorNodeSchemas";
 import {EthereumHash} from "@/utils/EthereumHash";
 import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
 import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";

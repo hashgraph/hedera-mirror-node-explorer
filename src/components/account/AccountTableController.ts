@@ -18,11 +18,11 @@
  *
  */
 
-import {AccountInfo, AccountsResponse} from "@/schemas/HederaSchemas";
+import {AccountInfo, AccountsResponse} from "@/schemas/MirrorNodeSchemas";
 import {Ref} from "vue";
 import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {drainAccounts} from "@/schemas/HederaUtils";
+import {drainAccounts} from "@/schemas/MirrorNodeUtils.ts";
 import {Router} from "vue-router";
 
 export class AccountTableController extends TableController<AccountInfo, string> {

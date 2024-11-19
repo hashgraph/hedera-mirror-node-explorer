@@ -144,7 +144,7 @@ import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
-import {Nfts} from "@/schemas/HederaSchemas";
+import {Nfts} from "@/schemas/MirrorNodeSchemas";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export default defineComponent({

@@ -96,7 +96,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {ContractResult} from "@/schemas/HederaSchemas";
+import {ContractResult} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -104,7 +104,7 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
+import {decodeSolidityErrorMessage} from "@/schemas/MirrorNodeUtils.ts";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";

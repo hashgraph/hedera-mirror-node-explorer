@@ -220,7 +220,7 @@ import {useRouter} from "vue-router";
 import Footer from "@/components/Footer.vue";
 import {routeManager, walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";

@@ -18,7 +18,7 @@
  *
  */
 
-import {Topic} from "@/schemas/HederaSchemas";
+import {Topic} from "@/schemas/MirrorNodeSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 

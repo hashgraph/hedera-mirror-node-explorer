@@ -67,7 +67,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import {TransactionDetail} from "@/schemas/HederaSchemas";
+import {TransactionDetail} from "@/schemas/MirrorNodeSchemas";
 import HbarTransferGraphC from "@/components/transfer_graphs/HbarTransferGraphC.vue";
 import HbarTransferGraphF from "@/components/transfer_graphs/HbarTransferGraphF.vue";
 import NftTransferGraph from "@/components/transfer_graphs/NftTransferGraph.vue";

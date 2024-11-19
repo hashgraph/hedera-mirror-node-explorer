@@ -60,7 +60,7 @@ import SearchHelp from "@/pages/SearchHelp.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
 import axios from "axios";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";

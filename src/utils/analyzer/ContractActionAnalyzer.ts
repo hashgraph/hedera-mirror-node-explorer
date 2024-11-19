@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {ContractAction, ResultDataType} from "@/schemas/HederaSchemas";
+import {ContractAction, ResultDataType} from "@/schemas/MirrorNodeSchemas";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {systemContractRegistry} from "@/schemas/SystemContractRegistry";

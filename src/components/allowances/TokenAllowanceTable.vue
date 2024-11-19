@@ -99,8 +99,8 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
-import {TokenAllowance} from "@/schemas/HederaSchemas";
-import {isValidAssociation} from "@/schemas/HederaUtils";
+import {TokenAllowance} from "@/schemas/MirrorNodeSchemas";
+import {isValidAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";

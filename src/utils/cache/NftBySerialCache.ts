@@ -18,7 +18,7 @@
  *
  */
 
-import {Nft} from "@/schemas/HederaSchemas"
+import {Nft} from "@/schemas/MirrorNodeSchemas"
 import axios from "axios"
 import {SerialCache} from "./base/SerialCache"
 import {computed, Ref} from "vue"

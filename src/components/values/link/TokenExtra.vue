@@ -42,9 +42,9 @@
 <script lang="ts">
 
 import {computed, defineComponent, onMounted, ref, watch} from "vue";
-import {TokenInfo} from "@/schemas/HederaSchemas";
+import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 
 export default defineComponent({

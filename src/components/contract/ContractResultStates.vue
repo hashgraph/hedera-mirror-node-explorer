@@ -95,7 +95,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, Ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import {ContractResultStateChange} from "@/schemas/HederaSchemas";
+import {ContractResultStateChange} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";

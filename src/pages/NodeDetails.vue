@@ -220,8 +220,8 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {NetworkNode} from "@/schemas/HederaSchemas";
-import {makeStakePercentage} from "@/schemas/HederaUtils";
+import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
+import {makeStakePercentage} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 

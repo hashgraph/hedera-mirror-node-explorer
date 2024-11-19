@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {Block} from "@/schemas/HederaSchemas";
+import {Block} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";
 

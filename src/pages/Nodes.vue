@@ -100,7 +100,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
-import {makeAnnualizedRate} from "@/schemas/HederaUtils";
+import {makeAnnualizedRate} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 

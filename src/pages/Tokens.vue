@@ -81,7 +81,7 @@ import Footer from "@/components/Footer.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
-import {TokenType} from "@/schemas/HederaSchemas";
+import {TokenType} from "@/schemas/MirrorNodeSchemas";
 
 export default defineComponent({
   name: 'Tokens',

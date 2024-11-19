@@ -24,12 +24,12 @@ import {EntityID} from "@/utils/EntityID";
 import {ethers} from "ethers";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
-import {ContractResultDetails, Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, Transaction} from "@/schemas/MirrorNodeSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {
     AddEthereumChainParameter,
     EIP1193Provider,

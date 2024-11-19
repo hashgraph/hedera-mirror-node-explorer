@@ -22,7 +22,7 @@ import {computed, ComputedRef, ref, Ref, shallowRef, watch, WatchStopHandle} fro
 import {ethers} from "ethers";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {SignatureCache, SignatureRecord, SignatureResponse} from "@/utils/cache/SignatureCache";
-import {decodeRedirectForTokenInput, resolveFunctionFragmentForHTSProxyContract, labelForResponseCode, isRedirectForTokenTx} from "@/schemas/HederaUtils";
+import {decodeRedirectForTokenInput, resolveFunctionFragmentForHTSProxyContract, labelForResponseCode, isRedirectForTokenTx} from "@/schemas/MirrorNodeUtils.ts";
 
 export class FunctionCallAnalyzer {
 

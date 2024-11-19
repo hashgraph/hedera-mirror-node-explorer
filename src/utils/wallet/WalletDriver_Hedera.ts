@@ -36,7 +36,7 @@ import {
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/MirrorNodeSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";

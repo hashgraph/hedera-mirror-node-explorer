@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, Ref, shallowRef, watch, WatchStopHandle} from "vue";
-import {ContractResultLog} from "@/schemas/HederaSchemas";
+import {ContractResultLog} from "@/schemas/MirrorNodeSchemas";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ethers} from "ethers";
 import {NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";

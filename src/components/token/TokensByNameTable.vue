@@ -83,7 +83,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
-import {Token} from '@/schemas/HederaSchemas';
+import {Token} from '@/schemas/MirrorNodeSchemas.ts';
 import {routeManager} from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";

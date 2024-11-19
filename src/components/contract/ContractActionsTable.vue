@@ -114,7 +114,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType} from 'vue';
-import {ContractAction} from "@/schemas/HederaSchemas";
+import {ContractAction} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";

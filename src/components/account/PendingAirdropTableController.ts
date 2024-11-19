@@ -18,7 +18,7 @@
  *
  */
 
-import {TokenAirdrop, TokenAirdropsResponse, TokenType,} from "@/schemas/HederaSchemas";
+import {TokenAirdrop, TokenAirdropsResponse, TokenType,} from "@/schemas/MirrorNodeSchemas";
 import {Ref} from "vue";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
