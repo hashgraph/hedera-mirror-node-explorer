@@ -32,11 +32,11 @@
 
       <a v-if="builtOnURL" :href="builtOnURL" style="line-height: 1;">
         <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
-        <img v-else alt="Built On Logo" src="@/assets/built-on-hedera-white.svg" class="footer-logo">
+        <img v-else alt="Built On Logo" src="@/assets/technology-logo.svg" class="footer-logo">
       </a>
       <div v-else style="line-height: 1;">
         <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
-        <img v-else alt="Built On Logo" src="@/assets/built-on-hedera-white.svg" class="footer-logo">
+        <img v-else alt="Built On Logo" src="@/assets/technology-logo.svg" class="footer-logo">
       </div>
 
       <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
