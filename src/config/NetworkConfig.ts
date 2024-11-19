@@ -148,7 +148,7 @@ export class NetworkEntry {
     private constructor(
         public readonly name: string,
         public readonly displayName: string,
-        public readonly url: string,
+        public readonly mirrorNodeURL: string,
         public readonly ledgerID: string,
 
         // When set to 'true', this variable will enable connecting a wallet

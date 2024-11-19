@@ -119,18 +119,18 @@ Explorer checks that this array contains at least one item and aborts otherwise.
 
 ### Network Configuration Object
 
-| Parameter Key           | Type     | When `undefined` or `null`         | Comments                            |
-|-------------------------|----------|------------------------------------|-------------------------------------|
-| `name`                  | `string` | n/a                                | This parameter is mandatory         |
-| `displayName`           | `string` | `name` is used                     |                                     |
-| `url`                   | `url`    | n/a                                | This parameter is mandatory         |
-| `ledgerID`              | `string` | n/a                                | This parameter is mandatory         |
-| `enableWallet`          | `string` | Wallet connection is disabled      |                                     |
-| `enableStaking`         | `string` | Staking features are disabled      |                                     |
-| `enableExpiry`          | `url`    | Expiry related info are hidden     |                                     |
-| `enableMarket`          | `url`    | Market data are hidden             |                                     |
-| `popularTokenIndexURL`  | `url`    | Popular token search is disabled   |                                     |
-| `sourcifySetup`         | `object` | Contract verification is disabled  | See below for `sourcifySetup` spec. |
+| Parameter Key          | Type     | When `undefined` or `null`         | Comments                            |
+|------------------------|----------|------------------------------------|-------------------------------------|
+| `name`                 | `string` | n/a                                | This parameter is mandatory         |
+| `displayName`          | `string` | `name` is used                     |                                     |
+| `mirrorNodeURL`        | `url`    | n/a                                | This parameter is mandatory         |
+| `ledgerID`             | `string` | n/a                                | This parameter is mandatory         |
+| `enableWallet`         | `string` | Wallet connection is disabled      |                                     |
+| `enableStaking`        | `string` | Staking features are disabled      |                                     |
+| `enableExpiry`         | `url`    | Expiry related info are hidden     |                                     |
+| `enableMarket`         | `url`    | Market data are hidden             |                                     |
+| `popularTokenIndexURL` | `url`    | Popular token search is disabled   |                                     |
+| `sourcifySetup`        | `object` | Contract verification is disabled  | See below for `sourcifySetup` spec. |
 
 ### `name`
 This provides the official name of the network (e.g. 'testnet').
@@ -138,7 +138,7 @@ This provides the official name of the network (e.g. 'testnet').
 ### `displayName`
 The user-friendly name of the network, as displayed in the network selector and the banner on top of the page.
 
-### `url`
+### `mirrorNodeURL`
 The URL of the mirror-node REST API for this network.
 
 ### `ledgerID`
@@ -195,7 +195,7 @@ This setup configures the use of a _contract verification server_ based on the
 | Parameter Key | Type      | When `undefined` or `null` | Comments                    |
 |---------------|-----------|----------------------------|-----------------------------|
 | `activate`    | `boolean` | Network is activated       |                             |
-| `repoURL`     | `string`  | n/a                        | This parameter is mandatory |
+| `repoURL`     | `url`     | n/a                        | This parameter is mandatory |
 | `serverURL`   | `url`     | n/a                        | This parameter is mandatory |
 | `chainID`     | `string`  | n/a                        | This parameter is mandatory |
 

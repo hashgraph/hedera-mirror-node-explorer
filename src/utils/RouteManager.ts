@@ -86,7 +86,7 @@ export class RouteManager {
         this.router.beforeEach(this.setupTitleAndHeaders)
 
         const currentNetworkDidChange = () => {
-            axios.defaults.baseURL = this.currentNetworkEntry.value.url
+            axios.defaults.baseURL = this.currentNetworkEntry.value.mirrorNodeURL
             this.switchThemes()
         }
         watch(this.currentNetwork, () => {
