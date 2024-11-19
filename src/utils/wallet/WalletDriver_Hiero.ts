@@ -43,7 +43,7 @@ import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultBy
 import {WalletDriverCancelError} from "@/utils/wallet/WalletDriverError";
 import {hexToByte} from "@/utils/B64Utils";
 
-export abstract class WalletDriver_Hedera extends WalletDriver {
+export abstract class WalletDriver_Hiero extends WalletDriver {
 
     //
     // Public
