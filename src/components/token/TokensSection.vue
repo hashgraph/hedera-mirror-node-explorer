@@ -283,7 +283,7 @@ const rejectEnabled = computed(() => {
       || (selectedTab.value === 'nfts' && nftsTableController.totalRowCount.value >= 1)
 
   return walletManager.connected.value
-      && walletManager.isHederaWallet.value
+      && walletManager.isHieroWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
 })
@@ -337,7 +337,7 @@ const claimEnabled = computed(() => {
       || (airdropSelectedTab.value === 'nfts' && nftsAirdropTableController.totalRowCount.value >= 1)
 
   return walletManager.connected.value
-      && walletManager.isHederaWallet.value
+      && walletManager.isHieroWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
 })

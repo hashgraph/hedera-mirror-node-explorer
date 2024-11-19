@@ -357,7 +357,7 @@ export default defineComponent({
     const notWithMetamaskDialogVisible = ref(false)
 
     const showStopConfirmDialog = () => {
-      if (walletManager.isHederaWallet.value) {
+      if (walletManager.isHieroWallet.value) {
         stopConfirmDialogVisible.value = true
       } else {
         notWithMetamaskDialogVisible.value = true
@@ -369,7 +369,7 @@ export default defineComponent({
     }
 
     const showStakingDialog = () => {
-      if (walletManager.isHederaWallet.value) {
+      if (walletManager.isHieroWallet.value) {
         stakingDialogVisible.value = true
       } else {
         notWithMetamaskDialogVisible.value = true
@@ -474,7 +474,7 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletLogoURL: walletManager.getActiveDriver().logoURL,
       accountId: walletManager.accountId,
-      isHederaWallet: walletManager.isHederaWallet,
+      isHederaWallet: walletManager.isHieroWallet,
       accountChecksum: accountLocParser.accountChecksum,
       account: accountLocParser.accountInfo,
       accountRoute,

@@ -51,7 +51,7 @@ export class WalletManager {
     private readonly walletNameRef = ref(this.activeDriver.name)
     private readonly accountIdRef = ref<string | null>(null)
     private readonly accountIdsRef = ref<string[]>([])
-    private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hiero)
+    private readonly hieroWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hiero)
     private readonly isEthereumWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Ethereum)
 
     //
@@ -77,7 +77,7 @@ export class WalletManager {
             this.connectedRef.value = false
             this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
-            this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hiero
+            this.hieroWalletRef.value = this.activeDriver instanceof WalletDriver_Hiero
             this.isEthereumWalletRef.value = this.activeDriver instanceof WalletDriver_Ethereum
         }
     }
@@ -90,7 +90,7 @@ export class WalletManager {
 
     public walletName = computed(() => this.walletNameRef.value)
 
-    public isHederaWallet = computed(() => this.hederaWalletRef.value)
+    public isHieroWallet = computed(() => this.hieroWalletRef.value)
 
     public isEthereumWallet = computed(() => this.isEthereumWalletRef.value)
 

@@ -251,7 +251,7 @@ const deleteDialogController = new DialogController()
 const notWithMetamaskDialogVisible = ref(false)
 
 const onClick = () => {
-  if (walletManager.isHederaWallet.value) {
+  if (walletManager.isHieroWallet.value) {
     showApproveAllowanceDialog.value = true
     currentHbarAllowance.value = null
     currentTokenAllowance.value = null
@@ -269,7 +269,7 @@ const onAllowanceApproved = () => {
 
 const onEditHbar = (allowance: CryptoAllowance) => {
   // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHederaWallet.value) {
+  if (walletManager.isHieroWallet.value) {
     currentHbarAllowance.value = allowance
     currentTokenAllowance.value = null
     showApproveAllowanceDialog.value = true
@@ -280,7 +280,7 @@ const onEditHbar = (allowance: CryptoAllowance) => {
 
 const onEditToken = async (allowance: TokenAllowance) => {
   // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHederaWallet.value) {
+  if (walletManager.isHieroWallet.value) {
     const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
     tokenDecimals.value = info?.decimals ?? null
     currentHbarAllowance.value = null
@@ -293,7 +293,7 @@ const onEditToken = async (allowance: TokenAllowance) => {
 
 const onDeleteNft = async (nft: Nft) => {
   // console.log("Delete NFT Allowance: " + JSON.stringify(nft))
-  if (walletManager.isHederaWallet.value) {
+  if (walletManager.isHieroWallet.value) {
     currentNftAllowance.value = nft
     currentNftAllSerialsAllowance.value = null
     deleteDialogController.visible.value = true
@@ -304,7 +304,7 @@ const onDeleteNft = async (nft: Nft) => {
 
 const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
   // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHederaWallet.value) {
+  if (walletManager.isHieroWallet.value) {
     currentNftAllowance.value = null
     currentNftAllSerialsAllowance.value = allowance
     deleteDialogController.visible.value = true
@@ -336,7 +336,7 @@ const onChangeApprovedForAll = (event: Event) => {
   AppStorage.setSelectApprovedForAll(checked)
 }
 
-const isHederaWallet = walletManager.isHederaWallet
+const isHederaWallet = walletManager.isHieroWallet
 const ownerAccountId = walletManager.accountId
 
 </script>

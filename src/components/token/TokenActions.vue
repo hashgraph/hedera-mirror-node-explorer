@@ -165,7 +165,7 @@ export default defineComponent({
     const isActive = ref(false)
     const tokenSerialNumber = ref("")
     const serialNumberInputRef = ref(null)
-    const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
+    const isHederaWallet = computed(() => walletManager.isHieroWallet.value)
     const isEthereumWallet = computed(() => walletManager.isEthereumWallet.value)
     const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
 

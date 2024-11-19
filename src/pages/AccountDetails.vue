@@ -578,7 +578,7 @@ const onUpdateCompleted = () => accountLocParser.remount()
 
 const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
-const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
+const isHederaWallet = computed(() => walletManager.isHieroWallet.value)
 const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value
 )
 

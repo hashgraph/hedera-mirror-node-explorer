@@ -131,7 +131,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const isWalletConnected = computed(
-        () => walletManager.isHederaWallet.value
+        () => walletManager.isHieroWallet.value
             && walletManager.connected.value
             && walletManager.accountId.value === props.controller.accountId.value
     )
