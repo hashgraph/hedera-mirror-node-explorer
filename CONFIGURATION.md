@@ -48,7 +48,7 @@ It can be either:
 
 ### `documentTitlePrefix`
 Explorer uses this value to prefix browser window title.
-When not specified, no prefix appears.
+If not specified, no prefix appears.
 
 ### `productDescription`
 This parameter is displayed on bottom left of the page when screen size is large.
@@ -56,11 +56,11 @@ Default value is `Hiero Mirror Node Explorer`
 
 ### `metaDescription`
 This parameter will be inserted as the meta tag `name="description"` in index.html.
-When not specified, the meta tag is not inserted.
+If not specified, the meta tag is not inserted.
 
 ### `metaURL`
 This parameter will be inserted as the meta tag `property="og:url"` in index.html.
-When not specified, the meta tag is not inserted.
+If not specified, the meta tag is not inserted.
 
 ### `builtOnLogoURL`
 This provides the location of an image to be used as a replacement for the default technology logo at the bottom left of the page.
@@ -70,18 +70,18 @@ It can be either:
 
 ### `builtOnURL`
 This provides the URL of the technology web site which will be placed as an hyperlink on the technology logo (bottom left).
-When not specified, a click on the logo will not trigger any navigation.
+If not specified, a click on the logo will not trigger any navigation.
 
 ### `sponsorLogoURL`
 This provides the location of an image to be used as a sponsor logo at the bottom right of the page.
 It can be either:
 - the file path of an image located at the root of the application (e.g. `/my-own-sponsor-logo.svg`)
 - the URL of an image available on the network (e.g. `https://my-own-server.com/my-own-sponsor-logo.svg`)
-When not specified, no sponsor logo is displayed.
+If not specified, no sponsor logo is displayed.
 
 ### `sponsorURL`
 This provides the URL of the sponsor web site which will be placed as an hyperlink on the sponsor logo (bottom right).
-When not specified, a click on the logo will not trigger any navigation.
+If not specified, a click on the logo will not trigger any navigation.
 
 ### `termsOfUseURL`
 When specified, this parameter will cause the display of a `See Terms of Service` mention at the bottom of the page,
@@ -89,11 +89,11 @@ with a hyperlink allowing to navigate to the given URL.
 
 ### `estimatorNotice`
 This provides the HTML content of the disclaimer notice displayed at the bottom of the Rewards Estimator section in the
-Staking page. When not specified, there is no notice.
+Staking page. If not specified, there is no notice.
 
 ### `walletChooserDisclaimerPopup`
 This provides the HTML content of the disclaimer popup dialog displayed by the Connect Wallet dialog. 
-When not specified, this pop-up dialog is not shown.
+If not specified, this pop-up dialog is not shown.
 
 ### `googleTagID`
 This provides the global site tag ID to be used by Google Analytics. When specified, it will trigger the display of a
@@ -136,7 +136,7 @@ Explorer checks that this array contains at least one item and aborts otherwise.
 This provides the official name of the network (e.g. 'testnet').
 
 ### `displayName`
-The user friendly name of the network, as displayed in the network selector and the banner on top of the page.
+The user-friendly name of the network, as displayed in the network selector and the banner on top of the page.
 
 ### `url`
 The URL of the mirror-node REST API for this network.
