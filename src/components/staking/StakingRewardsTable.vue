@@ -84,7 +84,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
-import {StakingReward} from '@/schemas/HederaSchemas';
+import {StakingReward} from '@/schemas/MirrorNodeSchemas.ts';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";

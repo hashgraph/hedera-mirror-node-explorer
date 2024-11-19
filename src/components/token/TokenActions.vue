@@ -144,7 +144,7 @@ import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
-import {Nfts} from "@/schemas/HederaSchemas";
+import {Nfts} from "@/schemas/MirrorNodeSchemas";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export default defineComponent({
@@ -165,7 +165,7 @@ export default defineComponent({
     const isActive = ref(false)
     const tokenSerialNumber = ref("")
     const serialNumberInputRef = ref(null)
-    const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
+    const isHieroWallet = computed(() => walletManager.isHieroWallet.value)
     const isEthereumWallet = computed(() => walletManager.isEthereumWallet.value)
     const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
 
@@ -187,7 +187,7 @@ export default defineComponent({
       let result: boolean
       const associations = associationLookup.entity.value
       if (associations && associations.length >= 1) {
-        result = (associations[0].balance > 0) && isHederaWallet.value && isAssociated.value
+        result = (associations[0].balance > 0) && isHieroWallet.value && isAssociated.value
       } else {
         result = false
       }
@@ -539,7 +539,6 @@ export default defineComponent({
       alertController,
       tooltipLabel,
       confirmMessage,
-      isHederaWallet,
       dynamicMessage,
       showDoneDialog,
       handleAssociate,

@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {Block, BlocksResponse} from "@/schemas/HederaSchemas";
+import {Block, BlocksResponse} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 
 export class BlockByTsCache extends EntityCache<string, Block | null> {

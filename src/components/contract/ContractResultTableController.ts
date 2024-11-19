@@ -19,7 +19,7 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {ContractResult, ContractResultsResponse} from "@/schemas/HederaSchemas";
+import {ContractResult, ContractResultsResponse} from "@/schemas/MirrorNodeSchemas";
 import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";

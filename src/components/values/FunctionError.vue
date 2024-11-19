@@ -84,7 +84,7 @@ import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
-import {decodeSolidityErrorMessage} from "@/schemas/HederaUtils";
+import {decodeSolidityErrorMessage} from "@/schemas/MirrorNodeUtils.ts";
 import StringValue from "@/components/values/StringValue.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 

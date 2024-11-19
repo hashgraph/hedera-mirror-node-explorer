@@ -18,7 +18,7 @@
  *
  */
 
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 

@@ -18,8 +18,8 @@
  *
  */
 
-import {compareTransferByAccount, NetworkNode, Transaction, Transfer} from "@/schemas/HederaSchemas";
-import {isFeeTransfer, makeOperatorDescription} from "@/schemas/HederaUtils";
+import {compareTransferByAccount, NetworkNode, Transaction, Transfer} from "@/schemas/MirrorNodeSchemas";
+import {isFeeTransfer, makeOperatorDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {computeNetAmount, makeNetOfRewards} from "@/utils/TransactionTools";
 
 export class HbarTransferLayout {

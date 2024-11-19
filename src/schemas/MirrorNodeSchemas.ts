@@ -23,7 +23,7 @@
 // ---------------------------------------------------------------------------------------------------------------------
 
 import {EntityID} from "@/utils/EntityID";
-import {makeDefaultNodeDescription} from "@/schemas/HederaUtils";
+import {makeDefaultNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined

@@ -19,8 +19,8 @@
  */
 
 import {computed, Ref} from "vue";
-import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/HederaUtils";
-import {TokenInfo, TokenType} from "@/schemas/HederaSchemas";
+import {makeEthAddressForToken, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
+import {TokenInfo, TokenType} from "@/schemas/MirrorNodeSchemas";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager, walletManager} from "@/router";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";

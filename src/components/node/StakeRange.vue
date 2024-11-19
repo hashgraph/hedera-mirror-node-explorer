@@ -54,7 +54,7 @@
 //
 
 import {computed, defineComponent, PropType} from "vue";
-import {NetworkNode} from "@/schemas/HederaSchemas";
+import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 const progressSize = 250 // size (width) of progress in pixels

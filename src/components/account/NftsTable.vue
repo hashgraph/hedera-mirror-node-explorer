@@ -115,7 +115,7 @@
 <script setup lang="ts">
 
 import {onBeforeUnmount, onMounted, PropType, watch} from 'vue';
-import {Nft, Token} from "@/schemas/HederaSchemas";
+import {Nft, Token} from "@/schemas/MirrorNodeSchemas";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {routeManager} from "@/router";
 import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";

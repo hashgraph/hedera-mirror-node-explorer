@@ -94,9 +94,9 @@
 import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import {makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
+import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {isCouncilNode, makeNodeDescription} from "@/schemas/HederaUtils";
+import {isCouncilNode, makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({

@@ -115,7 +115,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Nft} from "@/schemas/HederaSchemas";
+import {Nft} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";

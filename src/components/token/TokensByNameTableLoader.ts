@@ -18,7 +18,7 @@
  *
  */
 
-import {Token, TokensResponse} from "@/schemas/HederaSchemas";
+import {Token, TokensResponse} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 import {Ref, watch, WatchStopHandle} from "vue";
 import {TableLoader} from "@/utils/table/TableLoader";

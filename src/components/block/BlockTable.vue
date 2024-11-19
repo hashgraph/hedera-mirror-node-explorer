@@ -106,7 +106,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Block} from '@/schemas/HederaSchemas';
+import {Block} from '@/schemas/MirrorNodeSchemas.ts';
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";

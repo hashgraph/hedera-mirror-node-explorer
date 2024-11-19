@@ -47,7 +47,7 @@
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
 import {routeManager} from "@/router";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {PathParam} from "@/utils/PathParam";
 import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";

@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
-import {BalancesResponse, TokenBalance} from "@/schemas/HederaSchemas";
+import {BalancesResponse, TokenBalance} from "@/schemas/MirrorNodeSchemas";
 import {BalanceCache} from "@/utils/cache/BalanceCache";
 import {Duration} from "@/utils/Duration";
 import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";

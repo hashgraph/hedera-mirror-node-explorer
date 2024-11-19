@@ -20,12 +20,12 @@
 
 import {EntityCache} from "@/utils/cache/base/EntityCache"
 import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionResponse} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 
-import {drainTransactions} from "@/schemas/HederaUtils";
+import {drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
 
 export class TransactionGroupByBlockCache extends EntityCache<number, Transaction[] | null> {
 

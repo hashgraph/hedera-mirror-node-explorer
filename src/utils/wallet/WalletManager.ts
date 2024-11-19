@@ -24,12 +24,12 @@ import {WalletDriver} from "@/utils/wallet/WalletDriver";
 import {WalletDriver_Blade} from "@/utils/wallet/WalletDriver_Blade";
 import {WalletDriver_Hashpack} from "@/utils/wallet/WalletDriver_Hashpack";
 import {timeGuard, TimeGuardError} from "@/utils/TimerUtils";
-import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
+import {WalletDriver_Hiero} from "@/utils/wallet/WalletDriver_Hiero";
 import {WalletDriver_Metamask} from "@/utils/wallet/WalletDriver_Metamask";
 import {WalletDriver_Ethereum} from "@/utils/wallet/WalletDriver_Ethereum";
 import {WalletDriver_Coinbase} from "@/utils/wallet/WalletDriver_Coinbase";
 import {WalletDriver_Brave} from '@/utils/wallet//WalletDriver_Brave';
-import {ContractResultDetails, TokenAirdrop} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop} from "@/schemas/MirrorNodeSchemas";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {TokenRejectTransaction} from "@hashgraph/sdk";
 
@@ -51,7 +51,7 @@ export class WalletManager {
     private readonly walletNameRef = ref(this.activeDriver.name)
     private readonly accountIdRef = ref<string | null>(null)
     private readonly accountIdsRef = ref<string[]>([])
-    private readonly hederaWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hedera)
+    private readonly hieroWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Hiero)
     private readonly isEthereumWalletRef = ref<boolean>(this.activeDriver instanceof WalletDriver_Ethereum)
 
     //
@@ -77,7 +77,7 @@ export class WalletManager {
             this.connectedRef.value = false
             this.accountIdRef.value = null
             this.walletNameRef.value = this.activeDriver.name
-            this.hederaWalletRef.value = this.activeDriver instanceof WalletDriver_Hedera
+            this.hieroWalletRef.value = this.activeDriver instanceof WalletDriver_Hiero
             this.isEthereumWalletRef.value = this.activeDriver instanceof WalletDriver_Ethereum
         }
     }
@@ -90,7 +90,7 @@ export class WalletManager {
 
     public walletName = computed(() => this.walletNameRef.value)
 
-    public isHederaWallet = computed(() => this.hederaWalletRef.value)
+    public isHieroWallet = computed(() => this.hieroWalletRef.value)
 
     public isEthereumWallet = computed(() => this.isEthereumWalletRef.value)
 
@@ -145,7 +145,7 @@ export class WalletManager {
 
     public async claimTokenAirdrops(airdrops: TokenAirdrop[]): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.claimTokenAirdrops(this.accountIdRef.value, airdrops)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -157,7 +157,7 @@ export class WalletManager {
 
     public async changeStaking(nodeId: number | null, accountId: string | null, declineReward: boolean | null): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.changeStaking(this.accountIdRef.value, nodeId, accountId, declineReward)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -169,7 +169,7 @@ export class WalletManager {
 
     public async updateAccount(transaction: AccountUpdateTransaction): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.updateAccount(this.accountIdRef.value, transaction)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -181,7 +181,7 @@ export class WalletManager {
 
     public async approveHbarAllowance(spender: string, amount: number): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.approveHbarAllowance(this.accountIdRef.value, spender, amount)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -193,7 +193,7 @@ export class WalletManager {
 
     public async approveTokenAllowance(token: string, spender: string, amount: number): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.approveTokenAllowance(this.accountIdRef.value, token, spender, amount)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -205,7 +205,7 @@ export class WalletManager {
 
     public async approveNFTAllowance(token: string, spender: string, serialNumbers: number[]): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.approveNFTAllowance(this.accountIdRef.value, token, spender, serialNumbers)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -217,7 +217,7 @@ export class WalletManager {
 
     public async deleteNftAllowance(token: string, serialNumber: number): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.deleteNftAllowance(this.accountIdRef.value, token, serialNumber)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -229,7 +229,7 @@ export class WalletManager {
 
     public async deleteNftAllSerialsAllowance(token: string, spender: string): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.deleteNftAllSerialsAllowance(this.accountIdRef.value, token, spender)
             } else {
                 throw this.activeDriver.unsupportedOperation()
@@ -257,7 +257,7 @@ export class WalletManager {
 
     public async rejectTokens(transaction: TokenRejectTransaction): Promise<string> {
         if (this.accountIdRef.value !== null) {
-            if (this.activeDriver instanceof WalletDriver_Hedera) {
+            if (this.activeDriver instanceof WalletDriver_Hiero) {
                 return this.activeDriver.rejectTokens(this.accountIdRef.value, transaction)
             } else {
                 throw this.activeDriver.unsupportedOperation()

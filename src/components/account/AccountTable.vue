@@ -109,7 +109,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {AccountInfo} from "@/schemas/HederaSchemas";
+import {AccountInfo} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";

@@ -18,12 +18,12 @@
  *
  */
 
-import {WalletDriver_Hedera} from "../../../src/utils/wallet/WalletDriver_Hedera";
+import {WalletDriver_Hiero} from "../../../src/utils/wallet/WalletDriver_Hiero";
 import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
 import {Signer} from "@hashgraph/sdk/lib/Signer";
 
-export class WalletDriver_Mock extends WalletDriver_Hedera {
+export class WalletDriver_Mock extends WalletDriver_Hiero {
 
     private static WALLET_NAME = "WalletMock"
 

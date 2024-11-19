@@ -18,7 +18,7 @@
  *
  */
 
-import {Nft, Nfts} from "@/schemas/HederaSchemas";
+import {Nft, Nfts} from "@/schemas/MirrorNodeSchemas";
 import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";

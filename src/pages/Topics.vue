@@ -52,7 +52,7 @@ import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Footer from "@/components/Footer.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import {TransactionResult, TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionResult, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {useRouter} from "vue-router";
 import {AppStorage} from "@/AppStorage";
 

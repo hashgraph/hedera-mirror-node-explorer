@@ -36,14 +36,14 @@ import {
     TransactionResponse
 } from "@hashgraph/sdk";
 import {TransactionID} from "@/utils/TransactionID";
-import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/HederaSchemas";
+import {ContractResultDetails, TokenAirdrop, Transaction} from "@/schemas/MirrorNodeSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
 import {WalletDriverCancelError} from "@/utils/wallet/WalletDriverError";
 import {hexToByte} from "@/utils/B64Utils";
 
-export abstract class WalletDriver_Hedera extends WalletDriver {
+export abstract class WalletDriver_Hiero extends WalletDriver {
 
     //
     // Public

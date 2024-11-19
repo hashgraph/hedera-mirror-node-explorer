@@ -295,10 +295,10 @@
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {extractChecksum, isCouncilNode, stripChecksum, waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {extractChecksum, isCouncilNode, stripChecksum, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/HederaSchemas";
+import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
 import {routeManager, walletManager} from "@/router";

@@ -54,7 +54,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import {Transaction, TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionDetail, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
 import {TransactionAnalyzer} from "@/components/transaction/TransactionAnalyzer";

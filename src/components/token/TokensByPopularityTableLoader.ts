@@ -19,7 +19,7 @@
  */
 
 import {TableLoader} from "@/utils/table/TableLoader";
-import {Token} from "@/schemas/HederaSchemas";
+import {Token} from "@/schemas/MirrorNodeSchemas";
 import {Ref, watch, WatchStopHandle} from "vue";
 import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";

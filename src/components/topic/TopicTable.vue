@@ -79,7 +79,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";

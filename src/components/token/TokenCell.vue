@@ -46,9 +46,9 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {makeTokenName, makeTokenSymbol} from "@/schemas/HederaUtils";
+import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import TokenAmount from "@/components/values/TokenAmount.vue";
-import {TokenType} from "@/schemas/HederaSchemas";
+import {TokenType} from "@/schemas/MirrorNodeSchemas";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
 
 export enum TokenCellItem {

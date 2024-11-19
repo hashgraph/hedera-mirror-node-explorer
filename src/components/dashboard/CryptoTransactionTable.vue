@@ -82,7 +82,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
 import {routeManager} from "@/router";

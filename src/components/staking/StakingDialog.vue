@@ -178,7 +178,7 @@ import {
   AccountsResponse, makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
-} from "@/schemas/HederaSchemas";
+} from "@/schemas/MirrorNodeSchemas";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -188,7 +188,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/HederaUtils";
+import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"

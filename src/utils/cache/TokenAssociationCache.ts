@@ -18,7 +18,7 @@
  *
  */
 
-import {TokenRelationship, TokenRelationshipResponse} from "@/schemas/HederaSchemas";
+import {TokenRelationship, TokenRelationshipResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityCache, EntityLookup} from "@/utils/cache/base/EntityCache";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref} from "vue";

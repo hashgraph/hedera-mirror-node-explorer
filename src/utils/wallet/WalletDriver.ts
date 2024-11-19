@@ -19,7 +19,7 @@
  */
 
 import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
-import {ContractResultDetails} from "@/schemas/HederaSchemas";
+import {ContractResultDetails} from "@/schemas/MirrorNodeSchemas";
 
 export abstract class WalletDriver {
 

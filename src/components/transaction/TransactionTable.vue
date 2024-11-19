@@ -99,7 +99,7 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from "vue";
-import {Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";

@@ -392,7 +392,7 @@ import AllowancesSection from "@/components/allowances/AllowancesSection.vue";
 import Copyable from "@/components/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import EmptyTable from "@/components/EmptyTable.vue";
 import VerifiedContractsTable from "@/components/account/VerifiedContractsTable.vue";
@@ -408,7 +408,7 @@ import TransactionDownloadDialog from "@/components/download/TransactionDownload
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
+import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/components/account/UpdateAccountDialog.vue";
@@ -578,8 +578,8 @@ const onUpdateCompleted = () => accountLocParser.remount()
 
 const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
 const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
-const isHederaWallet = computed(() => walletManager.isHederaWallet.value)
-const isAccountEditable = computed(() => isMyAccount.value && isHederaWallet.value
+const isHieroWallet = computed(() => walletManager.isHieroWallet.value)
+const isAccountEditable = computed(() => isMyAccount.value && isHieroWallet.value
 )
 
 const transactionType = transactionTableController.transactionType

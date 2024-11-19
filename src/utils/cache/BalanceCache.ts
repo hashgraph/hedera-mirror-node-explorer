@@ -20,7 +20,7 @@
 
 import axios from "axios";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {BalancesResponse} from "@/schemas/HederaSchemas";
+import {BalancesResponse} from "@/schemas/MirrorNodeSchemas";
 
 export class BalanceCache extends EntityCache<string, BalancesResponse | null> {
 

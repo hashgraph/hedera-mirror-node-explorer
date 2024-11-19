@@ -96,7 +96,7 @@
 <script lang="ts">
 
 import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
-import {NftAllowance} from "@/schemas/HederaSchemas";
+import {NftAllowance} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -105,7 +105,7 @@ import TokenLink from "@/components/values/link/TokenLink.vue";
 import {walletManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
-import {isValidAssociation} from "@/schemas/HederaUtils";
+import {isValidAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
@@ -133,7 +133,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const isWalletConnected = computed(
-        () => walletManager.isHederaWallet.value
+        () => walletManager.isHieroWallet.value
             && walletManager.connected.value
             && walletManager.accountId.value === props.controller.accountId.value
     )

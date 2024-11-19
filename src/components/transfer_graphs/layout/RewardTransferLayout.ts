@@ -22,7 +22,7 @@ import {
     compareTransferByAccount,
     StakingRewardTransfer,
     Transaction,
-} from "@/schemas/HederaSchemas";
+} from "@/schemas/MirrorNodeSchemas";
 
 export class RewardTransferLayout {
 

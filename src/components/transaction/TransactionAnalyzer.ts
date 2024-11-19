@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
-import {TokenRelationship, Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {TokenRelationship, Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {EntityDescriptor} from "@/utils/EntityDescriptor";
 import {computeNetAmount, isSuccessfulResult, makeOperatorAccountLabel} from "@/utils/TransactionTools";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";

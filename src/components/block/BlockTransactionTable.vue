@@ -89,7 +89,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from 'vue';
-import {Transaction} from '@/schemas/HederaSchemas';
+import {Transaction} from '@/schemas/MirrorNodeSchemas.ts';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";

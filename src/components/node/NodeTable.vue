@@ -142,7 +142,7 @@
 <script lang="ts">
 
 import {defineComponent, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
-import {NetworkNode} from "@/schemas/HederaSchemas";
+import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -155,7 +155,7 @@ import {
   makeNodeDescriptionPrefix,
   makeNodeOwnerDescription,
   makeStakePercentage
-} from "@/schemas/HederaUtils";
+} from "@/schemas/MirrorNodeUtils.ts";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 

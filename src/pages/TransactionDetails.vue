@@ -288,7 +288,7 @@ import Property from "@/components/Property.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
-import {TransactionDetail, TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionDetail, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {routeManager} from "@/router"

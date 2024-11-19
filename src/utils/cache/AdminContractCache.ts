@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {ContractResponse} from "@/schemas/HederaSchemas";
+import {ContractResponse} from "@/schemas/MirrorNodeSchemas";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 

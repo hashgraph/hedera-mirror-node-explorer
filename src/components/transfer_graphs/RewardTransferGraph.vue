@@ -105,7 +105,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {RewardTransferLayout} from "@/components/transfer_graphs/layout/RewardTransferLayout";
 
 export default defineComponent({

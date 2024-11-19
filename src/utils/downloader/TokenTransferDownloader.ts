@@ -18,10 +18,10 @@
  *
  */
 
-import {compareTransferByAccount, Transaction, TransactionType} from "@/schemas/HederaSchemas";
+import {compareTransferByAccount, Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CSVEncoder} from "@/utils/CSVEncoder";
 import {computed, Ref} from "vue";
-import {lookupTokenTransfer} from "@/schemas/HederaUtils";
+import {lookupTokenTransfer} from "@/schemas/MirrorNodeUtils.ts";
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
 
 export class TokenTransferDownloader extends AbstractTransactionDownloader {

@@ -28,8 +28,8 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {AccountAlias} from "@/utils/AccountAlias";
-import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
-import {AccountInfo} from "@/schemas/HederaSchemas";
+import {makeEthAddressForAccount} from "@/schemas/MirrorNodeUtils";
+import {AccountInfo} from "@/schemas/MirrorNodeSchemas";
 import {NetworkConfig} from "../../../src/config/NetworkConfig";
 
 describe("AccountLocParser.ts", () => {

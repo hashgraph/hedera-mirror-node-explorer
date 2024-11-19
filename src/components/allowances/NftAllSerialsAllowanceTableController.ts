@@ -19,7 +19,7 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {NftAllowance, NftAllowancesResponse} from "@/schemas/HederaSchemas";
+import {NftAllowance, NftAllowancesResponse} from "@/schemas/MirrorNodeSchemas";
 import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";

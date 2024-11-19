@@ -21,7 +21,7 @@
 import {computed, ref, watch} from "vue";
 import {ethers} from "ethers";
 import {AppStorage} from "@/AppStorage";
-import {ContractCallRequest, ContractCallResponse} from "@/schemas/HederaSchemas";
+import {ContractCallRequest, ContractCallResponse} from "@/schemas/MirrorNodeSchemas";
 import {walletManager} from "@/router";
 import axios from "axios";
 import {ABIController} from "@/components/contract/ABIController";

@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, Ref} from "vue";
-import {makeShortNodeDescription, NetworkNode} from "@/schemas/HederaSchemas";
+import {makeShortNodeDescription, NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {
     isCouncilNode,
@@ -27,7 +27,7 @@ import {
     makeNodeDescription,
     makeRewardRate,
     makeUnclampedStake
-} from "@/schemas/HederaUtils";
+} from "@/schemas/MirrorNodeUtils.ts";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 export class NodeAnalyzer {

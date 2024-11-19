@@ -116,7 +116,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import {NFTTransferLayout} from "@/components/transfer_graphs/layout/NFTTransferLayout";
-import {NftTransactionTransfer} from "@/schemas/HederaSchemas";
+import {NftTransactionTransfer} from "@/schemas/MirrorNodeSchemas";
 import {useRoute} from "vue-router";
 
 export default defineComponent({

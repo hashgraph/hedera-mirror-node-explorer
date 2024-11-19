@@ -18,7 +18,7 @@
  *
  */
 
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions} from "@/schemas/MirrorNodeSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";

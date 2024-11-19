@@ -45,7 +45,7 @@
 
 import {defineComponent, inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
-import {ServiceEndPoint} from "@/schemas/HederaSchemas";
+import {ServiceEndPoint} from "@/schemas/MirrorNodeSchemas";
 
 export default defineComponent({
   name: 'Endpoints',

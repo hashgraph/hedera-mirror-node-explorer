@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {TopicMessagesResponse} from "@/schemas/HederaSchemas";
+import {TopicMessagesResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";

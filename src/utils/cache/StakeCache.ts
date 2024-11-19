@@ -19,7 +19,7 @@
  */
 
 import {SingletonCache} from "@/utils/cache/base/SingletonCache";
-import {NetworkStake} from "@/schemas/HederaSchemas";
+import {NetworkStake} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 
 export class StakeCache extends SingletonCache<NetworkStake> {

@@ -53,7 +53,7 @@ import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {RouteLocationRaw} from "vue-router";
 import EntityLink from "@/components/values/link/EntityLink.vue";
 import AccountIOL from "@/components/values/link/AccountIOL.vue";
-import {makeOperatorDescription} from "@/schemas/HederaUtils";
+import {makeOperatorDescription} from "@/schemas/MirrorNodeUtils.ts";
 
 export default defineComponent({
   name: "AccountLink",

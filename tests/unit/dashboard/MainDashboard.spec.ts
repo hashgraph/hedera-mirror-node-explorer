@@ -41,7 +41,7 @@ import MessageTransactionTable from "@/components/dashboard/MessageTransactionTa
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 
 /*
     Bookmarks

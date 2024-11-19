@@ -117,7 +117,7 @@
 
 import {computed, onMounted, PropType, ref, watch} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {tokenOrNftId, waitForTransactionRefresh} from "@/schemas/HederaUtils";
+import {tokenOrNftId, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import DialogButton from "@/components/dialog/DialogButton.vue";
@@ -125,7 +125,7 @@ import CommitButton from "@/components/dialog/CommitButton.vue";
 import {walletManager} from "@/router";
 import Dialog from "@/components/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
-import {FreezeStatus, Nft, Token} from "@/schemas/HederaSchemas";
+import {FreezeStatus, Nft, Token} from "@/schemas/MirrorNodeSchemas";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";

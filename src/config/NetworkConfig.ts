@@ -22,7 +22,7 @@ import axios from "axios";
 import {fetchBoolean, fetchNumber, fetchObject, fetchString, fetchURL} from "@/config/ConfigUtils";
 import {inject} from "vue";
 import {networkConfigKey} from "@/AppKeys";
-import {hip15checksum} from "@/schemas/HederaUtils";
+import {hip15checksum} from "@/schemas/MirrorNodeUtils.ts";
 import {EntityID} from "@/utils/EntityID";
 import {EthereumAddress} from "@/utils/EthereumAddress";
 

@@ -84,7 +84,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {TokenDistribution} from "@/schemas/HederaSchemas";
+import {TokenDistribution} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";

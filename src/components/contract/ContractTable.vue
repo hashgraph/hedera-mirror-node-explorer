@@ -86,7 +86,7 @@
 <script lang="ts">
 
 import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
-import {Contract} from "@/schemas/HederaSchemas";
+import {Contract} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";

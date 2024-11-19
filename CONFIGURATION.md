@@ -23,7 +23,7 @@ The following configuration parameters can be set in `core-config.json`:
 | `productDescription`           | `string` | No product description is displayed                                               |                            |
 | `metaDescription`              | `string` | Meta tag `name="description"` is unset                                            |                            |
 | `metaURL`                      | `url`    | Meta tag `property="og:url"` is unset                                             |                            |
-| `builtOnLogoURL`               | `url`    | [built-on-hedera-white.svg](src/assets/built-on-hedera-white.svg) is displayed    |                            |
+| `builtOnLogoURL`               | `url`    | [technology-logo.svg](src/assets/technology-logo.svg) is displayed                |                            |
 | `builtOnURL`                   | `url`    | Navigation to technology web site is disabled                                     |                            |
 | `sponsorLogoURL`               | `url`    | [brand-sponsor-logo.png](src/assets/branding/brand-sponsor-logo.png) is displayed |                            |
 | `sponsorURL`                   | `url`    | Navigation to sponsor web site is disabled                                        |                            |

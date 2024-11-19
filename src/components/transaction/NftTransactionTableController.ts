@@ -19,7 +19,7 @@
  */
 
 import {KeyOperator, SortOrder, TableController,} from "@/utils/table/TableController"
-import {NftTransactionHistory, NftTransactionTransfer,} from "@/schemas/HederaSchemas"
+import {NftTransactionHistory, NftTransactionTransfer,} from "@/schemas/MirrorNodeSchemas"
 import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue"
 import axios from "axios"
 import {LocationQuery, Router} from "vue-router"

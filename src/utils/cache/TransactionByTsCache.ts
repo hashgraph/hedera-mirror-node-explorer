@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache"
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionResponse} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 
 export class TransactionByTsCache extends EntityCache<string, Transaction | null> {

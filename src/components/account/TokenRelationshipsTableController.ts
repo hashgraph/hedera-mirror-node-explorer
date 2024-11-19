@@ -18,7 +18,7 @@
  *
  */
 
-import {TokenRelationship, TokenRelationshipResponse,} from "@/schemas/HederaSchemas";
+import {TokenRelationship, TokenRelationshipResponse,} from "@/schemas/MirrorNodeSchemas";
 import {Ref} from "vue";
 import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";

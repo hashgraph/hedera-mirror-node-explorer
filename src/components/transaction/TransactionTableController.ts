@@ -19,8 +19,8 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
-import {drainTransactions} from "@/schemas/HederaUtils";
+import {Transaction, TransactionResponse} from "@/schemas/MirrorNodeSchemas";
+import {drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
 import {ref, Ref} from "vue";
 import axios from "axios";
 import {Router} from "vue-router";

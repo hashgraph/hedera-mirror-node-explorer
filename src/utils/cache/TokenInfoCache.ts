@@ -19,7 +19,7 @@
  */
 
 import axios from "axios";
-import {TokenInfo} from "@/schemas/HederaSchemas";
+import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
 import {SerialCache} from "@/utils/cache/base/SerialCache";
 
 export class TokenInfoCache extends SerialCache<string, TokenInfo | null> {

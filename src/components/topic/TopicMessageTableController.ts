@@ -19,7 +19,7 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController"
-import {TopicMessage, TopicMessagesResponse} from "@/schemas/HederaSchemas"
+import {TopicMessage, TopicMessagesResponse} from "@/schemas/MirrorNodeSchemas"
 import axios, {AxiosResponse} from "axios"
 import {ComputedRef, Ref} from "vue"
 import {Router} from "vue-router";

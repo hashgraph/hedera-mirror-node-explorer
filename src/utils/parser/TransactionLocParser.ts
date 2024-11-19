@@ -19,7 +19,7 @@
  */
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {Timestamp} from "@/utils/Timestamp";
 import {TransactionHash} from "@/utils/TransactionHash";
 import {EthereumHash} from "@/utils/EthereumHash";

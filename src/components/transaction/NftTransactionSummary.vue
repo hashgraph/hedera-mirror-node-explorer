@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType,} from "vue"
-import {NftTransactionTransfer, TransactionType,} from "@/schemas/HederaSchemas"
+import {NftTransactionTransfer, TransactionType,} from "@/schemas/MirrorNodeSchemas"
 import {makeSummaryLabel} from "@/utils/TransactionTools"
 import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue"
 import TokenExtra from "@/components/values/link/TokenExtra.vue"

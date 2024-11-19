@@ -19,7 +19,7 @@
  */
 
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {Nft, Nfts} from "@/schemas/HederaSchemas";
+import {Nft, Nfts} from "@/schemas/MirrorNodeSchemas";
 import axios, {AxiosResponse} from "axios";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 

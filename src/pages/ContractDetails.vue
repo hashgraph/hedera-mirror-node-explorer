@@ -242,7 +242,7 @@ import MirrorLink from "@/components/MirrorLink.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import {labelForAutomaticTokenAssociation} from "@/schemas/HederaUtils";
+import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
 
 export default defineComponent({

@@ -19,12 +19,12 @@
  */
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
-import {Transaction, TransactionResponse} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionResponse} from "@/schemas/MirrorNodeSchemas";
 import {ref, Ref, watch, WatchStopHandle} from "vue";
 import axios from "axios";
 import {LocationQuery, Router} from "vue-router";
 import {fetchStringQueryParam} from "@/utils/RouteManager";
-import {drainTransactions} from "@/schemas/HederaUtils";
+import {drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
 
 
 export class TransactionTableControllerXL extends TableController<Transaction, string> {

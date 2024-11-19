@@ -18,7 +18,7 @@
  *
  */
 
-import {StakingReward, StakingRewardsResponse} from "@/schemas/HederaSchemas";
+import {StakingReward, StakingRewardsResponse} from "@/schemas/MirrorNodeSchemas";
 import {Ref, watch} from "vue";
 import {dateToTimestamp, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import axios, {AxiosResponse} from "axios";

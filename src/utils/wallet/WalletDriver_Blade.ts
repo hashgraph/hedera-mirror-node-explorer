@@ -21,12 +21,12 @@
 
 import type {BladeConnector, BladeSigner} from "@bladelabs/blade-web3.js";
 import {HederaNetwork} from "@bladelabs/blade-web3.js/lib/src/models/blade";
-import {WalletDriver_Hedera} from "@/utils/wallet/WalletDriver_Hedera";
+import {WalletDriver_Hiero} from "@/utils/wallet/WalletDriver_Hiero";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {Signer} from "@hashgraph/sdk";
 import {HederaLogo} from "@/utils/wallet/WalletDriver";
 
-export class WalletDriver_Blade extends WalletDriver_Hedera {
+export class WalletDriver_Blade extends WalletDriver_Hiero {
 
     //
     // https://github.com/Blade-Labs/blade-web3.js

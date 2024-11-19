@@ -18,7 +18,7 @@
  *
  */
 
-import {StakingRewardTransfer, Transaction, TransactionType, Transfer} from "@/schemas/HederaSchemas";
+import {StakingRewardTransfer, Transaction, TransactionType, Transfer} from "@/schemas/MirrorNodeSchemas";
 import {TransactionID} from "@/utils/TransactionID";
 
 export function makeSummaryLabel(row: Transaction): string {

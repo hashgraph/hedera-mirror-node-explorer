@@ -18,10 +18,10 @@
  *
  */
 
-import {AccountBalanceTransactions} from "@/schemas/HederaSchemas";
+import {AccountBalanceTransactions} from "@/schemas/MirrorNodeSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
-import {makeEthAddressForAccount} from "@/schemas/HederaUtils";
+import {makeEthAddressForAccount} from "@/schemas/MirrorNodeUtils.ts";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 

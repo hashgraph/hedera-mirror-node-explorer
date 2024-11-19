@@ -227,7 +227,7 @@ import {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/HederaSchemas";
+import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/MirrorNodeSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
@@ -240,7 +240,7 @@ import {
   makeTokenName,
   stripChecksum,
   waitForTransactionRefresh
-} from "@/schemas/HederaUtils";
+} from "@/schemas/MirrorNodeUtils.ts";
 import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
 import {TransactionID} from "@/utils/TransactionID";
 import {CoreConfig} from "@/config/CoreConfig.ts";

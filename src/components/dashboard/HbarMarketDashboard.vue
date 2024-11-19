@@ -84,7 +84,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import DashboardItem from "@/components/dashboard/DashboardItem.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
-import {HederaMetricsLoader} from "@/components/dashboard/metrics/HederaMetricsLoader";
+import {NetworkMetricsLoader} from "@/components/dashboard/metrics/NetworkMetricsLoader";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
@@ -108,9 +108,9 @@ export default defineComponent({
     const hbarTotalLabel = `${cryptoName} TOTAL`
 
     // Hedera Metrics
-    const hederaMetricsLoader = new HederaMetricsLoader()
-    onMounted(() => hederaMetricsLoader.mount())
-    onBeforeUnmount(() => hederaMetricsLoader.unmount())
+    const networkMetricsLoader = new NetworkMetricsLoader()
+    onMounted(() => networkMetricsLoader.mount())
+    onBeforeUnmount(() => networkMetricsLoader.unmount())
 
     return {
       isMainNetwork,
@@ -122,12 +122,12 @@ export default defineComponent({
       hbarMarketCapLabel,
       hbarReleasedLabel,
       hbarTotalLabel,
-      hbarReleased: hederaMetricsLoader.hbarReleasedText,
-      hbarTotal: hederaMetricsLoader.hbarTotalText,
-      hbarPrice: hederaMetricsLoader.hbarPriceText,
-      hbarPriceVariation: hederaMetricsLoader.hbarPriceVariationText,
-      hbarMarketCap: hederaMetricsLoader.hbarMarketCapText,
-      hbarMarketCapVariation: hederaMetricsLoader.hbarMarketCapVariationText,
+      hbarReleased: networkMetricsLoader.hbarReleasedText,
+      hbarTotal: networkMetricsLoader.hbarTotalText,
+      hbarPrice: networkMetricsLoader.hbarPriceText,
+      hbarPriceVariation: networkMetricsLoader.hbarPriceVariationText,
+      hbarMarketCap: networkMetricsLoader.hbarMarketCapText,
+      hbarMarketCapVariation: networkMetricsLoader.hbarMarketCapVariationText,
     }
   },
 });

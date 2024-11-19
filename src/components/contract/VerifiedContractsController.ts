@@ -20,7 +20,7 @@
 
 import {computed, ComputedRef, ref, Ref, watch} from "vue";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
-import {Contract} from "@/schemas/HederaSchemas";
+import {Contract} from "@/schemas/MirrorNodeSchemas";
 import axios, {AxiosError} from "axios";
 import {VerifiedContractsBuffer} from "@/utils/cache/VerifiedContractsBuffer";
 import {Lookup} from "@/utils/cache/base/Lookup";

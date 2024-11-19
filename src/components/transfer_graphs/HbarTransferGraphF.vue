@@ -130,7 +130,7 @@ import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 export default defineComponent({

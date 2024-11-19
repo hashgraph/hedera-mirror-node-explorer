@@ -115,7 +115,7 @@
                                     :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
             <div class="is-flex is-justify-content-space-between mt-5">
-              <div v-if="isHederaWallet" class="is-flex is-justify-content-flex-start">
+              <div v-if="isHieroWallet" class="is-flex is-justify-content-flex-start">
                 <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
                 </button>
@@ -129,7 +129,7 @@
                 </p>
               </div>
             </div>
-            <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+            <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
@@ -155,7 +155,7 @@
 
               <div class="mt-4"/>
             </div>
-            <div v-if="isHederaWallet" class="is-flex is-justify-content-center">
+            <div v-if="isHieroWallet" class="is-flex is-justify-content-center">
               <button id="stopStakingButtonSmall" class="button is-white is-small"
                       :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
               </button>
@@ -163,7 +163,7 @@
                 CHANGE STAKED TO
               </button>
             </div>
-            <div v-if="isHederaWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+            <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
               <span class="has-text-grey-light">Please Note: </span>
               Your full balance is automatically staked.<br/>
               Your funds are fully available for use while staked.<br/>
@@ -220,7 +220,7 @@ import {useRouter} from "vue-router";
 import Footer from "@/components/Footer.vue";
 import {routeManager, walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {waitFor} from "@/utils/TimerUtils";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
@@ -357,7 +357,7 @@ export default defineComponent({
     const notWithMetamaskDialogVisible = ref(false)
 
     const showStopConfirmDialog = () => {
-      if (walletManager.isHederaWallet.value) {
+      if (walletManager.isHieroWallet.value) {
         stopConfirmDialogVisible.value = true
       } else {
         notWithMetamaskDialogVisible.value = true
@@ -369,7 +369,7 @@ export default defineComponent({
     }
 
     const showStakingDialog = () => {
-      if (walletManager.isHederaWallet.value) {
+      if (walletManager.isHieroWallet.value) {
         stakingDialogVisible.value = true
       } else {
         notWithMetamaskDialogVisible.value = true
@@ -474,7 +474,7 @@ export default defineComponent({
       walletName: walletManager.walletName,
       walletLogoURL: walletManager.getActiveDriver().logoURL,
       accountId: walletManager.accountId,
-      isHederaWallet: walletManager.isHederaWallet,
+      isHieroWallet: walletManager.isHieroWallet,
       accountChecksum: accountLocParser.accountChecksum,
       account: accountLocParser.accountInfo,
       accountRoute,

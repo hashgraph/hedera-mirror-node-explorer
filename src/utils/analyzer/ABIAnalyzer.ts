@@ -21,7 +21,7 @@
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {computed, ref, watch, WatchStopHandle} from "vue";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
-import {ContractResponse} from "@/schemas/HederaSchemas";
+import {ContractResponse} from "@/schemas/MirrorNodeSchemas";
 import {AdminContractCache} from "@/utils/cache/AdminContractCache";
 
 export class ABIAnalyzer {

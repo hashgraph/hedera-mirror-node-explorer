@@ -20,7 +20,7 @@
 
 import axios from "axios";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
-import {NetworkExchangeRateSetResponse} from "@/schemas/HederaSchemas";
+import {NetworkExchangeRateSetResponse} from "@/schemas/MirrorNodeSchemas";
 
 export class HbarPriceCache extends EntityCache<string, NetworkExchangeRateSetResponse> {
 

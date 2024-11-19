@@ -97,7 +97,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
-import {TopicMessage} from "@/schemas/HederaSchemas";
+import {TopicMessage} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
