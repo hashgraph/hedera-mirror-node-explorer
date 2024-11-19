@@ -539,7 +539,6 @@ export default defineComponent({
       alertController,
       tooltipLabel,
       confirmMessage,
-      isHederaWallet: isHieroWallet,
       dynamicMessage,
       showDoneDialog,
       handleAssociate,
