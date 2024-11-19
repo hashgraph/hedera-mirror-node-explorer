@@ -275,9 +275,9 @@
         </template>
       </DashboardCard>
 
-      <ERCTokensSection :account-id="normalizedAccountId" :full-page="false"/>
-
       <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
+
+      <ERCTokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
       <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
         <template v-slot:title>
