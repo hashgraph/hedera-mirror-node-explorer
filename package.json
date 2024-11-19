@@ -32,7 +32,7 @@
     "@hedera-name-service/hns-resolution-sdk": "^2.0.11",
     "@kabuto-sh/ns": "^0.14.2",
     "@oruga-ui/oruga-next": "^0.7.0",
-    "@vuepic/vue-datepicker": "^9.0.3",
+    "@vuepic/vue-datepicker": "^10.0.0",
     "axios": "^1.7.7",
     "base32-decode": "^1.0.0",
     "base32-encode": "^2.0.0",
