@@ -28,12 +28,12 @@
 
     <template v-slot:title>
       <div v-if="fullPage">
-        <span class="h-is-primary-title">Tokens of Account </span>
+        <span class="h-is-primary-title">HTS Tokens of Account </span>
         <router-link :to="routeManager.makeRouteToAccount(accountId)">
           <span class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
         </router-link>
       </div>
-      <span v-else class="h-is-secondary-title">Tokens</span>
+      <span v-else class="h-is-secondary-title">HTS Tokens</span>
     </template>
 
     <template v-slot:control>
