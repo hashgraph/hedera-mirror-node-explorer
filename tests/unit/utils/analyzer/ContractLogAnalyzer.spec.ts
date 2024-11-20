@@ -26,7 +26,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {ref, Ref} from "vue";
 import {ContractLogAnalyzer} from "@/utils/analyzer/ContractLogAnalyzer";
-import {ContractResultLog} from "@/schemas/HederaSchemas";
+import {ContractResultLog} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import {SourcifyResponse} from "@/utils/cache/SourcifyCache";
 import {flushPromises} from "@vue/test-utils";
