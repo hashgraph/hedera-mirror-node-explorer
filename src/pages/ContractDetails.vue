@@ -253,13 +253,13 @@
         <Property id="totalSupply">
           <template v-slot:name>Total Supply</template>
           <template v-slot:value>
-            <StringValue :string-value="erc20?.totalSupply"/>
+            <StringValue :string-value="erc20TotalSupply"/>
           </template>
         </Property>
         <Property id="maxSupply">
           <template v-slot:name>Max. Supply</template>
           <template v-slot:value>
-            <StringValue :string-value="erc20?.maxSupply"/>
+            <StringValue :string-value="erc20MaxSupply"/>
           </template>
         </Property>
       </template>
@@ -319,6 +319,7 @@ import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
 import {ERC20Cache, ERC20Token} from "@/utils/cache/ERC20Cache.ts";
 import PlainAmount from "@/components/values/PlainAmount.vue";
+import {formatUnits} from "ethers";
 
 export default defineComponent({
 
@@ -446,6 +447,17 @@ export default defineComponent({
       }
     })
 
+    const erc20TotalSupply = computed(() =>
+        erc20.value != null
+            ? formatUnits(erc20.value.totalSupply, erc20.value.decimals)
+            : null
+    )
+    const erc20MaxSupply = computed(() =>
+        erc20.value != null
+            ? formatUnits(erc20.value.maxSupply, erc20.value.decimals)
+            : null
+    )
+
     //
     // contract results logs - event logs at contract level
     //
@@ -470,6 +482,8 @@ export default defineComponent({
       displayNonce,
       accountChecksum,
       erc20,
+      erc20TotalSupply,
+      erc20MaxSupply,
       notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
