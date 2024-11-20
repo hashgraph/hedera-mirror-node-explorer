@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="accountId" id="tokensSection" collapsible-key="tokens">
+  <DashboardCard v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
 
     <template v-slot:title>
       <div v-if="fullPage">
@@ -156,7 +156,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref} from 'vue';
+import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
@@ -185,6 +185,13 @@ const props = defineProps({
     default: false
   }
 })
+
+const showSection = computed(() =>
+    fungibleTableController.totalRowCount.value >= 1
+    || nftsTableController.totalRowCount.value >= 1
+    || fungibleAirdropTableController.totalRowCount.value >= 1
+    || nftsAirdropTableController.totalRowCount.value >= 1
+)
 
 const perPage = ref(props.fullPage ? 15 : 6)
 
@@ -240,6 +247,20 @@ const fungibleAirdropTableController = new PendingAirdropTableController(
     perPage,
     "pr", "kr"
 )
+
+onMounted(() => {
+  nftsTableController.mount()
+  fungibleTableController.mount()
+  nftsAirdropTableController.mount()
+  fungibleAirdropTableController.mount()
+})
+onBeforeUnmount(() => {
+  nftsTableController.unmount()
+  fungibleTableController.unmount()
+  nftsAirdropTableController.unmount()
+  fungibleAirdropTableController.unmount()
+})
+
 
 //
 // Reject
