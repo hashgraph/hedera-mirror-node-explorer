@@ -63,6 +63,9 @@ describe("ContractDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
+        const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
 
@@ -162,6 +165,9 @@ describe("ContractDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
+        const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
 
@@ -260,6 +266,9 @@ describe("ContractDetails.vue", () => {
 
         const mock = new MockAdapter(axios);
 
+        const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
 
@@ -331,6 +340,9 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const contract1 = SAMPLE_CONTRACT
+        let matcherAirdrop = "api/v1/accounts/" + contract1.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         let matcher1 = "/api/v1/contracts/" + contract1.contract_id
         mock.onGet(matcher1).reply(200, contract1);
 
@@ -378,6 +390,9 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
+        matcherAirdrop = "api/v1/accounts/" + contract2.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         matcher1 = "/api/v1/contracts/" + contract2.contract_id
         mock.onGet(matcher1).reply(200, contract2);
 
@@ -423,6 +438,9 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const contract = SAMPLE_CONTRACT_DUDE
+        const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         const matcher1 = "/api/v1/contracts/" + contract.contract_id
         mock.onGet(matcher1).reply(200, contract);
 
@@ -472,6 +490,9 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const contract = SAMPLE_CONTRACT_DUDE
+        const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         const matcher1 = "/api/v1/contracts/" + contract.contract_id
         mock.onGet(matcher1).reply(200, contract);
 
@@ -525,6 +546,9 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios);
 
         const contract = SAMPLE_CONTRACT_DELETED
+        const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+
         const matcher1 = "/api/v1/contracts/" + contract.contract_id
         mock.onGet(matcher1).reply(200, contract);
 
