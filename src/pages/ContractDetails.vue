@@ -88,12 +88,12 @@
         </template>
 
         <template v-slot:leftContent>
-          <Property id="key">
-            <template v-slot:name>Admin Key</template>
-            <template v-slot:value>
-              <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
-            </template>
-          </Property>
+         <Property id="key">
+           <template v-slot:name>Admin Key</template>
+           <template v-slot:value>
+             <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
+           </template>
+         </Property>
           <Property id="memo">
             <template v-slot:name>Memo</template>
             <template v-slot:value>
@@ -107,63 +107,84 @@
             </template>
           </Property>
           <Property
-              v-if="enableExpiry"
-              id="expiresAt"
-              tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+              id="maxAutoAssociation"
+              tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
           >
-            <template v-slot:name>
-              <span>Expires at</span>
-            </template>
-            <template v-slot:value>
-              <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
-            </template>
-          </Property>
-          <Property
-              v-if="enableExpiry"
-              id="autoRenewPeriod"
-              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-          >
-            <template v-slot:name>
-              <span>Auto Renew Period</span>
-            </template>
-            <template v-slot:value>
-              <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
-            </template>
-          </Property>
-          <Property
-              v-if="enableExpiry"
-              id="autoRenewAccount"
-              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-          >
-            <template v-slot:name>
-              <span>Auto Renew Account</span>
-            </template>
-            <template v-slot:value>
-              <AccountLink :account-id="autoRenewAccount"/>
-            </template>
-          </Property>
-          <Property id="maxAutoAssociation"
-                    tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0).">
             <template v-slot:name>Max. Auto. Association</template>
             <template v-slot:value>
               <StringValue :string-value="maxAutoAssociationValue"/>
             </template>
           </Property>
+
+          <template v-if="enableExpiry">
+            <Property
+                id="expiresAt"
+                tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+            >
+              <template v-slot:name>
+                <span>Expires at</span>
+              </template>
+              <template v-slot:value>
+                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
+              </template>
+            </Property>
+            <Property
+                id="autoRenewPeriod"
+                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+            >
+              <template v-slot:name>
+                <span>Auto Renew Period</span>
+              </template>
+              <template v-slot:value>
+                <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
+              </template>
+            </Property>
+            <Property
+                id="autoRenewAccount"
+                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+            >
+              <template v-slot:name>
+                <span>Auto Renew Account</span>
+              </template>
+              <template v-slot:value>
+                <AccountLink :account-id="autoRenewAccount"/>
+              </template>
+            </Property>
+          </template>
+          <template v-else>
+            <Property id="obtainer">
+              <template v-slot:name>Obtainer</template>
+              <template v-slot:value>
+                <AccountLink :account-id="obtainerId"/>
+              </template>
+            </Property>
+            <Property id="proxyAccount">
+              <template v-slot:name>Proxy Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="proxyAccountId"/>
+              </template>
+            </Property>
+          </template>
         </template>
 
         <template v-slot:rightContent>
-          <Property id="obtainer">
-            <template v-slot:name>Obtainer</template>
-            <template v-slot:value>
-              <AccountLink :account-id="obtainerId"/>
-            </template>
-          </Property>
-          <Property id="proxyAccount">
-            <template v-slot:name>Proxy Account</template>
-            <template v-slot:value>
-              <AccountLink :account-id="proxyAccountId"/>
-            </template>
-          </Property>
+          <template v-if="enableExpiry">
+            <Property id="obtainer">
+              <template v-slot:name>Obtainer</template>
+              <template v-slot:value>
+                <AccountLink :account-id="obtainerId"/>
+              </template>
+            </Property>
+            <Property id="proxyAccount">
+              <template v-slot:name>Proxy Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="proxyAccountId"/>
+              </template>
+            </Property>
+          </template>
+          <template v-else>
+          </template>
+
           <Property id="validFrom">
             <template v-slot:name>Valid from</template>
             <template v-slot:value>
