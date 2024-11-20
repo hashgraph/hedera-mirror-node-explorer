@@ -18,7 +18,7 @@
  *
  */
 
-import {ContractCallRequest, ContractCallResponse} from "@/schemas/HederaSchemas";
+import {ContractCallRequest, ContractCallResponse} from "@/schemas/MirrorNodeSchemas.ts";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
 import {ERC20Cache, ERC20Token} from "@/utils/cache/ERC20Cache";
