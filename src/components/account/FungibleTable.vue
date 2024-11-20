@@ -101,7 +101,7 @@
 
 <script setup lang="ts">
 
-import {onBeforeUnmount, onMounted, PropType, watch} from 'vue';
+import {PropType, watch} from 'vue';
 import {Nft, Token, TokenBalance} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -135,13 +135,6 @@ const checkedRows = defineModel("checkedTokens", {
 watch([props.controller.rows, () => props.checkEnabled], () =>
     checkedRows.value.splice(0)
 )
-
-onMounted(() => {
-  props.controller.mount()
-})
-onBeforeUnmount(() => {
-  props.controller.unmount()
-})
 
 const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, event: MouseEvent) => {
   if (balance.token_id) {
