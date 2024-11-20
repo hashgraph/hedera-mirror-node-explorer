@@ -29,7 +29,12 @@
 
       <DashboardCard collapsible-key="contractDetails">
         <template v-slot:title>
-          <span class="h-is-primary-title">Contract </span>
+          <div class="is-flex is-align-items-center is-flex-wrap-wrap">
+            <span class="h-is-primary-title mr-3">Contract</span>
+            <div v-if="isVerified" class="h-is-text-size-2 mt-1">
+              <div  class="h-has-pill has-background-success">VERIFIED</div>
+            </div>
+          </div>
         </template>
 
         <template v-slot:subtitle>
@@ -363,9 +368,14 @@ export default defineComponent({
       return normalizedContractId.value !== null ? routeManager.makeRouteToAccount(normalizedContractId.value) : null
     })
 
+    //
+    // ContractAnalyzer
+    //
     const contractAnalyzer = new ContractAnalyzer(normalizedContractId)
     onMounted(() => contractAnalyzer.mount())
     onBeforeUnmount(() => contractAnalyzer.unmount())
+
+    const isVerified = computed(() => contractAnalyzer.sourcifyURL.value != null)
 
     //
     // contract results logs - event logs at contract level
@@ -397,6 +407,7 @@ export default defineComponent({
       normalizedContractId,
       accountRoute,
       contractAnalyzer,
+      isVerified,
       logs: contractResultsLogsAnalyzer.logs,
       domainName: nameQuery.name,
       domainProviderName: nameQuery.providerName,
