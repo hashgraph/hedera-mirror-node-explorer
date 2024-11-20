@@ -138,7 +138,7 @@ import DynamicDialog from '../DynamicDialog.vue';
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
-import {WalletDriverCancelError, WalletDriverError} from '@/utils/wallet/WalletDriverError';
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import AlertDialog from "@/components/AlertDialog.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import {gtagTransaction} from "@/gtag";
@@ -506,13 +506,13 @@ export default defineComponent({
     // handleError()
     //
     const handleError = (reason: unknown) => {
-      if (reason instanceof WalletDriverCancelError) {
+      if (reason instanceof WalletClientRejectError) {
         showProgressDialog.value = false
       } else {
         showProgressDialog.value = true
         showProgressSpinner.value = false
         progressDialogMode.value = Mode.Error
-        if (reason instanceof WalletDriverError) {
+        if (reason instanceof WalletClientError) {
           progressMainMessage.value = reason.message
           progressExtraMessage.value = reason.extra
         } else {

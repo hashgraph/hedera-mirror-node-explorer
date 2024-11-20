@@ -110,7 +110,7 @@ import {computed, onMounted, PropType, ref, watch} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
-import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import CommitButton from "@/components/dialog/CommitButton.vue";
@@ -223,10 +223,10 @@ const onClaim = async () => {
   } catch (reason) {
 
     console.warn("Transaction Error: " + reason)
-    if (reason instanceof WalletDriverCancelError) {
+    if (reason instanceof WalletClientRejectError) {
       props.controller.handleClose()
     } else {
-      if (reason instanceof WalletDriverError) {
+      if (reason instanceof WalletClientError) {
         errorMessage.value = `${reason.message} (${reason.extra})`
       } else {
         const error = reason instanceof Error ? JSON.stringify(reason.message) : JSON.stringify(reason)
