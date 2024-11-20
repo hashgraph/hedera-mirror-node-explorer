@@ -43,10 +43,20 @@ export class ERC20Cache extends SingletonCache<ERC20Token[]> {
     //
 
     protected async load(): Promise<ERC20Token[]> {
-        const network = routeManager.currentNetwork.value
-        const url = window.location.origin + "/erc20-tokens-" + network + ".json"
-        const response = await axios.get<ERC20Token[]>(url)
-        return Promise.resolve(response.data)
+        let result: Promise<ERC20Token[]>
+        try {
+            const network = routeManager.currentNetwork.value
+            const url = window.location.origin + "/erc20-tokens-" + network + ".json"
+            const response = await axios.get<ERC20Token[]>(url)
+            result = Promise.resolve(response.data)
+        } catch (error) {
+            if (axios.isAxiosError(error) && error.response?.status == 404) {
+                result = Promise.resolve([])
+            } else {
+                throw error
+            }
+        }
+        return result
     }
 
 }
