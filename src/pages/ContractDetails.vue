@@ -34,6 +34,9 @@
             <div v-if="isVerified" class="h-is-text-size-2 mt-1">
               <div  class="h-has-pill has-background-success">VERIFIED</div>
             </div>
+            <div v-if="erc20" class="h-is-text-size-2 mt-1 ml-3">
+              <div  class="h-has-pill has-background-info">ERC 20</div>
+            </div>
           </div>
         </template>
 
@@ -215,8 +218,52 @@
             </template>
           </Property>
 
-        </template>
-      </DashboardCard>
+      </template>
+    </DashboardCard>
+
+    <DashboardCard v-if="erc20" collapsible-key="erc20TokenProperties">
+      <template #title>
+        <span class="h-is-secondary-title">ERC Token</span>
+      </template>
+      <template #content>
+        <Property id="erc20Name">
+          <template v-slot:name>Name</template>
+          <template v-slot:value>
+            <StringValue :string-value="erc20?.name"/>
+          </template>
+        </Property>
+        <Property id="symbol">
+          <template v-slot:name>Symbol</template>
+          <template v-slot:value>
+            <StringValue :string-value="erc20?.symbol"/>
+          </template>
+        </Property>
+        <Property id="decimals">
+          <template v-slot:name>Decimals</template>
+          <template v-slot:value>
+            <PlainAmount :amount="erc20?.decimals"/>
+          </template>
+        </Property>
+        <Property id="owner">
+          <template v-slot:name>Owner</template>
+          <template v-slot:value>
+            <EVMAddress :address="erc20?.owner" :show-id="true" :has-custom-font="true"/>
+          </template>
+        </Property>
+        <Property id="totalSupply">
+          <template v-slot:name>Total Supply</template>
+          <template v-slot:value>
+            <StringValue :string-value="erc20?.totalSupply"/>
+          </template>
+        </Property>
+        <Property id="maxSupply">
+          <template v-slot:name>Max. Supply</template>
+          <template v-slot:value>
+            <StringValue :string-value="erc20?.maxSupply"/>
+          </template>
+        </Property>
+      </template>
+    </DashboardCard>
 
       <TokensSection :account-id="normalizedContractId"/>
 
@@ -239,7 +286,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch, WatchStopHandle} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -270,12 +317,15 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
+import {ERC20Cache, ERC20Token} from "@/utils/cache/ERC20Cache.ts";
+import PlainAmount from "@/components/values/PlainAmount.vue";
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    PlainAmount,
     TokensSection,
     InfoTooltip,
     EntityIOL,
@@ -378,6 +428,25 @@ export default defineComponent({
     const isVerified = computed(() => contractAnalyzer.sourcifyURL.value != null)
 
     //
+    // ERC20
+    //
+    const erc20 = ref<ERC20Token | null>(null)
+    const watchHandle = ref<WatchStopHandle | null>(null)
+    onMounted(() => {
+      watchHandle.value = watch(normalizedContractId, async (id) => {
+        if (id !== null) {
+          erc20.value = await ERC20Cache.instance.lookupContract(id)
+        }
+      })
+    })
+    onBeforeUnmount(() => {
+      if (watchHandle.value !== null) {
+        watchHandle.value()
+        watchHandle.value = null
+      }
+    })
+
+    //
     // contract results logs - event logs at contract level
     //
     const contractResultsLogsAnalyzer = new ContractResultsLogsAnalyzer(normalizedContractId)
@@ -400,6 +469,7 @@ export default defineComponent({
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
+      erc20,
       notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
