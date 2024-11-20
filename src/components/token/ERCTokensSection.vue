@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="accountId" id="ercTokensSection" collapsible-key="ercTokens">
+  <DashboardCard v-if="accountId && showSection" id="ercTokensSection" collapsible-key="ercTokens">
 
     <template v-slot:title>
       <div v-if="fullPage">
@@ -99,6 +99,10 @@ const props = defineProps({
     default: false
   }
 })
+
+const showSection = computed(() =>
+    tokens.value.length >= 1
+)
 
 const accountId = computed(() => props.accountId)
 
