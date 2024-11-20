@@ -23,7 +23,7 @@ import {computed} from "vue";
 import {NetworkExchangeRateSetResponse, NetworkSupplyResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
 
-export class NetworkMetricsLoader extends EntityLoaderV2<HederaMetrics> {
+export class NetworkMetricsLoader extends EntityLoaderV2<NetworksMetrics> {
 
     //
     // Public
@@ -68,7 +68,7 @@ export class NetworkMetricsLoader extends EntityLoaderV2<HederaMetrics> {
     // EntityCache
     //
 
-    protected async load(): Promise<HederaMetrics> {
+    protected async load(): Promise<NetworksMetrics> {
 
         const timeNow = new Date().getTime()
         const time24 = timeNow - 24 * 3600 * 1000
@@ -84,7 +84,7 @@ export class NetworkMetricsLoader extends EntityLoaderV2<HederaMetrics> {
         const lastSupply24 = (await axios.get<NetworkSupplyResponse>(
             "api/v1/network/supply", {params: params24})).data
 
-        return Promise.resolve(new HederaMetrics(lastExchangeRate, lastExchangeRate24, lastSupply, lastSupply24))
+        return Promise.resolve(new NetworksMetrics(lastExchangeRate, lastExchangeRate24, lastSupply, lastSupply24))
     }
 
     //
@@ -150,7 +150,7 @@ export class NetworkMetricsLoader extends EntityLoaderV2<HederaMetrics> {
 
 }
 
-export class HederaMetrics {
+export class NetworksMetrics {
 
     constructor(
         readonly lastExchangeRate: NetworkExchangeRateSetResponse,
