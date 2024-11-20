@@ -19,10 +19,10 @@
  */
 
 import {RouteManager} from "@/utils/RouteManager";
-import {WalletManager} from "@/utils/wallet/WalletManager";
+import {WalletManagerV4} from "@/utils/wallet/WalletManagerV4.ts";
 
 export const routeManager = new RouteManager()
-export const walletManager = new WalletManager(routeManager)
+export const walletManager = new WalletManagerV4(routeManager)
 
 const router = routeManager.router
 export default router
