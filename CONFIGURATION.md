@@ -36,6 +36,7 @@ The following configuration parameters can be set in `core-config.json`:
 | `arweaveServerURL`             | `string` | The `https://arweave.net/` URL is used                                            |                            |
 | `cryptoName`                   | `string` | `HBAR` is displayed                                                               |                            |
 | `cryptoSymbol`                 | `string` | `<span style="color: darkgrey">ℏ</span>` is displayed                             |                            |
+| `walletConnectID`              | `string` | Wallet Connect is disabled                                                        |                            |
 
 
 ### `productName`

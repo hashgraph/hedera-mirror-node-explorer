@@ -111,7 +111,10 @@ export class CoreConfig {
         public readonly cryptoName: string,
 
         // The HTML content used as crypto unit symbol
-        public readonly cryptoSymbol: string|null
+        public readonly cryptoSymbol: string|null,
+
+        // The Wallect Connect Identifier
+        public readonly walletConnectID: string|null
 
     ) {}
 
@@ -136,7 +139,8 @@ export class CoreConfig {
             fetchURL(obj, "ipfsGatewayURL") ?? "https://gateway.pinata.cloud/ipfs/",
             fetchURL(obj, "arweaveServerURL") ?? "https://arweave.net/",
             fetchString(obj, "cryptoName") ?? "HBAR",
-            fetchString(obj, "cryptoSymbol")
+            fetchString(obj, "cryptoSymbol"),
+            fetchString(obj, "walletConnectID")
         )
     }
 }
