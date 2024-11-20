@@ -19,13 +19,24 @@
  */
 
 import axios from "axios";
-import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {SingletonCache} from "@/utils/cache/base/SingletonCache";
 import {routeManager} from "@/router";
 
 export class ERC20Cache extends SingletonCache<ERC20Token[]> {
 
     public static readonly instance = new ERC20Cache()
+
+    public async lookupContract(contractId: string) {
+        const tokens = await this.lookup()
+        let result = null as ERC20Token | null
+        for (const t of tokens) {
+            if (contractId === t.contractId) {
+                result = t
+                break
+            }
+        }
+        return Promise.resolve(result)
+    }
 
     //
     // Cache
