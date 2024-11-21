@@ -244,24 +244,24 @@
             <PlainAmount :amount="erc20?.decimals"/>
           </template>
         </Property>
-        <Property id="owner">
-          <template v-slot:name>Owner</template>
-          <template v-slot:value>
-            <EVMAddress :address="erc20?.owner" :show-id="true" :has-custom-font="true"/>
-          </template>
-        </Property>
+<!--        <Property id="owner">-->
+<!--          <template v-slot:name>Owner</template>-->
+<!--          <template v-slot:value>-->
+<!--            <EVMAddress :address="erc20?.owner" :show-id="true" :has-custom-font="true"/>-->
+<!--          </template>-->
+<!--        </Property>-->
         <Property id="totalSupply">
           <template v-slot:name>Total Supply</template>
           <template v-slot:value>
             <StringValue :string-value="erc20TotalSupply"/>
           </template>
         </Property>
-        <Property id="maxSupply">
-          <template v-slot:name>Max. Supply</template>
-          <template v-slot:value>
-            <StringValue :string-value="erc20MaxSupply"/>
-          </template>
-        </Property>
+<!--        <Property id="maxSupply">-->
+<!--          <template v-slot:name>Max. Supply</template>-->
+<!--          <template v-slot:value>-->
+<!--            <StringValue :string-value="erc20MaxSupply"/>-->
+<!--          </template>-->
+<!--        </Property>-->
       </template>
     </DashboardCard>
 
