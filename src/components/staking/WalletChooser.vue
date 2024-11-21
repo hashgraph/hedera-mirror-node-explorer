@@ -92,6 +92,7 @@ const showDisclaimerDialog = ref(false)
 
 const emit = defineEmits(["chooseWallet"])
 
+
 //
 // Wallet items
 //
@@ -102,9 +103,12 @@ export interface WalletItem {
   uuid: string|null
 }
 
+const walletConnectID = CoreConfig.inject().walletConnectID
 const walletItems = computed<WalletItem[]>(() => {
   const result: WalletItem[] = []
-  result.push({ name: "Wallet Connect", iconURL: WALLECT_CONNECT_LOGO, uuid: null})
+  if (walletConnectID !== null) {
+    result.push({ name: "Wallet Connect", iconURL: WALLECT_CONNECT_LOGO, uuid: null})
+  }
   for (const d of EIP6963Agent.instance.providers.value) {
     result.push({ name: d.info.name, iconURL: d.info.icon, uuid: d.info.uuid })
   }

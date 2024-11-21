@@ -53,10 +53,10 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET…Connect WalletWallet ConnectCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDisclaimerPlease don't show me this next timeCANCELAGREE")
+            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET…Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDisclaimerPlease don't show me this next timeCANCELAGREE")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(15)
+        expect(links.length).toBe(14)
 
         wrapper.unmount()
         await flushPromises()
@@ -78,10 +78,10 @@ describe("TopNavBar.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET…Connect WalletWallet ConnectCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDisclaimerPlease don't show me this next timeCANCELAGREE")
+            "DashboardTransactionsTokensTopicsContractsAccountsNodesStakingBlocksMAINNETTESTNETPREVIEWNETCONNECT WALLET…Connect WalletCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDisclaimerPlease don't show me this next timeCANCELAGREE")
 
         const links = wrapper.findAll("a")
-        expect(links.length).toBe(15)
+        expect(links.length).toBe(14)
 
         expect(links[0].text()).toBe("")
         expect(links[1].text()).toBe("")
@@ -95,20 +95,18 @@ describe("TopNavBar.vue", () => {
         expect(links[9].text()).toBe("Staking")
         expect(links[10].text()).toBe("Blocks")
         expect(links[11].text()).toBe("")
-        expect(links[12].text()).toBe("Wallet Connect")
+        expect(links[12].text()).toBe("")
         expect(links[13].text()).toBe("")
-        expect(links[14].text()).toBe("")
 
         expect(wrapper.findComponent(SearchBarV2).exists()).toBe(true)
 
         const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(6)
+        expect(logos.length).toBe(5)
         expect(logos[0].attributes('alt')).toBe("Product Logo")
         expect(logos[1].attributes('alt')).toBe("Modal close icon")
         expect(logos[2].attributes('alt')).toBe("")
-        expect(logos[3].attributes('alt')).toBe("wallet logo")
+        expect(logos[3].attributes('alt')).toBe("Modal close icon")
         expect(logos[4].attributes('alt')).toBe("Modal close icon")
-        expect(logos[5].attributes('alt')).toBe("Modal close icon")
 
         wrapper.unmount()
         await flushPromises()
