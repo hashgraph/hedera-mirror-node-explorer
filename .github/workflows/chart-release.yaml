@@ -51,7 +51,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Publish helm chart to github pages
-        uses: step-security/helm-gh-pages@6a390e89293c1ec8bc5120f6692f3b8a313a9a3d # v1.7.0
+        uses: step-security/helm-gh-pages@e32a08830c96b9109c2f3daa9e60b657e63020e2 # v1.7.1
         with:
           charts_dir: .
           target_dir: charts
