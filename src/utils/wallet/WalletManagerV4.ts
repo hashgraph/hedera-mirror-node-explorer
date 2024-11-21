@@ -65,7 +65,7 @@ export class WalletManagerV4 {
     public readonly status = computed<WalletManagerStatus>(() => {
         let result: WalletManagerStatus
 
-        if (this.routeManager.walletConnectID.value === null) {
+        if (this.walletCount.value === 0) {
             result = WalletManagerStatus.disabled
         } else if (this.initializing.value) {
             result = WalletManagerStatus.initializing
@@ -97,6 +97,14 @@ export class WalletManagerV4 {
 
     public readonly isEthereumWallet
         = computed(() => this.client.value instanceof WalletClient_Ethereum)
+
+    public readonly walletCount = computed(() => {
+        let result = EIP6963Agent.instance.providers.value.length
+        if (this.routeManager.walletConnectID.value !== null) {
+            result += 1
+        }
+        return result
+    })
 
     public async connect(walletUUID: string|null): Promise<boolean> {
 
