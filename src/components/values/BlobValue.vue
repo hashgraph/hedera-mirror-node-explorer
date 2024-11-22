@@ -195,10 +195,10 @@ export default defineComponent({
       return result
     })
 
-    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayURL
 
     const ipfsAddress = computed(() => {
-      if (decodedValue.value.startsWith("ipfs://") && decodedValue.value.length > 7) {
+      if (ipfsGatewayPrefix && decodedValue.value.startsWith("ipfs://") && decodedValue.value.length > 7) {
         return `${ipfsGatewayPrefix}${decodedValue.value.substring(7)}`
       }
       return null

@@ -13,7 +13,7 @@
   "estimatorNotice": null,
   "walletChooserDisclaimerPopup": null,
   "googleTagID": null,
-  "ipfsGatewayUrlPrefix": null,
+  "ipfsGatewayURL": null,
   "cryptoName": null,
   "cryptoSymbol": null
 }

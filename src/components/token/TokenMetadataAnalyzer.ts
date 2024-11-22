@@ -54,9 +54,9 @@ export class TokenMetadataAnalyzer {
     //
 
     public readonly rawMetadata: Ref<string>
-    public readonly ipfsGatewayPrefix: string
+    public readonly ipfsGatewayPrefix: string | null
 
-    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string) {
+    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string | null) {
         this.rawMetadata = rawMetadata
         this.ipfsGatewayPrefix = ipfsGatewayPrefix
     }
@@ -155,7 +155,7 @@ export class TokenMetadataAnalyzer {
             for (const file of files) {
                 if (file.uri != undefined && file.type != undefined) {
                     let url
-                    if (file.uri.startsWith("ipfs://") && file.uri.length > 7) {
+                    if (this.ipfsGatewayPrefix && file.uri.startsWith("ipfs://") && file.uri.length > 7) {
                         url = `${this.ipfsGatewayPrefix}${file.uri.substring(7)}`
                     } else {
                         url = file.uri
@@ -198,7 +198,7 @@ export class TokenMetadataAnalyzer {
         () => {
             let result = this.getProperty('image') ?? this.getProperty(('picture'))
 
-            if (result != null && result.startsWith("ipfs://") && result.length > 7) {
+            if (this.ipfsGatewayPrefix && result != null && result.startsWith("ipfs://") && result.length > 7) {
                 result = `${this.ipfsGatewayPrefix}${result.substring(7)}`
             }
             return result
@@ -245,7 +245,7 @@ export class TokenMetadataAnalyzer {
         }
 
         if (metadata.value !== null) {
-            if (metadata.value.startsWith('ipfs://')) {
+            if (this.ipfsGatewayPrefix && metadata.value.startsWith('ipfs://') && metadata.value.length > 7) {
                 content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value.substring(7)}`)
             } else if (metadata.value.startsWith('hcs://')) {
                 const i = metadata.value.lastIndexOf('/');
@@ -264,7 +264,11 @@ export class TokenMetadataAnalyzer {
             } else {
                 try {
                     CID.parse(metadata.value)
-                    content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value}`)
+                    if (this.ipfsGatewayPrefix) {
+                        content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value}`)
+                    } else {
+                        content.value = null
+                    }
                 } catch {
                     content.value = null
                 }
