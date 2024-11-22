@@ -19,13 +19,13 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {TopicMessagesResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {CID} from "multiformats";
 import {AssetCache} from "@/utils/cache/AssetCache.ts";
+import {LastTopicMessageByIdCache} from "@/utils/cache/LastTopicMessageByIdCache.ts";
 
 export interface NftAttribute {
     trait_type: string
@@ -295,12 +295,11 @@ export class TokenMetadataAnalyzer {
     private async readMetadataFromTopic(id: string): Promise<any> {
         // console.log(`readMetadataFromTopic: ${id}`)
         let result: any
-        const url = "api/v1/topics/" + id + "/messages?limit=1&order=desc"
         try {
-            const response = await axios.get<TopicMessagesResponse>(url)
+            const topicMessage = await LastTopicMessageByIdCache.instance.lookup(id)
             this.loadSuccessRef.value = true
-            if (response.data.messages && response.data.messages.length >= 0) {
-                result = JSON.parse(Buffer.from(response.data.messages[0].message, 'base64').toString())
+            if (topicMessage !== null) {
+                result = JSON.parse(Buffer.from(topicMessage.message, 'base64').toString())
             } else {
                 result = null
             }
