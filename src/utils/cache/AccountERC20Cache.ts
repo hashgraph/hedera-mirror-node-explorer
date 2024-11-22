@@ -21,7 +21,8 @@
 import {ContractCallRequest, ContractCallResponse} from "@/schemas/MirrorNodeSchemas.ts";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import axios from "axios";
-import {ERC20Cache, ERC20Token} from "@/utils/cache/ERC20Cache";
+import {ERC20Cache} from "@/utils/cache/ERC20Cache";
+import {ERC20Info, ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
 import {ethers} from "ethers";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
@@ -67,9 +68,10 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
 
         const erc20tokens = await ERC20Cache.instance.lookup()
         for (const t of erc20tokens) {
+            const erc20info = await ERC20InfoCache.instance.lookup(t.contractId)
             const balance = await this.getBalance(t.contractId, accountId)
-            if (balance > 0) {
-                result.push( { balance: balance.toString(), erc20: t })
+            if (erc20info !== null && balance > 0) {
+                result.push( { balance: balance.toString(), erc20: erc20info })
             }
         }
         return Promise.resolve(result)
@@ -100,6 +102,6 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
 
 export interface AccountERC20 {
     balance: string
-    erc20: ERC20Token
+    erc20: ERC20Info
 }
 
