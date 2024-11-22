@@ -26,7 +26,6 @@ export class AssetCache extends EntityCache<string, unknown> {
     public static readonly instance = new AssetCache()
 
     private static readonly AXIOS_TIMEOUT = 10000 // 10 sec. to leave reasonable time when querying IPFS asset
-    // private privateAxios = axios.create({timeout: AssetCache.AXIOS_TIMEOUT});
 
     //
     // Cache
