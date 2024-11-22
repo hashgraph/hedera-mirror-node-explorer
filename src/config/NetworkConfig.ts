@@ -109,6 +109,8 @@ export class NetworkEntry {
         const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
         const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
+        const erc20IndexURL = fetchURL(obj, "erc20IndexURL")
+        const erc721IndexURL = fetchURL(obj, "erc721IndexURL")
 
         if (name === null) {
             throw this.missingPropertyError("name")
@@ -137,7 +139,9 @@ export class NetworkEntry {
             enableExpiry,
             enableMarket,
             popularTokenIndexURL,
-            sourcifySetup
+            erc20IndexURL,
+            erc721IndexURL,
+            sourcifySetup,
         )
     }
 
@@ -163,6 +167,12 @@ export class NetworkEntry {
 
         // The URL of the popular token index
         public readonly popularTokenIndexURL: string|null,
+
+        // The URL of the ERC20 contract index
+        public readonly erc20IndexURL: string|null,
+
+        // The URL of the ERC721 contract index
+        public readonly erc721IndexURL: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}
