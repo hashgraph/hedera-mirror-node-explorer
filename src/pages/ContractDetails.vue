@@ -317,7 +317,7 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
-import {ERC20Cache, ERC20Token} from "@/utils/cache/ERC20Cache.ts";
+import {ERC20Info, ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {formatUnits} from "ethers";
 
@@ -431,12 +431,12 @@ export default defineComponent({
     //
     // ERC20
     //
-    const erc20 = ref<ERC20Token | null>(null)
+    const erc20 = ref<ERC20Info | null>(null)
     const watchHandle = ref<WatchStopHandle | null>(null)
     onMounted(() => {
       watchHandle.value = watch(normalizedContractId, async (id) => {
         if (id !== null) {
-          erc20.value = await ERC20Cache.instance.lookupContract(id)
+          erc20.value = await ERC20InfoCache.instance.lookup(id)
         }
       })
     })
@@ -448,15 +448,11 @@ export default defineComponent({
     })
 
     const erc20TotalSupply = computed(() =>
-        erc20.value != null
+        erc20.value?.totalSupply && erc20.value?.decimals
             ? formatUnits(erc20.value.totalSupply, erc20.value.decimals)
             : null
     )
-    const erc20MaxSupply = computed(() =>
-        erc20.value != null
-            ? formatUnits(erc20.value.maxSupply, erc20.value.decimals)
-            : null
-    )
+    const erc20MaxSupply = computed(() => null)
 
     //
     // contract results logs - event logs at contract level

@@ -55,6 +55,7 @@ import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
 import {ERC20Cache} from "@/utils/cache/ERC20Cache";
 import {AccountERC20Cache} from "@/utils/cache/AccountERC20Cache";
+import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 
 export class CacheUtils {
 
@@ -77,6 +78,7 @@ export class CacheUtils {
         ContractResultsLogsByContractIdCache.instance.clear()
         LogicContractCache.instance.clear()
         ERC20Cache.instance.clear()
+        ERC20InfoCache.instance.clear()
         HbarPriceCache.instance.clear()
         HCSAssetCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
