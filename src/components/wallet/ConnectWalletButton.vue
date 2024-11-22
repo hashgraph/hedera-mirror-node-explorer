@@ -154,6 +154,7 @@ const navigateToMyAccount = () => {
 
 const handleChangeAccount = (chosenAccountId: string) => {
   walletManager.selectAccountId(chosenAccountId)
+  navigateToMyAccount()
 }
 
 const disconnectFromWallet = async () => {
