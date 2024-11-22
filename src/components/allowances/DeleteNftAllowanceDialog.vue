@@ -137,7 +137,7 @@ import {Nft, NftAllowance} from "@/schemas/MirrorNodeSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenName, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
-import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 
 export default defineComponent({
   name: "DeleteNftAllowanceDialog",
@@ -209,11 +209,11 @@ export default defineComponent({
       } catch (reason) {
 
         console.warn("Transaction Error: " + reason)
-        if (reason instanceof WalletDriverCancelError) {
+        if (reason instanceof WalletClientRejectError) {
           props.controller.handleClose()
         } else {
           props.controller.mode.value = DialogMode.Error
-          if (reason instanceof WalletDriverError) {
+          if (reason instanceof WalletClientError) {
             errorMessage.value = reason.message
             errorMessageDetails.value = reason.extra
           } else {

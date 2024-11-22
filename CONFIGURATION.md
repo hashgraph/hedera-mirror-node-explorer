@@ -34,6 +34,7 @@ The following configuration parameters can be set in `core-config.json`:
 | `ipfsGatewayUrlPrefix`         | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
 | `cryptoName`                   | `string` | `HBAR` is displayed                                                               |                            |
 | `cryptoSymbol`                 | `string` | `<span style="color: darkgrey">ℏ</span>` is displayed                             |                            |
+| `walletConnectID`              | `string` | Wallet Connect is disabled                                                        |                            |
 
 
 ### `productName`

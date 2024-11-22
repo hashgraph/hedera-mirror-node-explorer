@@ -15,5 +15,6 @@
   "googleTagID": null,
   "ipfsGatewayUrlPrefix": null,
   "cryptoName": null,
-  "cryptoSymbol": null
+  "cryptoSymbol": null,
+  "walletConnectID": null
 }

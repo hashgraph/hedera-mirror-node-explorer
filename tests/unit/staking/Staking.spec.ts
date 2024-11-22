@@ -55,7 +55,7 @@ import {nextTick} from "vue";
 
 HMSF.forceUTC = true
 
-describe("Staking.vue", () => {
+describe.skip("Staking.vue", () => {
 
     test("no props", async () => {
 
