@@ -124,7 +124,7 @@ export class ERC20InfoCache extends EntityCache<string, ERC20Info|null> {
         } catch(error) {
             result = null
         }
-        return null
+        return result
     }
 }
 
