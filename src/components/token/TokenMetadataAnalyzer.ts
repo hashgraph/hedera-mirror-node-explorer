@@ -19,12 +19,13 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {TopicMessagesResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
 import {CID} from "multiformats";
+import {AssetCache} from "@/utils/cache/AssetCache.ts";
+import {LastTopicMessageByIdCache} from "@/utils/cache/LastTopicMessageByIdCache.ts";
 
 export interface NftAttribute {
     trait_type: string
@@ -46,7 +47,6 @@ export interface NftFile {
 export class TokenMetadataAnalyzer {
 
     private watchHandle: WatchStopHandle | null = null
-    private privateAxios = axios.create({timeout: 10000});
     private metadataContentRef = ref<any>(null)
 
     //
@@ -235,6 +235,8 @@ export class TokenMetadataAnalyzer {
     private async metadataDidChange(value: string | null): Promise<void> {
         const content = this.metadataContentRef
         const metadata = this.metadata
+        this.loadSuccessRef.value = false
+        this.loadErrorRef.value = false
 
         try {
             metadata.value = Buffer.from(value ?? '', 'base64').toString()
@@ -276,9 +278,8 @@ export class TokenMetadataAnalyzer {
         // console.log(`readMetadataFromUrl: ${url}`)
         let result: any
         try {
-            const response = await this.privateAxios.get(url)
+            result = await AssetCache.instance.lookup(url) as any
             this.loadSuccessRef.value = true
-            result = response.data ?? null
         } catch (reason) {
             console.warn(`Failed to read metadata from URL ${url} - error: ${reason}`)
             if (axios.isAxiosError(reason)) {
@@ -294,12 +295,11 @@ export class TokenMetadataAnalyzer {
     private async readMetadataFromTopic(id: string): Promise<any> {
         // console.log(`readMetadataFromTopic: ${id}`)
         let result: any
-        const url = "api/v1/topics/" + id + "/messages?limit=1&order=desc"
         try {
-            const response = await this.privateAxios.get<TopicMessagesResponse>(url)
+            const topicMessage = await LastTopicMessageByIdCache.instance.lookup(id)
             this.loadSuccessRef.value = true
-            if (response.data.messages && response.data.messages.length >= 0) {
-                result = JSON.parse(Buffer.from(response.data.messages[0].message, 'base64').toString())
+            if (topicMessage !== null) {
+                result = JSON.parse(Buffer.from(topicMessage.message, 'base64').toString())
             } else {
                 result = null
             }

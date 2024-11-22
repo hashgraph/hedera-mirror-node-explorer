@@ -503,8 +503,8 @@ export interface Topic {
 // ---------------------------------------------------------------------------------------------------------------------
 
 export interface TopicMessagesResponse {
-    messages: Array<TopicMessage> | undefined
-    links: Links | undefined
+    messages: Array<TopicMessage>
+    links: Links
 }
 
 export interface TopicMessage {
