@@ -31,7 +31,7 @@ The following configuration parameters can be set in `core-config.json`:
 | `estimatorNotice`              | `string` | No estimator notice is displayed                                                  |                            |
 | `walletChooserDisclaimerPopup` | `string` | No wallet chooser disclaimer popup is displayed                                   |                            |
 | `googleTagID`                  | `string` | Google Tag is disabled                                                            |                            |
-| `ipfsGatewayUrlPrefix`         | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
+| `ipfsGatewayURL`               | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
 | `cryptoName`                   | `string` | `HBAR` is displayed                                                               |                            |
 | `cryptoSymbol`                 | `string` | `<span style="color: darkgrey">ℏ</span>` is displayed                             |                            |
 
@@ -100,8 +100,8 @@ This provides the global site tag ID to be used by Google Analytics. When specif
 dialog asking the user to agree to the use of cookies before proceeding with the application. The google tag ID will
 be actually used only if the user has agreed.
 
-### `ipfsGatewayUrlPrefix`
-This provides the URL prefix of the public IPFS gateway to use to resolve the IPFS URLs used in the token metadata.
+### `ipfsGatewayURL`
+This provides the URL of the public IPFS gateway to use to resolve the IPFS URIs (or CIDs) used in the token metadata.
 By default the Pinata public IPFS gateway is used.
 
 ### `cryptoName`

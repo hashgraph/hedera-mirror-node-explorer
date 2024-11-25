@@ -91,7 +91,7 @@ export default defineComponent({
     onMounted(() => nftLookup.mount())
     onBeforeUnmount(() => nftLookup.unmount())
 
-    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayURL
     const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
     const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix)
     onMounted(() => metadataAnalyzer.mount())

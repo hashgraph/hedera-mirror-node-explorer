@@ -25,21 +25,11 @@
 <template>
   <div class="should-wrap">
 
-    <template v-if="blobValue">
+    <template v-if="decodedValue">
 
-      <template v-if="isURL">
-        <span v-if="noAnchor">{{ blobValue }}</span>
-        <a v-else :href="blobValue">{{ blobValue }}</a>
-      </template>
-
-      <template v-else-if="decodedURL">
-        <span v-if="noAnchor">{{ decodedURL }}</span>
-        <a v-else :href="decodedURL.toString()">{{ decodedURL }}</a>
-      </template>
-
-      <template v-else-if="ipfsAddress">
+      <template v-if="decodedURL">
         <span v-if="noAnchor">{{ decodedValue }}</span>
-        <a v-else :href="ipfsAddress">{{ decodedValue }}</a>
+        <a v-else :href="decodedURL">{{ decodedValue }}</a>
       </template>
 
       <template v-else-if="jsonValue && isNaN(jsonValue)">
@@ -86,6 +76,7 @@
 import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {CoreConfig} from "@/config/CoreConfig";
+import {blob2URL} from "@/utils/URLUtils.ts";
 
 export default defineComponent({
   name: "BlobValue",
@@ -122,31 +113,9 @@ export default defineComponent({
     const windowWidth = inject('windowWidth', 1280)
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    const isURL = computed(() => {
-      let result: boolean
-      if (props.blobValue) {
-        try {
-          const url = new URL(props.blobValue)
-          result = url.protocol == "http:" || url.protocol == "https:"
-        } catch {
-          result = false
-        }
-      } else {
-        result = false
-      }
-      return result
-    })
+    const ipfsGateway = CoreConfig.inject().ipfsGatewayURL
 
-    const decodedURL = computed(() => {
-      if (decodedValue.value.startsWith("http://") || decodedValue.value.startsWith("https://")) {
-        try {
-          return new URL(decodedValue.value)
-        } catch {
-          return null
-        }
-      }
-      return null
-    })
+    const decodedURL = computed(() => blob2URL(decodedValue.value, ipfsGateway))
 
     const jsonValue = computed(() => {
       let result
@@ -165,7 +134,7 @@ export default defineComponent({
     const b64EncodingFound = computed(() => b64DecodedValue.value !== null)
 
     const b64DecodedValue = computed(() => {
-      let result: string|null
+      let result: string | null
       const base64regex = /^([0-9a-zA-Z+/]{4})*(([0-9a-zA-Z+/]{2}==)|([0-9a-zA-Z+/]{3}=))?$/;
       if (props.blobValue && props.base64 && base64regex.test(props.blobValue)) {
         try {
@@ -195,24 +164,13 @@ export default defineComponent({
       return result
     })
 
-    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
-
-    const ipfsAddress = computed(() => {
-      if (decodedValue.value.startsWith("ipfs://") && decodedValue.value.length > 7) {
-        return `${ipfsGatewayPrefix}${decodedValue.value.substring(7)}`
-      }
-      return null
-    })
-
     return {
       isMediumScreen,
       windowWidth,
-      isURL,
       jsonValue,
       b64EncodingFound,
       decodedValue,
       initialLoading,
-      ipfsAddress,
       decodedURL
     }
   }

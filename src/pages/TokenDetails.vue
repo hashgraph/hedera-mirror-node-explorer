@@ -421,7 +421,7 @@ export default defineComponent({
     onMounted(() => tokenAnalyzer.mount())
     onBeforeUnmount(() => tokenAnalyzer.unmount())
 
-    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayUrlPrefix
+    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayURL
     const metadata = computed(() => tokenLookup.entity.value?.metadata ?? '')
     const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix)
     onMounted(() => metadataAnalyzer.mount())
