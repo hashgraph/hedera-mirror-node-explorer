@@ -60,13 +60,17 @@
 
       <div v-if="selectedTab === 'erc20'" id="erc20Table">
         <ERC20Table
-            :tokens="tokens"
+            :tokens="erc20Tokens"
             :full-page="props.fullPage"
-            @refresh="onRefreshRow"
+            @refresh="onRefreshRowERC20"
         />
       </div>
 
       <div v-else-if="selectedTab === 'erc721'" id="erc721Table">
+        <ERC721Table
+            :tokens="erc721Tokens"
+            :full-page="props.fullPage"
+            @refresh="onRefreshRowERC721"/>
       </div>
 
     </template>
@@ -87,7 +91,9 @@ import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import {routeManager} from "@/router";
 import {AccountERC20, AccountERC20Cache} from "@/utils/cache/AccountERC20Cache";
+import {AccountERC721, AccountERC721Cache} from "@/utils/cache/AccountERC721Cache.ts";
 import ERC20Table from "@/components/account/ERC20Table.vue";
+import ERC721Table from "@/components/account/ERC721Table.vue";
 
 const props = defineProps({
   accountId: {
@@ -101,7 +107,7 @@ const props = defineProps({
 })
 
 const showSection = computed(() =>
-    tokens.value.length >= 1
+    erc20Tokens.value.length >= 1
 )
 
 const accountId = computed(() => props.accountId)
@@ -115,24 +121,53 @@ const onSelectTab = (tab: string | null) => {
   AppStorage.setAccountERCTokenTab(tab)
 }
 
-const lookup = AccountERC20Cache.instance.makeLookup(accountId)
-onMounted(() => lookup.mount())
-onBeforeUnmount(() => lookup.unmount())
-const tokens = computed(() => lookup.entity.value ?? [])
+//
+// ERC20
+//
+
+const erc20Lookup = AccountERC20Cache.instance.makeLookup(accountId)
+onMounted(() => erc20Lookup.mount())
+onBeforeUnmount(() => erc20Lookup.unmount())
+const erc20Tokens = computed(() => erc20Lookup.entity.value ?? [])
+
+//
+// ERC721
+//
+
+const erc721Lookup = AccountERC721Cache.instance.makeLookup(accountId)
+onMounted(() => erc721Lookup.mount())
+onBeforeUnmount(() => erc721Lookup.unmount())
+const erc721Tokens = computed(() => erc721Lookup.entity.value ?? [])
+
 
 //
 // Refresh
 //
 
 const onRefresh = () => {
-  AccountERC20Cache.instance.clear()
-  lookup.unmount()
-  lookup.mount()
+  switch(selectedTab.value) {
+    case 'erc20':
+      AccountERC20Cache.instance.clear()
+      erc20Lookup.unmount()
+      erc20Lookup.mount()
+      break
+    case 'erc721':
+      AccountERC721Cache.instance.clear()
+      erc721Lookup.unmount()
+      erc721Lookup.mount()
+      break
+  }
 }
 
-const onRefreshRow = async (row: AccountERC20): Promise<void> => {
+const onRefreshRowERC20 = async (row: AccountERC20): Promise<void> => {
   if (accountId.value) {
     await AccountERC20Cache.instance.forgetContract(accountId.value, row.erc20Info.contractId)
+  }
+}
+
+const onRefreshRowERC721 = async (row: AccountERC721): Promise<void> => {
+  if (accountId.value) {
+    await AccountERC721Cache.instance.forgetContract(accountId.value, row.erc721Info.contractId)
   }
 }
 
