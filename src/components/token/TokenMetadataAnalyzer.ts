@@ -54,10 +54,12 @@ export class TokenMetadataAnalyzer {
 
     public readonly rawMetadata: Ref<string>
     public readonly ipfsGatewayPrefix: string | null
+    public readonly arweaveServer: string | null
 
-    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string | null) {
+    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string | null, arweaveServer: string | null) {
         this.rawMetadata = rawMetadata
         this.ipfsGatewayPrefix = ipfsGatewayPrefix
+        this.arweaveServer = arweaveServer
     }
 
     public mount(): void {
@@ -153,7 +155,7 @@ export class TokenMetadataAnalyzer {
         if (Array.isArray(files)) {
             for (const file of files) {
                 if (file.uri && file.type) { // both required by HIP-412
-                    const url = blob2URL(file.uri, this.ipfsGatewayPrefix) ?? file.uri
+                    const url = blob2URL(file.uri, this.ipfsGatewayPrefix, this.arweaveServer) ?? file.uri
                     result.push({
                         uri: file.uri,
                         url: url,
@@ -190,7 +192,7 @@ export class TokenMetadataAnalyzer {
     public imageUrl = computed<string | null>(
         () => {
             const uri = this.getProperty('image') ?? this.getProperty(('picture'))
-            return blob2URL(uri, this.ipfsGatewayPrefix) ?? uri
+            return blob2URL(uri, this.ipfsGatewayPrefix, this.arweaveServer) ?? uri
         })
 
     //
@@ -234,7 +236,7 @@ export class TokenMetadataAnalyzer {
         }
 
         if (metadata.value !== null) {
-            const url = blob2URL(metadata.value, this.ipfsGatewayPrefix)
+            const url = blob2URL(metadata.value, this.ipfsGatewayPrefix, this.arweaveServer)
             if (url !== null) {
                 content.value = await this.readMetadataFromUrl(url)
             } else {

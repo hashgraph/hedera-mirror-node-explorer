@@ -113,9 +113,11 @@ export default defineComponent({
     const windowWidth = inject('windowWidth', 1280)
     const initialLoading = inject(initialLoadingKey, ref(false))
 
-    const ipfsGateway = CoreConfig.inject().ipfsGatewayURL
+    const coreConfig = CoreConfig.inject()
+    const ipfsGateway = coreConfig.ipfsGatewayURL
+    const arweaveServer = coreConfig.arweaveServerURL
 
-    const decodedURL = computed(() => blob2URL(decodedValue.value, ipfsGateway))
+    const decodedURL = computed(() => blob2URL(decodedValue.value, ipfsGateway, arweaveServer))
 
     const jsonValue = computed(() => {
       let result

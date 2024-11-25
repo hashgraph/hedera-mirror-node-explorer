@@ -268,9 +268,12 @@ export default defineComponent({
     onMounted(() => nftLookup.mount())
     onBeforeUnmount(() => nftLookup.unmount())
 
-    const ipfsGatewayPrefix = CoreConfig.inject().ipfsGatewayURL
+    const coreConfig = CoreConfig.inject()
+    const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
+    const arweaveServerURL = coreConfig.arweaveServerURL
+
     const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix)
+    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
     onMounted(() => metadataAnalyzer.mount())
     onBeforeUnmount(() => metadataAnalyzer.unmount())
 
