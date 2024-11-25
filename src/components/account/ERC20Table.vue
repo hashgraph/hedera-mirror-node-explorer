@@ -103,8 +103,8 @@ const props = defineProps({
 const perPage = ref(props.fullPage ? 15 : 6)
 
 const handleClick = (row: AccountERC20, c: unknown, i: number, ci: number, event: MouseEvent) => {
-  if (row.erc20.contractId) {
-    routeManager.routeToContract(row.erc20.contractId, event)
+  if (row.erc20Info.contractId) {
+    routeManager.routeToContract(row.erc20Info.contractId, event)
   }
 }
 

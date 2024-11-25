@@ -132,7 +132,7 @@ const onRefresh = () => {
 
 const onRefreshRow = async (row: AccountERC20): Promise<void> => {
   if (accountId.value) {
-    await AccountERC20Cache.instance.forgetContract(accountId.value, row.erc20.contractId)
+    await AccountERC20Cache.instance.forgetContract(accountId.value, row.erc20Info.contractId)
   }
 }
 
