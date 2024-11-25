@@ -32,6 +32,7 @@ export class ERCUtils {
 
     public static async loadName(contractAddress: string):Promise<string|null> {
         // https://eips.ethereum.org/EIPS/eip-20
+        // https://eips.ethereum.org/EIPS/eip-721
         const abi = "function name() public view returns (string)"
         const results = await this.call(contractAddress, abi, [])
         const result = results !== null ? results[0] as string : null
@@ -40,11 +41,22 @@ export class ERCUtils {
 
     public static async loadSymbol(contractAddress: string): Promise<string|null> {
         // https://eips.ethereum.org/EIPS/eip-20
+        // https://eips.ethereum.org/EIPS/eip-721
         const abi = "function symbol() public view returns (string)"
         const results = await this.call(contractAddress, abi, [])
         const result = results !== null ? results[0] as string : null
         return Promise.resolve(result)
     }
+
+    public static async loadBalance(contractAddress: string, accountAddress: string): Promise<bigint|null> {
+        // https://eips.ethereum.org/EIPS/eip-20
+        // https://eips.ethereum.org/EIPS/eip-721
+        const abi = "function balanceOf(address owner) view returns (uint256)"
+        const results = await this.call(contractAddress, abi, [accountAddress])
+        const result = results !== null ? results[0] as bigint : null
+        return Promise.resolve(result)
+    }
+
 
     //
     // Public (ERC20)
