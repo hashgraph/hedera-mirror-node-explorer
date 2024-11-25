@@ -19,13 +19,12 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
 import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
-import {CID} from "multiformats";
 import {AssetCache} from "@/utils/cache/AssetCache.ts";
 import {LastTopicMessageByIdCache} from "@/utils/cache/LastTopicMessageByIdCache.ts";
+import {blob2Topic, blob2URL} from "@/utils/URLUtils.ts";
 
 export interface NftAttribute {
     trait_type: string
@@ -153,14 +152,8 @@ export class TokenMetadataAnalyzer {
         const files = this.getProperty('files')
         if (Array.isArray(files)) {
             for (const file of files) {
-                if (file.uri != undefined && file.type != undefined) {
-                    let url
-                    if (this.ipfsGatewayPrefix && file.uri.startsWith("ipfs://") && file.uri.length > 7) {
-                        url = `${this.ipfsGatewayPrefix}${file.uri.substring(7)}`
-                    } else {
-                        url = file.uri
-                    }
-
+                if (file.uri && file.type) { // both required by HIP-412
+                    const url = blob2URL(file.uri, this.ipfsGatewayPrefix) ?? file.uri
                     result.push({
                         uri: file.uri,
                         url: url,
@@ -196,12 +189,8 @@ export class TokenMetadataAnalyzer {
 
     public imageUrl = computed<string | null>(
         () => {
-            let result = this.getProperty('image') ?? this.getProperty(('picture'))
-
-            if (this.ipfsGatewayPrefix && result != null && result.startsWith("ipfs://") && result.length > 7) {
-                result = `${this.ipfsGatewayPrefix}${result.substring(7)}`
-            }
-            return result
+            const uri = this.getProperty('image') ?? this.getProperty(('picture'))
+            return blob2URL(uri, this.ipfsGatewayPrefix) ?? uri
         })
 
     //
@@ -245,31 +234,16 @@ export class TokenMetadataAnalyzer {
         }
 
         if (metadata.value !== null) {
-            if (this.ipfsGatewayPrefix && metadata.value.startsWith('ipfs://') && metadata.value.length > 7) {
-                content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value.substring(7)}`)
-            } else if (metadata.value.startsWith('hcs://')) {
-                const i = metadata.value.lastIndexOf('/');
-                const id = metadata.value.substring(i + 1);
-                if (EntityID.parse(id) !== null) {
-                    content.value = await this.readMetadataFromTopic(id)
-                } else {
-                    content.value = null
-                }
-            } else if (metadata.value.startsWith('https://')) {
-                content.value = await this.readMetadataFromUrl(metadata.value)
-            } else if (EntityID.parse(metadata.value) !== null) {
-                content.value = await this.readMetadataFromTopic(metadata.value)
-            } else if (Timestamp.parse(metadata.value) !== null) {
-                content.value = await this.readMetadataFromTimestamp(metadata.value)
+            const url = blob2URL(metadata.value, this.ipfsGatewayPrefix)
+            if (url !== null) {
+                content.value = await this.readMetadataFromUrl(url)
             } else {
-                try {
-                    CID.parse(metadata.value)
-                    if (this.ipfsGatewayPrefix) {
-                        content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value}`)
-                    } else {
-                        content.value = null
-                    }
-                } catch {
+                const topic = blob2Topic(metadata.value)
+                if (topic !== null) {
+                    content.value = await this.readMetadataFromTopic(topic)
+                } else if (Timestamp.parse(metadata.value) !== null) {
+                    content.value = await this.readMetadataFromTimestamp(metadata.value)
+                } else {
                     content.value = null
                 }
             }
