@@ -43,9 +43,9 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
                 const newAccountERC20s: AccountERC20[] = []
                 for (const accountERC20 of accountERC20s) {
                     let newAccountERC20: AccountERC20
-                    if (accountERC20.erc20.contractId === contractId) {
+                    if (accountERC20.erc20Info.contractId === contractId) {
                         const newBalance = await this.getBalance(contractId, accountId)
-                        newAccountERC20 = { balance: newBalance.toString(), erc20: accountERC20.erc20}
+                        newAccountERC20 = { balance: newBalance.toString(), erc20Info: accountERC20.erc20Info}
                     } else {
                         newAccountERC20 = accountERC20
                     }
@@ -66,12 +66,12 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
     protected async load(accountId: string): Promise<AccountERC20[]> {
         let result: AccountERC20[] = []
 
-        const erc20tokens = await ERC20Cache.instance.lookup()
-        for (const t of erc20tokens) {
-            const erc20info = await ERC20InfoCache.instance.lookup(t.contractId)
-            const balance = await this.getBalance(t.contractId, accountId)
+        const erc20Contracts = await ERC20Cache.instance.lookup()
+        for (const c of erc20Contracts) {
+            const erc20info = await ERC20InfoCache.instance.lookup(c.contractId)
+            const balance = await this.getBalance(c.contractId, accountId)
             if (erc20info !== null && balance > 0) {
-                result.push( { balance: balance.toString(), erc20: erc20info })
+                result.push( { balance: balance.toString(), erc20Info: erc20info })
             }
         }
         return Promise.resolve(result)
@@ -102,6 +102,6 @@ export class AccountERC20Cache extends EntityCache<string, AccountERC20[]> {
 
 export interface AccountERC20 {
     balance: string
-    erc20: ERC20Info
+    erc20Info: ERC20Info
 }
 
