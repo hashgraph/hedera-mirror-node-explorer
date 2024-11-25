@@ -101,6 +101,9 @@ export class CoreConfig {
         // The URL of the IPFS gateway
         public readonly ipfsGatewayURL: string|null,
 
+        // The URL of the Arweave server
+        public readonly arweaveServerURL: string|null,
+
         // The HTML content used as crypto unit symbol
         public readonly cryptoName: string,
 
@@ -127,6 +130,7 @@ export class CoreConfig {
             fetchString(obj, "walletChooserDisclaimerPopup"),
             fetchString(obj, "googleTagID"),
             fetchURL(obj, "ipfsGatewayURL") ?? "https://gateway.pinata.cloud/ipfs/",
+            fetchURL(obj, "arweaveServerURL"),
             fetchString(obj, "cryptoName") ?? "HBAR",
             fetchString(obj, "cryptoSymbol")
         )
