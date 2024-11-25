@@ -45,15 +45,15 @@
       customRowKey="token_id"
   >
     <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
-      {{ row.erc20.contractId }}
+      {{ row.erc20Info.contractId }}
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="name" label="Name">
-      {{ row.erc20.name }}
+      {{ row.erc20Info.name }}
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
-      {{ row.erc20.symbol }}
+      {{ row.erc20Info.symbol }}
     </o-table-column>
 
 <!--    <o-table-column v-slot="{ row }" field="raw-balance" label="Raw Balance">-->
@@ -61,7 +61,7 @@
 <!--    </o-table-column>-->
 
     <o-table-column v-slot="{ row }" field="balance" label="Balance">
-      {{ formatErcBalance(row.balance, row.erc20.decimals) }}
+      {{ formatErcBalance(row.balance, row.erc20Info.decimals) }}
     </o-table-column>
 
     <o-table-column v-slot="{ row }" field="refresh" position="right">
