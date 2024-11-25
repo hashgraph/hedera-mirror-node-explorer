@@ -20,7 +20,7 @@
 
 import {EntityCache} from "@/utils/cache/base/EntityCache.ts";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
-import {ERC721Cache, ERC721Contract} from "@/utils/cache/ERC721Cache.ts";
+import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
 import {ERCUtils} from "@/utils/ERCUtils.ts";
 
 export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
