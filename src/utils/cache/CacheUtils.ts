@@ -53,8 +53,11 @@ import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 import {AdminContractCache} from "@/utils/cache/AdminContractCache";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import {ERC20Cache} from "@/utils/cache/ERC20Cache";
-import {AccountERC20Cache} from "@/utils/cache/AccountERC20Cache";
+import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
 import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
+import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
+import {AccountERC20Cache} from "@/utils/cache/AccountERC20Cache.ts";
+import {AccountERC721Cache} from "@/utils/cache/AccountERC721Cache.ts";
 
 export class CacheUtils {
 
@@ -63,6 +66,7 @@ export class CacheUtils {
         AccountByAliasCache.instance.clear()
         AccountByIdCache.instance.clear()
         AccountERC20Cache.instance.clear()
+        AccountERC721Cache.instance.clear()
         AdminContractCache.instance.clear()
         AssetCache.instance.clear()
         BalanceCache.instance.clear()
@@ -78,6 +82,8 @@ export class CacheUtils {
         LogicContractCache.instance.clear()
         ERC20Cache.instance.clear()
         ERC20InfoCache.instance.clear()
+        ERC721Cache.instance.clear()
+        ERC721InfoCache.instance.clear()
         HbarPriceCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
