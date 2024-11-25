@@ -74,7 +74,7 @@ export class AccountERC721Cache extends EntityCache<string, AccountERC721[]> {
     //
 
     protected async load(accountId: string): Promise<AccountERC721[]> {
-        let result: AccountERC721[] = []
+        const result: AccountERC721[] = []
 
         const accountAddress = await AccountByIdCache.instance.findAccountAddress(accountId)
         if (accountAddress !== null) {
