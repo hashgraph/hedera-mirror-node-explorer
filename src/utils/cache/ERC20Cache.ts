@@ -22,13 +22,13 @@ import axios from "axios";
 import {SingletonCache} from "@/utils/cache/base/SingletonCache";
 import {routeManager} from "@/router";
 
-export class ERC20Cache extends SingletonCache<ERC20Token[]> {
+export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
 
     public static readonly instance = new ERC20Cache()
 
     public async lookupContract(contractId: string) {
         const tokens = await this.lookup()
-        let result = null as ERC20Token | null
+        let result = null as ERC20Contract | null
         for (const t of tokens) {
             if (contractId === t.contractId) {
                 result = t
@@ -42,11 +42,11 @@ export class ERC20Cache extends SingletonCache<ERC20Token[]> {
     // Cache
     //
 
-    protected async load(): Promise<ERC20Token[]> {
-        let result: ERC20Token[]
+    protected async load(): Promise<ERC20Contract[]> {
+        let result: ERC20Contract[]
         const url = routeManager.currentNetworkEntry.value.erc20IndexURL
         if (url !== null) {
-            result = (await axios.get<ERC20Token[]>(url)).data
+            result = (await axios.get<ERC20Contract[]>(url)).data
         } else {
             result = []
         }
@@ -54,7 +54,7 @@ export class ERC20Cache extends SingletonCache<ERC20Token[]> {
 
 }
 
-export interface ERC20Token {
+export interface ERC20Contract {
     contractId: string
     name: string|undefined
 }
