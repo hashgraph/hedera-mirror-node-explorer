@@ -28,7 +28,7 @@
       :url="url"
       :type="type"
       :size="size"
-      :auto="true"
+      :auto="auto"
       :no-anchor="noAnchor"
       @on-load-error="onLoadError"
   >
