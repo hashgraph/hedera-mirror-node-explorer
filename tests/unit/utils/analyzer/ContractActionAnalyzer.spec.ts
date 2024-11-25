@@ -27,7 +27,7 @@ import {ref} from "vue"
 import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer"
 import {flushPromises} from "@vue/test-utils"
 import {SAMPLE_CONTRACT_ACTIONS, SAMPLE_TOKEN} from "../../Mocks"
-import ContractAction from "@/schemas/HederaSchemas"
+import ContractAction from "@/schemas/MirrorNodeSchemas"
 import {SignatureCache} from "@/utils/cache/SignatureCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {cloneMock, fetchGetURLs} from "../../MockUtils";

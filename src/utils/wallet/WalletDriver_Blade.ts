@@ -50,7 +50,7 @@ export class WalletDriver_Blade extends WalletDriver_Hiero {
 
     public async connect(network: string): Promise<string[]> {
         let newConnector: BladeConnector | null
-        const hNetwork = WalletDriver_Blade.makeHederaNetwork(network)
+        const hNetwork = WalletDriver_Blade.makeHieroNetwork(network)
         if (hNetwork !== null) {
             const {BladeConnector, ConnectorStrategy} = await import("@bladelabs/blade-web3.js")
             try {
@@ -131,7 +131,7 @@ export class WalletDriver_Blade extends WalletDriver_Hiero {
     // Private
     //
 
-    private static makeHederaNetwork(network: string): HederaNetwork | null {
+    private static makeHieroNetwork(network: string): HederaNetwork | null {
         let result: HederaNetwork | null
         switch (network) {
             case "mainnet":

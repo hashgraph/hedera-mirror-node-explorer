@@ -29,7 +29,7 @@ import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/Toke
 import {SAMPLE_ACCOUNT, SAMPLE_ASSOCIATED_TOKEN} from "../../Mocks";
 import {WalletDriver_Mock} from "../../staking/WalletDriver_Mock";
 import {walletManager} from "@/router";
-import {TokenInfo} from "@/schemas/HederaSchemas";
+import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
 import {NetworkConfig} from "../../../../src/config/NetworkConfig";
 
 describe("TokenInfoAnalyzer.spec.ts", () => {

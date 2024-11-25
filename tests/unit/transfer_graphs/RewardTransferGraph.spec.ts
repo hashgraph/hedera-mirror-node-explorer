@@ -21,7 +21,7 @@
 import {describe, expect, test} from 'vitest'
 import router from "@/router";
 import {flushPromises, mount} from "@vue/test-utils";
-import {Transaction, TransactionDetail} from "@/schemas/HederaSchemas";
+import {Transaction, TransactionDetail} from "@/schemas/MirrorNodeSchemas";
 import RewardTransferGraph from "@/components/transfer_graphs/RewardTransferGraph.vue";
 import {
     SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE,
