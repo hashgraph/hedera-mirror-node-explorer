@@ -33,7 +33,7 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
 
     protected async load(contractId: string): Promise<ERC721Info|null> {
         let result: ERC721Info|null
-        const erc721Contract = await this.lookupOrIntrospect(contractId)
+        const erc721Contract = await ERC721Cache.instance.lookupContract(contractId)
         if (erc721Contract !== null) {
             result = await this.loadInfo(contractId)
         } else {
@@ -45,18 +45,6 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
     //
     // Private
     //
-
-    private async lookupOrIntrospect(contractId: string): Promise<ERC721Contract|null> {
-        let result = await ERC721Cache.instance.lookupContract(contractId)
-        if (result === null) {
-            result = await this.introspect(contractId)
-        }
-        return result
-    }
-
-    private async introspect(contractId: string): Promise<ERC721Contract|null> {
-        return null
-    }
 
     private async loadInfo(contractId: string): Promise<ERC721Info|null> {
         let result: ERC721Info|null
