@@ -14,6 +14,7 @@
   "walletChooserDisclaimerPopup": null,
   "googleTagID": null,
   "ipfsGatewayURL": null,
+  "arweaveServerURL": null,
   "cryptoName": null,
   "cryptoSymbol": null
 }

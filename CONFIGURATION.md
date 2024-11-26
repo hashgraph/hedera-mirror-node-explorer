@@ -32,6 +32,7 @@ The following configuration parameters can be set in `core-config.json`:
 | `walletChooserDisclaimerPopup` | `string` | No wallet chooser disclaimer popup is displayed                                   |                            |
 | `googleTagID`                  | `string` | Google Tag is disabled                                                            |                            |
 | `ipfsGatewayURL`               | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
+| `arweaveServerURL`             | `string` | The `https://arweave.net/` URL is used                                            |                            |
 | `cryptoName`                   | `string` | `HBAR` is displayed                                                               |                            |
 | `cryptoSymbol`                 | `string` | `<span style="color: darkgrey">ℏ</span>` is displayed                             |                            |
 
@@ -101,8 +102,12 @@ dialog asking the user to agree to the use of cookies before proceeding with the
 be actually used only if the user has agreed.
 
 ### `ipfsGatewayURL`
-This provides the URL of the public IPFS gateway to use to resolve the IPFS URIs (or CIDs) used in the token metadata.
+This provides the URL of the public IPFS gateway to use to resolve the IPFS URIs (or CIDs) found in the token metadata.
 By default the Pinata public IPFS gateway is used.
+
+### `arweaveServerURL`
+This provides the URL of the Arweave server used to resolve to use to resolve the Arweave URIs (or CIDs) found in the token metadata.
+By default the `https://arweave.net/` URL is used.
 
 ### `cryptoName`
 This provides the name of the crypto, as a replacement of the default name which is 'HBAR'.

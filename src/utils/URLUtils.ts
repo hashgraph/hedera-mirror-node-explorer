@@ -21,8 +21,7 @@
 import {EntityID} from "@/utils/EntityID";
 import {CID} from "multiformats";
 
-export function blob2URL(blob: string | null, ipfsGateway: string | null): string | null {
-
+export function blob2URL(blob: string | null, ipfsGateway: string | null, arweaveServer: string | null): string | null {
     let result: string | null
 
     if (blob !== null) {
@@ -32,6 +31,10 @@ export function blob2URL(blob: string | null, ipfsGateway: string | null): strin
             result = `${ipfsGateway}${blob.substring(7)}`
         } else if (ipfsGateway && isIPFSHash(blob)) {
             result = `${ipfsGateway}${blob}`
+        } else if (arweaveServer && blob.startsWith('ar://') && blob.length > 5) {
+            result = `${arweaveServer}${blob.substring(5)}`
+        } else if (arweaveServer && isArweaveHash(blob)) {
+            result = `${arweaveServer}${blob}`
         } else {
             result = null
         }
@@ -83,4 +86,9 @@ export function isIPFSHash(blob: string): boolean {
         isValid = false
     }
     return isValid
+}
+
+export function isArweaveHash(hash: string): boolean {
+    const re: RegExp = /^[a-zA-Z0-9_\-]{43}$/
+    return re.test(hash)
 }
