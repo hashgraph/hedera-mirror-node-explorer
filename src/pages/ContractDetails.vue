@@ -37,6 +37,9 @@
             <div v-if="erc20" class="h-is-text-size-2 mt-1 ml-3">
               <div  class="h-has-pill has-background-info">ERC 20</div>
             </div>
+            <div v-if="erc721" class="h-is-text-size-2 mt-1 ml-3">
+              <div  class="h-has-pill has-background-info">ERC 721</div>
+            </div>
           </div>
         </template>
 
@@ -244,24 +247,44 @@
             <PlainAmount :amount="erc20?.decimals"/>
           </template>
         </Property>
-<!--        <Property id="owner">-->
-<!--          <template v-slot:name>Owner</template>-->
-<!--          <template v-slot:value>-->
-<!--            <EVMAddress :address="erc20?.owner" :show-id="true" :has-custom-font="true"/>-->
-<!--          </template>-->
-<!--        </Property>-->
+        <!--        <Property id="owner">-->
+        <!--          <template v-slot:name>Owner</template>-->
+        <!--          <template v-slot:value>-->
+        <!--            <EVMAddress :address="erc20?.owner" :show-id="true" :has-custom-font="true"/>-->
+        <!--          </template>-->
+        <!--        </Property>-->
         <Property id="totalSupply">
           <template v-slot:name>Total Supply</template>
           <template v-slot:value>
             <StringValue :string-value="erc20TotalSupply"/>
           </template>
         </Property>
-<!--        <Property id="maxSupply">-->
-<!--          <template v-slot:name>Max. Supply</template>-->
-<!--          <template v-slot:value>-->
-<!--            <StringValue :string-value="erc20MaxSupply"/>-->
-<!--          </template>-->
-<!--        </Property>-->
+        <!--        <Property id="maxSupply">-->
+        <!--          <template v-slot:name>Max. Supply</template>-->
+        <!--          <template v-slot:value>-->
+        <!--            <StringValue :string-value="erc20MaxSupply"/>-->
+        <!--          </template>-->
+        <!--        </Property>-->
+      </template>
+    </DashboardCard>
+
+    <DashboardCard v-if="erc721" collapsible-key="erc721TokenProperties">
+      <template #title>
+        <span class="h-is-secondary-title">ERC Token</span>
+      </template>
+      <template #content>
+        <Property id="erc721Name">
+          <template v-slot:name>Name</template>
+          <template v-slot:value>
+            <StringValue :string-value="erc721?.name"/>
+          </template>
+        </Property>
+        <Property id="symbol">
+          <template v-slot:name>Symbol</template>
+          <template v-slot:value>
+            <StringValue :string-value="erc721?.symbol"/>
+          </template>
+        </Property>
       </template>
     </DashboardCard>
 
@@ -320,6 +343,7 @@ import TokensSection from "@/components/token/TokensSection.vue";
 import {ERC20Info, ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {formatUnits} from "ethers";
+import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
 
 export default defineComponent({
 
@@ -431,21 +455,11 @@ export default defineComponent({
     //
     // ERC20
     //
-    const erc20 = ref<ERC20Info | null>(null)
-    const watchHandle = ref<WatchStopHandle | null>(null)
-    onMounted(() => {
-      watchHandle.value = watch(normalizedContractId, async (id) => {
-        if (id !== null) {
-          erc20.value = await ERC20InfoCache.instance.lookup(id)
-        }
-      })
-    })
-    onBeforeUnmount(() => {
-      if (watchHandle.value !== null) {
-        watchHandle.value()
-        watchHandle.value = null
-      }
-    })
+
+    const erc20Lookup = ERC20InfoCache.instance.makeLookup(normalizedContractId)
+    onMounted(() => erc20Lookup.mount())
+    onBeforeUnmount(() => erc20Lookup.unmount())
+    const erc20 = erc20Lookup.entity
 
     const erc20TotalSupply = computed(() =>
         erc20.value?.totalSupply && erc20.value?.decimals
@@ -453,6 +467,16 @@ export default defineComponent({
             : null
     )
     const erc20MaxSupply = computed(() => null)
+
+    //
+    // ERC721
+    //
+    const erc721Lookup = ERC721InfoCache.instance.makeLookup(normalizedContractId)
+    onMounted(() => erc721Lookup.mount())
+    onBeforeUnmount(() => erc721Lookup.unmount())
+    const erc721 = erc721Lookup.entity
+
+    const erc = computed(() => erc20.value !== null || erc721.value !== null)
 
     //
     // contract results logs - event logs at contract level
@@ -477,9 +501,11 @@ export default defineComponent({
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
+      erc,
       erc20,
       erc20TotalSupply,
       erc20MaxSupply,
+      erc721,
       notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
