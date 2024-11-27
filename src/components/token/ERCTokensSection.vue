@@ -107,7 +107,7 @@ const props = defineProps({
 })
 
 const showSection = computed(() =>
-    erc20Tokens.value.length >= 1
+    (erc20Tokens.value.length + erc721Tokens.value.length) > 0
 )
 
 const accountId = computed(() => props.accountId)
