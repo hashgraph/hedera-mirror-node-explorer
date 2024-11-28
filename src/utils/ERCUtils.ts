@@ -97,6 +97,9 @@ export class ERCUtils {
             const response = await axios.post<ContractCallResponse>(url, body)
             result = itf.decodeFunctionResult(abi, response.data.result)
         } catch(error) {
+            if (axios.isAxiosError(error) && error.status === 400) {
+                console.log("Call to " + abi + " failed with error: " + JSON.stringify(error.response?.data))
+            }
             result = null
         }
         return result
