@@ -97,9 +97,12 @@ export function getDataURLType(dataURL: string): string | null {
     let result: string | null
     const DATA_URL_PREFIX = 'data:'
     if (dataURL.startsWith(DATA_URL_PREFIX)) {
-        const comma = dataURL.indexOf(',')
-        if (comma !== -1) {
-            result = dataURL.substring(DATA_URL_PREFIX.length, comma)
+        let delimiter = dataURL.indexOf(';')
+        if (delimiter === -1) {
+            delimiter = dataURL.indexOf(',')
+        }
+        if (delimiter !== -1) {
+            result = dataURL.substring(DATA_URL_PREFIX.length, delimiter)
         }
         else {
             result = null
