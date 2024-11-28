@@ -98,35 +98,40 @@
           </template>
         </Property>
 
-        <template v-if="hcs1Topic">
-          <p class="h-is-tertiary-text my-2">HCS-1 Content</p>
+      </template>
+    </DashboardCard>
 
-          <Property id="hash" :full-width="true">
-            <template v-slot:name>Content Hash</template>
-            <template v-slot:value>
-              {{ hcs1Memo?.hash }}
-            </template>
-          </Property>
-          <Property id="compression" :full-width="true">
-            <template v-slot:name>Compression</template>
-            <template v-slot:value>
-              {{ hcs1Memo?.algo }}
-            </template>
-          </Property>
-          <Property id="encoding" :full-width="true">
-            <template v-slot:name>Encoding</template>
-            <template v-slot:value>
-              {{ hcs1Memo?.encoding }}
-            </template>
-          </Property>
-          <Property id="mime-type" :full-width="true">
-            <template v-slot:name>Content Data Type</template>
-            <template v-slot:value>
-              {{ hcs1DataType }}
-            </template>
-          </Property>
+    <DashboardCard v-if="hcs1Topic" collapsible-key="topicERC1">
 
-        </template>
+      <template v-slot:title>
+        <span class="h-is-secondary-title">HCS-1 Content</span>
+      </template>
+
+      <template v-slot:content>
+        <Property id="hash" :full-width="true">
+          <template v-slot:name>Content Hash</template>
+          <template v-slot:value>
+            {{ hcs1Memo?.hash }}
+          </template>
+        </Property>
+        <Property id="compression" :full-width="true">
+          <template v-slot:name>Compression</template>
+          <template v-slot:value>
+            {{ hcs1Memo?.algo }}
+          </template>
+        </Property>
+        <Property id="encoding" :full-width="true">
+          <template v-slot:name>Encoding</template>
+          <template v-slot:value>
+            {{ hcs1Memo?.encoding }}
+          </template>
+        </Property>
+        <Property id="mime-type" :full-width="true">
+          <template v-slot:name>Content MIME Type</template>
+          <template v-slot:value>
+            {{ hcs1DataType }}
+          </template>
+        </Property>
       </template>
     </DashboardCard>
 
