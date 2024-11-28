@@ -25,13 +25,13 @@
 <template>
   <div>
     <template v-if="needsTextEditor">
-      <ParamTextEditor :param-builder="paramBuilder"/>
+      <ParamTextEditor :param-builder="props.paramBuilder"/>
     </template>
     <template v-else-if="needsBooleanEditor">
-      <ParamBooleanEditor :param-builder="paramBuilder"/>
+      <ParamBooleanEditor :param-builder="props.paramBuilder"/>
     </template>
     <template v-else>
-      <ParamJsonEditor :param-builder="paramBuilder"/>
+      <ParamJsonEditor :param-builder="props.paramBuilder"/>
     </template>
   </div>
 </template>
@@ -40,50 +40,39 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, PropType} from "vue";
 import ParamTextEditor from "@/components/values/abi/ParamTextEditor.vue";
 import ParamBooleanEditor from "@/components/values/abi/ParamBooleanEditor.vue";
 import ParamJsonEditor from "@/components/values/abi/ParamJsonEditor.vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
 
-export default defineComponent({
-  name: "ParamTypeEditor",
-  components: {ParamJsonEditor, ParamBooleanEditor, ParamTextEditor},
-  props: {
-    paramBuilder: {
-      type: Object as PropType<ContractParamBuilder>,
-      required: true
-    },
+const props = defineProps({
+  paramBuilder: {
+    type: Object as PropType<ContractParamBuilder>,
+    required: true
   },
-  setup(props) {
+})
 
-    const needsBooleanEditor = computed(
-        () => props.paramBuilder.paramType.baseType == "bool")
+const needsBooleanEditor = computed(
+    () => props.paramBuilder.paramType.baseType == "bool")
 
-    const needsTextEditor = computed(() => {
-      let result: boolean
-      switch (clearSize(props.paramBuilder.paramType.baseType)) {
-        case "int":
-        case "uint":
-        case "string":
-        case "address":
-        case "bytes":
-          result = true
-          break
-        default:
-          result = false
-          break
-      }
-      return result
-    })
-
-    return {
-      needsBooleanEditor,
-      needsTextEditor
-    }
+const needsTextEditor = computed(() => {
+  let result: boolean
+  switch (clearSize(props.paramBuilder.paramType.baseType)) {
+    case "int":
+    case "uint":
+    case "string":
+    case "address":
+    case "bytes":
+      result = true
+      break
+    default:
+      result = false
+      break
   }
+  return result
 })
 
 interface SizedType {
