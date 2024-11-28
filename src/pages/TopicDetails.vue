@@ -28,9 +28,16 @@
 
     <DashboardCard collapsible-key="topicDetails">
       <template v-slot:title>
-        <span class="h-is-primary-title">Topic </span>
-        <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
-        <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
+          <div>
+            <span class="h-is-primary-title">Topic </span>
+            <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
+            <!--            <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>-->
+          </div>
+          <div v-if="hcs1Topic" class="h-is-text-size-2 mt-1 ml-3">
+            <div class="h-has-pill has-background-info">HCS-1</div>
+          </div>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -90,6 +97,36 @@
             <KeyValue :key-bytes="topic?.submit_key?.key" :key-type="topic?.submit_key?._type" :show-none="true"/>
           </template>
         </Property>
+
+        <template v-if="hcs1Topic">
+          <p class="h-is-tertiary-text my-2">HCS-1 Content</p>
+
+          <Property id="hash" :full-width="true">
+            <template v-slot:name>Content Hash</template>
+            <template v-slot:value>
+              {{ hcs1Memo?.hash }}
+            </template>
+          </Property>
+          <Property id="compression" :full-width="true">
+            <template v-slot:name>Compression</template>
+            <template v-slot:value>
+              {{ hcs1Memo?.algo }}
+            </template>
+          </Property>
+          <Property id="encoding" :full-width="true">
+            <template v-slot:name>Encoding</template>
+            <template v-slot:value>
+              {{ hcs1Memo?.encoding }}
+            </template>
+          </Property>
+          <Property id="mime-type" :full-width="true">
+            <template v-slot:name>Content Data Type</template>
+            <template v-slot:value>
+              {{ hcs1DataType }}
+            </template>
+          </Property>
+
+        </template>
       </template>
     </DashboardCard>
 
@@ -143,6 +180,10 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
+import {getDataURLType} from "@/utils/URLUtils.ts";
+import {TopicMessageCache} from "@/utils/cache/TopicMessageCache.ts";
+import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
+import {HCSAssetFragment} from "@/utils/HCSAssetFragment.ts";
 
 const props = defineProps({
   topicId: {
@@ -204,6 +245,48 @@ const pageSize = ref(isMediumScreen ? 15 : 5)
 const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
 onMounted(() => messageTableController.mount())
 onBeforeUnmount(() => messageTableController.unmount())
+
+    //
+    // HCS-1 support
+    //
+    const hcs1Topic = computed(() =>
+        topic.value !== null
+        && (topic.value.admin_key?.key ?? "") === ""
+        && (topic.value.submit_key?.key ?? "") !== ""
+        && hcs1Memo.value !== null
+    )
+
+    const hcs1Memo = computed(() => {
+      const SHA256_REGEX = /^[A-Fa-f0-9]{64}$/;
+      let result: HCSTopicMemo | null
+      if (topic.value !== null) {
+        const hcsMemo = HCSTopicMemo.parse(topic.value.memo)
+        if (hcsMemo?.hash.match(SHA256_REGEX)) {
+          result = hcsMemo
+        } else {
+          result = null
+        }
+      } else {
+        result = null
+      }
+      return result
+    })
+
+    const firstMessageLookup = TopicMessageCache.instance.makeTopicMessageLookup(normalizedTopicId, ref(1))
+    onMounted(() => firstMessageLookup.mount())
+    onBeforeUnmount(() => firstMessageLookup.unmount())
+
+    const hcs1DataType = computed(() => {
+      let result: string | null
+      const firstChunk = firstMessageLookup.entity.value
+      if (hcs1Topic.value && firstChunk) {
+        const firstFragment = HCSAssetFragment.parse(firstChunk)
+        result = firstFragment !== null ? getDataURLType(firstFragment.content) : null
+      } else {
+        result = null
+      }
+      return result
+    })
 
 </script>
 
