@@ -22,9 +22,9 @@ import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {TopicMessage} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
 
-export class TopicMessageCache extends EntityCache<string, TopicMessage | null> {
+export class TopicMessageByTimestampCache extends EntityCache<string, TopicMessage | null> {
 
-    public static readonly instance = new TopicMessageCache()
+    public static readonly instance = new TopicMessageByTimestampCache()
 
     //
     // Cache

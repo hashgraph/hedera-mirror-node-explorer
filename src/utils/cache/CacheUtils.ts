@@ -28,7 +28,7 @@ import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
+import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
 import {BlockByNbCache} from "@/utils/cache/BlockByNbCache";
 import {BlockByHashCache} from "@/utils/cache/BlockByHashCache";
 import {StakeCache} from "@/utils/cache/StakeCache";
@@ -88,7 +88,7 @@ export class CacheUtils {
         TransactionByTsCache.instance.clear()
         TransactionGroupCache.instance.clear()
         TransactionGroupByBlockCache.instance.clear()
-        TopicMessageCache.instance.clear()
+        TopicMessageByTimestampCache.instance.clear()
         VerifiedContractsByAccountIdCache.instance.clear()
         VerifiedContractsCache.instance.clear()
     }

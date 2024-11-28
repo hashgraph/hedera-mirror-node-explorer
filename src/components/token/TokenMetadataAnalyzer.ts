@@ -21,7 +21,7 @@
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
 import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
-import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
+import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
 import {AssetCache} from "@/utils/cache/AssetCache.ts";
 import {LastTopicMessageByIdCache} from "@/utils/cache/LastTopicMessageByIdCache.ts";
 import {blob2Topic, blob2URL} from "@/utils/URLUtils.ts";
@@ -296,7 +296,7 @@ export class TokenMetadataAnalyzer {
         // console.log(`readMetadataFromTimestamp: ${timestamp}`)
         let result: any
         try {
-            const topicMessage = await TopicMessageCache.instance.lookup(timestamp)
+            const topicMessage = await TopicMessageByTimestampCache.instance.lookup(timestamp)
             this.loadSuccessRef.value = true
             if (topicMessage) {
                 result = JSON.parse(Buffer.from(topicMessage.message, 'base64').toString())
