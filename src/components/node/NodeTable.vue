@@ -56,7 +56,7 @@
 
       <o-table-column v-slot="props" field="description" label="Description">
         <div class="should-wrap regular-node-column is-inline-block">
-          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" class="has-text-grey"/>
+          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" :show-none="false" class="has-text-grey"/>
           <StringValue :string-value="makeNodeOwnerDescription(props.row)"/>
         </div>
       </o-table-column>
