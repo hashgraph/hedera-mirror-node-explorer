@@ -32,6 +32,18 @@ export class HCSAsset {
     ) {
     }
 
+    public getDataURL(): string | null {
+        let result: string | null
+        if (this.type !== null) {
+            const dataPrefix = `data:${this.type};base64,`
+            const urlContent = Buffer.from(this.content).toString("base64")
+            result = dataPrefix + urlContent
+        } else {
+            result = null
+        }
+        return result
+    }
+
     public static async reassemble(messages: TopicMessage[]): Promise<HCSAsset | null> {
         let result: HCSAsset | null
 
