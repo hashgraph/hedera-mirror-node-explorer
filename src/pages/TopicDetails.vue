@@ -34,7 +34,7 @@
             <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
             <!--            <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>-->
           </div>
-          <div v-if="hcs1Topic" class="h-is-text-size-2 mt-1 ml-3">
+          <div v-if="isHcs1Topic" class="h-is-text-size-2 mt-1 ml-3">
             <div class="h-has-pill has-background-info">HCS-1</div>
           </div>
         </div>
@@ -101,7 +101,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="hcs1Topic" collapsible-key="topicERC1">
+    <DashboardCard v-if="isHcs1Topic" collapsible-key="topicERC1">
 
       <template v-slot:title>
         <span class="h-is-secondary-title">HCS-1 Content</span>
@@ -175,7 +175,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
 import {NetworkConfig} from "@/config/NetworkConfig";
-import {routeManager} from "@/router";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import Property from "@/components/Property.vue";
@@ -185,10 +184,8 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
-import {getDataURLType} from "@/utils/URLUtils.ts";
-import {TopicMessageCache} from "@/utils/cache/TopicMessageCache.ts";
 import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
-import {HCSAssetFragment} from "@/utils/HCSAssetFragment.ts";
+import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
 
 const props = defineProps({
   topicId: {
@@ -209,12 +206,6 @@ const validEntityId = computed(() =>
 )
 const normalizedTopicId = computed(() =>
     props.topicId ? EntityID.normalize(props.topicId) : props.topicId
-)
-
-const topicChecksum = computed(() =>
-    normalizedTopicId.value
-        ? networkConfig.computeChecksum(normalizedTopicId.value, routeManager.currentNetwork.value)
-        : null
 )
 
 const notification = computed(() => {
@@ -251,47 +242,29 @@ const messageTableController = new TopicMessageTableController(useRouter(), norm
 onMounted(() => messageTableController.mount())
 onBeforeUnmount(() => messageTableController.unmount())
 
-    //
-    // HCS-1 support
-    //
-    const hcs1Topic = computed(() =>
-        topic.value !== null
-        && (topic.value.admin_key?.key ?? "") === ""
-        && (topic.value.submit_key?.key ?? "") !== ""
-        && hcs1Memo.value !== null
-    )
+//
+// HCS-1 support
+//
+const isHcs1Topic = computed(() =>
+    topic.value !== null
+    && (topic.value.admin_key?.key ?? "") === ""
+    && (topic.value.submit_key?.key ?? "") !== ""
+    && hcs1Memo.value !== null
+    && hcs1Asset.value?.hash === hcs1Memo.value.hash
+)
 
-    const hcs1Memo = computed(() => {
-      const SHA256_REGEX = /^[A-Fa-f0-9]{64}$/;
-      let result: HCSTopicMemo | null
-      if (topic.value !== null) {
-        const hcsMemo = HCSTopicMemo.parse(topic.value.memo)
-        if (hcsMemo?.hash.match(SHA256_REGEX)) {
-          result = hcsMemo
-        } else {
-          result = null
-        }
-      } else {
-        result = null
-      }
-      return result
-    })
+const hcs1Memo = computed(() =>
+    (topic.value !== null) ? HCSTopicMemo.parse(topic.value.memo) : null
+)
 
-    const firstMessageLookup = TopicMessageCache.instance.makeTopicMessageLookup(normalizedTopicId, ref(1))
-    onMounted(() => firstMessageLookup.mount())
-    onBeforeUnmount(() => firstMessageLookup.unmount())
+const assetLookup = HCSAssetCache.instance.makeLookup(normalizedTopicId)
+onMounted(() => assetLookup.mount())
+onBeforeUnmount(() => assetLookup.unmount())
+const hcs1Asset = assetLookup.entity
 
-    const hcs1DataType = computed(() => {
-      let result: string | null
-      const firstChunk = firstMessageLookup.entity.value
-      if (hcs1Topic.value && firstChunk) {
-        const firstFragment = HCSAssetFragment.parse(firstChunk)
-        result = firstFragment !== null ? getDataURLType(firstFragment.content) : null
-      } else {
-        result = null
-      }
-      return result
-    })
+const hcs1DataType = computed(() =>
+    (hcs1Asset.value !== null) ? hcs1Asset.value.type : null
+)
 
 </script>
 
