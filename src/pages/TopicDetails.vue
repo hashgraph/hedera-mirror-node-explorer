@@ -107,7 +107,7 @@
         <span class="h-is-secondary-title">HCS-1 Content</span>
       </template>
 
-      <template v-slot:content>
+      <template #content>
         <Property id="hash" :full-width="true">
           <template v-slot:name>Content Hash</template>
           <template v-slot:value>
@@ -130,6 +130,25 @@
           <template v-slot:name>Content MIME Type</template>
           <template v-slot:value>
             {{ hcs1DataType }}
+          </template>
+        </Property>
+        <Property id="preview" :full-width="true">
+          <template v-slot:name>Preview</template>
+          <template v-slot:value>
+            <MediaContent
+                v-if="hcs1DataURL"
+                :url="hcs1DataURL"
+                :type="hcs1DataType"
+                :size="200"
+                :auto="false"
+            />
+            <BlobValue
+                v-else-if="jsonContent"
+                :blob-value="jsonContent"
+                :show-none="true"
+                :base64="true"
+                :pretty="true"
+            />
           </template>
         </Property>
       </template>
@@ -174,7 +193,6 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
-import {NetworkConfig} from "@/config/NetworkConfig";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import Property from "@/components/Property.vue";
@@ -186,6 +204,7 @@ import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
 import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
+import MediaContent from "@/components/MediaContent.vue";
 
 const props = defineProps({
   topicId: {
@@ -199,7 +218,6 @@ const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
 const initialLoading = inject(initialLoadingKey, ref(false))
-const networkConfig = NetworkConfig.inject()
 
 const validEntityId = computed(() =>
     props.topicId ? EntityID.parse(props.topicId, true) != null : false
@@ -265,6 +283,34 @@ const hcs1Asset = assetLookup.entity
 const hcs1DataType = computed(() =>
     (hcs1Asset.value !== null) ? hcs1Asset.value.type : null
 )
+
+const jsonContent = computed(() => {
+  let result: string | null
+  if (
+      hcs1Asset.value !== null
+      && hcs1DataType.value !== null
+      && (hcs1DataType.value.startsWith('application/json'))
+  ) {
+    result = Buffer.from(hcs1Asset.value.content).toString()
+  } else {
+    result = null
+  }
+  return result
+})
+
+const hcs1DataURL = computed(() => {
+  let result: string | null
+  if (
+      hcs1Asset.value !== null
+      && hcs1DataType.value !== null
+      && (hcs1DataType.value.startsWith('image') || hcs1DataType.value.startsWith('video'))
+  ) {
+    result = hcs1Asset.value.getDataURL()
+  } else {
+    result = null
+  }
+  return result
+})
 
 </script>
 
