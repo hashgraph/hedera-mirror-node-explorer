@@ -121,9 +121,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TopicMessageTable from "@/components/topic/TopicMessageTable.vue";
@@ -144,96 +144,66 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
 
-export default defineComponent({
-
-  name: 'TopicDetails',
-
-  props: {
-    topicId: {
-      type: String,
-      required: true
-    },
-    network: String
+const props = defineProps({
+  topicId: {
+    type: String,
+    required: true
   },
+  network: String
+})
 
-  components: {
-    MirrorLink,
-    TimestampValue, KeyValue, BlobValue, DurationValue, Property, AccountLink,
-    NotificationBanner,
-    Footer,
-    DashboardCard,
-    TopicMessageTable,
-    PlayPauseButton
-  },
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+const isTouchDevice = inject('isTouchDevice', false)
+const initialLoading = inject(initialLoadingKey, ref(false))
+const networkConfig = NetworkConfig.inject()
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    const networkConfig = NetworkConfig.inject()
+const validEntityId = computed(() =>
+    props.topicId ? EntityID.parse(props.topicId, true) != null : false
+)
+const normalizedTopicId = computed(() =>
+    props.topicId ? EntityID.normalize(props.topicId) : props.topicId
+)
 
-    const validEntityId = computed(() => {
-      return props.topicId ? EntityID.parse(props.topicId, true) != null : false
-    })
-    const normalizedTopicId = computed(() => {
-      return props.topicId ? EntityID.normalize(props.topicId) : props.topicId
-    })
+const topicChecksum = computed(() =>
+    normalizedTopicId.value
+        ? networkConfig.computeChecksum(normalizedTopicId.value, routeManager.currentNetwork.value)
+        : null
+)
 
-    const topicChecksum = computed(() =>
-        normalizedTopicId.value ? networkConfig.computeChecksum(
-            normalizedTopicId.value,
-            routeManager.currentNetwork.value
-        ) : null)
-
-    const notification = computed(() => {
-      let result
-      if (!validEntityId.value) {
-        result = "Invalid topic ID: " + props.topicId
-      } else if (topicLookup.entity.value === null) {
-        if (topicLookup.isLoaded()) {
-          result = "Topic with ID " + props.topicId + " was not found"
-        } else {
-          result = null
-        }
-      } else if (topicLookup.entity.value.deleted) {
-        result = "Topic is deleted"
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    //
-    // topic
-    //
-
-    const topicLookup = TopicByIdCache.instance.makeLookup(normalizedTopicId)
-    onMounted(() => topicLookup.mount())
-    onBeforeUnmount(() => topicLookup.unmount())
-
-    //
-    // messageTableController
-    //
-
-    const pageSize = ref(isMediumScreen ? 15 : 5)
-    const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
-    onMounted(() => messageTableController.mount())
-    onBeforeUnmount(() => messageTableController.unmount())
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      initialLoading,
-      messageTableController,
-      validEntityId,
-      normalizedTopicId,
-      topicChecksum,
-      notification,
-      topic: topicLookup.entity,
+const notification = computed(() => {
+  let result
+  if (!validEntityId.value) {
+    result = "Invalid topic ID: " + props.topicId
+  } else if (topicLookup.entity.value === null) {
+    if (topicLookup.isLoaded()) {
+      result = "Topic with ID " + props.topicId + " was not found"
+    } else {
+      result = null
     }
+  } else if (topicLookup.entity.value.deleted) {
+    result = "Topic is deleted"
+  } else {
+    result = null
   }
-});
+  return result
+})
+
+//
+// topic
+//
+const topicLookup = TopicByIdCache.instance.makeLookup(normalizedTopicId)
+onMounted(() => topicLookup.mount())
+onBeforeUnmount(() => topicLookup.unmount())
+const topic = topicLookup.entity
+
+//
+// messageTableController
+//
+const pageSize = ref(isMediumScreen ? 15 : 5)
+const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
+onMounted(() => messageTableController.mount())
+onBeforeUnmount(() => messageTableController.unmount())
 
 </script>
 
