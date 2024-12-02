@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref, Ref, watch} from "vue";
+import {computed, Ref, watch} from "vue";
 import {EntityID} from "@/utils/EntityID";
 import {TransactionID} from "@/utils/TransactionID";
 import {AccountAlias} from "@/utils/AccountAlias";
@@ -37,6 +37,7 @@ import {
     TransactionSearchAgent
 } from "@/components/search/SearchAgent";
 import {nameServiceProviders} from "@/utils/name_service/provider/AllProviders";
+import {InputChangeController} from "@/components/utils/InputChangeController.ts";
 
 export class SearchController {
 
@@ -219,39 +220,6 @@ export class SearchController {
 
         for (const a of this.domainNameSearchAgents) {
             a.loc.value = domainName
-        }
-    }
-}
-
-class InputChangeController {
-
-    public readonly outputText = ref<string>("")
-    private timeoutID = -1
-
-    //
-    // Public
-    //
-
-    public constructor(private readonly inputText: Ref<string>, private readonly millis: number = 500) {
-        watch(this.inputText, this.inputTextDidChange, { immediate: true})
-    }
-
-    //
-    // Private
-    //
-
-    private readonly inputTextDidChange = () => {
-        if (this.timeoutID != -1) {
-            window.clearTimeout(this.timeoutID)
-            this.timeoutID = -1
-        }
-        if (this.inputText.value == "") {
-            this.outputText.value = this.inputText.value
-        } else {
-            this.timeoutID = window.setTimeout(() => {
-                this.outputText.value = this.inputText.value.trim()
-                this.timeoutID = -1
-            }, this.millis)
         }
     }
 }
