@@ -65,9 +65,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 import Dialog from "@/components/dialog/Dialog.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
@@ -79,71 +79,62 @@ import DialogStatus from "@/components/dialog/DialogStatus.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import {gtagCallContract} from "@/gtag";
 
-export default defineComponent({
-  components: {DialogTitle, DialogStatus, CommitButton, DialogButton, ParamTypeEditor, Dialog},
-  emits: ["didUpdateContractState"],
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
-    contractCallBuilder: {
-      type: Object as PropType<ContractCallBuilder>,
-      required: true
-    },
+const props = defineProps({
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
   },
-  setup(props, ctx) {
-
-    const dialogTitle = computed(() => props.contractCallBuilder.fragment.name + "()")
-
-    const handleRun = () => {
-      props.controller.mode.value = DialogMode.Busy
-      props.contractCallBuilder.saveInputParams()
-      props.contractCallBuilder.execute()
-          .then(() => {
-            if (props.contractCallBuilder.lastError.value !== null) {
-              props.controller.mode.value = DialogMode.Error
-            } else {
-              props.controller.mode.value = DialogMode.Success
-            }
-          })
-          .catch(() => {
-            props.controller.mode.value = DialogMode.Error
-          })
-          .finally(() => {
-            if (!props.contractCallBuilder.isReadOnly()) {
-              ctx.emit("didUpdateContractState")
-            }
-            gtagCallContract(props.contractCallBuilder.fragment.format("minimal"))
-          })
-    }
-
-    const runEnabled = computed(() => props.contractCallBuilder.functionData.value !== null)
-
-    const errorMessage = computed(() => {
-      let result: string
-      const lastError = props.contractCallBuilder.lastError.value
-      if (lastError instanceof Error) {
-        result = lastError.message
-      } else if (lastError !== null) {
-        result = JSON.stringify(lastError)
-      } else {
-        result = "No error details"
-      }
-      return result
-    })
-
-    return {
-      dialogTitle,
-      runEnabled,
-      walletName: walletManager.walletName,
-      callOutput: props.contractCallBuilder.callOutput,
-      errorMessage,
-      handleRun
-    }
-  }
-
+  contractCallBuilder: {
+    type: Object as PropType<ContractCallBuilder>,
+    required: true
+  },
 })
+
+const emit = defineEmits(
+    ["didUpdateContractState"]
+)
+
+const dialogTitle = computed(() => props.contractCallBuilder.fragment.name + "()")
+
+const handleRun = () => {
+  props.controller.mode.value = DialogMode.Busy
+  props.contractCallBuilder.saveInputParams()
+  props.contractCallBuilder.execute()
+      .then(() => {
+        if (props.contractCallBuilder.lastError.value !== null) {
+          props.controller.mode.value = DialogMode.Error
+        } else {
+          props.controller.mode.value = DialogMode.Success
+        }
+      })
+      .catch(() => {
+        props.controller.mode.value = DialogMode.Error
+      })
+      .finally(() => {
+        if (!props.contractCallBuilder.isReadOnly()) {
+          emit("didUpdateContractState")
+        }
+        gtagCallContract(props.contractCallBuilder.fragment.format("minimal"))
+      })
+}
+
+const runEnabled = computed(() => props.contractCallBuilder.functionData.value !== null)
+
+const errorMessage = computed(() => {
+  let result: string
+  const lastError = props.contractCallBuilder.lastError.value
+  if (lastError instanceof Error) {
+    result = lastError.message
+  } else if (lastError !== null) {
+    result = JSON.stringify(lastError)
+  } else {
+    result = "No error details"
+  }
+  return result
+})
+
+const walletName = walletManager.walletName
+const callOutput = props.contractCallBuilder.callOutput
 
 
 </script>
