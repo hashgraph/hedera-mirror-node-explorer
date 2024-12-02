@@ -66,18 +66,18 @@ describe("HCSContentSection.vue", () => {
 
         const jsonContent = {
             "type": "image/webp",
-                "format": "HIP412@2.0.0",
-                "attributes": [
+            "format": "HIP412@2.0.0",
+            "attributes": [
                 {
                     "trait_type": "Who got dibs?",
                     "value": "You do"
                 }
             ],
-                "files": [],
-                "name": "DIBS",
-                "creator": "(⌐■_■)",
-                "description": "Got dibs?",
-                "image": "hcs://1/0.0.5016824"
+            "files": [],
+            "name": "DIBS",
+            "creator": "(⌐■_■)",
+            "description": "Got dibs?",
+            "image": "hcs://1/0.0.5016824"
         }
         const hcs1Asset = await HCSAsset.reassemble([topicMessage])
 
