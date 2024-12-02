@@ -101,58 +101,7 @@
       </template>
     </DashboardCard>
 
-    <DashboardCard v-if="isHcs1Topic" collapsible-key="topicERC1">
-
-      <template v-slot:title>
-        <span class="h-is-secondary-title">HCS-1 Content</span>
-      </template>
-
-      <template #content>
-        <Property id="hash" :full-width="true">
-          <template v-slot:name>Content Hash</template>
-          <template v-slot:value>
-            {{ hcs1Memo?.hash }}
-          </template>
-        </Property>
-        <Property id="compression" :full-width="true">
-          <template v-slot:name>Compression</template>
-          <template v-slot:value>
-            {{ hcs1Memo?.algo }}
-          </template>
-        </Property>
-        <Property id="encoding" :full-width="true">
-          <template v-slot:name>Encoding</template>
-          <template v-slot:value>
-            {{ hcs1Memo?.encoding }}
-          </template>
-        </Property>
-        <Property id="mime-type" :full-width="true">
-          <template v-slot:name>Content MIME Type</template>
-          <template v-slot:value>
-            {{ hcs1DataType }}
-          </template>
-        </Property>
-        <Property id="preview" :full-width="true">
-          <template v-slot:name>Preview</template>
-          <template v-slot:value>
-            <MediaContent
-                v-if="hcs1DataURL"
-                :url="hcs1DataURL"
-                :type="hcs1DataType"
-                :size="200"
-                :auto="false"
-            />
-            <BlobValue
-                v-else-if="jsonContent"
-                :blob-value="jsonContent"
-                :show-none="true"
-                :base64="true"
-                :pretty="true"
-            />
-          </template>
-        </Property>
-      </template>
-    </DashboardCard>
+    <HCSContentSection v-if="isHcs1Topic" :topic-memo="hcs1Memo" :hcs1-asset="hcs1Asset"/>
 
     <DashboardCard collapsible-key="topicMessages">
 
@@ -204,7 +153,7 @@ import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
 import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
-import MediaContent from "@/components/MediaContent.vue";
+import HCSContentSection from "@/components/topic/HCSContentSection.vue";
 
 const props = defineProps({
   topicId: {
@@ -279,38 +228,6 @@ const assetLookup = HCSAssetCache.instance.makeLookup(normalizedTopicId)
 onMounted(() => assetLookup.mount())
 onBeforeUnmount(() => assetLookup.unmount())
 const hcs1Asset = assetLookup.entity
-
-const hcs1DataType = computed(() =>
-    (hcs1Asset.value !== null) ? hcs1Asset.value.type : null
-)
-
-const jsonContent = computed(() => {
-  let result: string | null
-  if (
-      hcs1Asset.value !== null
-      && hcs1DataType.value !== null
-      && (hcs1DataType.value.startsWith('application/json'))
-  ) {
-    result = Buffer.from(hcs1Asset.value.content).toString()
-  } else {
-    result = null
-  }
-  return result
-})
-
-const hcs1DataURL = computed(() => {
-  let result: string | null
-  if (
-      hcs1Asset.value !== null
-      && hcs1DataType.value !== null
-      && (hcs1DataType.value.startsWith('image') || hcs1DataType.value.startsWith('video'))
-  ) {
-    result = hcs1Asset.value.getDataURL()
-  } else {
-    result = null
-  }
-  return result
-})
 
 </script>
 
