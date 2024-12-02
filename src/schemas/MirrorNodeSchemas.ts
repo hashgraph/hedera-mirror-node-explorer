@@ -24,6 +24,7 @@
 
 import {EntityID} from "@/utils/EntityID";
 import {makeDefaultNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
+import {fetchJSArray, fetchJSObject, fetchJSString} from "@/utils/JSUtils.ts";
 
 export interface AccountsResponse {
     accounts: AccountInfo[] | undefined
@@ -854,6 +855,29 @@ export interface StakingReward {
     account_id: string | null
     amount: number
     timestamp: string
+}
+
+// ---------------------------------------------------------------------------------------------------------------------
+//                                                      Error
+// ---------------------------------------------------------------------------------------------------------------------
+
+export interface ErrorBody {
+    _status: {
+        messages: [
+            {
+                data: string|null|undefined     // Error message in hexadecimal - pattern: ^0x[0-9a-fA-F]+$
+                detail: string|null|undefined   // Detailed error message
+                message: string|undefined       // Error message
+            }
+        ] | undefined
+    } | undefined
+}
+
+export function extractMessageFromErrorBody(body: unknown): string|null {
+    const _status = fetchJSObject(body, "_status")
+    const messages = fetchJSArray(_status, "messages")
+    const message0 = messages !== null && messages.length >= 1 ? messages[0] : null
+    return message0 !== null ? fetchJSString(message0, "message") : null
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
