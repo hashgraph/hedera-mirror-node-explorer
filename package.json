@@ -65,7 +65,7 @@
     "axios-mock-adapter": "^2.1.0",
     "cypress": "^13.16.0",
     "esbuild": "^0.24.0",
-    "eslint": "^8.57.1",
+    "eslint": "^9.16.0",
     "eslint-plugin-cypress": "^3.6.0",
     "eslint-plugin-vue": "^9.32.0",
     "jsdom": "^25.0.1",
