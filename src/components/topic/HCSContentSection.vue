@@ -128,7 +128,11 @@ const hcs1DataURL = computed(() => {
   if (
       props.hcs1Asset
       && hcs1DataType.value !== null
-      && (hcs1DataType.value.startsWith('image') || hcs1DataType.value.startsWith('video'))
+      && (
+          hcs1DataType.value.startsWith('image')
+          || hcs1DataType.value.startsWith('video')
+          || hcs1DataType.value.startsWith('audio')
+      )
   ) {
     result = props.hcs1Asset.getDataURL()
   } else {
