@@ -48,7 +48,7 @@
     "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@cypress/code-coverage": "^3.13.7",
+    "@cypress/code-coverage": "^3.13.8",
     "@rushstack/eslint-patch": "^1.10.4",
     "@tsconfig/node18": "^18.2.4",
     "@types/file-saver": "^2.0.7",
@@ -57,8 +57,8 @@
     "@types/prismjs": "^1.26.5",
     "@vitejs/plugin-basic-ssl": "^1.2.0",
     "@vitejs/plugin-vue": "^5.2.1",
-    "@vitest/coverage-v8": "^2.1.6",
-    "@vitest/web-worker": "^2.1.6",
+    "@vitest/coverage-v8": "^2.1.8",
+    "@vitest/web-worker": "^2.1.8",
     "@vue/eslint-config-typescript": "^13.0.0",
     "@vue/test-utils": "^2.4.6",
     "@vue/tsconfig": "^0.6.0",
@@ -67,7 +67,7 @@
     "esbuild": "^0.24.0",
     "eslint": "^8.57.1",
     "eslint-plugin-cypress": "^3.6.0",
-    "eslint-plugin-vue": "^9.31.0",
+    "eslint-plugin-vue": "^9.32.0",
     "jsdom": "^25.0.1",
     "npm-run-all": "^4.1.5",
     "resize-observer-polyfill": "~1.5.1",
