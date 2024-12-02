@@ -67,7 +67,10 @@ export class HCSAsset {
             // Decode from Base64
             const compressedContent = base64DecToArr(assembledContent)
             // Decompress (zstd)
-            await init()
+            if (!this.isInitialized) {
+                await init()
+                this.isInitialized = true
+            }
             const assetContent = decompress(Buffer.from(compressedContent))
             const assetHash = await window.crypto.subtle.digest("SHA-256", assetContent);
             result = new HCSAsset(assetType, assetContent, Buffer.from(assetHash).toString('hex'))
@@ -77,4 +80,5 @@ export class HCSAsset {
         return Promise.resolve(result)
     }
 
+    private static isInitialized = false
 }
