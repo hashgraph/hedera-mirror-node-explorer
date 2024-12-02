@@ -20,8 +20,8 @@
 
 export function fetchJSValue(obj: unknown, attributeName: string): unknown|null {
     let result: unknown|null
-    if (typeof obj === 'object' && attributeName in obj) {
-        result = obj[attributeName]
+    if (typeof obj === 'object' && obj !== null && attributeName in obj) {
+        result = obj[attributeName as keyof typeof obj]
     } else {
         result = null
     }
