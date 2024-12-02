@@ -56,7 +56,7 @@ export class TokenMetadataAnalyzer {
     public readonly ipfsGatewayPrefix: string | null
     public readonly arweaveServer: string | null
 
-    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string | null, arweaveServer: string | null) {
+    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string | null, arweaveServer: string | null = null) {
         this.rawMetadata = rawMetadata
         this.ipfsGatewayPrefix = ipfsGatewayPrefix
         this.arweaveServer = arweaveServer
