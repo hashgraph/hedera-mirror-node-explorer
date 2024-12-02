@@ -36,8 +36,6 @@ export class HCSAssetFragment {
             chunk = null
         }
         if (chunk !== null && chunk.o != undefined && chunk.c != undefined) {
-            console.log(`chunk.o: ${chunk.o}`)
-            console.log(`chunk.c: ${chunk.c}`)
             result = new HCSAssetFragment(
                 chunk.o,
                 chunk.c
