@@ -28,9 +28,16 @@
 
     <DashboardCard collapsible-key="topicDetails">
       <template v-slot:title>
-        <span class="h-is-primary-title">Topic </span>
-        <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
-        <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>
+        <div class="is-flex is-align-items-center is-flex-wrap-wrap">
+          <div>
+            <span class="h-is-primary-title">Topic </span>
+            <span v-if="validEntityId" class="h-is-secondary-text">{{ normalizedTopicId }}</span>
+            <!--            <span v-if="topicChecksum" class="has-text-grey" style="font-size: 14px">-{{ topicChecksum }}</span>-->
+          </div>
+          <div v-if="isHcs1Topic" class="h-is-text-size-2 mt-1 ml-3">
+            <div class="h-has-pill has-background-info">HCS-1</div>
+          </div>
+        </div>
       </template>
 
       <template v-slot:content>
@@ -90,8 +97,11 @@
             <KeyValue :key-bytes="topic?.submit_key?.key" :key-type="topic?.submit_key?._type" :show-none="true"/>
           </template>
         </Property>
+
       </template>
     </DashboardCard>
+
+    <HCSContentSection v-if="isHcs1Topic" :topic-memo="hcs1Memo" :hcs1-asset="hcs1Asset"/>
 
     <DashboardCard collapsible-key="topicMessages">
 
@@ -132,8 +142,6 @@ import Footer from "@/components/Footer.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {EntityID} from "@/utils/EntityID";
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
-import {NetworkConfig} from "@/config/NetworkConfig";
-import {routeManager} from "@/router";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import Property from "@/components/Property.vue";
@@ -143,6 +151,9 @@ import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import MirrorLink from "@/components/MirrorLink.vue";
+import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
+import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
+import HCSContentSection from "@/components/topic/HCSContentSection.vue";
 
 const props = defineProps({
   topicId: {
@@ -156,19 +167,12 @@ const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 const isTouchDevice = inject('isTouchDevice', false)
 const initialLoading = inject(initialLoadingKey, ref(false))
-const networkConfig = NetworkConfig.inject()
 
 const validEntityId = computed(() =>
     props.topicId ? EntityID.parse(props.topicId, true) != null : false
 )
 const normalizedTopicId = computed(() =>
     props.topicId ? EntityID.normalize(props.topicId) : props.topicId
-)
-
-const topicChecksum = computed(() =>
-    normalizedTopicId.value
-        ? networkConfig.computeChecksum(normalizedTopicId.value, routeManager.currentNetwork.value)
-        : null
 )
 
 const notification = computed(() => {
@@ -204,6 +208,25 @@ const pageSize = ref(isMediumScreen ? 15 : 5)
 const messageTableController = new TopicMessageTableController(useRouter(), normalizedTopicId, pageSize)
 onMounted(() => messageTableController.mount())
 onBeforeUnmount(() => messageTableController.unmount())
+
+//
+// HCS-1 support
+//
+const isHcs1Topic = computed(() =>
+    topic.value !== null
+    && (topic.value.admin_key?.key ?? "") === ""
+    && (topic.value.submit_key?.key ?? "") !== ""
+    && hcs1Memo.value !== null
+)
+
+const hcs1Memo = computed(() =>
+    (topic.value !== null) ? HCSTopicMemo.parse(topic.value.memo) : null
+)
+
+const assetLookup = HCSAssetCache.instance.makeLookup(normalizedTopicId)
+onMounted(() => assetLookup.mount())
+onBeforeUnmount(() => assetLookup.unmount())
+const hcs1Asset = assetLookup.entity
 
 </script>
 

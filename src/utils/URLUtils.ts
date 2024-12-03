@@ -92,3 +92,23 @@ export function isArweaveHash(hash: string): boolean {
     const re: RegExp = /^[a-zA-Z0-9_\-]{43}$/
     return re.test(hash)
 }
+
+export function getDataURLType(dataURL: string): string | null {
+    let result: string | null
+    const DATA_URL_PREFIX = 'data:'
+    if (dataURL.startsWith(DATA_URL_PREFIX)) {
+        let delimiter = dataURL.indexOf(';')
+        if (delimiter === -1) {
+            delimiter = dataURL.indexOf(',')
+        }
+        if (delimiter !== -1) {
+            result = dataURL.substring(DATA_URL_PREFIX.length, delimiter)
+        }
+        else {
+            result = null
+        }
+    } else {
+        result = null
+    }
+    return result
+}

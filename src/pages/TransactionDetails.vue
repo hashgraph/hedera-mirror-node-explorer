@@ -290,7 +290,7 @@ import BlockLink from "@/components/values/BlockLink.vue";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {TransactionDetail, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import TopicMessage from "@/components/topic/TopicMessage.vue";
-import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
+import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
 import {routeManager} from "@/router"
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
@@ -387,7 +387,7 @@ export default defineComponent({
             ? transactionAnalyzer.consensusTimestamp.value ?? ""
             : ""
     )
-    const topicMessageLookup = TopicMessageCache.instance.makeLookup(messageTimestamp)
+    const topicMessageLookup = TopicMessageByTimestampCache.instance.makeLookup(messageTimestamp)
     onMounted(() => topicMessageLookup.mount())
     onBeforeUnmount(() => topicMessageLookup.unmount())
 

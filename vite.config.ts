@@ -1,9 +1,9 @@
-import { fileURLToPath, URL } from 'node:url'
+import {fileURLToPath, URL} from 'node:url'
 
-import { defineConfig } from 'vite'
+import {defineConfig} from 'vite'
 import vue from '@vitejs/plugin-vue'
 import basicSsl from '@vitejs/plugin-basic-ssl'
-import { nodePolyfills } from 'vite-plugin-node-polyfills'
+import {nodePolyfills} from 'vite-plugin-node-polyfills'
 import * as child from "child_process"
 
 const commitHash = child.execSync("git rev-parse --short HEAD").toString() //i.e., 706e821
@@ -12,6 +12,12 @@ const buildDate = new Date().toUTCString()
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    exclude: ['@bokuweb/zstd-wasm'],
+    esbuildOptions: {
+      target: 'es2020',
+    },
+  },
   plugins: [
     vue(),
     basicSsl(),
