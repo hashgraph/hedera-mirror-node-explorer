@@ -26,15 +26,15 @@ import {getDataURLType} from "@/utils/URLUtils.ts";
 
 export class HCSAsset {
     protected constructor(
-        public readonly type: string | null, // MIME type
-        public readonly content: ArrayBuffer,
-        public readonly hash: string, // SHA-256 in hexa
+        public readonly type: string | null,            // MIME type
+        public readonly content: ArrayBuffer | null,
+        public readonly hash: string | null,            // SHA-256 in hexa
     ) {
     }
 
     public getDataURL(): string | null {
         let result: string | null
-        if (this.type !== null) {
+        if (this.type !== null && this.content !== null) {
             const dataPrefix = `data:${this.type};base64,`
             const urlContent = Buffer.from(this.content).toString("base64")
             result = dataPrefix + urlContent
@@ -44,7 +44,7 @@ export class HCSAsset {
         return result
     }
 
-    public static async reassemble(messages: TopicMessage[]): Promise<HCSAsset | null> {
+    public static async reassemble(messages: TopicMessage[], assetComplete: boolean): Promise<HCSAsset | null> {
         let result: HCSAsset | null
 
         const fragments: HCSAssetFragment[] = []
@@ -60,20 +60,28 @@ export class HCSAsset {
             for (const f of fragments) {
                 assembledContent += f.content
             }
-            // Extract the mime type
-            const assetType = getDataURLType(assembledContent)
-            // Skip the data prefix
-            assembledContent = assembledContent.substring(assembledContent.indexOf(',') + 1)
-            // Decode from Base64
-            const compressedContent = base64DecToArr(assembledContent)
-            // Decompress (zstd)
-            if (!this.isInitialized) {
-                await init()
-                this.isInitialized = true
+            if (fragments[0].index === 0) {
+                // Extract the mime type
+                const assetType = getDataURLType(assembledContent)
+                if (assetComplete) {
+                    // Skip the data prefix
+                    assembledContent = assembledContent.substring(assembledContent.indexOf(',') + 1)
+                    // Decode from Base64
+                    const compressedContent = base64DecToArr(assembledContent)
+                    // Decompress (zstd)
+                    if (!this.isInitialized) {
+                        await init()
+                        this.isInitialized = true
+                    }
+                    const assetContent = decompress(Buffer.from(compressedContent))
+                    const assetHash = await window.crypto.subtle.digest("SHA-256", assetContent);
+                    result = new HCSAsset(assetType, assetContent, Buffer.from(assetHash).toString('hex'))
+                } else { // asset is incomplete
+                    result = new HCSAsset(assetType, null, null)
+                }
+            } else { // asset is incomplete, and we do not hold its first fragment -- it is unusable
+                result = null
             }
-            const assetContent = decompress(Buffer.from(compressedContent))
-            const assetHash = await window.crypto.subtle.digest("SHA-256", assetContent);
-            result = new HCSAsset(assetType, assetContent, Buffer.from(assetHash).toString('hex'))
         } else {
             result = null
         }

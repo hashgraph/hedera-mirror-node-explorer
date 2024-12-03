@@ -24,7 +24,7 @@
 
 <template>
 
-  <DashboardCard v-if="props.hcs1Asset && props.topicMemo" collapsible-key="hcs1Content">
+  <DashboardCard v-if="props.topicMemo" collapsible-key="hcs1Content">
 
     <template v-slot:title>
       <span class="h-is-secondary-title">HCS-1 Content</span>
@@ -35,6 +35,14 @@
         <template v-slot:name>Hash</template>
         <template v-slot:value>
           {{ props.topicMemo?.hash }}
+          <div v-if="hashMatch" class="icon is-small ml-1">
+            <i class="fas fa-check has-text-success"/>
+          </div>
+          <InfoTooltip
+              v-else
+              class="ml-1"
+              :label="isAssetIncomplete ? INCOMPLETE_ASSET_TOOLTIP : HASH_MISMATCH_TOOLTIP"
+          />
         </template>
       </Property>
       <Property id="compression" :full-width="true">
@@ -49,13 +57,13 @@
           {{ props.topicMemo?.encoding }}
         </template>
       </Property>
-      <Property id="mime-type" :full-width="true">
+      <Property v-if="hcs1DataType" id="mime-type" :full-width="true">
         <template v-slot:name>MIME Type</template>
         <template v-slot:value>
           {{ hcs1DataType }}
         </template>
       </Property>
-      <Property id="preview" :full-width="true">
+      <Property v-if="hashMatch && (hcs1DataURL || jsonContent)" id="preview" :full-width="true">
         <template v-slot:name>Preview</template>
         <template v-slot:value>
           <MediaContent
@@ -92,6 +100,7 @@ import BlobValue from "@/components/values/BlobValue.vue";
 import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
 import MediaContent from "@/components/MediaContent.vue";
 import {HCSAsset} from "@/utils/cache/HCSAsset.ts";
+import InfoTooltip from "@/components/InfoTooltip.vue";
 
 const props = defineProps({
   topicMemo: {
@@ -104,6 +113,24 @@ const props = defineProps({
   }
 })
 
+const INCOMPLETE_ASSET_TOOLTIP =
+    'This topic contains too many messages for the HCS-1 content to be fully retrieved. ' +
+    'The hash cannot be checked and the preview of the content is not available.'
+
+const HASH_MISMATCH_TOOLTIP =
+    'The HCS-1 content was fully retrieved but its hash does not match the hash from the topic memo. ' +
+    'The preview of the content is hence not available.'
+
+const isAssetIncomplete = computed(() =>
+    props.hcs1Asset === null
+    || props.hcs1Asset.content === null
+)
+
+const hashMatch = computed(() =>
+    props.topicMemo !== null
+    && props.hcs1Asset !== null
+    && props.topicMemo.hash === props.hcs1Asset.hash
+)
 
 const hcs1DataType = computed(() =>
     props.hcs1Asset ? props.hcs1Asset.type : null
@@ -112,7 +139,7 @@ const hcs1DataType = computed(() =>
 const jsonContent = computed(() => {
   let result: string | null
   if (
-      props.hcs1Asset
+      props.hcs1Asset?.content
       && hcs1DataType.value !== null
       && (hcs1DataType.value.startsWith('application/json'))
   ) {

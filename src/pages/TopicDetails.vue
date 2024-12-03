@@ -217,7 +217,6 @@ const isHcs1Topic = computed(() =>
     && (topic.value.admin_key?.key ?? "") === ""
     && (topic.value.submit_key?.key ?? "") !== ""
     && hcs1Memo.value !== null
-    && hcs1Asset.value?.hash === hcs1Memo.value.hash
 )
 
 const hcs1Memo = computed(() =>
