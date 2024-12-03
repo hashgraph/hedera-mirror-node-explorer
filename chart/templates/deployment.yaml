@@ -2,21 +2,21 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   annotations: {{ toYaml .Values.annotations | nindent 4 }}
-  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
-  name: {{ include "hedera-explorer.fullname" . }}
-  namespace: {{ include "hedera-explorer.namespace" . }}
+  labels: {{ include "hiero-explorer.labels" . | nindent 4 }}
+  name: {{ include "hiero-explorer.fullname" . }}
+  namespace: {{ include "hiero-explorer.namespace" . }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicas }}
   {{- end }}
   revisionHistoryLimit: {{ .Values.revisionHistoryLimit }}
   selector:
-    matchLabels: {{ include "hedera-explorer.selectorLabels" . | nindent 6 }}
+    matchLabels: {{ include "hiero-explorer.selectorLabels" . | nindent 6 }}
   strategy: {{ toYaml .Values.updateStrategy | nindent 4 }}
   template:
     metadata:
       annotations: {{- tpl (.Values.podAnnotations | toYaml) $ | nindent 8 }}
-      labels: {{ include "hedera-explorer.selectorLabels" . | nindent 8 }}
+      labels: {{ include "hiero-explorer.selectorLabels" . | nindent 8 }}
     spec:
       affinity: {{ toYaml .Values.affinity | nindent 8 }}
       containers:
@@ -52,7 +52,7 @@ spec:
       nodeSelector: {{ toYaml .Values.nodeSelector | nindent 8 }}
       priorityClassName: {{ .Values.priorityClassName }}
       securityContext: {{ toYaml .Values.podSecurityContext | nindent 8 }}
-      serviceAccountName: {{ include "hedera-explorer.serviceAccountName" . }}
+      serviceAccountName: {{ include "hiero-explorer.serviceAccountName" . }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       tolerations: {{ toYaml .Values.tolerations | nindent 8 }}
       {{- with .Values.volumes }}
