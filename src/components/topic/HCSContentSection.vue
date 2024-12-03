@@ -35,7 +35,7 @@
         <template v-slot:name>Hash</template>
         <template v-slot:value>
           {{ props.topicMemo?.hash }}
-          <div v-if="hashMatch" class="icon is-small ml-1">
+          <div v-if="hashMatch" class="icon is-small ml-1" id="check-mark">
             <i class="fas fa-check has-text-success"/>
           </div>
           <InfoTooltip
