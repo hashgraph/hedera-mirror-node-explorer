@@ -59,6 +59,7 @@
       :accountId="accountId || undefined"
       :walletIconURL="walletIconURL || undefined"
       @wallet-disconnect="disconnectFromWallet"
+      @wallet-reconnect="reconnectToWallet"
       @change-account="handleChangeAccount"/>
 
   <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
@@ -159,6 +160,12 @@ const handleChangeAccount = (chosenAccountId: string) => {
 
 const disconnectFromWallet = async () => {
   await walletManager.disconnect()
+}
+
+const reconnectToWallet = async () => {
+  const walletUUID = walletManager.walletUUID.value
+  await walletManager.disconnect()
+  await walletManager.connect(walletUUID)
 }
 
 //

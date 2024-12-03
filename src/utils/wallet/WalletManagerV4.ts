@@ -89,6 +89,9 @@ export class WalletManagerV4 {
     public readonly walletDN
         = computed<string|null>(() => this.walletSession.value?.getWalletDN() ?? null)
 
+    public readonly walletUUID
+        = computed<string|null>(() => this.walletSession.value?.getWalletUUID() ?? null)
+
     public readonly accountIds
         = computed<string[]>(() => this.walletSession.value?.usableAccountIds ?? [])
 
