@@ -74,6 +74,12 @@
           <StringValue :string-value="solcVersion ?? undefined"/>
         </template>
       </Property>
+      <Property v-if="isVerified" id="contractName" :full-width="true">
+        <template v-slot:name>EVM Version</template>
+        <template v-slot:value>
+          <StringValue :string-value="evmVersion"/>
+        </template>
+      </Property>
       <template  v-if="logicContractId">
         <Property id="logicContract" :full-width="true">
           <template v-slot:name>Proxying to Logic Contract</template>
@@ -221,6 +227,8 @@ const isFullMatch = computed(() => props.contractAnalyzer.fullMatch.value)
 
 const contractName = computed(
     () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
+
+const evmVersion = props.contractAnalyzer.evmVersion
 
 // True when the verification is ENABLED by configuration and the current verification STATUS is known, which
 // enables to decide which option to present to the user

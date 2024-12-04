@@ -108,6 +108,16 @@ export class ContractAnalyzer {
         return result
     })
 
+    public readonly evmVersion: ComputedRef<string | null> = computed(() => {
+        let result: string | null
+        if (this.metadata.value !== null) {
+            result = this.metadata.value.settings.evmVersion ?? null
+        } else {
+            result = null
+        }
+        return result
+    })
+
     public readonly interface: ComputedRef<ethers.Interface | null> = computed(() => {
         let result: ethers.Interface | null
         if (this.abi.value !== null) {
