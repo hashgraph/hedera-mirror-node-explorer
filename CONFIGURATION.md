@@ -31,6 +31,7 @@ The following configuration parameters can be set in `core-config.json`:
 | `estimatorNotice`              | `string` | No estimator notice is displayed                                                  |                            |
 | `walletChooserDisclaimerPopup` | `string` | No wallet chooser disclaimer popup is displayed                                   |                            |
 | `googleTagID`                  | `string` | Google Tag is disabled                                                            |                            |
+| `cookiesDialogContent`         | `string` | No cookies acceptation dialog (hence Google Tag is disabled)                      |                            |
 | `ipfsGatewayURL`               | `string` | Gateway `https://gateway.pinata.cloud/ipfs/` is used                              |                            |
 | `arweaveServerURL`             | `string` | The `https://arweave.net/` URL is used                                            |                            |
 | `cryptoName`                   | `string` | `HBAR` is displayed                                                               |                            |
@@ -97,9 +98,13 @@ This provides the HTML content of the disclaimer popup dialog displayed by the C
 If not specified, this pop-up dialog is not shown.
 
 ### `googleTagID`
-This provides the global site tag ID to be used by Google Analytics. When specified, it will trigger the display of a
-dialog asking the user to agree to the use of cookies before proceeding with the application. The google tag ID will
-be actually used only if the user has agreed.
+This provides the global site tag ID to be used by Google Analytics. If this parameter is specified, and if the user
+has agreed to the use of cookies, the google tag ID will be used.
+
+### `cookiesDialogContent`
+This provides the HTML content to be used in the cookies acceptation dialog. If this parameter is specified, it will 
+trigger the display of a dialog asking the user to agree to the use of cookies before proceeding with the application.
+By default, this dialog won't be shown (which also means that the google tag ID will not be used).
 
 ### `ipfsGatewayURL`
 This provides the URL of the public IPFS gateway to use to resolve the IPFS URIs (or CIDs) found in the token metadata.
