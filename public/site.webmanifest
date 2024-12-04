@@ -1,6 +1,6 @@
 {
-    "name": "hedera-explorer",
-    "short_name": "hedera-explorer",
+    "name": "hiero-explorer",
+    "short_name": "hiero-explorer",
     "icons": [
         {
             "src": "/android-chrome-192x192.png",
