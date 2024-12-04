@@ -124,7 +124,7 @@
           </o-field>
         </div>
 
-        <div id="connect-button">
+        <div v-if="enableWallet" id="connect-button">
           <ConnectWalletButton/>
         </div>
       </div>
@@ -183,6 +183,7 @@ watch(selectedNetwork, (newNetwork) => {
 })
 
 const name = routeManager.currentRoute
+const enableWallet = routeManager.enableWallet
 const nbNetworks = routeManager.nbNetworks
 const isNodeRoute = routeManager.isNodeRoute
 const isTokenRoute = routeManager.isTokenRoute
