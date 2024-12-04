@@ -117,8 +117,9 @@ provide(networkConfigKey, props.networkConfig)
 const showCookiesDialog = ref(false)
 
 const acceptCookies = ref<boolean | null>(null)
-watch(acceptCookies, (value) => {
-  if (value != null && value && props.coreConfig.googleTagID !== null) {
+watch(acceptCookies, (accept) => {
+  const googleTagID = props.coreConfig.googleTagID
+  if (accept && googleTagID && googleTagID.length > 0) {
     insertGoogleTag(props.coreConfig.googleTagID)
   }
 })
@@ -130,10 +131,11 @@ provide(explanationKey, AxiosMonitor.instance.explanation)
 provide(suggestionKey, AxiosMonitor.instance.suggestion)
 
 onBeforeMount(() => {
-  const tagId = props.coreConfig.googleTagID
-  if (tagId != undefined && tagId.length > 0) {
+  const cookiesDialogContent = props.coreConfig.cookiesDialogContent
+
+  if (cookiesDialogContent && cookiesDialogContent.length > 0) {
     acceptCookies.value = AppStorage.getAcceptCookiePolicy()
-    showCookiesDialog.value = (acceptCookies.value == null)
+    showCookiesDialog.value = (acceptCookies.value == null && props.coreConfig.cookiesDialogContent != null)
   } else {
     acceptCookies.value = null
     showCookiesDialog.value = false
