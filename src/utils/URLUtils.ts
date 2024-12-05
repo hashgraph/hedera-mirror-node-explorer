@@ -18,7 +18,6 @@
  *
  */
 
-import {EntityID} from "@/utils/EntityID";
 import {CID} from "multiformats";
 
 export function blob2URL(blob: string | null, ipfsGateway: string | null, arweaveServer: string | null): string | null {
@@ -35,28 +34,6 @@ export function blob2URL(blob: string | null, ipfsGateway: string | null, arweav
             result = `${arweaveServer}${blob.substring(5)}`
         } else if (arweaveServer && isArweaveHash(blob)) {
             result = `${arweaveServer}${blob}`
-        } else {
-            result = null
-        }
-    } else {
-        result = null
-    }
-    return result
-}
-
-export function blob2Topic(blob: string | null): string | null {
-    let result: string | null
-    let id: string
-
-    if (blob !== null) {
-        if (blob.startsWith('hcs://') && blob.length > 6) {
-            const i = blob.lastIndexOf('/');
-            id = blob.substring(i + 1);
-        } else {
-            id = blob
-        }
-        if (EntityID.parse(id) !== null) {
-            result = id
         } else {
             result = null
         }
