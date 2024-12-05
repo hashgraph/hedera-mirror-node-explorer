@@ -13,7 +13,9 @@
   "estimatorNotice": null,
   "walletChooserDisclaimerPopup": null,
   "googleTagID": null,
-  "ipfsGatewayUrlPrefix": null,
+  "cookiesDialogContent": null,
+  "ipfsGatewayURL": null,
+  "arweaveServerURL": null,
   "cryptoName": null,
   "cryptoSymbol": null,
   "walletConnectID": null

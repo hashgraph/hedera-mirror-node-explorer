@@ -25,7 +25,7 @@ import {SAMPLE_NETWORK_NODES} from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeTable from "@/components/node/NodeTable.vue";
-import {NetworkNode} from "@/schemas/HederaSchemas";
+import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 

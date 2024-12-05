@@ -21,7 +21,7 @@
 import {computed, ref, watch} from "vue";
 import {ethers} from "ethers";
 import {AppStorage} from "@/AppStorage";
-import {ContractCallRequest, ContractCallResponse} from "@/schemas/MirrorNodeSchemas";
+import {ContractCallRequest, ContractCallResponse, extractMessageFromErrorBody} from "@/schemas/MirrorNodeSchemas";
 import {walletManager} from "@/router";
 import axios from "axios";
 import {ABIController} from "@/components/contract/ABIController";
@@ -90,7 +90,11 @@ export class ContractCallBuilder {
         const lastValue = this.lastValue.value
         const lastError = this.lastError.value
         if (lastError !== null) {
-            result = lastError?.toString() ?? "Undefined error"
+            if (axios.isAxiosError(lastError) && lastError.status == 400) {
+                result = extractMessageFromErrorBody(lastError.response?.data) ?? lastError.toString()
+            } else {
+                result = lastError?.toString() ?? "Undefined error"
+            }
         } else if (lastValue !== null) {
             try {
                 result = JSON.stringify(lastValue.length == 1 ? lastValue[0] : lastValue)

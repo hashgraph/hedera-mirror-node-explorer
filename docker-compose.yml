@@ -1,7 +1,7 @@
 version: "3.7"
 services:
   explorer:
-    container_name:  hedera-explorer
+    container_name:  hiero-explorer
     image: "gcr.io/hedera-registry/hedera-mirror-node-explorer:latest"
     env_file: ./.env.docker
     restart: "always"

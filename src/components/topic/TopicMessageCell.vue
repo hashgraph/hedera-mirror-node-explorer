@@ -39,7 +39,7 @@
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
 import BlobValue from "@/components/values/BlobValue.vue";
-import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
+import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
 
 export enum TopicMessageCellItem {
   sequenceNumber = "sequenceNumber",
@@ -64,7 +64,7 @@ export default defineComponent({
   setup(props) {
     const timestamp = computed(() => props.timestamp)
 
-    const messageLookup = TopicMessageCache.instance.makeLookup(timestamp)
+    const messageLookup = TopicMessageByTimestampCache.instance.makeLookup(timestamp)
     onMounted(() => messageLookup.mount())
     onBeforeUnmount(() => messageLookup.unmount())
 

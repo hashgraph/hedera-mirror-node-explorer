@@ -2,14 +2,14 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: ca-secret-hedera-explorer
+  name: ca-secret-hiero-explorer
   namespace: {{ default $.Release.Namespace $.Values.global.namespaceOverride }}
 spec:
   isCA: false
   commonName: {{ index $.Values "ingress" "hosts" 0 "host" }}
   dnsNames:
     - {{ index $.Values "ingress" "hosts" 0 "host" }}
-  secretName: ca-secret-hedera-explorer
+  secretName: ca-secret-hiero-explorer
   privateKey:
     algorithm: RSA
     size: 3072

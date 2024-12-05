@@ -237,15 +237,14 @@ describe("BlobValue.vue", () => {
         expect(wrapper.find("a").attributes("href")).toBe(BLOB_URL)
 
         const encodedUrl = btoa(BLOB_URL)
-        const resultingUrl = (new URL(BLOB_URL)).toString()
 
         await wrapper.setProps({
             blobValue: encodedUrl,
             base64: true
         })
 
-        expect(wrapper.find("a").text()).toBe(resultingUrl)
-        expect(wrapper.find("a").attributes("href")).toBe(resultingUrl)
+        expect(wrapper.find("a").text()).toBe(BLOB_URL)
+        expect(wrapper.find("a").attributes("href")).toBe(BLOB_URL)
 
         wrapper.unmount()
         await flushPromises()
@@ -266,7 +265,7 @@ describe("BlobValue.vue", () => {
         const wrapper = mount(BlobValue, {
             global: {
                 plugins: [router],
-                provide: { [coreConfigKey]: CoreConfig.FALLBACK }
+                provide: {[coreConfigKey]: CoreConfig.FALLBACK}
             },
             props: {
                 blobValue: encodedUrl,

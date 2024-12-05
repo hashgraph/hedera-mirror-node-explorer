@@ -297,7 +297,7 @@ describe('Account Navigation', () => {
         cy.visit('testnet/account/' + accountId)
         cy.url().should('include', '/testnet/account/' + accountId)
         cy.contains('Account ID:' + accountId)
-        cy.contains('a', nodeId + ' - Hosted by Hedera')
+        cy.contains('a', 'node1')
             .click()
 
         cy.url().should('include', '/testnet/node/' + nodeId)

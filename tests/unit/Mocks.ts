@@ -568,8 +568,7 @@ export const SAMPLE_PENDING_AIRDROPS = {
 }
 
 export const IPFS_GATEWAY_PREFIX = 'https://gateway.pinata.cloud/ipfs/'
-
-export const CID_METADATA = "UW1QSjhnbTFIOFY3Ym9SR1JiV3ZyWloxSkMyeXFzajNoYkJKeUJhTFBnSG5ROA=="
+export const IPFS_CID_METADATA = "UW1QSjhnbTFIOFY3Ym9SR1JiV3ZyWloxSkMyeXFzajNoYkJKeUJhTFBnSG5ROA=="
 export const IPFS_METADATA = "aXBmczovL1FtUEo4Z20xSDhWN2JvUkdSYld2clpaMUpDMnlxc2ozaGJCSnlCYUxQZ0huUTg="
 export const IPFS_METADATA_CONTENT_URL = IPFS_GATEWAY_PREFIX + "QmPJ8gm1H8V7boRGRbWvrZZ1JC2yqsj3hbBJyBaLPgHnQ8"
 export const IPFS_IMAGE_URL = IPFS_GATEWAY_PREFIX + "QmXhGcYgJPgVmdDzkUuiK1RVy6fW7NVaJLLxir2iKLKRZU/0292-Shrak.png"
@@ -603,6 +602,32 @@ export const IPFS_METADATA_CONTENT = {
         }
     ]
 }
+
+export const AR_SERVER_PREFIX = 'https://arweave.net/'
+export const AR_CID_METADATA = "YWNjcXdsZFNPWkw4NElHY3JuUFRJdDZGZ05RVE9sc1N5RVhTNC11OGtrNA"
+export const AR_METADATA = "YXI6Ly9hY2Nxd2xkU09aTDg0SUdjcm5QVEl0NkZnTlFUT2xzU3lFWFM0LXU4a2s0"
+export const AR_METADATA_CONTENT_URL = AR_SERVER_PREFIX + "accqwldSOZL84IGcrnPTIt6FgNQTOlsSyEXS4-u8kk4"
+export const AR_IMAGE_URL = AR_SERVER_PREFIX + "3g1__QpZyBOlMUNUEE6YiBcoh0kdoDpimPFzpS8w_O4"
+export const AR_METADATA_CONTENT = {
+    "name": "DaVinciGraph BRONZE #2",
+    "description": "DaVinciGraph Utility BRONZE NFT",
+    "creator": "DaVinciGraph",
+    "CID": "3g1__QpZyBOlMUNUEE6YiBcoh0kdoDpimPFzpS8w_O4",
+    "image": "ar://3g1__QpZyBOlMUNUEE6YiBcoh0kdoDpimPFzpS8w_O4",
+    "type": "image/png",
+    "format": "DaVinciGraph",
+    "attributes": [
+        {
+            "trait_type": "Color",
+            "value": "Bronze"
+        },
+        {
+            "trait_type": "Number",
+            "value": "2"
+        }
+    ]
+}
+
 export const NON_STD_METADATA_CONTENT = {
     "custom": "Non standard metadata",
     "picture": "ipfs://QmXhGcYgJPgVmdDzkUuiK1RVy6fW7NVaJLLxir2iKLKRZU/0292-Shrak.png"

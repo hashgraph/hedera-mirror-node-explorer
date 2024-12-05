@@ -32,7 +32,7 @@ affinity:
           topologyKey: kubernetes.io/hostname
           labelSelector:
             matchLabels:
-              app.kubernetes.io/component: hedera-explorer
+              app.kubernetes.io/component: hiero-explorer
 
 annotations: {}
 
@@ -169,7 +169,7 @@ volumeMounts:
   nginx-config:
     mountPath: /etc/nginx/nginx.conf
     subPath: nginx.conf
-  hedera-explorer-config:
+  hiero-explorer-config:
     mountPath: /app/networks-config.json
     subPath: networks-config.json
 
@@ -179,10 +179,10 @@ volumes:
     emptyDir: {}
   nginx-config:
     configMap:
-      name: '{{ include "hedera-explorer.fullname" . }}-config'
-  hedera-explorer-config:
+      name: '{{ include "hiero-explorer.fullname" . }}-config'
+  hiero-explorer-config:
     configMap:
-      name: '{{ include "hedera-explorer.fullname" . }}-config'
+      name: '{{ include "hiero-explorer.fullname" . }}-config'
 
 # Add custom reverse proxy configuration.
 # It is a key-value map where key is the path and value being a URL.

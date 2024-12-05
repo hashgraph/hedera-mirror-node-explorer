@@ -19,12 +19,12 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {TopicMessagesResponse} from "@/schemas/MirrorNodeSchemas";
-import {EntityID} from "@/utils/EntityID";
 import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
-import {TopicMessageCache} from "@/utils/cache/TopicMessageCache";
-import {CID} from "multiformats";
+import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
+import {AssetCache} from "@/utils/cache/AssetCache.ts";
+import {LastTopicMessageByIdCache} from "@/utils/cache/LastTopicMessageByIdCache.ts";
+import {blob2Topic, blob2URL} from "@/utils/URLUtils.ts";
 
 export interface NftAttribute {
     trait_type: string
@@ -46,7 +46,6 @@ export interface NftFile {
 export class TokenMetadataAnalyzer {
 
     private watchHandle: WatchStopHandle | null = null
-    private privateAxios = axios.create({timeout: 10000});
     private metadataContentRef = ref<any>(null)
 
     //
@@ -54,11 +53,13 @@ export class TokenMetadataAnalyzer {
     //
 
     public readonly rawMetadata: Ref<string>
-    public readonly ipfsGatewayPrefix: string
+    public readonly ipfsGatewayPrefix: string | null
+    public readonly arweaveServer: string | null
 
-    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string) {
+    public constructor(rawMetadata: Ref<string>, ipfsGatewayPrefix: string | null, arweaveServer: string | null = null) {
         this.rawMetadata = rawMetadata
         this.ipfsGatewayPrefix = ipfsGatewayPrefix
+        this.arweaveServer = arweaveServer
     }
 
     public mount(): void {
@@ -153,14 +154,8 @@ export class TokenMetadataAnalyzer {
         const files = this.getProperty('files')
         if (Array.isArray(files)) {
             for (const file of files) {
-                if (file.uri != undefined && file.type != undefined) {
-                    let url
-                    if (file.uri.startsWith("ipfs://") && file.uri.length > 7) {
-                        url = `${this.ipfsGatewayPrefix}${file.uri.substring(7)}`
-                    } else {
-                        url = file.uri
-                    }
-
+                if (file.uri && file.type) { // both required by HIP-412
+                    const url = blob2URL(file.uri, this.ipfsGatewayPrefix, this.arweaveServer) ?? file.uri
                     result.push({
                         uri: file.uri,
                         url: url,
@@ -196,12 +191,8 @@ export class TokenMetadataAnalyzer {
 
     public imageUrl = computed<string | null>(
         () => {
-            let result = this.getProperty('image') ?? this.getProperty(('picture'))
-
-            if (result != null && result.startsWith("ipfs://") && result.length > 7) {
-                result = `${this.ipfsGatewayPrefix}${result.substring(7)}`
-            }
-            return result
+            const uri = this.getProperty('image') ?? this.getProperty(('picture'))
+            return blob2URL(uri, this.ipfsGatewayPrefix, this.arweaveServer) ?? uri
         })
 
     //
@@ -235,6 +226,8 @@ export class TokenMetadataAnalyzer {
     private async metadataDidChange(value: string | null): Promise<void> {
         const content = this.metadataContentRef
         const metadata = this.metadata
+        this.loadSuccessRef.value = false
+        this.loadErrorRef.value = false
 
         try {
             metadata.value = Buffer.from(value ?? '', 'base64').toString()
@@ -243,27 +236,16 @@ export class TokenMetadataAnalyzer {
         }
 
         if (metadata.value !== null) {
-            if (metadata.value.startsWith('ipfs://')) {
-                content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value.substring(7)}`)
-            } else if (metadata.value.startsWith('hcs://')) {
-                const i = metadata.value.lastIndexOf('/');
-                const id = metadata.value.substring(i + 1);
-                if (EntityID.parse(id) !== null) {
-                    content.value = await this.readMetadataFromTopic(id)
-                } else {
-                    content.value = null
-                }
-            } else if (metadata.value.startsWith('https://')) {
-                content.value = await this.readMetadataFromUrl(metadata.value)
-            } else if (EntityID.parse(metadata.value) !== null) {
-                content.value = await this.readMetadataFromTopic(metadata.value)
-            } else if (Timestamp.parse(metadata.value) !== null) {
-                content.value = await this.readMetadataFromTimestamp(metadata.value)
+            const url = blob2URL(metadata.value, this.ipfsGatewayPrefix, this.arweaveServer)
+            if (url !== null) {
+                content.value = await this.readMetadataFromUrl(url)
             } else {
-                try {
-                    CID.parse(metadata.value)
-                    content.value = await this.readMetadataFromUrl(`${this.ipfsGatewayPrefix}${metadata.value}`)
-                } catch {
+                const topic = blob2Topic(metadata.value)
+                if (topic !== null) {
+                    content.value = await this.readMetadataFromTopic(topic)
+                } else if (Timestamp.parse(metadata.value) !== null) {
+                    content.value = await this.readMetadataFromTimestamp(metadata.value)
+                } else {
                     content.value = null
                 }
             }
@@ -276,9 +258,8 @@ export class TokenMetadataAnalyzer {
         // console.log(`readMetadataFromUrl: ${url}`)
         let result: any
         try {
-            const response = await this.privateAxios.get(url)
+            result = await AssetCache.instance.lookup(url) as any
             this.loadSuccessRef.value = true
-            result = response.data ?? null
         } catch (reason) {
             console.warn(`Failed to read metadata from URL ${url} - error: ${reason}`)
             if (axios.isAxiosError(reason)) {
@@ -294,12 +275,11 @@ export class TokenMetadataAnalyzer {
     private async readMetadataFromTopic(id: string): Promise<any> {
         // console.log(`readMetadataFromTopic: ${id}`)
         let result: any
-        const url = "api/v1/topics/" + id + "/messages?limit=1&order=desc"
         try {
-            const response = await this.privateAxios.get<TopicMessagesResponse>(url)
+            const topicMessage = await LastTopicMessageByIdCache.instance.lookup(id)
             this.loadSuccessRef.value = true
-            if (response.data.messages && response.data.messages.length >= 0) {
-                result = JSON.parse(Buffer.from(response.data.messages[0].message, 'base64').toString())
+            if (topicMessage !== null) {
+                result = JSON.parse(Buffer.from(topicMessage.message, 'base64').toString())
             } else {
                 result = null
             }
@@ -316,7 +296,7 @@ export class TokenMetadataAnalyzer {
         // console.log(`readMetadataFromTimestamp: ${timestamp}`)
         let result: any
         try {
-            const topicMessage = await TopicMessageCache.instance.lookup(timestamp)
+            const topicMessage = await TopicMessageByTimestampCache.instance.lookup(timestamp)
             this.loadSuccessRef.value = true
             if (topicMessage) {
                 result = JSON.parse(Buffer.from(topicMessage.message, 'base64').toString())

@@ -64,7 +64,7 @@
           class="media-content"
           :style="contentStyle"
           :autoplay="auto"
-          :controls="!auto"
+          :controls="!auto && size >= 100"
           loop
           @error="onLoadError"
           @loadeddata="onLoadSuccess"

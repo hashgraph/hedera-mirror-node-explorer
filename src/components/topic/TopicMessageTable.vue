@@ -58,6 +58,12 @@
         <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
       </o-table-column>
 
+      <o-table-column v-slot="props" field="chunk" label="Chunk">
+        <div class="is-numeric">
+          {{ formatChunk(props.row) }}
+        </div>
+      </o-table-column>
+
       <o-table-column v-slot="props" field="message" label="Message">
         <div class="should-wrap">
           <BlobValue :blob-value="props.row.message" :base64="true" :show-none="true"/>
@@ -119,7 +125,9 @@ export default defineComponent({
     const isTouchDevice = inject('isTouchDevice', false)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const handleClick = (t: TopicMessage,  c: unknown, i: number, ci: number, event: MouseEvent) => {
+    const formatChunk = (t: TopicMessage) => t.chunk_info ? `${t.chunk_info.number}/${t.chunk_info.total}` : ''
+
+    const handleClick = (t: TopicMessage, c: unknown, i: number, ci: number, event: MouseEvent) => {
       const consensusTimestamp = t.consensus_timestamp
       if (consensusTimestamp) {
         routeManager.routeToTransactionByTs(consensusTimestamp, event)
@@ -139,6 +147,7 @@ export default defineComponent({
       showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
       ORUGA_MOBILE_BREAKPOINT,
       AppStorage,
+      formatChunk,
       handleClick
     }
   }

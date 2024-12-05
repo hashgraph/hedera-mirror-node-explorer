@@ -40,7 +40,7 @@
           <img :src="walletIconURL ?? undefined" alt="wallet logo"
                style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
         </figure>
-        {{ accountId }}
+        {{ accountId !== null ? accountId : "No account" }}
       </div>
       <div class="is-flex is-align-items-center is-justify-content-center" style="width: 30px;">
         <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down is-flex is-align-items-center"/>
@@ -56,8 +56,8 @@
       :connected="connected"
       :accountIds="accountIds"
       v-model:show-wallet-info="showWalletInfo"
-      :accountId="accountId || undefined"
-      :walletIconURL="walletIconURL || undefined"
+      :accountId="accountId ?? undefined"
+      :walletIconURL="walletIconURL ?? undefined"
       @wallet-disconnect="disconnectFromWallet"
       @wallet-reconnect="reconnectToWallet"
       @change-account="handleChangeAccount"/>

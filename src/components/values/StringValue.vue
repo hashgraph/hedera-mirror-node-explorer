@@ -28,7 +28,9 @@
 
   <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+  <span v-else-if="showNone" class="has-text-grey">None</span>
+
+  <span v-else/>
 
 </template>
 
@@ -48,6 +50,10 @@ export default defineComponent({
     stringValue: {
       type: String as PropType<string | null>,
       default: null
+    },
+    showNone: {
+      type: Boolean,
+      default: true
     },
   },
 

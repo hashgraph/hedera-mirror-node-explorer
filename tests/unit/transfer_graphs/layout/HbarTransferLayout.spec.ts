@@ -20,8 +20,8 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
-import {NetworkNode, Transaction} from "@/schemas/HederaSchemas";
+import {describe, expect, test} from 'vitest'
+import {NetworkNode, Transaction} from "@/schemas/MirrorNodeSchemas";
 import {SAMPLE_NETWORK_NODES} from "../../Mocks";
 import {HbarTransferLayout} from "@/components/transfer_graphs/layout/HbarTransferLayout";
 import {flushPromises} from "@vue/test-utils";

@@ -36,7 +36,7 @@
         </div>
         <hr class="h-card-separator"/>
 
-        <div class="is-flex is-justify-content-space-between is-align-items-center is-flex-wrap-wrap">
+        <div class="is-flex is-justify-content-space-evenly is-align-items-center is-flex-wrap-wrap">
           <div v-for="d in walletItems" :key="d.name">
             <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
               <div class="is-flex is-flex-direction-row is-align-items-center h-chooser-figure" :class="{'selected':isSelected(d)}">

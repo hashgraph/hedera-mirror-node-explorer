@@ -27,13 +27,19 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {TokenMetadataAnalyzer} from "../../../../src/components/token/TokenMetadataAnalyzer";
 import {
-    CID_METADATA,
+    AR_CID_METADATA,
+    AR_IMAGE_URL,
+    AR_METADATA,
+    AR_METADATA_CONTENT,
+    AR_METADATA_CONTENT_URL,
+    AR_SERVER_PREFIX,
     HCS_METADATA,
     HCS_METADATA_CONTENT,
     HCS_TOPIC,
     HCS_TOPIC_MESSAGES,
     HTTPS_METADATA,
     HTTPS_METADATA_CONTENT_URL,
+    IPFS_CID_METADATA,
     IPFS_GATEWAY_PREFIX,
     IPFS_IMAGE_URL,
     IPFS_METADATA,
@@ -144,12 +150,12 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         const mock = new MockAdapter(axios)
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
-        const metadata = ref(CID_METADATA)
+        const metadata = ref(IPFS_CID_METADATA)
         const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
         analyzer.mount()
         await flushPromises()
 
-        expect(analyzer.rawMetadata.value).toBe(CID_METADATA)
+        expect(analyzer.rawMetadata.value).toBe(IPFS_CID_METADATA)
         expect(analyzer.isHIP412.value).toBe(true)
         expect(analyzer.imageUrl.value).toBe(IPFS_IMAGE_URL)
         expect(analyzer.creator.value).toBe(IPFS_METADATA_CONTENT.creator)
@@ -170,6 +176,134 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
             ]
         )
         expect(analyzer.metadataString.value).toBe(JSON.stringify(IPFS_METADATA_CONTENT))
+
+        analyzer.unmount()
+        await flushPromises()
+
+        mock.restore()
+    })
+
+    test("complete flow with metadata containing Arweave URL", async () => {
+
+        // Mock axios
+        const mock = new MockAdapter(axios)
+        mock.onGet(AR_METADATA_CONTENT_URL).reply(200, AR_METADATA_CONTENT)
+
+        // 1) new
+        const metadata = ref<string>('')
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX, AR_SERVER_PREFIX)
+        expect(analyzer.rawMetadata.value).toBe('')
+        expect(analyzer.imageUrl.value).toBeNull()
+        expect(analyzer.creator.value).toBeNull()
+        expect(analyzer.creatorDID.value).toBeNull()
+        expect(analyzer.description.value).toBeNull()
+        expect(analyzer.name.value).toBeNull()
+        expect(analyzer.type.value).toBeNull()
+        expect(analyzer.metadataContent.value).toBeNull()
+        expect(analyzer.metadataKeys.value).toStrictEqual([])
+        expect(analyzer.metadataString.value).toBeNull()
+
+        // 2) mount
+        analyzer.mount()
+        await flushPromises()
+        expect(analyzer.rawMetadata.value).toBe('')
+        expect(analyzer.imageUrl.value).toBeNull()
+        expect(analyzer.creator.value).toBeNull()
+        expect(analyzer.creatorDID.value).toBeNull()
+        expect(analyzer.description.value).toBeNull()
+        expect(analyzer.name.value).toBeNull()
+        expect(analyzer.type.value).toBeNull()
+        expect(analyzer.metadataContent.value).toBeNull()
+        expect(analyzer.metadataKeys.value).toStrictEqual([])
+        expect(analyzer.metadataString.value).toBeNull()
+
+        // 3) Setup metadata
+        metadata.value = AR_METADATA
+        await flushPromises()
+        expect(analyzer.rawMetadata.value).toBe(AR_METADATA)
+        expect(analyzer.imageUrl.value).toBe(AR_IMAGE_URL)
+        expect(analyzer.creator.value).toBe(AR_METADATA_CONTENT.creator)
+        expect(analyzer.creatorDID.value).toBeNull()
+        expect(analyzer.description.value).toBe(AR_METADATA_CONTENT.description)
+        expect(analyzer.name.value).toBe(AR_METADATA_CONTENT.name)
+        expect(analyzer.type.value).toBe(AR_METADATA_CONTENT.type)
+        expect(analyzer.metadataContent.value).toStrictEqual(AR_METADATA_CONTENT)
+        expect(analyzer.metadataKeys.value).toStrictEqual([
+                "name",
+                "description",
+                "creator",
+                "CID",
+                "image",
+                "type",
+                "format",
+                "attributes",
+            ]
+        )
+        expect(analyzer.metadataString.value).toBe(JSON.stringify(AR_METADATA_CONTENT))
+
+        // 4) Unset metadata
+        metadata.value = ''
+        await flushPromises()
+        expect(analyzer.rawMetadata.value).toBe('')
+        expect(analyzer.imageUrl.value).toBeNull()
+        expect(analyzer.creator.value).toBeNull()
+        expect(analyzer.creatorDID.value).toBeNull()
+        expect(analyzer.description.value).toBeNull()
+        expect(analyzer.name.value).toBeNull()
+        expect(analyzer.type.value).toBeNull()
+        expect(analyzer.metadataContent.value).toBeNull()
+        expect(analyzer.metadataKeys.value).toStrictEqual([])
+        expect(analyzer.metadataString.value).toBeNull()
+
+        // 7) Unmount
+        analyzer.unmount()
+        await flushPromises()
+        expect(analyzer.rawMetadata.value).toBe('')
+        expect(analyzer.imageUrl.value).toBeNull()
+        expect(analyzer.creator.value).toBeNull()
+        expect(analyzer.creatorDID.value).toBeNull()
+        expect(analyzer.description.value).toBeNull()
+        expect(analyzer.name.value).toBeNull()
+        expect(analyzer.type.value).toBeNull()
+        expect(analyzer.metadataContent.value).toBeNull()
+        expect(analyzer.metadataKeys.value).toStrictEqual([])
+        expect(analyzer.metadataString.value).toBeNull()
+
+        mock.restore()
+    })
+
+    test("metadata containing Arweave CID", async () => {
+
+        // Mock axios
+        const mock = new MockAdapter(axios)
+        mock.onGet(AR_METADATA_CONTENT_URL).reply(200, AR_METADATA_CONTENT)
+
+        const metadata = ref(AR_CID_METADATA)
+        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX, AR_SERVER_PREFIX)
+        analyzer.mount()
+        await flushPromises()
+
+        expect(analyzer.rawMetadata.value).toBe(AR_CID_METADATA)
+        expect(analyzer.isHIP412.value).toBe(true)
+        expect(analyzer.imageUrl.value).toBe(AR_IMAGE_URL)
+        expect(analyzer.creator.value).toBe(AR_METADATA_CONTENT.creator)
+        expect(analyzer.creatorDID.value).toBe(null)
+        expect(analyzer.description.value).toBe(AR_METADATA_CONTENT.description)
+        expect(analyzer.name.value).toBe(AR_METADATA_CONTENT.name)
+        expect(analyzer.type.value).toBe(AR_METADATA_CONTENT.type)
+        expect(analyzer.metadataContent.value).toStrictEqual(AR_METADATA_CONTENT)
+        expect(analyzer.metadataKeys.value).toStrictEqual([
+                "name",
+                "description",
+                "creator",
+                "CID",
+                "image",
+                "type",
+                "format",
+                "attributes",
+            ]
+        )
+        expect(analyzer.metadataString.value).toBe(JSON.stringify(AR_METADATA_CONTENT))
 
         analyzer.unmount()
         await flushPromises()

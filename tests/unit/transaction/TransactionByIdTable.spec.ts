@@ -30,7 +30,7 @@ import {
 } from "../Mocks";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
-import {Transaction} from "@/schemas/HederaSchemas";
+import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";

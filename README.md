@@ -2,7 +2,7 @@
 
 # hashgraph/hedera-mirror-node-explorer
 
-Visual Explorer for the Hedera Hashgraph DLT.
+Visual Explorer for the Hiero DLT.
 
 ## Project setup
 
@@ -62,7 +62,7 @@ Details for these configuration files can be found in [CONFIGURATION.md](https:/
 # Build the Docker image locally
 npm run docker:build
 
-# Copy and adjust configuration of Hedera networks as needed
+# Copy and adjust configuration of Hiero networks as needed
 cp networks-config-http-example.json networks-config.json
 
 # Start the Docker container
@@ -78,22 +78,20 @@ npm run docker:stop
 
 ## Run in Kubernetes
 
-To run in [Kubernetes](https://kubernetes.io) the hedera-explorer [Helm](https://helm.sh) chart can be used. First,
+To run in [Kubernetes](https://kubernetes.io) the hiero-explorer [Helm](https://helm.sh) chart can be used. First,
 obtain access to a Kubernetes cluster running version 1.23 or greater. [Minikube](https://minikube.sigs.k8s.io/docs/)
 can be used for a local Kubernetes cluster.
 
 ```shell
-helm upgrade --install hedera-explorer chart/
+helm upgrade --install hiero-explorer chart/
 ```
 
 ### Configure custom networks 
 
 Core configuration and network configuration need to be provided to the Explorer in the `values.yaml` file 
-(see [CONFIGURATION.md](https://github.com/hashgraph/hedera-mirror-node-explorer/blob/main/CONFIGURATION.md) for 
-details on configuration parameters).
+(see [CONFIGURATION.md](https://github.com/hashgraph/hedera-mirror-node-explorer/blob/main/CONFIGURATION.md) for details on configuration parameters).
 
-If the network configuration is empty, by default the Explorer will support MAINNET, PREVIEWNET and TESTNET. But a 
-custom list of network can be provided, to either extend or completely replace the list of networks supported.
+The network configuration needs to provide at least the description on one supported networks.
 
 An example:
 ```

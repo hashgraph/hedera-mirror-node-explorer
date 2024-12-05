@@ -2,9 +2,9 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
-  name: {{ include "hedera-explorer.fullname" . }}
-  namespace: {{ include "hedera-explorer.namespace" . }}
+  labels: {{ include "hiero-explorer.labels" . | nindent 4 }}
+  name: {{ include "hiero-explorer.fullname" . }}
+  namespace: {{ include "hiero-explorer.namespace" . }}
 spec:
   {{- with .Values.podDisruptionBudget.maxUnavailable }}
   maxUnavailable: {{ . }}
@@ -13,5 +13,5 @@ spec:
   minAvailable: {{ . }}
   {{- end }}
   selector:
-    matchLabels: {{ include "hedera-explorer.selectorLabels" . | nindent 6 }}
+    matchLabels: {{ include "hiero-explorer.selectorLabels" . | nindent 6 }}
 {{- end -}}

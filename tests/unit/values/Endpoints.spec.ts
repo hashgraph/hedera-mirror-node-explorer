@@ -18,12 +18,12 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import Endpoints from "@/components/values/Endpoints.vue";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
-import {ServiceEndPoint} from "@/schemas/HederaSchemas";
+import {ServiceEndPoint} from "@/schemas/MirrorNodeSchemas";
 
 describe("Endpoint.vue", () => {
 

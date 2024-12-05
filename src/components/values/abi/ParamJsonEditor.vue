@@ -24,38 +24,28 @@
 
 <template>
   <button class="button is-white h-is-smaller" @click="jsonEditorController.visible.value = true">EDIT…</button>
-  <JsonEditorDialog :controller="jsonEditorController" :param-builder="paramBuilder"/>
+  <JsonEditorDialog :controller="jsonEditorController" :param-builder="props.paramBuilder"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import {PropType} from "vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
 import {DialogController} from "@/components/dialog/DialogController";
 import JsonEditorDialog from "@/components/values/abi/JsonEditorDialog.vue";
 
-export default defineComponent({
-  name: "ParamJsonEditor",
-  components: {JsonEditorDialog},
-  props: {
-    paramBuilder: {
-      type: Object as PropType<ContractParamBuilder>,
-      required: true
-    },
+const props = defineProps({
+  paramBuilder: {
+    type: Object as PropType<ContractParamBuilder>,
+    required: true
   },
-  setup() {
-
-    const jsonEditorController = new DialogController()
-
-    return {
-      jsonEditorController
-    }
-  }
 })
+
+const jsonEditorController = new DialogController()
 
 </script>
 

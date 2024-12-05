@@ -23,7 +23,7 @@
 import {describe, expect, test} from 'vitest'
 import {ref} from "vue";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
-import {TransactionType} from "@/schemas/HederaSchemas";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {DownloaderState} from "@/utils/downloader/EntityDownloader";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";

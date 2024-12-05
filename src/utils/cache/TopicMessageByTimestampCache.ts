@@ -18,25 +18,22 @@
  *
  */
 
-import {EntityCache, EntityLookup} from "@/utils/cache/base/EntityCache";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {TopicMessage} from "@/schemas/MirrorNodeSchemas";
 import axios from "axios";
-import {computed, Ref} from "vue";
 
-export class TopicMessageCache extends EntityCache<string, TopicMessage | null> {
+export class TopicMessageByTimestampCache extends EntityCache<string, TopicMessage | null> {
 
-    public static readonly instance = new TopicMessageCache()
+    public static readonly instance = new TopicMessageByTimestampCache()
 
     //
     // Cache
     //
 
-    protected async load(topicIdAndSeqNumber: string): Promise<TopicMessage | null> {
+    protected async load(timestamp: string): Promise<TopicMessage | null> {
         let result: Promise<TopicMessage | null>
-        const idAndSeqNumberArray = topicIdAndSeqNumber.split("---")
         try {
-            const url = `api/v1/topics/${idAndSeqNumberArray[0]}/messages/${idAndSeqNumberArray[1]}`
-            const response = await axios.get<TopicMessage>(url)
+            const response = await axios.get<TopicMessage>("api/v1/topics/messages/" + timestamp)
             result = Promise.resolve(response.data)
         } catch (error) {
             if (axios.isAxiosError(error) && error.response?.status == 404) {
@@ -48,19 +45,4 @@ export class TopicMessageCache extends EntityCache<string, TopicMessage | null> 
         return result
     }
 
-    public makeTopicMessageLookup(
-        tokenId: Ref<string | null>,
-        seqNumber: Ref<number | null>,
-    ): EntityLookup<string, TopicMessage | null> {
-        const key = computed(() => {
-            let result: string | null
-            if (tokenId.value !== null && seqNumber.value !== null) {
-                result = tokenId.value + "---" + seqNumber.value.toString()
-            } else {
-                result = null
-            }
-            return result
-        })
-        return this.makeLookup(key)
-    }
 }
