@@ -11,8 +11,8 @@
     "popularTokenIndexURL": null,
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
+      "repoURL": "https://repository-verify.hashscan.io/contracts/",
+      "serverURL": "https://server-verify.hashscan.io/",
       "chainID": 295
     }
   },
@@ -27,8 +27,8 @@
     "enableMarket": false,
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
+      "repoURL": "https://repository-sourcify.hedera-devops.com/contracts/",
+      "serverURL": "https://server-sourcify.hedera-devops.com/",
       "chainID": 296
     }
   },
@@ -41,10 +41,11 @@
     "enableStaking": false,
     "enableExpiry": false,
     "enableMarket": false,
+    "erc721IndexURL": "erc721-previewnet.json",
     "sourcifySetup": {
       "activate": true,
-      "repoURL": "https://repository.local/contracts/",
-      "serverURL": "https://localhost/server/",
+      "repoURL": "https://repository-sourcify.hedera-devops.com/contracts/",
+      "serverURL": "https://server-sourcify.hedera-devops.com/",
       "chainID": 297
     }
   }

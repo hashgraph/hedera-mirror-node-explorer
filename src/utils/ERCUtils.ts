@@ -57,6 +57,42 @@ export class ERCUtils {
         return Promise.resolve(result)
     }
 
+    //
+    // Public (ERC165)
+    //
+
+    public static async supportsInterface(contractAddress: string, interfaceID: string): Promise<boolean> {
+        // https://eips.ethereum.org/EIPS/eip-165
+        const abi = "function supportsInterface(bytes4 interfaceID) external view returns (bool)"
+        const results = await this.call(contractAddress, abi, [interfaceID])
+        const result = results !== null ? results[0] as boolean : false
+        return Promise.resolve(result)
+    }
+
+    public static async isERC165(contractAddress: string): Promise<boolean> {
+        let result: boolean
+        // https://eips.ethereum.org/EIPS/eip-165
+        try {
+            const supports0x01ffc9a7 = await this.supportsInterface(contractAddress, "0x01ffc9a7")
+            const supports0xffffffff = await this.supportsInterface(contractAddress, "0xffffffff")
+            result = supports0x01ffc9a7 && !supports0xffffffff
+        } catch {
+            result = false
+        }
+        return Promise.resolve(result)
+    }
+
+    public static async isERC721(contractAddress: string): Promise<boolean> {
+        let result: boolean
+        // https://eips.ethereum.org/EIPS/eip-165
+        if (await this.isERC165(contractAddress)) {
+            result = await this.supportsInterface(contractAddress, "0x80ac58cd")
+        } else {
+            result = false
+        }
+        return Promise.resolve(result)
+    }
+
 
     //
     // Public (ERC20)

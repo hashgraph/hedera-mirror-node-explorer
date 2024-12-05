@@ -37,8 +37,19 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
         if (erc721Contract !== null) {
             result = await this.loadInfo(contractId)
         } else {
-            result = null
+            const evmAddress = await AccountByIdCache.instance.findAccountAddress(contractId)
+            if (evmAddress !== null && await ERCUtils.isERC721(evmAddress)) {
+                result = await this.loadInfo(contractId)
+                if (result !== null) {
+                    // We extend ERC721Cache
+                    const newERC721Contract = { contractId, name: result.name ?? undefined }
+                    await ERC721Cache.instance.populate(contractId, newERC721Contract)
+                }
+            } else {
+                result = null
+            }
         }
+
         return Promise.resolve(result)
     }
 
