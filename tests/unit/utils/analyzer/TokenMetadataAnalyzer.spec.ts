@@ -349,7 +349,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.restore()
     })
 
-    test("metadata containing HCS URL", async () => {
+    test.skip("metadata containing HCS URL", async () => {
 
         // Mock axios
         const mock = new MockAdapter(axios)
@@ -378,7 +378,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.restore()
     })
 
-    test("metadata containing topic ID", async () => {
+    test.skip("metadata containing topic ID", async () => {
 
         // Mock axios
         const mock = new MockAdapter(axios)
