@@ -77,7 +77,15 @@ export class WalletConnectAgent {
         }
         const { uri, approval } = await this.signClient.connect(params)
         const {WalletConnectModal} = await import("@walletconnect/modal")
-        const connectModal = new WalletConnectModal({ projectId: this.projectId })
+        // https://docs.reown.com/advanced/walletconnectmodal/options
+        // https://walletguide.walletconnect.network
+        const connectModal = new WalletConnectModal({
+            projectId: this.projectId,
+            explorerRecommendedWalletIds:[
+                "a29498d225fa4b13468ff4d6cf4ae0ea4adcbd95f07ce8a843a1dee10b632f3f", // HashPack
+                "a9104b630bac1929ad9ac2a73a17ed4beead1889341f307bff502f89b46c8501", // Blade
+            ]
+        })
         const session = await this.waitForApprovalOrModalClose(uri, approval, connectModal)
 
         const result = session !== null ? await this.makeWalletSession(session) : null
