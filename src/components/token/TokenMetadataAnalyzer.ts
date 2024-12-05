@@ -23,8 +23,9 @@ import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
 import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
 import {AssetCache} from "@/utils/cache/AssetCache.ts";
-import {blob2Topic, blob2URL} from "@/utils/URLUtils.ts";
+import {blob2URL} from "@/utils/URLUtils.ts";
 import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
+import {HCSURI} from "@/utils/HCSURI.ts";
 
 export interface NftAttribute {
     trait_type: string
@@ -202,16 +203,15 @@ export class TokenMetadataAnalyzer {
 
         Content type       | Example syntax                                                       | See token example
         ===================+======================================================================+================================================
-        IPFS URL           | "ipfs://QmSoJYWXvds2qcPeRGJdirP7YTCYvZv4fo43TadwmbvV8H"              | https://hashscan.io/mainnet/token/0.0.5679552/1
+        IPFS URI           | "ipfs://QmSoJYWXvds2qcPeRGJdirP7YTCYvZv4fo43TadwmbvV8H"              | https://hashscan.io/mainnet/token/0.0.5679552/1
         -------------------+----------------------------------------------------------------------+------------------------------------------------
-        IPFS CID           | "QmSoJYWXvds2qcPeRGJdirP7YTCYvZv4fo43TadwmbvV8H"                     | https://hashscan.io/mainnet/token/0.0.5844106/1
+        IPFS CID           | "QmSoJYWXvds2qcPeRGJdirP7YTCYvZv4fo43TadwmbvV8H"                     |
         -------------------+----------------------------------------------------------------------+------------------------------------------------
-        HCS URL            | "hcs://6/0.0.5671138"                                                | https://hashscan.io/mainnet/token/0.0.5671193/1
+        Arweave URI        | "ar://VkeESz5eDWA6RWn2cOYafGEvZDIgWzHi91GM3X3N7eI"                   | https://hashscan.io/mainnet/token/0.0.6096205/1
         -------------------+----------------------------------------------------------------------+------------------------------------------------
-        Plain Topic ID     | "0.0.5679050"                                                        | https://hashscan.io/mainnet/token/0.0.5679054/1
+        Arweave CID        | "sFcjESRXMJmSJxuHo4f606jZgSb4Si0IPrIYD9kQfko"                        | https://hashscan.io/mainnet/token/0.0.1518294/1
         -------------------+----------------------------------------------------------------------+------------------------------------------------
-        HCS SUBMIT MESSAGE | "1713509435.878762003"                                               | https://hashscan.io/mainnet/token/0.0.5488525/1
-        tx timestamp       |                                                                      |
+        HCS-1 URL          | "hcs://1/0.0.5016827"                                                | https://hashscan.io/mainnet/token/0.0.5016839/1
         -------------------+----------------------------------------------------------------------+------------------------------------------------
         Plain HTTPS URL    | "https://fliggs-nfts-metadata.s3.us-east-2.amazonaws.com/degen.json" | https://hashscan.io/mainnet/token/0.0.6029502/1
                            | (Note this one causes a CORS error)                                  |
@@ -236,9 +236,9 @@ export class TokenMetadataAnalyzer {
             if (url !== null) {
                 content.value = await this.readMetadataFromUrl(url)
             } else {
-                const topic = blob2Topic(metadata.value)
-                if (topic !== null) {
-                    content.value = await this.readMetadataFromTopic(topic)
+                const hcsUri = HCSURI.parse(metadata.value)
+                if (hcsUri && hcsUri.version === '1') { // HCS-1 topic
+                    content.value = await this.readMetadataFromTopic(hcsUri.topicId)
                 } else if (Timestamp.parse(metadata.value) !== null) {
                     content.value = await this.readMetadataFromTimestamp(metadata.value)
                 } else {
@@ -253,19 +253,21 @@ export class TokenMetadataAnalyzer {
 
     private async updateImage(): Promise<void> {
         const uri = this.getProperty('image') ?? this.getProperty(('picture'))
-        let url = blob2URL(uri, this.ipfsGatewayPrefix, this.arweaveServer)
-        if (url === null) {
-            const topicId = blob2Topic(uri)
-            console.log(`image topic: ${topicId}`)
-            if (topicId !== null) {
-                let content = await HCSAssetCache.instance.lookup(topicId)
-                url = content?.getDataURL() ?? uri
-            } else {
-                url = uri
+        if (uri !== null) {
+            let url = blob2URL(uri, this.ipfsGatewayPrefix, this.arweaveServer)
+            if (url === null) {
+                const hcsUri = HCSURI.parse(uri)
+                if (hcsUri && hcsUri.version === '1') { // HCS-1 topic
+                    let content = await HCSAssetCache.instance.lookup(hcsUri.topicId)
+                    url = content?.getDataURL() ?? uri
+                } else {
+                    url = uri
+                }
             }
+            this.imageUrl.value = url
+        } else {
+            this.imageUrl.value = null
         }
-        console.log(`image URL: ${url}`)
-        this.imageUrl.value = url
     }
 
     private async readMetadataFromUrl(url: string): Promise<any> {

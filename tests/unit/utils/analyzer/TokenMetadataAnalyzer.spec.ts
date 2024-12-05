@@ -49,8 +49,7 @@ import {
     TIMESTAMP,
     TIMESTAMP_METADATA,
     TIMESTAMP_METADATA_CONTENT,
-    TIMESTAMP_SUBMIT_MESSAGE,
-    TOPIC_METADATA
+    TIMESTAMP_SUBMIT_MESSAGE
 } from "../../Mocks";
 
 describe("TokenMetadataAnalyzer.spec.ts", () => {
@@ -349,7 +348,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.restore()
     })
 
-    test.skip("metadata containing HCS URL", async () => {
+    test.skip("metadata containing HCS-1 URI", async () => {
 
         // Mock axios
         const mock = new MockAdapter(axios)
@@ -362,35 +361,6 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         await flushPromises()
 
         expect(analyzer.rawMetadata.value).toBe(HCS_METADATA)
-        expect(analyzer.imageUrl.value).toBe(null)
-        expect(analyzer.creator.value).toBe(null)
-        expect(analyzer.creatorDID.value).toBe(null)
-        expect(analyzer.description.value).toBe(null)
-        expect(analyzer.name.value).toBe(null)
-        expect(analyzer.type.value).toBe(null)
-        expect(analyzer.metadataContent.value).toStrictEqual(HCS_METADATA_CONTENT)
-        expect(analyzer.metadataKeys.value).toStrictEqual(['o', 'c'])
-        expect(analyzer.metadataString.value).toBe(JSON.stringify(HCS_METADATA_CONTENT))
-
-        analyzer.unmount()
-        await flushPromises()
-
-        mock.restore()
-    })
-
-    test.skip("metadata containing topic ID", async () => {
-
-        // Mock axios
-        const mock = new MockAdapter(axios)
-        const matcher = `/api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
-        mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
-
-        const metadata = ref(TOPIC_METADATA)
-        const analyzer = new TokenMetadataAnalyzer(metadata, IPFS_GATEWAY_PREFIX)
-        analyzer.mount()
-        await flushPromises()
-
-        expect(analyzer.rawMetadata.value).toBe(TOPIC_METADATA)
         expect(analyzer.imageUrl.value).toBe(null)
         expect(analyzer.creator.value).toBe(null)
         expect(analyzer.creatorDID.value).toBe(null)
