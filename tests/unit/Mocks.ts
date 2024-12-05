@@ -636,8 +636,8 @@ export const NON_STD_METADATA_CONTENT = {
 export const HTTPS_METADATA = "aHR0cHM6Ly9jbG91ZGZsYXJlLWlwZnMuY29tL2lwZnMvUW1QSjhnbTFIOFY3Ym9SR1JiV3ZyWloxSkMyeXFzajNoYkJKeUJhTFBnSG5ROA=="
 export const HTTPS_METADATA_CONTENT_URL = "https://cloudflare-ipfs.com/ipfs/QmPJ8gm1H8V7boRGRbWvrZZ1JC2yqsj3hbBJyBaLPgHnQ8"
 
-export const HCS_METADATA = "aGNzOi8vNi8wLjAuNTY3MTEzOA=="
-export const HCS_TOPIC = "0.0.5671138"
+export const HCS_METADATA = "aGNzOi8vMS8wLjAuNTAxNjgyNw=="
+export const HCS_TOPIC = "0.0.5016827"
 export const HCS_TOPIC_MESSAGES = {
     "messages": [{
         "chunk_info": {
@@ -645,26 +645,24 @@ export const HCS_TOPIC_MESSAGES = {
                 "account_id": "0.0.4368166",
                 "nonce": 0,
                 "scheduled": false,
-                "transaction_valid_start": "1713898867.880037813"
+                "transaction_valid_start": "1710651204.524472492"
             }, "number": 1, "total": 1
         },
-        "consensus_timestamp": "1713898880.739044003",
-        "message": "eyJ0X2lkIjoiMC4wLjU2NzExNTUiLCJvcCI6InJlZ2lzdGVyIiwibSI6IlZlcnNpb24gMS4iLCJwIjoiaGNzLTYifQ==",
+        "consensus_timestamp": "1710651215.535497003",
+        "message": "eyJvIjowLCJjIjoiZGF0YTphcHBsaWNhdGlvbi9qc29uO2Jhc2U2NCxLTFV2L1FCZ3hRVUFvc3NwTElDcDZUTXdBM01DaENJRFdVTS9hdktldHVaOXU1RlEyODJCVjlGcWhGZUdRTCtSdEgyL0E1MDZnM01CalMvS2dFQUNBeHgwOENYdmJZV283eEcrWDB6Wmw2UlE1ZWp0QUE5SDVqd2MyWVJFcHZpZXpvNU1vYmN2R0RBSDM3TVZGMjlOSmFXM3B2RVpJZGhzK0o2eEtqNjhuYUErTWtKNlRzaWtHSnlXa2ZZWkR2dktqVDJTZHNlM1F3ZWRVcUFraXdLVDhIMUhpMDdwN2RmREVJK25hTW52K1lyb013SUVBRE1USU1WZzBGM3ZEMFFXekE9PSJ9",
         "payer_account_id": "0.0.4368166",
-        "running_hash": "H9o6QzEEJDOxcdfIkT9Rw0zf+1VxLfyeod18r4faaObHbBy/qkxLgFVjWRB5JzAn",
+        "running_hash": "Lidj0R4ZZkguqigovmKat9FTkKNQwcqeNUj0ZfvH6DaaHD/b+VoyL8hHhbB2tAwK",
         "running_hash_version": 3,
         "sequence_number": 1,
-        "topic_id": "0.0.5671138"
+        "topic_id": "0.0.5016827"
     }], "links": {"next": null}
 }
 export const HCS_METADATA_CONTENT = {
-    "t_id": "0.0.5671155",
-    "op": "register",
-    "m": "Version 1.",
-    "p": "hcs-6"
+    "o": 0,
+    "c": "data:application/json;base64,KLUv/QBgxQUAosspLICp6TMwA3MChCIDWUM/avKetuZ9u5FQ282BV9FqhFeGQL+RtH2/A506g3MBjS/KgEACAxx08CXvbYWo7xG+X0zZl6RQ5ejtAA9H5jwc2YREpviezo5MobcvGDAH37MVF29NJaW3pvEZIdhs+J6xKj68naA+MkJ6TsikGJyWkfYZDvvKjT2Sdse3QwedUqAkiwKT8H1Hi07p7dfDEI+naMnv+YroMwIEADMTIMVg0F3vD0QWzA=="
 }
 
-export const TOPIC_METADATA = "MC4wLjU2NzExMzg="
+export const TOPIC_METADATA = "MC4wLjUwMTY4Mjc="
 
 export const TIMESTAMP_METADATA = "MTcxMzUwOTQzNS44Nzg3NjIwMDM="
 export const TIMESTAMP = "1713509435.878762003"

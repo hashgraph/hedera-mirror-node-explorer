@@ -353,7 +353,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
 
         // Mock axios
         const mock = new MockAdapter(axios)
-        const matcher = "/api/v1/topics/" + HCS_TOPIC + "/messages?limit=1&order=desc"
+        const matcher = `/api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
         mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
 
         const metadata = ref(HCS_METADATA)
@@ -369,7 +369,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         expect(analyzer.name.value).toBe(null)
         expect(analyzer.type.value).toBe(null)
         expect(analyzer.metadataContent.value).toStrictEqual(HCS_METADATA_CONTENT)
-        expect(analyzer.metadataKeys.value).toStrictEqual(['t_id', 'op', 'm', 'p'])
+        expect(analyzer.metadataKeys.value).toStrictEqual(['o', 'c'])
         expect(analyzer.metadataString.value).toBe(JSON.stringify(HCS_METADATA_CONTENT))
 
         analyzer.unmount()
@@ -382,7 +382,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
 
         // Mock axios
         const mock = new MockAdapter(axios)
-        const matcher = "/api/v1/topics/" + HCS_TOPIC + "/messages?limit=1&order=desc"
+        const matcher = `/api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
         mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
 
         const metadata = ref(TOPIC_METADATA)
@@ -398,7 +398,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         expect(analyzer.name.value).toBe(null)
         expect(analyzer.type.value).toBe(null)
         expect(analyzer.metadataContent.value).toStrictEqual(HCS_METADATA_CONTENT)
-        expect(analyzer.metadataKeys.value).toStrictEqual(['t_id', 'op', 'm', 'p'])
+        expect(analyzer.metadataKeys.value).toStrictEqual(['o', 'c'])
         expect(analyzer.metadataString.value).toBe(JSON.stringify(HCS_METADATA_CONTENT))
 
         analyzer.unmount()
