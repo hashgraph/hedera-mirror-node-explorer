@@ -78,12 +78,14 @@ export class WalletConnectAgent {
         const { uri, approval } = await this.signClient.connect(params)
         const {WalletConnectModal} = await import("@walletconnect/modal")
         // https://docs.reown.com/advanced/walletconnectmodal/options
-        // https://walletguide.walletconnect.network
         const connectModal = new WalletConnectModal({
             projectId: this.projectId,
             explorerRecommendedWalletIds:[
+                // https://walletguide.walletconnect.network
                 "a29498d225fa4b13468ff4d6cf4ae0ea4adcbd95f07ce8a843a1dee10b632f3f", // HashPack
                 "a9104b630bac1929ad9ac2a73a17ed4beead1889341f307bff502f89b46c8501", // Blade
+                "c57ca95b47569778a828d19178114f4db188b89b763c899ba0be274e97267d96", // Metamask
+                "fd20dc426fb37566d803205b19bbc1d4096b248ac04548e3cfb6b3a38bd033aa", // Coinbase
             ]
         })
         const session = await this.waitForApprovalOrModalClose(uri, approval, connectModal)
