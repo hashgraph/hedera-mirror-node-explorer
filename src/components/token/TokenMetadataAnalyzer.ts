@@ -23,8 +23,8 @@ import axios from "axios";
 import {Timestamp} from "@/utils/Timestamp";
 import {TopicMessageByTimestampCache} from "@/utils/cache/TopicMessageByTimestampCache.ts";
 import {AssetCache} from "@/utils/cache/AssetCache.ts";
-import {LastTopicMessageByIdCache} from "@/utils/cache/LastTopicMessageByIdCache.ts";
 import {blob2Topic, blob2URL} from "@/utils/URLUtils.ts";
+import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
 
 export interface NftAttribute {
     trait_type: string
@@ -189,11 +189,7 @@ export class TokenMetadataAnalyzer {
         return result
     })
 
-    public imageUrl = computed<string | null>(
-        () => {
-            const uri = this.getProperty('image') ?? this.getProperty(('picture'))
-            return blob2URL(uri, this.ipfsGatewayPrefix, this.arweaveServer) ?? uri
-        })
+    public imageUrl = ref<string | null>(null)
 
     //
     // Private
@@ -252,6 +248,24 @@ export class TokenMetadataAnalyzer {
         } else {
             content.value = null
         }
+        await this.updateImage()
+    }
+
+    private async updateImage(): Promise<void> {
+        const uri = this.getProperty('image') ?? this.getProperty(('picture'))
+        let url = blob2URL(uri, this.ipfsGatewayPrefix, this.arweaveServer)
+        if (url === null) {
+            const topicId = blob2Topic(uri)
+            console.log(`image topic: ${topicId}`)
+            if (topicId !== null) {
+                let content = await HCSAssetCache.instance.lookup(topicId)
+                url = content?.getDataURL() ?? uri
+            } else {
+                url = uri
+            }
+        }
+        console.log(`image URL: ${url}`)
+        this.imageUrl.value = url
     }
 
     private async readMetadataFromUrl(url: string): Promise<any> {
@@ -276,10 +290,10 @@ export class TokenMetadataAnalyzer {
         // console.log(`readMetadataFromTopic: ${id}`)
         let result: any
         try {
-            const topicMessage = await LastTopicMessageByIdCache.instance.lookup(id)
+            const content = await HCSAssetCache.instance.lookup(id)
             this.loadSuccessRef.value = true
-            if (topicMessage !== null) {
-                result = JSON.parse(Buffer.from(topicMessage.message, 'base64').toString())
+            if (content?.content) {
+                result = JSON.parse(Buffer.from(content.content).toString())
             } else {
                 result = null
             }
