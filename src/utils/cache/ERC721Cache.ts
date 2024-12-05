@@ -42,6 +42,11 @@ export class ERC721Cache extends SingletonCache<ERC721Contract[]> {
         return Promise.resolve(result)
     }
 
+    public async populate(contractId: string, erc721Contract: ERC721Contract): Promise<void> {
+        const entries = await ERC721Cache.instance.lookup()
+        entries.push(erc721Contract)
+    }
+
     //
     // Cache
     //
