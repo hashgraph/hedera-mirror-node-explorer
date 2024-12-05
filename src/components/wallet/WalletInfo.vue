@@ -80,7 +80,7 @@
 
     </template>
     <template v-else>
-      <div>Reconnect to your wallet and make sure to choose {{ currentNetwork.toUpperCase() }} accounts</div>
+      <div>Reconnect to your wallet and make sure to select {{ currentNetwork.toUpperCase() }} accounts</div>
     </template>
 
     <!-- Footer -->
