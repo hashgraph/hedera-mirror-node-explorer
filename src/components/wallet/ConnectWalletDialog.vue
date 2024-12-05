@@ -56,7 +56,7 @@ import DialogButton from "@/components/dialog/DialogButton.vue";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 import DialogStatus from "@/components/dialog/DialogStatus.vue";
-import {WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletClientError} from "@/utils/wallet/client/WalletClient";
 
 export default defineComponent({
   name: "ConnectWalletDialog",
@@ -77,12 +77,12 @@ export default defineComponent({
   setup(props) {
     const title = "Could not connect wallet"
     const mainMessage = computed(
-        () => props.error instanceof WalletDriverError
+        () => props.error instanceof WalletClientError
             ? props.error.message
             : "Unexpected error"
     )
     const extraMessage = computed(
-        () => props.error instanceof WalletDriverError
+        () => props.error instanceof WalletClientError
             ? props.error.extra
             : JSON.stringify(props.error)
     )

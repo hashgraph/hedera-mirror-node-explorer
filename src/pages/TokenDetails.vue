@@ -363,6 +363,7 @@ import MetadataSection from "@/components/token/MetadataSection.vue";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 
 export default defineComponent({
 
@@ -469,7 +470,7 @@ export default defineComponent({
     onMounted(() => nftHolderTableController.mount())
     onBeforeUnmount(() => nftHolderTableController.unmount())
 
-    const isWalletConnected = computed(() => walletManager.connected.value)
+    const isWalletConnected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 
     const onActionCompleted = () => {
       if (tokenAnalyzer.isNft.value) {

@@ -122,7 +122,7 @@ export default defineComponent({
     const isMediumScreen = inject('isMediumScreen', true)
 
     const isWalletConnected = computed(
-        () => walletManager.connected.value && walletManager.accountId.value === props.controller.accountId.value)
+        () => walletManager.accountId.value === props.controller.accountId.value)
     // const isWalletConnected = computed(() => false)
 
     return {
