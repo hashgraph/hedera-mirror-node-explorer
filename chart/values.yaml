@@ -172,6 +172,9 @@ volumeMounts:
   hiero-explorer-config:
     mountPath: /app/networks-config.json
     subPath: networks-config.json
+  hiero-core-config:
+    mountPath: /app/core-config.json
+    subPath: core-config.json
 
 # Volume mounts to add to the container. The key is the volume name and the value is the volume definition. Evaluated as a template.
 volumes:
@@ -181,6 +184,9 @@ volumes:
     configMap:
       name: '{{ include "hiero-explorer.fullname" . }}-config'
   hiero-explorer-config:
+    configMap:
+      name: '{{ include "hiero-explorer.fullname" . }}-config'
+  hiero-core-config:
     configMap:
       name: '{{ include "hiero-explorer.fullname" . }}-config'
 
@@ -213,3 +219,25 @@ config: |
       "ledgerID": "02"
     }
   ]
+core-config: |
+  {
+    "productName": null,
+    "productLogoURL": null,
+    "documentTitlePrefix": null,
+    "productDescription": null,
+    "metaDescription": null,
+    "metaURL": null,
+    "builtOnLogoURL": null,
+    "builtOnURL": null,
+    "sponsorLogoURL": null,
+    "sponsorURL": null,
+    "termsOfUseURL": null,
+    "estimatorNotice": null,
+    "walletChooserDisclaimerPopup": null,
+    "googleTagID": null,
+    "cookiesDialogContent": null,
+    "ipfsGatewayURL": null,
+    "arweaveServerURL": null,
+    "cryptoName": null,
+    "cryptoSymbol": null
+  }

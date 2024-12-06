@@ -43,14 +43,14 @@ data:
         }
 
         {{- if .Values.proxyPass }}
-          
+
           {{- range $path, $backend := .Values.proxyPass }}
           location {{ $path }} {
             proxy_pass {{ tpl $backend $ }};
           }
           {{- end }}
 
-     
+
         {{- end }}
 
         error_page   500 502 503 504  /50x.html;
@@ -60,3 +60,4 @@ data:
       }
     }
   networks-config.json: {{ .Values.config | toJson }}
+  core-config.json: {{ index .Values "core-config" | toJson }}
