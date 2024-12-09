@@ -24,29 +24,31 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+  <PageFrame>
+    <template #pageContent>
+      <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Admin Key for Account </span>
-        <div id="accountId" v-if="normalizedAccountId"
-             class="h-is-secondary-text has-text-weight-light is-inline-block">
-          <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
-        </div>
-        <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
-      </template>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Admin Key for Account </span>
+            <div id="accountId" v-if="normalizedAccountId"
+                 class="h-is-secondary-text has-text-weight-light is-inline-block">
+              <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
+            </div>
+            <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
+          </template>
 
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
+          <template v-slot:content>
+            <NotificationBanner v-if="notification" :message="notification"/>
 
-        <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
-                  :show-none="true"/>
-      </template>
-    </DashboardCard>
+            <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
+                      :show-none="true"/>
+          </template>
+        </DashboardCard>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -58,7 +60,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -73,7 +75,7 @@ export default defineComponent({
     NotificationBanner,
     KeyValue,
     AccountLink,
-    Footer,
+    PageFrame,
     DashboardCard,
   },
 

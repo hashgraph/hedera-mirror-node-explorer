@@ -24,18 +24,20 @@
 
 <template>
 
-  <section class="section has-text-left" style="min-height: 450px">
+  <PageFrame>
+    <template #pageContent>
+      <section class="section has-text-left" style="min-height: 450px">
 
-    <div class="is-flex is-align-items-center mb-6">
-      <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">
-      <span class="ml-4">Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp</span>
-    </div>
+        <div class="is-flex is-align-items-center mb-6">
+          <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">
+          <span class="ml-4">Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp</span>
+        </div>
 
-    <SearchBarV2/>
+        <SearchBarV2/>
 
-  </section>
-
-  <Footer :keep-background="true"/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -49,11 +51,11 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watc
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 
 export default defineComponent({
   name: 'MobileSearch',
-  components: {Footer, SearchBarV2},
+  components: {PageFrame, SearchBarV2},
   props: {
     "searchedId": String,
     "network": String

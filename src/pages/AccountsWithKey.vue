@@ -24,24 +24,26 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+  <PageFrame>
+    <template #pageContent>
+      <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Accounts with Key </span>
-        <span class="h-is-tertiary-text">{{ pubKey }}</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-bind:controller="accountTableController"/>
-      </template>
-      <template v-slot:content>
-        <AccountTable :controller="accountTableController"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Accounts with Key </span>
+            <span class="h-is-tertiary-text">{{ pubKey }}</span>
+          </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="accountTableController"/>
+          </template>
+          <template v-slot:content>
+            <AccountTable :controller="accountTableController"/>
+          </template>
+        </DashboardCard>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -54,7 +56,7 @@
 import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import AccountTable from "@/components/account/AccountTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {useRouter} from "vue-router";
@@ -69,7 +71,7 @@ export default defineComponent({
 
   components: {
     PlayPauseButton,
-    Footer,
+    PageFrame,
     DashboardCard,
     AccountTable
   },

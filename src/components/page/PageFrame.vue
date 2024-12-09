@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,23 +24,15 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
+    <TopNavBar/>
+  </section>
 
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Tokens matching </span>
-            <span class="h-is-secondary-text">"{{ name }}"</span>
-          </template>
-          <template v-slot:content>
-            <TokensByNameTable :name="name"/>
-          </template>
-        </DashboardCard>
+  <hr v-if="!props.onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
 
-      </section>
-    </template>
-  </PageFrame>
+  <slot name="pageContent"/>
+
+  <Footer :keep-background="props.keepFooterBackground"/>
 
 </template>
 
@@ -48,41 +40,23 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
-import TokensByNameTable from "@/components/token/TokensByNameTable.vue";
+import {inject} from "vue";
+import Footer from "@/components/Footer.vue";
+import TopNavBar from "@/components/TopNavBar.vue";
 
-export default defineComponent({
-  name: 'TokensByName',
-
-  props: {
-    network: String,
-    name: {
-      type: String as PropType<string|null>,
-      default: null
-    }
+const props = defineProps({
+  onMainDashboardPage: {
+    type: Boolean,
+    default: false
   },
-
-  components: {
-    TokensByNameTable,
-    PageFrame,
-    DashboardCard,
-  },
-
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-    }
+  keepFooterBackground: {
+    type: Boolean,
+    default: false
   }
-});
+})
+const isMediumScreen = inject('isMediumScreen', true)
 
 </script>
 
@@ -90,4 +64,19 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+section.section.is-top-section {
+  padding-top: 0;
+  padding-bottom: 0;
+  background-image: url("assets/block-chain-bg.png");
+  background-repeat: no-repeat;
+  background-size: 104px
+}
+
+section.section.is-top-section.is-medium-screen {
+  padding-bottom: 30px;
+  background-size: 112px
+}
+
+</style>

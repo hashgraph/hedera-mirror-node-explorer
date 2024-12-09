@@ -20,12 +20,6 @@
 
 <template>
 
-  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
-    <TopNavBar/>
-  </section>
-
-  <hr v-if="!onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
-
   <router-view/>
 
   <CookiesDialog v-model:show-dialog="showCookiesDialog"
@@ -38,7 +32,6 @@
 <script setup lang="ts">
 
 import {computed, onBeforeMount, onBeforeUnmount, onMounted, PropType, provide, ref, watch} from 'vue';
-import TopNavBar from "@/components/TopNavBar.vue";
 import {
   coreConfigKey,
   errorKey,
@@ -49,7 +42,6 @@ import {
   suggestionKey
 } from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
-import {useRoute} from "vue-router";
 import CookiesDialog from "@/components/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
@@ -66,11 +58,6 @@ const props = defineProps({
     type: Object as PropType<NetworkConfig>,
     required: true
   }
-})
-
-const route = useRoute()
-const onMainDashboardPage = computed(() => {
-  return route.name == "MainDashboard"
 })
 
 const buildRelease = import.meta.env.VITE_BUILD_RELEASE ?? "not available"
@@ -182,19 +169,4 @@ function insertGoogleTag(tagId: string) {
 
 </script>
 
-<style scoped>
-
-section.section.is-top-section {
-  padding-top: 0;
-  padding-bottom: 0;
-  background-image: url("assets/block-chain-bg.png");
-  background-repeat: no-repeat;
-  background-size: 104px
-}
-
-section.section.is-top-section.is-medium-screen {
-  padding-bottom: 30px;
-  background-size: 112px
-}
-
-</style>
+<style/>

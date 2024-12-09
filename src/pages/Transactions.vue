@@ -24,30 +24,32 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <PageFrame>
+    <template #pageContent>
+      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-      <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
-    </div>
-
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Transactions</span>
-      </template>
-      <template v-slot:control>
-        <div class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-bind:controller="transactionTableController"/>
-          <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
+        <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
+          <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
         </div>
-      </template>
-      <template v-slot:content>
-        <TransactionTable v-bind:controller="transactionTableController"/>
-      </template>
-    </DashboardCard>
 
-  </section>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Recent Transactions</span>
+          </template>
+          <template v-slot:control>
+            <div class="is-flex is-align-items-flex-end">
+              <PlayPauseButton v-bind:controller="transactionTableController"/>
+              <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
+            </div>
+          </template>
+          <template v-slot:content>
+            <TransactionTable v-bind:controller="transactionTableController"/>
+          </template>
+        </DashboardCard>
 
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -64,7 +66,7 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {AppStorage} from "@/AppStorage";
 
@@ -76,7 +78,7 @@ export default defineComponent({
   },
 
   components: {
-    Footer,
+    PageFrame,
     DashboardCard,
     TransactionFilterSelect,
     PlayPauseButton,

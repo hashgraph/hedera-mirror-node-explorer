@@ -24,14 +24,16 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-    <TokensSection
-        :account-id="accountId"
-        :full-page="true"
-    />
-  </section>
-
-  <Footer/>
+  <PageFrame>
+    <template #pageContent>
+      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+        <TokensSection
+            :account-id="accountId"
+            :full-page="true"
+        />
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -42,7 +44,7 @@
 <script lang="ts">
 
 import {defineComponent, inject, PropType} from 'vue';
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import TokensSection from "@/components/token/TokensSection.vue";
 
 export default defineComponent({
@@ -58,7 +60,7 @@ export default defineComponent({
 
   components: {
     TokensSection,
-    Footer,
+    PageFrame,
   },
 
   setup() {

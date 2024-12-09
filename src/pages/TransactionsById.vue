@@ -24,21 +24,23 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <PageFrame>
+    <template #pageContent>
+      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Transactions with ID </span>
-        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-      </template>
-      <template v-slot:content>
-        <TransactionByIdTable v-bind:transactions="transactions"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Transactions with ID </span>
+            <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
+          </template>
+          <template v-slot:content>
+            <TransactionByIdTable v-bind:transactions="transactions"/>
+          </template>
+        </DashboardCard>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -52,7 +54,7 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {TransactionID} from "@/utils/TransactionID";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 export default defineComponent({
@@ -64,7 +66,7 @@ export default defineComponent({
   },
 
   components: {
-    Footer,
+    PageFrame,
     DashboardCard,
     TransactionByIdTable,
   },
