@@ -229,7 +229,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
-import {WalletDriverCancelError, WalletDriverError} from "@/utils/wallet/WalletDriverError";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import {TransactionID} from "@/utils/TransactionID";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import DownloadButton from "@/components/DownloadButton.vue";
@@ -405,11 +405,11 @@ export default defineComponent({
 
       } catch (error) {
 
-        if (error instanceof WalletDriverCancelError) {
+        if (error instanceof WalletClientRejectError) {
           showProgressDialog.value = false
         } else {
           progressDialogMode.value = Mode.Error
-          if (error instanceof WalletDriverError) {
+          if (error instanceof WalletClientError) {
             progressMainMessage.value = error.message
             progressExtraMessage.value = error.extra
           } else {
@@ -470,9 +470,6 @@ export default defineComponent({
       cryptoName,
       enableWallet: routeManager.enableWallet,
       connecting,
-      connected: walletManager.connected,
-      walletName: walletManager.walletName,
-      walletLogoURL: walletManager.getActiveDriver().logoURL,
       accountId: walletManager.accountId,
       isHieroWallet: walletManager.isHieroWallet,
       accountChecksum: accountLocParser.accountChecksum,

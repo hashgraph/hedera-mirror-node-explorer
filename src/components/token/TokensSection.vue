@@ -282,8 +282,7 @@ const rejectEnabled = computed(() => {
   const isTableFilled = (selectedTab.value === 'fungible' && fungibleTableController.totalRowCount.value >= 1)
       || (selectedTab.value === 'nfts' && nftsTableController.totalRowCount.value >= 1)
 
-  return walletManager.connected.value
-      && walletManager.isHieroWallet.value
+  return walletManager.isHieroWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
 })
@@ -336,8 +335,7 @@ const claimEnabled = computed(() => {
   const isTableFilled = (airdropSelectedTab.value === 'fungible' && fungibleAirdropTableController.totalRowCount.value >= 1)
       || (airdropSelectedTab.value === 'nfts' && nftsAirdropTableController.totalRowCount.value >= 1)
 
-  return walletManager.connected.value
-      && walletManager.isHieroWallet.value
+  return walletManager.isHieroWallet.value
       && walletManager.accountId.value === props.accountId
       && isTableFilled
 })

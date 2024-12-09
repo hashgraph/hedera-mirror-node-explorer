@@ -87,15 +87,6 @@ export async function wallet_switchEthereumChain(p: EIP1193Provider, newChainId:
     })
 }
 
-export async function wallet_requestPermissions(p: EIP1193Provider): Promise<void> {
-    await p.request({
-        "method": "wallet_requestPermissions",
-        "params": [{
-            eth_accounts: {}
-        }],
-    })
-}
-
 export async function wallet_revokePermissions(p: EIP1193Provider): Promise<void> {
     await p.request({
         "method": "wallet_revokePermissions",
@@ -154,28 +145,5 @@ export async function wallet_addEthereumChain(p: EIP1193Provider, param: AddEthe
     await p.request({
         "method": "wallet_addEthereumChain",
         "params": [ param ],
-    })
-}
-
-
-export interface WatchAssetParameters {
-    // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-747.md
-    type: string // The asset's interface, e.g. 'ERC1046'
-    options: WatchAssetOptions
-}
-
-export interface WatchAssetOptions {
-    // https://docs.metamask.io/wallet/reference/wallet_watchasset/
-    address: string // The hexadecimal address of the token contract
-    symbol?: string // A ticker symbol or shorthand, up to 11 characters (optional for ERC-20 tokens)
-    decimals?: number // The number of token decimals (optional for ERC-20 tokens)
-    image?: string // A string URL of the token logo (optional for ERC-20 tokens)
-    tokenId?: string // The unique identifier of the NFT (required for ERC-721 and ERC-1155 tokens)
-}
-
-export async function wallet_watchAsset(p: EIP1193Provider, params: WatchAssetParameters): Promise<void> {
-    await p.request({
-        "method": "wallet_watchAsset",
-        "params": params,
     })
 }

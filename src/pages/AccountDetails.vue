@@ -576,8 +576,8 @@ const onUpdateAccount = () => updateDialogController.visible.value = true
 
 const onUpdateCompleted = () => accountLocParser.remount()
 
-const isMyAccount = computed(() => walletManager.connected.value && walletManager.accountId.value === props.accountId)
-const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.getActiveDriver().iconURL || "" : "")
+const isMyAccount = computed(() => walletManager.accountId.value === props.accountId)
+const walletIconURL = computed(() => (isMyAccount.value) ? walletManager.walletIconURL.value || "" : "")
 const isHieroWallet = computed(() => walletManager.isHieroWallet.value)
 const isAccountEditable = computed(() => isMyAccount.value && isHieroWallet.value
 )

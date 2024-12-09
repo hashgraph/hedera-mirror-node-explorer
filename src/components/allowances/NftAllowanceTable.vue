@@ -132,7 +132,6 @@ export default defineComponent({
 
     const isWalletConnected = computed(
         () => walletManager.isHieroWallet.value
-            && walletManager.connected.value
             && walletManager.accountId.value === props.controller.accountId.value
     )
 

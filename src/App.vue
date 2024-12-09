@@ -55,6 +55,7 @@ import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import {walletManager} from "@/router.ts";
 
 const props = defineProps({
   "coreConfig": {
@@ -145,6 +146,7 @@ onBeforeMount(() => {
 onMounted(() => {
   windowWidth.value = window.innerWidth
   window.addEventListener('resize', onResizeHandler);
+      walletManager.launch()
 })
 
 onBeforeUnmount(() => {

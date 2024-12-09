@@ -28,7 +28,7 @@ import {
     Router,
     RouteRecordRaw
 } from "vue-router";
-import {App, computed, watch} from "vue";
+import {App, computed, shallowRef, watch} from "vue";
 import {AppStorage} from "@/AppStorage";
 import PageNotFound from "@/pages/PageNotFound.vue";
 import MainDashboard from "@/pages/MainDashboard.vue";
@@ -68,8 +68,8 @@ import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
 export class RouteManager {
 
     public readonly router: Router
-    private coreConfig = CoreConfig.FALLBACK
-    private networkConfig = NetworkConfig.FALLBACK
+    private readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
+    private readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
 
     //
     // Public
@@ -120,7 +120,7 @@ export class RouteManager {
     })
 
     public readonly nbNetworks = computed(() => {
-        return this.networkConfig.entries.length
+        return this.networkConfig.value.entries.length
     })
 
     public readonly currentNetworkEntry = computed(() => {
@@ -131,15 +131,15 @@ export class RouteManager {
         } else {
             networkName = networkParam
         }
-        const networkEntry = networkName != null ? this.networkConfig.lookup(networkName) : null
+        const networkEntry = networkName != null ? this.networkConfig.value.lookup(networkName) : null
 
-        return networkEntry != null ? networkEntry : this.networkConfig.entries[0]
+        return networkEntry != null ? networkEntry : this.networkConfig.value.entries[0]
     })
 
     public configure(coreConfig: CoreConfig, networkConfig: NetworkConfig) {
 
-        this.coreConfig = coreConfig
-        this.networkConfig = networkConfig
+        this.coreConfig.value = coreConfig
+        this.networkConfig.value = networkConfig
 
         //
         // Rebuilds route array
@@ -161,6 +161,20 @@ export class RouteManager {
         }
 
     }
+
+    public findChainID(network: string): number|null {
+        let result: number|null
+        const entry = this.networkConfig.value.lookup(network)
+        if (entry !== null) {
+            result = entry.sourcifySetup?.chainID ?? null
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    public readonly walletConnectID = computed(() => this.coreConfig.value.walletConnectID)
+
 
     //
     // To be moved to MobileMenu.vue
@@ -575,7 +589,7 @@ export class RouteManager {
     }
 
     private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
-        const envTitlePrefix = this.coreConfig.documentTitlePrefix
+        const envTitlePrefix = this.coreConfig.value.documentTitlePrefix
         const titlePrefix = envTitlePrefix !== "" ? envTitlePrefix + " " : ""
 
         switch (to.name as string) {
@@ -632,7 +646,7 @@ export class RouteManager {
             networkName = networkParam
         }
 
-        return networkName !== null ? this.networkConfig.lookup(networkName) : null
+        return networkName !== null ? this.networkConfig.value.lookup(networkName) : null
     }
 
     //
@@ -642,9 +656,9 @@ export class RouteManager {
     private addMetaTags(): void {
 
         const title = document.title
-        const productName = this.coreConfig.productName
-        const description = this.coreConfig.metaDescription
-        const url = this.coreConfig.metaURL
+        const productName = this.coreConfig.value.productName
+        const description = this.coreConfig.value.metaDescription
+        const url = this.coreConfig.value.metaURL
 
         this.createOrUpdateTagName('application-name', productName)
         this.createOrUpdateTagProperty('og:site_name', productName)

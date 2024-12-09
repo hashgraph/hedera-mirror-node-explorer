@@ -148,7 +148,7 @@ const cryptoName = CoreConfig.inject().cryptoName
 
 const computedAccountId = computed(() => props.accountId || null)
 const isWalletConnected = computed(
-    () => walletManager.connected.value && walletManager.accountId.value === props.accountId)
+        () => walletManager.accountId.value === props.accountId)
 
 const showApproveAllowanceDialog = ref(false)
 

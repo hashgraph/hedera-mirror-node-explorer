@@ -167,6 +167,19 @@ export class EntityID {
         return result
     }
 
+    public static compareAccountID(e1: string, e2: string): number {
+        let result: number
+        const o1 = EntityID.parse(e1)
+        const o2 = EntityID.parse(e2)
+        if (o1 !== null && o2 !== null) {
+            result = o1.compareAccountID(o2)
+        } else {
+            result = e1.localeCompare(e2)
+        }
+        return result
+    }
+
+
     // Utility
 
     public static readonly MAX_INT = Math.pow(2, 32) // Max supported by mirror node rest api on May 30, 2022

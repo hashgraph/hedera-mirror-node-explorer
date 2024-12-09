@@ -36,51 +36,72 @@
 
       <!-- accountID-checksum -->
       <div @click="hideWalletInfo" class="is-flex is-align-items-baseline ml-3" style="font-size: 1.35rem;">
-        <AccountLink :account-id="accountId"/>
-        <span class="has-text-grey h-is-smaller">
+        <template v-if="accountId">
+          <AccountLink :account-id="accountId"/>
+          <span class="has-text-grey h-is-smaller">
                     -{{ accountChecksum }}
                 </span>
+        </template>
+        <template v-else>
+          <div>No accounts</div>
+        </template>
       </div>
     </div>
 
-    <!-- EVM address -->
-    <div class="p-2" style="border: 0.5px solid white;">
-      <p class="has-text-grey h-is-smaller">EVM ADDRESS</p>
+    <template v-if="accountId">
 
-      <Copyable @copy-made="hideWalletInfo" :content-to-copy="accountEthereumAddress ?? ''">
-        <template v-slot:content>
-          <div class="is-flex is-align-items-center" style="gap: 0.5rem">
-            <p v-if="accountEthereumAddress">
-              {{ accountEthereumAddress.slice(0, 15) }}...{{ accountEthereumAddress.slice(-12) }}
-            </p>
+      <!-- EVM address -->
+      <div class="p-2" style="border: 0.5px solid white;">
+        <p class="has-text-grey h-is-smaller">EVM ADDRESS</p>
 
-            <p v-else>N/A</p>
-          </div>
-        </template>
-      </Copyable>
-    </div>
+        <Copyable @copy-made="hideWalletInfo" :content-to-copy="accountEthereumAddress ?? ''">
+          <template v-slot:content>
+            <div class="is-flex is-align-items-center" style="gap: 0.5rem">
+              <p v-if="accountEthereumAddress">
+                {{ accountEthereumAddress.slice(0, 15) }}...{{ accountEthereumAddress.slice(-12) }}
+              </p>
 
-    <!-- balance -->
-    <div class="p-2" style="border: 0.5px solid white;">
-      <p class="has-text-grey h-is-smaller">BALANCE</p>
-      <p class="has-text-white" style="font-size: 1.2rem">{{ formattedAmount }} ℏ</p>
+              <p v-else>N/A</p>
+            </div>
+          </template>
+        </Copyable>
+      </div>
 
-      <span>
+      <!-- balance -->
+      <div class="p-2" style="border: 0.5px solid white;">
+        <p class="has-text-grey h-is-smaller">BALANCE</p>
+        <p class="has-text-white" style="font-size: 1.2rem">{{ formattedAmount }} ℏ</p>
+
+        <span>
               <HbarExtra :hide-zero="false" :small-extra="false" :tbar-amount="tbarBalance ?? 0"/>
             </span>
-    </div>
+      </div>
+
+
+    </template>
+    <template v-else>
+      <div>Reconnect to your wallet and make sure to select {{ currentNetwork.toUpperCase() }} accounts</div>
+    </template>
 
     <!-- Footer -->
     <div class="is-flex is-justify-content-space-between" style="position: relative;">
-      <button @click="showAccountIdsModal = !showAccountIdsModal" class="button is-white is-small"
-              style="outline: none; height: 40px">
-        CHANGE ACCOUNT
-      </button>
+      <template v-if="accountId">
+        <button  @click="showAccountIdsModal = !showAccountIdsModal" class="button is-white is-small"
+                style="outline: none; height: 40px">
+          CHANGE ACCOUNT
+        </button>
 
-      <button @click="disconnectFromWallet" id="disconnectWalletButton" class="button is-white is-small"
-              style="outline: none; height: 40px">
-        DISCONNECT WALLET
-      </button>
+        <button @click="disconnectFromWallet" id="disconnectWalletButton" class="button is-white is-small"
+                style="outline: none; height: 40px">
+          DISCONNECT WALLET
+        </button>
+      </template>
+      <template v-else>
+        <button @click="reconnectToWallet" id="reconnectToWallet" class="button is-white is-small"
+                style="outline: none; height: 40px">
+          RECONNECT WALLET
+        </button>
+      </template>
 
       <div v-if="showAccountIdsModal"
            :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}"
@@ -141,7 +162,7 @@ export default defineComponent({
       default: undefined,
     },
   },
-  emit: ['walletDisconnect', 'changeAccount', 'update:showWalletInfo'],
+  emit: ['walletDisconnect', 'walletReconnect', 'changeAccount', 'update:showWalletInfo'],
 
   setup(props, ctx) {
     const isSmallScreen = inject('isSmallScreen', true)
@@ -200,6 +221,16 @@ export default defineComponent({
     const disconnectFromWallet = () => {
       ctx.emit('walletDisconnect', true)
       showAccountIdsModal.value = false;
+      hideWalletInfo()
+    }
+
+    //
+    // reconnect to wallet
+    //
+    const reconnectToWallet = () => {
+      ctx.emit('walletReconnect', true)
+      showAccountIdsModal.value = false
+      hideWalletInfo()
     }
 
     const hideWalletInfo = () => {
@@ -216,10 +247,12 @@ export default defineComponent({
       chosenAccountId,
       showAccountIdsModal,
       disconnectFromWallet,
+      reconnectToWallet,
       hideWalletInfo,
       accountEthereumAddress,
       tbarBalance: balanceAnalyzer.hbarBalance,
       accountChecksum: accountLocParser.accountChecksum,
+      currentNetwork: routeManager.currentNetwork,
     }
   },
 })
