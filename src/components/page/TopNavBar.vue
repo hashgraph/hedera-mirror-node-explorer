@@ -43,7 +43,7 @@
             alt="Product Logo"
             class="image"
             style="max-width: 165px; max-height: 49px"
-            src="@/assets/branding/brand-product-logo.png"
+            src="../../assets/branding/brand-product-logo.png"
         >
       </router-link>
       <AxiosStatus/>
@@ -52,15 +52,15 @@
     <div class="is-flex is-align-items-center pt-2">
       <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
                    :to="routeManager.makeRouteToMobileSearch()">
-        <img alt="Search bar" id="mobile-search-icon" src="@/assets/search-icon.png" style="max-height: 20px;">
+        <img alt="Search bar" id="mobile-search-icon" src="../../assets/search-icon.png" style="max-height: 20px;">
       </router-link>
       <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
                    :to="routeManager.makeRouteToMobileMenu(name)" class="ml-5">
-        <img alt="Mobile menu" id="mobile-menu-icon" src="@/assets/hamburger.png" style="max-height: 32px;">
+        <img alt="Mobile menu" id="mobile-menu-icon" src="../../assets/hamburger.png" style="max-height: 32px;">
       </router-link>
       <a v-else class="ml-5 mr-2"
          @click="$router.back()">
-        <img alt="Search bar" id="close-icon" src="@/assets/close-icon.png" style="max-height: 22px;">
+        <img alt="Search bar" id="close-icon" src="../../assets/close-icon.png" style="max-height: 22px;">
       </a>
     </div>
 
@@ -71,7 +71,7 @@
     <div class="is-inline-flex is-align-items-center is-flex-grow-0 is-flex-shrink-0 mr-3">
       <router-link :to="routeManager.makeRouteToMainDashboard()">
         <img v-if="productLogoURL" id="product-logo" alt="Product Logo" class="image" :src="productLogoURL">
-        <img v-else id="product-logo" alt="Product Logo" class="image" src="@/assets/branding/brand-product-logo.png">
+        <img v-else id="product-logo" alt="Product Logo" class="image" src="../../assets/branding/brand-product-logo.png">
       </router-link>
       <AxiosStatus/>
     </div>
@@ -140,13 +140,13 @@
 
 <script setup lang="ts">
 
-import {routeManager} from "@/router";
+import {routeManager} from "@/router.ts";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
-import {NetworkConfig} from "@/config/NetworkConfig";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {computed, inject, ref, watch} from "vue";
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton.vue";
-import {CoreConfig} from "@/config/CoreConfig";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 const isMediumScreen = inject('isMediumScreen', true)
 const coreConfig = CoreConfig.inject()

@@ -26,7 +26,7 @@ import router, {walletManager} from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Staking from "@/pages/Staking.vue";
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/page/TopNavBar.vue";
 import WalletInfo from "@/components/wallet/WalletInfo.vue"
 import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver_Mock} from "./WalletDriver_Mock";

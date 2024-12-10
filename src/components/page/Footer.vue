@@ -32,11 +32,11 @@
 
       <a v-if="builtOnURL" :href="builtOnURL" style="line-height: 1;">
         <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
-        <img v-else alt="Built On Logo" src="@/assets/technology-logo.svg" class="footer-logo">
+        <img v-else alt="Built On Logo" src="../../assets/technology-logo.svg" class="footer-logo">
       </a>
       <div v-else style="line-height: 1;">
         <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
-        <img v-else alt="Built On Logo" src="@/assets/technology-logo.svg" class="footer-logo">
+        <img v-else alt="Built On Logo" src="../../assets/technology-logo.svg" class="footer-logo">
       </div>
 
       <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
@@ -58,11 +58,11 @@
 
       <a v-if="sponsorURL" :href="sponsorURL" class="ml-4" style="line-height: 1;">
         <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" class="footer-logo">
-        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" class="footer-logo">
+        <img v-else alt="Sponsor Logo" src="../../assets/branding/brand-sponsor-logo.png" class="footer-logo">
       </a>
       <div v-else class="ml-4" style="line-height: 1;">
         <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" style="max-width: 104px;">
-        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" class="footer-logo">
+        <img v-else alt="Sponsor Logo" src="../../assets/branding/brand-sponsor-logo.png" class="footer-logo">
       </div>
 
     </div>
@@ -77,7 +77,7 @@
 <script lang="ts">
 
 import {defineComponent, inject} from "vue";
-import {CoreConfig} from "@/config/CoreConfig";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 
 export default defineComponent({
   name: "Footer",
