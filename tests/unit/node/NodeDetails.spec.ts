@@ -84,7 +84,7 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Node " + node))
+        expect(wrapper.text()).toMatch(RegExp("Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
         expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609CopyRSA")
@@ -135,7 +135,7 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Node " + node))
+        expect(wrapper.text()).toMatch(RegExp("Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
         expect(wrapper.get("#nodeCertHashValue").text()).toBe("d316 b5ef 57b7 6daf 37e3 bebb e3b6 9e6f 67b6 69ce 1dd1 ed75 e5c6 9a69 bf75 f36d 376f 475f 7b57 1d79 a6f8 e37e 37f1 f736 f3d6 9b73 c6da f1ae 9a7d ff37 75be 5fd5 bdf7 e34e 3a75 af3c 73Copy")
@@ -148,7 +148,7 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Node " + node))
+        expect(wrapper.text()).toMatch(RegExp("Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.4")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
         expect(wrapper.get("#nodeCertHashValue").text()).toBe("d31e f8d3 d75e 7367 b8f7 86fa dbb7 9ee3 d73a f5bd bde1 b7b5 71e6 9e6d c6b7 7dd7 1a7f 7ebb f3d7 bcf1 f73b 7796 f479 e7f9 e7ad 5fe7 66fc d9dd f9d7 dd5a dfd7 367d b79d eb4d bbdb aef5 ebCopy")

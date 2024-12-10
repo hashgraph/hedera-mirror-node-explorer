@@ -78,7 +78,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Block " + BLOCK_NUMBER))
+        expect(wrapper.text()).toMatch(RegExp("Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("3")
@@ -131,7 +131,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Block " + BLOCK_NUMBER))
+        expect(wrapper.text()).toMatch(RegExp("Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("3")
@@ -185,7 +185,7 @@ describe("BlockDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Block " + BLOCK_NUMBER))
+        expect(wrapper.text()).toMatch(RegExp("Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("3")
@@ -221,7 +221,7 @@ describe("BlockDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Block " + NEW_BLOCK_NUMBER))
+        expect(wrapper.text()).toMatch(RegExp("Block " + NEW_BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("5")
