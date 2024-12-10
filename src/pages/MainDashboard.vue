@@ -24,64 +24,63 @@
 
 <template>
 
-  <PageFrame :on-main-dashboard-page="true">
+  <PageFrame>
+
+    <template #pageBanner>
+      <HbarMarketDashboard/>
+    </template>
+
     <template #pageContent>
 
-      <HbarMarketDashboard/>
+      <div class="columns">
 
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-        <div class="columns">
-
-          <div class="column">
-            <DashboardCard data-cy="cryptoTransfers">
-              <template v-slot:title>
-                <span class="h-is-secondary-title">Crypto Transfers</span>
-              </template>
-              <template v-slot:control>
-                <PlayPauseButton v-bind:controller="cryptoTableController"/>
-              </template>
-              <template v-slot:content>
-                <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
-              </template>
-            </DashboardCard>
-          </div>
-
+        <div class="column">
+          <DashboardCard data-cy="cryptoTransfers">
+            <template v-slot:title>
+              <span class="h-is-secondary-title">Crypto Transfers</span>
+            </template>
+            <template v-slot:control>
+              <PlayPauseButton v-bind:controller="cryptoTableController"/>
+            </template>
+            <template v-slot:content>
+              <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
+            </template>
+          </DashboardCard>
         </div>
 
-        <div class="columns is-multiline">
+      </div>
 
-          <div class="column" :class="{'is-full':!isXLargeScreen}">
-            <DashboardCard data-cy="smartContractCalls">
-              <template v-slot:title>
-                <span class="h-is-secondary-title">Smart Contract Calls</span>
-              </template>
-              <template v-slot:control>
-                <PlayPauseButton v-bind:controller="contractTableController"/>
-              </template>
-              <template v-slot:content>
-                <ContractCallTransactionTable v-bind:controller="contractTableController"/>
-              </template>
-            </DashboardCard>
-          </div>
+      <div class="columns is-multiline">
 
-          <div class="column">
-            <DashboardCard data-cy="hcsMessages">
-              <template v-slot:title>
-                <span class="h-is-secondary-title">HCS Messages</span>
-              </template>
-              <template v-slot:control>
-                <PlayPauseButton v-bind:controller="messageTableController"/>
-              </template>
-              <template v-slot:content>
-                <MessageTransactionTable v-bind:controller="messageTableController"/>
-              </template>
-            </DashboardCard>
-          </div>
-
+        <div class="column" :class="{'is-full':!isXLargeScreen}">
+          <DashboardCard data-cy="smartContractCalls">
+            <template v-slot:title>
+              <span class="h-is-secondary-title">Smart Contract Calls</span>
+            </template>
+            <template v-slot:control>
+              <PlayPauseButton v-bind:controller="contractTableController"/>
+            </template>
+            <template v-slot:content>
+              <ContractCallTransactionTable v-bind:controller="contractTableController"/>
+            </template>
+          </DashboardCard>
         </div>
 
-      </section>
+        <div class="column">
+          <DashboardCard data-cy="hcsMessages">
+            <template v-slot:title>
+              <span class="h-is-secondary-title">HCS Messages</span>
+            </template>
+            <template v-slot:control>
+              <PlayPauseButton v-bind:controller="messageTableController"/>
+            </template>
+            <template v-slot:content>
+              <MessageTransactionTable v-bind:controller="messageTableController"/>
+            </template>
+          </DashboardCard>
+        </div>
+
+      </div>
 
     </template>
   </PageFrame>
@@ -125,8 +124,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
     const isXLargeScreen = inject('isXLargeScreen', true)
 
     const router = useRouter()
@@ -164,8 +161,6 @@ export default defineComponent({
     })
 
     return {
-      isSmallScreen,
-      isTouchDevice,
       isXLargeScreen,
       cryptoTableController,
       messageTableController,

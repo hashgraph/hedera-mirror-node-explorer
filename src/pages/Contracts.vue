@@ -26,34 +26,32 @@
 
   <PageFrame>
     <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Recent Contracts</span>
-          </template>
-          <template v-slot:control>
-            <div class="is-flex is-justify-content-end is-align-items-center">
-              <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
-              <PlayPauseButton v-else :controller="verifiedContractsController"/>
-              <span class="ml-5 mr-2">All</span>
-              <o-field>
-                <o-switch v-model="filterVerified">Verified</o-switch>
-              </o-field>
-            </div>
-          </template>
-          <template v-slot:content>
-            <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
-            <VerifiedContractsTable
-                v-else
-                :controller="verifiedContractsController"
-                :loaded="loaded"
-                :overflow="overflow"
-            />
-          </template>
-        </DashboardCard>
+      <DashboardCard>
+        <template v-slot:title>
+          <span class="h-is-primary-title">Recent Contracts</span>
+        </template>
+        <template v-slot:control>
+          <div class="is-flex is-justify-content-end is-align-items-center">
+            <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
+            <PlayPauseButton v-else :controller="verifiedContractsController"/>
+            <span class="ml-5 mr-2">All</span>
+            <o-field>
+              <o-switch v-model="filterVerified">Verified</o-switch>
+            </o-field>
+          </div>
+        </template>
+        <template v-slot:content>
+          <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
+          <VerifiedContractsTable
+              v-else
+              :controller="verifiedContractsController"
+              :loaded="loaded"
+              :overflow="overflow"
+          />
+        </template>
+      </DashboardCard>
 
-      </section>
     </template>
   </PageFrame>
 
@@ -93,9 +91,7 @@ export default defineComponent({
   },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
 
     const filterVerified = ref(false)
 
@@ -108,8 +104,6 @@ export default defineComponent({
         new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(), perPage, AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY)
 
     return {
-      isSmallScreen,
-      isTouchDevice,
       contractTableController,
       verifiedContractsController,
       loaded: verifiedContractsController.loaded,
