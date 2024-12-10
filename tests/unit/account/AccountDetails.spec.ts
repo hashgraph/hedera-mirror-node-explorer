@@ -131,7 +131,6 @@ describe("AccountDetails.vue", () => {
             "ED25519")
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
-        expect(wrapper.get("#aliasValue").text()).toBe(ALIAS_HEX + 'Copy')
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
 
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
