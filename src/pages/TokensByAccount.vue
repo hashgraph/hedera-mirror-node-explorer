@@ -26,12 +26,10 @@
 
   <PageFrame>
     <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-        <TokensSection
-            :account-id="accountId"
-            :full-page="true"
-        />
-      </section>
+      <TokensSection
+          :account-id="accountId"
+          :full-page="true"
+      />
     </template>
   </PageFrame>
 
@@ -43,7 +41,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, PropType} from 'vue';
 import PageFrame from "@/components/page/PageFrame.vue";
 import TokensSection from "@/components/token/TokensSection.vue";
 
@@ -62,15 +60,6 @@ export default defineComponent({
     TokensSection,
     PageFrame,
   },
-
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    return {
-      isSmallScreen,
-      isTouchDevice
-    }
-  }
 });
 
 </script>

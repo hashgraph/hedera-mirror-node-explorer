@@ -26,18 +26,14 @@
 
   <PageFrame>
     <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Recent Topics</span>
-          </template>
-          <template v-slot:content>
-            <TopicTable v-bind:controller="transactionTableController"/>
-          </template>
-        </DashboardCard>
-
-      </section>
+      <DashboardCard>
+        <template v-slot:title>
+          <span class="h-is-primary-title">Recent Topics</span>
+        </template>
+        <template v-slot:content>
+          <TopicTable v-bind:controller="transactionTableController"/>
+        </template>
+      </DashboardCard>
     </template>
   </PageFrame>
 
@@ -72,9 +68,7 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
 
 
     const router = useRouter()
@@ -95,8 +89,6 @@ export default defineComponent({
 
     return {
       transactionTableController,
-      isSmallScreen,
-      isTouchDevice,
     }
   }
 });

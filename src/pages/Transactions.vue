@@ -26,28 +26,26 @@
 
   <PageFrame>
     <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-        <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-          <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
-        </div>
+      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
+        <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
+      </div>
 
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Recent Transactions</span>
-          </template>
-          <template v-slot:control>
-            <div class="is-flex is-align-items-flex-end">
-              <PlayPauseButton v-bind:controller="transactionTableController"/>
-              <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-            </div>
-          </template>
-          <template v-slot:content>
-            <TransactionTable v-bind:controller="transactionTableController"/>
-          </template>
-        </DashboardCard>
+      <DashboardCard>
+        <template v-slot:title>
+          <span class="h-is-primary-title">Recent Transactions</span>
+        </template>
+        <template v-slot:control>
+          <div class="is-flex is-align-items-flex-end">
+            <PlayPauseButton v-bind:controller="transactionTableController"/>
+            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
+          </div>
+        </template>
+        <template v-slot:content>
+          <TransactionTable v-bind:controller="transactionTableController"/>
+        </template>
+      </DashboardCard>
 
-      </section>
     </template>
   </PageFrame>
 
@@ -59,7 +57,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
+import {defineComponent, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
@@ -88,9 +86,6 @@ export default defineComponent({
   setup() {
     const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
     const router = useRouter()
 
     //
@@ -111,8 +106,6 @@ export default defineComponent({
 
     return {
       temporaryBanner,
-      isSmallScreen,
-      isTouchDevice,
       transactionTableController,
       transactionType: transactionTableController.transactionType
     }

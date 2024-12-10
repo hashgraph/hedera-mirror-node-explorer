@@ -24,7 +24,7 @@
 
 <template>
 
-  <PageFrame :keep-footer-background="true">
+  <PageFrame :raw-content="true" :keep-footer-background="true">
     <template #pageContent>
       <section class="section has-text-left" style="min-height: 450px">
 

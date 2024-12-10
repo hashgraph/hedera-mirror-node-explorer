@@ -26,19 +26,15 @@
 
   <PageFrame>
     <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Tokens matching </span>
-            <span class="h-is-secondary-text">"{{ name }}"</span>
-          </template>
-          <template v-slot:content>
-            <TokensByNameTable :name="name"/>
-          </template>
-        </DashboardCard>
-
-      </section>
+      <DashboardCard>
+        <template v-slot:title>
+          <span class="h-is-primary-title">Tokens matching </span>
+          <span class="h-is-secondary-text">"{{ name }}"</span>
+        </template>
+        <template v-slot:content>
+          <TokensByNameTable :name="name"/>
+        </template>
+      </DashboardCard>
     </template>
   </PageFrame>
 
@@ -50,7 +46,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {defineComponent, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrame from "@/components/page/PageFrame.vue";
 import TokensByNameTable from "@/components/token/TokensByNameTable.vue";
@@ -71,17 +67,6 @@ export default defineComponent({
     PageFrame,
     DashboardCard,
   },
-
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-    }
-  }
 });
 
 </script>

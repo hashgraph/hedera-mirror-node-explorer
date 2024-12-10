@@ -28,9 +28,14 @@
     <TopNavBar/>
   </section>
 
-  <hr v-if="!props.onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
+  <slot name="pageBanner">
+    <hr class="h-has-background-color" style="margin: 0; height: 4px"/>
+  </slot>
 
-  <slot name="pageContent"/>
+  <slot v-if="props.rawContent" name="pageContent"/>
+  <section v-else :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+    <slot name="pageContent"/>
+  </section>
 
   <Footer :keep-background="props.keepFooterBackground"/>
 
@@ -47,16 +52,19 @@ import Footer from "@/components/page/Footer.vue";
 import TopNavBar from "@/components/page/TopNavBar.vue";
 
 const props = defineProps({
-  onMainDashboardPage: {
+  keepFooterBackground: {
     type: Boolean,
     default: false
   },
-  keepFooterBackground: {
+  rawContent: {
     type: Boolean,
     default: false
   }
 })
+
+const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
+const isTouchDevice = inject('isTouchDevice', false)
 
 </script>
 
