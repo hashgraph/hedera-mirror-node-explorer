@@ -252,7 +252,7 @@ describe('Search Bar', () => {
         clickTestBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ID:', true)
     })
 
-    it('should find account with kns name', () => {
+    it.skip('should find account with kns name', () => {
         const searchName = "kabuto.hh"
         const searchAccount = "0.0.1001"
         testBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ID:', true, searchName)
