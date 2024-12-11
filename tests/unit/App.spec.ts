@@ -24,7 +24,7 @@ import router from "@/router";
 import axios from "axios";
 import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE_TRANSACTIONS} from "./Mocks";
 import App from "@/App.vue";
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/page/TopNavBar.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";

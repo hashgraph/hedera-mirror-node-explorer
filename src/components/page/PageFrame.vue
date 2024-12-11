@@ -43,8 +43,8 @@
 <script setup lang="ts">
 
 import {inject} from "vue";
-import Footer from "@/components/Footer.vue";
-import TopNavBar from "@/components/TopNavBar.vue";
+import Footer from "@/components/page/Footer.vue";
+import TopNavBar from "@/components/page/TopNavBar.vue";
 
 const props = defineProps({
   onMainDashboardPage: {

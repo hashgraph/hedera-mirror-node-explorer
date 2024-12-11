@@ -22,7 +22,7 @@ import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import SearchBarV2 from "../../src/components/search/SearchBarV2.vue";
-import TopNavBar from "@/components/TopNavBar.vue";
+import TopNavBar from "@/components/page/TopNavBar.vue";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 
