@@ -26,21 +26,17 @@
 
   <PageFrame>
     <template #pageContent>
-      <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
-
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Blocks</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="blockTableController"/>
-          </template>
-          <template v-slot:content>
-            <BlockTable :controller="blockTableController"/>
-          </template>
-        </DashboardCard>
-
-      </section>
+      <DashboardCard>
+        <template v-slot:title>
+          <span class="h-is-primary-title">Blocks</span>
+        </template>
+        <template v-slot:control>
+          <PlayPauseButton v-bind:controller="blockTableController"/>
+        </template>
+        <template v-slot:content>
+          <BlockTable :controller="blockTableController"/>
+        </template>
+      </DashboardCard>
     </template>
   </PageFrame>
 
@@ -75,9 +71,7 @@ export default defineComponent({
   },
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
 
     // BlockTableController
     const pageSize = ref(isMediumScreen ? 15 : 5)
@@ -86,8 +80,6 @@ export default defineComponent({
     onBeforeUnmount(() => blockTableController.unmount())
 
     return {
-      isSmallScreen,
-      isTouchDevice,
       blockTableController
     }
   }

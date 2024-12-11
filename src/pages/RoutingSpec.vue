@@ -27,7 +27,6 @@
   <PageFrame>
 
     <template #pageContent>
-      <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
         <DashboardCard class="h-card">
           <template v-slot:title>
@@ -61,7 +60,6 @@
           </template>
         </DashboardCard>
 
-      </section>
     </template>
 
   </PageFrame>
@@ -70,7 +68,7 @@
 
 <script lang="ts">
 
-import {defineComponent, inject, ref} from "vue";
+import {defineComponent, ref} from "vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -83,8 +81,6 @@ export default defineComponent({
   props: {},
 
   setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
     const cryptoName = CoreConfig.inject().cryptoName
 
     const isOpen = ref<number[]>([])
@@ -251,8 +247,6 @@ export default defineComponent({
 
 
     return {
-      isSmallScreen,
-      isTouchDevice,
       isOpen,
       routes
     }

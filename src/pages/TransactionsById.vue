@@ -26,19 +26,15 @@
 
   <PageFrame>
     <template #pageContent>
-      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
-
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Transactions with ID </span>
-            <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-          </template>
-          <template v-slot:content>
-            <TransactionByIdTable v-bind:transactions="transactions"/>
-          </template>
-        </DashboardCard>
-
-      </section>
+      <DashboardCard>
+        <template v-slot:title>
+          <span class="h-is-primary-title">Transactions with ID </span>
+          <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
+        </template>
+        <template v-slot:content>
+          <TransactionByIdTable v-bind:transactions="transactions"/>
+        </template>
+      </DashboardCard>
     </template>
   </PageFrame>
 
@@ -50,7 +46,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {TransactionID} from "@/utils/TransactionID";
@@ -72,8 +68,6 @@ export default defineComponent({
   },
 
   setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
 
     const normalizedTransactionId = computed(() => {
       return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : "?";
@@ -90,8 +84,6 @@ export default defineComponent({
     const transactions = computed(() => groupLookup.entity.value ?? [])
 
     return {
-      isSmallScreen,
-      isTouchDevice,
       transactions,
       normalizedTransactionId
     }
