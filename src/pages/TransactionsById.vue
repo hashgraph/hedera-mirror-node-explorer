@@ -46,7 +46,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {TransactionID} from "@/utils/TransactionID";

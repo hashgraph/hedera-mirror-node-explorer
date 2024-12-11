@@ -376,7 +376,6 @@ import router, {routeManager, walletManager} from "@/router";
 import TransactionLink from "@/components/values/TransactionLink.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
-import AliasValue from "@/components/values/AliasValue.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import AllowancesSection from "@/components/allowances/AllowancesSection.vue";
