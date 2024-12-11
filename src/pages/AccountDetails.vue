@@ -266,13 +266,6 @@
           </template>
         </EditableProperty>
 
-        <Property v-if="account?.alias" id="alias" :class="{'mb-0':account?.alias}">
-          <template v-slot:name>Key Alias</template>
-          <template v-slot:value>
-            <AliasValue :alias-value="account?.alias"/>
-          </template>
-        </Property>
-
         <Property id="ethereumNonce">
           <template v-slot:name>Ethereum Nonce</template>
           <template v-slot:value>
