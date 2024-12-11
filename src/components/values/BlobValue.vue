@@ -40,6 +40,12 @@
         </div>
       </template>
 
+      <template v-else-if="hcs1TopicRoute">
+        <EntityLink :route="noAnchor ? null : hcs1TopicRoute">
+          {{ decodedValue }}
+        </EntityLink>
+      </template>
+
       <template v-else>
         <div v-if="decodedValue.length > 1024" style="max-height: 200px; padding: 10px"
              class="h-is-json mt-1 h-code-box h-has-page-background is-inline-block has-text-left h-is-text-size-3 should-wrap">
@@ -77,10 +83,13 @@ import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {CoreConfig} from "@/config/CoreConfig";
 import {blob2URL} from "@/utils/URLUtils.ts";
+import {HCSURI} from "@/utils/HCSURI.ts";
+import {routeManager} from "@/router.ts";
+import EntityLink from "@/components/values/link/EntityLink.vue";
 
 export default defineComponent({
   name: "BlobValue",
-  components: {},
+  components: {EntityLink},
   props: {
     blobValue: {
       type: String as PropType<string | null>,
@@ -133,6 +142,17 @@ export default defineComponent({
       return result
     })
 
+    const hcs1TopicRoute = computed(() => {
+      let result
+      const hcs1Uri = HCSURI.parse(decodedValue.value)
+      if (hcs1Uri) {
+        result = routeManager.makeRouteToTopic(hcs1Uri.topicId)
+      } else {
+        result = null
+      }
+      return result
+    })
+
     const b64EncodingFound = computed(() => b64DecodedValue.value !== null)
 
     const b64DecodedValue = computed(() => {
@@ -170,10 +190,11 @@ export default defineComponent({
       isMediumScreen,
       windowWidth,
       jsonValue,
+      hcs1TopicRoute,
       b64EncodingFound,
       decodedValue,
       initialLoading,
-      decodedURL
+      decodedURL,
     }
   }
 })
