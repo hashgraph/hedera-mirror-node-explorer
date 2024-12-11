@@ -72,7 +72,7 @@ describe("NftDetails.vue", () => {
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp('^' + SAMPLE_NONFUNGIBLE.name + 'Non Fungible Token'))
+        expect(wrapper.text()).toMatch(RegExp(SAMPLE_NONFUNGIBLE.name + 'Non Fungible Token'))
 
         const media = wrapper.get('#media-placeholder')
         expect(media.text()).toBe('Non Fungible TokenThe NFT metadata does not provide any image')
@@ -89,7 +89,9 @@ describe("NftDetails.vue", () => {
 
         expect(wrapper.findComponent('MetadataSection').exists()).toBe(false)
 
-        const selector = wrapper.get('select')
+        const selectors = wrapper.findAll("select")
+        expect(selectors.length).toBe(2)
+        const selector = selectors[1]
         expect(selector.text()).toBe(
             'TYPES: ALLCRYPTO APPROVE ALLOWANCECRYPTO DELETE ALLOWANCECRYPTO TRANSFERTOKEN AIRDROPTOKEN BURN' +
             'TOKEN CANCEL AIRDROPTOKEN CLAIM AIRDROPTOKEN DELETETOKEN MINTTOKEN REJECTTOKEN WIPE')
@@ -141,7 +143,7 @@ describe("NftDetails.vue", () => {
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp('^' + IPFS_METADATA_CONTENT.name + 'Non Fungible Token'))
+        expect(wrapper.text()).toMatch(RegExp(IPFS_METADATA_CONTENT.name + 'Non Fungible Token'))
 
         const media = wrapper.get('#image-content')
         expect(media.find('img').exists()).toBe(true)

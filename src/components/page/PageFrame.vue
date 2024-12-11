@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -24,24 +24,15 @@
 
 <template>
 
-  <PageFrame :keep-footer-background="true">
-    <template #pageContent>
-      <section class="section has-text-centered" style="min-height: 450px">
+  <section class="section is-top-section" :class="{'is-medium-screen': isMediumScreen}">
+    <TopNavBar/>
+  </section>
 
-        <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
-        <br/>
+  <hr v-if="!props.onMainDashboardPage" class="h-has-background-color" style="margin: 0; height: 4px"/>
 
-        <div class="block">
-          <p class="h-is-tertiary-text" style="font-weight: 300">
-            No page matches the specified URL.
-            <br>
-            Check URL value or use tabs in navigation bar.
-          </p>
-        </div>
+  <slot name="pageContent"/>
 
-      </section>
-    </template>
-  </PageFrame>
+  <Footer :keep-background="props.keepFooterBackground"/>
 
 </template>
 
@@ -49,21 +40,43 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent} from 'vue';
-import PageFrame from "@/components/page/PageFrame.vue";
+import {inject} from "vue";
+import Footer from "@/components/Footer.vue";
+import TopNavBar from "@/components/TopNavBar.vue";
 
-export default defineComponent({
-  name: 'PageNotFound',
-  components: {PageFrame}
+const props = defineProps({
+  onMainDashboardPage: {
+    type: Boolean,
+    default: false
+  },
+  keepFooterBackground: {
+    type: Boolean,
+    default: false
+  }
 })
+const isMediumScreen = inject('isMediumScreen', true)
 
 </script>
-
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+section.section.is-top-section {
+  padding-top: 0;
+  padding-bottom: 0;
+  background-image: url("assets/block-chain-bg.png");
+  background-repeat: no-repeat;
+  background-size: 104px
+}
+
+section.section.is-top-section.is-medium-screen {
+  padding-bottom: 30px;
+  background-size: 112px
+}
+
+</style>

@@ -24,21 +24,23 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <PageFrame>
+    <template #pageContent>
+      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Popular tokens matching </span>
-        <span class="h-is-secondary-text">"{{ name }}"</span>
-      </template>
-      <template v-slot:content>
-        <TokensByPopularityTable :name="name"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Popular tokens matching </span>
+            <span class="h-is-secondary-text">"{{ name }}"</span>
+          </template>
+          <template v-slot:content>
+            <TokensByPopularityTable :name="name"/>
+          </template>
+        </DashboardCard>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -50,7 +52,7 @@
 
 import {defineComponent, inject, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import TokensByPopularityTable from "@/components/token/TokensByPopularityTable.vue";
 
 export default defineComponent({
@@ -66,7 +68,7 @@ export default defineComponent({
 
   components: {
     TokensByPopularityTable,
-    Footer,
+    PageFrame,
     DashboardCard,
   },
 

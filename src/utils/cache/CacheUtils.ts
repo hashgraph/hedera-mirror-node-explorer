@@ -52,6 +52,7 @@ import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 import {AdminContractCache} from "@/utils/cache/AdminContractCache";
 import {TopicByIdCache} from "@/utils/cache/TopicByIdCache";
+import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
 
 export class CacheUtils {
 
@@ -73,6 +74,7 @@ export class CacheUtils {
         ContractResultsLogsByContractIdCache.instance.clear()
         LogicContractCache.instance.clear()
         HbarPriceCache.instance.clear()
+        HCSAssetCache.instance.clear()
         // IPFSCache.instance => no clear: we preserve it because IPFS content is valid for all networks
         NetworkCache.instance.clear()
         NftCollectionCache.instance.clear()

@@ -24,23 +24,25 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+  <PageFrame>
+    <template #pageContent>
+      <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Blocks</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-bind:controller="blockTableController"/>
-      </template>
-      <template v-slot:content>
-        <BlockTable :controller="blockTableController"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Blocks</span>
+          </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="blockTableController"/>
+          </template>
+          <template v-slot:content>
+            <BlockTable :controller="blockTableController"/>
+          </template>
+        </DashboardCard>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -52,7 +54,7 @@
 
 import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
@@ -68,7 +70,7 @@ export default defineComponent({
   components: {
     PlayPauseButton,
     BlockTable,
-    Footer,
+    PageFrame,
     DashboardCard
   },
 

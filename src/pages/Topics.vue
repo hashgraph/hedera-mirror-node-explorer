@@ -24,20 +24,22 @@
 
 <template>
 
-  <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
+  <PageFrame>
+    <template #pageContent>
+      <section class="section" :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Topics</span>
-      </template>
-      <template v-slot:content>
-        <TopicTable v-bind:controller="transactionTableController"/>
-      </template>
-    </DashboardCard>
+        <DashboardCard>
+          <template v-slot:title>
+            <span class="h-is-primary-title">Recent Topics</span>
+          </template>
+          <template v-slot:content>
+            <TopicTable v-bind:controller="transactionTableController"/>
+          </template>
+        </DashboardCard>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -50,7 +52,7 @@
 import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {useRouter} from "vue-router";
@@ -64,7 +66,7 @@ export default defineComponent({
   },
 
   components: {
-    Footer,
+    PageFrame,
     DashboardCard,
     TopicTable
   },

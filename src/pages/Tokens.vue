@@ -24,47 +24,49 @@
 
 <template>
 
-  <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
+  <PageFrame>
+    <template #pageContent>
+      <section :class="{'h-mobile-background': isTouchDevice || !isSmallScreen}" class="section">
 
-    <div class="columns is-multiline">
+        <div class="columns is-multiline">
 
-      <div :class="{'is-full': !displaySideBySide}" class="column has-text-left">
+          <div :class="{'is-full': !displaySideBySide}" class="column has-text-left">
 
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="nftTableController"/>
-          </template>
-          <template v-slot:content>
-            <TokenTable :controller="nftTableController"/>
-          </template>
-        </DashboardCard>
+            <DashboardCard>
+              <template v-slot:title>
+                <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
+              </template>
+              <template v-slot:control>
+                <PlayPauseButton v-bind:controller="nftTableController"/>
+              </template>
+              <template v-slot:content>
+                <TokenTable :controller="nftTableController"/>
+              </template>
+            </DashboardCard>
 
-      </div>
+          </div>
 
-      <div class="column has-text-left">
+          <div class="column has-text-left">
 
-        <DashboardCard>
-          <template v-slot:title>
-            <span class="h-is-primary-title">Recent Fungible Tokens</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="tokenTableController"/>
-          </template>
-          <template v-slot:content>
-            <TokenTable :controller="tokenTableController"/>
-          </template>
-        </DashboardCard>
+            <DashboardCard>
+              <template v-slot:title>
+                <span class="h-is-primary-title">Recent Fungible Tokens</span>
+              </template>
+              <template v-slot:control>
+                <PlayPauseButton v-bind:controller="tokenTableController"/>
+              </template>
+              <template v-slot:content>
+                <TokenTable :controller="tokenTableController"/>
+              </template>
+            </DashboardCard>
 
-      </div>
+          </div>
 
-    </div>
+        </div>
 
-  </section>
-
-  <Footer/>
+      </section>
+    </template>
+  </PageFrame>
 
 </template>
 
@@ -77,7 +79,7 @@
 import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import Footer from "@/components/Footer.vue";
+import PageFrame from "@/components/page/PageFrame.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
@@ -92,7 +94,7 @@ export default defineComponent({
 
   components: {
     PlayPauseButton,
-    Footer,
+    PageFrame,
     DashboardCard,
     TokenTable
   },
