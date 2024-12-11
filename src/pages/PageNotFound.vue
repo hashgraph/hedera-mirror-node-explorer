@@ -24,7 +24,7 @@
 
 <template>
 
-  <PageFrame>
+  <PageFrame :keep-footer-background="true">
     <template #pageContent>
       <section class="section has-text-centered" style="min-height: 450px">
 
