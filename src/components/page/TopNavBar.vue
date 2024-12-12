@@ -78,35 +78,25 @@
 
     <div class="is-flex-grow-0 is-flex-shrink-0 is-flex is-flex-direction-column ml-4">
       <div class="is-flex mb-3 is-align-items-baseline is-justify-content-space-between">
-        <router-link :to="routeManager.makeRouteToMainDashboard()"
-                     id="dashboard-menu-item"
-                     class="button is-ghost is-first h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isDashboardRoute}">Dashboard</router-link>
-        <router-link :to="routeManager.makeRouteToTransactions()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTransactionRoute}">Transactions</router-link>
-        <router-link :to="routeManager.makeRouteToTokens()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTokenRoute}">Tokens</router-link>
-        <router-link :to="routeManager.makeRouteToTopics()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isTopicRoute}">Topics</router-link>
-        <router-link :to="routeManager.makeRouteToContracts()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isContractRoute}">Contracts</router-link>
-        <router-link :to="routeManager.makeRouteToAccounts()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isAccountRoute}">Accounts</router-link>
-        <router-link :to="routeManager.makeRouteToNodes()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isNodeRoute}">Nodes</router-link>
-        <router-link v-if="enableStaking"
-                     :to="routeManager.makeRouteToStaking()"
-                     class="button is-ghost h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isStakingRoute}">Staking</router-link>
-        <router-link :to="routeManager.makeRouteToBlocks()"
-                     class="button is-ghost is-last h-is-navbar-item h-is-dense"
-                     :class="{ 'is-rimmed': isBlocksRoute}">Blocks</router-link>
+        <NavMenuItem :tabId="TabId.Dashboard" :is-first="true"
+                     :target-route="routeManager.makeRouteToMainDashboard()"/>
+        <NavMenuItem :tabId="TabId.Transactions"
+                     :target-route="routeManager.makeRouteToTransactions()"/>
+        <NavMenuItem :tabId="TabId.Tokens"
+                     :target-route="routeManager.makeRouteToTokens()"/>
+        <NavMenuItem :tabId="TabId.Topics"
+                     :target-route="routeManager.makeRouteToTopics()"/>
+        <NavMenuItem :tabId="TabId.Contracts"
+                     :target-route="routeManager.makeRouteToContracts()"/>
+        <NavMenuItem :tabId="TabId.Accounts"
+                     :target-route="routeManager.makeRouteToAccounts()"/>
+        <NavMenuItem :tabId="TabId.Nodes"
+                     :target-route="routeManager.makeRouteToNodes()"/>
+        <NavMenuItem v-if="enableStaking"
+                     :tabId="TabId.Staking"
+                     :target-route="routeManager.makeRouteToStaking()"/>
+        <NavMenuItem :tabId="TabId.Blocks"
+                     :target-route="routeManager.makeRouteToBlocks()"/>
       </div>
 
       <div id="navbar-grid">
@@ -147,6 +137,8 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import {computed, inject, ref, watch} from "vue";
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton.vue";
 import {CoreConfig} from "@/config/CoreConfig";
+import NavMenuItem from "@/components/page/NavMenuItem.vue";
+import {TabId} from "@/utils/RouteManager.ts";
 
 const isMediumScreen = inject('isMediumScreen', true)
 const coreConfig = CoreConfig.inject()
@@ -185,16 +177,7 @@ watch(selectedNetwork, (newNetwork) => {
 const name = routeManager.currentRoute
 const enableWallet = routeManager.enableWallet
 const nbNetworks = routeManager.nbNetworks
-const isNodeRoute = routeManager.isNodeRoute
-const isTokenRoute = routeManager.isTokenRoute
 const networkEntries = networkConfig.entries
-const isBlocksRoute = routeManager.isBlocksRoute
-const isStakingRoute = routeManager.isStakingRoute
-const isTopicRoute = routeManager.isTopicRoute
-const isAccountRoute = routeManager.isAccountRoute
-const isContractRoute = routeManager.isContractRoute
-const isDashboardRoute = routeManager.isDashboardRoute
-const isTransactionRoute = routeManager.isTransactionRoute
 
 </script>
 

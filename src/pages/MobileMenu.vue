@@ -40,52 +40,35 @@
                 </o-select>
               </o-field>
             </div>
-            <router-link :to="routeManager.makeRouteToMainDashboard()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isDashboardRoute(previousRoute)}">Dashboard
-            </router-link>
-            <router-link :to="routeManager.makeRouteToTransactions()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isTransactionRoute(previousRoute)}">Transactions
-            </router-link>
-            <router-link :to="routeManager.makeRouteToTokens()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isTokenRoute(previousRoute)}">Tokens
-            </router-link>
-            <router-link :to="routeManager.makeRouteToTopics()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isTopicRoute(previousRoute)}">Topics
-            </router-link>
-            <router-link :to="routeManager.makeRouteToContracts()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isContractRoute(previousRoute)}">Contracts
-            </router-link>
-            <router-link :to="routeManager.makeRouteToAccounts()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isAccountRoute(previousRoute)}">Accounts
-            </router-link>
-            <router-link :to="routeManager.makeRouteToNodes()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isNodeRoute(previousRoute)}">Nodes
-            </router-link>
-            <router-link v-if="enableStaking"
-                         :to="routeManager.makeRouteToStaking()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isStakingRoute(previousRoute)}">Staking
-            </router-link>
-            <router-link :to="routeManager.makeRouteToBlocks()" replace
-                         id="dashboard-menu-item"
-                         class="button is-ghost h-is-navbar-item h-is-mobile-navbar-item h-is-dense"
-                         :class="{'is-rimmed': isBlocksRoute(previousRoute)}">Blocks
-            </router-link>
+
+            <NavMenuItem :tabId="TabId.Dashboard"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToMainDashboard()"/>
+            <NavMenuItem :tabId="TabId.Transactions"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToTransactions()"/>
+            <NavMenuItem :tabId="TabId.Tokens"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToTokens()"/>
+            <NavMenuItem :tabId="TabId.Topics"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToTopics()"/>
+            <NavMenuItem :tabId="TabId.Contracts"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToContracts()"/>
+            <NavMenuItem :tabId="TabId.Accounts"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToAccounts()"/>
+            <NavMenuItem :tabId="TabId.Nodes"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToNodes()"/>
+            <NavMenuItem v-if="enableStaking"
+                         :tabId="TabId.Staking"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToStaking()"/>
+            <NavMenuItem :tabId="TabId.Blocks"
+                         :is-mobile="true"
+                         :target-route="routeManager.makeRouteToBlocks()"/>
           </div>
 
         </div>
@@ -107,6 +90,8 @@ import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import PageFrame from "@/components/page/PageFrame.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import {TabId} from "@/utils/RouteManager.ts";
+import NavMenuItem from "@/components/page/NavMenuItem.vue";
 
 defineProps(
     {
@@ -143,16 +128,6 @@ watch(selectedNetwork, (newNetwork) => {
 })
 
 const enableStaking = routeManager.enableStaking
-const previousRoute = routeManager.previousRoute
-const isDashboardRoute = routeManager.testDashboardRoute
-const isTransactionRoute = routeManager.testTransactionRoute
-const isTokenRoute = routeManager.testTokenRoute
-const isTopicRoute = routeManager.testTopicRoute
-const isContractRoute = routeManager.testContractRoute
-const isAccountRoute = routeManager.testAccountRoute
-const isNodeRoute = routeManager.testNodeRoute
-const isStakingRoute = routeManager.testStakingRoute
-const isBlocksRoute = routeManager.testBlocksRoute
 const networkEntries = networkConfig.entries
 
 </script>
