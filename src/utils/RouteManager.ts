@@ -103,6 +103,12 @@ export class RouteManager {
 
     public readonly currentNetwork = computed(() => this.currentNetworkEntry.value.name)
 
+    public readonly currentTabId = computed(() => {
+        const matched = this.router.currentRoute.value?.matched
+        const meta = matched && matched.length >= 1 && matched[0].meta ? matched[0].meta : null
+        return meta?.tabId ?? null
+    })
+
     public readonly enableWallet = computed(() => {
         return this.currentNetworkEntry.value.enableWallet
     })
@@ -188,65 +194,7 @@ export class RouteManager {
     // Public (routeToXXX)
     //
 
-    public readonly isDashboardRoute = computed(() => this.testDashboardRoute())
-    public readonly isTransactionRoute = computed(() => this.testTransactionRoute())
-    public readonly isTokenRoute = computed(() => this.testTokenRoute())
-    public readonly isTopicRoute = computed(() => this.testTopicRoute())
-    public readonly isContractRoute = computed(() => this.testContractRoute())
-    public readonly isAccountRoute = computed(() => this.testAccountRoute())
-    public readonly isNodeRoute = computed(() => this.testNodeRoute())
-    public readonly isStakingRoute = computed(() => this.testStakingRoute())
-    public readonly isBlocksRoute = computed(() => this.testBlocksRoute())
-
-    public testDashboardRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'MainDashboard'
-    }
-
-    public testTransactionRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Transactions' || r === 'TransactionsById' || r === 'TransactionDetails'
-    }
-
-    public testTokenRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Tokens' || r === 'TokenDetails'
-    }
-
-    public testTopicRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Topics' || r === 'TopicDetails'
-    }
-
-    public testContractRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Contracts' || r === 'ContractDetails'
-    }
-
-    public testAccountRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Accounts'
-            || r === 'AccountDetails'
-            || r === 'AccountsWithKey'
-            || r === 'AdminKeyDetails'
-            || r === 'TokensByAccount'
-    }
-
-    public testNodeRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Nodes' || r === 'NodeDetails'
-    }
-
-    public testStakingRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Staking'
-    }
-
-    public testBlocksRoute(route: string | null = null): boolean {
-        const r = route ?? this.currentRoute.value
-        return r === 'Blocks' || r === 'BlockDetails'
-    }
-
+    
     //
     // Transaction
     //
@@ -750,7 +698,17 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
 
 
 
-
+export enum TabId {
+    Dashboard = "Dashboard",
+    Transactions = "Transactions",
+    Tokens = "Tokens",
+    Topics = "Topics",
+    Contracts = "Contracts",
+    Accounts = "Accounts",
+    Nodes = "Nodes",
+    Staking = "Staking",
+    Blocks = "Blocks",
+}
 
 //
 // Route table
@@ -770,7 +728,10 @@ const routes: Array<RouteRecordRaw> = [
     {
         path: '/:network/page-not-found',
         name: 'PageNotFound',
-        component: PageNotFound
+        component: PageNotFound,
+        meta: {
+            tabId: null
+        }
     },
     {
         path: '/:network',
@@ -780,176 +741,263 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/dashboard',
         name: 'MainDashboard',
         component: MainDashboard,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Dashboard
+        }
     },
     {
         path: '/:network/spec',
         name: 'RoutingSpec',
         component: RoutingSpec,
+        meta: {
+            tabId: null
+        },
     },
     {
         path: '/:network/transactions',
         name: 'Transactions',
         component: Transactions,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Transactions
+        }
     },
     {
         path: '/:network/transactionsById/:transactionId',
         name: 'TransactionsById',
         component: TransactionsById,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Transactions
+        }
     },
     {
         path: '/:network/transaction/:transactionLoc',
         name: 'TransactionDetails',
         component: TransactionDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Transactions
+        }
     },
     {
         path: '/:network/accounts',
         name: 'Accounts',
         component: Accounts,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Accounts
+        }
     },
     {
         path: '/:network/accountsWithKey/:pubKey',
         name: 'AccountsWithKey',
         component: AccountsWithKey,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Accounts
+        }
     },
     {
         path: '/:network/account/:accountId',
         name: 'AccountDetails',
         component: AccountDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Accounts
+        }
     },
     {
         path: '/:network/adminKey/:accountId',
         name: 'AdminKeyDetails',
         component: AdminKeyDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Accounts
+        }
     },
     {
         // EIP 3091 Support
         path: '/:network/address/:accountAddress',
         name: 'AddressDetails',
         component: AddressDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Accounts
+        }
     },
     {
         path: '/:network/tokens',
         name: 'Tokens',
         component: Tokens,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Tokens
+        }
     },
     {
         path: '/:network/token/:tokenId',
         name: 'TokenDetails',
         component: TokenDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Tokens
+        }
     },
     {
         path: '/:network/token/:tokenId/:serialNumber',
         name: 'NftDetails',
         component: NftDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Tokens
+        }
     },
     {
         path: '/:network/tokensByName/:name',
         name: 'TokensByName',
         component: TokensByName,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Tokens
+        }
     },
     {
         path: '/:network/tokensByPopularity/:name',
         name: 'TokensByPopularity',
         component: TokensByPopularity,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Tokens
+        }
     },
     {
         path: '/:network/tokensByAccount/:accountId',
         name: 'TokensByAccount',
         component: TokensByAccount,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Tokens
+        }
     },
     {
         path: '/:network/contracts',
         name: 'Contracts',
         component: Contracts,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Contracts
+        }
     },
     {
         path: '/:network/contract/:contractId',
         name: 'ContractDetails',
         component: ContractDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Contracts
+        }
     },
     {
         path: '/:network/topics',
         name: 'Topics',
         component: Topics,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Topics
+        }
     },
     {
         path: '/:network/topic/:topicId',
         name: 'TopicDetails',
         component: TopicDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Topics
+        }
     },
     {
         path: '/:network/nodes',
         name: 'Nodes',
         component: Nodes,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Nodes
+        }
     },
     {
         path: '/:network/node/:nodeId',
         name: 'NodeDetails',
         component: NodeDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Nodes
+        }
     },
     {
         path: '/:network/staking',
         name: 'Staking',
         component: Staking,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Staking
+        }
     },
     {
         path: '/:network/blocks',
         name: 'Blocks',
         component: Blocks,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Blocks
+        }
     },
     {
         path: '/:network/block/:blockHon',
         name: 'BlockDetails',
         component: BlockDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Blocks
+        }
     },
     {
         // EIP 3091 Support
         path: '/:network/tx/:transactionLoc',
         name: 'TransactionDetails3091',
         component: TransactionDetails,
-        props: true
+        props: true,
+        meta: {
+            tabId: TabId.Transactions
+        }
     },
     {
         path: '/:network/search-help',
         name: 'SearchHelp',
         component: SearchHelp,
-        props: true
+        props: true,
+        meta: {
+            tabId: null
+        }
     },
     {
         path: '/:network/mobile-menu',
         name: 'MobileMenu',
         component: MobileMenu,
-        props: true
+        props: true,
+        meta: {
+            tabId: null
+        }
     },
     {
         path: '/:network/mobile-search',
         name: 'MobileSearch',
         component: MobileSearch,
-        props: true
+        props: true,
+        meta: {
+            tabId: null
+        }
     },
     {
         path: "/:catchAll(.*)",
