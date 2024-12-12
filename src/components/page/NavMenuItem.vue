@@ -23,9 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <router-link :to="props.targetRoute" :replace="isMobile"
-               class="button is-ghost h-is-navbar-item h-is-dense"
-               :class="classObject">{{ props.tabId }}</router-link>
+  <router-link
+      :to="props.targetRoute"
+      :replace="isMobile"
+      class="button is-ghost h-is-navbar-item h-is-dense"
+      :class="classObject">
+    {{ props.tabId }}
+  </router-link>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
