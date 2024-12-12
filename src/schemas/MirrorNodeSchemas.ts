@@ -815,6 +815,16 @@ export interface NetworkStake {
                                               // this value is used to compute the HIP-782 balance ratio
 }
 
+export interface NetworkFeesResponse {
+    fees: NetworkFee[],
+    timestamp: string
+}
+
+export interface NetworkFee {
+    gas: number,              // gas cost in tinybars
+    transaction_type: string
+}
+
 // ---------------------------------------------------------------------------------------------------------------------
 //                                                      Block
 // ---------------------------------------------------------------------------------------------------------------------
@@ -865,15 +875,15 @@ export interface ErrorBody {
     _status: {
         messages: [
             {
-                data: string|null|undefined     // Error message in hexadecimal - pattern: ^0x[0-9a-fA-F]+$
-                detail: string|null|undefined   // Detailed error message
-                message: string|undefined       // Error message
+                data: string | null | undefined     // Error message in hexadecimal - pattern: ^0x[0-9a-fA-F]+$
+                detail: string | null | undefined   // Detailed error message
+                message: string | undefined       // Error message
             }
         ] | undefined
     } | undefined
 }
 
-export function extractMessageFromErrorBody(body: unknown): string|null {
+export function extractMessageFromErrorBody(body: unknown): string | null {
     const _status = fetchJSObject(body, "_status")
     const messages = fetchJSArray(_status, "messages")
     const message0 = messages !== null && messages.length >= 1 ? messages[0] : null
