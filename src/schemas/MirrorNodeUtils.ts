@@ -27,6 +27,7 @@ import {
     ContractResultsResponse,
     HTS_PRECOMPILE_CONTRACT_ID,
     KeyType,
+    NetworkFeesResponse,
     NetworkNode,
     Nft,
     Nfts,
@@ -40,6 +41,7 @@ import {
     Transaction,
     TransactionByIdResponse,
     TransactionResponse,
+    TransactionType,
     Transfer,
 } from "@/schemas/MirrorNodeSchemas";
 import {ethers} from "ethers";
@@ -236,6 +238,31 @@ export function makeAnnualizedRate(rewardInTinyBar: number): string {
         maximumFractionDigits: 3
     })
     return formatter.format(makeRewardRate(rewardInTinyBar) * 365);
+}
+
+export function lookupTransactionType(feesResponse: NetworkFeesResponse | null, txType: TransactionType): number | null {
+    let result: number | null = null
+    let type: string
+    switch (txType) {
+        case TransactionType.CONTRACTCREATEINSTANCE:
+            type = "ContractCreate"
+            break
+        case TransactionType.CONTRACTCALL:
+            type = "ContractCall"
+            break
+        case TransactionType.ETHEREUMTRANSACTION:
+        default:
+            type = "EthereumTransaction"
+            break
+    }
+    const networkFees = feesResponse?.fees ?? []
+    for (const fee of networkFees) {
+        if (fee.transaction_type === type) {
+            result = fee.gas
+            break
+        }
+    }
+    return result
 }
 
 export function isCouncilNode(node: NetworkNode): boolean {

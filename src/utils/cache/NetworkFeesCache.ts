@@ -19,37 +19,12 @@
  */
 
 import axios from "axios";
-import {EntityCache, EntityLookup} from "@/utils/cache/base/EntityCache";
-import {NetworkFeesResponse, TransactionType} from "@/schemas/MirrorNodeSchemas";
+import {EntityCache} from "@/utils/cache/base/EntityCache";
+import {NetworkFeesResponse} from "@/schemas/MirrorNodeSchemas";
 
 export class NetworkFeesCache extends EntityCache<string, NetworkFeesResponse> {
 
     public static readonly instance = new NetworkFeesCache()
-
-    public static lookupTransactionType(lookup: EntityLookup<string, NetworkFeesResponse>, txType: TransactionType): number | null {
-        let result: number | null = null
-        let type: string
-        switch (txType) {
-            case TransactionType.CONTRACTCREATEINSTANCE:
-                type = "ContractCreate"
-                break
-            case TransactionType.CONTRACTCALL:
-                type = "ContractCall"
-                break
-            case TransactionType.ETHEREUMTRANSACTION:
-            default:
-                type = "EthereumTransaction"
-                break
-        }
-        const networkFees = lookup.entity.value?.fees ?? []
-        for (const fee of networkFees) {
-            if (fee.transaction_type === type) {
-                result = fee.gas
-                break
-            }
-        }
-        return result
-    }
 
     //
     // Cache

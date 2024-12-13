@@ -172,6 +172,7 @@ import HexaValue from "@/components/values/HexaValue.vue";
 import GasAmount from "@/components/values/GasAmount.vue";
 import {NetworkFeesCache} from "@/utils/cache/NetworkFeesCache.ts";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
+import {lookupTransactionType} from "@/schemas/MirrorNodeUtils.ts";
 
 const props = defineProps({
   timestamp: {
@@ -215,7 +216,7 @@ const gasPrice = computed(() => {
   console.log(`contractResultAnalyzer.gasPrice.value: ${result}`)
 
   if (!result && timestamp.value !== null) {
-    result = NetworkFeesCache.lookupTransactionType(feeLookup, props.transactionType)
+    result = lookupTransactionType(feeLookup.entity.value, props.transactionType)
   }
   result = result ?? contractResultAnalyzer.gasPrice.value
   return result
