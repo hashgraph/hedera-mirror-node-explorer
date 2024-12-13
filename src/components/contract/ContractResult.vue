@@ -28,7 +28,7 @@
 
     <DashboardCard class="h-card" collapsible-key="contractResult">
       <template v-slot:title>
-        <span v-if="topLevel" class="h-is-primary-title">
+        <span v-if="props.topLevel" class="h-is-primary-title">
           Contract Result for {{ contractResult?.contract_id }} at {{ contractResult?.timestamp }}
         </span>
         <span v-else class="h-is-secondary-title">Contract Result</span>
@@ -135,12 +135,12 @@
 
     </DashboardCard>
 
-    <ContractResultTrace v-if="isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined"
+    <ContractResultTrace v-if="props.isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined"
                          :analyzer="analyzer"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
-    <ContractResultLogs :logs="contractResult?.logs" :block-number="blockNumber" :transaction-hash="transactionHash"/>
+    <ContractResultLogs :logs="contractResult?.logs" :block-number="props.blockNumber" :transaction-hash="props.transactionHash"/>
 
   </template>
 
@@ -150,9 +150,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -169,87 +169,54 @@ import FunctionError from "@/components/values/FunctionError.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import GasAmount from "@/components/values/GasAmount.vue";
 
-export default defineComponent({
-
-  name: 'ContractResult',
-
-  components: {
-    GasAmount,
-    HexaValue,
-    FunctionError,
-    FunctionResult,
-    FunctionInput,
-    ContractResultLogs,
-    EVMAddress,
-    ContractResultStates,
-    ContractResultTrace,
-    PlainAmount,
-    Property,
-    HbarAmount,
-    DashboardCard,
-    StringValue
+const props = defineProps({
+  timestamp: {
+    type: String,
   },
-
-  props: {
-    timestamp: {
-      type: String,
-    },
-    topLevel: {
-      type: Boolean,
-      default: false
-    },
-    isParent: {
-      type: Boolean,
-      default: false
-    },
-    blockNumber: {
-      type: Number
-    },
-    transactionHash: {
-      type: String
-    }
+  topLevel: {
+    type: Boolean,
+    default: false
   },
-
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const contractResultAnalyzer = new ContractResultAnalyzer(computed(() => props.timestamp ?? null))
-    onMounted(() => contractResultAnalyzer.mount())
-    onBeforeUnmount(() => contractResultAnalyzer.unmount())
-
-    const displayedPrice = computed(() => {
-      let result: number | null
-      if (contractResultAnalyzer.contractType.value === 'Pre-Eip1559') {
-        result = contractResultAnalyzer.gasPrice.value
-      } else if (contractResultAnalyzer.contractType.value === 'Post-Eip1559') {
-        result = contractResultAnalyzer.maxFeePerGas.value
-      } else {
-        result = contractResultAnalyzer.gasPrice.value
-      }
-      return result
-    })
-
-    return {
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      displayedPrice,
-      fromId: contractResultAnalyzer.fromId,
-      toId: contractResultAnalyzer.toId,
-      gasPrice: contractResultAnalyzer.gasPrice,
-      maxFeePerGas: contractResultAnalyzer.maxFeePerGas,
-      maxPriorityFeePerGas: contractResultAnalyzer.maxPriorityFeePerGas,
-      contractResult: contractResultAnalyzer.contractResult,
-      analyzer: contractResultAnalyzer.functionCallAnalyzer,
-      functionHash: contractResultAnalyzer.functionCallAnalyzer.functionHash,
-      signature: contractResultAnalyzer.functionCallAnalyzer.signature,
-      contractType: contractResultAnalyzer.contractType,
-      ethereumNonce: contractResultAnalyzer.ethereumNonce,
-    }
+  isParent: {
+    type: Boolean,
+    default: false
   },
-});
+  blockNumber: {
+    type: Number
+  },
+  transactionHash: {
+    type: String
+  }
+})
+
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+
+const contractResultAnalyzer = new ContractResultAnalyzer(computed(() => props.timestamp ?? null))
+onMounted(() => contractResultAnalyzer.mount())
+onBeforeUnmount(() => contractResultAnalyzer.unmount())
+
+const displayedPrice = computed(() => {
+  let result: number | null
+  if (contractResultAnalyzer.contractType.value === 'Pre-Eip1559') {
+    result = contractResultAnalyzer.gasPrice.value
+  } else if (contractResultAnalyzer.contractType.value === 'Post-Eip1559') {
+    result = contractResultAnalyzer.maxFeePerGas.value
+  } else {
+    result = contractResultAnalyzer.gasPrice.value
+  }
+  return result
+})
+
+const fromId = contractResultAnalyzer.fromId
+const toId = contractResultAnalyzer.toId
+const gasPrice = contractResultAnalyzer.gasPrice
+const maxFeePerGas = contractResultAnalyzer.maxFeePerGas
+const maxPriorityFeePerGas = contractResultAnalyzer.maxPriorityFeePerGas
+const contractResult = contractResultAnalyzer.contractResult
+const analyzer = contractResultAnalyzer.functionCallAnalyzer
+const contractType = contractResultAnalyzer.contractType
+const ethereumNonce = contractResultAnalyzer.ethereumNonce
 
 </script>
 
