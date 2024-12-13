@@ -159,6 +159,8 @@ export function makeOperatorDescription(accountId: string, nodes: NetworkNode[],
         result = "Hedera fee collection account"
     } else if (accountId === "0.0.800") {
         result = isFee ? "Staking reward account fee" : "Staking reward account"
+    } else if (accountId === "0.0.801") {
+        result = isFee ? "Node reward account fee" : "Node reward account"
     } else {
         const node = lookupNodeByAccountId(accountId, nodes)
         result = node !== null
