@@ -154,10 +154,10 @@ export class EntityID {
             result = compareNumber(this.realm, that.realm)
         }
         if (result == 0) {
-            if ((this.num < 100 || this.num === 800) && (that.num >= 100 && that.num !== 800)) {
+            if ((this.num < 100 || this.num === 800 || this.num === 801) && (that.num >= 100 && that.num !== 800 && that.num !== 801)) {
                 // We put this.num at the end
                 result = +1
-            } else if ((that.num < 100 || that.num === 800) && (this.num >= 100 && this.num != 800)) {
+            } else if ((that.num < 100 || that.num === 800 || that.num === 801) && (this.num >= 100 && this.num != 800 && this.num != 801)) {
                 // We put that.num at the end
                 result = -1
             } else {
