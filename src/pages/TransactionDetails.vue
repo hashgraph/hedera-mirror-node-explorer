@@ -256,7 +256,9 @@
       <ContractResult :timestamp="transaction?.consensus_timestamp"
                       :is-parent="transaction?.parent_consensus_timestamp === null"
                       :block-number="blockNumber ?? undefined"
-                      :transaction-hash="formattedHash ?? undefined"/>
+                      :transaction-hash="formattedHash ?? undefined"
+                      :transaction-type="transaction?.name ?? undefined"
+      />
 
       <MirrorLink :network="network" entityUrl="transactions" :loc="transactionId!"/>
 

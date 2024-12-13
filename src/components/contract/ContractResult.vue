@@ -79,7 +79,7 @@
           <template v-slot:value>
             <GasAmount
                 :gas="contractResult?.gas_limit"
-                :price="displayedPrice"
+                :price="gasPrice"
             />
           </template>
         </Property>
@@ -88,7 +88,7 @@
           <template v-slot:value>
             <GasAmount
                 :gas="contractResult?.gas_used"
-                :price="displayedPrice"
+                :price="gasPrice"
             />
           </template>
         </Property>
@@ -97,32 +97,34 @@
           <template v-slot:value>
             <GasAmount
                 :gas="contractResult?.gas_consumed"
-                :price="displayedPrice"
+                :price="gasPrice"
             />
           </template>
         </Property>
-        <Property v-if="contractType==='Post-Eip1559'" id="maxFeePerGas">
-          <template v-slot:name>Max Fee Per Gas</template>
-          <template v-slot:value>
-            <HbarAmount :amount="maxFeePerGas"/>
-            <span v-if="maxFeePerGas"
-                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxFeePerGas * 10} gWei` }}</span>
-          </template>
-        </Property>
-        <Property v-if="contractType==='Post-Eip1559'" id="maxPriorityFeePerGas">
-          <template v-slot:name>Max Priority Fee Per Gas</template>
-          <template v-slot:value>
-            <HbarAmount :amount="maxPriorityFeePerGas"/>
-            <span v-if="maxPriorityFeePerGas"
-                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${maxPriorityFeePerGas * 10} gWei` }}</span>
-          </template>
-        </Property>
-        <Property v-if="contractType==='Pre-Eip1559' || contractType === null" id="gasPrice">
+        <template v-if="contractType==='Post-Eip1559'">
+          <Property id="maxFeePerGas">
+            <template v-slot:name>Max Fee Per Gas</template>
+            <template v-slot:value>
+              <HbarAmount :amount="maxFeePerGas"/>
+              <span v-if="maxFeePerGas"
+                    class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxFeePerGas) }}</span>
+            </template>
+          </Property>
+          <Property id="maxPriorityFeePerGas">
+            <template v-slot:name>Max Priority Fee Per Gas</template>
+            <template v-slot:value>
+              <HbarAmount :amount="maxPriorityFeePerGas"/>
+              <span v-if="maxPriorityFeePerGas"
+                    class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
+            </template>
+          </Property>
+        </template>
+        <Property id="gasPrice">
           <template v-slot:name>Gas Price</template>
           <template v-slot:value>
             <HbarAmount :amount="gasPrice"/>
             <span v-if="gasPrice"
-                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ ` ${gasPrice * 10} gWei` }}</span>
+                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(gasPrice) }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">
@@ -152,7 +154,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
@@ -168,6 +170,8 @@ import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import GasAmount from "@/components/values/GasAmount.vue";
+import {NetworkFeesCache} from "@/utils/cache/NetworkFeesCache.ts";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
 
 const props = defineProps({
   timestamp: {
@@ -186,31 +190,43 @@ const props = defineProps({
   },
   transactionHash: {
     type: String
+  },
+  transactionType: {
+    type: String as PropType<TransactionType>,
+    default: TransactionType.ETHEREUMTRANSACTION
   }
 })
 
 const isSmallScreen = inject('isSmallScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
 
-const contractResultAnalyzer = new ContractResultAnalyzer(computed(() => props.timestamp ?? null))
+const timestamp = computed(() => props.timestamp ?? null)
+
+const contractResultAnalyzer = new ContractResultAnalyzer(timestamp)
 onMounted(() => contractResultAnalyzer.mount())
 onBeforeUnmount(() => contractResultAnalyzer.unmount())
 
-const displayedPrice = computed(() => {
-  let result: number | null
-  if (contractResultAnalyzer.contractType.value === 'Pre-Eip1559') {
-    result = contractResultAnalyzer.gasPrice.value
-  } else if (contractResultAnalyzer.contractType.value === 'Post-Eip1559') {
-    result = contractResultAnalyzer.maxFeePerGas.value
-  } else {
-    result = contractResultAnalyzer.gasPrice.value
+const feeLookup = NetworkFeesCache.instance.makeLookup(timestamp)
+onMounted(() => feeLookup.mount())
+onBeforeUnmount(() => feeLookup.unmount())
+
+const gasPrice = computed(() => {
+  let result: number | null = contractResultAnalyzer.gasPrice.value
+  console.log(`contractResultAnalyzer.gasPrice.value: ${result}`)
+
+  if (!result && timestamp.value !== null) {
+    result = NetworkFeesCache.lookupTransactionType(feeLookup, props.transactionType)
   }
+  result = result ?? contractResultAnalyzer.gasPrice.value
   return result
 })
 
+const gWeiExtra = (priceInHbar: number): string => {
+  return priceInHbar ? ` ${priceInHbar * 10} gWei` : ''
+}
+
 const fromId = contractResultAnalyzer.fromId
 const toId = contractResultAnalyzer.toId
-const gasPrice = contractResultAnalyzer.gasPrice
 const maxFeePerGas = contractResultAnalyzer.maxFeePerGas
 const maxPriorityFeePerGas = contractResultAnalyzer.maxPriorityFeePerGas
 const contractResult = contractResultAnalyzer.contractResult
