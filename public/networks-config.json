@@ -9,6 +9,8 @@
     "enableExpiry": true,
     "enableMarket": true,
     "popularTokenIndexURL": null,
+    "erc20IndexURL": null,
+    "erc721IndexURL": null,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository-verify.hashscan.io/contracts/",
@@ -25,6 +27,8 @@
     "enableStaking": true,
     "enableExpiry": false,
     "enableMarket": false,
+    "erc20IndexURL": null,
+    "erc721IndexURL": null,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository-sourcify.hedera-devops.com/contracts/",
@@ -41,7 +45,8 @@
     "enableStaking": false,
     "enableExpiry": false,
     "enableMarket": false,
-    "erc721IndexURL": "erc721-previewnet.json",
+    "erc20IndexURL": null,
+    "erc721IndexURL": null,
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository-sourcify.hedera-devops.com/contracts/",
