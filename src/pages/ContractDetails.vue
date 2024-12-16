@@ -29,16 +29,21 @@
 
       <DashboardCard collapsible-key="contractDetails">
         <template v-slot:title>
-          <div class="is-flex is-align-items-center is-flex-wrap-wrap">
-            <span class="h-is-primary-title mr-3">Contract</span>
-            <div v-if="isVerified" class="h-is-text-size-2 mt-1">
-              <div  class="h-has-pill has-background-success">VERIFIED</div>
+          <div class="is-flex is-align-items-end is-flex-wrap-wrap">
+            <span>
+              <span class="h-is-primary-title">Contract</span>
+              <span v-if="displayName" class="h-is-tertiary-text h-is-extra-text should-wrap ml-3">
+                {{ displayName }}
+              </span>
+            </span>
+            <div v-if="isVerified" class="h-is-text-size-2 mb-1 ml-3">
+              <div class="h-has-pill has-background-success">VERIFIED</div>
             </div>
-            <div v-if="erc20" class="h-is-text-size-2 mt-1 ml-3">
-              <div  class="h-has-pill has-background-info">ERC 20</div>
+            <div v-if="erc20" class="h-is-text-size-2 mb-1 ml-3">
+              <div class="h-has-pill">ERC 20</div>
             </div>
-            <div v-if="erc721" class="h-is-text-size-2 mt-1 ml-3">
-              <div  class="h-has-pill has-background-info">ERC 721</div>
+            <div v-if="erc721" class="h-is-text-size-2 mb-1 ml-3">
+              <div class="h-has-pill">ERC 721</div>
             </div>
           </div>
         </template>
@@ -309,7 +314,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch, WatchStopHandle} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -340,7 +345,7 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
-import {ERC20Info, ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
+import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {formatUnits} from "ethers";
 import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
@@ -444,6 +449,14 @@ export default defineComponent({
     })
 
     //
+    // Contract name (known either from verification or from ERC token interface
+    //
+
+    const displayName = computed(() =>
+        contractAnalyzer.contractName.value ?? erc20.value?.name ?? erc721.value?.name ?? null
+    )
+
+    //
     // ContractAnalyzer
     //
     const contractAnalyzer = new ContractAnalyzer(normalizedContractId)
@@ -512,6 +525,7 @@ export default defineComponent({
       accountRoute,
       contractAnalyzer,
       isVerified: contractAnalyzer.isVerified,
+      displayName,
       logs: contractResultsLogsAnalyzer.logs,
       domainName: nameQuery.name,
       domainProviderName: nameQuery.providerName,
