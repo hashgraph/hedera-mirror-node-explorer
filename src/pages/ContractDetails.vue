@@ -450,8 +450,6 @@ export default defineComponent({
     onMounted(() => contractAnalyzer.mount())
     onBeforeUnmount(() => contractAnalyzer.unmount())
 
-    const isVerified = computed(() => contractAnalyzer.sourcifyURL.value != null)
-
     //
     // ERC20
     //
@@ -513,7 +511,7 @@ export default defineComponent({
       normalizedContractId,
       accountRoute,
       contractAnalyzer,
-      isVerified,
+      isVerified: contractAnalyzer.isVerified,
       logs: contractResultsLogsAnalyzer.logs,
       domainName: nameQuery.name,
       domainProviderName: nameQuery.providerName,

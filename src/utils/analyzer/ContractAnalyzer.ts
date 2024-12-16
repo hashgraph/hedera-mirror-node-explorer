@@ -84,6 +84,8 @@ export class ContractAnalyzer {
         return result
     })
 
+    public readonly isVerified = computed(() => this.sourcifyURL.value != null)
+
     public readonly globalState = computed<GlobalState | null>(() => {
         let result: GlobalState | null
         if (this.contractId.value !== null) {
