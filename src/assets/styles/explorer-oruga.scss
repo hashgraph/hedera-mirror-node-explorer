@@ -54,7 +54,7 @@ $checkbox-active-background-color: var(--h-theme-highlight-color);
 $checkbox-checkmark-color: var(--h-theme-box-background-color);
 
 // Import Oruga
-@import '../../../node_modules/@oruga-ui/oruga-next/src/scss/oruga-full-vars';
+@import '../../../node_modules/@oruga-ui/theme-oruga/dist/scss/oruga-build';
 
 
 
