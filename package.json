@@ -39,7 +39,6 @@
     "axios": "^1.7.8",
     "base32-decode": "^1.0.0",
     "base32-encode": "^2.0.0",
-    "bulma": "^0.9.4",
     "ethers": "^6.13.4",
     "file-saver": "^2.0.5",
     "jszip": "^3.10.1",
