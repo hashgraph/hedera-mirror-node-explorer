@@ -18,15 +18,10 @@
  *
  */
 
-// Import brand variables
-@import '../branding/brand-theme';
-
-//
-// COLORS
-//
+@import '../branding/brand-theme.css';
 
 .h-has-background-color {
-  background: $h-background-color;
+  background: var(--h-theme-background-color);
 }
 
 .h-has-opacity-40 {
@@ -34,7 +29,7 @@
 }
 
 .h-radio-button:hover {
-  color: $h-radio-hover-color;
+  color: var(--h-mainnet-highlight-color);
 }
 
 .h-chooser-figure {
@@ -64,12 +59,8 @@
 .h-chooser-img {
   vertical-align: middle;
   width: 48px;
-  height: 48px
+  height: 48px;
 }
-
-//
-// TEXT
-//
 
 body {
   font-feature-settings: "liga", "kern";
@@ -215,7 +206,7 @@ body {
 }
 
 .h-is-extra-text {
-  color: $h-extra-text-color;
+  color: var(--h-mainnet-highlight-color);
 }
 
 .h-is-label {
@@ -228,13 +219,14 @@ body {
   font-size: 13px;
   line-height: 19px;
   padding: 3px 6px 3px;
-  //height: 26px;
   letter-spacing: normal;
   align-content: center;
 }
+
 .h-is-hoverable:hover {
   color: grey;
 }
+
 .h-is-compact-label {
   color: #DDD;
   background: #383838;
@@ -246,7 +238,6 @@ body {
   line-height: 16px;
   padding: 1px 4px 2px;
   width: fit-content;
-  //height: 22px;
   letter-spacing: normal;
   align-content: center;
 }
@@ -254,13 +245,13 @@ body {
 .h-has-pill {
   color: black;
   font-weight: bold;
-  background: $h-pill-background-color;
+  background: var(--h-theme-pill-background-color);
   border-radius: 15px;
   padding: 3px 8px 3px;
 }
 
 .h-has-low-contrast {
-  opacity: 0.4
+  opacity: 0.4;
 }
 
 .is-numeric {
@@ -316,7 +307,6 @@ body {
   word-break: break-word;
 }
 
-// Transfer Graphs
 .h-is-debit {
   color: #FE687A;
 }
@@ -325,24 +315,16 @@ body {
   color: #27D19E;
 }
 
-//
-// BUTTONS
-//
-
 .h-button {
   border-radius: 3px;
 }
 
-//
-// TOP NAV BAR
-//
-
 #drop-down-menu .o-sel {
   height: 40px;
   font-weight: bold;
-  color: $h-highlight-color;
-  border-color: $h-highlight-color;
-  background-color: $h-page-background-color;
+  color: var(--h-theme-highlight-color);
+  border-color: var(--h-theme-highlight-color);
+  background-color: var(--h-theme-page-background-color);
   border-width: 0.5px;
 }
 
@@ -350,9 +332,9 @@ body {
   height: 44.5px;
   width: 322px;
   font-weight: bold;
-  color: $h-highlight-color;
-  border-color: $h-highlight-color;
-  background-color: $h-page-background-color;
+  color: var(--h-theme-highlight-color);
+  border-color: var(--h-theme-highlight-color);
+  background-color: var(--h-theme-page-background-color);
   border-width: 0.5px;
   padding-top: 13px;
   padding-bottom: 13px;
@@ -373,7 +355,7 @@ body {
 }
 
 .button.h-is-navbar-item:not(.h-is-mobile-navbar-item) {
-  outline: $h-page-background-color solid 2px;
+  outline: var(--h-theme-page-background-color) solid 2px;
 }
 
 .button.h-is-navbar-item.is-outlined {
@@ -402,7 +384,7 @@ body {
 .button.h-is-navbar-item.is-ghost.is-rimmed {
   text-decoration-line: underline;
   text-decoration-style: solid;
-  text-decoration-color: $h-highlight-color;
+  text-decoration-color: var(--h-theme-highlight-color);
   text-decoration-thickness: 1px;
   text-underline-offset: 9px;
   font-weight: bold;
@@ -422,16 +404,12 @@ body {
   padding-right: 0;
 }
 
-//
-// CARDS AND SEPARATORS
-//
-
 .h-card:not(:first-child) {
   margin-top: 2rem;
 }
 
 .h-card-separator {
-  background: $h-background-color;
+  background: var(--h-theme-background-color);
   margin: 16px 0;
 }
 
@@ -441,7 +419,6 @@ body {
     margin: 10px 0;
   }
 }
-
 /* Solid vertical separator */
 .h-has-column-separator {
   padding-left: 1rem;
@@ -456,7 +433,6 @@ body {
     border-left: initial;
   }
 }
-
 /* Dashed vertical separator */
 .h-has-column-dashed-separator {
   padding-left: 1rem;
@@ -471,7 +447,6 @@ body {
     border-left: initial;
   }
 }
-
 /* Dashed horizontal separator */
 hr.dotted {
   border-top: 1px dashed dimgrey;
@@ -483,7 +458,7 @@ hr.dotted {
 
 /* Dashed DnD area */
 .h-dotted-area {
-  border: dashed 1px $h-highlight-color;
+  border: dashed 1px var(--h-theme-highlight-color);
 }
 
 /* Code box (source, bytecode, assembly code) */
@@ -491,33 +466,23 @@ hr.dotted {
   border: 0.5px solid dimgrey;
   gap: 0.42rem;
   overflow-y: auto;
-  min-height: 5rem
+  min-height: 5rem;
 }
 
-//
-// MODALS
-//
-
 .h-modal-content {
-  width: 768px
+  width: 768px;
 }
 
 @media (max-width: 1079px) {
   .h-modal-content {
-    width: 640px
+    width: 640px;
   }
 }
-
 @media (max-width: 767px) {
   .h-modal-content {
-    width: 280px
+    width: 280px;
   }
 }
-
-//
-// TOOLTIPS
-//
-
 .h-tooltip {
   --oruga-tooltip-background-color: var(--h-theme-highlight-color);
   --oruga-tooltip-arrow-margin: 5px;
@@ -525,40 +490,28 @@ hr.dotted {
   --oruga-tooltip-content-weight-normal: 300;
 }
 
-//
-// BANNER
-//
-
 .h-banner-link {
   text-decoration: underline;
 }
 
 .h-banner-link:hover {
-  color: black
+  color: black;
 }
 
-//
-// ORUGA TABLES
-//
-
-// Style borders on mobile
 @media (max-width: 1079px) {
   .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child {
     border-top: #979797 1px solid;
     border-bottom: #4A4A4A 1px solid;
   }
-
   .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:not(:first-child):not(:last-child) {
     border-top: 0;
     border-bottom: #4A4A4A 1px solid;
   }
-
   .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:last-child {
     border-top: 0;
     border-bottom: 0;
   }
 }
-
 table.o-table > thead > tr > th {
   font-style: normal;
   font-weight: bold;
@@ -587,30 +540,28 @@ table.o-table > tbody > tr {
 
 @keyframes fadeIn {
   0% {
-    opacity: 0.0
+    opacity: 0;
   }
   25% {
-    opacity: 0.0
+    opacity: 0;
   }
   75% {
-    opacity: 1.0
+    opacity: 1;
   }
   100% {
-    opacity: 1.0
+    opacity: 1;
   }
 }
-
-// Fixes for o-table "defects"
 table.o-table {
-  margin: 1rem 0
+  margin: 1rem 0;
 }
 
 .h-is-table-compact table.o-table {
-  margin: 0
+  margin: 0;
 }
 
 div.o-table__pagination {
-  padding: 4px
+  padding: 4px;
 }
 
 /*
@@ -633,7 +584,7 @@ div.o-table__pagination {
     Rules below restore the correct precedence.
  */
 table.o-table {
-  text-align: left
+  text-align: left;
 }
 
 table.o-table td.o-table__td--right,
@@ -646,14 +597,11 @@ table.o-table th.o-table__th--left {
   text-align: left;
 }
 
-//
-// BACKGROUND
-//
 .h-mobile-background {
-  background-color: $h-mobile-page-background-color;
+  background-color: var(--h-theme-box-background-color);
   min-height: 450px;
 }
 
 .h-has-page-background {
-  background-color: $h-page-background-color;
+  background-color: var(--h-theme-page-background-color);
 }

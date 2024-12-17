@@ -1,0 +1,58 @@
+@charset "UTF-8";
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+@import '../branding/brand-theme.css';
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+
+:root {
+    --bulma-text: white;
+    --bulma-title-color: --bulma-text;
+    --bulma-scheme-main: var(--h-theme-page-background-color);
+    --bulma-radius: 0;
+    --bulma-hero-body-padding-small: 0.5rem 0 0.75rem;
+    --bulma-family-primary: 'Styrene A Web', sans-serif;
+    --bulma-family-monospace: novamonoregular;
+    --bulma-button-color: white;
+    --bulma-control-border-width: 0.5px;
+    --bulma-input-placeholder-color: grey;
+    --bulma-progress-bar-background-color: #444444;
+    --bulma-progress-border-radius: --bulma-box-radius;
+    --bulma-desktop: 1080px;
+}
+
+a {
+    --bulma-link-text: white;
+}
+
+.box {
+    --bulma-box-radius: 0;
+    --bulma-box-background-color: var(--h-theme-box-background-color);
+}
+
+.tabs {
+    --bulma-tabs-toggle-link-radius: 4px;
+    --bulma-tabs-toggle-link-border-color: grey;
+    --bulma-tabs-toggle-link-border-width: 1px;
+    --bulma-tabs-border-bottom-color: var(--h-theme-box-background-color);
+    --bulma-tabs-link-active-border-bottom-color: var(--h-theme-highlight-color);
+    --bulma-tabs-link-hover-border-bottom-color: white;
+    --bulma-tabs-link-hover-color: var(--h-theme-highlight-color);
+}
