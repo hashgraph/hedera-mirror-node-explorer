@@ -27,10 +27,6 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faForward} from "@fortawesome/free-solid-svg-icons";
 
-import "./fonts/styreneA/1802-UFGULA.css";
-import "./fonts/novamono/stylesheet.css";
-import "./assets/styles/explorer-bulma.css";
-import "./assets/styles/explorer-oruga.css";
 import "./assets/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import {CoreConfig} from "@/config/CoreConfig";

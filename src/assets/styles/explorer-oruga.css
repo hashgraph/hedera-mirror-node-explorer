@@ -1,0 +1,52 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+:root{
+  --oruga-base-font-size: 12px;
+  --oruga-table-background-color: var(--h-theme-box-background-color);
+  --oruga-table-striped-background-color: var(--h-theme-box-background-color);
+  --oruga-table-border-radius: 0;
+  --oruga-table-color: white;
+  --oruga-table-hoverable-background-color: var(--h-theme-page-background-color);
+  --oruga-table-th-color: white;
+  --oruga-table-th-border: 2px solid #4A4A4A;
+  --oruga-table-td-border: 1px solid #4A4A4A;
+  --oruga-pagination-link-margin: 2px;
+  --oruga-pagination-link-color: white;
+  --oruga-pagination-link-border-color: #979797;
+  --oruga-pagination-link-border-radius: 0;
+  --oruga-pagination-link-height: 20px;
+  --oruga-pagination-link-min-width: 20px;
+  --oruga-select-color: white;
+  --oruga-select-background-color: var(--h-theme-box-background-color);
+  --oruga-select-border-color: white;
+  --oruga-select-border-radius: 0;
+  --oruga-select-arrow-size: 0.75rem;
+  --oruga-select-height: 26px;
+  --oruga-select-line-height: 1;
+  --oruga-select-padding: 0 8px;
+  --oruga-switch-active-background-color: var(--h-theme-background-color);
+
+  --oruga-checkbox-border-color: var(--h-theme-highlight-color);
+  --oruga-checkbox-background-color: var(--h-theme-box-background-color);
+  --oruga-checkbox-border-width: 1px;
+  --oruga-checkbox-active-background-color: var(--h-theme-highlight-color);
+  --oruga-checkbox-checkmark-color: var(--h-theme-box-background-color);
+}

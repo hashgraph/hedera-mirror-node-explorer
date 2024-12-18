@@ -18,7 +18,16 @@
  *
  */
 
-@import '../branding/brand-theme.css';
+@import "@/fonts/styreneA/1802-UFGULA.css";
+@import "@/fonts/novamono/stylesheet.css";
+
+@import "@/assets/branding/brand-theme.css";
+
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+@import "@/assets/styles/explorer-bulma.css";
+
+@import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
+@import "@/assets/styles/explorer-oruga.css";
 
 .h-has-background-color {
   background: var(--h-theme-background-color);
