@@ -65,7 +65,18 @@ const createAndMount = async () => {
     if (coreConfig instanceof CoreConfig && networkConfig instanceof NetworkConfig) {
         routeManager.configure(coreConfig, networkConfig)
     }
-    const app = createApp(Root, { coreConfig, networkConfig })
+
+    const cssId = 'customCss';  // you could encode the css path itself to generate id..
+    const head = document.getElementsByTagName('head')[0];
+    const link = document.createElement('link');
+    link.id = cssId;
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = '/style-config.css';
+    link.media = 'all';
+    head.appendChild(link);
+
+    const app = createApp(Root, {coreConfig, networkConfig})
     app.component("font-awesome-icon", FontAwesomeIcon)
     app.use(router)
     app.use(Oruga, {iconPack: 'fas'})

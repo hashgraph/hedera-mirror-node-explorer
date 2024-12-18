@@ -1,0 +1,127 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/*  ============================================================================
+    Network themes - these should end up being just a (few) configuration parameters in networks-config.json
+*/
+:root {
+  --h-mainnet-background-color: #575757;
+  --h-mainnet-highlight-color: lightgrey;
+  --h-mainnet-page-background-color: #171717;
+  --h-mainnet-box-background-color: #202020;
+  --h-mainnet-pill-background-color: lightgrey;
+  --h-testnet-background-color: #575757;
+  --h-testnet-highlight-color: lightgrey;
+  --h-testnet-page-background-color: #171717;
+  --h-testnet-box-background-color: #202020;
+  --h-testnet-pill-background-color: lightgrey;
+  --h-previewnet-background-color: #575757;
+  --h-previewnet-highlight-color: lightgrey;
+  --h-previewnet-page-background-color: #171717;
+  --h-previewnet-box-background-color: #202020;
+  --h-previewnet-pill-background-color: lightgrey;
+  --h-theme-background-color: var(--h-mainnet-background-color);
+  --h-theme-highlight-color: var(--h-mainnet-highlight-color);
+  --h-theme-page-background-color: var(--h-mainnet-page-background-color);
+  --h-theme-box-background-color: var(--h-mainnet-box-background-color);
+  --h-theme-pill-background-color: var(--h-mainnet-pill-background-color);
+}
+
+/*
+    Need to retrofit this in explorer.css
+*/
+.h-box-border {
+  border: 0.5px solid;
+  border-image-slice: 1;
+  border-image-source: var(--h-theme-background-color);
+}
+
+/*  ============================================================================
+    Bulma customization
+*/
+:root {
+  --bulma-text: white;
+  --bulma-title-color: --bulma-text;
+  --bulma-scheme-main: var(--h-theme-page-background-color);
+  --bulma-radius: 0;
+  --bulma-hero-body-padding-small: 0.5rem 0 0.75rem;
+  --bulma-family-primary: 'Styrene A Web', sans-serif;
+  --bulma-family-monospace: novamonoregular;
+  --bulma-button-color: white;
+  --bulma-control-border-width: 0.5px;
+  --bulma-input-placeholder-color: grey;
+  --bulma-progress-bar-background-color: #444444;
+  --bulma-progress-border-radius: --bulma-box-radius;
+  --bulma-desktop: 1080px;
+}
+
+a {
+  --bulma-link-text: white;
+}
+
+.box {
+  --bulma-box-radius: 0;
+  --bulma-box-background-color: var(--h-theme-box-background-color);
+}
+
+.tabs {
+  --bulma-tabs-toggle-link-radius: 4px;
+  --bulma-tabs-toggle-link-border-color: grey;
+  --bulma-tabs-toggle-link-border-width: 1px;
+  --bulma-tabs-border-bottom-color: var(--h-theme-box-background-color);
+  --bulma-tabs-link-active-border-bottom-color: var(--h-theme-highlight-color);
+  --bulma-tabs-link-hover-border-bottom-color: white;
+  --bulma-tabs-link-hover-color: var(--h-theme-highlight-color);
+}
+
+/*  ============================================================================
+    Oruga customization
+*/
+:root{
+  --oruga-base-font-size: 12px;
+  --oruga-table-background-color: var(--h-theme-box-background-color);
+  --oruga-table-striped-background-color: var(--h-theme-box-background-color);
+  --oruga-table-border-radius: 0;
+  --oruga-table-color: white;
+  --oruga-table-hoverable-background-color: var(--h-theme-page-background-color);
+  --oruga-table-th-color: white;
+  --oruga-table-th-border: 2px solid #4A4A4A;
+  --oruga-table-td-border: 1px solid #4A4A4A;
+  --oruga-pagination-link-margin: 2px;
+  --oruga-pagination-link-color: white;
+  --oruga-pagination-link-border-color: #979797;
+  --oruga-pagination-link-border-radius: 0;
+  --oruga-pagination-link-height: 20px;
+  --oruga-pagination-link-min-width: 20px;
+  --oruga-select-color: white;
+  --oruga-select-background-color: var(--h-theme-box-background-color);
+  --oruga-select-border-color: white;
+  --oruga-select-border-radius: 0;
+  --oruga-select-arrow-size: 0.75rem;
+  --oruga-select-height: 26px;
+  --oruga-select-line-height: 1;
+  --oruga-select-padding: 0 8px;
+  --oruga-switch-active-background-color: var(--h-theme-background-color);
+  --oruga-checkbox-border-color: var(--h-theme-highlight-color);
+  --oruga-checkbox-background-color: var(--h-theme-box-background-color);
+  --oruga-checkbox-border-width: 1px;
+  --oruga-checkbox-active-background-color: var(--h-theme-highlight-color);
+  --oruga-checkbox-checkmark-color: var(--h-theme-box-background-color);
+}
