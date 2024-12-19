@@ -80,7 +80,7 @@ export default defineComponent({
 
 <style>
 .dp__theme_dark {
-  --dp-background-color: var(--h-theme-box-background-color);
+  --dp-background-color: var(--background-tertiary);
   --dp-primary-color: #575757;
   --dp-border-color: white;
   --dp-border-color-hover: white;

@@ -248,7 +248,7 @@ export default defineComponent({
     margin-top: 10px;
     border: 0.5px solid grey;
     padding: 0.5px;
-    background-color: var(--h-theme-page-background-color);
+    background-color: var(--background-primary);
   }
 
   .file-container-item:hover {
@@ -262,7 +262,7 @@ export default defineComponent({
   }
 
   .file-container-item.selectedItem {
-    border: 1px solid var(--h-theme-highlight-color);
+    border: 1px solid var(--network-theme-color);
     padding: 0;
   }
 }

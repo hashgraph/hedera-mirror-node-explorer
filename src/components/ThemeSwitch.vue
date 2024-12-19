@@ -25,7 +25,11 @@
 <template>
 
   <o-field>
-    <o-switch v-model="darkSelected">{{ darkSelected ? 'dark' : 'light' }}</o-switch>
+    <o-switch v-model="darkSelected">
+      <span style="color: var(--network-theme-color)">
+        {{ darkSelected ? 'dark' : 'light' }}
+      </span>
+    </o-switch>
   </o-field>
 
 </template>
@@ -38,6 +42,9 @@
 
 import {onMounted, ref, watch} from "vue";
 import {AppStorage} from "@/AppStorage.ts";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+
+const networkConfig = NetworkConfig.inject()
 
 const darkSelected = ref(false)
 onMounted(() => {
@@ -48,18 +55,20 @@ onMounted(() => {
   watch(darkSelected, (dark) => {
     if (dark) {
       AppStorage.setTheme('dark')
-      document.documentElement.style.setProperty('--theme-text-primary', 'var(--dark-text-primary)')
-      document.documentElement.style.setProperty('--theme-text-secondary', 'var(--dark-text-secondary)')
-      document.documentElement.style.setProperty('--h-theme-page-background-color', 'var(--dark-background-primary)')
-      document.documentElement.style.setProperty('--h-theme-box-background-color', 'var(--dark-background-tertiary)')
-      document.documentElement.style.setProperty('--theme-table-border', 'var(--dark-table-border)')
+      document.documentElement.style.setProperty('--text-primary', 'var(--dark-text-primary)')
+      document.documentElement.style.setProperty('--text-secondary', 'var(--dark-text-secondary)')
+      document.documentElement.style.setProperty('--background-primary', 'var(--dark-background-primary)')
+      document.documentElement.style.setProperty('--background-tertiary', 'var(--dark-background-tertiary)')
+      document.documentElement.style.setProperty('--table-border', 'var(--dark-table-border)')
+      document.documentElement.style.setProperty('--network-theme-color', 'var(--dark-network-theme-color)')
     } else {
       AppStorage.setTheme('light')
-      document.documentElement.style.setProperty('--theme-text-primary', 'var(--light-text-primary)')
-      document.documentElement.style.setProperty('--theme-text-secondary', 'var(--light-text-secondary)')
-      document.documentElement.style.setProperty('--h-theme-page-background-color', 'var(--light-background-primary)')
-      document.documentElement.style.setProperty('--h-theme-box-background-color', 'var(--light-background-tertiary)')
-      document.documentElement.style.setProperty('--theme-table-border', 'var(--light-table-border)')
+      document.documentElement.style.setProperty('--text-primary', 'var(--light-text-primary)')
+      document.documentElement.style.setProperty('--text-secondary', 'var(--light-text-secondary)')
+      document.documentElement.style.setProperty('--background-primary', 'var(--light-background-primary)')
+      document.documentElement.style.setProperty('--background-tertiary', 'var(--light-background-tertiary)')
+      document.documentElement.style.setProperty('--table-border', 'var(--light-table-border)')
+      document.documentElement.style.setProperty('--network-theme-color', 'var(--light-network-theme-color)')
     }
   }, {immediate: true})
 })

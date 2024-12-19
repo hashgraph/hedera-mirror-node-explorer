@@ -48,19 +48,19 @@
             <o-field>
               <o-select v-model="periodOption" class="h-is-text-size-1" style="border-radius: 4px">
                 <option :key="Period.Day" :value="Period.Day"
-                        style="background-color: var(--h-theme-box-background-color)">
+                        style="background-color: var(--background-tertiary)">
                   LAST 24 HOURS
                 </option>
                 <option :key="Period.Week" :value="Period.Week"
-                        style="background-color: var(--h-theme-box-background-color)">
+                        style="background-color: var(--background-tertiary)">
                   LAST 7 DAYS
                 </option>
                 <option :key="Period.Month" :value="Period.Month"
-                        style="background-color: var(--h-theme-box-background-color)">
+                        style="background-color: var(--background-tertiary)">
                   LAST 30 DAYS
                 </option>
                 <option :key="Period.Year" :value="Period.Year"
-                        style="background-color: var(--h-theme-box-background-color)">
+                        style="background-color: var(--background-tertiary)">
                   LAST 365 DAYS
                 </option>
               </o-select>

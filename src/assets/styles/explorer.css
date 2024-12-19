@@ -24,34 +24,17 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 @import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
 
-
 /*  ============================================================================
     Themes
 */
-:root {
-  --h-mainnet-background-color: #575757;
-  --h-mainnet-highlight-color: lightgrey;
-  --h-mainnet-box-background-color: #202020;
-  --h-mainnet-pill-background-color: lightgrey;
-  --h-testnet-background-color: #575757;
-  --h-testnet-highlight-color: lightgrey;
-  --h-testnet-box-background-color: #202020;
-  --h-testnet-pill-background-color: lightgrey;
-  --h-previewnet-background-color: #575757;
-  --h-previewnet-highlight-color: lightgrey;
-  --h-previewnet-box-background-color: #202020;
-  --h-previewnet-pill-background-color: lightgrey;
-  --h-theme-background-color: var(--h-mainnet-background-color);
-  --h-theme-highlight-color: #7A1B80;
-  --h-theme-pill-background-color: var(--h-mainnet-pill-background-color);
-}
-
 :root {
   --light-text-primary: #050505;
   --light-text-secondary: #888888;
   --light-background-primary: #F6F6F6;
   --light-background-tertiary: #FFFFFF;
   --light-table-border: #EFEFEF;
+  /* this default will be overriden by the current NetworkEntry.lightThemeColor configuration parameter */
+  --light-network-theme-color: lightgrey;
 
 
   --dark-text-primary: #FFFFFF;
@@ -59,21 +42,32 @@
   --dark-background-primary: #131313;
   --dark-background-tertiary: #171717;
   --dark-table-border: #1F1F1F;
+  /* this default will be overriden by the current NetworkEntry.darkThemeColor configuration parameter */
+  --dark-network-theme-color: lightgrey;
 
 
-  --theme-text-primary: var(--light-text-primary);
-  --theme-text-secondary: var(--light-text-secondary);
-  --h-theme-page-background-color: var(--light-background-primary);
-  --h-theme-box-background-color: var(--light-background-tertiary);
-  --theme-table-border: var(--light-table-border);
+  --text-primary: var(--light-text-primary);
+  --text-secondary: var(--light-text-secondary);
+  --background-primary: var(--light-background-primary);
+  --background-tertiary: var(--light-background-tertiary);
+  --table-border: var(--light-table-border);
+  --network-theme-color: var(--light-network-theme-color);
 }
+
+/*
+    Compatibility during the migration
+ */
+:root {
+  --h-theme-background-color: var(--background-primary);
+}
+
 
 /*  ============================================================================
     Bulma customization
 */
 :root {
-  --bulma-text: var(--theme-text-primary);
-  --bulma-scheme-main: var(--h-theme-page-background-color);
+  --bulma-text: var(--text-primary);
+  --bulma-scheme-main: var(--background-primary);
   --bulma-radius: 0;
   --bulma-hero-body-padding-small: 0.5rem 0 0.75rem;
   --bulma-family-primary: 'Styrene A Web', sans-serif;
@@ -88,28 +82,28 @@
 }
 
 a {
-  --bulma-link-text: var(--theme-text-primary);
+  --bulma-link-text: var(--text-primary);
 }
 
 .box {
   --bulma-box-radius: 16px;
-  --bulma-box-background-color: var(--h-theme-box-background-color);
+  --bulma-box-background-color: var(--background-tertiary);
   --bulma-box-shadow: 0 0 0 0;
   --bulma-box-padding: 32px;
 }
 
 .h-box-border {
-  border: 1px solid var(--theme-table-border);
+  border: 1px solid var(--table-border);
 }
 
 .tabs {
   --bulma-tabs-toggle-link-radius: 4px;
   --bulma-tabs-toggle-link-border-color: grey;
   --bulma-tabs-toggle-link-border-width: 1px;
-  --bulma-tabs-border-bottom-color: var(--h-theme-box-background-color);
-  --bulma-tabs-link-active-border-bottom-color: var(--h-theme-highlight-color);
+  --bulma-tabs-border-bottom-color: var(--background-tertiary);
+  --bulma-tabs-link-active-border-bottom-color: var(--network-theme-color);
   --bulma-tabs-link-hover-border-bottom-color: white;
-  --bulma-tabs-link-hover-color: var(--h-theme-highlight-color);
+  --bulma-tabs-link-hover-color: var(--network-theme-color);
 }
 
 /*  ============================================================================
@@ -117,34 +111,34 @@ a {
 */
 :root {
   --oruga-base-font-size: 12px;
-  --oruga-table-background-color: var(--h-theme-box-background-color);
-  --oruga-table-striped-background-color: var(--h-theme-box-background-color);
+  --oruga-table-background-color: var(--background-tertiary);
+  --oruga-table-striped-background-color: var(--background-tertiary);
   --oruga-table-border-radius: 0;
-  --oruga-table-color: var(--theme-text-primary);
-  --oruga-table-hoverable-background-color: var(--h-theme-page-background-color);
-  --oruga-table-th-color: var(--theme-text-secondary);
+  --oruga-table-color: var(--text-primary);
+  --oruga-table-hoverable-background-color: var(--background-primary);
+  --oruga-table-th-color: var(--text-secondary);
   --oruga-table-th-border: 2px solid #4A4A4A;
   --oruga-table-td-border: 1px solid #4A4A4A;
   --oruga-pagination-link-margin: 2px;
-  --oruga-pagination-link-color: var(--theme-text-primary);
+  --oruga-pagination-link-color: var(--text-primary);
   --oruga-pagination-link-border-color: #979797;
   --oruga-pagination-link-border-radius: 0;
   --oruga-pagination-link-height: 20px;
   --oruga-pagination-link-min-width: 20px;
-  --oruga-select-color: var(--theme-text-primary);
-  --oruga-select-background-color: var(--h-theme-box-background-color);
-  --oruga-select-border-color: var(--theme-text-primary);
+  --oruga-select-color: var(--text-primary);
+  --oruga-select-background-color: var(--background-tertiary);
+  --oruga-select-border-color: var(--text-primary);
   --oruga-select-border-radius: 4px;
   --oruga-select-arrow-size: 0.75rem;
   --oruga-select-height: 26px;
   --oruga-select-line-height: 1;
   --oruga-select-padding: 0 8px;
   --oruga-switch-active-background-color: var(--h-theme-background-color);
-  --oruga-checkbox-border-color: var(--h-theme-highlight-color);
-  --oruga-checkbox-background-color: var(--h-theme-box-background-color);
+  --oruga-checkbox-border-color: var(--network-theme-color);
+  --oruga-checkbox-background-color: var(--background-tertiary);
   --oruga-checkbox-border-width: 1px;
-  --oruga-checkbox-active-background-color: var(--h-theme-highlight-color);
-  --oruga-checkbox-checkmark-color: var(--h-theme-box-background-color);
+  --oruga-checkbox-active-background-color: var(--network-theme-color);
+  --oruga-checkbox-checkmark-color: var(--background-tertiary);
 }
 
 /*  ============================================================================
@@ -172,17 +166,17 @@ a {
 }
 
 .h-chooser-figure:hover:not(.selected) {
-  border: solid 0.5px var(--h-theme-highlight-color);
+  border: solid 0.5px var(--network-theme-color);
   background-color: initial;
 }
 
 .h-chooser-figure:active:not(.selected) {
-  border: solid 0.5px var(--h-theme-highlight-color);
-  background-color: var(--h-theme-page-background-color);
+  border: solid 0.5px var(--network-theme-color);
+  background-color: var(--background-primary);
 }
 
 .h-chooser-figure.selected {
-  border: solid 1.5px var(--h-theme-highlight-color);
+  border: solid 1.5px var(--network-theme-color);
   background-color: initial;
 }
 
@@ -342,7 +336,7 @@ body {
 .h-is-label {
   color: #DDD;
   background: #383838;
-  border: solid 0.5px var(--h-theme-highlight-color);
+  border: solid 0.5px var(--network-theme-color);
   border-radius: 4px;
   font-family: "Styrene A Web", sans-serif;
   font-weight: normal;
@@ -360,7 +354,7 @@ body {
 .h-is-compact-label {
   color: #DDD;
   background: #383838;
-  border: solid 0.5px var(--h-theme-highlight-color);
+  border: solid 0.5px var(--network-theme-color);
   border-radius: 4px;
   font-family: "Styrene A Web", sans-serif;
   font-weight: normal;
@@ -375,7 +369,7 @@ body {
 .h-has-pill {
   color: black;
   font-weight: bold;
-  background: var(--h-theme-pill-background-color);
+  background: var(--network-theme-color);
   border-radius: 15px;
   padding: 3px 8px 3px;
 }
@@ -452,9 +446,9 @@ body {
 #drop-down-menu .o-sel {
   height: 40px;
   font-weight: bold;
-  color: var(--h-theme-highlight-color);
-  border-color: var(--h-theme-highlight-color);
-  background-color: var(--h-theme-page-background-color);
+  color: var(--network-theme-color);
+  border-color: var(--network-theme-color);
+  background-color: var(--background-primary);
   border-width: 0.5px;
 }
 
@@ -464,7 +458,7 @@ body {
   font-weight: bold;
   color: var(--h-theme-highlight-color);
   border-color: var(--h-theme-highlight-color);
-  background-color: var(--h-theme-page-background-color);
+  background-color: var(--background-primary);
   border-width: 0.5px;
   padding-top: 13px;
   padding-bottom: 13px;
@@ -485,7 +479,7 @@ body {
 }
 
 .button.h-is-navbar-item:not(.h-is-mobile-navbar-item) {
-  outline: var(--h-theme-page-background-color) solid 2px;
+  outline: var(--background-primary) solid 2px;
 }
 
 .button.h-is-navbar-item.is-outlined {
@@ -728,10 +722,10 @@ table.o-table th.o-table__th--left {
 }
 
 .h-mobile-background {
-  background-color: var(--h-theme-box-background-color);
+  background-color: var(--background-tertiary);
   min-height: 450px;
 }
 
 .h-has-page-background {
-  background-color: var(--h-theme-page-background-color);
+  background-color: var(--background-primary);
 }

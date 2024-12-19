@@ -235,7 +235,7 @@ export default defineComponent({
 }
 
 .media-container-background {
-  background-color: var(--h-theme-page-background-color);
+  background-color: var(--background-primary);
   border: solid 1px grey;
 }
 

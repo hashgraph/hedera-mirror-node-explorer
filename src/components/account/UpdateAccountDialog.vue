@@ -69,10 +69,10 @@
         <o-select v-model="selectedUnit"
                   class="is-small has-text-white ml-2"
                   style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
+                    background-color: var(--background-primary);"
         >
           <option v-for="p in PeriodUnit" :key="p" :value="p"
-                  style="background-color: var(--h-theme-page-background-color)">
+                  style="background-color: var(--background-primary)">
             {{ p }}
           </option>
         </o-select>
@@ -96,15 +96,15 @@
         <o-select v-model="autoAssociationMode"
                   class="is-small has-text-white"
                   style=" height: 38px; border-radius: 2px;border-width: 1px;border-color: grey;
-                  background-color: var(--h-theme-page-background-color);"
+                  background-color: var(--background-primary);"
         >
-          <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
+          <option :key="0" :value="0" style="background-color: var(--background-primary)">
             No Automatic Association
           </option>
-          <option :key="1" :value="1" style="background-color: var(--h-theme-page-background-color)">
+          <option :key="1" :value="1" style="background-color: var(--background-primary)">
             Limited Automatic Association
           </option>
-          <option :key="-1" :value="-1" style="background-color: var(--h-theme-page-background-color)">
+          <option :key="-1" :value="-1" style="background-color: var(--background-primary)">
             Unlimited Automatic Association
           </option>
         </o-select>
@@ -166,11 +166,11 @@
           <o-select v-model="stakedNode"
                     class="is-small has-text-white"
                     style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
+                    background-color: var(--background-primary);"
           >
             <optgroup label="Hedera council nodes">
               <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-page-background-color)"
+                      style="background-color: var(--background-primary)"
                       v-show="isCouncilNode(n)"
               >
                 {{ makeNodeSelectorDescription(n) }}
@@ -178,7 +178,7 @@
             </optgroup>
             <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
               <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-page-background-color)"
+                      style="background-color: var(--background-primary)"
                       v-show="!isCouncilNode(n)"
               >
                 {{ makeNodeSelectorDescription(n) }}
@@ -754,7 +754,7 @@ const normalizePeriod = (period: number, unit: PeriodUnit) => unit === PeriodUni
   height: 38px;
   border-width: 1px;
   border-color: grey;
-  background-color: var(--h-theme-page-background-color);
+  background-color: var(--background-primary);
 }
 
 </style>

@@ -54,7 +54,7 @@
                  :class="{'has-text-grey': !tokenId}"
                  :value="tokenId"
                  @input="handleInput"
-                 style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px; background-color: var(--h-theme-box-background-color)">
+                 style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px; background-color: var(--background-tertiary)">
           <span v-if="topicIdFeedback=='valid'" class="icon is-small has-text-success ml-2"><i class="fas fa-check"></i></span>
           <span v-else-if="topicIdFeedback=='invalid'" class="icon is-small has-text-danger ml-2"><i
               class="fas fa-times"></i></span>
@@ -299,7 +299,7 @@ export default defineComponent({
 
 <style>
 .dp__theme_dark {
-  --dp-background-color: var(--h-theme-box-background-color);
+  --dp-background-color: var(--background-tertiary);
   --dp-primary-color: #575757;
   --dp-border-color: white;
   --dp-border-color-hover: white;

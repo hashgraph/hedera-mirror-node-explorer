@@ -39,14 +39,14 @@
               <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
                 <optgroup label="Hedera council nodes">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
+                          style="background-color: var(--background-tertiary)"
                           v-show="isCouncilNode(n)">
                     {{ makeNodeSelectorDescription(n) }}
                   </option>
                 </optgroup>
                 <optgroup v-if="hasCommunityNode" label="Community nodes">
                   <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
+                          style="background-color: var(--background-tertiary)"
                           v-show="!isCouncilNode(n)">
                     {{ makeNodeSelectorDescription(n) }}
                   </option>
@@ -63,7 +63,7 @@
                    :value="amountStaked"
                    @input="handleInput"
                    style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
-                     color: white; background-color: var(--h-theme-box-background-color)">
+                     color: white; background-color: var(--background-tertiary)">
           </div>
         </div>
       </div>

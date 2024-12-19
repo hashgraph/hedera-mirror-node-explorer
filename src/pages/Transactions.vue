@@ -27,7 +27,7 @@
   <PageFrame>
     <template #pageContent>
 
-      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
+      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--network-theme-color);">
         <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
       </div>
 

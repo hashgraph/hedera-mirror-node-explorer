@@ -9,6 +9,8 @@
     "enableExpiry": true,
     "enableMarket": true,
     "popularTokenIndexURL": null,
+    "lightThemeColor": "#7A1B80",
+    "darkThemeColor": "#7A1B80",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
@@ -25,6 +27,8 @@
     "enableStaking": true,
     "enableExpiry": false,
     "enableMarket": false,
+    "lightThemeColor": "#FF4D00",
+    "darkThemeColor": "#FF4D00",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
@@ -41,6 +45,8 @@
     "enableStaking": false,
     "enableExpiry": false,
     "enableMarket": false,
+    "lightThemeColor": "#FFDE00",
+    "darkThemeColor": "#FFDE00",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",

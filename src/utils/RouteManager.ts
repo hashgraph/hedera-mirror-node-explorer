@@ -165,11 +165,11 @@ export class RouteManager {
         for (const r of routes) {
             this.router.addRoute(r)
         }
-
+        this.switchThemes()
     }
 
-    public findChainID(network: string): number|null {
-        let result: number|null
+    public findChainID(network: string): number | null {
+        let result: number | null
         const entry = this.networkConfig.value.lookup(network)
         if (entry !== null) {
             result = entry.sourcifySetup?.chainID ?? null
@@ -189,12 +189,11 @@ export class RouteManager {
     public readonly previousRoute = computed(() => (this.router.currentRoute.value?.query.from as string))
 
 
-
     //
     // Public (routeToXXX)
     //
 
-    
+
     //
     // Transaction
     //
@@ -454,11 +453,11 @@ export class RouteManager {
     // Main Pages
     //
 
-    public makeRouteToMainDashboard(network: string|null = null): RouteLocationRaw {
-        return {name: 'MainDashboard', params: {network: network ??  this.currentNetwork.value}}
+    public makeRouteToMainDashboard(network: string | null = null): RouteLocationRaw {
+        return {name: 'MainDashboard', params: {network: network ?? this.currentNetwork.value}}
     }
 
-    public routeToMainDashboard(network: string|null = null): Promise<NavigationFailure | void | undefined> {
+    public routeToMainDashboard(network: string | null = null): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToMainDashboard(network))
     }
 
@@ -511,7 +510,6 @@ export class RouteManager {
     }
 
 
-
     //
     // App plugin
     //
@@ -525,7 +523,7 @@ export class RouteManager {
     // Private
     //
 
-    private readonly checkNetwork = (to: RouteLocationNormalized): boolean|string => {
+    private readonly checkNetwork = (to: RouteLocationNormalized): boolean | string => {
         let result: boolean | string
 
         if (this.getNetworkEntryFromRoute(to) === null) { // Unknown network)
@@ -536,7 +534,7 @@ export class RouteManager {
         return result
     }
 
-    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
+    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized): void => {
         const envTitlePrefix = this.coreConfig.value.documentTitlePrefix
         const titlePrefix = envTitlePrefix !== "" ? envTitlePrefix + " " : ""
 
@@ -650,27 +648,9 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        if (this.currentNetworkEntry.value.name == NetworkConfig.TEST_NETWORK) {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-        } else if (this.currentNetworkEntry.value.name == NetworkConfig.PREVIEW_NETWORK) {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
-        } else {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
-        }
+        document.documentElement.style.setProperty('--light-network-theme-color', this.currentNetworkEntry.value.lightThemeColor)
+        document.documentElement.style.setProperty('--dark-network-theme-color', this.currentNetworkEntry.value.darkThemeColor)
     }
-
 }
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string | null {
@@ -695,7 +675,6 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
     }
     return result
 }
-
 
 
 export enum TabId {

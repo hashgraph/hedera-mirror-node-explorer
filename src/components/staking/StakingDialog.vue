@@ -90,14 +90,14 @@
                             :icon="selectedNodeIcon">
                     <optgroup label="Hedera council nodes">
                       <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                              style="background-color: var(--h-theme-box-background-color)"
+                              style="background-color: var(--background-tertiary)"
                               v-show="isCouncilNode(n)">
                         {{ makeNodeSelectorDescription(n) }}
                       </option>
                     </optgroup>
                     <optgroup v-if="hasCommunityNode" label="Community nodes">
                       <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                              style="background-color: var(--h-theme-box-background-color)"
+                              style="background-color: var(--background-tertiary)"
                               v-show="!isCouncilNode(n)">
                         {{ makeNodeSelectorDescription(n) }}
                       </option>
@@ -123,7 +123,7 @@
                          @focus="stakeChoice='account'"
                          @input="handleInput"
                          style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                         background-color: var(--h-theme-box-background-color)">
+                         background-color: var(--background-tertiary)">
 
                   <div v-if="isAccountSelected" id="feedbackMessage"
                        :class="{'has-text-grey': isSelectedAccountValid, 'has-text-danger': !isSelectedAccountValid}"
@@ -175,7 +175,8 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse, makeNodeSelectorDescription,
+  AccountsResponse,
+  makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/MirrorNodeSchemas";

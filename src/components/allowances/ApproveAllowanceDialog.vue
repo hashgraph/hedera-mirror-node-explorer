@@ -56,7 +56,7 @@
                  class="input is-small has-text-right has-text-white"
                  placeholder="Account or Contract ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-box-background-color)"
+                 background-color: var(--background-tertiary)"
                  type="text"
                  :disabled="isSpenderDisabled"
                  @input="event => handleSpenderInput(event)">
@@ -83,7 +83,7 @@
                  class="input is-small has-text-right has-text-white"
                  placeholder="HBAR Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-box-background-color)"
+                 background-color: var(--background-tertiary)"
                  type="text"
                  @focus="allowanceChoice='hbar'"
                  @input="event => handleHbarAmountInput(event)">
@@ -103,7 +103,7 @@
                  class="input is-small has-text-right has-text-white"
                  placeholder="Token ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-box-background-color)"
+                 background-color: var(--background-tertiary)"
                  type="text"
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenInput(event)">
@@ -113,7 +113,7 @@
                  class="input is-small has-text-right has-text-white"
                  placeholder="Token Amount"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-box-background-color)"
+                 background-color: var(--background-tertiary)"
                  type="text"
                  @focus="allowanceChoice='token'"
                  @input="event => handleTokenAmountInput(event)">
@@ -138,7 +138,7 @@
                  class="input is-small has-text-right has-text-white"
                  placeholder="Collection ID (0.0.1234)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-box-background-color)"
+                 background-color: var(--background-tertiary)"
                  type="text"
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftInput(event)">
@@ -148,7 +148,7 @@
                  class="input is-small has-text-right has-text-white"
                  placeholder="serial numbers (1, 2, 3…)"
                  style="height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                 background-color: var(--h-theme-box-background-color)"
+                 background-color: var(--background-tertiary)"
                  type="text"
                  @focus="allowanceChoice='nft'"
                  @input="event => handleNftSerialsInput(event)">

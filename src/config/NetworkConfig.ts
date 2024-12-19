@@ -109,6 +109,8 @@ export class NetworkEntry {
         const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
         const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
+        const lightThemeColor = fetchString(obj, "lightThemeColor") ?? "lightgrey"
+        const darkThemeColor = fetchString(obj, "darkThemeColor") ?? "lightgrey"
 
         if (name === null) {
             throw this.missingPropertyError("name")
@@ -137,6 +139,8 @@ export class NetworkEntry {
             enableExpiry,
             enableMarket,
             popularTokenIndexURL,
+            lightThemeColor,
+            darkThemeColor,
             sourcifySetup
         )
     }
@@ -163,6 +167,10 @@ export class NetworkEntry {
 
         // The URL of the popular token index
         public readonly popularTokenIndexURL: string|null,
+
+        // The light and dark variants of the network theme color
+        public readonly lightThemeColor: string|null,
+        public readonly darkThemeColor: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}
