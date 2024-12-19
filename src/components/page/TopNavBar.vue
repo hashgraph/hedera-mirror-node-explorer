@@ -50,6 +50,8 @@
     </span>
 
     <div class="is-flex is-align-items-center pt-2">
+      <ThemeSwitch id="theme-switch" class="mr-3"/>
+
       <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'"
                    :to="routeManager.makeRouteToMobileSearch()">
         <img alt="Search bar" id="mobile-search-icon" src="@/assets/search-icon.png" style="max-height: 20px;">
@@ -104,6 +106,8 @@
           <SearchBarV2/>
         </div>
 
+        <ThemeSwitch id="theme-switch"/>
+
         <div v-if="nbNetworks > 1" id="drop-down-menu">
           <o-field>
             <o-select v-model="selectedNetwork" class="h-is-navbar-item">
@@ -139,6 +143,7 @@ import ConnectWalletButton from "@/components/wallet/ConnectWalletButton.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import NavMenuItem from "@/components/page/NavMenuItem.vue";
 import {TabId} from "@/utils/RouteManager.ts";
+import ThemeSwitch from "@/components/ThemeSwitch.vue";
 
 const isMediumScreen = inject('isMediumScreen', true)
 const coreConfig = CoreConfig.inject()
@@ -191,7 +196,7 @@ const networkEntries = networkConfig.entries
   position: relative;
   display: grid;
   column-gap: 1.2rem;
-  grid-template-columns:repeat(20, minmax(0, 35px));
+  grid-template-columns:repeat(22, minmax(0, 35px));
 }
 
 #product-logo {
@@ -212,6 +217,10 @@ const networkEntries = networkConfig.entries
   grid-column: span 20;
 }
 
+#theme-switch {
+  grid-column: span 2;
+}
+
 #drop-down-menu {
   grid-column: span 4;
 }
@@ -226,7 +235,7 @@ const networkEntries = networkConfig.entries
   }
 
   #navbar-grid {
-    grid-template-columns:repeat(17, minmax(0, 35px));
+    grid-template-columns:repeat(19, minmax(0, 35px));
   }
 
   .search-bar-S {
@@ -258,13 +267,13 @@ const networkEntries = networkConfig.entries
   }
 
   .search-bar-S {
-    grid-column: span 8;
+    grid-column: span 6;
   }
   .search-bar-M {
-    grid-column: span 13;
+    grid-column: span 11;
   }
   .search-bar-L {
-    grid-column: span 18;
+    grid-column: span 16;
   }
 
   #drop-down-menu {
