@@ -77,7 +77,7 @@ const isTouchDevice = inject('isTouchDevice', false)
 section.section.is-top-section {
   padding-top: 0;
   padding-bottom: 0;
-  background-image: url("assets/block-chain-bg.png");
+  background-image: url("@/assets/block-chain-bg.png");
   background-repeat: no-repeat;
   background-size: 104px
 }
