@@ -24,6 +24,132 @@
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 @import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
 
+
+/*  ============================================================================
+    Themes
+*/
+:root {
+  --h-mainnet-background-color: #575757;
+  --h-mainnet-highlight-color: lightgrey;
+  --h-mainnet-box-background-color: #202020;
+  --h-mainnet-pill-background-color: lightgrey;
+  --h-testnet-background-color: #575757;
+  --h-testnet-highlight-color: lightgrey;
+  --h-testnet-box-background-color: #202020;
+  --h-testnet-pill-background-color: lightgrey;
+  --h-previewnet-background-color: #575757;
+  --h-previewnet-highlight-color: lightgrey;
+  --h-previewnet-box-background-color: #202020;
+  --h-previewnet-pill-background-color: lightgrey;
+  --h-theme-background-color: var(--h-mainnet-background-color);
+  --h-theme-highlight-color: #7A1B80;
+  --h-theme-pill-background-color: var(--h-mainnet-pill-background-color);
+}
+
+:root {
+  --light-text-primary: #050505;
+  --light-text-secondary: #888888;
+  --light-background-primary: #F6F6F6;
+  --light-background-tertiary: #FFFFFF;
+  --light-table-border: #EFEFEF;
+
+
+  --dark-text-primary: #FFFFFF;
+  --dark-text-secondary: #A2A2A2;
+  --dark-background-primary: #131313;
+  --dark-background-tertiary: #171717;
+  --dark-table-border: #1F1F1F;
+
+
+  --theme-text-primary: var(--light-text-primary);
+  --theme-text-secondary: var(--light-text-secondary);
+  --h-theme-page-background-color: var(--light-background-primary);
+  --h-theme-box-background-color: var(--light-background-tertiary);
+  --theme-table-border: var(--light-table-border);
+}
+
+/*  ============================================================================
+    Bulma customization
+*/
+:root {
+  --bulma-text: var(--theme-text-primary);
+  --bulma-scheme-main: var(--h-theme-page-background-color);
+  --bulma-radius: 0;
+  --bulma-hero-body-padding-small: 0.5rem 0 0.75rem;
+  --bulma-family-primary: 'Styrene A Web', sans-serif;
+  --bulma-family-monospace: novamonoregular;
+  --bulma-button-color: white;
+  --bulma-control-border-width: 0.5px;
+  --bulma-input-placeholder-color: grey;
+  --bulma-progress-bar-background-color: #444444;
+  --bulma-progress-border-radius: --bulma-box-radius;
+  --bulma-desktop: 1080px;
+
+}
+
+a {
+  --bulma-link-text: var(--theme-text-primary);
+}
+
+.box {
+  --bulma-box-radius: 16px;
+  --bulma-box-background-color: var(--h-theme-box-background-color);
+  --bulma-box-shadow: 0 0 0 0;
+  --bulma-box-padding: 32px;
+}
+
+.h-box-border {
+  border: 1px solid var(--theme-table-border);
+}
+
+.tabs {
+  --bulma-tabs-toggle-link-radius: 4px;
+  --bulma-tabs-toggle-link-border-color: grey;
+  --bulma-tabs-toggle-link-border-width: 1px;
+  --bulma-tabs-border-bottom-color: var(--h-theme-box-background-color);
+  --bulma-tabs-link-active-border-bottom-color: var(--h-theme-highlight-color);
+  --bulma-tabs-link-hover-border-bottom-color: white;
+  --bulma-tabs-link-hover-color: var(--h-theme-highlight-color);
+}
+
+/*  ============================================================================
+    Oruga customization
+*/
+:root {
+  --oruga-base-font-size: 12px;
+  --oruga-table-background-color: var(--h-theme-box-background-color);
+  --oruga-table-striped-background-color: var(--h-theme-box-background-color);
+  --oruga-table-border-radius: 0;
+  --oruga-table-color: var(--theme-text-primary);
+  --oruga-table-hoverable-background-color: var(--h-theme-page-background-color);
+  --oruga-table-th-color: var(--theme-text-secondary);
+  --oruga-table-th-border: 2px solid #4A4A4A;
+  --oruga-table-td-border: 1px solid #4A4A4A;
+  --oruga-pagination-link-margin: 2px;
+  --oruga-pagination-link-color: var(--theme-text-primary);
+  --oruga-pagination-link-border-color: #979797;
+  --oruga-pagination-link-border-radius: 0;
+  --oruga-pagination-link-height: 20px;
+  --oruga-pagination-link-min-width: 20px;
+  --oruga-select-color: var(--theme-text-primary);
+  --oruga-select-background-color: var(--h-theme-box-background-color);
+  --oruga-select-border-color: var(--theme-text-primary);
+  --oruga-select-border-radius: 4px;
+  --oruga-select-arrow-size: 0.75rem;
+  --oruga-select-height: 26px;
+  --oruga-select-line-height: 1;
+  --oruga-select-padding: 0 8px;
+  --oruga-switch-active-background-color: var(--h-theme-background-color);
+  --oruga-checkbox-border-color: var(--h-theme-highlight-color);
+  --oruga-checkbox-background-color: var(--h-theme-box-background-color);
+  --oruga-checkbox-border-width: 1px;
+  --oruga-checkbox-active-background-color: var(--h-theme-highlight-color);
+  --oruga-checkbox-checkmark-color: var(--h-theme-box-background-color);
+}
+
+/*  ============================================================================
+    Explorer classes
+*/
 .h-has-background-color {
   background: var(--h-theme-background-color);
 }
