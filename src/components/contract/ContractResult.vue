@@ -213,7 +213,6 @@ onBeforeUnmount(() => feeLookup.unmount())
 
 const gasPrice = computed(() => {
   let result: number | null = contractResultAnalyzer.gasPrice.value
-  console.log(`contractResultAnalyzer.gasPrice.value: ${result}`)
 
   if (!result && timestamp.value !== null) {
     result = lookupTransactionType(feeLookup.entity.value, props.transactionType)
