@@ -31,18 +31,18 @@
         <template v-slot:title>
           <div class="is-flex is-align-items-end is-flex-wrap-wrap">
             <span>
-              <span class="h-is-primary-title">Contract</span>
-              <span v-if="displayName" class="h-is-tertiary-text h-is-extra-text should-wrap ml-3">
-                {{ displayName }}
+              <span class="h-is-primary-title">Contract </span>
+              <span v-if="contractName" class="h-is-tertiary-text h-is-extra-text should-wrap ml-3">
+                {{ contractName }}
               </span>
             </span>
             <div v-if="isVerified" class="h-is-text-size-2 mb-1 ml-3">
               <div class="h-has-pill has-background-success">VERIFIED</div>
             </div>
-            <div v-if="erc20" class="h-is-text-size-2 mb-1 ml-3">
+            <div v-if="isErc20" class="h-is-text-size-2 mb-1 ml-3">
               <div class="h-has-pill">ERC 20</div>
             </div>
-            <div v-if="erc721" class="h-is-text-size-2 mb-1 ml-3">
+            <div v-if="isErc721" class="h-is-text-size-2 mb-1 ml-3">
               <div class="h-has-pill">ERC 721</div>
             </div>
           </div>
@@ -104,12 +104,12 @@
         </template>
 
         <template v-slot:leftContent>
-         <Property id="key">
-           <template v-slot:name>Admin Key</template>
-           <template v-slot:value>
-             <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
-           </template>
-         </Property>
+          <Property id="key">
+            <template v-slot:name>Admin Key</template>
+            <template v-slot:value>
+              <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
+            </template>
+          </Property>
           <Property id="memo">
             <template v-slot:name>Memo</template>
             <template v-slot:value>
@@ -226,74 +226,16 @@
             </template>
           </Property>
 
-      </template>
-    </DashboardCard>
-
-    <DashboardCard v-if="erc20" collapsible-key="erc20TokenProperties">
-      <template #title>
-        <span class="h-is-secondary-title">ERC Token</span>
-      </template>
-      <template #content>
-        <Property id="erc20Name">
-          <template v-slot:name>Name</template>
-          <template v-slot:value>
-            <StringValue :string-value="erc20?.name"/>
-          </template>
-        </Property>
-        <Property id="symbol">
-          <template v-slot:name>Symbol</template>
-          <template v-slot:value>
-            <StringValue :string-value="erc20?.symbol"/>
-          </template>
-        </Property>
-        <Property id="decimals">
-          <template v-slot:name>Decimals</template>
-          <template v-slot:value>
-            <PlainAmount :amount="erc20?.decimals"/>
-          </template>
-        </Property>
-        <!--        <Property id="owner">-->
-        <!--          <template v-slot:name>Owner</template>-->
-        <!--          <template v-slot:value>-->
-        <!--            <EVMAddress :address="erc20?.owner" :show-id="true" :has-custom-font="true"/>-->
-        <!--          </template>-->
-        <!--        </Property>-->
-        <Property id="totalSupply">
-          <template v-slot:name>Total Supply</template>
-          <template v-slot:value>
-            <StringValue :string-value="erc20TotalSupply"/>
-          </template>
-        </Property>
-        <!--        <Property id="maxSupply">-->
-        <!--          <template v-slot:name>Max. Supply</template>-->
-        <!--          <template v-slot:value>-->
-        <!--            <StringValue :string-value="erc20MaxSupply"/>-->
-        <!--          </template>-->
-        <!--        </Property>-->
-      </template>
-    </DashboardCard>
-
-    <DashboardCard v-if="erc721" collapsible-key="erc721TokenProperties">
-      <template #title>
-        <span class="h-is-secondary-title">ERC Token</span>
-      </template>
-      <template #content>
-        <Property id="erc721Name">
-          <template v-slot:name>Name</template>
-          <template v-slot:value>
-            <StringValue :string-value="erc721?.name"/>
-          </template>
-        </Property>
-        <Property id="symbol">
-          <template v-slot:name>Symbol</template>
-          <template v-slot:value>
-            <StringValue :string-value="erc721?.symbol"/>
-          </template>
-        </Property>
-      </template>
-    </DashboardCard>
+        </template>
+      </DashboardCard>
 
       <TokensSection :account-id="normalizedContractId"/>
+
+      <ContractERCSection
+          :contract-id="normalizedContractId"
+          v-model:is-erc20="isErc20"
+          v-model:is-erc721="isErc721"
+      />
 
       <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
@@ -314,7 +256,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -345,16 +287,15 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
-import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import PlainAmount from "@/components/values/PlainAmount.vue";
-import {formatUnits} from "ethers";
-import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
+import ContractERCSection from "@/components/contract/ContractERCSection.vue";
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    ContractERCSection,
     PlainAmount,
     TokensSection,
     InfoTooltip,
@@ -449,14 +390,6 @@ export default defineComponent({
     })
 
     //
-    // Contract name (known either from verification or from ERC token interface
-    //
-
-    const displayName = computed(() =>
-        contractAnalyzer.contractName.value ?? erc20.value?.name ?? erc721.value?.name ?? null
-    )
-
-    //
     // ContractAnalyzer
     //
     const contractAnalyzer = new ContractAnalyzer(normalizedContractId)
@@ -464,30 +397,10 @@ export default defineComponent({
     onBeforeUnmount(() => contractAnalyzer.unmount())
 
     //
-    // ERC20
+    // ERC
     //
-
-    const erc20Lookup = ERC20InfoCache.instance.makeLookup(normalizedContractId)
-    onMounted(() => erc20Lookup.mount())
-    onBeforeUnmount(() => erc20Lookup.unmount())
-    const erc20 = erc20Lookup.entity
-
-    const erc20TotalSupply = computed(() =>
-        erc20.value?.totalSupply && erc20.value?.decimals
-            ? formatUnits(erc20.value.totalSupply, erc20.value.decimals)
-            : null
-    )
-    const erc20MaxSupply = computed(() => null)
-
-    //
-    // ERC721
-    //
-    const erc721Lookup = ERC721InfoCache.instance.makeLookup(normalizedContractId)
-    onMounted(() => erc721Lookup.mount())
-    onBeforeUnmount(() => erc721Lookup.unmount())
-    const erc721 = erc721Lookup.entity
-
-    const erc = computed(() => erc20.value !== null || erc721.value !== null)
+    const isErc20 = ref(false)
+    const isErc721 = ref(false)
 
     //
     // contract results logs - event logs at contract level
@@ -512,11 +425,8 @@ export default defineComponent({
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
-      erc,
-      erc20,
-      erc20TotalSupply,
-      erc20MaxSupply,
-      erc721,
+      isErc20,
+      isErc721,
       notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
@@ -525,7 +435,7 @@ export default defineComponent({
       accountRoute,
       contractAnalyzer,
       isVerified: contractAnalyzer.isVerified,
-      displayName,
+      contractName: contractAnalyzer.contractName,
       logs: contractResultsLogsAnalyzer.logs,
       domainName: nameQuery.name,
       domainProviderName: nameQuery.providerName,

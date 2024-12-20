@@ -109,7 +109,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
@@ -210,7 +210,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
@@ -308,7 +308,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
 
         const resultTable = wrapper.findComponent(ContractResultTable)
         expect(resultTable.exists()).toBe(true)
@@ -379,7 +379,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
 
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
@@ -417,7 +417,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#keyValue").text()).toBe("None")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("No Auto Association")
         expect(wrapper.get("#memoValue").text()).toBe("None")
@@ -471,7 +471,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("^Contract" + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -529,7 +529,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(false)
@@ -585,7 +585,7 @@ describe("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract" + "Show associated account" + "Contract ID:" + contract.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + contract.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
