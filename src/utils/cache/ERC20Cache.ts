@@ -26,13 +26,25 @@ export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
 
     public static readonly instance = new ERC20Cache()
 
-    public async lookupContract(contractId: string) {
+    public async lookupContract(contractId: string): Promise<ERC20Contract | null> {
         const tokens = await this.lookup()
         let result = null as ERC20Contract | null
         for (const t of tokens) {
             if (contractId === t.contractId) {
                 result = t
                 break
+            }
+        }
+        return Promise.resolve(result)
+    }
+
+    public async search(name: string): Promise<ERC20Contract[]> {
+        name = name.toLowerCase()
+        const result : ERC20Contract[] = []
+        const tokens = await this.lookup()
+        for (const t of tokens) {
+            if (t.name && t.name.toLowerCase().indexOf(name) != -1) {
+                result.push(t)
             }
         }
         return Promise.resolve(result)

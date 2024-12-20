@@ -46,6 +46,8 @@ import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProv
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {AppStorage} from "@/AppStorage";
 import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache";
+import {ERC20Cache} from "@/utils/cache/ERC20Cache.ts";
+import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
 
 export abstract class SearchAgent<L, E> {
 
@@ -555,6 +557,10 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
 
     protected abstract makeRoute(tokenName: string): RouteLocationRaw
 
+    protected makeRouteToDetails(tokenId: string): RouteLocationRaw {
+        return routeManager.makeRouteToToken(tokenId)
+    }
+
     //
     // SearchAgent
     //
@@ -578,7 +584,7 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
                 if (t.token_id !== null) {
                     const description = truncate(t.name, 35)
                     const extra = " " + t.token_id
-                    const route = routeManager.makeRouteToToken(t.token_id)
+                    const route = this.makeRouteToDetails(t.token_id)
                     const candidate = new SearchCandidate<TokenLike>(description, extra, route, t, this)
                     result.push(candidate)
                 }
@@ -699,4 +705,76 @@ export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
 export interface TokenLike {
     token_id: string|null
     name: string
+}
+
+export class ERC20SearchAgent extends TokenNameSearchAgent {
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("ERC 20")
+    }
+
+    //
+    // TokenNameSearchAgent
+    //
+
+    protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
+        let result: TokenLike[] = []
+
+        const tokens = await ERC20Cache.instance.search(tokenName)
+        for (const t of tokens) {
+            result.push({
+                token_id: t.contractId,
+                name: t.name!,
+            })
+        }
+        return Promise.resolve(result)
+    }
+
+    protected makeRouteToDetails(tokenId: string): RouteLocationRaw {
+        return routeManager.makeRouteToContract(tokenId);
+    }
+
+    protected makeRoute(tokenName: string): RouteLocationRaw {
+        return ""
+    }
+}
+
+export class ERC721SearchAgent extends TokenNameSearchAgent {
+
+    //
+    // Public
+    //
+
+    public constructor() {
+        super("ERC 721")
+    }
+
+    //
+    // TokenNameSearchAgent
+    //
+
+    protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
+        let result: TokenLike[] = []
+
+        const tokens = await ERC721Cache.instance.search(tokenName)
+        for (const t of tokens) {
+            result.push({
+                token_id: t.contractId,
+                name: t.name!,
+            })
+        }
+        return Promise.resolve(result)
+    }
+
+    protected makeRouteToDetails(tokenId: string): RouteLocationRaw {
+        return routeManager.makeRouteToContract(tokenId);
+    }
+
+    protected makeRoute(tokenName: string): RouteLocationRaw {
+        return ""
+    }
 }
