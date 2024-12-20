@@ -71,7 +71,7 @@ export default defineComponent({
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
 
-    const computedContractId = computed(() => props.contractId || null)
+    const computedContractId = computed(() => props.contractId ?? null)
     const perPage = ref(isMediumScreen ? 10 : 5)
 
     const showContractResults = computed(() => resultTableController.rows.value.length)
