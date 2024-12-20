@@ -52,7 +52,7 @@ import PageFrame from "@/components/page/PageFrame.vue";
 import TokensByPopularityTable from "@/components/token/TokensByPopularityTable.vue";
 
 export default defineComponent({
-  name: 'TokensByName',
+  name: 'TokensByPopularity',
 
   props: {
     network: String,
