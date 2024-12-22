@@ -78,5 +78,7 @@ export class ERC721Cache extends SingletonCache<ERC721Contract[]> {
 
 export interface ERC721Contract {
     contractId: string
-    name: string|undefined
+    address: string
+    name: string
+    symbol: string
 }

@@ -64,6 +64,8 @@ import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
+import ERC20ByName from "@/pages/ERC20ByName.vue";
+import ERC721ByName from "@/pages/ERC721ByName.vue";
 
 export class RouteManager {
 
@@ -378,6 +380,20 @@ export class RouteManager {
             result = this.router.push(this.makeRouteToContract(contractId))
         }
         return result
+    }
+
+    public makeRouteToERC20ByName(name: string): RouteLocationRaw {
+        return {
+            name: 'ERC20ByName',
+            params: {name: name, network: this.currentNetwork.value}
+        }
+    }
+
+    public makeRouteToERC721ByName(name: string): RouteLocationRaw {
+        return {
+            name: 'ERC721ByName',
+            params: {name: name, network: this.currentNetwork.value}
+        }
     }
 
     //
@@ -885,6 +901,24 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/contracts',
         name: 'Contracts',
         component: Contracts,
+        props: true,
+        meta: {
+            tabId: TabId.Contracts
+        }
+    },
+    {
+        path: '/:network/erc20ByName/:name',
+        name: 'ERC20ByName',
+        component: ERC20ByName,
+        props: true,
+        meta: {
+            tabId: TabId.Contracts
+        }
+    },
+    {
+        path: '/:network/erc721ByName/:name',
+        name: 'ERC721ByName',
+        component: ERC721ByName,
         props: true,
         meta: {
             tabId: TabId.Contracts

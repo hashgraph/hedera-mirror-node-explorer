@@ -739,7 +739,7 @@ export class ERC20SearchAgent extends TokenNameSearchAgent {
     }
 
     protected makeRoute(tokenName: string): RouteLocationRaw {
-        return ""
+        return routeManager.makeRouteToERC20ByName(tokenName)
     }
 }
 
@@ -775,6 +775,6 @@ export class ERC721SearchAgent extends TokenNameSearchAgent {
     }
 
     protected makeRoute(tokenName: string): RouteLocationRaw {
-        return ""
+        return routeManager.makeRouteToERC721ByName(tokenName)
     }
 }

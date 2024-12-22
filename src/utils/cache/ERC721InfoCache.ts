@@ -20,7 +20,7 @@
 
 import {EntityCache} from "@/utils/cache/base/EntityCache.ts";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
-import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
+import {ERC721Cache, ERC721Contract} from "@/utils/cache/ERC721Cache.ts";
 import {ERCUtils} from "@/utils/ERCUtils.ts";
 
 export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
@@ -42,8 +42,13 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
                 result = await this.loadInfo(contractId)
                 if (result !== null) {
                     // We extend ERC721Cache
-                    const newERC721Contract = { contractId, name: result.name ?? undefined }
-                    await ERC721Cache.instance.populate(contractId, newERC721Contract)
+                    const newERC721Contract = {
+                        contractId: contractId,
+                        address: result.evmAddress,
+                        name: result.name,
+                        symbol: result.symbol
+                    }
+                    await ERC721Cache.instance.populate(contractId, newERC721Contract as ERC721Contract)
                 }
             } else {
                 result = null

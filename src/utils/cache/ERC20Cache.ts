@@ -67,6 +67,10 @@ export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
 }
 
 export interface ERC20Contract {
-    contractId: string
-    name: string|undefined
+    contractId: string,
+    address: string,
+    name: string | null,
+    symbol: string | null,
+    totalSupply: number | null,
+    decimals: number | null
 }
