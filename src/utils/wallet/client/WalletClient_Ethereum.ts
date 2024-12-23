@@ -123,6 +123,7 @@ export class WalletClient_Ethereum extends WalletClient {
         return Promise.resolve(result)
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public async callContract(contractId: string, functionData: string): Promise<ContractResultDetails | string> {
         throw "to be implemented"
     }
@@ -161,7 +162,9 @@ export class WalletClient_Ethereum extends WalletClient {
             // 3) Waits for transaction to appear in mirror node
             try {
                 await this.waitForTransactionSurfacing(result)
-            } catch {}
+            } catch {
+                // Carefully ignored
+            }
 
         } else {
             throw "bug"

@@ -258,7 +258,7 @@ export class TokenMetadataAnalyzer {
             if (url === null) {
                 const hcsUri = HCSURI.parse(uri)
                 if (hcsUri && hcsUri.version === '1') { // HCS-1 topic
-                    let content = await HCSAssetCache.instance.lookup(hcsUri.topicId)
+                    const content = await HCSAssetCache.instance.lookup(hcsUri.topicId)
                     url = content?.getDataURL() ?? uri
                 } else {
                     url = uri
