@@ -68,7 +68,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -89,7 +88,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -109,7 +107,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(SAMPLE_ACCOUNT.account)
@@ -127,7 +124,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBe(SAMPLE_ACCOUNT_ADDRESS)
-        expect(parser.aliasByteString.value).toBe(SAMPLE_ACCOUNT_ALIAS_HEX)
         expect(parser.errorNotification.value).toBeNull()
 
         // 3) Unsets
@@ -148,7 +144,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -169,7 +164,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -205,7 +199,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -225,7 +218,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(SAMPLE_ACCOUNT.account)
@@ -243,7 +235,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Mounts parser
@@ -264,7 +255,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBe(SAMPLE_ACCOUNT_ADDRESS)
-        expect(parser.aliasByteString.value).toBe(SAMPLE_ACCOUNT_ALIAS_HEX)
         expect(parser.errorNotification.value).toBeNull()
 
         // 3) Unmounts parser
@@ -285,7 +275,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // Unsets
@@ -306,7 +295,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -342,7 +330,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -363,7 +350,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account address
@@ -383,7 +369,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(SAMPLE_ACCOUNT_ADDRESS)
@@ -401,7 +386,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBe(SAMPLE_ACCOUNT_ADDRESS)
-        expect(parser.aliasByteString.value).toBe(SAMPLE_ACCOUNT_ALIAS_HEX)
         expect(parser.errorNotification.value).toBeNull()
 
         // 3) Unsets
@@ -422,7 +406,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -443,7 +426,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -479,7 +461,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -500,7 +481,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account alias
@@ -520,7 +500,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(SAMPLE_ACCOUNT.alias)
@@ -538,7 +517,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBe(SAMPLE_ACCOUNT_ADDRESS)
-        expect(parser.aliasByteString.value).toBe(SAMPLE_ACCOUNT_ALIAS_HEX)
         expect(parser.errorNotification.value).toBeNull()
 
         accountLoc.value = null
@@ -558,7 +536,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -579,7 +556,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -615,7 +591,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -636,7 +611,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account alias in hex form
@@ -656,7 +630,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(SAMPLE_ACCOUNT_ALIAS_HEX)
@@ -674,7 +647,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBe(SAMPLE_ACCOUNT_ADDRESS)
-        expect(parser.aliasByteString.value).toBe(SAMPLE_ACCOUNT_ALIAS_HEX)
         expect(parser.errorNotification.value).toBeNull()
 
         accountLoc.value = null
@@ -694,7 +666,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -715,7 +686,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -752,7 +722,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -773,7 +742,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -793,7 +761,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(UNKNOWN_ACCOUNT_ID)
@@ -811,7 +778,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBe("Account with ID 0.0.42 was not found")
 
         // 3) Unsets
@@ -832,7 +798,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -853,7 +818,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -890,7 +854,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -911,7 +874,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -931,7 +893,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(UNKNOWN_ACCOUNT_ADDRESS)
@@ -949,7 +910,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBe("Own this account? Activate it by transferring any amount of ℏ or tokens to 0x00…070809.")
 
         // 3) Unsets
@@ -970,7 +930,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -991,7 +950,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -1028,7 +986,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -1049,7 +1006,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -1069,7 +1025,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(UNKNOWN_ACCOUNT_ALIAS)
@@ -1087,7 +1042,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBe("Account with alias CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ was not found")
 
         // 3) Unsets
@@ -1108,7 +1062,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -1129,7 +1082,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -1166,7 +1118,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -1187,7 +1138,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -1207,7 +1157,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
         await flushPromises()
         expect(parser.accountLoc.value).toBe(UNKNOWN_ACCOUNT_ALIAS)
@@ -1225,7 +1174,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBe("Account with alias CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ was not found")
 
         // 3) Unsets
@@ -1246,7 +1194,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -1267,7 +1214,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
@@ -1305,7 +1251,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 1) Mounts parser
@@ -1326,7 +1271,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 2) Sets with account id
@@ -1346,7 +1290,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBe("Invalid account ID, address or alias: dummy loc")
         await flushPromises()
         expect(parser.accountLoc.value).toBe(DUMMY_LOC)
@@ -1364,7 +1307,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBe("Invalid account ID, address or alias: dummy loc")
 
         // 3) Unsets
@@ -1385,7 +1327,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         // 4) Unmounts parser
@@ -1406,7 +1347,6 @@ describe("AccountLocParser.ts", () => {
         expect(parser.accountDescription.value).toBeNull()
         expect(parser.nodeId.value).toBeNull()
         expect(parser.ethereumAddress.value).toBeNull()
-        expect(parser.aliasByteString.value).toBeNull()
         expect(parser.errorNotification.value).toBeNull()
 
         mock.restore()
