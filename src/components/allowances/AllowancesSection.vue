@@ -330,12 +330,6 @@ const cleanUpRouteQuery = async () => {
   }
 }
 
-const onChangeApprovedForAll = (event: Event) => {
-  const checked = (event.target as HTMLInputElement).checked
-  selectApprovedForAll.value = checked
-  AppStorage.setSelectApprovedForAll(checked)
-}
-
 const isHieroWallet = walletManager.isHieroWallet
 const ownerAccountId = walletManager.accountId
 
