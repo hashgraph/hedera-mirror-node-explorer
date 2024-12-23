@@ -29,7 +29,7 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {makeEthAddressForAccount} from "@/schemas/MirrorNodeUtils.ts";
-import {base32ToAlias, byteToHex} from "@/utils/B64Utils";
+import {base32ToAlias} from "@/utils/B64Utils";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 
@@ -146,12 +146,6 @@ export class AccountLocParser {
 
     public readonly ethereumAddress = computed(() => {
         return this.accountInfo.value !== null ? makeEthAddressForAccount(this.accountInfo.value) : null
-    })
-
-    public readonly aliasByteString = computed(() => {
-        const alias32 = this.accountInfo.value?.alias
-        const aliasBytes = alias32 ? base32ToAlias(alias32) : null
-        return aliasBytes !== null ? byteToHex(aliasBytes) : null
     })
 
     public readonly errorNotification: ComputedRef<string | null> = computed(() => {
