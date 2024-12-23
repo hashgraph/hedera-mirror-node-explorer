@@ -105,13 +105,7 @@
         </div>
 
         <div v-if="nbNetworks > 1" id="drop-down-menu">
-          <o-field>
-            <o-select v-model="selectedNetwork" class="h-is-navbar-item">
-              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
-                {{ network.displayName }}
-              </option>
-            </o-select>
-          </o-field>
+          <NetworkSelector/>
         </div>
 
         <div v-if="enableWallet" id="connect-button">
@@ -133,16 +127,15 @@
 import {routeManager} from "@/router";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
-import {NetworkConfig} from "@/config/NetworkConfig";
-import {computed, inject, ref, watch} from "vue";
+import {computed, inject} from "vue";
 import ConnectWalletButton from "@/components/wallet/ConnectWalletButton.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import NavMenuItem from "@/components/page/NavMenuItem.vue";
 import {TabId} from "@/utils/RouteManager.ts";
+import NetworkSelector from "@/components/page/NetworkSelector.vue";
 
 const isMediumScreen = inject('isMediumScreen', true)
 const coreConfig = CoreConfig.inject()
-const networkConfig = NetworkConfig.inject()
 
 const enableStaking = routeManager.enableStaking
 const productLogoURL = coreConfig.productLogoURL
@@ -160,24 +153,9 @@ const searchBarClass = computed(() => {
   return result
 })
 
-//
-// Public (selectedNetwork)
-//
-
-const selectedNetwork = ref(routeManager.currentNetwork.value)
-watch(routeManager.currentNetwork, (newNetwork) => {
-  selectedNetwork.value = newNetwork // Checked : does not trigger any watch when value is unchanged
-})
-watch(selectedNetwork, (newNetwork) => {
-  if (newNetwork !== routeManager.currentNetwork.value) {
-    routeManager.routeToMainDashboard(newNetwork)
-  }
-})
-
 const name = routeManager.currentRoute
 const enableWallet = routeManager.enableWallet
 const nbNetworks = routeManager.nbNetworks
-const networkEntries = networkConfig.entries
 
 </script>
 
