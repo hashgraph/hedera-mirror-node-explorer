@@ -111,6 +111,8 @@ export class NetworkEntry {
         const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
         const erc20IndexURL = fetchURL(obj, "erc20IndexURL")
         const erc721IndexURL = fetchURL(obj, "erc721IndexURL")
+        const lightThemeColor = fetchString(obj, "lightThemeColor") ?? "lightgrey"
+        const darkThemeColor = fetchString(obj, "darkThemeColor") ?? "lightgrey"
 
         if (name === null) {
             throw this.missingPropertyError("name")
@@ -141,7 +143,9 @@ export class NetworkEntry {
             popularTokenIndexURL,
             erc20IndexURL,
             erc721IndexURL,
-            sourcifySetup,
+            lightThemeColor,
+            darkThemeColor,
+            sourcifySetup
         )
     }
 
@@ -173,6 +177,10 @@ export class NetworkEntry {
 
         // The URL of the ERC721 contract index
         public readonly erc721IndexURL: string|null,
+
+        // The light and dark variants of the network theme color
+        public readonly lightThemeColor: string|null,
+        public readonly darkThemeColor: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}

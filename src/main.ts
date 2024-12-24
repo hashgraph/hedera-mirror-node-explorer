@@ -27,10 +27,6 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faForward} from "@fortawesome/free-solid-svg-icons";
 
-import "./fonts/styreneA/1802-UFGULA.css";
-import "./fonts/novamono/stylesheet.css";
-import "./assets/styles/explorer-bulma.css";
-import "./assets/styles/explorer-oruga.css";
 import "./assets/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import {CoreConfig} from "@/config/CoreConfig";
@@ -69,7 +65,18 @@ const createAndMount = async () => {
     if (coreConfig instanceof CoreConfig && networkConfig instanceof NetworkConfig) {
         routeManager.configure(coreConfig, networkConfig)
     }
-    const app = createApp(Root, { coreConfig, networkConfig })
+
+    const cssId = 'customCss';  // you could encode the css path itself to generate id..
+    const head = document.getElementsByTagName('head')[0];
+    const link = document.createElement('link');
+    link.id = cssId;
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = '/style-config.css';
+    link.media = 'all';
+    head.appendChild(link);
+
+    const app = createApp(Root, {coreConfig, networkConfig})
     app.component("font-awesome-icon", FontAwesomeIcon)
     app.use(router)
     app.use(Oruga, {iconPack: 'fas'})

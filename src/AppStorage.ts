@@ -26,6 +26,19 @@ export class AppStorage {
     private static readonly VERSION = "v1"
 
     //
+    // dark vs. light theme
+    //
+    private static readonly THEME_KEY = 'theme'
+
+    public static getTheme(): string | null {
+        return this.getLocalStorageItem(this.THEME_KEY)
+    }
+
+    public static setTheme(newValue: string | null): void {
+        this.setLocalStorageItem(this.THEME_KEY, newValue)
+    }
+
+    //
     // network
     //
 
