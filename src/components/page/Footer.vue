@@ -31,12 +31,10 @@
     <div class="is-flex is-align-items-center">
 
       <a v-if="builtOnURL" :href="builtOnURL" style="line-height: 1;">
-        <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
-        <img v-else alt="Built On Logo" src="@/assets/technology-logo.svg" class="footer-logo">
+        <img id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
       </a>
       <div v-else style="line-height: 1;">
-        <img v-if="builtOnLogoURL" alt="Built On Logo" :src="builtOnLogoURL" class="footer-logo">
-        <img v-else alt="Built On Logo" src="@/assets/technology-logo.svg" class="footer-logo">
+        <img id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
       </div>
 
       <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
@@ -57,12 +55,10 @@
       <span class="is-flex-grow-1"/>
 
       <a v-if="sponsorURL" :href="sponsorURL" class="ml-4" style="line-height: 1;">
-        <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" class="footer-logo">
-        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" class="footer-logo">
+        <img id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''" class="footer-logo">
       </a>
       <div v-else class="ml-4" style="line-height: 1;">
-        <img v-if="sponsorLogoURL" alt="Sponsor Logo" :src="sponsorLogoURL" style="max-width: 104px;">
-        <img v-else alt="Sponsor Logo" src="@/assets/branding/brand-sponsor-logo.png" class="footer-logo">
+        <img id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''" class="footer-logo">
       </div>
 
     </div>
@@ -113,9 +109,9 @@ export default defineComponent({
     const coreConfig = CoreConfig.inject()
     const productName = coreConfig.productName
     const productDescription = coreConfig.productDescription
-    const builtOnLogoURL = coreConfig.builtOnLogoURL
+    const builtOnLogoURL = coreConfig.builtOnLogoLightURL
     const builtOnURL = coreConfig.builtOnURL
-    const sponsorLogoURL = coreConfig.sponsorLogoURL
+    const sponsorLogoURL = coreConfig.sponsorLogoLightURL
     const sponsorURL = coreConfig.sponsorURL
     const termsOfUseURL = coreConfig.termsOfUseURL
 

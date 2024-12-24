@@ -59,8 +59,11 @@ export class CoreConfig {
         // The name of the product as shown in the short form of the footer tagline
         public readonly productName: string,
 
-        // The URL of the product logo located at the left of the top navigation bar
-        public readonly productLogoURL: string|null,
+        // The URL of the product logo (light theme) located at the left of the top navigation bar
+        public readonly productLogoLightURL: string|null,
+
+        // The URL of the product logo (dark theme) located at the left of the top navigation bar
+        public readonly productLogoDarkURL: string|null,
 
         // The prefix used in the document title
         public readonly documentTitlePrefix: string,
@@ -74,14 +77,20 @@ export class CoreConfig {
         // The content of meta tag: property="og:url"
         public readonly metaURL: string|null,
 
-        // The URL of the 'BUILT ON' logo located at the left of the footer
-        public readonly builtOnLogoURL: string|null,
+        // The URL of the 'BUILT ON' logo (light theme) located at the left of the footer
+        public readonly builtOnLogoLightURL: string|null,
+
+        // The URL of the 'BUILT ON' logo (dark theme) located at the left of the footer
+        public readonly builtOnLogoDarkURL: string|null,
 
         // The URL to which a click on the bottom-left 'BUILT ON' logo will navigate
         public readonly builtOnURL: string|null,
 
-        // The URL of the sponsor logo located at the right of the footer
-        public readonly sponsorLogoURL: string|null,
+        // The URL of the sponsor logo (light theme) located at the right of the footer
+        public readonly sponsorLogoLightURL: string|null,
+
+        // The URL of the sponsor logo (dark theme) located at the right of the footer
+        public readonly sponsorLogoDarkURL: string|null,
 
         // The URL to which a click on the bottom-right sponsor logo will navigate
         public readonly sponsorURL: string|null,
@@ -122,14 +131,17 @@ export class CoreConfig {
     private static parse(obj: object): CoreConfig {
         return new CoreConfig(
             fetchString(obj, "productName") ?? "Hiero Mirror Node Explorer",
-            fetchURL(obj, "productLogoURL"),
+            fetchURL(obj, "productLogoLightURL"),
+            fetchURL(obj, "productLogoDarkURL"),
             fetchString(obj, "documentTitlePrefix") ?? "Hiero",
             fetchString(obj, "productDescription") ?? "Hiero Mirror Node Explorer",
             fetchString(obj, "metaDescription"),
             fetchURL(obj, "metaURL"),
-            fetchURL(obj, "builtOnLogoURL"),
+            fetchURL(obj, "builtOnLogoLightURL"),
+            fetchURL(obj, "builtOnLogoDarkURL"),
             fetchURL(obj, "builtOnURL"),
-            fetchURL(obj, "sponsorLogoURL"),
+            fetchURL(obj, "sponsorLogoLightURL"),
+            fetchURL(obj, "sponsorLogoDarkURL"),
             fetchURL(obj, "sponsorURL"),
             fetchURL(obj, "termsOfUseURL"),
             fetchString(obj, "estimatorNotice"),

@@ -167,7 +167,7 @@ export class RouteManager {
         for (const r of routes) {
             this.router.addRoute(r)
         }
-
+        this.switchThemes()
     }
 
     public findChainID(network: string): number|null {
@@ -666,27 +666,9 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        if (this.currentNetworkEntry.value.name == NetworkConfig.TEST_NETWORK) {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-        } else if (this.currentNetworkEntry.value.name == NetworkConfig.PREVIEW_NETWORK) {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
-        } else {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
-        }
+        document.documentElement.style.setProperty('--light-network-theme-color', this.currentNetworkEntry.value.lightThemeColor)
+        document.documentElement.style.setProperty('--dark-network-theme-color', this.currentNetworkEntry.value.darkThemeColor)
     }
-
 }
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string | null {

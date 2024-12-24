@@ -1,0 +1,751 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+@import "@/fonts/styreneA/1802-UFGULA.css";
+@import "@/fonts/novamono/stylesheet.css";
+
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+@import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
+
+/*  ============================================================================
+    Themes
+*/
+:root {
+    --light-text-primary: #050505;
+    --light-text-secondary: #888888;
+    --light-background-primary: #F6F6F6;
+    --light-background-tertiary: #FFFFFF;
+    --light-table-border: #EFEFEF;
+    --light-chip-primary: var(--light-network-theme-color);
+    --light-chip-text-primary: white;
+
+    /* default overriden by the current NetworkEntry.lightThemeColor configuration parameter */
+    --light-network-theme-color: lightgrey;
+
+
+    --dark-text-primary: #FFFFFF;
+    --dark-text-secondary: #A2A2A2;
+    --dark-background-primary: #131313;
+    --dark-background-tertiary: #171717;
+    --dark-table-border: #1F1F1F;
+    --dark-chip-primary: var(--light-network-theme-color);
+    --dark-chip-text-primary: white;
+
+    /* default overriden by the current NetworkEntry.darkThemeColor configuration parameter */
+    --dark-network-theme-color: lightgrey;
+
+
+    --text-primary: var(--light-text-primary);
+    --text-secondary: var(--light-text-secondary);
+    --background-primary: var(--light-background-primary);
+    --background-tertiary: var(--light-background-tertiary);
+    --table-border: var(--light-table-border);
+    --chip-primary: var(--light-chip-primary);
+    --chip-text-primary: var(--light-chip-text-primary);
+
+    --network-theme-color: var(--light-network-theme-color);
+}
+
+/*
+    Compatibility with existing variables
+ */
+:root {
+    --h-theme-highlight-color: var(--network-theme-color);
+    --h-theme-background-color: var(--background-primary);
+    --h-theme-page-background-color: var(--background-primary);
+    --h-theme-box-background-color: var(--background-tertiary);
+}
+
+/*  ============================================================================
+    Bulma customization
+*/
+:root {
+    --bulma-text: var(--text-primary);
+    --bulma-scheme-main: var(--background-primary);
+    --bulma-radius: 0;
+    --bulma-hero-body-padding-small: 0.5rem 0 0.75rem;
+    --bulma-family-primary: 'Styrene A Web', sans-serif;
+    --bulma-family-monospace: novamonoregular;
+    --bulma-button-color: white;
+    --bulma-control-border-width: 0.5px;
+    --bulma-input-placeholder-color: grey;
+    --bulma-progress-bar-background-color: #444444;
+    --bulma-progress-border-radius: --bulma-box-radius;
+    --bulma-desktop: 1080px;
+
+}
+
+a {
+    --bulma-link-text: var(--text-primary);
+}
+
+.box {
+    --bulma-box-radius: 16px;
+    --bulma-box-background-color: var(--background-tertiary);
+    --bulma-box-shadow: 0 0 0 0;
+    --bulma-box-padding: 32px;
+}
+
+.h-box-border {
+    border: 1px solid var(--table-border);
+}
+
+.tabs {
+    --bulma-tabs-toggle-link-radius: 4px;
+    --bulma-tabs-toggle-link-border-color: grey;
+    --bulma-tabs-toggle-link-border-width: 1px;
+    --bulma-tabs-border-bottom-color: var(--background-tertiary);
+    --bulma-tabs-link-active-border-bottom-color: var(--network-theme-color);
+    --bulma-tabs-link-hover-border-bottom-color: white;
+    --bulma-tabs-link-hover-color: var(--network-theme-color);
+}
+
+/*  ============================================================================
+    Oruga customization
+*/
+:root {
+    --oruga-base-font-size: 12px;
+    --oruga-table-background-color: var(--background-tertiary);
+    --oruga-table-striped-background-color: var(--background-tertiary);
+    --oruga-table-border-radius: 0;
+    --oruga-table-color: var(--text-primary);
+    --oruga-table-hoverable-background-color: var(--background-primary);
+    --oruga-table-th-color: var(--text-secondary);
+    --oruga-table-th-border: 2px solid #4A4A4A;
+    --oruga-table-td-border: 1px solid #4A4A4A;
+    --oruga-pagination-link-margin: 2px;
+    --oruga-pagination-link-color: var(--text-primary);
+    --oruga-pagination-link-border-color: #979797;
+    --oruga-pagination-link-border-radius: 0;
+    --oruga-pagination-link-height: 20px;
+    --oruga-pagination-link-min-width: 20px;
+    --oruga-select-color: var(--text-primary);
+    --oruga-select-background-color: var(--background-tertiary);
+    --oruga-select-border-color: var(--text-primary);
+    --oruga-select-border-radius: 4px;
+    --oruga-select-arrow-size: 0.75rem;
+    --oruga-select-height: 26px;
+    --oruga-select-line-height: 1;
+    --oruga-select-padding: 0 8px;
+    --oruga-switch-active-background-color: var(--h-theme-background-color);
+    --oruga-checkbox-border-color: var(--network-theme-color);
+    --oruga-checkbox-background-color: var(--background-tertiary);
+    --oruga-checkbox-border-width: 1px;
+    --oruga-checkbox-active-background-color: var(--network-theme-color);
+    --oruga-checkbox-checkmark-color: var(--background-tertiary);
+}
+
+/*  ============================================================================
+    Explorer classes
+*/
+.h-has-background-color {
+    background: var(--h-theme-background-color);
+}
+
+.h-has-opacity-40 {
+    opacity: 0.4;
+}
+
+.h-radio-button:hover {
+    color: var(--network-theme-color);
+}
+
+.h-chooser-figure {
+    width: 180px;
+    height: 80px;
+    text-align: center;
+    padding: 8px;
+    border: solid 0.5px transparent;
+    border-radius: 6px;
+}
+
+.h-chooser-figure:hover:not(.selected) {
+    border: solid 0.5px var(--network-theme-color);
+    background-color: initial;
+}
+
+.h-chooser-figure:active:not(.selected) {
+    border: solid 0.5px var(--network-theme-color);
+    background-color: var(--background-primary);
+}
+
+.h-chooser-figure.selected {
+    border: solid 1.5px var(--network-theme-color);
+    background-color: initial;
+}
+
+.h-chooser-img {
+    vertical-align: middle;
+    width: 48px;
+    height: 48px;
+}
+
+body {
+    font-feature-settings: "liga", "kern";
+}
+
+.h-is-primary-title {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 30px;
+    line-height: 36px;
+}
+
+@media (max-width: 1079px) {
+    .h-is-primary-title {
+        font-size: 24px;
+        line-height: 29px;
+    }
+}
+
+@media (max-width: 767px) {
+    .h-is-primary-title {
+        font-size: 16px;
+        line-height: 19px;
+    }
+}
+
+.h-is-secondary-title {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 22px;
+    line-height: 26px;
+}
+
+@media (max-width: 767px) {
+    .h-is-secondary-title {
+        font-size: 16px;
+        line-height: 19px;
+    }
+}
+
+.h-is-primary-subtitle {
+    font-style: normal;
+    font-weight: 900;
+    font-size: 16px;
+    line-height: 19px;
+}
+
+.h-is-secondary-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 34px;
+    line-height: 41px;
+    letter-spacing: -0.05em;
+}
+
+@media (max-width: 1079px) {
+    .h-is-secondary-text {
+        font-size: 26px;
+        line-height: 31px;
+    }
+}
+
+@media (max-width: 767px) {
+    .h-is-secondary-text {
+        font-size: 18px;
+        line-height: 22px;
+    }
+}
+
+.h-is-tertiary-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 18px;
+    line-height: 22px;
+}
+
+@media (max-width: 767px) {
+    .h-is-tertiary-text {
+        font-size: 14px;
+    }
+}
+
+.h-is-table-heading {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 13px;
+}
+
+.h-is-text-size-1 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 9px;
+    line-height: 11px;
+}
+
+.h-is-text-size-2 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 10px;
+    line-height: 12px;
+}
+
+.h-is-text-size-3 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+}
+
+.h-is-text-size-4 {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 12px;
+    line-height: 14px;
+}
+
+.h-is-property-text {
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+    line-height: 17px;
+}
+
+.h-is-navbar-item {
+    font-style: normal;
+    font-weight: 300;
+    font-size: 14px;
+    line-height: 17px;
+}
+
+.h-is-mobile-navbar-item {
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.h-is-dense {
+    letter-spacing: -0.05em;
+}
+
+.h-is-smaller {
+    font-size: 0.7em;
+}
+
+.h-is-extra-text {
+    color: var(--network-theme-color);
+}
+
+.h-is-label {
+    color: #DDD;
+    background: #383838;
+    border: solid 0.5px var(--network-theme-color);
+    border-radius: 4px;
+    font-family: "Styrene A Web", sans-serif;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 19px;
+    padding: 3px 6px 3px;
+    letter-spacing: normal;
+    align-content: center;
+}
+
+.h-is-hoverable:hover {
+    color: grey;
+}
+
+.h-is-compact-label {
+    color: #DDD;
+    background: #383838;
+    border: solid 0.5px var(--network-theme-color);
+    border-radius: 4px;
+    font-family: "Styrene A Web", sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 16px;
+    padding: 1px 4px 2px;
+    width: fit-content;
+    letter-spacing: normal;
+    align-content: center;
+}
+
+.h-has-pill {
+    color: var(--chip-text-primary);
+    font-weight: bold;
+    background: var(--light-chip-primary);
+    border-radius: 15px;
+    padding: 3px 8px 3px;
+}
+
+.h-has-low-contrast {
+    opacity: 0.4;
+}
+
+.is-numeric {
+    font-variant-numeric: tabular-nums;
+}
+
+.h-is-json {
+    white-space: pre-wrap;
+}
+
+.h-is-one-line {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w200 {
+    max-width: 200px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w250 {
+    max-width: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w300 {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w400 {
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w600 {
+    max-width: 600px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.should-wrap {
+    word-break: break-word;
+}
+
+.h-is-debit {
+    color: #FE687A;
+}
+
+.h-is-credit {
+    color: #27D19E;
+}
+
+.h-button {
+    border-radius: 3px;
+}
+
+#drop-down-menu .o-sel {
+    height: 40px;
+    font-weight: bold;
+    color: var(--network-theme-color);
+    border-color: var(--network-theme-color);
+    background-color: var(--background-primary);
+    border-width: 0.5px;
+}
+
+#mobile-drop-down-menu .o-sel {
+    height: 44.5px;
+    width: 322px;
+    font-weight: bold;
+    color: var(--network-theme-color);
+    border-color: var(--network-theme-color);
+    background-color: var(--background-primary);
+    border-width: 0.5px;
+    padding-top: 13px;
+    padding-bottom: 13px;
+    padding-left: 13px;
+}
+
+#mobile-drop-down-menu .o-sel-arrow {
+    background-position: calc(100% - 13px) calc(100% - 16px);
+}
+
+#drop-down-menu .h-is-navbar-item:focus {
+    outline: none;
+}
+
+.button.h-is-navbar-item {
+    padding-top: 28px;
+    padding-bottom: 16px;
+}
+
+.button.h-is-navbar-item:not(.h-is-mobile-navbar-item) {
+    outline: var(--background-primary) solid 2px;
+}
+
+.button.h-is-navbar-item.is-outlined {
+    border-top-width: 0;
+    padding-left: 0.6em;
+    padding-right: 0.6em;
+    margin-right: 0.4em;
+}
+
+.button.h-is-navbar-item.is-ghost:hover {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: grey;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 9px;
+}
+
+.button.h-is-navbar-item.is-ghost:focus {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: lightgrey;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 9px;
+}
+
+.button.h-is-navbar-item.is-ghost.is-rimmed {
+    text-decoration-line: underline;
+    text-decoration-style: solid;
+    text-decoration-color: var(--network-theme-color);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 9px;
+    font-weight: bold;
+    letter-spacing: normal;
+}
+
+.button.h-is-navbar-item.is-ghost {
+    padding-left: 0.4em;
+    padding-right: 0.4em;
+}
+
+.button.h-is-navbar-item.is-ghost.is-first {
+    padding-left: 0;
+}
+
+.button.h-is-navbar-item.is-ghost.is-last {
+    padding-right: 0;
+}
+
+.h-card:not(:first-child) {
+    margin-top: 2rem;
+}
+
+.h-card-separator {
+    background: var(--h-theme-background-color);
+    margin: 16px 0;
+}
+
+@media (max-width: 767px) {
+    .h-card-separator {
+        width: 0;
+        margin: 10px 0;
+    }
+}
+
+/* Solid vertical separator */
+.h-has-column-separator {
+    padding-left: 1rem;
+    padding-top: 12px;
+    border-left: 1px grey solid;
+}
+
+@media (max-width: 767px) {
+    .h-has-column-separator {
+        padding-left: 12px;
+        padding-top: 1rem;
+        border-left: initial;
+    }
+}
+
+/* Dashed vertical separator */
+.h-has-column-dashed-separator {
+    padding-left: 1rem;
+    padding-top: 12px;
+    border-left: 1px dimgrey dashed;
+}
+
+@media (max-width: 767px) {
+    .h-has-column-dashed-separator {
+        padding-left: 12px;
+        padding-top: 1rem;
+        border-left: initial;
+    }
+}
+
+/* Dashed horizontal separator */
+hr.dotted {
+    border-top: 1px dashed dimgrey;
+    height: 0;
+    background-color: initial;
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashed DnD area */
+.h-dotted-area {
+    border: dashed 1px var(--network-theme-color);
+}
+
+/* Code box (source, bytecode, assembly code) */
+.h-code-box {
+    border: 0.5px solid dimgrey;
+    gap: 0.42rem;
+    overflow-y: auto;
+    min-height: 5rem;
+}
+
+.h-modal-content {
+    width: 768px;
+}
+
+@media (max-width: 1079px) {
+    .h-modal-content {
+        width: 640px;
+    }
+}
+
+@media (max-width: 767px) {
+    .h-modal-content {
+        width: 280px;
+    }
+}
+
+.h-tooltip {
+    --oruga-tooltip-background-color: var(--network-theme-color);
+    --oruga-tooltip-arrow-margin: 5px;
+    --oruga-tooltip-content-font-size: 0.75rem;
+    --oruga-tooltip-content-weight-normal: 300;
+}
+
+.h-banner-link {
+    text-decoration: underline;
+}
+
+.h-banner-link:hover {
+    color: black;
+}
+
+@media (max-width: 1079px) {
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child {
+        border-top: #979797 1px solid;
+        border-bottom: #4A4A4A 1px solid;
+    }
+
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:not(:first-child):not(:last-child) {
+        border-top: 0;
+        border-bottom: #4A4A4A 1px solid;
+    }
+
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:last-child {
+        border-top: 0;
+        border-bottom: 0;
+    }
+}
+
+table.o-table > thead > tr > th {
+    font-style: normal;
+    font-weight: bold;
+    font-size: 11px;
+    line-height: 13px;
+    padding-bottom: 12px;
+}
+
+table.o-table > tbody > tr > td {
+    vertical-align: middle;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 13px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+
+table.o-table > tbody > tr {
+    cursor: pointer;
+}
+
+table.o-table > tbody > tr {
+    animation: fadeIn linear 1s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+table.o-table {
+    margin: 1rem 0;
+}
+
+.h-is-table-compact table.o-table {
+    margin: 0;
+}
+
+div.o-table__pagination {
+    padding: 4px;
+}
+
+/*
+    Fix Bulma / Oruga conflict
+
+    In Bulma, rules:
+        table td:not([align]), table th:not([align]) {
+            text-align: inherit;
+        }
+        td:not([align]), th:not([align]) {
+            text-align: inherit;
+        }
+    break Oruga table setting:
+        o-table-column with position="right"
+    This prevents right alignment because Bulma rules above take precedence over generated classes:
+        o-table__td--right
+        o-table__th--right
+    (why?)
+
+    Rules below restore the correct precedence.
+ */
+table.o-table {
+    text-align: left;
+}
+
+table.o-table td.o-table__td--right,
+table.o-table th.o-table__th--right {
+    text-align: right;
+}
+
+table.o-table td.o-table__td--left,
+table.o-table th.o-table__th--left {
+    text-align: left;
+}
+
+.h-mobile-background {
+    background-color: var(--background-tertiary);
+    min-height: 450px;
+}
+
+.h-has-page-background {
+    background-color: var(--background-primary);
+}

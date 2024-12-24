@@ -11,6 +11,8 @@
     "popularTokenIndexURL": "popular-tokens.json",
     "erc20IndexURL": "mainnet/erc-20.json",
     "erc721IndexURL": "mainnet/erc-721.json",
+    "lightThemeColor": "#7A1B80",
+    "darkThemeColor": "#7A1B80",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
@@ -29,6 +31,8 @@
     "enableMarket": false,
     "erc20IndexURL": "testnet/erc-20.json",
     "erc721IndexURL": "testnet/erc-721.json",
+    "lightThemeColor": "#FF4D00",
+    "darkThemeColor": "#FF4D00",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
@@ -47,6 +51,8 @@
     "enableMarket": false,
     "erc20IndexURL": null,
     "erc721IndexURL": "previewnet/erc-721.json",
+    "lightThemeColor": "#FFDE00",
+    "darkThemeColor": "#FFDE00",
     "sourcifySetup": {
       "activate": true,
       "repoURL": "https://repository.local/contracts/",
