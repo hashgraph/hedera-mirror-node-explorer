@@ -39,7 +39,8 @@ import {
   initialLoadingKey,
   loadingKey,
   networkConfigKey,
-  suggestionKey
+  suggestionKey,
+  themeControllerKey
 } from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
 import CookiesDialog from "@/components/CookiesDialog.vue";
@@ -48,6 +49,7 @@ import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {walletManager} from "@/router.ts";
+import {ThemeController} from "@/components/ThemeController.ts";
 
 const props = defineProps({
   "coreConfig": {
@@ -101,6 +103,10 @@ const onResizeHandler = () => {
 
 provide(coreConfigKey, props.coreConfig)
 provide(networkConfigKey, props.networkConfig)
+
+const themeController = new ThemeController(props.coreConfig)
+provide(themeControllerKey, themeController)
+onMounted(() =>themeController.mount())
 
 const showCookiesDialog = ref(false)
 
