@@ -25,3 +25,5 @@ export const explanationKey = Symbol()
 export const suggestionKey = Symbol()
 export const coreConfigKey = Symbol()
 export const networkConfigKey = Symbol()
+export const themeControllerKey = Symbol()
+
