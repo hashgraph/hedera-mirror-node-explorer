@@ -24,7 +24,7 @@
 
 <template>
 
-  <div @click="darkSelected = !darkSelected" :class="{'left': !darkSelected, 'right': darkSelected}">
+  <div @click="darkSelected = !darkSelected" :class="{'start': !darkSelected, 'end': darkSelected}">
     <img :src="imageURL" alt="theme switch"/>
   </div>
 
@@ -63,11 +63,11 @@ div {
   width: 40px;
 }
 
-div.left {
+div.start {
   justify-content: flex-start;
 }
 
-div.right {
+div.end {
   justify-content: flex-end;
 }
 
