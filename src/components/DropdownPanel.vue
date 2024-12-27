@@ -27,7 +27,11 @@
   <div ref="rootRef">
     <slot name="button"/>
     <div v-if="deployed" style="position: relative">
-      <div class="panelHolder" style="position: absolute; z-index: 999; top:6px" :style="{left: panelDX + 'px'}" ref="panelRef">
+      <div
+          class="panelHolder"
+          style="position: absolute; z-index: 999; top:6px"
+          :style="{left: panelDX + 'px', 'box-shadow': boxShadow}"
+          ref="panelRef">
         <slot name="panel"/>
       </div>
     </div>
@@ -42,6 +46,7 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {ThemeController} from "@/components/ThemeController.ts";
 
 const props = defineProps({
   rightAligned: {
@@ -123,6 +128,15 @@ onBeforeUnmount(() => {
   document.removeEventListener("mousedown", onMouseDown)
 })
 
+//
+// box shadow
+//
+
+const lightShadow = "0 4px 18px 0 rgba(0, 0, 0, 7%)"
+const darkShadow = "0 4px 18px 0 rgba(255, 255, 255, 7%)"
+const darkSelected = ThemeController.inject().darkSelected
+const boxShadow = computed(() => darkSelected.value ? darkShadow : lightShadow)
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -133,11 +147,10 @@ onBeforeUnmount(() => {
 
 div.panelHolder {
   background: var(--background-tertiary);
-  border-color: lightgray;
+  border-color: var(--border-secondary);
   border-radius: 16px;
   border-style: solid;
   border-width: 1px;
-  box-shadow: 0 4px 18px 0 rgba(0, 0, 0, 7%);
   padding: 24px;
 }
 
