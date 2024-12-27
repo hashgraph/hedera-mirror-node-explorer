@@ -26,7 +26,7 @@
   <div class="root">
     <div class="l1">
       <div class="left">
-        <HeaderLogo/>
+        <ProductLogo/>
         <AxiosStatus/>
         <TabBar/>
       </div>
@@ -53,7 +53,7 @@
 
 <script setup lang="ts">
 
-import HeaderLogo from "@/components/page/header/ProductLogo.vue";
+import ProductLogo from "@/components/page/header/ProductLogo.vue";
 import NetworkSelector from "@/components/page/header/NetworkSelector.vue";
 import ThemeSwitch from "@/components/ThemeSwitch.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
