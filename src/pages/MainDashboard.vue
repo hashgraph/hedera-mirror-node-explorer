@@ -24,66 +24,59 @@
 
 <template>
 
-  <PageFrame>
+  <PageFrameV2 page-title="Dashboard">
 
-    <template #pageBanner>
-      <HbarMarketDashboard/>
-    </template>
+    <div class="columns">
 
-    <template #pageContent>
-
-      <div class="columns">
-
-        <div class="column">
-          <DashboardCard data-cy="cryptoTransfers">
-            <template v-slot:title>
-              <span class="h-is-secondary-title">Crypto Transfers</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="cryptoTableController"/>
-            </template>
-            <template v-slot:content>
-              <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
-            </template>
-          </DashboardCard>
-        </div>
-
+      <div class="column">
+        <DashboardCard data-cy="cryptoTransfers">
+          <template v-slot:title>
+            <span class="h-is-secondary-title">Crypto Transfers</span>
+          </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="cryptoTableController"/>
+          </template>
+          <template v-slot:content>
+            <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
+          </template>
+        </DashboardCard>
       </div>
 
-      <div class="columns is-multiline">
+    </div>
 
-        <div class="column" :class="{'is-full':!isXLargeScreen}">
-          <DashboardCard data-cy="smartContractCalls">
-            <template v-slot:title>
-              <span class="h-is-secondary-title">Smart Contract Calls</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="contractTableController"/>
-            </template>
-            <template v-slot:content>
-              <ContractCallTransactionTable v-bind:controller="contractTableController"/>
-            </template>
-          </DashboardCard>
-        </div>
+    <div class="columns is-multiline">
 
-        <div class="column">
-          <DashboardCard data-cy="hcsMessages">
-            <template v-slot:title>
-              <span class="h-is-secondary-title">HCS Messages</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="messageTableController"/>
-            </template>
-            <template v-slot:content>
-              <MessageTransactionTable v-bind:controller="messageTableController"/>
-            </template>
-          </DashboardCard>
-        </div>
-
+      <div class="column" :class="{'is-full':!isXLargeScreen}">
+        <DashboardCard data-cy="smartContractCalls">
+          <template v-slot:title>
+            <span class="h-is-secondary-title">Smart Contract Calls</span>
+          </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="contractTableController"/>
+          </template>
+          <template v-slot:content>
+            <ContractCallTransactionTable v-bind:controller="contractTableController"/>
+          </template>
+        </DashboardCard>
       </div>
 
-    </template>
-  </PageFrame>
+      <div class="column">
+        <DashboardCard data-cy="hcsMessages">
+          <template v-slot:title>
+            <span class="h-is-secondary-title">HCS Messages</span>
+          </template>
+          <template v-slot:control>
+            <PlayPauseButton v-bind:controller="messageTableController"/>
+          </template>
+          <template v-slot:content>
+            <MessageTransactionTable v-bind:controller="messageTableController"/>
+          </template>
+        </DashboardCard>
+      </div>
+
+    </div>
+
+  </PageFrameV2>
 
 </template>
 
@@ -102,7 +95,7 @@ import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTabl
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
 
@@ -110,7 +103,7 @@ export default defineComponent({
   name: 'MainDashboard',
 
   components: {
-    PageFrame,
+    PageFrameV2,
     PlayPauseButton,
     DashboardCard,
     CryptoTransactionTable,

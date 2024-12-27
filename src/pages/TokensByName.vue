@@ -24,19 +24,17 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <DashboardCard>
-        <template v-slot:title>
-          <span class="h-is-primary-title">Tokens matching </span>
-          <span class="h-is-secondary-text">"{{ name }}"</span>
-        </template>
-        <template v-slot:content>
-          <TokensByNameTable :name="name"/>
-        </template>
-      </DashboardCard>
-    </template>
-  </PageFrame>
+  <PageFrameV2 page-title="Tokens by Name">
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-primary-title">Tokens matching </span>
+        <span class="h-is-secondary-text">"{{ name }}"</span>
+      </template>
+      <template v-slot:content>
+        <TokensByNameTable :name="name"/>
+      </template>
+    </DashboardCard>
+  </PageFrameV2>
 
 </template>
 
@@ -48,7 +46,7 @@
 
 import {defineComponent, PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import TokensByNameTable from "@/components/token/TokensByNameTable.vue";
 
 export default defineComponent({
@@ -64,7 +62,7 @@ export default defineComponent({
 
   components: {
     TokensByNameTable,
-    PageFrame,
+    PageFrameV2,
     DashboardCard,
   },
 });

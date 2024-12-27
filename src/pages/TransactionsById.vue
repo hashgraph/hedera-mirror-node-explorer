@@ -24,19 +24,17 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <DashboardCard>
-        <template v-slot:title>
-          <span class="h-is-primary-title">Transactions with ID </span>
-          <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-        </template>
-        <template v-slot:content>
-          <TransactionByIdTable v-bind:transactions="transactions"/>
-        </template>
-      </DashboardCard>
-    </template>
-  </PageFrame>
+  <PageFrameV2 page-title="Transactions by ID">
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-primary-title">Transactions with ID </span>
+        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
+      </template>
+      <template v-slot:content>
+        <TransactionByIdTable v-bind:transactions="transactions"/>
+      </template>
+    </DashboardCard>
+  </PageFrameV2>
 
 </template>
 
@@ -50,7 +48,7 @@ import {computed, defineComponent, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {TransactionID} from "@/utils/TransactionID";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
 export default defineComponent({
@@ -62,7 +60,7 @@ export default defineComponent({
   },
 
   components: {
-    PageFrame,
+    PageFrameV2,
     DashboardCard,
     TransactionByIdTable,
   },

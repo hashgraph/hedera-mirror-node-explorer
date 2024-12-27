@@ -24,189 +24,187 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Staking">
 
-      <StakingDialog v-model:show-dialog="stakingDialogVisible"
-                     :account="account ?? undefined"
-                     :currently-staked-to="stakedTo ?? undefined"
-                     v-on:change-staking="handleChangeStaking"/>
+    <StakingDialog v-model:show-dialog="stakingDialogVisible"
+                   :account="account ?? undefined"
+                   :currently-staked-to="stakedTo ?? undefined"
+                   v-on:change-staking="handleChangeStaking"/>
 
-      <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
-                     :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
-        <template v-slot:dialogTitle>
+    <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
+                   :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
+      <template v-slot:dialogTitle>
+        <span class="h-is-primary-title">My Staking </span>
+        <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+        <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+      </template>
+    </ConfirmDialog>
+
+    <ProgressDialog v-model:show-dialog="showProgressDialog"
+                    :mode="progressDialogMode"
+                    :main-message="progressMainMessage"
+                    :extra-message="progressExtraMessage"
+                    :extra-transaction-id="progressExtraTransactionId"
+                    :show-spinner="showProgressSpinner"
+    >
+      <template v-slot:dialogTitle>
+        <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
+      </template>
+    </ProgressDialog>
+
+    <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
+                    :mode="Mode.Error"
+                    main-message="This operation cannot be done using Metamask"
+                    extra-message="Use another wallet (Blade or Hashpack)"
+    >
+      <template v-slot:dialogTitle>
+        <span class="h-is-primary-title">Unsupported Operation</span>
+      </template>
+    </ProgressDialog>
+
+    <CSVDownloadDialog v-if="accountId"
+                       v-model:show-dialog="showDownloadDialog"
+                       :downloader="downloader"
+                       :account-id="accountId"/>
+
+
+    <DashboardCard v-if="enableWallet" collapsible-key="stakingDetails">
+      <template v-slot:title>
+        <div>
           <span class="h-is-primary-title">My Staking </span>
-          <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-          <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
-        </template>
-      </ConfirmDialog>
-
-      <ProgressDialog v-model:show-dialog="showProgressDialog"
-                      :mode="progressDialogMode"
-                      :main-message="progressMainMessage"
-                      :extra-message="progressExtraMessage"
-                      :extra-transaction-id="progressExtraTransactionId"
-                      :show-spinner="showProgressSpinner"
-      >
-        <template v-slot:dialogTitle>
-          <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
-        </template>
-      </ProgressDialog>
-
-      <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
-                      :mode="Mode.Error"
-                      main-message="This operation cannot be done using Metamask"
-                      extra-message="Use another wallet (Blade or Hashpack)"
-      >
-        <template v-slot:dialogTitle>
-          <span class="h-is-primary-title">Unsupported Operation</span>
-        </template>
-      </ProgressDialog>
-
-      <CSVDownloadDialog v-if="accountId"
-                         v-model:show-dialog="showDownloadDialog"
-                         :downloader="downloader"
-                         :account-id="accountId"/>
-
-
-      <DashboardCard v-if="enableWallet" collapsible-key="stakingDetails">
-        <template v-slot:title>
-          <div>
-            <span class="h-is-primary-title">My Staking </span>
-            <span v-if="accountId" class="h-is-primary-title"> for account </span>
-            <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
-              <AccountLink :account-id="accountId"/>
-            </div>
-            <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
+          <span v-if="accountId" class="h-is-primary-title"> for account </span>
+          <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
+            <AccountLink :account-id="accountId"/>
           </div>
-        </template>
+          <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
+        </div>
+      </template>
 
-        <template v-slot:content>
+      <template v-slot:content>
 
-          <template v-if="accountId">
-            <div v-if="isSmallScreen">
-              <div class="is-flex is-justify-content-space-between">
-                <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
-                                      title="Staked to">
-                  <template v-slot:value>
-                    <div class="is-inline-block">
+        <template v-if="accountId">
+          <div v-if="isSmallScreen">
+            <div class="is-flex is-justify-content-space-between">
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+                                    title="Staked to">
+                <template v-slot:value>
+                  <div class="is-inline-block">
                     <span v-if="isStakedToNode" class="icon has-text-info mr-2" style="font-size: 20px">
                       <i v-if="isCouncilNode" class="fas fa-building"></i>
                       <i v-else class="fas fa-users"></i>
                     </span>
-                      <span v-if="stakedTo">{{ stakedTo }}</span>
-                      <span v-else class="has-text-grey">None</span>
-                    </div>
-                  </template>
-                </NetworkDashboardItem>
+                    <span v-if="stakedTo">{{ stakedTo }}</span>
+                    <span v-else class="has-text-grey">None</span>
+                  </div>
+                </template>
+              </NetworkDashboardItem>
 
-                <NetworkDashboardItem class="ml-4"
-                                      :name="stakedAmount ? cryptoName : ''"
-                                      title="My Stake"
-                                      :value="stakedAmount"/>
+              <NetworkDashboardItem class="ml-4"
+                                    :name="stakedAmount ? cryptoName : ''"
+                                    title="My Stake"
+                                    :value="stakedAmount"/>
 
-                <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
-                                      class="ml-4"
-                                      title="Rewards"
-                                      value="Declined"/>
-                <NetworkDashboardItem v-else
-                                      class="ml-4"
-                                      title="Pending Reward"
-                                      :name="pendingReward ? cryptoName : ''"
-                                      :value="pendingReward"
-                                      :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
-              </div>
-              <div class="is-flex is-justify-content-space-between mt-5">
-                <div v-if="isHieroWallet" class="is-flex is-justify-content-flex-start">
-                  <button id="stopStakingButton" class="button is-white is-small"
-                          :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
-                  </button>
-                  <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE
-                    STAKING
-                  </button>
-                </div>
-                <div v-else>
-                  <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
-                    To change your staking options use Blade or HashPack.
-                  </p>
-                </div>
-              </div>
-              <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
-                <span class="has-text-grey-light">Please Note: </span>
-                Your full balance is automatically staked.<br/>
-                Your funds are fully available for use while staked.<br/>
-                You can unstake or switch nodes freely.
-              </div>
+              <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    class="ml-4"
+                                    title="Rewards"
+                                    value="Declined"/>
+              <NetworkDashboardItem v-else
+                                    class="ml-4"
+                                    title="Pending Reward"
+                                    :name="pendingReward ? cryptoName : ''"
+                                    :value="pendingReward"
+                                    :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
             </div>
-            <div v-else>
-              <div class="is-flex-direction-column">
-                <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
-                                      title="Staked to" :value="stakedTo ?? undefined"/>
-                <div class="mt-4"/>
-                <NetworkDashboardItem :name="stakedAmount ? cryptoName : ''" title="My Stake" :value="stakedAmount"/>
-                <div class="mt-4"/>
-
-                <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
-                                      title="Rewards"
-                                      value="Declined"/>
-                <NetworkDashboardItem v-else
-                                      title="Pending Reward"
-                                      :name=cryptoName
-                                      :value="undefined"
-                                      :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
-
-                <div class="mt-4"/>
-              </div>
-              <div v-if="isHieroWallet" class="is-flex is-justify-content-center">
-                <button id="stopStakingButtonSmall" class="button is-white is-small"
+            <div class="is-flex is-justify-content-space-between mt-5">
+              <div v-if="isHieroWallet" class="is-flex is-justify-content-flex-start">
+                <button id="stopStakingButton" class="button is-white is-small"
                         :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
                 </button>
-                <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">
-                  CHANGE STAKED TO
+                <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE
+                  STAKING
                 </button>
               </div>
-              <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
-                <span class="has-text-grey-light">Please Note: </span>
-                Your full balance is automatically staked.<br/>
-                Your funds are fully available for use while staked.<br/>
-                You can unstake or switch nodes freely.
+              <div v-else>
+                <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
+                  To change your staking options use Blade or HashPack.
+                </p>
               </div>
+            </div>
+            <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+              <span class="has-text-grey-light">Please Note: </span>
+              Your full balance is automatically staked.<br/>
+              Your funds are fully available for use while staked.<br/>
+              You can unstake or switch nodes freely.
+            </div>
+          </div>
+          <div v-else>
+            <div class="is-flex-direction-column">
+              <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+                                    title="Staked to" :value="stakedTo ?? undefined"/>
+              <div class="mt-4"/>
+              <NetworkDashboardItem :name="stakedAmount ? cryptoName : ''" title="My Stake" :value="stakedAmount"/>
+              <div class="mt-4"/>
+
+              <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
+                                    title="Rewards"
+                                    value="Declined"/>
+              <NetworkDashboardItem v-else
+                                    title="Pending Reward"
+                                    :name=cryptoName
+                                    :value="undefined"
+                                    :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
+
               <div class="mt-4"/>
             </div>
-          </template>
-
-          <template v-else>
-            <section class="section has-text-centered pt-0" :class="{'pb-0': isSmallScreen}">
-              <p class="h-is-tertiary-text" style="font-weight: 300">
-                To view or change your staking options first connect your wallet.
-              </p>
-              <br/>
-            </section>
-          </template>
-
+            <div v-if="isHieroWallet" class="is-flex is-justify-content-center">
+              <button id="stopStakingButtonSmall" class="button is-white is-small"
+                      :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
+              </button>
+              <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">
+                CHANGE STAKED TO
+              </button>
+            </div>
+            <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
+              <span class="has-text-grey-light">Please Note: </span>
+              Your full balance is automatically staked.<br/>
+              Your funds are fully available for use while staked.<br/>
+              You can unstake or switch nodes freely.
+            </div>
+            <div class="mt-4"/>
+          </div>
         </template>
-      </DashboardCard>
 
-      <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}" collapsible-key="myRecentRewards">
-        <template v-slot:title>
-          <span class="h-is-secondary-title">Recent Staking Rewards</span>
+        <template v-else>
+          <section class="section has-text-centered pt-0" :class="{'pb-0': isSmallScreen}">
+            <p class="h-is-tertiary-text" style="font-weight: 300">
+              To view or change your staking options first connect your wallet.
+            </p>
+            <br/>
+          </section>
         </template>
-        <template v-slot:control>
-          <DownloadButton @click="showDownloadDialog = true"/>
-        </template>
-        <template v-slot:content>
-          <StakingRewardsTable
-              :narrowed="true"
-              :controller="transactionTableController"
-          />
-        </template>
-      </DashboardCard>
 
-      <RewardsCalculator :amount-in-hbar="balanceInHbar"
-                         :node-id="stakedNode?.node_id"/>
+      </template>
+    </DashboardCard>
 
-    </template>
-  </PageFrame>
+    <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}" collapsible-key="myRecentRewards">
+      <template v-slot:title>
+        <span class="h-is-secondary-title">Recent Staking Rewards</span>
+      </template>
+      <template v-slot:control>
+        <DownloadButton @click="showDownloadDialog = true"/>
+      </template>
+      <template v-slot:content>
+        <StakingRewardsTable
+            :narrowed="true"
+            :controller="transactionTableController"
+        />
+      </template>
+    </DashboardCard>
+
+    <RewardsCalculator :amount-in-hbar="balanceInHbar"
+                       :node-id="stakedNode?.node_id"/>
+
+  </PageFrameV2>
 
 </template>
 
@@ -218,7 +216,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
@@ -266,7 +264,7 @@ export default defineComponent({
     StakingDialog,
     StakingRewardsTable,
     NetworkDashboardItem,
-    PageFrame,
+    PageFrameV2,
   },
 
   setup(props) {

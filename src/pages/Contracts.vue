@@ -24,36 +24,32 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-
-      <DashboardCard>
-        <template v-slot:title>
-          <span class="h-is-primary-title">Recent Contracts</span>
-        </template>
-        <template v-slot:control>
-          <div class="is-flex is-justify-content-end is-align-items-center">
-            <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
-            <PlayPauseButton v-else :controller="verifiedContractsController"/>
-            <span class="ml-5 mr-2">All</span>
-            <o-field>
-              <o-switch v-model="filterVerified">Verified</o-switch>
-            </o-field>
-          </div>
-        </template>
-        <template v-slot:content>
-          <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
-          <VerifiedContractsTable
-              v-else
-              :controller="verifiedContractsController"
-              :loaded="loaded"
-              :overflow="overflow"
-          />
-        </template>
-      </DashboardCard>
-
-    </template>
-  </PageFrame>
+  <PageFrameV2 page-title="Contracts">
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-primary-title">Recent Contracts</span>
+      </template>
+      <template v-slot:control>
+        <div class="is-flex is-justify-content-end is-align-items-center">
+          <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
+          <PlayPauseButton v-else :controller="verifiedContractsController"/>
+          <span class="ml-5 mr-2">All</span>
+          <o-field>
+            <o-switch v-model="filterVerified">Verified</o-switch>
+          </o-field>
+        </div>
+      </template>
+      <template v-slot:content>
+        <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
+        <VerifiedContractsTable
+            v-else
+            :controller="verifiedContractsController"
+            :loaded="loaded"
+            :overflow="overflow"
+        />
+      </template>
+    </DashboardCard>
+  </PageFrameV2>
 
 </template>
 
@@ -66,7 +62,7 @@
 import {defineComponent, inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
 import {useRouter} from "vue-router";
@@ -85,7 +81,7 @@ export default defineComponent({
   components: {
     VerifiedContractsTable,
     PlayPauseButton,
-    PageFrame,
+    PageFrameV2,
     DashboardCard,
     ContractTable
   },

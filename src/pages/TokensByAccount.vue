@@ -24,14 +24,12 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <TokensSection
-          :account-id="accountId"
-          :full-page="true"
-      />
-    </template>
-  </PageFrame>
+  <PageFrameV2 page-title="Tokens by Account">
+    <TokensSection
+        :account-id="accountId"
+        :full-page="true"
+    />
+  </PageFrameV2>
 
 </template>
 
@@ -42,7 +40,7 @@
 <script lang="ts">
 
 import {defineComponent, PropType} from 'vue';
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import TokensSection from "@/components/token/TokensSection.vue";
 
 export default defineComponent({
@@ -58,7 +56,7 @@ export default defineComponent({
 
   components: {
     TokensSection,
-    PageFrame,
+    PageFrameV2,
   },
 });
 

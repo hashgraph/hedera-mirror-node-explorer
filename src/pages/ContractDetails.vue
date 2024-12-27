@@ -24,229 +24,229 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Contract Details">
 
-      <DashboardCard collapsible-key="contractDetails">
-        <template v-slot:title>
-          <div class="is-flex is-align-items-end is-flex-wrap-wrap">
+    <DashboardCard collapsible-key="contractDetails">
+      <template v-slot:title>
+        <div class="is-flex is-align-items-end is-flex-wrap-wrap">
             <span>
               <span class="h-is-primary-title">Contract </span>
               <span v-if="contractName" class="h-is-tertiary-text h-is-extra-text should-wrap ml-3">
                 {{ contractName }}
               </span>
             </span>
-            <div v-if="isVerified" class="h-is-text-size-2 mb-1 ml-3">
-              <div class="h-has-pill has-background-success">VERIFIED</div>
-            </div>
-            <div v-if="isErc20" class="h-is-text-size-2 mb-1 ml-3">
-              <div class="h-has-pill">ERC 20</div>
-            </div>
-            <div v-if="isErc721" class="h-is-text-size-2 mb-1 ml-3">
-              <div class="h-has-pill">ERC 721</div>
-            </div>
+          <div v-if="isVerified" class="h-is-text-size-2 mb-1 ml-3">
+            <div class="h-has-pill has-background-success">VERIFIED</div>
           </div>
-        </template>
+          <div v-if="isErc20" class="h-is-text-size-2 mb-1 ml-3">
+            <div class="h-has-pill">ERC 20</div>
+          </div>
+          <div v-if="isErc721" class="h-is-text-size-2 mb-1 ml-3">
+            <div class="h-has-pill">ERC 721</div>
+          </div>
+        </div>
+      </template>
 
-        <template v-slot:subtitle>
-          <div class="h-is-tertiary-text mt-3" id="entityId">
-            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:</div>
-            <Copyable :content-to-copy="normalizedContractId ?? ''">
-              <template v-slot:content>
-                <span>{{ normalizedContractId ?? "" }}</span>
-              </template>
-            </Copyable>
-            <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
+      <template v-slot:subtitle>
+        <div class="h-is-tertiary-text mt-3" id="entityId">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Contract ID:
           </div>
-          <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-            <div class="is-inline-block">
-              <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-            </div>
+          <Copyable :content-to-copy="normalizedContractId ?? ''">
+            <template v-slot:content>
+              <span>{{ normalizedContractId ?? "" }}</span>
+            </template>
+          </Copyable>
+          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
+        </div>
+        <div v-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:
           </div>
-          <div v-if="domainName" id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-            <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
-            <div class="is-inline-block h-is-property-text">
-              <EntityIOL :label="domainName"/>
-              <span class="ml-2">
+          <div class="is-inline-block">
+            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+          </div>
+        </div>
+        <div v-if="domainName" id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
+          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
+          <div class="is-inline-block h-is-property-text">
+            <EntityIOL :label="domainName"/>
+            <span class="ml-2">
               <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
             </span>
-            </div>
           </div>
-          <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
-            <router-link :to="accountRoute">
-              <span class="h-is-property-text">Show associated account</span>
-            </router-link>
-          </div>
-        </template>
+        </div>
+        <div v-if="!isMediumScreen && accountRoute" id="showAccountLink" class="is-inline-block mt-2">
+          <router-link :to="accountRoute">
+            <span class="h-is-property-text">Show associated account</span>
+          </router-link>
+        </div>
+      </template>
 
-        <template v-slot:control v-if="isMediumScreen">
-          <div v-if="contract && accountRoute" id="showAccountLink" class="is-inline-block ml-3">
-            <router-link :to="accountRoute">
-              <span class="h-is-property-text">Show associated account</span>
-            </router-link>
-          </div>
-        </template>
+      <template v-slot:control v-if="isMediumScreen">
+        <div v-if="contract && accountRoute" id="showAccountLink" class="is-inline-block ml-3">
+          <router-link :to="accountRoute">
+            <span class="h-is-property-text">Show associated account</span>
+          </router-link>
+        </div>
+      </template>
 
-        <template v-slot:content>
-          <NotificationBanner v-if="notification" :message="notification"/>
+      <template v-slot:content>
+        <NotificationBanner v-if="notification" :message="notification"/>
 
-          <div class="h-is-property-text">
-            <Property id="balance" :full-width="isMediumScreen">
-              <template v-slot:name>
-                <span class="h-is-tertiary-text">Balance</span>
-              </template>
-              <template v-slot:value>
-                <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
-              </template>
-            </Property>
-          </div>
-        </template>
-
-        <template v-slot:leftContent>
-          <Property id="key">
-            <template v-slot:name>Admin Key</template>
+        <div class="h-is-property-text">
+          <Property id="balance" :full-width="isMediumScreen">
+            <template v-slot:name>
+              <span class="h-is-tertiary-text">Balance</span>
+            </template>
             <template v-slot:value>
-              <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
+              <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
             </template>
           </Property>
-          <Property id="memo">
-            <template v-slot:name>Memo</template>
-            <template v-slot:value>
-              <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
+        </div>
+      </template>
+
+      <template v-slot:leftContent>
+        <Property id="key">
+          <template v-slot:name>Admin Key</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="memo">
+          <template v-slot:name>Memo</template>
+          <template v-slot:value>
+            <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
+          </template>
+        </Property>
+        <Property id="createTransaction">
+          <template v-slot:name>Create Transaction</template>
+          <template v-slot:value>
+            <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
+          </template>
+        </Property>
+        <Property
+            id="maxAutoAssociation"
+            tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
+        >
+          <template v-slot:name>Max. Auto. Association</template>
+          <template v-slot:value>
+            <StringValue :string-value="maxAutoAssociationValue"/>
+          </template>
+        </Property>
+
+        <template v-if="enableExpiry">
+          <Property
+              id="expiresAt"
+              tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+          >
+            <template v-slot:name>
+              <span>Expires at</span>
             </template>
-          </Property>
-          <Property id="createTransaction">
-            <template v-slot:name>Create Transaction</template>
             <template v-slot:value>
-              <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
+              <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
             </template>
           </Property>
           <Property
-              id="maxAutoAssociation"
-              tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
+              id="autoRenewPeriod"
+              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
           >
-            <template v-slot:name>Max. Auto. Association</template>
+            <template v-slot:name>
+              <span>Auto Renew Period</span>
+            </template>
             <template v-slot:value>
-              <StringValue :string-value="maxAutoAssociationValue"/>
+              <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
             </template>
           </Property>
+          <Property
+              id="autoRenewAccount"
+              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+          >
+            <template v-slot:name>
+              <span>Auto Renew Account</span>
+            </template>
+            <template v-slot:value>
+              <AccountLink :account-id="autoRenewAccount"/>
+            </template>
+          </Property>
+        </template>
+        <template v-else>
+          <Property id="obtainer">
+            <template v-slot:name>Obtainer</template>
+            <template v-slot:value>
+              <AccountLink :account-id="obtainerId"/>
+            </template>
+          </Property>
+          <Property id="proxyAccount">
+            <template v-slot:name>Proxy Account</template>
+            <template v-slot:value>
+              <AccountLink :account-id="proxyAccountId"/>
+            </template>
+          </Property>
+        </template>
+      </template>
 
-          <template v-if="enableExpiry">
-            <Property
-                id="expiresAt"
-                tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
-            >
-              <template v-slot:name>
-                <span>Expires at</span>
-              </template>
-              <template v-slot:value>
-                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
-              </template>
-            </Property>
-            <Property
-                id="autoRenewPeriod"
-                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-            >
-              <template v-slot:name>
-                <span>Auto Renew Period</span>
-              </template>
-              <template v-slot:value>
-                <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
-              </template>
-            </Property>
-            <Property
-                id="autoRenewAccount"
-                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-            >
-              <template v-slot:name>
-                <span>Auto Renew Account</span>
-              </template>
-              <template v-slot:value>
-                <AccountLink :account-id="autoRenewAccount"/>
-              </template>
-            </Property>
-          </template>
-          <template v-else>
-            <Property id="obtainer">
-              <template v-slot:name>Obtainer</template>
-              <template v-slot:value>
-                <AccountLink :account-id="obtainerId"/>
-              </template>
-            </Property>
-            <Property id="proxyAccount">
-              <template v-slot:name>Proxy Account</template>
-              <template v-slot:value>
-                <AccountLink :account-id="proxyAccountId"/>
-              </template>
-            </Property>
-          </template>
+      <template v-slot:rightContent>
+        <template v-if="enableExpiry">
+          <Property id="obtainer">
+            <template v-slot:name>Obtainer</template>
+            <template v-slot:value>
+              <AccountLink :account-id="obtainerId"/>
+            </template>
+          </Property>
+          <Property id="proxyAccount">
+            <template v-slot:name>Proxy Account</template>
+            <template v-slot:value>
+              <AccountLink :account-id="proxyAccountId"/>
+            </template>
+          </Property>
+        </template>
+        <template v-else>
         </template>
 
-        <template v-slot:rightContent>
-          <template v-if="enableExpiry">
-            <Property id="obtainer">
-              <template v-slot:name>Obtainer</template>
-              <template v-slot:value>
-                <AccountLink :account-id="obtainerId"/>
-              </template>
-            </Property>
-            <Property id="proxyAccount">
-              <template v-slot:name>Proxy Account</template>
-              <template v-slot:value>
-                <AccountLink :account-id="proxyAccountId"/>
-              </template>
-            </Property>
+        <Property id="validFrom">
+          <template v-slot:name>Valid from</template>
+          <template v-slot:value>
+            <TimestampValue :timestamp="contract?.timestamp?.from" :show-none="true"/>
           </template>
-          <template v-else>
+        </Property>
+        <Property id="validUntil">
+          <template v-slot:name>Valid until</template>
+          <template v-slot:value>
+            <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
           </template>
+        </Property>
+        <Property v-if="displayNonce" id="nonce">
+          <template v-slot:name>Contract Nonce</template>
+          <template v-slot:value>
+            {{ contract?.nonce }}
+          </template>
+        </Property>
+        <Property id="file">
+          <template v-slot:name>File</template>
+          <template v-slot:value>
+            <StringValue :string-value="contract?.file_id"/>
+          </template>
+        </Property>
 
-          <Property id="validFrom">
-            <template v-slot:name>Valid from</template>
-            <template v-slot:value>
-              <TimestampValue :timestamp="contract?.timestamp?.from" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="validUntil">
-            <template v-slot:name>Valid until</template>
-            <template v-slot:value>
-              <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="displayNonce" id="nonce">
-            <template v-slot:name>Contract Nonce</template>
-            <template v-slot:value>
-              {{ contract?.nonce }}
-            </template>
-          </Property>
-          <Property id="file">
-            <template v-slot:name>File</template>
-            <template v-slot:value>
-              <StringValue :string-value="contract?.file_id"/>
-            </template>
-          </Property>
+      </template>
+    </DashboardCard>
 
-        </template>
-      </DashboardCard>
+    <TokensSection :account-id="normalizedContractId"/>
 
-      <TokensSection :account-id="normalizedContractId"/>
+    <ContractERCSection
+        :contract-id="normalizedContractId"
+        v-model:is-erc20="isErc20"
+        v-model:is-erc721="isErc721"
+    />
 
-      <ContractERCSection
-          :contract-id="normalizedContractId"
-          v-model:is-erc20="isErc20"
-          v-model:is-erc721="isErc721"
-      />
+    <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
-      <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
+    <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
 
-      <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
+    <ContractResultLogs :logs="logs"/>
 
-      <ContractResultLogs :logs="logs"/>
+    <MirrorLink :network="network" entityUrl="contracts" :loc="contractId"/>
 
-      <MirrorLink :network="network" entityUrl="contracts" :loc="contractId"/>
-
-    </template>
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -264,7 +264,7 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
@@ -307,7 +307,7 @@ export default defineComponent({
     TransactionLink,
     Property,
     NotificationBanner,
-    PageFrame,
+    PageFrameV2,
     BlobValue,
     DashboardCard,
     AccountLink,

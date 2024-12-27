@@ -24,58 +24,56 @@
 
 <template>
 
-  <PageFrame :raw-content="true" :keep-footer-background="true">
-    <template #pageContent>
-      <section class="section has-text-centered" style="min-height: 450px">
+  <PageFrameV2 page-title="Mobile Menu">
+    <section class="section has-text-centered" style="min-height: 450px">
 
-        <div class="is-flex is-justify-content-center">
+      <div class="is-flex is-justify-content-center">
 
-          <div class="is-flex is-flex-direction-column is-align-items-start">
-            <div id="mobile-drop-down-menu" class="ml-1 mb-5 ">
-              <o-field>
-                <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
-                  <option v-for="network in networkEntries" :key="network.name" :value="network.name">
-                    {{ network.displayName }}
-                  </option>
-                </o-select>
-              </o-field>
-            </div>
-
-            <NavMenuItem :tabId="TabId.Dashboard"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToMainDashboard()"/>
-            <NavMenuItem :tabId="TabId.Transactions"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToTransactions()"/>
-            <NavMenuItem :tabId="TabId.Tokens"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToTokens()"/>
-            <NavMenuItem :tabId="TabId.Topics"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToTopics()"/>
-            <NavMenuItem :tabId="TabId.Contracts"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToContracts()"/>
-            <NavMenuItem :tabId="TabId.Accounts"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToAccounts()"/>
-            <NavMenuItem :tabId="TabId.Nodes"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToNodes()"/>
-            <NavMenuItem v-if="enableStaking"
-                         :tabId="TabId.Staking"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToStaking()"/>
-            <NavMenuItem :tabId="TabId.Blocks"
-                         :is-mobile="true"
-                         :target-route="routeManager.makeRouteToBlocks()"/>
+        <div class="is-flex is-flex-direction-column is-align-items-start">
+          <div id="mobile-drop-down-menu" class="ml-1 mb-5 ">
+            <o-field>
+              <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
+                <option v-for="network in networkEntries" :key="network.name" :value="network.name">
+                  {{ network.displayName }}
+                </option>
+              </o-select>
+            </o-field>
           </div>
 
+          <NavMenuItem :tabId="TabId.Dashboard"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToMainDashboard()"/>
+          <NavMenuItem :tabId="TabId.Transactions"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToTransactions()"/>
+          <NavMenuItem :tabId="TabId.Tokens"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToTokens()"/>
+          <NavMenuItem :tabId="TabId.Topics"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToTopics()"/>
+          <NavMenuItem :tabId="TabId.Contracts"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToContracts()"/>
+          <NavMenuItem :tabId="TabId.Accounts"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToAccounts()"/>
+          <NavMenuItem :tabId="TabId.Nodes"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToNodes()"/>
+          <NavMenuItem v-if="enableStaking"
+                       :tabId="TabId.Staking"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToStaking()"/>
+          <NavMenuItem :tabId="TabId.Blocks"
+                       :is-mobile="true"
+                       :target-route="routeManager.makeRouteToBlocks()"/>
         </div>
 
-      </section>
-    </template>
-  </PageFrame>
+      </div>
+
+    </section>
+  </PageFrameV2>
 
 </template>
 
@@ -88,7 +86,7 @@
 import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {TabId} from "@/utils/RouteManager.ts";
 import NavMenuItem from "@/components/page/NavMenuItem.vue";
