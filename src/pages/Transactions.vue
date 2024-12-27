@@ -26,24 +26,22 @@
 
   <PageFrameV2 page-title="Transactions">
 
-    <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-      <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
+    <div class="root">
+      <DashboardCardV2>
+        <template v-slot:title>
+          <span>Recent Transactions</span>
+        </template>
+        <template v-slot:left-control>
+          <PlayPauseButtonV2 v-bind:controller="transactionTableController"/>
+        </template>
+        <template v-slot:right-control>
+          <TransactionFilterSelect v-model:selected-filter="transactionType"/>
+        </template>
+        <template v-slot:content>
+          <TransactionTable v-bind:controller="transactionTableController"/>
+        </template>
+      </DashboardCardV2>
     </div>
-
-    <DashboardCard>
-    <template v-slot:title>
-      <span class="h-is-primary-title">Recent Transactions</span>
-    </template>
-    <template v-slot:control>
-      <div class="is-flex is-align-items-flex-end">
-        <PlayPauseButton v-bind:controller="transactionTableController"/>
-        <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-      </div>
-    </template>
-    <template v-slot:content>
-      <TransactionTable v-bind:controller="transactionTableController"/>
-    </template>
-  </DashboardCard>
 
   </PageFrameV2>
 
@@ -65,6 +63,9 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {AppStorage} from "@/AppStorage";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import Dialog from "@/components/dialog/Dialog.vue";
 
 export default defineComponent({
   name: 'Transactions',
@@ -74,6 +75,9 @@ export default defineComponent({
   },
 
   components: {
+    Dialog,
+    PlayPauseButtonV2,
+    DashboardCardV2,
     PageFrameV2,
     DashboardCard,
     TransactionFilterSelect,
@@ -116,4 +120,14 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.root {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-left: 16px;
+  margin-right: 16px;
+}
+
+</style>
