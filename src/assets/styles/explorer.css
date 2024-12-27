@@ -32,6 +32,7 @@
     --light-text-secondary: #888888;
     --light-background-primary: #F6F6F6;
     --light-background-tertiary: #FFFFFF;
+    --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
     --light-chip-primary: var(--light-network-theme-color);
     --light-chip-text-primary: white;
@@ -44,6 +45,7 @@
     --dark-text-secondary: #A2A2A2;
     --dark-background-primary: #131313;
     --dark-background-tertiary: #171717;
+    --dark-border-secondary: #2C2C2C;
     --dark-table-border: #1F1F1F;
     --dark-chip-primary: var(--light-network-theme-color);
     --dark-chip-text-primary: white;
@@ -56,6 +58,7 @@
     --text-secondary: var(--light-text-secondary);
     --background-primary: var(--light-background-primary);
     --background-tertiary: var(--light-background-tertiary);
+    --border-secondary: var(--light-border-secondary);
     --table-border: var(--light-table-border);
     --chip-primary: var(--light-chip-primary);
     --chip-text-primary: var(--light-chip-text-primary);
