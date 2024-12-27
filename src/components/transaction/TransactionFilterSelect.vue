@@ -24,11 +24,12 @@
 
 <template>
 
-  <o-field>
+  <o-field style="margin-bottom: 0">
     <o-select
         v-bind:model-value="selectedFilter"
         @update:model-value="handleOption($event)"
         class="h-is-text-size-1"
+        style="margin-bottom: 0"
         data-cy="select-type"
     >
       <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
