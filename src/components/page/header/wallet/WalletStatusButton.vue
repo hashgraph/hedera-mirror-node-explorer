@@ -24,30 +24,34 @@
 
 <template>
 
-  <RoundButton id="walletInfoBanner" @click="showWalletInfo = !showWalletInfo">
-    <div class="left">
-      <figure>
-        <img :src="walletIconURL ?? undefined" alt="wallet logo"
-             style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
-      </figure>
-      {{ accountId !== null ? accountId : "No account" }}
-    </div>
-    <div class="right">
-      <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down"/>
-      <i v-else class="fas fa-solid fa-angle-up"/>
-    </div>
-  </RoundButton>
-
-
-  <WalletInfo
-      :connected="connected"
-      :accountIds="accountIds"
-      v-model:show-wallet-info="showWalletInfo"
-      :accountId="accountId ?? undefined"
-      :walletIconURL="walletIconURL ?? undefined"
-      @wallet-disconnect="disconnectFromWallet"
-      @wallet-reconnect="reconnectToWallet"
-      @change-account="handleChangeAccount"/>
+  <DropdownPanel :deployed="showWalletInfo" :right-aligned="true">
+    <template #button>
+      <RoundButton id="walletInfoBanner" @click="showWalletInfo = !showWalletInfo">
+        <div class="left">
+          <figure>
+            <img :src="walletIconURL ?? undefined" alt="wallet logo"
+                 style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
+          </figure>
+          {{ accountId !== null ? accountId : "No account" }}
+        </div>
+        <div class="right">
+          <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down"/>
+          <i v-else class="fas fa-solid fa-angle-up"/>
+        </div>
+      </RoundButton>
+    </template>
+    <template #panel>
+      <WalletInfo
+          :connected="connected"
+          :accountIds="accountIds"
+          v-model:show-wallet-info="showWalletInfo"
+          :accountId="accountId ?? undefined"
+          :walletIconURL="walletIconURL ?? undefined"
+          @wallet-disconnect="disconnectFromWallet"
+          @wallet-reconnect="reconnectToWallet"
+          @change-account="handleChangeAccount"/>
+    </template>
+  </DropdownPanel>
 
 </template>
 
@@ -62,6 +66,7 @@ import WalletInfo from "@/components/wallet/WalletInfo.vue";
 import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
+import DropdownPanel from "@/components/DropdownPanel.vue";
 
 
 //
@@ -100,7 +105,6 @@ const reconnectToWallet = async () => {
 //
 
 const showWalletInfo = ref(false)
-
 
 </script>
 

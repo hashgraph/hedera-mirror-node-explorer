@@ -23,9 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="connected && showWalletInfo"
-       :class="{'box': !isTouchDevice && isSmallScreen, 'h-box-border': !isTouchDevice && isSmallScreen}"
-       style="position: absolute; display: flex; flex-direction: column; gap: 1rem; width: 380px; top: 45px; right: 0; z-index: 10; border: 0.5px solid white; padding: 16px 12px;">
+  <div v-if="connected">
     <!-- header -->
     <div class="is-flex is-align-items-center">
       <!-- logo icon -->
