@@ -24,24 +24,22 @@
 
 <template>
 
-  <PageFrame :raw-content="true" :keep-footer-background="true">
-    <template #pageContent>
-      <section class="section has-text-centered" style="min-height: 450px">
+  <PageFrameV2 page-title="Page not found">
+    <section class="section has-text-centered" style="min-height: 450px">
 
-        <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
-        <br/>
+      <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
+      <br/>
 
-        <div class="block">
-          <p class="h-is-tertiary-text" style="font-weight: 300">
-            No page matches the specified URL.
-            <br>
-            Check URL value or use tabs in navigation bar.
-          </p>
-        </div>
+      <div class="block">
+        <p class="h-is-tertiary-text" style="font-weight: 300">
+          No page matches the specified URL.
+          <br>
+          Check URL value or use tabs in navigation bar.
+        </p>
+      </div>
 
-      </section>
-    </template>
-  </PageFrame>
+    </section>
+  </PageFrameV2>
 
 </template>
 
@@ -52,11 +50,11 @@
 <script lang="ts">
 
 import {defineComponent} from 'vue';
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 
 export default defineComponent({
   name: 'PageNotFound',
-  components: {PageFrame}
+  components: {PageFrameV2}
 })
 
 </script>

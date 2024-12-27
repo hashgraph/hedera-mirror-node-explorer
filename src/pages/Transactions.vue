@@ -24,26 +24,28 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Transactions">
 
-      <DashboardCard>
-        <template v-slot:title>
-          <span class="h-is-primary-title">Recent Transactions</span>
-        </template>
-        <template v-slot:control>
-          <div class="is-flex is-align-items-flex-end">
-            <PlayPauseButton v-bind:controller="transactionTableController"/>
-            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-          </div>
-        </template>
-        <template v-slot:content>
-          <TransactionTable v-bind:controller="transactionTableController"/>
-        </template>
-      </DashboardCard>
+    <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
+      <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
+    </div>
 
+    <DashboardCard>
+    <template v-slot:title>
+      <span class="h-is-primary-title">Recent Transactions</span>
     </template>
-  </PageFrame>
+    <template v-slot:control>
+      <div class="is-flex is-align-items-flex-end">
+        <PlayPauseButton v-bind:controller="transactionTableController"/>
+        <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
+      </div>
+    </template>
+    <template v-slot:content>
+      <TransactionTable v-bind:controller="transactionTableController"/>
+    </template>
+  </DashboardCard>
+
+  </PageFrameV2>
 
 </template>
 
@@ -60,7 +62,7 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRouter} from "vue-router";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {AppStorage} from "@/AppStorage";
 
@@ -72,7 +74,7 @@ export default defineComponent({
   },
 
   components: {
-    PageFrame,
+    PageFrameV2,
     DashboardCard,
     TransactionFilterSelect,
     PlayPauseButton,
@@ -80,6 +82,8 @@ export default defineComponent({
   },
 
   setup() {
+    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
+
     const router = useRouter()
 
     //
@@ -99,6 +103,7 @@ export default defineComponent({
     onBeforeUnmount(() => transactionTableController.unmount())
 
     return {
+      temporaryBanner,
       transactionTableController,
       transactionType: transactionTableController.transactionType
     }

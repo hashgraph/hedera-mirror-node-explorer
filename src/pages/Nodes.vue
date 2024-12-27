@@ -24,65 +24,63 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Nodes">
 
-      <DashboardCard v-if="enableStaking" collapsible-key="networkDetails">
-        <template v-slot:title>
-          <span class="h-is-primary-title">Network</span>
-        </template>
-        <template v-slot:content>
+    <DashboardCard v-if="enableStaking" collapsible-key="networkDetails">
+      <template v-slot:title>
+        <span class="h-is-primary-title">Network</span>
+      </template>
+      <template v-slot:content>
 
-          <div class="has-text-grey "
-               :class="{'is-flex':isSmallScreen,'is-justify-content-space-between':isSmallScreen}">
-            <div :class="{'is-flex-direction-column':isSmallScreen}">
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
-            </div>
-            <div v-if="!isSmallScreen" class="mt-4"/>
-            <div :class="{'is-flex-direction-column':isSmallScreen}">
-              <NetworkDashboardItem :name=cryptoName title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"
-                                    :tooltip-label="stakeTotalTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem :name=cryptoName title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"
-                                    :tooltip-label="stakeRewardedTotalTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem :name=cryptoName title="Maximum Staked for Reward"
-                                    :value="makeFloorHbarAmount(maxStakeRewarded)"
-                                    :tooltip-label="maxStakeRewardedTooltip"/>
-            </div>
-            <div v-if="!isSmallScreen" class="mt-4"/>
-            <div :class="{'is-flex-direction-column':isSmallScreen}">
-              <NetworkDashboardItem :name=cryptoName title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"
-                                    :tooltip-label="totalRewardedTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"
-                                    :tooltip-label="maxRewardRateTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"
-                                    :tooltip-label="rewardRateTooltip"/>
-            </div>
+        <div class="has-text-grey "
+             :class="{'is-flex':isSmallScreen,'is-justify-content-space-between':isSmallScreen}">
+          <div :class="{'is-flex-direction-column':isSmallScreen}">
+            <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
+            <div class="mt-4"/>
+            <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
+            <div class="mt-4"/>
+            <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
           </div>
           <div v-if="!isSmallScreen" class="mt-4"/>
+          <div :class="{'is-flex-direction-column':isSmallScreen}">
+            <NetworkDashboardItem :name=cryptoName title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"
+                                  :tooltip-label="stakeTotalTooltip"/>
+            <div class="mt-4"/>
+            <NetworkDashboardItem :name=cryptoName title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"
+                                  :tooltip-label="stakeRewardedTotalTooltip"/>
+            <div class="mt-4"/>
+            <NetworkDashboardItem :name=cryptoName title="Maximum Staked for Reward"
+                                  :value="makeFloorHbarAmount(maxStakeRewarded)"
+                                  :tooltip-label="maxStakeRewardedTooltip"/>
+          </div>
+          <div v-if="!isSmallScreen" class="mt-4"/>
+          <div :class="{'is-flex-direction-column':isSmallScreen}">
+            <NetworkDashboardItem :name=cryptoName title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"
+                                  :tooltip-label="totalRewardedTooltip"/>
+            <div class="mt-4"/>
+            <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"
+                                  :tooltip-label="maxRewardRateTooltip"/>
+            <div class="mt-4"/>
+            <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"
+                                  :tooltip-label="rewardRateTooltip"/>
+          </div>
+        </div>
+        <div v-if="!isSmallScreen" class="mt-4"/>
 
-        </template>
-      </DashboardCard>
+      </template>
+    </DashboardCard>
 
-      <DashboardCard collapsible-key="nodes">
-        <template v-slot:title>
-          <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
-        </template>
-        <template v-slot:content>
-          <NodeTable :nodes="nodes"
-                     :stake-total="stakeTotal"/>
-        </template>
-      </DashboardCard>
+    <DashboardCard collapsible-key="nodes">
+      <template v-slot:title>
+        <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
+      </template>
+      <template v-slot:content>
+        <NodeTable :nodes="nodes"
+                   :stake-total="stakeTotal"/>
+      </template>
+    </DashboardCard>
 
-    </template>
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -94,7 +92,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
@@ -115,7 +113,7 @@ export default defineComponent({
   components: {
     NetworkDashboardItem,
     NodeTable,
-    PageFrame,
+    PageFrameV2,
     DashboardCard
   },
 

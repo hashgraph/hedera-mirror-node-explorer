@@ -24,18 +24,16 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <DashboardCard>
-        <template v-slot:title>
-          <span class="h-is-primary-title">Recent Topics</span>
-        </template>
-        <template v-slot:content>
-          <TopicTable v-bind:controller="transactionTableController"/>
-        </template>
-      </DashboardCard>
-    </template>
-  </PageFrame>
+  <PageFrameV2 page-title="Topics">
+    <DashboardCard>
+      <template v-slot:title>
+        <span class="h-is-primary-title">Recent Topics</span>
+      </template>
+      <template v-slot:content>
+        <TopicTable v-bind:controller="transactionTableController"/>
+      </template>
+    </DashboardCard>
+  </PageFrameV2>
 
 </template>
 
@@ -48,7 +46,7 @@
 import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {useRouter} from "vue-router";
@@ -62,7 +60,7 @@ export default defineComponent({
   },
 
   components: {
-    PageFrame,
+    PageFrameV2,
     DashboardCard,
     TopicTable
   },

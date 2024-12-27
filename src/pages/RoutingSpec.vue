@@ -24,45 +24,41 @@
 
 <template>
 
-  <PageFrame>
+  <PageFrameV2 page-title="Mirror Explorer Routes">
 
-    <template #pageContent>
-
-        <DashboardCard class="h-card">
-          <template v-slot:title>
-            <span class="h-is-primary-title">Mirror Explorer Routes</span>
-          </template>
-          <template v-slot:content>
-            <o-collapse
-                v-for="(route, index) of routes"
-                :key="index"
-                class="card"
-                animation="slide"
-                :open="isOpen.includes(index)"
-                @open="isOpen.push(index)">
-              <template #trigger="props">
-                <Property class="trigger" aria-controls="contentIdForA11y1" id="dashboard" wide-name>
-                  <template v-slot:name>
-                    <span class="has-text-weight-bold">{{ route.title }}</span>
-                  </template>
-                  <template v-slot:value>
-                    <StringValue class="value" :string-value="route.subtitle"/>
-                    <o-icon :icon="props.open ? 'caret-up' : 'caret-down'"/>
-                  </template>
-                </Property>
+    <DashboardCard class="h-card">
+      <template v-slot:title>
+        <span class="h-is-primary-title">Mirror Explorer Routes</span>
+      </template>
+      <template v-slot:content>
+        <o-collapse
+            v-for="(route, index) of routes"
+            :key="index"
+            class="card"
+            animation="slide"
+            :open="isOpen.includes(index)"
+            @open="isOpen.push(index)">
+          <template #trigger="props">
+            <Property class="trigger" aria-controls="contentIdForA11y1" id="dashboard" wide-name>
+              <template v-slot:name>
+                <span class="has-text-weight-bold">{{ route.title }}</span>
               </template>
-              <div class="content">
-                <div>{{ route.description }}</div>
-                <div v-if="route.data" style="margin-top: 17px; margin-bottom: 8px">Data Displayed:</div>
-                <div style="margin-left: 17px" v-for="d of route.data" :key="d">{{ d }}</div>
-              </div>
-            </o-collapse>
+              <template v-slot:value>
+                <StringValue class="value" :string-value="route.subtitle"/>
+                <o-icon :icon="props.open ? 'caret-up' : 'caret-down'"/>
+              </template>
+            </Property>
           </template>
-        </DashboardCard>
+          <div class="content">
+            <div>{{ route.description }}</div>
+            <div v-if="route.data" style="margin-top: 17px; margin-bottom: 8px">Data Displayed:</div>
+            <div style="margin-left: 17px" v-for="d of route.data" :key="d">{{ d }}</div>
+          </div>
+        </o-collapse>
+      </template>
+    </DashboardCard>
 
-    </template>
-
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -73,11 +69,11 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 
 export default defineComponent({
   name: 'RoutingSpec',
-  components: {PageFrame, StringValue, Property, DashboardCard},
+  components: {PageFrameV2, StringValue, Property, DashboardCard},
   props: {},
 
   setup() {

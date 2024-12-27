@@ -24,20 +24,18 @@
 
 <template>
 
-  <PageFrame :raw-content="true" :keep-footer-background="true">
-    <template #pageContent>
-      <section class="section has-text-left" style="min-height: 450px">
+  <PageFrameV2 page-title="Search">
+    <section class="section has-text-left" style="min-height: 450px">
 
-        <div class="is-flex is-align-items-center mb-6">
-          <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">
-          <span class="ml-4">Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp</span>
-        </div>
+      <div class="is-flex is-align-items-center mb-6">
+        <img alt="Search bar" src="@/assets/large-search-icon.png" style="width: 42px;">
+        <span class="ml-4">Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp</span>
+      </div>
 
-        <SearchBarV2/>
+      <SearchBarV2/>
 
-      </section>
-    </template>
-  </PageFrame>
+    </section>
+  </PageFrameV2>
 
 </template>
 
@@ -51,11 +49,11 @@ import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watc
 import router, {routeManager} from "@/router";
 import {MEDIUM_BREAKPOINT} from "@/BreakPoints";
 import SearchBarV2 from "@/components/search/SearchBarV2.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 
 export default defineComponent({
   name: 'MobileSearch',
-  components: {PageFrame, SearchBarV2},
+  components: {PageFrameV2, SearchBarV2},
   props: {
     "searchedId": String,
     "network": String
