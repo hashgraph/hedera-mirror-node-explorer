@@ -42,7 +42,7 @@
     </div>
     <div class="l3">
       <div class="title">{{ props.pageTitle }}</div>
-      <SearchBarV2/>
+      <SearchBar/>
     </div>
   </div>
 </template>
@@ -58,7 +58,7 @@ import NetworkSelector from "@/components/page/header/NetworkSelector.vue";
 import ThemeSwitch from "@/components/ThemeSwitch.vue";
 import AxiosStatus from "@/components/AxiosStatus.vue";
 import TabBar from "@/components/page/header/TabBar.vue";
-import SearchBarV2 from "@/components/search/SearchBarV2.vue";
+import SearchBar from "@/components/search/SearchBar.vue";
 import ConnectWalletButton from "@/components/page/header/wallet/ConnectWalletButton.vue";
 import {computed} from "vue";
 import {walletManager} from "@/router.ts";
