@@ -29,9 +29,9 @@
       :loading="loading"
       :paginated="paginated"
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="center"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -50,14 +50,14 @@
       customRowKey="account"
   >
     <o-table-column v-slot="props" field="account" label="ID">
-      <AccountIOL :account-id="props.row.account"/>
+      <AccountIOL class="account_id" :account-id="props.row.account"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="Created">
+    <o-table-column v-slot="props" field="created" label="CREATED">
       <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
     </o-table-column>
 
-    <o-table-column field="nb_tokens" label="Tokens" v-slot="props">
+    <o-table-column field="nb_tokens" label="TOKENS" v-slot="props">
       <div v-if="props.row.balance?.tokens?.length > 1">
         {{ props.row.balance?.tokens?.length }} Types of Token
       </div>
@@ -73,13 +73,13 @@
 
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="Memo">
+    <o-table-column v-slot="props" field="memo" label="MEMO">
       <div class="w250">
         <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+    <o-table-column v-slot="props" field="balance" label="BALANCE" position="right">
       <HbarAmount v-bind:amount="props.row.balance.balance ?? 0"/>
     </o-table-column>
 
@@ -106,9 +106,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {AccountInfo} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -122,49 +122,31 @@ import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'AccountTable',
-
-  components: {TablePageSize, AccountIOL, EmptyTable, BlobValue, HbarAmount, TimestampValue, TokenAmount},
-
-  props: {
-    controller: {
-      type: Object as PropType<AccountTableController>,
-      required: true
-    },
-    narrowed: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<AccountTableController>,
+    required: true
   },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const handleClick = (a: AccountInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (a.account) {
-        routeManager.routeToAccount(a.account, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      accounts: props.controller.rows as ComputedRef<AccountInfo[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      handleClick,
-      AppStorage,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+  narrowed: {
+    type: Boolean,
+    default: false
   }
-});
+})
+
+const handleClick = (a: AccountInfo, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (a.account) {
+    routeManager.routeToAccount(a.account, event)
+  }
+}
+
+const accounts = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -173,5 +155,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.account_id {
+  font-weight: 600;
+}
 
 </style>
