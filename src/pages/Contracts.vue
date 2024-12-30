@@ -57,9 +57,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, ref} from 'vue';
+import {inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
@@ -71,43 +71,26 @@ import {VerifiedContractsController} from "@/components/contract/VerifiedContrac
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'Contracts',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const isMediumScreen = inject('isMediumScreen', true)
 
-  components: {
-    VerifiedContractsTable,
-    PlayPauseButton,
-    PageFrameV2,
-    DashboardCard,
-    ContractTable
-  },
+const filterVerified = ref(false)
 
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const filterVerified = ref(false)
-
-    //
-    // ContractTableController
-    //
-    const perPage = ref(isMediumScreen ? 15 : 10)
-    const contractTableController = new ContractTableController(useRouter(), perPage)
-    const verifiedContractsController =
-        new VerifiedContractsController(VerifiedContractsCache.instance.makeLookup(), perPage, AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY)
-
-    return {
-      contractTableController,
-      verifiedContractsController,
-      loaded: verifiedContractsController.loaded,
-      overflow: verifiedContractsController.overflow,
-      filterVerified,
-    }
-  }
-});
+//
+// ContractTableController
+//
+const perPage = ref(isMediumScreen ? 15 : 10)
+const contractTableController = new ContractTableController(useRouter(), perPage)
+const verifiedContractsController = new VerifiedContractsController(
+    VerifiedContractsCache.instance.makeLookup(),
+    perPage,
+    AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY
+)
+const loaded = verifiedContractsController.loaded
+const overflow = verifiedContractsController.overflow
 
 </script>
 
