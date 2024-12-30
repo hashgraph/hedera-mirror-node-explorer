@@ -29,9 +29,9 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="center"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -39,7 +39,7 @@
       @cell-click="handleClick"
 
       :hoverable="true"
-      :narrowed="narrowed"
+      :narrowed="props.narrowed"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
@@ -49,19 +49,19 @@
       aria-previous-label="Previous page"
       customRowKey="contract_id"
   >
-    <o-table-column field="contract_id" label="ID" v-slot="props">
-      <ContractIOL :contract-id="props.row.contract_id"/>
+    <o-table-column v-slot="props" field="contract_id" label="ID">
+      <ContractIOL class="contract_id" :contract-id="props.row.contract_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="contract_name" label="Contract Name">
+    <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
       <ContractName :contract-id="props.row.contract_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="Created">
+    <o-table-column v-slot="props" field="created" label="CREATED">
       <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
     </o-table-column>
 
-    <o-table-column field="memo" label="Memo" v-slot="props">
+    <o-table-column v-slot="props" field="memo" label="MEMO">
       <div class="should-wrap">
         <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
       </div>
@@ -83,9 +83,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
+import {onBeforeUnmount, onMounted, PropType} from 'vue';
 import {Contract} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -98,55 +98,32 @@ import ContractIOL from "@/components/values/link/ContractIOL.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-
-//
-// defineComponent
-//
-
-export default defineComponent({
-  name: 'ContractTable',
-
-  components: {TablePageSize, ContractIOL, ContractName, EmptyTable, BlobValue, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<ContractTableController>,
-      required: true
-    },
-    narrowed: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<ContractTableController>,
+    required: true
   },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    onMounted(() => props.controller.mount())
-    onBeforeUnmount(() => props.controller.unmount())
-
-    const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (contract.contract_id) {
-        routeManager.routeToContract(contract.contract_id, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      contracts: props.controller.rows as ComputedRef<Contract[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      AppStorage,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+  narrowed: {
+    type: Boolean,
+    default: false
   }
-});
+})
+
+onMounted(() => props.controller.mount())
+onBeforeUnmount(() => props.controller.unmount())
+
+const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (contract.contract_id) {
+    routeManager.routeToContract(contract.contract_id, event)
+  }
+}
+
+const contracts = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
 
 </script>
 
@@ -154,4 +131,10 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+.contract_id {
+  font-weight: 600;
+}
+
+</style>
