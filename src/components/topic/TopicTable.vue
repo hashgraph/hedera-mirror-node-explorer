@@ -29,9 +29,9 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -48,15 +48,15 @@
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
   >
-    <o-table-column v-slot="props" field="topic_id" label="Topic">
-      <TopicIOL :topic-id="props.row.entity_id"/>
+    <o-table-column v-slot="props" field="topic_id" label="TOPIC">
+      <TopicIOL class="topic_id" :topic-id="props.row.entity_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="Created">
+    <o-table-column v-slot="props" field="created" label="CREATED">
       <TimestampValue v-bind:timestamp="props.row.valid_start_timestamp"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="Memo">
+    <o-table-column v-slot="props" field="memo" label="MEMO">
       <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
     </o-table-column>
 
@@ -76,9 +76,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {inject, PropType} from 'vue';
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
@@ -90,47 +90,27 @@ import TopicIOL from "@/components/values/link/TopicIOL.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'TopicTable',
-  computed: {
-    AppStorage() {
-      return AppStorage
-    }
-  },
-
-  components: {TablePageSize, TopicIOL, EmptyTable, BlobValue, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (t.entity_id) {
-        routeManager.routeToTopic(t.entity_id, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TransactionTableController>,
+    required: true
   }
-});
+})
+
+const isTouchDevice = inject('isTouchDevice', false)
+
+const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (t.entity_id) {
+    routeManager.routeToTopic(t.entity_id, event)
+  }
+}
+
+const transactions = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
 
 </script>
 
@@ -139,5 +119,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.topic_id {
+  font-weight: 600;
+}
 
 </style>
