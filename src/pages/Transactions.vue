@@ -51,68 +51,42 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
+import {onBeforeUnmount, onMounted, Ref, ref} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRouter} from "vue-router";
-import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {AppStorage} from "@/AppStorage";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
-import Dialog from "@/components/dialog/Dialog.vue";
 
-export default defineComponent({
-  name: 'Transactions',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const router = useRouter()
 
-  components: {
-    Dialog,
-    PlayPauseButtonV2,
-    DashboardCardV2,
-    PageFrameV2,
-    DashboardCard,
-    TransactionFilterSelect,
-    PlayPauseButton,
-    TransactionTable,
-  },
+//
+// transactionTableController
+//
 
-  setup() {
-    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
+const accountId: Ref<string | null> = ref(null)
+const pageSize = ref(15)
+const transactionTableController = new TransactionTableControllerXL(
+    router,
+    accountId,
+    pageSize,
+    false,
+    AppStorage.TRANSACTION_TABLE_PAGE_SIZE_KEY
+)
+onMounted(() => transactionTableController.mount())
+onBeforeUnmount(() => transactionTableController.unmount())
 
-    const router = useRouter()
-
-    //
-    // transactionTableController
-    //
-
-    const accountId: Ref<string | null> = ref(null)
-    const pageSize = ref(15)
-    const transactionTableController = new TransactionTableControllerXL(
-        router,
-        accountId,
-        pageSize,
-        false,
-        AppStorage.TRANSACTION_TABLE_PAGE_SIZE_KEY
-    )
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
-
-    return {
-      temporaryBanner,
-      transactionTableController,
-      transactionType: transactionTableController.transactionType
-    }
-  }
-});
+const transactionType = transactionTableController.transactionType
 
 </script>
 
