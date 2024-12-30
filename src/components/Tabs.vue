@@ -23,22 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="props.tabIds.length >= 1" class="is-flex is-align-items-center">
-    <div class="tabs" :class="tabClass">
-      <ul>
-        <li
-            v-for="(tab, i) in props.tabIds"
-            :key="tab"
-            :id="'tab-' + tab"
-            :class="{'is-active':selectedTab === tab}"
-            :style="{fontWeight: selectedTab === tab ? 500 : 300}"
-            @click="handleSelect(tab, true)"
-        >
-          <a>{{ props.tabLabels[i] ?? tab }}</a>
-        </li>
-      </ul>
-    </div>
-  </div>
+  <ul  v-if="props.tabIds.length >= 1">
+    <li
+        v-for="(tab, i) in props.tabIds"
+        :key="tab"
+        :id="'tab-' + tab"
+        :class="{'is-active':selectedTab === tab}"
+        @click="handleSelect(tab, true)"
+    >
+      <a>{{ props.tabLabels[i] ?? tab }}</a>
+    </li>
+  </ul>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,7 +42,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref, watch} from "vue";
+import {PropType, ref, watch} from "vue";
 
 const props = defineProps({
   tabIds: {
@@ -75,13 +70,13 @@ const selectedTab = defineModel("selectedTab", {
 
 const interactiveSelection = ref<boolean>(true) // true because initial value must be preserved
 
-const tabClass = computed<string>(() =>
-    props.subTabs
-        ? "is-small h-is-property-text mt-4 mb-2"
-        : props.compact
-            ? "is-toggle h-is-text-size-1 mb-1"
-            : "is-toggle h-is-property-text mt-3 mb-1"
-)
+// const tabClass = computed<string>(() =>
+//     props.subTabs
+//         ? "is-small h-is-property-text mt-4 mb-2"
+//         : props.compact
+//             ? "is-toggle h-is-text-size-1 mb-1"
+//             : "is-toggle h-is-property-text mt-3 mb-1"
+// )
 
 const handleSelect = (tab: string | null, interactive: boolean) => {
   selectedTab.value = tab
@@ -106,4 +101,24 @@ watch(() => props.tabIds, adjustSelectedTab, {immediate: true})
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+ul {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  font-size: 14px;
+  font-weight: 600;
+  column-gap: 16px;
+}
+
+li {
+  padding: 8px 8px 8px 8px;
+  border-radius: 8px;
+}
+li.is-active {
+  background-color: blue;
+  color: var(--text-primary);
+}
+
+</style>

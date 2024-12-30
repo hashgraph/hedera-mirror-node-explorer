@@ -23,20 +23,30 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <form data-cy="searchBar" id="searchBar" action=""
-        v-on:submit.prevent="handleSubmit">
-    <input
-        type="text"
-        spellcheck="false"
-        placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
-        v-model="searchedText"
-        ref="inputElement"
-        size="70"
-    />
-    <button type="submit" value="searchBar" :disabled="submitDisabled">
-      <img src="@/assets/search-icon.svg" alt="search button"/>
-    </button>
-  </form>
+  <DropdownPanel
+      v-model:deployed="showSearchDropdown"
+      background-color="var(--border-secondary)"
+      :stretched="true">
+    <template #button>
+      <form data-cy="searchBar" id="searchBar" action=""
+            v-on:submit.prevent="handleSubmit">
+        <input
+            type="text"
+            spellcheck="false"
+            placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
+            v-model="searchedText"
+            ref="inputElement"
+            size="70"
+        />
+        <button type="submit" value="searchBar" :disabled="submitDisabled">
+          <img src="@/assets/search-icon.svg" alt="search button"/>
+        </button>
+      </form>
+    </template>
+    <template #panel>
+      <SearchDropdown :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+    </template>
+  </DropdownPanel>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -45,12 +55,14 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {SearchController} from "@/components/search/SearchController";
 import router from "@/router";
 import {SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
+import DropdownPanel from "@/components/DropdownPanel.vue";
+import SearchDropdown from "@/components/search/SearchDropdown.vue";
 
-const isMediumScreen = inject('isMediumScreen', true)
+// const isMediumScreen = inject('isMediumScreen', true)
 // const isTouchDevice = inject('isTouchDevice', false)
 const searchedText = ref<string>("")
 
@@ -106,19 +118,14 @@ const handleSubmit = () => {
 
 const submitDisabled = computed(() => defaultCandidate.value === null)
 
-const root = ref<HTMLElement|null>(null)
-const isInside = (target: Node) => root.value !== null && root.value.contains(target)
-
-const onMouseDown = (ev: MouseEvent) => {
-  if (ev.target instanceof Node && !isInside(ev.target)) {
-    searchController.inputText.value = "" // Hides SearchDropdown
-  }
-}
-onMounted(() => {
-  document.addEventListener("mousedown", onMouseDown)
+const showSearchDropdown = ref(false)
+watch(searchController.actualInputText, (newValue) => {
+  showSearchDropdown.value = newValue !== ""
 })
-onBeforeUnmount(() => {
-  document.removeEventListener("mousedown", onMouseDown)
+watch(showSearchDropdown, (show) => {
+  if (!show) {
+    searchController.inputText.value = ""
+  }
 })
 
 </script>
@@ -132,7 +139,7 @@ onBeforeUnmount(() => {
 form {
   display: flex;
   align-items: center;
-  background-color: #2C2C2C;
+  background-color: var(--border-secondary);
   border-radius: 40px;
   border-width: 1px;
   border-style: solid;
