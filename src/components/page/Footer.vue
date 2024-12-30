@@ -23,116 +23,84 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <section class="section pt-0"
-           :class="{'h-mobile-background': !keepBackground && (isTouchDevice || !isSmallScreen)}">
 
-    <hr class="h-has-background-color mb-4 mt-0" style="height: 1px"/>
+  <div class="footer-root">
 
-    <div class="is-flex is-align-items-center">
-
-      <a v-if="builtOnURL" :href="builtOnURL" style="line-height: 1;">
-        <img id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
+    <div class="footer-left">
+      <a v-if="builtOnURL" :href="builtOnURL">
+        <img id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
       </a>
-      <div v-else style="line-height: 1;">
-        <img id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
-      </div>
+      <img id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
 
-      <div class="is-flex is-flex-direction-column is-align-items-flex-start ml-5">
-        <span class="h-is-property-text pb-1" style="font-weight:300; color: #DBDBDB">
-          <span v-if="!isTouchDevice && isMediumScreen">{{ productDescription }}</span>
-          <span v-else>{{ productName }}</span>
+      <div class="footer-text">
+        <p class="footer-text-item">{{ productDescription }}</p>
+
+        <template v-if="termsOfUseURL">
+          <div class="line"></div>
+
+          <a data-cy="termsOfUse" :href="termsOfUseURL" style="line-height: 1rem">
+            <span class="footer-text-item">See Terms of Service</span>
+          </a>
+        </template>
+
+        <div class="line"></div>
+
+        <span class="footer-text-item">
+          <span>Release </span>
+          <a :href="buildReleaseUrl">{{ buildRelease }}</a>
+          <span> built {{ buildTime }}</span>
         </span>
-        <span class="h-is-text-size-1" style="font-weight:300; color: #DBDBDB">
-          Release <a :href="buildReleaseUrl">{{ buildRelease }}</a> built {{ buildTime }}
-        </span>
-        <a data-cy="termsOfUse" v-if="termsOfUseURL" :href="termsOfUseURL" style="line-height: 1rem">
-          <span class="h-is-text-size-3" style="font-weight:300">
-           See Terms of Service
-          </span>
-        </a>
       </div>
-
-      <span class="is-flex-grow-1"/>
-
-      <a v-if="sponsorURL" :href="sponsorURL" class="ml-4" style="line-height: 1;">
-        <img id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''" class="footer-logo">
-      </a>
-      <div v-else class="ml-4" style="line-height: 1;">
-        <img id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''" class="footer-logo">
-      </div>
-
     </div>
 
-  </section>
+    <a v-if="sponsorURL" :href="sponsorURL" class="footer-logo">
+      <img id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+    </a>
+    <img v-else class="footer-logo" id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+  </div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject} from "vue";
+import {computed, inject} from "vue";
 import {CoreConfig} from "@/config/CoreConfig";
+import {ThemeController} from "@/components/ThemeController.ts";
 
-export default defineComponent({
-  name: "Footer",
+let buildRelease = inject('buildRelease', "not available")
+let buildReleaseUrl = "https://github.com/hashgraph/hedera-mirror-node-explorer"
+const buildShortCommitHash = inject('buildShortCommitHash', "not available")
+const disposableReleaseDetails = "-0-g" + buildShortCommitHash;
+if (buildRelease.includes(disposableReleaseDetails)) {
+  // Commit matches a specific release (i.e., v23.5.0), show only release version
+  buildRelease = buildRelease.replace(disposableReleaseDetails, "")
+  // Link release page
+  buildReleaseUrl += "/releases/tag/" + buildRelease
+} else {
+  // Show git version (<tag>-<commit distance>-<short commit hash> (i.e., v23.5.0-1-g706e821)
+  // Link to specific commit
+  buildReleaseUrl += "/tree/" + buildShortCommitHash
+}
+const buildTime = inject('buildTime', "not available")
 
-  props: {
-    keepBackground: {
-      type: Boolean,
-      default: false
-    }
-  },
+const coreConfig = CoreConfig.inject()
+const productDescription = coreConfig.productDescription
 
-  setup() {
-    let buildRelease = inject('buildRelease', "not available")
-    let buildReleaseUrl = "https://github.com/hashgraph/hedera-mirror-node-explorer"
-    const buildShortCommitHash = inject('buildShortCommitHash', "not available")
-    const disposableReleaseDetails = "-0-g" + buildShortCommitHash;
-    if (buildRelease.includes(disposableReleaseDetails)) {
-      // Commit matches a specific release (i.e., v23.5.0), show only release version
-      buildRelease = buildRelease.replace(disposableReleaseDetails, "")
-      // Link release page
-      buildReleaseUrl += "/releases/tag/" + buildRelease
-    } else {
-      // Show git version (<tag>-<commit distance>-<short commit hash> (i.e., v23.5.0-1-g706e821)
-      // Link to specific commit
-      buildReleaseUrl += "/tree/" + buildShortCommitHash
-    }
-    const buildTime = inject('buildTime', "not available")
+const darkSelected = ThemeController.inject().darkSelected
+const builtOnLogoURL = computed(() =>
+    darkSelected.value ? coreConfig.builtOnLogoDarkURL : coreConfig.builtOnLogoLightURL
+)
+const sponsorLogoURL = computed(() =>
+    darkSelected.value ? coreConfig.sponsorLogoDarkURL : coreConfig.sponsorLogoLightURL
+)
 
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const coreConfig = CoreConfig.inject()
-    const productName = coreConfig.productName
-    const productDescription = coreConfig.productDescription
-    const builtOnLogoURL = coreConfig.builtOnLogoLightURL
-    const builtOnURL = coreConfig.builtOnURL
-    const sponsorLogoURL = coreConfig.sponsorLogoLightURL
-    const sponsorURL = coreConfig.sponsorURL
-    const termsOfUseURL = coreConfig.termsOfUseURL
-
-
-    return {
-      buildRelease,
-      buildReleaseUrl,
-      buildTime,
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      productName,
-      productDescription,
-      builtOnLogoURL,
-      builtOnURL,
-      sponsorLogoURL,
-      sponsorURL,
-      termsOfUseURL
-    }
-  },
-})
+const builtOnURL = coreConfig.builtOnURL
+const sponsorURL = coreConfig.sponsorURL
+const termsOfUseURL = coreConfig.termsOfUseURL
 
 </script>
 
@@ -141,9 +109,44 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-.footer-logo {
-  width: 100%;
-  max-width: 104px;
-  max-height: 48px;
+
+div.footer-root {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 32px
 }
+
+div.footer-left {
+  align-items: center;
+  display: flex;
+  gap: 40px;
+  justify-content: flex-start;
+}
+
+div.footer-text {
+  align-items: baseline;
+  display: flex;
+  gap: 12px;
+  height: 16px;
+  justify-content: flex-start;
+}
+
+.footer-text-item {
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  color: var(--light-text-primary);
+}
+
+.footer-logo {
+  max-width: 120px;
+}
+
+div.line {
+  align-self: center;
+  border: 1px solid var(--text-secondary);
+  rotate: -90deg;
+  width: 16px;
+}
+
 </style>
