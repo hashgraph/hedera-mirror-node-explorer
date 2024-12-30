@@ -30,7 +30,7 @@
       <div
           class="panelHolder"
           style="position: absolute; z-index: 999; top:6px;"
-          :style="{left: panelDX + 'px', 'box-shadow': boxShadow, 'background-color': props.backgroundColor}"
+          :style="{left: panelDX + 'px', 'box-shadow': boxShadow, 'background-color': props.backgroundColor, 'right': rightDX}"
           ref="panelRef">
         <slot name="panel"/>
       </div>
@@ -50,6 +50,10 @@ import {ThemeController} from "@/components/ThemeController.ts";
 
 const props = defineProps({
   rightAligned: {
+    type: Boolean,
+    default: false
+  },
+  stretched: {
     type: Boolean,
     default: false
   },
@@ -120,6 +124,11 @@ const panelDX = computed(() => {
   return result
 })
 
+//
+// rightDX
+//
+
+const rightDX = computed(() => props.stretched ? "0" : "auto")
 
 //
 // mount/unmount

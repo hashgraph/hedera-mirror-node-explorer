@@ -23,17 +23,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div>
-    <template v-for="(c,i) in searchAgent.candidates.value" :key="i">
-      <button class="button-as-link h-is-property-text"
-              :class="{'h-is-hoverable': c.route !== null, 'has-text-grey': c.route === null || c.secondary}"
-              @click="navigate(c)" :disabled="c.route === null" style="width: 100%">
-        {{ c.description }}
-        <span v-if="c.extra" class="has-text-grey">{{ c.extra }}</span>
-        <span v-if="i == 0" style="float: right">&#x23ce;</span>
-      </button>
-    </template>
-  </div>
+  <template v-for="(c,i) in searchAgent.candidates.value" :key="i">
+    <button class="button-as-link"
+            :class="{'h-is-hoverable': c.route !== null, 'has-text-grey': c.route === null || c.secondary}"
+            @click="navigate(c)"
+            :disabled="c.route === null"
+            style="width: 100%">
+      {{ c.description }}
+      <span v-if="c.extra" style="color: var(--text-secondary); padding-left: 16px">{{ c.extra }}</span>
+      <span v-if="i == 0" style="float: right">&#x23ce;</span>
+    </button>
+  </template>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -74,12 +74,15 @@ const navigate = (c: SearchCandidate<unknown>) => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
 .button-as-link {
   background: none!important;
   border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400;
   padding: 0!important;
   text-align: left;
-  color: white;
-  cursor: pointer;
 }
 </style>
