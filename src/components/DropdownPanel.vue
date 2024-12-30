@@ -29,7 +29,7 @@
     <div v-if="deployed" style="position: relative">
       <div
           class="panelHolder"
-          style="position: absolute; z-index: 999; top:6px"
+          style="position: absolute; z-index: 999; top:6px; width:100%;"
           :style="{left: panelDX + 'px', 'box-shadow': boxShadow}"
           ref="panelRef">
         <slot name="panel"/>
