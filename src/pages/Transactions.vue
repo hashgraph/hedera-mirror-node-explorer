@@ -28,17 +28,17 @@
 
     <div class="page-container">
       <DashboardCardV2>
-        <template v-slot:title>
+        <template #title>
           <span>Recent Transactions</span>
         </template>
-        <template v-slot:left-control>
-          <PlayPauseButtonV2 v-bind:controller="transactionTableController"/>
+        <template #left-control>
+          <PlayPauseButtonV2 :controller="transactionTableController"/>
         </template>
-        <template v-slot:right-control>
+        <template #right-control>
           <TransactionFilterSelect v-model:selected-filter="transactionType"/>
         </template>
-        <template v-slot:content>
-          <TransactionTable v-bind:controller="transactionTableController"/>
+        <template #content>
+          <TransactionTable :controller="transactionTableController"/>
         </template>
       </DashboardCardV2>
     </div>
