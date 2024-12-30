@@ -30,9 +30,9 @@
       :loading="loading"
       :paginated="paginated"
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -51,10 +51,14 @@
       customRowKey="consensus_timestamp"
   >
     <o-table-column v-slot="props" field="timestamp" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
+      <TransactionLabel
+          class="transaction-label"
+          :transaction-id="props.row.transaction_id"
+          :result="props.row.result"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Type">
+    <o-table-column v-slot="props" field="name" label="TYPE">
       <div class="h-has-pill" style="display: inline-block">
         <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
       </div>
@@ -64,11 +68,11 @@
       <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" label="Content">
+    <o-table-column v-slot="props" label="CONTENT">
       <TransactionSummary v-bind:transaction="props.row"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
@@ -170,4 +174,10 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+.transaction-label {
+  font-weight: 600;
+}
+
+</style>
