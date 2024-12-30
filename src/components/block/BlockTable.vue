@@ -51,9 +51,9 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -71,19 +71,19 @@
       aria-previous-label="Previous page"
       customRowKey="number"
   >
-    <o-table-column v-slot="props" field="number" label="Number">
-      {{ props.row.number }}
+    <o-table-column v-slot="props" field="number" label="NUMBER">
+      <p class="block_number">{{ props.row.number }}</p>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Start Time">
+    <o-table-column v-slot="props" field="timestamp" label="START TIME">
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="count" label="No. Transactions" position="right">
+    <o-table-column v-slot="props" field="count" label="NO. TRANSACTIONS" position="right">
       <PlainAmount v-bind:amount="props.row.count"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="gas_used" label="Gas Used" position="right">
+    <o-table-column v-slot="props" field="gas_used" label="GAS USED" position="right">
       <PlainAmount v-bind:amount="props.row.gas_used"/>
     </o-table-column>
 
@@ -103,9 +103,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {Block} from '@/schemas/MirrorNodeSchemas.ts';
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -116,45 +116,29 @@ import {BlockTableController} from "@/components/block/BlockTableController";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'BlockTable',
-
-  components: {TablePageSize, PlainAmount, TimestampValue, EmptyTable},
-
-  props: {
-    narrowed: Boolean,
-    controller: {
-      type: Object as PropType<BlockTableController>,
-      required: true
-    },
+const props = defineProps({
+  controller: {
+    type: Object as PropType<BlockTableController>,
+    required: true
   },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const handleClick = (block: Block, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (block.number) {
-        routeManager.routeToBlock(block.number, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      blocks: props.controller.rows as ComputedRef<Block[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+  narrowed: {
+    type: Boolean,
+    default: false
   }
-});
+})
+
+const handleClick = (block: Block, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (block.number) {
+    routeManager.routeToBlock(block.number, event)
+  }
+}
+
+const blocks = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
 
 </script>
 
@@ -163,5 +147,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.block_number {
+  font-weight: 600;
+}
 
 </style>
