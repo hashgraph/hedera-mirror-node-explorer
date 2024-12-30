@@ -24,7 +24,7 @@
 
 <template>
 
-  <DropdownPanel :deployed="showWalletInfo" :right-aligned="true">
+  <DropdownPanel v-model:deployed="showWalletInfo" :right-aligned="true">
     <template #button>
       <RoundButton id="walletInfoBanner" @click="showWalletInfo = !showWalletInfo">
         <div class="left">
