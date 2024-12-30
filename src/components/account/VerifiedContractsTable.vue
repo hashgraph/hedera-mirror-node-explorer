@@ -30,9 +30,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="contracts.length > perPage"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="center"
+      :range-before="1"
+      :range-after="1"
 
       :per-page="perPage"
       :striped="true"
@@ -46,16 +46,14 @@
   >
 
     <o-table-column v-slot="props" field="contract_id" label="ID">
-      <div class="is-numeric">
-        {{ props.row.contract_id }}
-      </div>
+      <ContractIOL class="contract_id" :contract-id="props.row.contract_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="contract_name" label="Contract Name">
+    <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
       <ContractName :contract-id="props.row.contract_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="Created">
+    <o-table-column v-slot="props" field="created" label="CREATED">
       <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
     </o-table-column>
 
@@ -82,9 +80,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, PropType} from 'vue';
+import {computed, onBeforeUnmount, onMounted, PropType} from 'vue';
 import {Contract} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
@@ -93,47 +91,35 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import ContractName from "@/components/values/ContractName.vue";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
+import ContractIOL from "@/components/values/link/ContractIOL.vue";
 
-export default defineComponent({
-  name: 'VerifiedContractsTable',
-
-  components: {TablePageSize, ContractName, EmptyTable, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<VerifiedContractsController>,
-      required: true
-    },
-    loaded: Boolean,
-    overflow: Boolean
+const props = defineProps({
+  controller: {
+    type: Object as PropType<VerifiedContractsController>,
+    required: true
   },
+  loaded: Boolean,
+  overflow: Boolean
+})
 
-  setup(props) {
-    const noDataMessage = computed(() =>
-        props.overflow
-            ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
-            : 'No data'
-    )
+const noDataMessage = computed(() =>
+    props.overflow
+        ? 'No verified contract found in the last ' + props.controller.capacity + ' created contracts'
+        : 'No data'
+)
 
-    onMounted(() => props.controller.mount())
-    onBeforeUnmount(() => props.controller.unmount())
+onMounted(() => props.controller.mount())
+onBeforeUnmount(() => props.controller.unmount())
 
-    const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToContract(contract.contract_id!, event)
-    }
+const handleClick = (contract: Contract, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  routeManager.routeToContract(contract.contract_id!, event)
+}
 
-    return {
-      noDataMessage,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT,
-      contracts: props.controller.contracts,
-      perPage: props.controller.pageSize,
-      storageKey: props.controller.storageKey,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-    }
-  }
-});
+const contracts = props.controller.contracts
+const perPage = props.controller.pageSize
+const storageKey = props.controller.storageKey
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -142,5 +128,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.contract_id {
+  font-weight: 600;
+}
 
 </style>
