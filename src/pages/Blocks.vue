@@ -25,17 +25,21 @@
 <template>
 
   <PageFrameV2 page-title="Blocks">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Blocks</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-bind:controller="blockTableController"/>
-      </template>
-      <template v-slot:content>
-        <BlockTable :controller="blockTableController"/>
-      </template>
-    </DashboardCard>
+
+    <div class="page-container">
+      <DashboardCardV2>
+        <template #title>
+          <span>Blocks</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButtonV2 :controller="blockTableController"/>
+        </template>
+        <template #content>
+          <BlockTable :controller="blockTableController"/>
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -44,44 +48,27 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
 import {useRouter} from "vue-router";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
-export default defineComponent({
-  name: 'Blocks',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const isMediumScreen = inject('isMediumScreen', true)
 
-  components: {
-    PlayPauseButton,
-    BlockTable,
-    PageFrameV2,
-    DashboardCard
-  },
-
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    // BlockTableController
-    const pageSize = ref(isMediumScreen ? 15 : 5)
-    const blockTableController = new BlockTableController(useRouter(), pageSize)
-    onMounted(() => blockTableController.mount())
-    onBeforeUnmount(() => blockTableController.unmount())
-
-    return {
-      blockTableController
-    }
-  }
-});
+// BlockTableController
+const pageSize = ref(isMediumScreen ? 15 : 5)
+const blockTableController = new BlockTableController(useRouter(), pageSize)
+onMounted(() => blockTableController.mount())
+onBeforeUnmount(() => blockTableController.unmount())
 
 </script>
 
@@ -90,5 +77,13 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
 
 </style>
