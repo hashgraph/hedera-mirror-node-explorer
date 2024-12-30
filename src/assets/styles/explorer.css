@@ -153,7 +153,7 @@ a {
     --oruga-select-height: 26px;
     --oruga-select-line-height: 1;
     --oruga-select-padding: 0 8px;
-    --oruga-switch-active-background-color: var(--background-primary);
+    --oruga-switch-active-background-color: var(--network-theme-color);
     --oruga-checkbox-border-color: var(--network-theme-color);
     --oruga-checkbox-background-color: var(--background-tertiary);
     --oruga-checkbox-border-width: 1px;

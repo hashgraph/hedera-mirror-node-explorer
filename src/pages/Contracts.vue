@@ -25,30 +25,40 @@
 <template>
 
   <PageFrameV2 page-title="Contracts">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Contracts</span>
-      </template>
-      <template v-slot:control>
-        <div class="is-flex is-justify-content-end is-align-items-center">
+
+    <div class="page-container">
+      <DashboardCardV2>
+        <template #title>
+          <span>Recent Contracts</span>
+        </template>
+        <template #left-control>
           <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
           <PlayPauseButton v-else :controller="verifiedContractsController"/>
-          <span class="ml-5 mr-2">All</span>
-          <o-field>
-            <o-switch v-model="filterVerified">Verified</o-switch>
-          </o-field>
-        </div>
-      </template>
-      <template v-slot:content>
-        <ContractTable v-if="!filterVerified" :controller="contractTableController"/>
-        <VerifiedContractsTable
-            v-else
-            :controller="verifiedContractsController"
-            :loaded="loaded"
-            :overflow="overflow"
-        />
-      </template>
-    </DashboardCard>
+        </template>
+        <template #right-control>
+          <div class="verify-switch">
+            <div class="switch-text">All</div>
+            <o-field style="margin-bottom: 0;">
+              <o-switch v-model="filterVerified"/>
+            </o-field>
+            <div class="switch-text">Verified</div>
+          </div>
+        </template>
+        <template #content>
+          <ContractTable
+              v-if="!filterVerified"
+              :controller="contractTableController"
+          />
+          <VerifiedContractsTable
+              v-else
+              :controller="verifiedContractsController"
+              :loaded="loaded"
+              :overflow="overflow"
+          />
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -61,7 +71,6 @@
 
 import {inject, ref} from 'vue';
 import ContractTable from "@/components/contract/ContractTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {ContractTableController} from "@/components/contract/ContractTableController";
@@ -70,6 +79,7 @@ import VerifiedContractsTable from "@/components/account/VerifiedContractsTable.
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {AppStorage} from "@/AppStorage";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 defineProps({
   network: String
@@ -99,5 +109,27 @@ const overflow = verifiedContractsController.overflow
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+div.verify-switch {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+div.switch-text {
+  font-family: 'Styrene A Web', serif;
+  font-size: 14px;
+  font-weight: 400;
+  height: 18px;
+  vertical-align: center;
+}
 
 </style>
