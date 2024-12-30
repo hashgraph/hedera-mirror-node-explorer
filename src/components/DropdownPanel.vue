@@ -30,7 +30,7 @@
       <div
           class="panelHolder"
           style="position: absolute; z-index: 999; top:6px;"
-          :style="{left: panelDX + 'px', 'box-shadow': boxShadow}"
+          :style="{left: panelDX + 'px', 'box-shadow': boxShadow, 'background-color': props.backgroundColor}"
           ref="panelRef">
         <slot name="panel"/>
       </div>
@@ -52,6 +52,10 @@ const props = defineProps({
   rightAligned: {
     type: Boolean,
     default: false
+  },
+  backgroundColor: {
+    type: String,
+    default: "var(--background-tertiary)"
   }
 })
 
@@ -74,7 +78,7 @@ const onMouseDown = (ev: MouseEvent) => {
 }
 
 //
-// right alignement
+// right alignment
 //
 
 const buttonWidth = ref<number|null>(null)
@@ -146,7 +150,6 @@ const boxShadow = computed(() => darkSelected.value ? darkShadow : lightShadow)
 <style scoped>
 
 div.panelHolder {
-  background: var(--background-tertiary);
   border-color: var(--border-secondary);
   border-radius: 16px;
   border-style: solid;
