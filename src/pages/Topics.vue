@@ -25,14 +25,18 @@
 <template>
 
   <PageFrameV2 page-title="Topics">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Topics</span>
-      </template>
-      <template v-slot:content>
-        <TopicTable v-bind:controller="transactionTableController"/>
-      </template>
-    </DashboardCard>
+
+    <div class="page-container">
+      <DashboardCardV2>
+        <template #title>
+          <span>Recent Topics</span>
+        </template>
+        <template #content>
+          <TopicTable v-bind:controller="transactionTableController"/>
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -41,55 +45,38 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {TransactionResult, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {useRouter} from "vue-router";
 import {AppStorage} from "@/AppStorage";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
-export default defineComponent({
-  name: 'Topics',
+const props = defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const isMediumScreen = inject('isMediumScreen', true)
+const router = useRouter()
+const pageSize = ref(isMediumScreen ? 15 : 5)
 
-  components: {
-    PageFrameV2,
-    DashboardCard,
-    TopicTable
-  },
+const transactionTableController = new TransactionTableController(
+    router,
+    pageSize,
+    TransactionType.CONSENSUSCREATETOPIC,
+    TransactionResult.SUCCESS,
+    AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY
+)
+onMounted(() => transactionTableController.mount())
+onBeforeUnmount(() => transactionTableController.unmount())
 
-  setup(props) {
-    const isMediumScreen = inject('isMediumScreen', true)
-
-
-    const router = useRouter()
-    const pageSize = ref(isMediumScreen ? 15 : 5)
-    const transactionTableController = new TransactionTableController(
-        router,
-        pageSize,
-        TransactionType.CONSENSUSCREATETOPIC,
-        TransactionResult.SUCCESS,
-        AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY
-    )
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
-
-    watch(() => props.network, () => {
-      transactionTableController.reset()
-    })
-
-    return {
-      transactionTableController,
-    }
-  }
-});
+watch(() => props.network, () => {
+  transactionTableController.reset()
+})
 
 </script>
 
@@ -98,5 +85,13 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
 
 </style>
