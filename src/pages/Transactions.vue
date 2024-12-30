@@ -26,7 +26,7 @@
 
   <PageFrameV2 page-title="Transactions">
 
-    <div class="root">
+    <div class="page-container">
       <DashboardCardV2>
         <template v-slot:title>
           <span>Recent Transactions</span>
@@ -122,12 +122,12 @@ export default defineComponent({
 
 <style scoped>
 
-div.root {
+div.page-container {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-left: 16px;
-  margin-right: 16px;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
 }
 
 </style>

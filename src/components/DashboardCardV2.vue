@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="root">
+  <div class="card-root">
     <div class="header">
       <div class="left-header">
         <div class="title">
@@ -118,11 +118,10 @@ const toggleCollapsed = () => {
 
 <style scoped>
 
-div.root {
+div.card-root {
   background-color: var(--background-tertiary);
   border: 1px solid var(--table-border);
   border-radius: 16px;
-  margin-bottom: 16px;
   padding: 32px;
 }
 
