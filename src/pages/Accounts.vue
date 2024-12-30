@@ -25,17 +25,21 @@
 <template>
 
   <PageFrameV2 page-title="Accounts">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Recent Accounts</span>
-      </template>
-      <template v-slot:control>
-        <PlayPauseButton v-bind:controller="accountTableController"/>
-      </template>
-      <template v-slot:content>
-        <AccountTable :controller="accountTableController"/>
-      </template>
-    </DashboardCard>
+
+    <div class="page-container">
+      <DashboardCardV2>
+        <template #title>
+          <span>Recent Accounts</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButtonV2 :controller="accountTableController"/>
+        </template>
+        <template #content>
+          <AccountTable :controller="accountTableController"/>
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -44,46 +48,29 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import AccountTable from "@/components/account/AccountTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {useRouter} from "vue-router";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
-export default defineComponent({
-  name: 'Accounts',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const isMediumScreen = inject('isMediumScreen', true)
 
-  components: {
-    PageFrameV2,
-    PlayPauseButton,
-    DashboardCard,
-    AccountTable
-  },
-
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    //
-    // AccountTableController
-    //
-    const perPage = ref(isMediumScreen ? 15 : 10)
-    const accountTableController = new AccountTableController(useRouter(), perPage)
-    onMounted(() => accountTableController.mount())
-    onBeforeUnmount(() => accountTableController.unmount())
-
-    return {
-      accountTableController,
-    }
-  }
-});
+//
+// AccountTableController
+//
+const perPage = ref(isMediumScreen ? 15 : 10)
+const accountTableController = new AccountTableController(useRouter(), perPage)
+onMounted(() => accountTableController.mount())
+onBeforeUnmount(() => accountTableController.unmount())
 
 </script>
 
@@ -92,5 +79,13 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
 
 </style>
