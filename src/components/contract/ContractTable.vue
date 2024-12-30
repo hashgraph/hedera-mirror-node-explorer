@@ -29,7 +29,7 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="center"
+      pagination-order="centered"
       :range-before="1"
       :range-after="1"
       :total="total"

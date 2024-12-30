@@ -30,7 +30,7 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="contracts.length > perPage"
-      pagination-order="center"
+      pagination-order="centered"
       :range-before="1"
       :range-after="1"
 
