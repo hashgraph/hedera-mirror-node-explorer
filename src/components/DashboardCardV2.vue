@@ -122,6 +122,9 @@ div.card-root {
   background-color: var(--background-tertiary);
   border: 1px solid var(--table-border);
   border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
   padding: 32px;
 }
 
@@ -130,8 +133,8 @@ div.header {
   border-bottom: 1px solid var(--network-theme-color);
   display: flex;
   gap: 12px;
-  height: 42px;
   justify-content: space-between;
+  padding-bottom: 16px;
 }
 
 div.left-header {
