@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DialogButton :controller="props.controller" :auto-close="false" :enabled="props.enabled" @action="handleAction">
+  <DialogButton :controller="props.controller" :auto-close="false" :enabled="props.enabled" @action="handleAction" :is-default="true">
     <div class="dialog-stack">
       <div :class="{'is-invisible': isBusy}">
         <slot/>
