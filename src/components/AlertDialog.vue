@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="controller">
+  <Dialog :controller="props.controller">
 
     <template v-slot:dialogInput>
       <div class="is-flex is-justify-content-center h-is-tertiary-text">
@@ -35,7 +35,7 @@
     </template>
 
     <template v-slot:dialogInputButtons>
-      <DialogButton :controller="controller">CLOSE</DialogButton>
+      <DialogButton :controller="props.controller">CLOSE</DialogButton>
     </template>
 
   </Dialog>
@@ -46,21 +46,17 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import {PropType} from "vue";
 import Dialog from "@/components/dialog/Dialog.vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController} from "@/components/dialog/DialogController";
 
-export default defineComponent({
-  name: "AlertDialog",
-  components: {DialogButton, Dialog},
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
+const props = defineProps({
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
   },
 })
 
