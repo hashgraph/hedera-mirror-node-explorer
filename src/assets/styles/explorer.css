@@ -65,6 +65,8 @@
     --table-border: var(--light-table-border);
     --chip-primary: var(--light-chip-primary);
     --chip-text-primary: var(--light-chip-text-primary);
+    --button-text-primary: #FFFFFF;
+    --button-text-secondary: #050505;
     --button-background-primary: #7A1B80;
     --button-background-secondary: #EFEFEF;
 
