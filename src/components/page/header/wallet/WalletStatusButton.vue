@@ -28,10 +28,7 @@
     <template #button>
       <RoundButton id="walletInfoBanner" @click="showWalletInfo = !showWalletInfo">
         <div class="left">
-          <figure>
-            <img :src="walletIconURL ?? undefined" alt="wallet logo"
-                 style="object-fit: contain; aspect-ratio: 3/2; height: 60%;">
-          </figure>
+          <img :src="walletIconURL ?? undefined" alt="wallet logo">
           {{ accountId !== null ? accountId : "No account" }}
         </div>
         <div class="right">
@@ -127,6 +124,10 @@ div.right {
   display: flex;
   justify-content: space-between;
   padding-left: 4px;
+}
+
+img {
+  max-height: 24px;
 }
 
 figure {
