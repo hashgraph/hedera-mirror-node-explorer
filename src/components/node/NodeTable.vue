@@ -26,7 +26,7 @@
 
   <div v-if="nodes" id="node-table">
     <o-table
-        :data="nodes"
+        :data="props.nodes"
         :hoverable="true"
         :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
         :paginated="false"
@@ -42,50 +42,44 @@
         </span>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="node_id" label="Node">
+      <o-table-column v-slot="props" field="node_id" label="NODE ID">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_id }}
         </div>
       </o-table-column>
 
-      <o-table-column v-if="!enableStaking" v-slot="props" field="node_account_id" label="Account">
+      <o-table-column v-if="!enableStaking" v-slot="props" field="node_account_id" label="ACCOUNT">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_account_id }}
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="description" label="Description">
+      <o-table-column v-slot="props" field="description" label="DESCRIPTION">
         <div class="should-wrap regular-node-column is-inline-block">
           <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" :show-none="false" class="has-text-grey"/>
           <StringValue :string-value="makeNodeOwnerDescription(props.row)"/>
         </div>
       </o-table-column>
 
-      <o-table-column v-if="enableStaking" v-slot="props" field="stake" label="Stake for Consensus" position="right">
-        <o-tooltip :label="tooltipStake"
-                   multiline
-                   :delay="tooltipDelay"
-                   class="h-tooltip">
+      <o-table-column v-if="enableStaking" v-slot="props" field="stake" label="STAKE FOR CONSENSUS" position="right">
+        <Tooltip :text="tooltipStake">
           <div class="regular-node-column">
             <HbarAmount :amount="props.row.stake" :decimals="0"/>
           </div>
-        </o-tooltip>
+        </Tooltip>
       </o-table-column>
 
       <o-table-column v-if="enableStaking" v-slot="props" field="percentage" label="%" position="right">
-        <o-tooltip :delay="tooltipDelay"
-                   :label="tooltipPercentage"
-                   class="h-tooltip"
-                   multiline>
+        <Tooltip :text="tooltipPercentage">
           <div class="regular-node-column">
             <StringValue :string-value="makeWeightPercentage(props.row)"/>
           </div>
-        </o-tooltip>
+        </Tooltip>
       </o-table-column>
 
       <o-table-column
           v-if="enableStaking"
-          id="stake-range-column" v-slot="props" field="stake-range" label="Stake Range" position="right"
+          id="stake-range-column" v-slot="props" field="stake-range" label="STAKE RANGE" position="right"
           style="padding-bottom: 2px; padding-top: 12px;"
       >
         <o-tooltip :delay="tooltipDelay" class="h-tooltip">
@@ -117,15 +111,12 @@
         </o-tooltip>
       </o-table-column>
 
-      <o-table-column v-if="enableStaking" v-slot="props" field="last_reward_rate" label="Reward Rate" position="right">
-        <o-tooltip :label="tooltipRewardRate"
-                   multiline
-                   :delay="tooltipDelay"
-                   class="h-tooltip">
-          <span class="regular-node-column">
+      <o-table-column v-if="enableStaking" v-slot="props" field="last_reward_rate" label="REWARD RATE" position="right">
+        <Tooltip :text="tooltipRewardRate">
+          <div class="regular-node-column">
             {{ makeAnnualizedRate(props.row.reward_rate_start) }}
-          </span>
-        </o-tooltip>
+          </div>
+        </Tooltip>
       </o-table-column>
 
     </o-table>
@@ -139,9 +130,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
+import {onBeforeUnmount, onMounted, PropType} from 'vue';
 import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -157,66 +148,33 @@ import {
   makeStakePercentage
 } from "@/schemas/MirrorNodeUtils.ts";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
+import Tooltip from "@/components/Tooltip.vue";
 
+const props = defineProps({
+  nodes: Object as PropType<Array<NetworkNode> | undefined>,
+  stakeTotal: Number
+})
 
-//
-// defineComponent
-//
+const tooltipDelay = 500
+const tooltipStake = "Total amount of HBAR staked to this specific validator for consensus."
+const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
+const tooltipRewardRate = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
-export default defineComponent({
-  name: 'NodeTable',
+const enableStaking = routeManager.enableStaking
 
-  components: {StringValue, StakeRange, HbarAmount, EmptyTable},
+const networkAnalyzer = new NetworkAnalyzer()
+onMounted(() => networkAnalyzer.mount())
+onBeforeUnmount(() => networkAnalyzer.unmount())
 
-  props: {
-    nodes: Object as PropType<Array<NetworkNode> | undefined>,
-    stakeTotal: Number,
-  },
+const makeWeightPercentage = (node: NetworkNode) => {
+  return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : "0"
+}
 
-  setup(props) {
-    const tooltipDelay = 500
-    const tooltipStake = "Total amount of HBAR staked to this specific validator for consensus."
-    const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
-    const tooltipRewardRate = "Approximate annual reward rate based on the reward earned during the last 24h period."
-
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const enableStaking = routeManager.enableStaking
-
-    const networkAnalyzer = new NetworkAnalyzer()
-    onMounted(() => networkAnalyzer.mount())
-    onBeforeUnmount(() => networkAnalyzer.unmount())
-
-    const makeWeightPercentage = (node: NetworkNode) => {
-      return node.stake && props.stakeTotal ? makeStakePercentage(node, props.stakeTotal) : "0"
-    }
-
-    const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (node.node_id !== undefined) {
-        routeManager.routeToNode(node.node_id, event)
-      }
-    }
-
-    return {
-      tooltipDelay,
-      tooltipStake,
-      tooltipPercentage,
-      tooltipRewardRate,
-      isTouchDevice,
-      isMediumScreen,
-      enableStaking,
-      networkAnalyzer,
-      isCouncilNode,
-      makeNodeDescriptionPrefix,
-      makeNodeOwnerDescription,
-      makeWeightPercentage,
-      makeAnnualizedRate,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (node.node_id !== undefined) {
+    routeManager.routeToNode(node.node_id, event)
   }
-});
+}
 
 </script>
 
