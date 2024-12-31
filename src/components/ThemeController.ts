@@ -67,6 +67,7 @@ export class ThemeController {
 
             document.documentElement.style.setProperty('--text-primary', 'var(--dark-text-primary)')
             document.documentElement.style.setProperty('--text-secondary', 'var(--dark-text-secondary)')
+            document.documentElement.style.setProperty('--text-accent', 'var(--dark-text-accent)')
             document.documentElement.style.setProperty('--background-primary', 'var(--dark-background-primary)')
             document.documentElement.style.setProperty('--background-tertiary', 'var(--dark-background-tertiary)')
             document.documentElement.style.setProperty('--border-secondary', 'var(--dark-border-secondary)')
@@ -83,6 +84,7 @@ export class ThemeController {
 
             document.documentElement.style.setProperty('--text-primary', 'var(--light-text-primary)')
             document.documentElement.style.setProperty('--text-secondary', 'var(--light-text-secondary)')
+            document.documentElement.style.setProperty('--text-accent', 'var(--light-text-accent)')
             document.documentElement.style.setProperty('--background-primary', 'var(--light-background-primary)')
             document.documentElement.style.setProperty('--background-tertiary', 'var(--light-background-tertiary)')
             document.documentElement.style.setProperty('--border-secondary', 'var(--light-border-secondary)')
