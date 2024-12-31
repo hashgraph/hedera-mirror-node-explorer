@@ -25,7 +25,7 @@
 <template>
   <template v-for="(c,i) in searchAgent.candidates.value" :key="i">
     <button class="button-as-link"
-            :class="{'h-is-hoverable': c.route !== null, 'has-text-grey': c.route === null || c.secondary}"
+            :class="{'secondary': c.route === null || c.secondary}"
             @click="navigate(c)"
             :disabled="c.route === null"
             style="width: 100%">
@@ -85,4 +85,9 @@ const navigate = (c: SearchCandidate<unknown>) => {
   padding: 0!important;
   text-align: left;
 }
+
+.button-as-link.secondary {
+  color: var(--text-secondary);
+}
+
 </style>
