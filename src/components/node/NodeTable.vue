@@ -35,11 +35,8 @@
         @cell-click="handleClick"
     >
 
-      <o-table-column v-slot="props" field="nature" label="">
-        <span class="icon has-text-info regular-node-column" style="font-size: 16px">
-          <i v-if="isCouncilNode(props.row)" class="fas fa-building"></i>
-          <i v-else class="fas fa-users"></i>
-        </span>
+      <o-table-column  field="nature" label="">
+        <img style="padding-top: 6px;" alt="Node icon" src="@/assets/ticket.svg">
       </o-table-column>
 
       <o-table-column v-slot="props" field="node_id" label="NODE ID">
@@ -141,7 +138,6 @@ import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
 import {
-  isCouncilNode,
   makeAnnualizedRate,
   makeNodeDescriptionPrefix,
   makeNodeOwnerDescription,
