@@ -30,6 +30,7 @@
 :root {
     --light-text-primary: #050505;
     --light-text-secondary: #888888;
+    --light-text-accent: #E0007B;
     --light-background-primary: #F6F6F6;
     --light-background-tertiary: #FFFFFF;
     --light-border-secondary: #D7D7D7;
@@ -43,6 +44,7 @@
 
     --dark-text-primary: #FFFFFF;
     --dark-text-secondary: #A2A2A2;
+    --dark-text-accent: #F258AC;
     --dark-background-primary: #131313;
     --dark-background-tertiary: #171717;
     --dark-border-secondary: #2C2C2C;
@@ -56,6 +58,7 @@
 
     --text-primary: var(--light-text-primary);
     --text-secondary: var(--light-text-secondary);
+    --text-accent: var(--light-text-accent);
     --background-primary: var(--light-background-primary);
     --background-tertiary: var(--light-background-tertiary);
     --border-secondary: var(--light-border-secondary);
@@ -159,6 +162,10 @@ a {
     --oruga-checkbox-border-width: 1px;
     --oruga-checkbox-active-background-color: var(--network-theme-color);
     --oruga-checkbox-checkmark-color: var(--background-tertiary);
+    --oruga-tooltip-background-color: var(--network-theme-color);
+    --oruga-tooltip-arrow-margin: 5px;
+    --oruga-tooltip-content-font-size: 0.75rem;
+    --oruga-tooltip-content-weight-normal: 300;
 }
 
 table.o-table {
@@ -735,13 +742,6 @@ hr.dotted {
     .h-modal-content {
         width: 280px;
     }
-}
-
-.h-tooltip {
-    --oruga-tooltip-background-color: var(--network-theme-color);
-    --oruga-tooltip-arrow-margin: 5px;
-    --oruga-tooltip-content-font-size: 0.75rem;
-    --oruga-tooltip-content-weight-normal: 300;
 }
 
 .h-banner-link {
