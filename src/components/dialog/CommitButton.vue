@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DialogButton :controller="controller" :auto-close="false" :enabled="enabled" @action="handleAction">
+  <DialogButton :controller="props.controller" :auto-close="false" :enabled="props.enabled" @action="handleAction">
     <div class="dialog-stack">
       <div :class="{'is-invisible': isBusy}">
         <slot/>
@@ -39,39 +39,26 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-
-import {computed, defineComponent, PropType} from "vue";
-import DialogButton from "@/components/dialog/DialogButton.vue";
+import {computed, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import DialogButton from "@/components/dialog/DialogButton.vue";
 
-export default defineComponent({
-  name: "CommitButton",
-  components: {DialogButton},
-
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
-    enabled: Boolean
+const props = defineProps({
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
   },
-  emits: ["action"],
-  setup(props, ctx) {
-
-    const isBusy = computed(() => props.controller.mode.value == DialogMode.Busy)
-    const handleAction = () => {
-      ctx.emit("action")
-    }
-
-    return {
-      isBusy,
-      handleAction
-    }
-  }
-
+  enabled: Boolean
 })
+
+const emit = defineEmits(["action"]);
+
+const isBusy = computed(() => props.controller.mode.value == DialogMode.Busy)
+const handleAction = () => {
+  emit("action")
+}
 
 </script>
 

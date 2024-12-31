@@ -26,7 +26,7 @@
   <template v-if="controller.visible.value">
     <div class="is-active modal has-text-white">
       <div class="modal-background"/>
-      <div class="modal-content" :style="{'width': width+'px'}" style="border-radius: 16px">
+      <div class="modal-content" :style="{'width': props.width+'px'}" style="border-radius: 16px">
         <div class="box" style="padding: 32px">
 
           <div class="is-flex is-justify-content-space-between is-align-items-baseline">
@@ -65,17 +65,17 @@
               <div class="is-flex is-justify-content-flex-end column-gap-1">
                 <template v-if="dialogInputVisible || dialogBusyVisible">
                   <slot name="dialogInputButtons">
-                    <DialogButton :controller="controller">Close</DialogButton>
+                    <DialogButton :controller="props.controller">Close</DialogButton>
                   </slot>
                 </template>
                 <template v-else-if="dialogSuccessVisible">
                   <slot name="dialogSuccessButtons">
-                    <DialogButton :controller="controller">Close</DialogButton>
+                    <DialogButton :controller="props.controller">Close</DialogButton>
                   </slot>
                 </template>
                 <template v-else-if="dialogErrorVisible">
                   <slot name="dialogErrorButtons">
-                    <DialogButton :controller="controller">Close</DialogButton>
+                    <DialogButton :controller="props.controller">Close</DialogButton>
                   </slot>
                 </template>
               </div>
@@ -93,47 +93,35 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType, useSlots, watch} from "vue";
+import {computed, PropType, useSlots, watch} from "vue";
 import DialogButton from "@/components/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
-export default defineComponent({
-  name: "Dialog",
-  components: {DialogButton},
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
-    width: {
-      type: Number,
-      default: 768
-    },
-  },
-  setup(props) {
-    const slots = useSlots()
-    const dialogInputVisible = computed(() => props.controller.mode.value === DialogMode.Input)
-    const dialogBusyVisible = computed(() => props.controller.mode.value === DialogMode.Busy)
-    const dialogSuccessVisible = computed(() => props.controller.mode.value === DialogMode.Success)
-    const dialogErrorVisible = computed(() => props.controller.mode.value === DialogMode.Error)
-
-    watch(props.controller.visible, () => {
-      if (props.controller.visible.value) {
-        props.controller.mode.value = DialogMode.Input
-      }
+const props = defineProps({
+      controller: {
+        type: Object as PropType<DialogController>,
+        required: true
+      },
+      width: {
+        type: Number,
+        default: 768
+      },
     })
 
-    return {
-      slots,
-      dialogInputVisible,
-      dialogBusyVisible,
-      dialogSuccessVisible,
-      dialogErrorVisible
-    }
+const slots = useSlots()
+const dialogInputVisible = computed(() => props.controller.mode.value === DialogMode.Input)
+const dialogBusyVisible = computed(() => props.controller.mode.value === DialogMode.Busy)
+const dialogSuccessVisible = computed(() => props.controller.mode.value === DialogMode.Success)
+const dialogErrorVisible = computed(() => props.controller.mode.value === DialogMode.Error)
+
+watch(props.controller.visible, () => {
+  if (props.controller.visible.value) {
+    props.controller.mode.value = DialogMode.Input
   }
-});
+})
+
 
 </script>
 
