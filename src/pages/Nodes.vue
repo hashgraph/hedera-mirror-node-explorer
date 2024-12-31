@@ -88,9 +88,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
@@ -102,77 +102,46 @@ import {makeAnnualizedRate} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
-export default defineComponent({
-  name: 'Nodes',
-  methods: {makeAnnualizedRate},
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const isSmallScreen = inject('isSmallScreen', true)
+const cryptoName = CoreConfig.inject().cryptoName
 
-  components: {
-    NetworkDashboardItem,
-    NodeTable,
-    PageFrameV2,
-    DashboardCard
-  },
+const stakeTotalTooltip = `Total amount of ${cryptoName} staked to all validators for consensus.`
+const stakeRewardedTotalTooltip = `Total amount of ${cryptoName} staked for reward.`
+const maxStakeRewardedTooltip = `Maximum amount of ${cryptoName} that can be staked for reward while still achieving the maximum reward rate.`
+const totalRewardedTooltip = `Total amount of ${cryptoName} paid in reward for the last period.`
+const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
+const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const cryptoName = CoreConfig.inject().cryptoName
+const networkNodeAnalyzer = new NetworkAnalyzer()
+onMounted(() => networkNodeAnalyzer.mount())
+onBeforeUnmount(() => networkNodeAnalyzer.unmount())
 
-    const stakeTotalTooltip = `Total amount of ${cryptoName} staked to all validators for consensus.`
-    const stakeRewardedTotalTooltip = `Total amount of ${cryptoName} staked for reward.`
-    const maxStakeRewardedTooltip = `Maximum amount of ${cryptoName} that can be staked for reward while still achieving the maximum reward rate.`
-    const totalRewardedTooltip = `Total amount of ${cryptoName} paid in reward for the last period.`
-    const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
-    const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
+const stakeLookup = StakeCache.instance.makeLookup()
+onMounted(() => stakeLookup.mount())
+onBeforeUnmount(() => stakeLookup.unmount())
 
-    const networkNodeAnalyzer = new NetworkAnalyzer()
-    onMounted(() => networkNodeAnalyzer.mount())
-    onBeforeUnmount(() => networkNodeAnalyzer.unmount())
+const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
+const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
+const rewardRate = computed(() => {
+  return networkNodeAnalyzer.stakeRewardedTotal.value != 0
+      ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
+      : 0
+})
+const maxRewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
 
-    const stakeLookup = StakeCache.instance.makeLookup()
-    onMounted(() => stakeLookup.mount())
-    onBeforeUnmount(() => stakeLookup.unmount())
+const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
-    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
-    const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
-    const rewardRate = computed(() => {
-      return networkNodeAnalyzer.stakeRewardedTotal.value != 0
-          ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
-          : 0
-    })
-    const maxRewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
-
-    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
-
-    return {
-      isSmallScreen,
-      cryptoName,
-      enableStaking: routeManager.enableStaking,
-      stakeTotalTooltip,
-      stakeRewardedTotalTooltip,
-      maxStakeRewardedTooltip,
-      totalRewardedTooltip,
-      maxRewardRateTooltip,
-      rewardRateTooltip,
-      nodes: networkNodeAnalyzer.nodes,
-      totalNodes: networkNodeAnalyzer.nodeCount,
-      stakeTotal,
-      maxStakeRewarded,
-      maxRewardRate,
-      rewardRate,
-      stakeRewardedTotal: networkNodeAnalyzer.stakeRewardedTotal,
-      totalRewarded: networkNodeAnalyzer.totalRewarded,
-      durationMin: networkNodeAnalyzer.durationMin,
-      elapsedMin: networkNodeAnalyzer.elapsedMin,
-      remainingMin: networkNodeAnalyzer.remainingMin,
-      makeFloorHbarAmount,
-      formatSeconds
-    }
-  }
-});
+const enableStaking = routeManager.enableStaking
+const nodes = networkNodeAnalyzer.nodes
+const stakeRewardedTotal = networkNodeAnalyzer.stakeRewardedTotal
+const totalRewarded = networkNodeAnalyzer.totalRewarded
+const durationMin = networkNodeAnalyzer.durationMin
+const elapsedMin = networkNodeAnalyzer.elapsedMin
+const remainingMin = networkNodeAnalyzer.remainingMin
 
 </script>
 
