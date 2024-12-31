@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <button class="button is-white is-small is-uppercase"
+  <button class="dialog-button"
           @click="handleClick"
           :disabled="!buttonEnabled">
     <slot/>
@@ -73,4 +73,16 @@ const buttonEnabled = computed(
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+button.dialog-button {
+  appearance: none;
+  border-radius: 32px;
+  height: 48px;
+  background-color: var(--button-background-secondary);
+  padding: 15px 24px 15px 24px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+</style>

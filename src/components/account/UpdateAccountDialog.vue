@@ -27,9 +27,7 @@
 
     <!-- title -->
     <template #dialogTitle>
-      <div class="h-is-primary-title">
-        Account Update
-      </div>
+      <DialogTitle>Account Update</DialogTitle>
     </template>
 
     <!-- input -->
@@ -42,7 +40,7 @@
       </div>
       <input v-model="memo"
              class="input input-field is-small has-text-white"
-             style="width: 560px"
+             style="width: 100%"
              placeholder="Memo (string)"
              type="text"
       >
@@ -312,6 +310,7 @@ import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
+import DialogTitle from "@/components/dialog/DialogTitle.vue";
 
 const props = defineProps({
   accountInfo: {

@@ -65,6 +65,8 @@
     --table-border: var(--light-table-border);
     --chip-primary: var(--light-chip-primary);
     --chip-text-primary: var(--light-chip-text-primary);
+    --button-background-primary: #7A1B80;
+    --button-background-secondary: #EFEFEF;
 
     --network-theme-color: var(--light-network-theme-color);
 }
