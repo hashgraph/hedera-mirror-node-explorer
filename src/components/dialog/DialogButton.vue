@@ -34,49 +34,39 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
-export default defineComponent({
-  name: "DialogButton",
-  components: {},
 
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
-    autoClose: {
-      type: Boolean,
-      default: true
-    },
-    enabled: {
-      type: Boolean,
-      default: true
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
   },
-  emits: ["action"],
-  setup(props, ctx) {
-
-    const handleClick = () => {
-      ctx.emit("action")
-      if (props.autoClose) {
-        props.controller.visible.value = false
-      }
-    }
-
-    const buttonEnabled = computed(
-        () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
-
-    return {
-      handleClick,
-      buttonEnabled
-    }
+  autoClose: {
+    type: Boolean,
+    default: true
+  },
+  enabled: {
+    type: Boolean,
+    default: true
   }
-
 })
+
+const emit = defineEmits(["action"])
+
+const handleClick = () => {
+  emit("action")
+  if (props.autoClose) {
+    props.controller.visible.value = false
+  }
+}
+
+const buttonEnabled = computed(
+    () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

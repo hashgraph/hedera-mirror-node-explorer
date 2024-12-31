@@ -50,42 +50,30 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, PropType} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
 
-export default defineComponent({
-  name: "DialogStatus",
-  components: {},
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
-    isSuccess: {
-      type: Boolean as PropType<boolean | undefined>,
-      default: undefined
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
   },
-  setup(props) {
-
-    const dialogSuccessVisible = computed(
-        () => props.isSuccess !== undefined
-            ? props.isSuccess
-            : props.controller.mode.value === DialogMode.Success)
-    const dialogErrorVisible = computed(
-        () => props.isSuccess !== undefined
-            ? !props.isSuccess
-            : props.controller.mode.value === DialogMode.Error)
-
-    return {
-      dialogSuccessVisible,
-      dialogErrorVisible
-    }
+  isSuccess: {
+    type: Boolean as PropType<boolean | undefined>,
+    default: undefined
   }
-});
+})
 
+const dialogSuccessVisible = computed(
+    () => props.isSuccess !== undefined
+        ? props.isSuccess
+        : props.controller.mode.value === DialogMode.Success)
+const dialogErrorVisible = computed(
+    () => props.isSuccess !== undefined
+        ? !props.isSuccess
+        : props.controller.mode.value === DialogMode.Error)
 
 </script>
 
