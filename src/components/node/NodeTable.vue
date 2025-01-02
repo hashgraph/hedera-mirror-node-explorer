@@ -83,7 +83,7 @@
           <StakeRange
               :node="props.row"
               :network-analyzer="networkAnalyzer"
-              style="padding-bottom: 2px; padding-top: 14px;"
+              style="height: 48px; padding-top: 20px"
           />
           <template #content>
             <div class="reward-range-tooltip">

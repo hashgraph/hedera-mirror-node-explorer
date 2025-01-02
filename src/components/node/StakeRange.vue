@@ -23,29 +23,31 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-flex-direction-column stake-range-column">
-    <div class="miniBar" :style="{'width': progressSize+'px'}">
+  <div class="stake-range-root">
+    <div class="mini-bar" :style="{'width': progressSize+'px'}">
       <div
-          class="miniBarProgress plain-range"
+          class="mini-bar-progress plain-range"
           :style="{'left': 0, 'width': '100%'}"
       />
       <div
-          class="miniBarProgress unrewarded-range"
+          class="mini-bar-progress unrewarded-range"
           :style="{'left': 0, 'width': (stakeRewardedProgress + stakeNotRewardedProgress)+'%'}"
       />
       <div
           v-if="stakeRewardedProgress > 2"
-          class="miniBarProgress"
+          class="mini-bar-progress"
           :class="{'rewarded-range': isPastRewardThreshold, 'unrewarded-range': !isPastRewardThreshold}"
           :style="{'left': 0, 'width': stakeRewardedProgress+'%'}"
       />
     </div>
 
-    <div class="is-flex">
-      <img alt="Minimum staking mark" src="@/assets/min-mark.png"
-           class="image" style="max-height: 8px" :style="{'margin-left': minStakePix}">
-      <img alt="Maximum staking mark" src="@/assets/max-mark.png"
-           class="image" style="max-height: 8px" :style="{'margin-left': maxStakePix}">
+    <div class="stake-range-marks">
+      <span class="stake-mark" :style="{'margin-left': minStakePix}">
+        min
+      </span>
+      <span class="stake-mark" :style="{'margin-left': maxStakePix}">
+        max
+      </span>
     </div>
   </div>
 </template>
@@ -135,7 +137,12 @@ const maxStakePix = computed(() => {
 
 <style>
 
-.miniBarProgress {
+div.stake-range-root {
+  display: flex;
+  flex-direction: column;
+}
+
+div.mini-bar-progress {
   height: 100%;
   position: absolute;
   top: 0;
@@ -143,25 +150,37 @@ const maxStakePix = computed(() => {
   border-radius: 4px;
 }
 
-.miniBar {
+div.mini-bar {
   height: 8px;
   position: relative;
   margin-bottom: 1px;
 }
 
-.rewarded-range {
+div.rewarded-range {
   border: 1px solid var(--text-success);
   background-color: var(--text-success);
 }
 
-.unrewarded-range {
+div.unrewarded-range {
   border: 1px solid var(--text-accent2);
   background-color: var(--text-accent2)
 }
 
-.plain-range {
+div.plain-range {
   border: 1px solid var(--border-secondary);
   background-color: var(--border-secondary)
+}
+
+div.stake-range-marks {
+  display: flex;
+}
+
+span.stake-mark {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  height: 12px;
 }
 
 </style>
