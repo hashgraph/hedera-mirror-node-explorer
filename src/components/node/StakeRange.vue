@@ -25,12 +25,20 @@
 <template>
   <div class="is-flex-direction-column stake-range-column">
     <div class="miniBar" :style="{'width': progressSize+'px'}">
-      <div class="miniBarProgress" :class="stakeRewardedColorClass"
-           :style="{'left': 0, 'width': stakeRewardedProgress+'%'}"></div>
-      <div class="miniBarProgress has-background-info"
-           :style="{'left': stakeRewardedProgress+'%', 'width': stakeNotRewardedProgress+'%'}"></div>
-      <div class="miniBarProgress"
-           :style="{'left': stakeProgress+'%', 'width': (100-stakeProgress)+'%'}"></div>
+      <div
+          class="miniBarProgress plain-range"
+          :style="{'left': 0, 'width': '100%'}"
+      />
+      <div
+          class="miniBarProgress unrewarded-range"
+          :style="{'left': 0, 'width': (stakeRewardedProgress + stakeNotRewardedProgress)+'%'}"
+      />
+      <div
+          v-if="stakeRewardedProgress > 2"
+          class="miniBarProgress"
+          :class="{'rewarded-range': isPastRewardThreshold, 'unrewarded-range': !isPastRewardThreshold}"
+          :style="{'left': 0, 'width': stakeRewardedProgress+'%'}"
+      />
     </div>
 
     <div class="is-flex">
@@ -47,11 +55,6 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script setup lang="ts">
-
-
-//
-// defineComponent
-//
 
 import {computed, PropType} from "vue";
 import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
@@ -75,7 +78,6 @@ const maxStake = computed(
 const unclampedStake = computed(
     () => (props.node?.stake_rewarded ?? 0) + (props.node?.stake_not_rewarded ?? 0))
 
-// Alternative implementation for absolute stake range
 const progressScale = computed(
     () => props.networkAnalyzer.stakeScaleEnd.value)
 
@@ -107,14 +109,8 @@ const stakeNotRewardedProgress = computed(() => {
   return result
 })
 
-const stakeProgress = computed(() => stakeRewardedProgress.value + stakeNotRewardedProgress.value)
-
-const stakeRewardedColorClass = computed(
-    () => unclampedStake.value && minStake.value && unclampedStake.value < minStake.value
-        ? 'has-background-success'
-        : props.node?.stake_rewarded && maxStake.value && props.node.stake_rewarded <= maxStake.value
-            ? 'has-background-success'
-            : 'has-background-success'
+const isPastRewardThreshold = computed(() =>
+    minStake.value !== null && unclampedStake.value >= minStake.value
 )
 
 const minStakePercent = computed(() =>
@@ -139,23 +135,33 @@ const maxStakePix = computed(() => {
 
 <style>
 
-.stake-range-column {
-  padding-bottom: 2px;
-  padding-top: 12px;
-}
-
 .miniBarProgress {
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
+  border-radius: 4px;
 }
 
 .miniBar {
-  height: 0.5rem;
-  border: 1px solid grey;
+  height: 8px;
   position: relative;
   margin-bottom: 1px;
+}
+
+.rewarded-range {
+  border: 1px solid var(--text-success);
+  background-color: var(--text-success);
+}
+
+.unrewarded-range {
+  border: 1px solid var(--text-accent2);
+  background-color: var(--text-accent2)
+}
+
+.plain-range {
+  border: 1px solid var(--border-secondary);
+  background-color: var(--border-secondary)
 }
 
 </style>

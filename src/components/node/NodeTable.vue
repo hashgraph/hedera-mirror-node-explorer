@@ -80,7 +80,11 @@
           style="padding-bottom: 2px; padding-top: 12px;"
       >
         <o-tooltip :delay="tooltipDelay" class="h-tooltip">
-          <StakeRange :node="props.row" :network-analyzer="networkAnalyzer"/>
+          <StakeRange
+              :node="props.row"
+              :network-analyzer="networkAnalyzer"
+              style="padding-bottom: 2px; padding-top: 14px;"
+          />
           <template #content>
             <div class="reward-range-tooltip">
               <div class="caption has-background-success has-text-right"></div>
