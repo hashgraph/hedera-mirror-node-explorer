@@ -343,15 +343,15 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
-import {DialogController, DialogMode} from "@/dialogs/core/DialogController.ts";
+import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import {extractChecksum, isCouncilNode, stripChecksum, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID.ts";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas.ts";
-import DialogButton from "@/dialogs/core/DialogButton.vue";
-import CommitButton from "@/dialogs/core/CommitButton.vue";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
 import {routeManager, walletManager} from "@/router.ts";
-import Dialog from "@/dialogs/core/Dialog.vue";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
 import {inputEntityID} from "@/utils/InputUtils.ts";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer.ts";
@@ -361,8 +361,8 @@ import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
 import {isSuccessfulResult} from "@/utils/TransactionTools.ts";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache.ts";
-import DialogTitle from "@/dialogs/core/DialogTitle.vue";
-import ContentCell from "@/components/ContentCell.vue";
+import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
+import ContentCell from "@/dialogs/core/ContentCell.vue";
 
 const props = defineProps({
   accountInfo: {

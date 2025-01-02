@@ -391,7 +391,7 @@ import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContracts
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import DateTimePicker from "@/components/DateTimePicker.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
-import {DialogController} from "@/dialogs/core/DialogController";
+import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
@@ -399,7 +399,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
-import UpdateAccountDialog from "@/dialogs/update_account/UpdateAccountDialog.vue";
+import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 
 const props = defineProps({

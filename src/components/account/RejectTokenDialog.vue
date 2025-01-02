@@ -116,14 +116,14 @@
 <script setup lang="ts">
 
 import {computed, onMounted, PropType, ref, watch} from "vue";
-import {DialogController, DialogMode} from "@/dialogs/core/DialogController";
+import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import {tokenOrNftId, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import DialogButton from "@/dialogs/core/DialogButton.vue";
-import CommitButton from "@/dialogs/core/CommitButton.vue";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
 import {walletManager} from "@/router";
-import Dialog from "@/dialogs/core/Dialog.vue";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 import {FreezeStatus, Nft, Token} from "@/schemas/MirrorNodeSchemas";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";

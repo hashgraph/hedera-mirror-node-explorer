@@ -128,10 +128,10 @@
 <script lang="ts">
 
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
-import Dialog from "@/dialogs/core/Dialog.vue";
-import CommitButton from "@/dialogs/core/CommitButton.vue";
-import DialogButton from "@/dialogs/core/DialogButton.vue";
-import {DialogController, DialogMode} from "@/dialogs/core/DialogController";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
+import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import {walletManager} from "@/router";
 import {Nft, NftAllowance} from "@/schemas/MirrorNodeSchemas";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";

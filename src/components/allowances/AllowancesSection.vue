@@ -134,7 +134,7 @@ import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
 import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
-import {DialogController} from "@/dialogs/core/DialogController";
+import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {CoreConfig} from "@/config/CoreConfig.ts";
