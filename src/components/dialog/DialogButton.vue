@@ -25,7 +25,7 @@
 <template>
   <button class="dialog-button"
           @click="handleClick"
-          :style="{ backgroundColor: buttonBackgroundColor , color: buttonColor }"
+          :class="{'is-default': props.isDefault}"
           :disabled="!buttonEnabled">
     <slot/>
   </button>
@@ -72,12 +72,6 @@ const handleClick = () => {
 const buttonEnabled = computed(
     () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
 
-const buttonColor = computed(
-    () => props.isDefault ?  "var(--button-text-primary" : "var(--button-text-secondary)")
-
-const buttonBackgroundColor = computed(
-    () => props.isDefault ?  "var(--button-background-primary)" : "var(--button-background-secondary)")
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -87,13 +81,24 @@ const buttonBackgroundColor = computed(
 <style scoped>
 
 button.dialog-button {
-  color: var(--text-primary);
   appearance: none;
+  color: var(--button-text-secondary);
+  background-color: var(--button-background-secondary);
   border-radius: 32px;
   height: 48px;
   padding: 15px 24px 15px 24px;
   font-size: 14px;
   font-weight: 500;
+}
+
+button.dialog-button:disabled {
+  cursor: not-allowed;
+}
+
+button.dialog-button.is-default {
+  color: var(--button-text-primary);
+  background-color: var(--button-background-primary);
+  cursor: not-allowed;
 }
 
 </style>
