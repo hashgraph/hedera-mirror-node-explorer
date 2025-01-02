@@ -51,11 +51,11 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import Dialog from "@/components/dialog/Dialog.vue";
-import DialogButton from "@/components/dialog/DialogButton.vue";
-import DialogTitle from "@/components/dialog/DialogTitle.vue";
-import {DialogController} from "@/components/dialog/DialogController";
-import DialogStatus from "@/components/dialog/DialogStatus.vue";
+import Dialog from "@/dialogs/core/Dialog.vue";
+import DialogButton from "@/dialogs/core/DialogButton.vue";
+import DialogTitle from "@/dialogs/core/DialogTitle.vue";
+import {DialogController} from "@/dialogs/core/DialogController";
+import DialogStatus from "@/dialogs/core/DialogStatus.vue";
 import {WalletClientError} from "@/utils/wallet/client/WalletClient";
 
 export default defineComponent({

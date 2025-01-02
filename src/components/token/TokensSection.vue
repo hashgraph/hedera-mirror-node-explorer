@@ -165,7 +165,7 @@ import {NftsTableController} from "@/components/account/NftsTableController";
 import NftsTable from "@/components/account/NftsTable.vue";
 import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
-import {DialogController} from "@/components/dialog/DialogController";
+import {DialogController} from "@/dialogs/core/DialogController";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
 import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";

@@ -42,8 +42,8 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import DialogButton from "@/components/dialog/DialogButton.vue";
+import {DialogController, DialogMode} from "@/dialogs/core/DialogController.ts";
+import DialogButton from "@/dialogs/core/DialogButton.vue";
 
 const props = defineProps({
   controller: {

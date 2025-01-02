@@ -86,8 +86,8 @@
 <script setup lang="ts">
 
 import {computed, PropType, watch} from "vue";
-import DialogButton from "@/components/dialog/DialogButton.vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import DialogButton from "@/dialogs/core/DialogButton.vue";
+import {DialogController, DialogMode} from "@/dialogs/core/DialogController.ts";
 
 const props = defineProps({
       controller: {

@@ -35,7 +35,7 @@
 
 import {PropType} from "vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
-import {DialogController} from "@/components/dialog/DialogController";
+import {DialogController} from "@/dialogs/core/DialogController";
 import JsonEditorDialog from "@/components/values/abi/JsonEditorDialog.vue";
 
 const props = defineProps({

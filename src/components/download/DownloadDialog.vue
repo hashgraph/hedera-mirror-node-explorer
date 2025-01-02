@@ -77,10 +77,10 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import Dialog from "@/components/dialog/Dialog.vue";
-import CommitButton from "@/components/dialog/CommitButton.vue";
-import DialogButton from "@/components/dialog/DialogButton.vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import Dialog from "@/dialogs/core/Dialog.vue";
+import CommitButton from "@/dialogs/core/CommitButton.vue";
+import DialogButton from "@/dialogs/core/DialogButton.vue";
+import {DialogController, DialogMode} from "@/dialogs/core/DialogController";
 import {DownloaderState, EntityDownloader} from "@/utils/downloader/EntityDownloader";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
