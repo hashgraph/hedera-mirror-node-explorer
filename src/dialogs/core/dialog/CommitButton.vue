@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,25 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <template v-if="props.direction == 'vertical'">
-    <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: stretch; width: 100%;">
-      <div class="cellTitle">
-        <slot name="cellTitle"/>
+  <DialogButton :controller="props.controller" :auto-close="false" :enabled="props.enabled" @action="handleAction" :is-default="true">
+    <div class="dialog-stack">
+      <div :class="{'is-invisible': isBusy}">
+        <slot/>
       </div>
-      <slot name="cellContent"/>
-    </div>
-  </template>
-
-  <template v-else> <!-- horizontal -->
-    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%">
-      <div class="cellTitle">
-        <slot name="cellTitle"/>
+      <div :class="{'is-invisible': !isBusy}">
+        <span class="loader is-inline-block"/>
       </div>
-      <slot name="cellContent"/>
     </div>
-  </template>
-
+  </DialogButton>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -50,12 +41,24 @@
 
 <script setup lang="ts">
 
+import {computed, PropType} from "vue";
+import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+
 const props = defineProps({
-  direction: {
-    type: String as PropType<"vertical" | "horizontal">,
-    default: "vertical"
-  }
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
+  },
+  enabled: Boolean
 })
+
+const emit = defineEmits(["action"]);
+
+const isBusy = computed(() => props.controller.mode.value == DialogMode.Busy)
+const handleAction = () => {
+  emit("action")
+}
 
 </script>
 
@@ -64,11 +67,15 @@ const props = defineProps({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.cellTitle {
-  color: var(--text-secondary);
-  font-size: 12px;
-  font-weight: 400;
+.dialog-stack {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  justify-items: center;
 }
 
+.dialog-stack div {
+  grid-column-start: 1;
+  grid-row-start: 1
+}
 </style>

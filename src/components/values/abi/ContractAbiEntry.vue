@@ -81,12 +81,12 @@ import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
 import SolidityCode from "@/components/SolidityCode.vue";
 import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
-import {DialogController} from "@/dialogs/core/DialogController";
+import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
-import Dialog from "@/dialogs/core/Dialog.vue";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import {walletManager} from "@/router";
-import DialogStatus from "@/dialogs/core/DialogStatus.vue";
-import DialogTitle from "@/dialogs/core/DialogTitle.vue";
+import DialogStatus from "@/dialogs/core/dialog/DialogStatus.vue";
+import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 
 export default defineComponent({
   components: {SolidityCode, DialogTitle, DialogStatus, ContractAbiDialog, Dialog},

@@ -68,15 +68,15 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {DialogController, DialogMode} from "@/dialogs/core/DialogController";
-import Dialog from "@/dialogs/core/Dialog.vue";
-import DialogButton from "@/dialogs/core/DialogButton.vue";
-import CommitButton from "@/dialogs/core/CommitButton.vue";
+import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
 import ParamTypeEditor from "@/components/values/abi/ParamTypeEditor.vue";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
 import {walletManager} from "@/router";
-import DialogStatus from "@/dialogs/core/DialogStatus.vue";
-import DialogTitle from "@/dialogs/core/DialogTitle.vue";
+import DialogStatus from "@/dialogs/core/dialog/DialogStatus.vue";
+import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 import {gtagCallContract} from "@/gtag";
 
 const props = defineProps({

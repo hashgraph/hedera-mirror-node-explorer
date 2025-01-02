@@ -140,7 +140,7 @@ import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import AlertDialog from "@/components/AlertDialog.vue";
-import {DialogController} from "@/dialogs/core/DialogController";
+import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {gtagTransaction} from "@/gtag";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
