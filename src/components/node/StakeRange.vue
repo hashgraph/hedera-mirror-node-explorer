@@ -46,114 +46,90 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
 
 //
 // defineComponent
 //
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, PropType} from "vue";
 import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 
 const progressSize = 250 // size (width) of progress in pixels
 
-export default defineComponent({
-  name: 'StakeRange',
-
-  components: {},
-
-  props: {
-    node: Object as PropType<NetworkNode | undefined>,
-    networkAnalyzer: {
-      type: Object as PropType<NetworkAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-
-    const minStake = computed(
-        () => props.node?.min_stake ?? null)
-    const maxStake = computed(
-        () => props.node?.max_stake ?? null)
-
-    const unclampedStake = computed(
-        () => (props.node?.stake_rewarded ?? 0) + (props.node?.stake_not_rewarded ?? 0))
-
-    // Alternative implementation for absolute stake range
-    const progressScale = computed(
-        () => props.networkAnalyzer.stakeScaleEnd.value)
-
-    // Alternative implementation for relative stake range
-    // const progressScale = computed(
-    //     () => maxStake.value ? maxStake.value * 1.2 : 0)
-
-    const stakeRewardedProgress = computed(() => {
-      let result
-      if (progressScale.value) {
-        if ((props.node?.stake_rewarded ?? 0) < progressScale.value) {
-          result = (props.node?.stake_rewarded ?? 0) / progressScale.value * 100
-        } else {
-          result = 100
-        }
-      } else {
-        result = 0
-      }
-      return result
-    })
-
-    const stakeNotRewardedProgress = computed(() => {
-      let result
-      if (progressScale.value) {
-        if (unclampedStake.value < progressScale.value) {
-          result = (props.node?.stake_not_rewarded ?? 0) / progressScale.value * 100
-        } else {
-          result = 100 - stakeRewardedProgress.value
-        }
-      } else {
-        result = 0
-      }
-      return result
-    })
-
-    const stakeProgress = computed(() => stakeRewardedProgress.value + stakeNotRewardedProgress.value)
-
-    const stakeRewardedColorClass = computed(
-        () => unclampedStake.value && minStake.value && unclampedStake.value < minStake.value
-            ? 'has-background-success'
-            : props.node?.stake_rewarded && maxStake.value && props.node.stake_rewarded <= maxStake.value
-                ? 'has-background-success'
-                : 'has-background-success'
-    )
-
-    const minStakePercent = computed(() =>
-        minStake.value && progressScale.value ? minStake.value / progressScale.value * 100 : 0)
-    const minStakePix = computed(() => {
-      const pixels = Math.round(minStakePercent.value / 100 * progressSize)
-      return pixels.toString() + 'px'
-    })
-
-    const maxStakePercent = computed(() =>
-        maxStake.value && progressScale.value ? maxStake.value / progressScale.value * 100 : 0)
-    const maxStakePix = computed(() => {
-      const pixels = Math.round((maxStakePercent.value - minStakePercent.value) / 100 * progressSize - 20)
-      return pixels.toString() + 'px'
-    })
-
-
-    return {
-      stakeRewardedProgress,
-      stakeNotRewardedProgress,
-      stakeProgress,
-      stakeRewardedColorClass,
-      progressSize,
-      minStakePix,
-      maxStakePix,
-    }
+const props = defineProps({
+  node: Object as PropType<NetworkNode | undefined>,
+  networkAnalyzer: {
+    type: Object as PropType<NetworkAnalyzer>,
+    required: true
   }
-});
+})
+
+const minStake = computed(
+    () => props.node?.min_stake ?? null)
+const maxStake = computed(
+    () => props.node?.max_stake ?? null)
+
+const unclampedStake = computed(
+    () => (props.node?.stake_rewarded ?? 0) + (props.node?.stake_not_rewarded ?? 0))
+
+// Alternative implementation for absolute stake range
+const progressScale = computed(
+    () => props.networkAnalyzer.stakeScaleEnd.value)
+
+const stakeRewardedProgress = computed(() => {
+  let result
+  if (progressScale.value) {
+    if ((props.node?.stake_rewarded ?? 0) < progressScale.value) {
+      result = (props.node?.stake_rewarded ?? 0) / progressScale.value * 100
+    } else {
+      result = 100
+    }
+  } else {
+    result = 0
+  }
+  return result
+})
+
+const stakeNotRewardedProgress = computed(() => {
+  let result
+  if (progressScale.value) {
+    if (unclampedStake.value < progressScale.value) {
+      result = (props.node?.stake_not_rewarded ?? 0) / progressScale.value * 100
+    } else {
+      result = 100 - stakeRewardedProgress.value
+    }
+  } else {
+    result = 0
+  }
+  return result
+})
+
+const stakeProgress = computed(() => stakeRewardedProgress.value + stakeNotRewardedProgress.value)
+
+const stakeRewardedColorClass = computed(
+    () => unclampedStake.value && minStake.value && unclampedStake.value < minStake.value
+        ? 'has-background-success'
+        : props.node?.stake_rewarded && maxStake.value && props.node.stake_rewarded <= maxStake.value
+            ? 'has-background-success'
+            : 'has-background-success'
+)
+
+const minStakePercent = computed(() =>
+    minStake.value && progressScale.value ? minStake.value / progressScale.value * 100 : 0)
+const minStakePix = computed(() => {
+  const pixels = Math.round(minStakePercent.value / 100 * progressSize)
+  return pixels.toString() + 'px'
+})
+
+const maxStakePercent = computed(() =>
+    maxStake.value && progressScale.value ? maxStake.value / progressScale.value * 100 : 0)
+const maxStakePix = computed(() => {
+  const pixels = Math.round((maxStakePercent.value - minStakePercent.value) / 100 * progressSize - 20)
+  return pixels.toString() + 'px'
+})
 
 </script>
 
@@ -171,8 +147,8 @@ export default defineComponent({
 .miniBarProgress {
   height: 100%;
   position: absolute;
-  top: 0rem;
-  left: 0rem;
+  top: 0;
+  left: 0;
 }
 
 .miniBar {
