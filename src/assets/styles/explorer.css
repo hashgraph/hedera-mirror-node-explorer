@@ -31,6 +31,8 @@
     --light-text-primary: #050505;
     --light-text-secondary: #888888;
     --light-text-accent: #E0007B;
+    --light-text-accent2: #255CF4;
+    --light-text-success: #00722D;
     --light-background-primary: #F6F6F6;
     --light-background-tertiary: #FFFFFF;
     --light-border-secondary: #D7D7D7;
@@ -45,6 +47,8 @@
     --dark-text-primary: #FFFFFF;
     --dark-text-secondary: #A2A2A2;
     --dark-text-accent: #F258AC;
+    --dark-text-accent2: #255CF4;
+    --dark-text-success: #29BC63;
     --dark-background-primary: #131313;
     --dark-background-tertiary: #171717;
     --dark-border-secondary: #2C2C2C;
@@ -59,6 +63,8 @@
     --text-primary: var(--light-text-primary);
     --text-secondary: var(--light-text-secondary);
     --text-accent: var(--light-text-accent);
+    --text-accent2: var(--light-text-accent2);
+    --text-success: var(--light-text-success);
     --background-primary: var(--light-background-primary);
     --background-tertiary: var(--light-background-tertiary);
     --border-secondary: var(--light-border-secondary);
