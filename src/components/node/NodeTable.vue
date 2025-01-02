@@ -40,7 +40,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="node_id" label="NODE ID">
-        <div class="is-numeric regular-node-column">
+        <div class="regular-node-column node_id">
           {{ props.row.node_id }}
         </div>
       </o-table-column>
@@ -179,6 +179,10 @@ const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
+
+.node_id {
+  font-weight: 600;
+}
 
 #node-table table.o-table > tbody > tr > td {
   padding-top: 0;
