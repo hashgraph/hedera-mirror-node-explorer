@@ -33,199 +33,250 @@
     <!-- input -->
     <template #dialogInput>
 
-      <div class="mb-3"/>
-
-      <div class="has-text-weight-light mb-1">
-        Account Memo
-      </div>
-      <input v-model="memo"
-             class="input input-field is-small has-text-white"
-             style="width: 100%"
-             placeholder="Memo (string)"
-             type="text"
-      >
-
-      <div class="mb-4"/>
-
-      <div class="has-text-weight-light mb-1">
-        Auto Renew Period
-        <span class="ml-1"/>
-        <InfoTooltip
-            label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
-        />
-      </div>
-      <div class="is-flex is-justify-content-flex-start is-align-items-center">
-        <input class="input input-field is-small has-text-white"
-               style="width: 130px"
-               id="selectedAutoRenewPeriod"
-               v-model="selectedAutoRenewPeriod"
-               placeholder="> 0"
-               type="number"
-               min="1"
-               step="1"
-        >
-        <o-select v-model="selectedUnit"
-                  class="is-small has-text-white ml-2"
-                  style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
-        >
-          <option v-for="p in PeriodUnit" :key="p" :value="p"
-                  style="background-color: var(--h-theme-page-background-color)">
-            {{ p }}
-          </option>
-        </o-select>
-        <div class="icon is-small ml-2">
-          <i v-if="isAutoRenewPeriodValid" class="fas fa-check has-text-success"/>
-          <i v-else-if="autoRenewPeriodFeedbackMessage" class="fas fa-xmark has-text-danger"/>
-          <i v-else/>
-        </div>
-      </div>
-
-      <hr class="mt-4 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
-
-      <div class="has-text-weight-light mb-1">
-        Max. Auto. Associations
-        <span class="ml-1"/>
-        <InfoTooltip
-            label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
-        />
-      </div>
-      <div class="is-flex is-justify-content-flex-start is-align-items-center">
-        <o-select v-model="autoAssociationMode"
-                  class="is-small has-text-white"
-                  style=" height: 38px; border-radius: 2px;border-width: 1px;border-color: grey;
-                  background-color: var(--h-theme-page-background-color);"
-        >
-          <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
-            No Automatic Association
-          </option>
-          <option :key="1" :value="1" style="background-color: var(--h-theme-page-background-color)">
-            Limited Automatic Association
-          </option>
-          <option :key="-1" :value="-1" style="background-color: var(--h-theme-page-background-color)">
-            Unlimited Automatic Association
-          </option>
-        </o-select>
-        <input v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
-               class="input input-field is-small has-text-white ml-2"
-               style="width: 100px"
-               :class="{'is-invisible':autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation}"
-               v-model="maxAutoAssociations"
-               placeholder="≥ 0"
-               type="number"
-               min="1"
-               step="1"
-        >
-        <div v-if="autoAssociationMode!=AutoAssociationMode.UnlimitedAutoAssociation"
-             class="icon is-small ml-2"
-        >
-          <i v-if="isMaxAutoAssociationsValid" class="fas fa-check has-text-success"/>
-          <i v-else-if="maxAutoAssociationsFeedbackMessage" class="fas fa-xmark has-text-danger"/>
-          <i v-else/>
-        </div>
-      </div>
-
-      <div class="mb-4"/>
-
-      <div class="is-flex is-align-items-center is-justify-content-space-between">
-        <div class="is-flex has-text-weight-light mb-1">
-          Receiver Signature Required
-        </div>
-        <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
-      </div>
-
-      <template v-if="enableStaking">
-        <hr class="mt-2 mb-3" style="height: 1px; background: var(--h-theme-background-color);"/>
-
-        <div class="has-text-weight-light mb-2">
-          Staking
-        </div>
-        <div class="radios h-is-text-size-4">
-          <label class="radio h-radio-button">
-            <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice"/>
-            To Node
-          </label>
-          <label class="radio h-radio-button ml-5">
-            <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice"/>
-            To Account
-          </label>
-          <label class="radio h-radio-button ml-5">
-            <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice"/>
-            Not Staking
-          </label>
-        </div>
-
-        <div class="mb-4"/>
-
-        <template v-if="stakeChoice===StakeChoice.StakeToNode">
-          <div class="has-text-weight-light mb-1">
-            Staked Node ID
-          </div>
-          <o-select v-model="stakedNode"
-                    class="is-small has-text-white"
-                    style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
+      <!-- Account Memo -->
+      <ContentCell>
+        <template #cellTitle>Account Memo</template>
+        <template #cellContent>
+          <input v-model="memo"
+                 class="input input-field is-small has-text-white"
+                 placeholder="Memo (string)"
+                 type="text"
           >
-            <optgroup label="Hedera council nodes">
-              <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-page-background-color)"
-                      v-show="isCouncilNode(n)"
-              >
-                {{ makeNodeSelectorDescription(n) }}
-              </option>
-            </optgroup>
-            <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
-              <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-page-background-color)"
-                      v-show="!isCouncilNode(n)"
-              >
-                {{ makeNodeSelectorDescription(n) }}
-              </option>
-            </optgroup>
-          </o-select>
+        </template>
+      </ContentCell>
 
+
+      <!-- Auto Renew Period -->
+      <ContentCell>
+
+        <template #cellTitle>
+          Auto Renew Period
+          <span class="ml-1"/>
+          <InfoTooltip
+              label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
+          />
         </template>
 
-        <template v-if="stakeChoice===StakeChoice.StakeToAccount">
-          <div class="has-text-weight-light mb-1">
-            Staked Account ID
-          </div>
-          <div class="is-flex is-align-items-center">
-            <input :value="stakedAccount"
-                   class="input input-field is-small has-text-white"
-                   placeholder="Account ID (0.0.1234)"
-                   type="text"
-                   @input="event => onStakedAccountInput(event)"
+        <template #cellContent>
+          <div style="display: flex; width: 100%">
+            <input class="input input-field is-small has-text-white"
+                   style="width: 130px"
+                   id="selectedAutoRenewPeriod"
+                   v-model="selectedAutoRenewPeriod"
+                   placeholder="> 0"
+                   type="number"
+                   min="1"
+                   step="1"
             >
+            <o-select v-model="selectedUnit"
+                      class="is-small has-text-white ml-2"
+                      style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
+                    background-color: var(--h-theme-page-background-color); width: 100%;"
+            >
+              <option v-for="p in PeriodUnit" :key="p" :value="p"
+                      style="background-color: var(--h-theme-page-background-color)">
+                {{ p }}
+              </option>
+            </o-select>
             <div class="icon is-small ml-2">
-              <i v-if="isStakedAccountValid" class="fas fa-check has-text-success"/>
-              <i v-else-if="stakedAccountFeedbackMessage" class="fas fa-xmark has-text-danger"/>
+              <i v-if="isAutoRenewPeriodValid" class="fas fa-check has-text-success"/>
+              <i v-else-if="autoRenewPeriodFeedbackMessage" class="fas fa-xmark has-text-danger"/>
               <i v-else/>
             </div>
           </div>
         </template>
 
-        <template v-if="stakeChoice===StakeChoice.NotStaking">
-          <div class="is-invisible mb-1">
-            Filler
+      </ContentCell>
+
+      <hr/>
+
+      <!-- Max. Auto. Associations -->
+      <ContentCell>
+
+        <template #cellTitle>
+          Max. Auto. Associations
+          <span class="ml-1"/>
+          <InfoTooltip
+              label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+          />
+        </template>
+
+        <template #cellContent>
+          <div style="display: flex; width: 100%">
+            <o-select v-model="autoAssociationMode"
+                      class="is-small has-text-white"
+                      style=" height: 38px; border-radius: 2px;border-width: 1px;border-color: grey;
+                  background-color: var(--h-theme-page-background-color); width: 100%"
+            >
+              <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
+                No Automatic Association
+              </option>
+              <option :key="1" :value="1" style="background-color: var(--h-theme-page-background-color)">
+                Limited Automatic Association
+              </option>
+              <option :key="-1" :value="-1" style="background-color: var(--h-theme-page-background-color)">
+                Unlimited Automatic Association
+              </option>
+            </o-select>
+            <input v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
+                   class="input input-field is-small has-text-white ml-2"
+                   style="width: 100px"
+                   :class="{'is-invisible':autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation}"
+                   v-model="maxAutoAssociations"
+                   placeholder="≥ 0"
+                   type="number"
+                   min="1"
+                   step="1"
+            >
+            <div v-if="autoAssociationMode!=AutoAssociationMode.UnlimitedAutoAssociation"
+                 class="icon is-small ml-2"
+            >
+              <i v-if="isMaxAutoAssociationsValid" class="fas fa-check has-text-success"/>
+              <i v-else-if="maxAutoAssociationsFeedbackMessage" class="fas fa-xmark has-text-danger"/>
+              <i v-else/>
+            </div>
           </div>
-          <div class="input-field is-invisible" style="width: 560px">
-            Filler
+        </template>
+
+      </ContentCell>
+
+
+      <!-- Receiver Signature Required -->
+
+      <ContentCell direction="horizontal">
+
+        <template #cellTitle>
+          <div class="is-flex has-text-weight-light mb-1">
+            Receiver Signature Required
+          </div>
+        </template>
+
+        <template #cellContent>
+          <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
+        </template>
+
+      </ContentCell>
+
+      <template v-if="enableStaking">
+
+        <hr/>
+
+        <!-- Staking -->
+
+        <ContentCell>
+
+          <template #cellTitle>Staking</template>
+
+          <template #cellContent>
+            <div class="h-is-text-size-4">
+              <label class="radio h-radio-button">
+                <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice"/>
+                To Node
+              </label>
+              <label class="radio h-radio-button ml-5">
+                <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice"/>
+                To Account
+              </label>
+              <label class="radio h-radio-button ml-5">
+                <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice"/>
+                Not Staking
+              </label>
+            </div>
+          </template>
+
+        </ContentCell>
+
+        <!-- Staked Node ID -->
+
+        <template v-if="stakeChoice===StakeChoice.StakeToNode">
+
+          <ContentCell>
+
+            <template #cellTitle>Staked Node ID</template>
+
+            <template #cellContent>
+              <o-select v-model="stakedNode"
+                        class="is-small has-text-white"
+                        style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
+                    background-color: var(--h-theme-page-background-color);"
+              >
+                <optgroup label="Hedera council nodes">
+                  <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-page-background-color)"
+                          v-show="isCouncilNode(n)"
+                  >
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
+                </optgroup>
+                <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
+                  <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-page-background-color)"
+                          v-show="!isCouncilNode(n)"
+                  >
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
+                </optgroup>
+              </o-select>
+            </template>
+
+          </ContentCell>
+
+        </template>
+
+        <!-- Staked Account ID -->
+
+        <template v-if="stakeChoice===StakeChoice.StakeToAccount">
+
+          <ContentCell>
+
+            <template #cellTitle>Staked Account ID</template>/>
+
+            <template #cellContent>
+              <div style="display:flex; align-items: center;">
+                <input :value="stakedAccount"
+                       class="input input-field is-small has-text-white"
+                       placeholder="Account ID (0.0.1234)"
+                       type="text"
+                       @input="event => onStakedAccountInput(event)"
+                >
+                <div class="icon is-small ml-2">
+                  <i v-if="isStakedAccountValid" class="fas fa-check has-text-success"/>
+                  <i v-else-if="stakedAccountFeedbackMessage" class="fas fa-xmark has-text-danger"/>
+                  <i v-else/>
+                </div>
+              </div>
+            </template>
+
+          </ContentCell>
+
+
+        </template>
+
+        <!-- Filler -->
+
+        <template v-if="stakeChoice===StakeChoice.NotStaking">
+          <div style="visibility: hidden">
+            <ContentCell>
+              <template #cellTitle>Filler</template>
+              <template #cellContent>Filler</template>
+            </ContentCell>
           </div>
         </template>
 
         <div class="mb-4"/>
 
-        <div class="is-flex is-align-items-center is-justify-content-space-between"
-             :class="{'is-invisible':stakeChoice !== StakeChoice.StakeToNode}">
-          <div class="is-flex has-text-weight-light mb-1">
-            Decline Rewards
-          </div>
-          <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
-        </div>
-      </template>
+        <!-- Decline Rewards -->
 
-      <div class="mb-4"/>
+        <div :class="{'is-invisible':stakeChoice !== StakeChoice.StakeToNode}" style="width: 100%">
+          <ContentCell direction="horizontal">
+            <template #cellTitle>Decline Rewards</template>
+            <template #cellContent>
+              <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
+            </template>
+          </ContentCell>
+        </div>
+
+      </template>
 
     </template>
 
@@ -311,6 +362,7 @@ import {isSuccessfulResult} from "@/utils/TransactionTools";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache";
 import DialogTitle from "@/components/dialog/DialogTitle.vue";
+import ContentCell from "@/components/ContentCell.vue";
 
 const props = defineProps({
   accountInfo: {
@@ -754,6 +806,13 @@ const normalizePeriod = (period: number, unit: PeriodUnit) => unit === PeriodUni
   border-width: 1px;
   border-color: grey;
   background-color: var(--h-theme-page-background-color);
+}
+
+hr {
+  height: 1px;
+  background-color: var(--network-theme-color);
+  width: 100%;
+  margin: 0 0 0 0;
 }
 
 </style>

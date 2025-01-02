@@ -165,6 +165,7 @@ div.dialog-layer-input {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  row-gap: 16px;
 }
 
 div.dialog-layer-busy {
