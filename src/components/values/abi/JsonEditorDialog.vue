@@ -47,10 +47,10 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
 import {AppStorage} from "@/AppStorage";
-import Dialog from "@/components/dialog/Dialog.vue";
-import DialogTitle from "@/components/dialog/DialogTitle.vue";
-import DialogButton from "@/components/dialog/DialogButton.vue";
-import {DialogController} from "@/components/dialog/DialogController";
+import Dialog from "@/dialogs/core/Dialog.vue";
+import DialogTitle from "@/dialogs/core/DialogTitle.vue";
+import DialogButton from "@/dialogs/core/DialogButton.vue";
+import {DialogController} from "@/dialogs/core/DialogController";
 import {ethers} from "ethers";
 
 export default defineComponent({

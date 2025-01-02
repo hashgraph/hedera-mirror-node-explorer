@@ -45,7 +45,7 @@ import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
 import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
-import {DialogController} from "@/components/dialog/DialogController.ts";
+import {DialogController} from "@/dialogs/core/DialogController.ts";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
 import RoundButton from "@/components/page/header/wallet/RoundButton.vue";
 

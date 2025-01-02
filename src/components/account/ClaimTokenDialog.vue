@@ -107,15 +107,15 @@
 <script setup lang="ts">
 
 import {computed, onMounted, PropType, ref, watch} from "vue";
-import {DialogController, DialogMode} from "@/components/dialog/DialogController";
+import {DialogController, DialogMode} from "@/dialogs/core/DialogController";
 import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas";
-import DialogButton from "@/components/dialog/DialogButton.vue";
-import CommitButton from "@/components/dialog/CommitButton.vue";
+import DialogButton from "@/dialogs/core/DialogButton.vue";
+import CommitButton from "@/dialogs/core/CommitButton.vue";
 import {walletManager} from "@/router";
-import Dialog from "@/components/dialog/Dialog.vue";
+import Dialog from "@/dialogs/core/Dialog.vue";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
 
 const MAX_AIRDROPS_PER_CLAIM = 10

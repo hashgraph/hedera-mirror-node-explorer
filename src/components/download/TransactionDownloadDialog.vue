@@ -108,10 +108,10 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType, ref, watch} from "vue";
-import {DialogController} from "@/components/dialog/DialogController";
+import {DialogController} from "@/dialogs/core/DialogController";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import DownloadDialog from "@/components/download/DownloadDialog.vue";
-import DialogTitle from "@/components/dialog/DialogTitle.vue";
+import DialogTitle from "@/dialogs/core/DialogTitle.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import Datepicker from '@vuepic/vue-datepicker';
