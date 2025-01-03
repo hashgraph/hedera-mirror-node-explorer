@@ -2,7 +2,7 @@
   -
   - Hedera Mirror Node Explorer
   -
-  - Copyright (C) 2021 - 2023 Hedera Hashgraph, LLC
+  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
   -
   - Licensed under the Apache License, Version 2.0 (the "License");
   - you may not use this file except in compliance with the License.
@@ -23,11 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <SelectView :border-visible="false" v-model="selectedNetwork">
-    <option v-for="network in networkEntries" :key="network.name" :value="network.name">
-      {{ network.displayName }}
-    </option>
-  </SelectView>
+  <select
+      v-model="selected"
+      :style="{ 'width': width }"
+      :class="{'border-visible': props.borderVisible}"
+  >
+    <slot/>
+  </select>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -36,21 +38,21 @@
 
 <script setup lang="ts">
 
-import {ref, watch} from "vue";
-import {routeManager} from "@/router.ts";
-import {NetworkConfig} from "@/config/NetworkConfig.ts";
-import SelectView from "@/components/SelectView.vue";
+import {PropType} from "vue";
 
-const networkEntries = NetworkConfig.inject().entries
-
-const selectedNetwork = ref(routeManager.currentNetwork.value)
-watch(routeManager.currentNetwork, (newNetwork) => {
-  selectedNetwork.value = newNetwork // Checked : does not trigger any watch when value is unchanged
-})
-watch(selectedNetwork, (newNetwork) => {
-  if (newNetwork !== routeManager.currentNetwork.value) {
-    routeManager.routeToMainDashboard(newNetwork)
+const props = defineProps({
+  borderVisible: {
+    type: Boolean,
+    default: true
+  },
+  width: {
+    type: String,
+    default: "auto"
   }
+})
+const selected = defineModel({
+  type: String as PropType<string|null>,
+  default: null
 })
 
 </script>
@@ -60,4 +62,27 @@ watch(selectedNetwork, (newNetwork) => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+select {
+  appearance: none;
+  border-width: 0;
+  color: var(--text-primary);
+  background-color: transparent;
+  font-weight: 400;
+  font-size: 14px;
+  height: 40px;
+  outline: none;
+  padding: 0 24px 0 8px;
+  background-image: url("@/assets/chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position: calc(100% - 6px);
+}
+
+select.border-visible {
+  border-color: var(--text-secondary);
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 2px;
+}
+
 </style>
