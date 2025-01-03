@@ -63,6 +63,7 @@
           <template v-slot:value>
             <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
                   style="font-size: 16px">
+              <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
             </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
@@ -83,17 +84,22 @@
                 </div>
               </div>
               <div class="column">
-                <o-field>
-                  <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
-                            class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'"
-                  >
+                <SelectView v-model="selectedNode" @focus="stakeChoice='node'">
+                  <optgroup label="Hedera council nodes">
                     <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                             style="background-color: var(--h-theme-box-background-color)"
-                    >
+                            v-show="isCouncilNode(n)">
                       {{ makeNodeSelectorDescription(n) }}
                     </option>
-                  </o-select>
-                </o-field>
+                  </optgroup>
+                  <optgroup v-if="hasCommunityNode" label="Community nodes">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                            v-show="!isCouncilNode(n)">
+                      {{ makeNodeSelectorDescription(n) }}
+                    </option>
+                  </optgroup>
+                </SelectView>
               </div>
             </div>
             <div class="columns">
@@ -165,8 +171,7 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse,
-  makeNodeSelectorDescription,
+  AccountsResponse, makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/MirrorNodeSchemas";
@@ -179,7 +184,8 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {extractChecksum, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
+import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
+import SelectView from "@/components/SelectView.vue";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -189,7 +195,7 @@ const CANT_STAKE_SAME_ACCOUNT_MESSAGE = "Cannot stake to one's own account"
 
 export default defineComponent({
   name: "StakingDialog",
-  components: {ConfirmDialog, StringValue, HbarAmount, Property},
+  components: {SelectView, ConfirmDialog, StringValue, HbarAmount, Property},
   props: {
     showDialog: {
       type: Boolean,
@@ -225,6 +231,18 @@ export default defineComponent({
     onMounted(() => nodeAnalyzer.mount())
     onBeforeUnmount(() => nodeAnalyzer.unmount())
 
+    const currentStakedNodeIcon = computed(() => {
+      let result: string | null
+      if (props.account?.staked_node_id !== null) {
+        result = nodeAnalyzer.isCouncilNode.value
+            ? "fas fa-building"
+            : "fas fa-users"
+      } else {
+        result = null
+      }
+      return result
+    })
+
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
     const isAccountSelected = computed(() => stakeChoice.value === 'account')
@@ -255,6 +273,17 @@ export default defineComponent({
     })
 
     const selectedNode = ref<number | null>(null)
+
+    const selectedNodeIcon = computed(() => {
+      let result
+      if (selectedNode.value !== null) {
+        const nodes = nodeAnalyzer.networkAnalyzer.nodes
+        result = isCouncilNode(nodes.value[selectedNode.value]) ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
+    })
 
     const selectedNodeDescription = computed(() => {
       const nodes = nodeAnalyzer.networkAnalyzer.nodes
@@ -382,6 +411,7 @@ export default defineComponent({
       accountId,
       showConfirmDialog,
       confirmMessage,
+      currentStakedNodeIcon,
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
@@ -389,6 +419,7 @@ export default defineComponent({
       inputFeedbackMessage,
       selectedAccount,
       selectedNode,
+      selectedNodeIcon,
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,
@@ -398,6 +429,8 @@ export default defineComponent({
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
+      isCouncilNode,
+      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }

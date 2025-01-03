@@ -35,15 +35,22 @@
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
-            <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
+            <SelectView v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
+              <optgroup label="Hedera council nodes">
                 <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                         style="background-color: var(--h-theme-box-background-color)"
-                >
+                        v-show="isCouncilNode(n)">
                   {{ makeNodeSelectorDescription(n) }}
                 </option>
-              </o-select>
-            </o-field>
+              </optgroup>
+              <optgroup v-if="hasCommunityNode" label="Community nodes">
+                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                        style="background-color: var(--h-theme-box-background-color)"
+                        v-show="!isCouncilNode(n)">
+                  {{ makeNodeSelectorDescription(n) }}
+                </option>
+              </optgroup>
+            </SelectView>
           </div>
         </div>
         <div class="column">
@@ -87,8 +94,9 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
+import {isCouncilNode, makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {CoreConfig} from "@/config/CoreConfig";
+import SelectView from "@/components/SelectView.vue";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -100,6 +108,7 @@ export default defineComponent({
   },
 
   components: {
+    SelectView,
     DashboardCard,
     NetworkDashboardItem,
   },
@@ -122,6 +131,16 @@ export default defineComponent({
     const nodeAnalyzer = new NodeAnalyzer(selectedNodeId)
     onMounted(() => nodeAnalyzer.mount())
     onBeforeUnmount(() => nodeAnalyzer.unmount())
+
+    const nodeIcon = computed(() => {
+      let result
+      if (selectedNodeId.value !== null) {
+        result = nodeAnalyzer.isCouncilNode.value ? "building" : "users"
+      } else {
+        result = ""
+      }
+      return result
+    })
 
     const amountStaked = ref<number>(100)
     const updateAmountStaked = () => {
@@ -154,6 +173,7 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       selectedNodeId,
+      nodeIcon,
       amountStaked,
       rewardRate,
       currentReward,
@@ -161,8 +181,10 @@ export default defineComponent({
       yearlyReward,
       annualizedRate: nodeAnalyzer.annualizedRate,
       nodes: nodeAnalyzer.networkAnalyzer.nodes,
+      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeDescription,
       makeNodeSelectorDescription,
+      isCouncilNode,
       handleInput
     }
   }

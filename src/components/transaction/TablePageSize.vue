@@ -23,10 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-select
+  <SelectView
       v-bind:model-value="selected"
       @update:model-value="onSelect($event)"
-      class="h-is-text-size-2"
+      :small="true"
       data-cy="select-page-size"
   >
     <!--        Use "as number" to avoid warning as o-select does not allow to force type-->
@@ -36,7 +36,7 @@
     <option :value="20 as number">20 per page</option>
     <option :value="50 as number">50 per page</option>
     <option :value="100 as number">100 per page</option>
-  </o-select>
+  </SelectView>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,10 +47,12 @@
 
 import {defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {AppStorage} from "@/AppStorage";
+import SelectView from "@/components/SelectView.vue";
 
 
 export default defineComponent({
   name: "TablePageSize",
+  components: {SelectView},
 
   props: {
     size: {
