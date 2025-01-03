@@ -45,26 +45,24 @@
             Select period
           </div>
           <div class="column">
-            <o-field>
-              <o-select v-model="periodOption" class="h-is-text-size-1" style="border-radius: 4px">
-                <option :key="Period.Day" :value="Period.Day"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  LAST 24 HOURS
-                </option>
-                <option :key="Period.Week" :value="Period.Week"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  LAST 7 DAYS
-                </option>
-                <option :key="Period.Month" :value="Period.Month"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  LAST 30 DAYS
-                </option>
-                <option :key="Period.Year" :value="Period.Year"
-                        style="background-color: var(--h-theme-box-background-color)">
-                  LAST 365 DAYS
-                </option>
-              </o-select>
-            </o-field>
+            <SelectView v-model="periodOption">
+              <option :key="Period.Day" :value="Period.Day"
+                      style="background-color: var(--h-theme-box-background-color)">
+                LAST 24 HOURS
+              </option>
+              <option :key="Period.Week" :value="Period.Week"
+                      style="background-color: var(--h-theme-box-background-color)">
+                LAST 7 DAYS
+              </option>
+              <option :key="Period.Month" :value="Period.Month"
+                      style="background-color: var(--h-theme-box-background-color)">
+                LAST 30 DAYS
+              </option>
+              <option :key="Period.Year" :value="Period.Year"
+                      style="background-color: var(--h-theme-box-background-color)">
+                LAST 365 DAYS
+              </option>
+            </SelectView>
           </div>
         </div>
 
@@ -95,10 +93,11 @@
 import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
 import CSVDownloadProgressDialog from "@/components/CSVDownloadProgressDialog.vue";
 import {EntityDownloader} from "@/utils/downloader/EntityDownloader";
+import SelectView from "@/components/SelectView.vue";
 
 export default defineComponent({
   name: "CSVDownloadDialog",
-  components: {CSVDownloadProgressDialog},
+  components: {SelectView, CSVDownloadProgressDialog},
   props: {
     showDialog: {
       type: Boolean,

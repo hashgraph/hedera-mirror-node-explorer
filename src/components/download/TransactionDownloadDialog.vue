@@ -37,16 +37,11 @@
           Select scope:
         </p>
         <div class="column is-two-fifths">
-          <o-field>
-            <o-select
-                v-model="selectedScope"
-                class="h-is-text-size-1"
-            >
-              <option v-for="s in scopes" v-bind:key="s" v-bind:value="s">
-                {{ s }}
-              </option>
-            </o-select>
-          </o-field>
+          <SelectView v-model="selectedScope" :small="true">
+            <option v-for="s in scopes" v-bind:key="s" v-bind:value="s">
+              {{ s }}
+            </option>
+          </SelectView>
         </div>
         <div v-if="selectedScope==='TOKEN TRANSFERS BY ID' || selectedScope==='NFT TRANSFERS BY ID'"
              class="column is-two-fifths">
@@ -122,10 +117,11 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {NFTTransferDownloader} from "@/utils/downloader/NFTTransferDownloader";
 import {HbarTransferDownloader} from "@/utils/downloader/HBarTransferDownloader";
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
+import SelectView from "@/components/SelectView.vue";
 
 export default defineComponent({
   name: 'TransactionDownloadDialog',
-  components: {Datepicker, TransactionFilterSelect, DialogTitle, DownloadDialog},
+  components: {SelectView, Datepicker, TransactionFilterSelect, DialogTitle, DownloadDialog},
   props: {
     controller: {
       type: Object as PropType<DialogController>,

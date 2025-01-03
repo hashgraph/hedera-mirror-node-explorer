@@ -103,22 +103,20 @@
         />
         <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
           <DownloadButton @click="handleDownload"/>
-          <o-field class="ml-2">
-            <o-select v-model="selectedSource" class="h-is-text-size-3">
-              <option value="">All source files</option>
-              <optgroup label="Main contract file">
-                <option :value="contractFileName">{{ sourceFileName }}</option>
-              </optgroup>
-              <optgroup label="Include files">
-                <option v-for="file in solidityFiles" v-bind:key="file.path"
-                        v-bind:value="file.name"
-                        v-show="isImportFile(file)">
-                  {{ relevantPath(file.path) }}
-                </option>
-              </optgroup>
-            </o-select>
-          </o-field>
-        </div>
+          <SelectView v-model="selectedSource" :small="true">
+            <option value="">All source files</option>
+            <optgroup label="Main contract file">
+              <option :value="contractFileName">{{ sourceFileName }}</option>
+            </optgroup>
+            <optgroup label="Include files">
+              <option v-for="file in solidityFiles" v-bind:key="file.path"
+                      v-bind:value="file.name"
+                      v-show="isImportFile(file)">
+                {{ relevantPath(file.path) }}
+              </option>
+            </optgroup>
+          </SelectView>
+       </div>
         <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
           <p class="has-text-weight-light">Show hexa opcode</p>
           <label class="checkbox pt-1 ml-3">
@@ -131,16 +129,14 @@
             <o-switch v-model="showLogicABI"/>
           </template>
           <DownloadButton @click="handleDownloadABI"/>
-          <o-field class="ml-2">
-            <o-select v-model="selectedType" class="h-is-text-size-3">
-              <option :value="FragmentType.ALL">All definitions</option>
-              <option :value="FragmentType.READONLY">Read-only functions</option>
-              <option :value="FragmentType.READWRITE">Read-write functions</option>
-              <option :value="FragmentType.EVENTS">Events</option>
-              <option :value="FragmentType.ERRORS">Errors</option>
-              <option :value="FragmentType.OTHER">Other definitions</option>
-            </o-select>
-          </o-field>
+          <SelectView v-model="selectedType" :small="true">
+            <option :value="FragmentType.ALL">All definitions</option>
+            <option :value="FragmentType.READONLY">Read-only functions</option>
+            <option :value="FragmentType.READWRITE">Read-write functions</option>
+            <option :value="FragmentType.EVENTS">Events</option>
+            <option :value="FragmentType.ERRORS">Errors</option>
+            <option :value="FragmentType.OTHER">Other definitions</option>
+          </SelectView>
         </div>
       </div>
       <SourceCodeValue v-if="isVerified && selectedOption==='source'"
@@ -207,6 +203,7 @@ import Tabs from "@/components/Tabs.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import {ABIController, ABIMode} from "@/components/contract/ABIController";
 import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
+import SelectView from "@/components/SelectView.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`

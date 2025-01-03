@@ -30,13 +30,11 @@
     </template>
 
     <template v-slot:control v-if="logs.length > 2">
-      <o-field>
-        <o-select v-model="pageSize" class="h-is-text-size-1">
-          <option v-for="n of actualSizeOptions" :key="n" :value="n">
-            {{ (n >= logs?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
-          </option>
-        </o-select>
-      </o-field>
+      <SelectView v-model="pageSize" :small="true">
+        <option v-for="n of actualSizeOptions" :key="n" :value="n">
+          {{ (n >= logs?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
+        </option>
+      </SelectView>
     </template>
     <template v-slot:content>
       <template v-for="l in nbLogDisplayed" :key="l">
@@ -77,6 +75,7 @@ import DashboardCard from "@/components/DashboardCard.vue";
 import ContractResultLogEntry from "@/components/contract/ContractResultLogEntry.vue";
 import {ContractLog} from "@/schemas/MirrorNodeSchemas";
 import {AppStorage} from "@/AppStorage";
+import SelectView from "@/components/SelectView.vue";
 
 const DEFAULT_PAGE_SIZE = 3
 
@@ -85,6 +84,7 @@ export default defineComponent({
   name: "ContractResultLogs",
 
   components: {
+    SelectView,
     ContractResultLogEntry,
     DashboardCard
   },

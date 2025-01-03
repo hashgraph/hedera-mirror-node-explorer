@@ -84,26 +84,22 @@
                 </div>
               </div>
               <div class="column">
-                <o-field>
-                  <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
-                            class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'"
-                            :icon="selectedNodeIcon">
-                    <optgroup label="Hedera council nodes">
-                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                              style="background-color: var(--h-theme-box-background-color)"
-                              v-show="isCouncilNode(n)">
-                        {{ makeNodeSelectorDescription(n) }}
-                      </option>
-                    </optgroup>
-                    <optgroup v-if="hasCommunityNode" label="Community nodes">
-                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                              style="background-color: var(--h-theme-box-background-color)"
-                              v-show="!isCouncilNode(n)">
-                        {{ makeNodeSelectorDescription(n) }}
-                      </option>
-                    </optgroup>
-                  </o-select>
-                </o-field>
+                <SelectView v-model="selectedNode" @focus="stakeChoice='node'">
+                  <optgroup label="Hedera council nodes">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                            v-show="isCouncilNode(n)">
+                      {{ makeNodeSelectorDescription(n) }}
+                    </option>
+                  </optgroup>
+                  <optgroup v-if="hasCommunityNode" label="Community nodes">
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                            v-show="!isCouncilNode(n)">
+                      {{ makeNodeSelectorDescription(n) }}
+                    </option>
+                  </optgroup>
+                </SelectView>
               </div>
             </div>
             <div class="columns">
@@ -189,6 +185,7 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
+import SelectView from "@/components/SelectView.vue";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -198,7 +195,7 @@ const CANT_STAKE_SAME_ACCOUNT_MESSAGE = "Cannot stake to one's own account"
 
 export default defineComponent({
   name: "StakingDialog",
-  components: {ConfirmDialog, StringValue, HbarAmount, Property},
+  components: {SelectView, ConfirmDialog, StringValue, HbarAmount, Property},
   props: {
     showDialog: {
       type: Boolean,

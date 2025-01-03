@@ -30,13 +30,11 @@
     </template>
 
     <template v-slot:control v-if="displayStateChanges.length > 5">
-      <o-field>
-        <o-select v-model="pageSize" class="h-is-text-size-1">
-          <option v-for="n of actualSizeOptions" :key="n" :value="n">
-            {{ (n >= displayStateChanges?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
-          </option>
-        </o-select>
-      </o-field>
+      <SelectView v-model="pageSize" :small="true">
+        <option v-for="n of actualSizeOptions" :key="n" :value="n">
+          {{ (n >= displayStateChanges?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
+        </option>
+      </SelectView>
     </template>
 
     <template v-slot:content>
@@ -100,6 +98,7 @@ import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";
 import {AppStorage} from "@/AppStorage";
+import SelectView from "@/components/SelectView.vue";
 
 export interface DisplayStateChange {
   changes: ContractResultStateChange,
@@ -124,6 +123,7 @@ export default defineComponent({
   name: 'ContractResultStates',
 
   components: {
+    SelectView,
     ContractResultStateChangeEntry,
     DashboardCard
   },

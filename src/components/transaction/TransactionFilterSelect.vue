@@ -24,19 +24,16 @@
 
 <template>
 
-  <o-field style="margin-bottom: 0">
-    <o-select
-        v-bind:model-value="selectedFilter"
-        @update:model-value="handleOption($event)"
-        class="h-is-text-size-1"
-        style="margin-bottom: 0"
-        data-cy="select-type"
-    >
-      <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
-        {{ makeFilterLabel(f) }}
-      </option>
-    </o-select>
-  </o-field>
+  <SelectView
+      v-bind:model-value="selectedFilter"
+      @update:model-value="handleOption($event)"
+      :small="true"
+      data-cy="select-type"
+  >
+    <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
+      {{ makeFilterLabel(f) }}
+    </option>
+  </SelectView>
 
 </template>
 
@@ -49,9 +46,11 @@
 import {computed, defineComponent} from "vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
+import SelectView from "@/components/SelectView.vue";
 
 export default defineComponent({
   name: "TransactionFilterSelect",
+  components: {SelectView},
 
   props: {
     selectedFilter: {

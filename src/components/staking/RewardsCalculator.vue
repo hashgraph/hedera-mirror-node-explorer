@@ -35,24 +35,22 @@
           <div class="is-flex is-flex-direction-column is-align-items-flex-start">
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
-            <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
-                <optgroup label="Hedera council nodes">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
-                          v-show="isCouncilNode(n)">
-                    {{ makeNodeSelectorDescription(n) }}
-                  </option>
-                </optgroup>
-                <optgroup v-if="hasCommunityNode" label="Community nodes">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
-                          v-show="!isCouncilNode(n)">
-                    {{ makeNodeSelectorDescription(n) }}
-                  </option>
-                </optgroup>
-              </o-select>
-            </o-field>
+            <SelectView v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
+              <optgroup label="Hedera council nodes">
+                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                        style="background-color: var(--h-theme-box-background-color)"
+                        v-show="isCouncilNode(n)">
+                  {{ makeNodeSelectorDescription(n) }}
+                </option>
+              </optgroup>
+              <optgroup v-if="hasCommunityNode" label="Community nodes">
+                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                        style="background-color: var(--h-theme-box-background-color)"
+                        v-show="!isCouncilNode(n)">
+                  {{ makeNodeSelectorDescription(n) }}
+                </option>
+              </optgroup>
+            </SelectView>
           </div>
         </div>
         <div class="column">
@@ -98,6 +96,7 @@ import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {isCouncilNode, makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {CoreConfig} from "@/config/CoreConfig";
+import SelectView from "@/components/SelectView.vue";
 
 export default defineComponent({
   name: 'RewardsCalculator',
@@ -109,6 +108,7 @@ export default defineComponent({
   },
 
   components: {
+    SelectView,
     DashboardCard,
     NetworkDashboardItem,
   },

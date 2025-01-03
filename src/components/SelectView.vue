@@ -26,7 +26,7 @@
   <select
       v-model="selected"
       :style="{ 'width': width }"
-      :class="{'border-visible': props.borderVisible}"
+      :class="{'border-visible': props.borderVisible, 'small': props.small}"
   >
     <slot/>
   </select>
@@ -48,6 +48,10 @@ const props = defineProps({
   width: {
     type: String,
     default: "auto"
+  },
+  small: {
+    type: Boolean,
+    default: false
   }
 })
 const selected = defineModel({
@@ -65,24 +69,31 @@ const selected = defineModel({
 
 select {
   appearance: none;
+  background-color: transparent;
+  background-image: url("@/assets/chevron-down.svg");
+  background-position: calc(100% - 6px);
+  background-repeat: no-repeat;
   border-width: 0;
   color: var(--text-primary);
-  background-color: transparent;
-  font-weight: 400;
   font-size: 14px;
+  font-weight: 400;
   height: 40px;
   outline: none;
   padding: 0 24px 0 8px;
-  background-image: url("@/assets/chevron-down.svg");
-  background-repeat: no-repeat;
-  background-position: calc(100% - 6px);
 }
 
 select.border-visible {
   border-color: var(--text-secondary);
-  border-width: 1px;
-  border-style: solid;
   border-radius: 2px;
+  border-style: solid;
+  border-width: 1px;
+}
+
+select.small {
+  font-size: 10px;
+  font-weight: 400;
+  height: 28px;
+  line-height: 11px;
 }
 
 </style>
