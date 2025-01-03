@@ -38,9 +38,7 @@
         <template #right-control>
           <div class="verify-switch">
             <div class="switch-text">All</div>
-            <o-field style="margin-bottom: 0;">
-              <o-switch v-model="filterVerified"/>
-            </o-field>
+            <SwitchView v-model="filterVerified"/>
             <div class="switch-text">Verified</div>
           </div>
         </template>
@@ -80,6 +78,7 @@ import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {AppStorage} from "@/AppStorage";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import SwitchView from "@/components/SwitchView.vue";
 
 defineProps({
   network: String
