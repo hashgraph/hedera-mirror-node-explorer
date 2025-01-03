@@ -58,7 +58,7 @@
         </template>
 
         <template #cellContent>
-          <div style="display: flex; width: 100%">
+          <div style="display: flex; column-gap: 8px; width: 100%">
             <input class="input input-field is-small has-text-white"
                    style="width: 130px"
                    id="selectedAutoRenewPeriod"
@@ -68,16 +68,12 @@
                    min="1"
                    step="1"
             >
-            <o-select v-model="selectedUnit"
-                      class="is-small has-text-white ml-2"
-                      style=" height: 38px;border-radius: 2px;border-width: 1px;border-color: grey;
-                    background-color: var(--h-theme-page-background-color); width: 100%;"
-            >
+            <SelectView v-model="selectedUnit" width="100%">
               <option v-for="p in PeriodUnit" :key="p" :value="p"
                       style="background-color: var(--h-theme-page-background-color)">
                 {{ p }}
               </option>
-            </o-select>
+            </SelectView>
             <div class="icon is-small ml-2">
               <i v-if="isAutoRenewPeriodValid" class="fas fa-check has-text-success"/>
               <i v-else-if="autoRenewPeriodFeedbackMessage" class="fas fa-xmark has-text-danger"/>
@@ -103,11 +99,7 @@
 
         <template #cellContent>
           <div style="display: flex; width: 100%">
-            <o-select v-model="autoAssociationMode"
-                      class="is-small has-text-white"
-                      style=" height: 38px; border-radius: 2px;border-width: 1px;border-color: grey;
-                  background-color: var(--h-theme-page-background-color); width: 100%"
-            >
+            <SelectView v-model="autoAssociationMode" width="100%">
               <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
                 No Automatic Association
               </option>
@@ -117,7 +109,7 @@
               <option :key="-1" :value="-1" style="background-color: var(--h-theme-page-background-color)">
                 Unlimited Automatic Association
               </option>
-            </o-select>
+            </SelectView>
             <input v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
                    class="input input-field is-small has-text-white ml-2"
                    style="width: 100px"
@@ -195,11 +187,7 @@
             <template #cellTitle>Staked Node ID</template>
 
             <template #cellContent>
-              <o-select v-model="stakedNode"
-                        class="is-small has-text-white"
-                        style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
-                    background-color: var(--h-theme-page-background-color);"
-              >
+              <SelectView v-model="stakedNode">
                 <optgroup label="Hedera council nodes">
                   <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-page-background-color)"
@@ -216,7 +204,7 @@
                     {{ makeNodeSelectorDescription(n) }}
                   </option>
                 </optgroup>
-              </o-select>
+              </SelectView>
             </template>
 
           </ContentCell>
@@ -363,6 +351,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache.ts";
 import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
+import SelectView from "@/components/SelectView.vue";
 
 const props = defineProps({
   accountInfo: {
