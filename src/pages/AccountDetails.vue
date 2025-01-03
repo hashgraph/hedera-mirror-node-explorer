@@ -284,12 +284,10 @@
         <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
           <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
           <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
-          <o-field style="margin-bottom: 0">
-            <o-select v-model="timeSelection" class="ml-2 h-is-text-size-1">
-              <option value="LATEST">LATEST</option>
-              <option value="JUMP">JUMP TO DATE</option>
-            </o-select>
-          </o-field>
+          <SelectView v-model="timeSelection" :small="true">
+            <option value="LATEST">LATEST</option>
+            <option value="JUMP">JUMP TO DATE</option>
+          </SelectView>
           <DownloadButton @click="downloadController.visible.value = true"/>
           <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
         </div>
@@ -401,6 +399,7 @@ import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import SelectView from "@/components/SelectView.vue";
 
 const props = defineProps({
   accountId: String,

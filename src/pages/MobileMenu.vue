@@ -31,13 +31,11 @@
 
         <div class="is-flex is-flex-direction-column is-align-items-start">
           <div id="mobile-drop-down-menu" class="ml-1 mb-5 ">
-            <o-field>
-              <o-select v-model="selectedNetwork" class="h-is-navbar-item" style="outline: none">
-                <option v-for="network in networkEntries" :key="network.name" :value="network.name">
-                  {{ network.displayName }}
-                </option>
-              </o-select>
-            </o-field>
+            <SelectView v-model="selectedNetwork" :small="true">
+              <option v-for="network in networkEntries" :key="network.name" :value="network.name">
+                {{ network.displayName }}
+              </option>
+            </SelectView>
           </div>
 
           <NavMenuItem :tabId="TabId.Dashboard"
@@ -90,6 +88,7 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {TabId} from "@/utils/RouteManager.ts";
 import NavMenuItem from "@/components/page/NavMenuItem.vue";
+import SelectView from "@/components/SelectView.vue";
 
 defineProps(
     {

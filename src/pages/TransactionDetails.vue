@@ -41,14 +41,13 @@
       </template>
 
       <template v-slot:control>
-        <o-select
+        <SelectView
             data-cy="select-format"
             v-model="txIdForm"
-            class="h-is-text-size-3 ml-3"
         >
           <option value="atForm">Default format</option>
           <option value="dashForm">Exchange format</option>
-        </o-select>
+        </SelectView>
       </template>
 
       <template v-slot:subtitle>
@@ -302,6 +301,7 @@ import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import SelectView from "@/components/SelectView.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -310,6 +310,7 @@ export default defineComponent({
   name: 'TransactionDetails',
 
   components: {
+    SelectView,
     TransactionIdValue,
     TokenExtra,
     MirrorLink,
