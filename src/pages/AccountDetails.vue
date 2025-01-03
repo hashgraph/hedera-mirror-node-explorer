@@ -295,9 +295,8 @@
           <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
           <PlayPauseButton v-else :controller="verifiedContractsController"/>
           <span class="ml-5 mr-2">All</span>
-          <o-field>
-            <o-switch v-model="filterVerified">Verified</o-switch>
-          </o-field>
+          <SwitchView v-model="filterVerified"/>
+          <span class="ml-2">Verified</span>
         </div>
       </template>
       <template v-slot:content>
@@ -399,6 +398,7 @@ import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
 import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
 
 const props = defineProps({
