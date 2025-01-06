@@ -42,11 +42,11 @@
       <TransactionLabel :transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" label="Content">
+    <o-table-column v-slot="props" label="CONTENT">
       <TransactionSummary :transaction="props.row"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
+    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
       <TimestampValue :timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
