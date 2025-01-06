@@ -46,6 +46,8 @@ export enum TopicMessageCellItem {
   message = "message"
 }
 
+const DEFAULT_TRUNCATION = 150
+
 export default defineComponent({
   name: "TopicMessageCell",
   components: {BlobValue},
@@ -58,6 +60,10 @@ export default defineComponent({
     property: {
       type: String as PropType<TopicMessageCellItem>,
       default: TopicMessageCellItem.message
+    },
+    truncation: {
+      type: Number,
+      default: DEFAULT_TRUNCATION
     }
   },
 
@@ -76,7 +82,7 @@ export default defineComponent({
       let result: string | null
       switch (props.property) {
         case TopicMessageCellItem.message:
-          result = truncate(messageLookup.entity.value?.message ?? '', 150)
+          result = truncate(messageLookup.entity.value?.message ?? '', props.truncation)
           break
         case TopicMessageCellItem.sequenceNumber:
           result = messageLookup.entity.value?.sequence_number.toString() ?? ''
