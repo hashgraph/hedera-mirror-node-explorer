@@ -84,11 +84,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-
-import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
+import {inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
@@ -99,70 +97,45 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
 
-export default defineComponent({
-  name: 'MainDashboard',
+const props = defineProps({
+  network: String
+})
 
-  components: {
-    PageFrameV2,
-    PlayPauseButton,
-    DashboardCard,
-    CryptoTransactionTable,
-    MessageTransactionTable,
-    ContractCallTransactionTable,
-    HbarMarketDashboard,
-  },
+const isXLargeScreen = inject('isXLargeScreen', true)
 
-  props: {
-    network: String
-  },
+const router = useRouter()
+const topPageSize = ref(5)
+const bottomPageSize = ref(5)
 
-  setup(props) {
-    const isXLargeScreen = inject('isXLargeScreen', true)
+const cryptoTableController = new TransactionTableController(
+    router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
 
-    const router = useRouter()
-    const topPageSize = ref(5)
-    const bottomPageSize = ref(5)
+const messageTableController = new TransactionTableController(
+    router, bottomPageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", null, "p2", "k2")
 
-    const cryptoTableController = new TransactionTableController(
-        router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
+const contractTableController = new TransactionTableController(
+    router, bottomPageSize, TransactionType.CONTRACTCALL, "", null, "p3", "k3")
 
-    const messageTableController = new TransactionTableController(
-        router, bottomPageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", null, "p2", "k2")
+onMounted(() => {
+  cryptoTableController.mount()
+  messageTableController.mount()
+  contractTableController.mount()
+})
 
-    const contractTableController = new TransactionTableController(
-        router, bottomPageSize, TransactionType.CONTRACTCALL, "", null, "p3", "k3")
+onBeforeUnmount(() => {
+  cryptoTableController.unmount()
+  messageTableController.unmount()
+  contractTableController.unmount()
+})
 
-    onMounted(() => {
-      cryptoTableController.mount()
-      messageTableController.mount()
-      contractTableController.mount()
-    })
-
-    onBeforeUnmount(() => {
-      cryptoTableController.unmount()
-      messageTableController.unmount()
-      contractTableController.unmount()
-    })
-
-    watch(() => props.network, () => {
-      cryptoTableController.reset()
-      messageTableController.reset()
-      contractTableController.reset()
-      cryptoTableController.startAutoRefresh()
-      messageTableController.startAutoRefresh()
-      contractTableController.startAutoRefresh()
-    })
-
-    return {
-      isXLargeScreen,
-      cryptoTableController,
-      messageTableController,
-      contractTableController,
-      TransactionType
-    }
-  }
-
-});
+watch(() => props.network, () => {
+  cryptoTableController.reset()
+  messageTableController.reset()
+  contractTableController.reset()
+  cryptoTableController.startAutoRefresh()
+  messageTableController.startAutoRefresh()
+  contractTableController.startAutoRefresh()
+})
 
 </script>
 
