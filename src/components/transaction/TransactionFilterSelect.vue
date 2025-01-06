@@ -68,7 +68,7 @@ export default defineComponent({
       return filterValue == "" ? "TYPES: ALL" : makeTypeLabel(filterValue as TransactionType)
     }
 
-    const handleOption = (option: string) => context.emit('update:selectedFilter', option)
+    const handleOption = (option: string|number|null) => context.emit('update:selectedFilter', option as string)
 
     const filterValues = computed(() => {
       let result = Object
