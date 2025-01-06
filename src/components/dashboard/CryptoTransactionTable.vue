@@ -51,15 +51,15 @@
   >
 
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
+      <TransactionLabel :transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
     </o-table-column>
 
     <o-table-column v-slot="props" label="Content">
-      <TransactionSummary v-bind:transaction="props.row"/>
+      <TransactionSummary :transaction="props.row"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+      <TimestampValue :timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -79,9 +79,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionLabel from "@/components/values/TransactionLabel.vue";
@@ -93,39 +93,23 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'CryptoTransactionTable',
-
-  components: {TablePageSize, EmptyTable, TimestampValue, TransactionSummary, TransactionLabel},
-
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
-    }
-  },
-
-  setup(props) {
-
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransaction(t, event)
-    }
-
-    return {
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      AppStorage,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TransactionTableController>,
+    required: true
   }
-});
+})
+
+const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  routeManager.routeToTransaction(t, event)
+}
+
+const transactions = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
 
 </script>
 
