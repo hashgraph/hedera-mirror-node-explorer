@@ -132,7 +132,7 @@
       <ContentCell direction="horizontal">
 
         <template #cellTitle>
-          <div class="is-flex has-text-weight-light mb-1">
+          <div>
             Receiver Signature Required
           </div>
         </template>
@@ -154,17 +154,17 @@
           <template #cellTitle>Staking</template>
 
           <template #cellContent>
-            <div class="h-is-text-size-4">
-              <label class="radio h-radio-button">
-                <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice"/>
+            <div style="display: flex; column-gap: 16px">
+              <label style="font-size: 14px">
+                <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice" style="vertical-align: middle"/>
                 To Node
               </label>
-              <label class="radio h-radio-button ml-5">
-                <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice"/>
+              <label style="font-size: 14px">
+                <input type="radio" name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice" style="vertical-align: middle"/>
                 To Account
               </label>
-              <label class="radio h-radio-button ml-5">
-                <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice"/>
+              <label style="font-size: 14px">
+                <input type="radio" name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice" style="vertical-align: middle"/>
                 Not Staking
               </label>
             </div>

@@ -93,6 +93,7 @@ button.dialog-button {
 
 button.dialog-button:disabled {
   cursor: not-allowed;
+  opacity: 0.3;
 }
 
 button.dialog-button.is-default {
