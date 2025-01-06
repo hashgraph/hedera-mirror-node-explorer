@@ -26,52 +26,54 @@
 
   <PageFrameV2 page-title="Dashboard">
 
-    <div class="columns">
+    <div class="page-container">
 
-      <div class="column">
-        <DashboardCard data-cy="cryptoTransfers">
-          <template v-slot:title>
-            <span class="h-is-secondary-title">Crypto Transfers</span>
-          </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="cryptoTableController"/>
-          </template>
-          <template v-slot:content>
-            <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
-          </template>
-        </DashboardCard>
-      </div>
+      <DashboardCardV2 data-cy="cryptoTransfers">
+        <template #title>
+          <span>Crypto Transfers</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButtonV2 :controller="cryptoTableController"/>
+        </template>
+        <template #right-control>
+          TBD: 'All Crypto Transfers' link
+        </template>
+        <template #content>
+          <CryptoTransactionTable :controller="cryptoTableController"/>
+        </template>
+      </DashboardCardV2>
 
-    </div>
+      <div class="side-by-side-container">
 
-    <div class="columns is-multiline">
-
-      <div class="column" :class="{'is-full':!isXLargeScreen}">
-        <DashboardCard data-cy="smartContractCalls">
-          <template v-slot:title>
-            <span class="h-is-secondary-title">Smart Contract Calls</span>
+        <DashboardCardV2 data-cy="smartContractCalls">
+          <template #title>
+            <span>Smart Contract Calls</span>
           </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="contractTableController"/>
+          <template #left-control>
+            <PlayPauseButtonV2 :controller="contractTableController"/>
           </template>
-          <template v-slot:content>
-            <ContractCallTransactionTable v-bind:controller="contractTableController"/>
+          <template #right-control>
+            TBD: 'All Smart Contract Calls' link
           </template>
-        </DashboardCard>
-      </div>
-
-      <div class="column">
-        <DashboardCard data-cy="hcsMessages">
-          <template v-slot:title>
-            <span class="h-is-secondary-title">HCS Messages</span>
+          <template #content>
+            <ContractCallTransactionTable :controller="contractTableController"/>
           </template>
-          <template v-slot:control>
-            <PlayPauseButton v-bind:controller="messageTableController"/>
+        </DashboardCardV2>
+        <DashboardCardV2 data-cy="hcsMessages">
+          <template #title>
+            <span>HCS Messages</span>
           </template>
-          <template v-slot:content>
+          <template #left-control>
+            <PlayPauseButtonV2 :controller="messageTableController"/>
+          </template>
+          <template #right-control>
+            TBD: 'All HCS Messages' link
+          </template>
+          <template #content>
             <MessageTransactionTable v-bind:controller="messageTableController"/>
           </template>
-        </DashboardCard>
+        </DashboardCardV2>
+
       </div>
 
     </div>
@@ -86,9 +88,7 @@
 
 <script setup lang="ts">
 
-import {inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
@@ -96,12 +96,12 @@ import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 const props = defineProps({
   network: String
 })
-
-const isXLargeScreen = inject('isXLargeScreen', true)
 
 const router = useRouter()
 const topPageSize = ref(5)
@@ -143,4 +143,28 @@ watch(() => props.network, () => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+div.side-by-side-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 1280px) {
+  div.side-by-side-container {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+</style>
