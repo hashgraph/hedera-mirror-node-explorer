@@ -104,8 +104,8 @@ const props = defineProps({
 })
 
 const router = useRouter()
-const topPageSize = ref(5)
-const bottomPageSize = ref(5)
+const topPageSize = ref(6)
+const bottomPageSize = ref(6)
 
 const cryptoTableController = new TransactionTableController(
     router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")

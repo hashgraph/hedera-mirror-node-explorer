@@ -27,15 +27,7 @@
   <o-table
       :data="transactions"
       :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
-      :total="total"
-      v-model:current-page="currentPage"
       :per-page="perPage"
-      @page-change="onPageChange"
       @cell-click="handleClick"
 
       :hoverable="true"
@@ -43,10 +35,6 @@
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
   >
 
@@ -61,13 +49,6 @@
     <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
       <TimestampValue :timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
-
-    <template v-slot:bottom-left>
-      <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.TRANSFER_TABLE_PAGE_SIZE_KEY"
-      />
-    </template>
 
   </o-table>
 
@@ -90,8 +71,6 @@ import TransactionSummary from "@/components/transaction/TransactionSummary.vue"
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import TablePageSize from "@/components/transaction/TablePageSize.vue";
-import {AppStorage} from "@/AppStorage";
 
 const props = defineProps({
   controller: {
@@ -106,9 +85,6 @@ const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: M
 
 const transactions = props.controller.rows
 const loading = props.controller.loading
-const total = props.controller.totalRowCount
-const currentPage = props.controller.currentPage
-const onPageChange = props.controller.onPageChange
 const perPage = props.controller.pageSize
 
 </script>
