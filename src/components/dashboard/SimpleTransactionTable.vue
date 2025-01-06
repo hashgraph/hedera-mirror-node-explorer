@@ -39,7 +39,11 @@
   >
 
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel :transaction-id="props.row.transaction_id" :result="props.row.result"/>
+      <TransactionLabel
+          class="transaction-label"
+          :transaction-id="props.row.transaction_id"
+          :result="props.row.result"
+      />
     </o-table-column>
 
     <o-table-column v-slot="props" label="CONTENT">
@@ -94,5 +98,9 @@ const perPage = props.controller.pageSize
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.transaction-label {
+  font-weight: 600;
+}
 
 </style>
