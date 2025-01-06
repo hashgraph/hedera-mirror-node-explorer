@@ -39,7 +39,7 @@
           TBD: 'All Crypto Transfers' link
         </template>
         <template #content>
-          <CryptoTransactionTable :controller="cryptoTableController"/>
+          <SimpleTransactionTable :controller="cryptoTableController"/>
         </template>
       </DashboardCardV2>
 
@@ -56,7 +56,7 @@
             TBD: 'All Smart Contract Calls' link
           </template>
           <template #content>
-            <ContractCallTransactionTable :controller="contractTableController"/>
+            <SimpleTransactionTable :controller="contractTableController"/>
           </template>
         </DashboardCardV2>
         <DashboardCardV2 data-cy="hcsMessages">
@@ -89,9 +89,8 @@
 <script setup lang="ts">
 
 import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
+import SimpleTransactionTable from "@/components/dashboard/SimpleTransactionTable.vue";
 import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
-import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
