@@ -56,7 +56,7 @@
         </template>
 
         <template #cellContent>
-          <div style="display: flex; column-gap: 8px; width: 100%">
+          <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
             <TextFieldView v-model="selectedAutoRenewPeriod"
                            id="selectedAutoRenewPeriod"
                            placeholder="> 0"
@@ -71,7 +71,7 @@
                 {{ p }}
               </option>
             </SelectView>
-            <div class="icon is-small ml-2">
+            <div>
               <i v-if="isAutoRenewPeriodValid" class="fas fa-check has-text-success"/>
               <i v-else-if="autoRenewPeriodFeedbackMessage" class="fas fa-xmark has-text-danger"/>
               <i v-else/>
@@ -141,7 +141,7 @@
         </template>
 
         <template #cellContent>
-          <o-switch class="ml-2 h-is-text-size-4" v-model="recSigRequired"/>
+          <SwitchView v-model="recSigRequired"/>
         </template>
 
       </ContentCell>
@@ -256,7 +256,7 @@
           <ContentCell direction="horizontal">
             <template #cellTitle>Decline Rewards</template>
             <template #cellContent>
-              <o-switch class="ml-2 h-is-text-size-4" v-model="declineRewards"/>
+              <SwitchView v-model="declineRewards"/>
             </template>
           </ContentCell>
         </div>
@@ -350,6 +350,7 @@ import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import SelectView from "@/components/SelectView.vue";
 import TextFieldView from "@/components/TextFieldView.vue";
+import SwitchView from "@/components/SwitchView.vue";
 
 const props = defineProps({
   accountInfo: {
