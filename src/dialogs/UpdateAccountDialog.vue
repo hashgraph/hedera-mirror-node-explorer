@@ -95,7 +95,7 @@
         </template>
 
         <template #cellContent>
-          <div style="display: flex; width: 100%">
+          <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
             <SelectView v-model="autoAssociationMode" width="100%">
               <option :key="0" :value="0" style="background-color: var(--h-theme-page-background-color)">
                 No Automatic Association
@@ -107,19 +107,16 @@
                 Unlimited Automatic Association
               </option>
             </SelectView>
-            <input v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
-                   class="input input-field is-small has-text-white ml-2"
+            <TextFieldView v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
                    style="width: 100px"
-                   :class="{'is-invisible':autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation}"
+                   :style="{'visibility': autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'visible'}"
                    v-model="maxAutoAssociations"
-                   placeholder="≥ 0"
+                   placeholder="> 0"
                    type="number"
                    min="1"
                    step="1"
-            >
-            <div v-if="autoAssociationMode!=AutoAssociationMode.UnlimitedAutoAssociation"
-                 class="icon is-small ml-2"
-            >
+            />
+            <div v-if="autoAssociationMode!=AutoAssociationMode.UnlimitedAutoAssociation">
               <i v-if="isMaxAutoAssociationsValid" class="fas fa-check has-text-success"/>
               <i v-else-if="maxAutoAssociationsFeedbackMessage" class="fas fa-xmark has-text-danger"/>
               <i v-else/>
@@ -184,7 +181,7 @@
             <template #cellTitle>Staked Node ID</template>
 
             <template #cellContent>
-              <SelectView v-model="stakedNode">
+              <SelectView v-model="stakedNode" style="width: 100%">
                 <optgroup label="Hedera council nodes">
                   <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
                           style="background-color: var(--h-theme-page-background-color)"
