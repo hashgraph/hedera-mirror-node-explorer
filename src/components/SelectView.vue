@@ -54,10 +54,7 @@ const props = defineProps({
     default: false
   }
 })
-const selected = defineModel({
-  type: String as PropType<string|number|null>,
-  default: null
-})
+const selected = defineModel()
 
 </script>
 
