@@ -37,11 +37,10 @@
       <ContentCell>
         <template #cellTitle>Account Memo</template>
         <template #cellContent>
-          <input v-model="memo"
-                 class="input input-field is-small has-text-white"
-                 placeholder="Memo (string)"
-                 type="text"
-          >
+          <TextFieldView v-model="memo"
+                         placeholder="Memo (string)"
+                         style="width: 100%"
+          />
         </template>
       </ContentCell>
 
@@ -51,7 +50,6 @@
 
         <template #cellTitle>
           Auto Renew Period
-          <span class="ml-1"/>
           <InfoTooltip
               label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
           />
@@ -59,15 +57,14 @@
 
         <template #cellContent>
           <div style="display: flex; column-gap: 8px; width: 100%">
-            <input class="input input-field is-small has-text-white"
-                   style="width: 130px"
-                   id="selectedAutoRenewPeriod"
-                   v-model="selectedAutoRenewPeriod"
-                   placeholder="> 0"
-                   type="number"
-                   min="1"
-                   step="1"
-            >
+            <TextFieldView v-model="selectedAutoRenewPeriod"
+                           id="selectedAutoRenewPeriod"
+                           placeholder="> 0"
+                           type="number"
+                           min="1"
+                           step="1"
+                           style="width: 100%"
+            />
             <SelectView v-model="selectedUnit" width="100%">
               <option v-for="p in PeriodUnit" :key="p" :value="p"
                       style="background-color: var(--h-theme-page-background-color)">
@@ -352,6 +349,7 @@ import {TokenRelationshipCache} from "@/utils/cache/TokenRelationshipCache.ts";
 import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import SelectView from "@/components/SelectView.vue";
+import TextFieldView from "@/components/TextFieldView.vue";
 
 const props = defineProps({
   accountInfo: {
