@@ -27,15 +27,7 @@
   <o-table
       :data="transactions"
       :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
-      :total="total"
-      v-model:current-page="currentPage"
       :per-page="perPage"
-      @page-change="onPageChange"
       @cell-click="handleClick"
 
       :hoverable="true"
@@ -43,32 +35,24 @@
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
-      default-sort="consensus_timestamp"
   >
 
-    <o-table-column v-slot="props" field="topic_id" label="Topic ID">
-      <TopicIOL class="w200" :topic-id="props.row.entity_id"/>
+    <o-table-column v-slot="props" field="topic_id" label="TOPIC ID">
+      <TopicIOL class="topic-id" :topic-id="props.row.entity_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="content" label="Content">
-      <TopicMessageCell :timestamp="props.row.consensus_timestamp" :property="TopicMessageCellItem.message"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
-    </o-table-column>
-
-    <template v-slot:bottom-left>
-      <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.BOTTOM_DASHBOARD_TABLE_PAGE_SIZE_KEY"
+    <o-table-column v-slot="props" field="content" label="CONTENT">
+      <TopicMessageCell
+          :timestamp="props.row.consensus_timestamp"
+          :property="TopicMessageCellItem.message"
+          :truncation="36"
       />
-    </template>
+    </o-table-column>
+
+    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
+      <TimestampValue :timestamp="props.row.consensus_timestamp"/>
+    </o-table-column>
 
   </o-table>
 
@@ -80,9 +64,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
@@ -91,42 +75,21 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import TopicIOL from "@/components/values/link/TopicIOL.vue";
 import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMessageCell.vue";
-import TablePageSize from "@/components/transaction/TablePageSize.vue";
-import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'MessageTransactionTable',
-
-  components: {TablePageSize, TopicMessageCell, TopicIOL, EmptyTable, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
-    }
-  },
-
-  setup(props) {
-
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransaction(t, event)
-    }
-
-    return {
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      TopicMessageCellItem,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TransactionTableController>,
+    required: true
   }
-});
+})
+
+const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  routeManager.routeToTransaction(t, event)
+}
+
+const transactions = props.controller.rows
+const loading = props.controller.loading
+const perPage = props.controller.pageSize
 
 </script>
 
@@ -135,5 +98,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.topic-id {
+  font-weight: 600;
+}
 
 </style>
