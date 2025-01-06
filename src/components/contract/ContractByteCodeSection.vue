@@ -125,8 +125,8 @@
         </div>
         <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
           <template v-if="logicModeAvailable">
-            <p class="mr-2 h-is-text-size-3">Show Logic Contract ABI</p>
-            <o-switch v-model="showLogicABI"/>
+            <p>Show Logic Contract ABI</p>
+            <SwitchView v-model="showLogicABI"/>
           </template>
           <DownloadButton @click="handleDownloadABI"/>
           <SelectView v-model="selectedType" :small="true">
@@ -204,6 +204,7 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import {ABIController, ABIMode} from "@/components/contract/ABIController";
 import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 import SelectView from "@/components/SelectView.vue";
+import SwitchView from "@/components/SwitchView.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
