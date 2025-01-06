@@ -63,7 +63,7 @@ div.switch {
 
 div.switch.unchecked {
   justify-content: flex-start;
-  background-color: var(--text-secondary);
+  background-color: var(--border-secondary);
 }
 
 div.switch.checked {
@@ -74,7 +74,7 @@ div.switch.checked {
 div.switch > div {
   height: 18px;
   width: 18px;
-  background-color: var(--text-primary);
+  background-color: var(--text-secondary);
   border-width: 0;
   border-radius: 9px;
 }
