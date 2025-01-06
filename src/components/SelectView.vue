@@ -55,7 +55,7 @@ const props = defineProps({
   }
 })
 const selected = defineModel({
-  type: String as PropType<string|null>,
+  type: String as PropType<string|number|null>,
   default: null
 })
 

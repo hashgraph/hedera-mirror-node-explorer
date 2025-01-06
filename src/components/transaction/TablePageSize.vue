@@ -77,11 +77,11 @@ export default defineComponent({
         context.emit("update:size", preferred)
       }
     })
-    const onSelect = (value: number) => {
-      selected.value = value
+    const onSelect = (value: string|number|null) => {
+      selected.value = value as number
       if (props.storageKey !== null) {
         if (value != defaultValue) {
-          AppStorage.setTablePageSize(props.storageKey, value)
+          AppStorage.setTablePageSize(props.storageKey, value as number)
         } else {
           AppStorage.setTablePageSize(props.storageKey, null)
         }
