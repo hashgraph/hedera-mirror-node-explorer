@@ -24,9 +24,9 @@
 
 <template>
   <div class="card-root">
-    <div class="header">
+    <div class="card-header">
       <div class="left-header">
-        <div class="title">
+        <div class="card-title">
           <slot name="title"/>
         </div>
         <slot name="left-control" v-if="!isCollapsed"/>
@@ -41,7 +41,7 @@
     <slot name="subtitle"/>
 
     <div v-if="!isCollapsed">
-      <slot name="content" v-if="slots.content" class="content"/>
+      <slot name="content" v-if="slots.content"/>
 
       <div v-if="slots.mediaContent || slots.mediaDescription" class="media-content">
         <slot name="mediaContent"/>
@@ -128,7 +128,7 @@ div.card-root {
   padding: 32px;
 }
 
-div.header {
+div.card-header {
   align-items: flex-start;
   border-bottom: 1px solid var(--network-theme-color);
   display: flex;
@@ -145,7 +145,7 @@ div.left-header {
   justify-content: flex-start;
 }
 
-div.title {
+div.card-title {
   color: var(--text-primary);
   font-family: 'Styrene A Web', serif;
   font-size: 20px;
