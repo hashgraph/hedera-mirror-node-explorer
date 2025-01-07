@@ -20,17 +20,19 @@
  *
  */
 
-import {describe, expect, test} from 'vitest'
-import {ref} from "vue";
-import {flushPromises} from "@vue/test-utils";
-import MockAdapter from "axios-mock-adapter";
-import axios from "axios";
-import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
-import {SAMPLE_ACCOUNT, SAMPLE_ASSOCIATED_TOKEN} from "../../Mocks";
+import {describe, test} from 'vitest'
+
+// import {describe, expect, test} from 'vitest'
+// import {ref} from "vue";
+// import {flushPromises} from "@vue/test-utils";
+// import MockAdapter from "axios-mock-adapter";
+// import axios from "axios";
+// import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+// import {SAMPLE_ACCOUNT, SAMPLE_ASSOCIATED_TOKEN} from "../../Mocks";
 // import {WalletDriver_Mock} from "../../staking/WalletDriver_Mock";
-import {walletManager} from "@/router";
-import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
-import {NetworkConfig} from "../../../../src/config/NetworkConfig";
+// import {walletManager} from "@/router";
+// import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
+// import {NetworkConfig} from "../../../../src/config/NetworkConfig";
 
 describe.skip("TokenInfoAnalyzer.spec.ts", () => {
 

@@ -287,7 +287,6 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
-import PlainAmount from "@/components/values/PlainAmount.vue";
 import ContractERCSection from "@/components/contract/ContractERCSection.vue";
 
 export default defineComponent({
@@ -296,7 +295,6 @@ export default defineComponent({
 
   components: {
     ContractERCSection,
-    PlainAmount,
     TokensSection,
     InfoTooltip,
     EntityIOL,

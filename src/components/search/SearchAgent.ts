@@ -722,7 +722,7 @@ export class ERC20SearchAgent extends TokenNameSearchAgent {
     //
 
     protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
-        let result: TokenLike[] = []
+        const result: TokenLike[] = []
 
         const tokens = await ERC20Cache.instance.search(tokenName)
         for (const t of tokens) {
@@ -758,7 +758,7 @@ export class ERC721SearchAgent extends TokenNameSearchAgent {
     //
 
     protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
-        let result: TokenLike[] = []
+        const result: TokenLike[] = []
 
         const tokens = await ERC721Cache.instance.search(tokenName)
         for (const t of tokens) {
