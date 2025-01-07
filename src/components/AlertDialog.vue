@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="props.controller">
+  <Dialog :controller="controller">
 
     <template v-slot:dialogInput>
       <div class="is-flex is-justify-content-center h-is-tertiary-text">
@@ -35,7 +35,7 @@
     </template>
 
     <template v-slot:dialogInputButtons>
-      <DialogButton :controller="props.controller">CLOSE</DialogButton>
+      <DialogButton :controller="controller">CLOSE</DialogButton>
     </template>
 
   </Dialog>
@@ -48,17 +48,16 @@
 
 <script setup lang="ts">
 
-import {PropType} from "vue";
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 
-const props = defineProps({
-  controller: {
-    type: Object as PropType<DialogController>,
-    required: true
-  },
+const visible = defineModel("visible", {
+  type: Boolean,
+  required: true
 })
+
+const controller = new DialogController(visible)
 
 </script>
 

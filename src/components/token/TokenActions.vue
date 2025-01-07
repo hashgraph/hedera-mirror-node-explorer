@@ -117,7 +117,7 @@
     </DoneDialog>
   </div>
 
-  <AlertDialog :controller="alertController">
+  <AlertDialog v-model:visible="alertVisible">
     <template v-slot:alertMessage>
       {{ tooltipLabel }}
     </template>
@@ -140,7 +140,6 @@ import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import AlertDialog from "@/components/AlertDialog.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {gtagTransaction} from "@/gtag";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
@@ -182,7 +181,7 @@ const isRejectEnabled = computed(() => {
 })
 
 // Alert dialog states
-const alertController = new DialogController()
+const alertVisible = ref(false)
 const tooltipLabel = computed(
     () => {
       let result: string
@@ -263,7 +262,7 @@ const handleDissociate = () => {
     confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
     confirmExtraMessage.value = null
   } else {
-    alertController.visible.value = true
+    alertVisible.value = true
   }
 }
 
@@ -283,7 +282,7 @@ const handleReject = () => {
     }
     confirmExtraMessage.value = null
   } else {
-    alertController.visible.value = true
+    alertVisible.value = true
   }
 }
 
