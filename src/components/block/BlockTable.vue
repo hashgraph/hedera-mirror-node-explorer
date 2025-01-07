@@ -18,28 +18,6 @@
   -
   -->
 
-<!--
-
-  USAGE NOTES
-
-  <template>
-    ...
-    <BlockTable v-bind:blocks="blocks"/>
-    ...
-  </template>
-
-  <script>
-    ...
-    const blockCache = new BlockCache()
-    ...
-
-    return {
-      blocks: blockCache.blocks
-    }
-  </script>
-
-  -->
-
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -148,7 +126,7 @@ const perPage = props.controller.pageSize
 
 <style scoped>
 
-.block_number {
+p.block_number {
   font-weight: 600;
 }
 
