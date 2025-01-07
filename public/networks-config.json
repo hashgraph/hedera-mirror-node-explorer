@@ -8,7 +8,7 @@
     "enableStaking": true,
     "enableExpiry": true,
     "enableMarket": true,
-    "popularTokenIndexURL": null,
+    "popularTokenIndexURL": "popular-tokens.json",
     "erc20IndexURL": "mainnet/erc-20.json",
     "erc721IndexURL": "mainnet/erc-721.json",
     "sourcifySetup": {
