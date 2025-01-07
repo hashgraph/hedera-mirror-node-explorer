@@ -99,7 +99,6 @@ button.dialog-button:disabled {
 button.dialog-button.is-default {
   color: var(--button-text-primary);
   background-color: var(--button-background-primary);
-  cursor: not-allowed;
 }
 
 </style>
