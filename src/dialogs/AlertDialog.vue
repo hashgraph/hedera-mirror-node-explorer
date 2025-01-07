@@ -26,10 +26,10 @@
   <Dialog :controller="controller">
 
     <template v-slot:dialogInput>
-      <div class="is-flex is-justify-content-center h-is-tertiary-text">
-            <span class="icon has-text-warning h-is-secondary-title mr-3">
-                <i class="fas fa-exclamation-triangle"></i>
-            </span>
+      <div>
+        <span class="icon">
+            <i class="fas fa-exclamation-triangle"></i>
+        </span>
         <slot name="alertMessage"/>
       </div>
     </template>
@@ -65,4 +65,22 @@ const controller = new DialogController(visible)
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+div {
+  display: flex;
+  justify-content: center;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+span.icon {
+  height: 1.5rem;
+  width: 1.5rem;
+  color: rgb(255, 183, 15);
+  margin-right: 0.75rem;
+}
+
+</style>
