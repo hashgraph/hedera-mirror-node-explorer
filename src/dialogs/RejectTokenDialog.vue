@@ -118,17 +118,17 @@
 import {computed, onMounted, PropType, ref, watch} from "vue";
 import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import {tokenOrNftId, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
-import {TransactionID} from "@/utils/TransactionID";
-import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
+import {TransactionID} from "@/utils/TransactionID.ts";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
 import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
-import {walletManager} from "@/router";
+import {walletManager} from "@/router.ts";
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";
-import {isSuccessfulResult} from "@/utils/TransactionTools";
-import {FreezeStatus, Nft, Token} from "@/schemas/MirrorNodeSchemas";
+import {isSuccessfulResult} from "@/utils/TransactionTools.ts";
+import {FreezeStatus, Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
+import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";
 
 const MAX_TOKENS_PER_REJECT = 10
 
