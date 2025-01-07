@@ -277,8 +277,6 @@
 
       <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
-<!--      <ERCTokensSection :account-id="normalizedAccountId" :full-page="false"/>-->
-
       <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
         <template v-slot:title>
           <p id="recentTransactions" class="h-is-secondary-title">Recent Operations</p>
