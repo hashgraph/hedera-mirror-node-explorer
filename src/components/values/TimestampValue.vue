@@ -24,7 +24,7 @@
 
 <template>
 
-  <template v-if="timestamp">
+  <span v-if="timestamp">
     <template v-if="isNever">
       <span class="has-text-grey">Never</span>
     </template>
@@ -47,7 +47,7 @@
         </span>
       </span>
     </template>
-  </template>
+  </span>
 
   <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
 

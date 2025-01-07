@@ -69,7 +69,7 @@ const accountId = walletManager.accountId
 //
 // Rewards Transactions Table Controller
 //
-const pageSize = ref(6)
+const pageSize = ref(5)
 const transactionTableController = new StakingRewardsTableController(
     router,
     accountId,
