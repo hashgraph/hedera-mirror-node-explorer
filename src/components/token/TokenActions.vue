@@ -139,7 +139,7 @@ import {computed, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import AlertDialog from "@/components/AlertDialog.vue";
+import AlertDialog from "@/dialogs/AlertDialog.vue";
 import {gtagTransaction} from "@/gtag";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
