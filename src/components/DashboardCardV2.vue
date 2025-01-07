@@ -129,7 +129,7 @@ div.card-root {
 }
 
 div.card-header {
-  align-items: flex-start;
+  align-items: center;
   border-bottom: 1px solid var(--network-theme-color);
   display: flex;
   gap: 12px;
@@ -151,7 +151,7 @@ div.card-title {
   font-size: 20px;
   font-weight: 500;
   height: 26px;
-  margin: 0;
+  margin-bottom: 8px;
 }
 
 div.right-header {
