@@ -101,6 +101,7 @@ div.item-l2 {
   align-items: baseline;
   display: flex;
   gap: 4px;
+  padding-bottom: 5px;
 }
 
 .item-value {
