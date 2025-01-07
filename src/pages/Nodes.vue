@@ -35,48 +35,48 @@
         <template #content>
           <div class="network-dashboard">
             <NetworkDashboardItemV2
-                title="Last Staked"
+                title="LAST STAKED"
                 :value="formatSeconds((elapsedMin??0)*60) + ' ago'"
             />
             <NetworkDashboardItemV2
-                title="Next Staking Period"
+                title="NEXT STAKING PERIOD"
                 :value="'in ' + formatSeconds((remainingMin??0)*60)"
             />
             <NetworkDashboardItemV2
-                title="Staking Period"
+                title="STAKING PERIOD"
                 :value="formatSeconds((durationMin??0)*60)"
             />
             <NetworkDashboardItemV2
                 :unit=cryptoName
-                title="Total Staked"
+                title="TOTAL STAKED"
                 :value="makeFloorHbarAmount(stakeTotal)"
                 :tooltip-label="stakeTotalTooltip"
             />
             <NetworkDashboardItemV2
                 :unit=cryptoName
-                title="Staked for Reward"
+                title="STAKED FOR REWARD"
                 :value="makeFloorHbarAmount(stakeRewardedTotal)"
                 :tooltip-label="stakeRewardedTotalTooltip"
             />
             <NetworkDashboardItemV2
                 :unit=cryptoName
-                title="Maximum Staked for Reward"
+                title="MAXIMUM STAKED FOR REWARD"
                 :value="makeFloorHbarAmount(maxStakeRewarded)"
                 :tooltip-label="maxStakeRewardedTooltip"
             />
             <NetworkDashboardItemV2
                 :unit=cryptoName
-                title="Rewarded Last Period"
+                title="REWARDED LAST PERIOD"
                 :value="makeFloorHbarAmount(totalRewarded)"
                 :tooltip-label="totalRewardedTooltip"
             />
             <NetworkDashboardItemV2
-                title="Maximum Reward Rate"
+                title="MAXIMUM REWARD RATE"
                 :value="makeAnnualizedRate(maxRewardRate)"
                 :tooltip-label="maxRewardRateTooltip"
             />
             <NetworkDashboardItemV2
-                title="Current Reward Rate"
+                title="CURRENT REWARD RATE"
                 :value="makeAnnualizedRate(rewardRate)"
                 :tooltip-label="rewardRateTooltip"
             />
