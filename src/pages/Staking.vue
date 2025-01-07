@@ -62,11 +62,6 @@
       </template>
     </ProgressDialog>
 
-    <CSVDownloadDialog v-if="accountId"
-                       v-model:show-dialog="showDownloadDialog"
-                       :downloader="downloader"
-                       :account-id="accountId"/>
-
     <div class="page-container">
 
       <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
@@ -145,22 +140,9 @@
         </template>
       </DashboardCardV2>
 
-      <DashboardCardV2 v-if="accountId" collapsible-key="myRecentRewards">
-        <template #title>
-          <span>Recent Staking Rewards</span>
-        </template>
-        <template #right-control>
-          <DownloadButton @click="showDownloadDialog = true"/>
-        </template>
-        <template #content>
-          <StakingRewardsTable :controller="transactionTableController"/>
-        </template>
-      </DashboardCardV2>
+      <RecentRewardsSection/>
 
-      <RewardsCalculator
-          :amount-in-hbar="balanceInHbar"
-          :node-id="stakedNode?.node_id"
-      />
+      <RewardsCalculator :amount-in-hbar="balanceInHbar" :node-id="stakedNode?.node_id"/>
 
     </div>
 
@@ -174,13 +156,11 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import {useRouter} from "vue-router";
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {waitFor} from "@/utils/TimerUtils";
-import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
@@ -188,19 +168,15 @@ import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import {TransactionID} from "@/utils/TransactionID";
-import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
-import DownloadButton from "@/components/DownloadButton.vue";
-import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
-import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {gtagTransaction} from "@/gtag";
-import {AppStorage} from "@/AppStorage";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
+import RecentRewardsSection from "@/components/staking/RecentRewardsSection.vue";
 
 const props = defineProps({
   network: String,
@@ -210,11 +186,8 @@ const props = defineProps({
   }
 })
 
-const isMediumScreen = inject('isMediumScreen', true)
 const cryptoName = CoreConfig.inject().cryptoName
 const networkConfig = NetworkConfig.inject()
-
-const router = useRouter()
 
 const stakingDialogVisible = ref(false)
 const stopConfirmDialogVisible = ref(false)
@@ -225,7 +198,6 @@ const progressMainMessage = ref<string | null>(null)
 const progressExtraMessage = ref<string | null>(null)
 const progressExtraTransactionId = ref<string | null>(null)
 const showProgressSpinner = ref(false)
-const showDownloadDialog = ref(false)
 
 //
 // Account
@@ -375,23 +347,6 @@ const waitForTransactionRefresh = async (transactionId: string) => {
 
   return result
 }
-
-//
-// Rewards Transactions Table Controller
-//
-const pageSize = ref(isMediumScreen ? 10 : 5)
-const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize, AppStorage.STAKING_TABLE_PAGE_SIZE_KEY)
-onMounted(() => transactionTableController.mount())
-onBeforeUnmount(() => transactionTableController.unmount())
-
-//
-// Rewards transaction downloader
-//
-const downloader = new RewardDownloader(
-    walletManager.accountId,
-    ref(null),
-    ref(null),
-    1000)
 
 const enableWallet = routeManager.enableWallet
 const accountId = walletManager.accountId
