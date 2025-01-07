@@ -129,13 +129,13 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
 import {walletManager} from "@/router";
 import DoneDialog from '../DoneDialog.vue';
 import ConfirmDialog from '../ConfirmDialog.vue';
 import DynamicDialog from '../DynamicDialog.vue';
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {computed, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from './TokenInfoAnalyzer';
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
@@ -146,423 +146,377 @@ import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import axios, {AxiosResponse} from "axios";
 import {Nfts} from "@/schemas/MirrorNodeSchemas";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
+//
+// States
+//
+const action = ref("")
+const isActive = ref(false)
+const tokenSerialNumber = ref("")
+const serialNumberInputRef = ref(null)
+const isHieroWallet = computed(() => walletManager.isHieroWallet.value)
+const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
 
-export default defineComponent({
-  name: "TokenActions",
-  components: {AlertDialog, ConfirmDialog, ProgressDialog, DoneDialog, DynamicDialog},
-  props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
-  },
-  emits: ['completed'],
-  setup(props, context) {
-    //
-    // States
-    //
-    const action = ref("")
-    const isActive = ref(false)
-    const tokenSerialNumber = ref("")
-    const serialNumberInputRef = ref(null)
-    const isHieroWallet = computed(() => walletManager.isHieroWallet.value)
-    const isEthereumWallet = computed(() => walletManager.isEthereumWallet.value)
-    const isWatchAssetSupported = computed(() => walletManager.isEthereumWallet.value)
+//
+// Token Info States
+//
+const tokenType = computed(() => props.analyzer.isFungible.value ? "token" : "NFT")
+const tokenId = computed(() => props.analyzer.tokenId.value)
+const accountId = computed(() => walletManager.accountId.value)
+const tokenSymbol = computed(() => props.analyzer.tokenSymbol.value)
+const isAssociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Associated)
+const isDissociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated)
 
-    //
-    // Token Info States
-    //
-    const tokenType = computed(() => props.analyzer.isFungible.value ? "token" : "NFT")
-    const tokenId = computed(() => props.analyzer.tokenId.value)
-    const accountId = computed(() => walletManager.accountId.value)
-    const tokenSymbol = computed(() => props.analyzer.tokenSymbol.value)
-    const isAssociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Associated)
-    const isDissociated = computed(() => props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated)
+const associationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(walletManager.accountId, tokenId)
+onMounted((() => associationLookup.mount()))
+onBeforeUnmount((() => associationLookup.unmount()))
 
-    const associationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(walletManager.accountId, tokenId)
-    onMounted((() => associationLookup.mount()))
-    onBeforeUnmount((() => associationLookup.unmount()))
+const isRejectEnabled = computed(() => {
+  let result: boolean
+  const associations = associationLookup.entity.value
+  if (associations && associations.length >= 1) {
+    result = (associations[0].balance > 0) && isHieroWallet.value && isAssociated.value
+  } else {
+    result = false
+  }
+  return result
+})
 
-    const isRejectEnabled = computed(() => {
-      let result: boolean
-      const associations = associationLookup.entity.value
-      if (associations && associations.length >= 1) {
-        result = (associations[0].balance > 0) && isHieroWallet.value && isAssociated.value
-      } else {
-        result = false
-      }
-      return result
-    })
-
-    // Alert dialog states
-    const alertController = new DialogController()
-    const tooltipLabel = computed(
-        () => {
-          let result: string
-          switch (action.value) {
-            case "ASSOCIATE":
-              result = "Token " + tokenSymbol.value + " cannot be associated because "
-                  + walletManager.accountId.value + " is its treasury account."
-              break
-            case "DISSOCIATE":
-              result = "Token " + tokenSymbol.value + " cannot be dissociated because "
-                  + walletManager.accountId.value + " is its treasury account."
-              break
-            case "REJECT":
-              result = "Token " + tokenSymbol.value + " cannot be rejected because "
-                  + walletManager.accountId.value + " is its treasury account."
-              break
-            default:
-              result = "?"
-              break
-          }
-          return result
-        }
-    )
-
-    //
-    // Confirm dialog states
-    //
-    const watchInWallet = ref(false)
-    const showConfirmDialog = ref(false)
-    const dialogTitle = ref<string | null>(null)
-    const confirmMessage = ref<string | null>(null)
-    const confirmExtraMessage = ref<string | null>(null)
-    const showWatchOption = computed(() => action.value === 'ASSOCIATE' && props.analyzer.isFungible.value)
-
-    //
-    // Dynamic dialog states
-    //
-    const showDynamicDialog = ref(false)
-    const dynamicMessage = ref<string | null>(null)
-
-    //
-    // Progress dialog states
-    //
-    const showProgressDialog = ref(false)
-    const showProgressSpinner = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressMainMessage = ref<string | null>(null)
-    const progressExtraMessage = ref<string | null>(null)
-    const progressExtraTransactionId = ref<string | null>(null)
-
-    //
-    // Done dialog states
-    //
-    const showDoneDialog = ref(false)
-    const doneMessage = ref<string | null>(null)
-
-
-    //
-    // handleAssociate()
-    //
-    const handleAssociate = () => {
-      action.value = 'ASSOCIATE'
-      showConfirmDialog.value = true
-      dialogTitle.value = `Associate ${tokenType.value} ${tokenId.value}`
-      confirmMessage.value = `Confirm associating ${tokenType.value} ${tokenId.value! + "(" + tokenSymbol.value + ")"} to account ${accountId.value}?`
-      confirmExtraMessage.value = null
-    }
-
-    //
-    // handleDissociate()
-    //
-    const handleDissociate = () => {
-      action.value = 'DISSOCIATE'
-
-      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-        showConfirmDialog.value = true
-        dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
-        confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
-        confirmExtraMessage.value = null
-      } else {
-        alertController.visible.value = true
-      }
-    }
-
-    //
-    // handleReject()
-    //
-    const handleReject = () => {
-      action.value = 'REJECT'
-
-      if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
-        showConfirmDialog.value = true
-        dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
-        if (tokenType.value === 'NFT') {
-          confirmMessage.value = `Confirm rejecting NFTs of collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
-        } else {
-          confirmMessage.value = `Confirm rejecting token ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
-        }
-        confirmExtraMessage.value = null
-      } else {
-        alertController.visible.value = true
-      }
-    }
-
-    //
-    // handleImport()
-    //
-    const handleImport = () => {
-      action.value = "IMPORT_TOKEN"
-
-      if (props.analyzer.isFungible.value) {
-        dialogTitle.value = `Import token ${tokenId.value}`
-        handleConfirm();
-      } else {
-        showDynamicDialog.value = true
-        dialogTitle.value = `Import NFT`
-        dynamicMessage.value = `Importing NFT ${tokenId.value!} (${tokenSymbol.value}) requires serial number of the token.`
-      }
-    }
-
-    //
-    // handleConfirm()
-    //
-    const handleConfirm = () => {
-      isActive.value = false
-      showConfirmDialog.value = false
-      showDynamicDialog.value = false
-      showProgressDialog.value = true
-      showProgressSpinner.value = true
-      progressMainMessage.value = null
-      progressExtraMessage.value = null
-      progressDialogMode.value = Mode.Busy
+// Alert dialog states
+const alertController = new DialogController()
+const tooltipLabel = computed(
+    () => {
+      let result: string
       switch (action.value) {
         case "ASSOCIATE":
-          associateAction();
-          break;
+          result = "Token " + tokenSymbol.value + " cannot be associated because "
+              + walletManager.accountId.value + " is its treasury account."
+          break
         case "DISSOCIATE":
-          dissociateAction();
-          break;
+          result = "Token " + tokenSymbol.value + " cannot be dissociated because "
+              + walletManager.accountId.value + " is its treasury account."
+          break
         case "REJECT":
-          rejectAction();
-          break;
-        case "IMPORT_TOKEN":
-          importTokenAction();
-          break;
+          result = "Token " + tokenSymbol.value + " cannot be rejected because "
+              + walletManager.accountId.value + " is its treasury account."
+          break
+        default:
+          result = "?"
+          break
+      }
+      return result
+    }
+)
+
+//
+// Confirm dialog states
+//
+const watchInWallet = ref(false)
+const showConfirmDialog = ref(false)
+const dialogTitle = ref<string | null>(null)
+const confirmMessage = ref<string | null>(null)
+const confirmExtraMessage = ref<string | null>(null)
+const showWatchOption = computed(() => action.value === 'ASSOCIATE' && props.analyzer.isFungible.value)
+
+//
+// Dynamic dialog states
+//
+const showDynamicDialog = ref(false)
+const dynamicMessage = ref<string | null>(null)
+
+//
+// Progress dialog states
+//
+const showProgressDialog = ref(false)
+const showProgressSpinner = ref(false)
+const progressDialogMode = ref(Mode.Busy)
+const progressMainMessage = ref<string | null>(null)
+const progressExtraMessage = ref<string | null>(null)
+const progressExtraTransactionId = ref<string | null>(null)
+
+//
+// Done dialog states
+//
+const showDoneDialog = ref(false)
+const doneMessage = ref<string | null>(null)
+
+
+//
+// handleAssociate()
+//
+const handleAssociate = () => {
+  action.value = 'ASSOCIATE'
+  showConfirmDialog.value = true
+  dialogTitle.value = `Associate ${tokenType.value} ${tokenId.value}`
+  confirmMessage.value = `Confirm associating ${tokenType.value} ${tokenId.value! + "(" + tokenSymbol.value + ")"} to account ${accountId.value}?`
+  confirmExtraMessage.value = null
+}
+
+//
+// handleDissociate()
+//
+const handleDissociate = () => {
+  action.value = 'DISSOCIATE'
+
+  if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
+    showConfirmDialog.value = true
+    dialogTitle.value = `Dissociate ${tokenType.value} ${tokenId.value}`
+    confirmMessage.value = `Confirm dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+    confirmExtraMessage.value = null
+  } else {
+    alertController.visible.value = true
+  }
+}
+
+//
+// handleReject()
+//
+const handleReject = () => {
+  action.value = 'REJECT'
+
+  if (props.analyzer.treasuryAccount.value != walletManager.accountId.value) {
+    showConfirmDialog.value = true
+    dialogTitle.value = `Reject ${tokenType.value} ${tokenId.value}`
+    if (tokenType.value === 'NFT') {
+      confirmMessage.value = `Confirm rejecting NFTs of collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+    } else {
+      confirmMessage.value = `Confirm rejecting token ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}?`
+    }
+    confirmExtraMessage.value = null
+  } else {
+    alertController.visible.value = true
+  }
+}
+
+//
+// handleImport()
+//
+const handleImport = () => {
+  action.value = "IMPORT_TOKEN"
+
+  if (props.analyzer.isFungible.value) {
+    dialogTitle.value = `Import token ${tokenId.value}`
+    handleConfirm();
+  } else {
+    showDynamicDialog.value = true
+    dialogTitle.value = `Import NFT`
+    dynamicMessage.value = `Importing NFT ${tokenId.value!} (${tokenSymbol.value}) requires serial number of the token.`
+  }
+}
+
+//
+// handleConfirm()
+//
+const handleConfirm = () => {
+  isActive.value = false
+  showConfirmDialog.value = false
+  showDynamicDialog.value = false
+  showProgressDialog.value = true
+  showProgressSpinner.value = true
+  progressMainMessage.value = null
+  progressExtraMessage.value = null
+  progressDialogMode.value = Mode.Busy
+  switch (action.value) {
+    case "ASSOCIATE":
+      associateAction();
+      break;
+    case "DISSOCIATE":
+      dissociateAction();
+      break;
+    case "REJECT":
+      rejectAction();
+      break;
+    case "IMPORT_TOKEN":
+      importTokenAction();
+      break;
+  }
+}
+
+//
+// handleDoneConfirm()
+//
+const handleDoneConfirm = () => {
+  isActive.value = false
+  doneMessage.value = null
+  dialogTitle.value = null
+  showDoneDialog.value = false
+  tokenSerialNumber.value = ""
+  showDynamicDialog.value = false
+}
+
+//
+// handleCancel()
+//
+const handleCancel = () => {
+  isActive.value = false
+  showConfirmDialog.value = false
+  showDynamicDialog.value = false
+}
+
+//
+// associateAction()
+//
+const associateAction = async () => {
+  try {
+    if (props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated) {
+      showProgressDialog.value = true
+      showProgressSpinner.value = true
+      progressMainMessage.value = `Associating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) to account ${accountId.value}...`
+
+      try {
+        await walletManager.associateToken(tokenId.value!)
+      } finally {
+        emit('completed')
+        props.analyzer.tokenAssociationDidChange()
+        gtagTransaction("associate_token")
       }
     }
 
-    //
-    // handleDoneConfirm()
-    //
-    const handleDoneConfirm = () => {
-      isActive.value = false
-      doneMessage.value = null
-      dialogTitle.value = null
-      showDoneDialog.value = false
-      tokenSerialNumber.value = ""
-      showDynamicDialog.value = false
+    if (watchInWallet.value) {
+      await importTokenAction()
+    } else {
+      showDoneDialog.value = true
+      dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
+      doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
+      showProgressDialog.value = false
     }
+  } catch (reason) {
+    handleError(reason)
+  }
+}
 
-    //
-    // handleCancel()
-    //
-    const handleCancel = () => {
-      isActive.value = false
-      showConfirmDialog.value = false
-      showDynamicDialog.value = false
-    }
-
-    //
-    // associateAction()
-    //
-    const associateAction = async () => {
+//
+// dissociateAction()
+//
+const dissociateAction = async () => {
+  try {
+    if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
+      showProgressDialog.value = true
+      showProgressSpinner.value = true
+      progressMainMessage.value = `Dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
       try {
-        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Dissociated) {
-          showProgressDialog.value = true
-          showProgressSpinner.value = true
-          progressMainMessage.value = `Associating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) to account ${accountId.value}...`
-
-          try {
-            await walletManager.associateToken(tokenId.value!)
-          } finally {
-            context.emit('completed')
-            props.analyzer.tokenAssociationDidChange()
-            gtagTransaction("associate_token")
-          }
-        }
-
-        if (watchInWallet.value) {
-          await importTokenAction()
-        } else {
-          showDoneDialog.value = true
-          dialogTitle.value = `Successfully associated ${tokenType.value} ${tokenId.value!}`
-          doneMessage.value = `Successfully associated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to account ${accountId.value}`
-          showProgressDialog.value = false
-        }
-      } catch (reason) {
-        handleError(reason)
+        await walletManager.dissociateToken(tokenId.value!)
+      } finally {
+        TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, tokenId.value!)
+        props.analyzer.tokenAssociationDidChange()
+        emit('completed')
+        gtagTransaction("dissociate_token")
       }
     }
+    showProgressDialog.value = false
+    showDoneDialog.value = true
+    dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
+    doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+  } catch (reason) {
+    handleError(reason)
+  }
+}
 
-    //
-    // dissociateAction()
-    //
-    const dissociateAction = async () => {
-      try {
-        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
-          showProgressDialog.value = true
-          showProgressSpinner.value = true
-          progressMainMessage.value = `Dissociating ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
-          try {
-            await walletManager.dissociateToken(tokenId.value!)
-          } finally {
-            TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, tokenId.value!)
-            props.analyzer.tokenAssociationDidChange()
-            context.emit('completed')
-            gtagTransaction("dissociate_token")
-          }
-        }
-        showProgressDialog.value = false
-        showDoneDialog.value = true
-        dialogTitle.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}`
-        doneMessage.value = `Successfully dissociated ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
-      } catch (reason) {
-        handleError(reason)
+//
+// rejectAction()
+//
+const rejectAction = async () => {
+  try {
+    if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
+      showProgressDialog.value = true
+      showProgressSpinner.value = true
+      if (tokenType.value === 'NFT') {
+        progressMainMessage.value = `Rejecting NFTs from collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
+      } else {
+        progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
       }
-    }
-
-    //
-    // rejectAction()
-    //
-    const rejectAction = async () => {
       try {
-        if (props.analyzer.associationStatus.value == TokenAssociationStatus.Associated) {
-          showProgressDialog.value = true
-          showProgressSpinner.value = true
-          if (tokenType.value === 'NFT') {
-            progressMainMessage.value = `Rejecting NFTs from collection ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
-          } else {
-            progressMainMessage.value = `Rejecting ${tokenType.value} ${tokenId.value!} (${tokenSymbol.value}) from account ${accountId.value}...`
-          }
-          try {
-            if (tokenType.value === 'NFT') {
-              let url: string | null = "api/v1/accounts/" + accountId.value + "/nfts?token.id=" + tokenId.value + "&limit=10"
-              let counter = 10
-              while (url !== null && counter > 0) {
-                const response: AxiosResponse<Nfts> = await axios.get<Nfts>(url)
-                if (response.data.nfts) {
-                  const transaction = new TokenRejectTransaction()
-                  for (const nft of response.data.nfts) {
-                    transaction.addNftId(new NftId(TokenId.fromString(nft.token_id!), nft.serial_number))
-                  }
-                  await walletManager.rejectTokens(transaction)
-                }
-                url = response.data.links?.next ?? null
-                counter -= 1
-              }
-            } else {
+        if (tokenType.value === 'NFT') {
+          let url: string | null = "api/v1/accounts/" + accountId.value + "/nfts?token.id=" + tokenId.value + "&limit=10"
+          let counter = 10
+          while (url !== null && counter > 0) {
+            const response: AxiosResponse<Nfts> = await axios.get<Nfts>(url)
+            if (response.data.nfts) {
               const transaction = new TokenRejectTransaction()
-              transaction.addTokenId(TokenId.fromString(tokenId.value!))
+              for (const nft of response.data.nfts) {
+                transaction.addNftId(new NftId(TokenId.fromString(nft.token_id!), nft.serial_number))
+              }
               await walletManager.rejectTokens(transaction)
             }
-          } finally {
-            TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, tokenId.value!)
-            props.analyzer.tokenAssociationDidChange()
-            context.emit('completed')
-            gtagTransaction("reject_token")
+            url = response.data.links?.next ?? null
+            counter -= 1
           }
+        } else {
+          const transaction = new TokenRejectTransaction()
+          transaction.addTokenId(TokenId.fromString(tokenId.value!))
+          await walletManager.rejectTokens(transaction)
         }
-        showProgressDialog.value = false
-        showDoneDialog.value = true
-        dialogTitle.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}`
-        doneMessage.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
-      } catch (reason) {
-        handleError(reason)
+      } finally {
+        TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, tokenId.value!)
+        props.analyzer.tokenAssociationDidChange()
+        emit('completed')
+        gtagTransaction("reject_token")
       }
     }
+    showProgressDialog.value = false
+    showDoneDialog.value = true
+    dialogTitle.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}`
+    doneMessage.value = `Successfully rejected ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) from account ${accountId.value}`
+  } catch (reason) {
+    handleError(reason)
+  }
+}
 
-    //
-    // importTokenAction()
-    //
-    const importTokenAction = async () => {
-      try {
-        if (props.analyzer.isFungible.value) {
-          progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
-          await walletManager.watchToken(tokenId.value!)
-        } else {
-          dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
-          progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
-          await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
-        }
-
-        isActive.value = false
-        showDoneDialog.value = true
-        showProgressDialog.value = false
-        dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
-        if (props.analyzer.isFungible.value) {
-          doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to ${walletManager.walletName.value}`
-        } else {
-          doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) #${tokenSerialNumber.value} to ${walletManager.walletName.value}`
-        }
-      } catch (reason) {
-        handleError(reason)
-      }
+//
+// importTokenAction()
+//
+const importTokenAction = async () => {
+  try {
+    if (props.analyzer.isFungible.value) {
+      progressMainMessage.value = `Importing token ${tokenId.value} (${tokenSymbol.value}) to wallet ${walletManager.walletName.value}...`
+      await walletManager.watchToken(tokenId.value!)
+    } else {
+      dialogTitle.value = `Import NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value}`
+      progressMainMessage.value = `Importing NFT ${tokenId.value}(${tokenSymbol.value}) #${tokenSerialNumber.value} to wallet ${walletManager.walletName.value}...`
+      await walletManager.watchToken(tokenId.value!, tokenSerialNumber.value.toString())
     }
 
-    //
-    // handleError()
-    //
-    const handleError = (reason: unknown) => {
-      if (reason instanceof WalletClientRejectError) {
-        showProgressDialog.value = false
-      } else {
-        showProgressDialog.value = true
-        showProgressSpinner.value = false
-        progressDialogMode.value = Mode.Error
-        if (reason instanceof WalletClientError) {
-          progressMainMessage.value = reason.message
-          progressExtraMessage.value = reason.extra
-        } else {
-          progressMainMessage.value = "Unexpected error"
-          progressExtraMessage.value = JSON.stringify(reason)
-        }
-      }
+    isActive.value = false
+    showDoneDialog.value = true
+    showProgressDialog.value = false
+    dialogTitle.value = `Successfully imported ${tokenType.value} ${tokenId.value!}`
+    if (props.analyzer.isFungible.value) {
+      doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) to ${walletManager.walletName.value}`
+    } else {
+      doneMessage.value = `Successfully imported ${tokenType.value} ${tokenId.value!}(${tokenSymbol.value}) #${tokenSerialNumber.value} to ${walletManager.walletName.value}`
     }
+  } catch (reason) {
+    handleError(reason)
+  }
+}
 
-
-    return {
-      isActive,
-      dialogTitle,
-      tokenSymbol,
-      doneMessage,
-      handleCancel,
-      isAssociated,
-      handleImport,
-      watchInWallet,
-      handleConfirm,
-      walletManager,
-      isDissociated,
-      isRejectEnabled,
-      alertController,
-      tooltipLabel,
-      confirmMessage,
-      dynamicMessage,
-      showDoneDialog,
-      handleAssociate,
-      showWatchOption,
-      handleDissociate,
-      handleReject,
-      isEthereumWallet,
-      showDynamicDialog,
-      tokenSerialNumber,
-      handleDoneConfirm,
-      showConfirmDialog,
-      importTokenAction,
-      showProgressDialog,
-      progressDialogMode,
-      confirmExtraMessage,
-      progressMainMessage,
-      showProgressSpinner,
-      progressExtraMessage,
-      serialNumberInputRef,
-      isWatchAssetSupported,
-      progressExtraTransactionId,
+//
+// handleError()
+//
+const handleError = (reason: unknown) => {
+  if (reason instanceof WalletClientRejectError) {
+    showProgressDialog.value = false
+  } else {
+    showProgressDialog.value = true
+    showProgressSpinner.value = false
+    progressDialogMode.value = Mode.Error
+    if (reason instanceof WalletClientError) {
+      progressMainMessage.value = reason.message
+      progressExtraMessage.value = reason.extra
+    } else {
+      progressMainMessage.value = "Unexpected error"
+      progressExtraMessage.value = JSON.stringify(reason)
     }
   }
+}
+
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<TokenInfoAnalyzer>,
+    required: true
+  }
 })
+
+const emit = defineEmits(["completed"])
 
 </script>
 
