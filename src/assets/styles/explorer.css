@@ -34,12 +34,15 @@
     --light-text-accent2: #255CF4;
     --light-text-success: #00722D;
     --light-text-danger: #AA0000;
+    --light-text-disabled: #BDBDBD;
     --light-background-primary: #F6F6F6;
     --light-background-tertiary: #FFFFFF;
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
     --light-chip-primary: var(--light-network-theme-color);
     --light-chip-text-primary: white;
+    --light-button-background-primary: #7A1B80;
+    --light-button-background-secondary: #EFEFEF;
 
     /* default overriden by the current NetworkEntry.lightThemeColor configuration parameter */
     --light-network-theme-color: lightgrey;
@@ -51,12 +54,15 @@
     --dark-text-accent2: #255CF4;
     --dark-text-success: #29BC63;
     --dark-text-danger: #FF0000;
+    --dark-text-disabled: #A2A2A2;
     --dark-background-primary: #131313;
     --dark-background-tertiary: #171717;
     --dark-border-secondary: #2C2C2C;
     --dark-table-border: #1F1F1F;
     --dark-chip-primary: var(--light-network-theme-color);
     --dark-chip-text-primary: white;
+    --dark-button-background-primary: #7A1B80;
+    --dark-button-background-secondary: #2C2C2C;
 
     /* default overriden by the current NetworkEntry.darkThemeColor configuration parameter */
     --dark-network-theme-color: lightgrey;
@@ -68,6 +74,7 @@
     --text-accent2: var(--light-text-accent2);
     --text-success: var(--light-text-success);
     --text-danger: var(--light-text-danger);
+    --text-disabled: var(--light-text-disabled);
     --background-primary: var(--light-background-primary);
     --background-tertiary: var(--light-background-tertiary);
     --border-secondary: var(--light-border-secondary);
@@ -75,9 +82,9 @@
     --chip-primary: var(--light-chip-primary);
     --chip-text-primary: var(--light-chip-text-primary);
     --button-text-primary: #FFFFFF;
-    --button-text-secondary: #050505;
-    --button-background-primary: #7A1B80;
-    --button-background-secondary: #EFEFEF;
+    --button-text-secondary: var(--text-primary);
+    --button-background-primary: var(--light-button-background-primary);
+    --button-background-secondary: var(--light-button-background-secondary);
 
     --network-theme-color: var(--light-network-theme-color);
 }
