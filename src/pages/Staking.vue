@@ -212,9 +212,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
@@ -242,269 +242,206 @@ import {AppStorage} from "@/AppStorage";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
-export default defineComponent({
-  name: 'Staking',
-
-  props: {
-    network: String,
-    polling: { // For testing purpose
-      type: Number,
-      default: 3000 // Because a transaction emerges 3 or 4 seconds in mirror node after its completion in network
-    }
-  },
-
-  components: {
-    CSVDownloadDialog,
-    DownloadButton,
-    RewardsCalculator,
-    AccountLink,
-    ConfirmDialog,
-    ProgressDialog,
-    DashboardCard,
-    StakingDialog,
-    StakingRewardsTable,
-    NetworkDashboardItem,
-    PageFrameV2,
-  },
-
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const cryptoName = CoreConfig.inject().cryptoName
-    const networkConfig = NetworkConfig.inject()
-
-    const router = useRouter()
-
-    const stakingDialogVisible = ref(false)
-    const stopConfirmDialogVisible = ref(false)
-    const showErrorDialog = ref(false)
-    const showProgressDialog = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressDialogTitle = ref<string | null>(null)
-    const progressMainMessage = ref<string | null>(null)
-    const progressExtraMessage = ref<string | null>(null)
-    const progressExtraTransactionId = ref<string | null>(null)
-    const showProgressSpinner = ref(false)
-    const showDownloadDialog = ref(false)
-
-    const connecting = ref(false)
-
-    //
-    // Account
-    //
-    const accountLocParser = new AccountLocParser(walletManager.accountId,networkConfig)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const isStakedToNode = computed(() => accountLocParser.stakedNodeId.value !== null)
-    const isStakedToAccount = computed(() => accountLocParser.stakedAccountId.value)
-    const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
-
-    const stakedTo = computed(() => {
-      let result: string | null
-      if (isStakedToAccount.value) {
-        result = "Account " + accountLocParser.stakedAccountId.value
-      } else if (isStakedToNode.value) {
-        result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeAnalyzer.shortNodeDescription.value
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const accountRoute = computed(() => {
-      return walletManager.accountId.value !== null
-          ? routeManager.makeRouteToAccount(walletManager.accountId.value)
-          : null
-    })
-
-    const balanceInHbar = computed(() => {
-      const balance = accountLocParser.balance.value ?? 10000000000
-      return balance / 100000000
-    })
-
-    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
-
-    const formatHbarAmount = (amount: number | null) => {
-      let result: string | null
-      if (amount) {
-        const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
-        result = amountFormatter.format(amount / 100000000)
-      } else {
-        result = null
-      }
-      return result
-    }
-
-    const pendingReward = computed(() => formatHbarAmount(accountLocParser.pendingReward.value ?? null))
-    const declineReward = computed(() => accountLocParser.accountInfo.value?.decline_reward ?? false)
-    const ignoreReward = computed(() => accountLocParser.stakedNodeId.value === null)
-
-    //
-    // stakedNode
-    //
-
-    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
-    onMounted(() => stakedNodeAnalyzer.mount())
-    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
-
-    //
-    // handleStopStaking / handleChangeStaking
-    //
-
-    const notWithMetamaskDialogVisible = ref(false)
-
-    const showStopConfirmDialog = () => {
-      if (walletManager.isHieroWallet.value) {
-        stopConfirmDialogVisible.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
-
-    const handleStopStaking = () => {
-      changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
-    }
-
-    const showStakingDialog = () => {
-      if (walletManager.isHieroWallet.value) {
-        stakingDialogVisible.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
-
-    const handleChangeStaking = (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
-      changeStaking(nodeId, accountId, declineReward)
-    }
-
-    const changeStaking = async (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
-
-      try {
-
-        showProgressDialog.value = true
-        progressDialogMode.value = Mode.Busy
-        progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
-        progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
-        progressExtraMessage.value = "Check your wallet for any approval request"
-        progressExtraTransactionId.value = null
-        showProgressSpinner.value = false
-        const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward))
-        progressMainMessage.value = "Completing operation…"
-        progressExtraMessage.value = "This may take a few seconds"
-        showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionId)
-
-        progressDialogMode.value = Mode.Success
-        progressMainMessage.value = "Operation completed"
-        showProgressSpinner.value = false
-        progressExtraMessage.value = "with transaction ID:"
-        progressExtraTransactionId.value = transactionId
-
-      } catch (error) {
-
-        if (error instanceof WalletClientRejectError) {
-          showProgressDialog.value = false
-        } else {
-          progressDialogMode.value = Mode.Error
-          if (error instanceof WalletClientError) {
-            progressMainMessage.value = error.message
-            progressExtraMessage.value = error.extra
-          } else {
-            progressMainMessage.value = "Operation did not complete"
-            progressExtraMessage.value = JSON.stringify(error)
-          }
-          progressExtraTransactionId.value = null
-          showProgressSpinner.value = false
-        }
-
-      } finally {
-        accountLocParser.remount()
-        gtagTransaction("change_staking")
-      }
-
-    }
-
-    const waitForTransactionRefresh = async (transactionId: string) => {
-      let result: Promise<Transaction | string>
-
-      try {
-        let counter = 10
-        let transaction: Transaction | null = null
-        while (counter > 0 && transaction === null) {
-          await waitFor(props.polling)
-          transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
-          counter -= 1
-        }
-        result = Promise.resolve(transaction ?? transactionId)
-      } catch {
-        result = Promise.resolve(transactionId)
-      }
-
-      return result
-    }
-
-    //
-    // Rewards Transactions Table Controller
-    //
-    const pageSize = ref(isMediumScreen ? 10 : 5)
-    const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize, AppStorage.STAKING_TABLE_PAGE_SIZE_KEY)
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
-
-    //
-    // Rewards transaction downloader
-    //
-    const downloader = new RewardDownloader(
-        walletManager.accountId,
-        ref(null),
-        ref(null),
-        1000)
-
-    return {
-      isSmallScreen,
-      isMediumScreen,
-      cryptoName,
-      enableWallet: routeManager.enableWallet,
-      connecting,
-      accountId: walletManager.accountId,
-      isHieroWallet: walletManager.isHieroWallet,
-      accountChecksum: accountLocParser.accountChecksum,
-      account: accountLocParser.accountInfo,
-      accountRoute,
-      stakePeriodStart: accountLocParser.stakePeriodStart,
-      showStakingDialog,
-      stakingDialogVisible,
-      showStopConfirmDialog,
-      stopConfirmDialogVisible,
-      showErrorDialog,
-      showDownloadDialog,
-      isStakedToNode,
-      isStakedToAccount,
-      stakedTo,
-      stakedNode: stakedNodeAnalyzer.node,
-      isCouncilNode: stakedNodeAnalyzer.isCouncilNode,
-      balanceInHbar,
-      stakedAmount,
-      pendingReward,
-      declineReward,
-      ignoreReward,
-      handleStopStaking,
-      handleChangeStaking,
-      showProgressDialog,
-      progressDialogMode,
-      progressDialogTitle,
-      progressMainMessage,
-      progressExtraMessage,
-      progressExtraTransactionId,
-      showProgressSpinner,
-      transactionTableController,
-      downloader,
-      notWithMetamaskDialogVisible,
-      Mode
-    }
+const props = defineProps({
+  network: String,
+  polling: { // For testing purpose
+    type: Number,
+    default: 3000 // Because a transaction emerges 3 or 4 seconds in mirror node after its completion in network
   }
-});
+})
+
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+const cryptoName = CoreConfig.inject().cryptoName
+const networkConfig = NetworkConfig.inject()
+
+const router = useRouter()
+
+const stakingDialogVisible = ref(false)
+const stopConfirmDialogVisible = ref(false)
+const showProgressDialog = ref(false)
+const progressDialogMode = ref(Mode.Busy)
+const progressDialogTitle = ref<string | null>(null)
+const progressMainMessage = ref<string | null>(null)
+const progressExtraMessage = ref<string | null>(null)
+const progressExtraTransactionId = ref<string | null>(null)
+const showProgressSpinner = ref(false)
+const showDownloadDialog = ref(false)
+
+//
+// Account
+//
+const accountLocParser = new AccountLocParser(walletManager.accountId, networkConfig)
+onMounted(() => accountLocParser.mount())
+onBeforeUnmount(() => accountLocParser.unmount())
+
+const isStakedToNode = computed(() => accountLocParser.stakedNodeId.value !== null)
+const isStakedToAccount = computed(() => accountLocParser.stakedAccountId.value)
+const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
+
+const stakedTo = computed(() => {
+  let result: string | null
+  if (isStakedToAccount.value) {
+    result = "Account " + accountLocParser.stakedAccountId.value
+  } else if (isStakedToNode.value) {
+    result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeAnalyzer.shortNodeDescription.value
+  } else {
+    result = null
+  }
+  return result
+})
+
+const balanceInHbar = computed(() => {
+  const balance = accountLocParser.balance.value ?? 10000000000
+  return balance / 100000000
+})
+
+const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
+
+const formatHbarAmount = (amount: number | null) => {
+  let result: string | null
+  if (amount) {
+    const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
+    result = amountFormatter.format(amount / 100000000)
+  } else {
+    result = null
+  }
+  return result
+}
+
+const pendingReward = computed(() => formatHbarAmount(accountLocParser.pendingReward.value ?? null))
+const declineReward = computed(() => accountLocParser.accountInfo.value?.decline_reward ?? false)
+const ignoreReward = computed(() => accountLocParser.stakedNodeId.value === null)
+
+//
+// stakedNode
+//
+
+const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+onMounted(() => stakedNodeAnalyzer.mount())
+onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
+
+//
+// handleStopStaking / handleChangeStaking
+//
+
+const notWithMetamaskDialogVisible = ref(false)
+
+const showStopConfirmDialog = () => {
+  if (walletManager.isHieroWallet.value) {
+    stopConfirmDialogVisible.value = true
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const handleStopStaking = () => {
+  changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
+}
+
+const showStakingDialog = () => {
+  if (walletManager.isHieroWallet.value) {
+    stakingDialogVisible.value = true
+  } else {
+    notWithMetamaskDialogVisible.value = true
+  }
+}
+
+const handleChangeStaking = (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
+  changeStaking(nodeId, accountId, declineReward)
+}
+
+const changeStaking = async (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
+
+  try {
+
+    showProgressDialog.value = true
+    progressDialogMode.value = Mode.Busy
+    progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
+    progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
+    progressExtraMessage.value = "Check your wallet for any approval request"
+    progressExtraTransactionId.value = null
+    showProgressSpinner.value = false
+    const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward))
+    progressMainMessage.value = "Completing operation…"
+    progressExtraMessage.value = "This may take a few seconds"
+    showProgressSpinner.value = true
+    await waitForTransactionRefresh(transactionId)
+
+    progressDialogMode.value = Mode.Success
+    progressMainMessage.value = "Operation completed"
+    showProgressSpinner.value = false
+    progressExtraMessage.value = "with transaction ID:"
+    progressExtraTransactionId.value = transactionId
+
+  } catch (error) {
+
+    if (error instanceof WalletClientRejectError) {
+      showProgressDialog.value = false
+    } else {
+      progressDialogMode.value = Mode.Error
+      if (error instanceof WalletClientError) {
+        progressMainMessage.value = error.message
+        progressExtraMessage.value = error.extra
+      } else {
+        progressMainMessage.value = "Operation did not complete"
+        progressExtraMessage.value = JSON.stringify(error)
+      }
+      progressExtraTransactionId.value = null
+      showProgressSpinner.value = false
+    }
+
+  } finally {
+    accountLocParser.remount()
+    gtagTransaction("change_staking")
+  }
+
+}
+
+const waitForTransactionRefresh = async (transactionId: string) => {
+  let result: Promise<Transaction | string>
+
+  try {
+    let counter = 10
+    let transaction: Transaction | null = null
+    while (counter > 0 && transaction === null) {
+      await waitFor(props.polling)
+      transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
+      counter -= 1
+    }
+    result = Promise.resolve(transaction ?? transactionId)
+  } catch {
+    result = Promise.resolve(transactionId)
+  }
+
+  return result
+}
+
+//
+// Rewards Transactions Table Controller
+//
+const pageSize = ref(isMediumScreen ? 10 : 5)
+const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize, AppStorage.STAKING_TABLE_PAGE_SIZE_KEY)
+onMounted(() => transactionTableController.mount())
+onBeforeUnmount(() => transactionTableController.unmount())
+
+//
+// Rewards transaction downloader
+//
+const downloader = new RewardDownloader(
+    walletManager.accountId,
+    ref(null),
+    ref(null),
+    1000)
+
+const enableWallet = routeManager.enableWallet
+const accountId = walletManager.accountId
+const isHieroWallet = walletManager.isHieroWallet
+const accountChecksum = accountLocParser.accountChecksum
+const account = accountLocParser.accountInfo
+const stakePeriodStart = accountLocParser.stakePeriodStart
+const stakedNode = stakedNodeAnalyzer.node
+const isCouncilNode = stakedNodeAnalyzer.isCouncilNode
 
 </script>
 
