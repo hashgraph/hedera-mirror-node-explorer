@@ -18,12 +18,16 @@
  *
  */
 
-import {ref} from "vue";
+import {ref, Ref} from "vue";
 
 export class DialogController {
 
-    public readonly visible = ref(false)
+    public readonly visible: Ref<boolean>
     public readonly mode = ref<DialogMode>(DialogMode.Input)
+
+    public constructor(visible: Ref<boolean> = ref(false)) {
+        this.visible = visible
+    }
 
     public readonly handleClose = () => {
         this.visible.value = false
