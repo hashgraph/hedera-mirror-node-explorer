@@ -25,10 +25,10 @@
 <template>
   <DialogButton :controller="props.controller" :auto-close="false" :enabled="props.enabled" @action="handleAction" :is-default="true">
     <div class="dialog-stack">
-      <div :class="{'is-invisible': isBusy}">
+      <div :style="{'visibility': isBusy ? 'hidden' : 'visible'}">
         <slot/>
       </div>
-      <div :class="{'is-invisible': !isBusy}">
+      <div :style="{'visibility': isBusy ? 'visible' : 'hidden'}">
         <span class="loader is-inline-block"/>
       </div>
     </div>
