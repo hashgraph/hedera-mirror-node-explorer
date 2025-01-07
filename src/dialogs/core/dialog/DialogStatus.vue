@@ -24,9 +24,9 @@
 
 <template>
 
-  <div class="is-flex is-align-items-baseline">
+  <div style="display: flex; align-items: baseline">
 
-    <div v-if="dialogSuccessVisible" class="icon is-medium has-text-success ml-0">
+    <div v-if="dialogSuccessVisible" class="icon is-medium has-text-success">
       <i class="fas fa-check"/>
     </div>
     <div v-else-if="dialogErrorVisible" class="icon is-medium has-text-danger">
@@ -34,12 +34,12 @@
     </div>
     <div v-else/>
 
-    <div class="block h-is-tertiary-text mt-2">
+    <div class="main-message">
       <slot name="mainMessage"/>
     </div>
   </div>
 
-  <div class="h-is-property-text my-4">
+  <div class="extra-message">
     <slot name="extraMessage"/>
   </div>
 
@@ -81,4 +81,37 @@ const dialogErrorVisible = computed(
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.icon.is-medium {
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  height: 1.5rem;
+  width: 1.5rem;
+}
+
+div.icon.has-text-success {
+  color: var(--text-success);
+}
+
+div.icon.has-text-danger {
+  color: var(--text-danger);
+}
+
+div.main-message {
+  margin-bottom: 1.5rem;
+  margin-top: 0.5rem;
+  font-size: 14px;
+}
+
+div.extra-message {
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 17px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+</style>
