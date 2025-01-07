@@ -24,11 +24,8 @@
 
 <template>
 
-  <button
-      class="button is-small has-text-white ml-2"
-      data-cy="downloadButton"
-      style="background-color: #202532; width: 26px; height: 26px; border:1px solid white; border-radius: 0">
-    <i class="fas fa-download"></i>
+  <button class="download-button" data-cy="downloadButton">
+    <img alt="Download" :src="downloadURL">
   </button>
 
 </template>
@@ -37,13 +34,15 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent} from "vue";
+import {ThemeController} from "@/components/ThemeController.ts";
+import downloadDarkURL from "@/assets/download-dark.svg";
+import downloadLightURL from "@/assets/download-light.svg";
+import {computed} from "vue";
 
-export default defineComponent({
-  name: "DownloadButton",
-});
+const darkSelected = ThemeController.inject().darkSelected
+const downloadURL = computed(() => darkSelected.value ? downloadDarkURL : downloadLightURL)
 
 </script>
 
@@ -51,5 +50,11 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+button.download-button {
+  height: 24px;
+}
+
+</style>
 
