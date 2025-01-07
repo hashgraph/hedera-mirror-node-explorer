@@ -30,9 +30,9 @@
       :loading="loading"
       :paginated="paginated"
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -50,12 +50,12 @@
       aria-previous-label="Previous page"
       customRowKey="consensus_timestamp"
   >
-    <o-table-column v-slot="props" field="timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.timestamp"/>
+    <o-table-column v-slot="props" field="timestamp" label="TIME">
+      <TimestampValue class="timestamp-value" :timestamp="props.row.timestamp"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Amount Rewarded" position="right">
-      <HbarAmount v-bind:amount="props.row.amount"/>
+    <o-table-column v-slot="props" field="amount" label="AMOUNT REWARDED" position="right">
+      <HbarAmount :amount="props.row.amount"/>
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -81,11 +81,10 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
+import {onBeforeUnmount, onMounted, PropType} from 'vue';
 import {StakingReward} from '@/schemas/MirrorNodeSchemas.ts';
-import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
@@ -93,62 +92,33 @@ import EmptyTable from "@/components/EmptyTable.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
-import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'StakingRewardsTable',
-  computed: {
-    AppStorage() {
-      return AppStorage
-    }
+const props = defineProps({
+  narrowed: Boolean,
+  controller: {
+    type: Object as PropType<StakingRewardsTableController>,
+    required: true
   },
+})
 
-  components: {TablePageSize, HbarAmount, EmptyTable, TimestampValue},
+onMounted(() => props.controller.mount())
+onBeforeUnmount(() => props.controller.unmount())
 
-  props: {
-    narrowed: Boolean,
-    controller: {
-      type: Object as PropType<StakingRewardsTableController>,
-      required: true
-    },
-  },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    onMounted(() => props.controller.mount())
-    onBeforeUnmount(() => props.controller.unmount())
-
-    const handleClick = (t: StakingReward, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (t.timestamp) {
-        routeManager.routeToTransactionByTs(t.timestamp, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      rewards: props.controller.rows as ComputedRef<StakingReward[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      storageKey: props.controller.storageKey,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      accountId: props.controller.accountId as Ref<string>,
-      handleClick,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-
-      // From TransactionTools
-      makeTypeLabel,
-    }
+const handleClick = (t: StakingReward, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (t.timestamp) {
+    routeManager.routeToTransactionByTs(t.timestamp, event)
   }
-});
+}
+
+const rewards = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const storageKey = props.controller.storageKey
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -157,5 +127,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.timestamp-value {
+  font-weight: 600;
+}
 
 </style>
