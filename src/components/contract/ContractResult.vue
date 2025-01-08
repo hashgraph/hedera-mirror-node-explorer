@@ -26,15 +26,15 @@
 
   <template v-if="contractResult">
 
-    <DashboardCard class="h-card" collapsible-key="contractResult">
-      <template v-slot:title>
-        <span v-if="props.topLevel" class="h-is-primary-title">
+    <DashboardCardV2 collapsible-key="contractResult">
+      <template #title>
+        <span v-if="props.topLevel">
           Contract Result for {{ contractResult?.contract_id }} at {{ contractResult?.timestamp }}
         </span>
-        <span v-else class="h-is-secondary-title">Contract Result</span>
+        <span v-else>Contract Result</span>
       </template>
 
-      <template v-slot:leftContent>
+      <template #left-content>
         <Property id="result">
           <template v-slot:name>Result</template>
           <template v-slot:value>
@@ -67,7 +67,7 @@
         <FunctionError :analyzer="analyzer"/>
       </template>
 
-      <template v-slot:rightContent>
+      <template #right-content>
         <Property v-if="contractType" id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
@@ -135,14 +135,15 @@
         </Property>
       </template>
 
-    </DashboardCard>
+    </DashboardCardV2>
 
     <ContractResultTrace v-if="props.isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined"
                          :analyzer="analyzer"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
-    <ContractResultLogs :logs="contractResult?.logs" :block-number="props.blockNumber" :transaction-hash="props.transactionHash"/>
+    <ContractResultLogs :logs="contractResult?.logs" :block-number="props.blockNumber"
+                        :transaction-hash="props.transactionHash"/>
 
   </template>
 
@@ -155,7 +156,6 @@
 <script setup lang="ts">
 
 import {computed, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
@@ -173,6 +173,7 @@ import GasAmount from "@/components/values/GasAmount.vue";
 import {NetworkFeesCache} from "@/utils/cache/NetworkFeesCache.ts";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
 import {lookupTransactionType} from "@/schemas/MirrorNodeUtils.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const props = defineProps({
   timestamp: {
