@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <router-link v-if="!props.fullPage" :to="routeManager.makeRouteToTokensByAccount(accountId)">
+      <router-link v-if="showAllTokensLink" :to="routeManager.makeRouteToTokensByAccount(accountId)">
         <div class="h-is-property-text h-is-extra-text has-text-centered">Show all tokens</div>
       </router-link>
 
@@ -187,10 +187,19 @@ const props = defineProps({
 })
 
 const showSection = computed(() =>
-    fungibleTableController.totalRowCount.value >= 1
+    props.accountId === walletManager.accountId.value
+    || fungibleTableController.totalRowCount.value >= 1
     || nftsTableController.totalRowCount.value >= 1
     || fungibleAirdropTableController.totalRowCount.value >= 1
     || nftsAirdropTableController.totalRowCount.value >= 1
+)
+
+const showAllTokensLink = computed(() =>
+    !props.fullPage
+    && (fungibleTableController.totalRowCount.value >= perPage.value
+        || nftsTableController.totalRowCount.value >= perPage.value
+        || fungibleAirdropTableController.totalRowCount.value >= perPage.value
+        || nftsAirdropTableController.totalRowCount.value >= perPage.value)
 )
 
 const perPage = ref(props.fullPage ? 15 : 6)
