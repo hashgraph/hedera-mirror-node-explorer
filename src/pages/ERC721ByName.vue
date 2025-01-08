@@ -28,11 +28,11 @@
     <template #pageContent>
       <DashboardCard>
         <template v-slot:title>
-          <span class="h-is-primary-title">Popular tokens matching </span>
-          <span class="h-is-secondary-text">"{{ name }}"</span>
+          <span class="h-is-primary-title">ERC 721 Tokens matching </span>
+          <span class="h-is-secondary-text">"{{ props.name }}"</span>
         </template>
         <template v-slot:content>
-          <TokensByPopularityTable :name="name"/>
+          <ERC721ByNameTable :name="props.name"/>
         </template>
       </DashboardCard>
     </template>
@@ -44,30 +44,20 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
+import {PropType} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrame from "@/components/page/PageFrame.vue";
-import TokensByPopularityTable from "@/components/token/TokensByPopularityTable.vue";
+import ERC721ByNameTable from "@/components/contract/ERC721ByNameTable.vue";
 
-export default defineComponent({
-  name: 'TokensByPopularity',
-
-  props: {
-    network: String,
-    name: {
-      type: String as PropType<string|null>,
-      default: null
-    }
-  },
-
-  components: {
-    TokensByPopularityTable,
-    PageFrame,
-    DashboardCard,
-  },
-});
+const props = defineProps({
+  network: String,
+  name: {
+    type: String as PropType<string | null>,
+    default: null
+  }
+})
 
 </script>
 

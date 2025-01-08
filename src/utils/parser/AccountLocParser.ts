@@ -29,7 +29,6 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {makeEthAddressForAccount} from "@/schemas/MirrorNodeUtils.ts";
-import {base32ToAlias} from "@/utils/B64Utils";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {AccountByAliasCache} from "@/utils/cache/AccountByAliasCache";
 

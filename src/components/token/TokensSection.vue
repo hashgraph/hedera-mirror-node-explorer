@@ -24,16 +24,16 @@
 
 <template>
 
-  <DashboardCard v-if="accountId" id="tokensSection" collapsible-key="tokens">
+  <DashboardCard v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
 
     <template v-slot:title>
       <div v-if="fullPage">
-        <span class="h-is-primary-title">Tokens of Account </span>
+        <span class="h-is-primary-title">HTS Tokens of Account </span>
         <router-link :to="routeManager.makeRouteToAccount(accountId)">
           <span class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
         </router-link>
       </div>
-      <span v-else class="h-is-secondary-title">Tokens</span>
+      <span v-else class="h-is-secondary-title">HTS Tokens</span>
     </template>
 
     <template v-slot:control>
@@ -127,7 +127,7 @@
         </div>
       </div>
 
-      <router-link v-if="!props.fullPage" :to="routeManager.makeRouteToTokensByAccount(accountId)">
+      <router-link v-if="showAllTokensLink" :to="routeManager.makeRouteToTokensByAccount(accountId)">
         <div class="h-is-property-text h-is-extra-text has-text-centered">Show all tokens</div>
       </router-link>
 
@@ -156,7 +156,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref} from 'vue';
+import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
@@ -185,6 +185,22 @@ const props = defineProps({
     default: false
   }
 })
+
+const showSection = computed(() =>
+    props.accountId === walletManager.accountId.value
+    || fungibleTableController.totalRowCount.value >= 1
+    || nftsTableController.totalRowCount.value >= 1
+    || fungibleAirdropTableController.totalRowCount.value >= 1
+    || nftsAirdropTableController.totalRowCount.value >= 1
+)
+
+const showAllTokensLink = computed(() =>
+    !props.fullPage
+    && (fungibleTableController.totalRowCount.value >= perPage.value
+        || nftsTableController.totalRowCount.value >= perPage.value
+        || fungibleAirdropTableController.totalRowCount.value >= perPage.value
+        || nftsAirdropTableController.totalRowCount.value >= perPage.value)
+)
 
 const perPage = ref(props.fullPage ? 15 : 6)
 
@@ -240,6 +256,20 @@ const fungibleAirdropTableController = new PendingAirdropTableController(
     perPage,
     "pr", "kr"
 )
+
+onMounted(() => {
+  nftsTableController.mount()
+  fungibleTableController.mount()
+  nftsAirdropTableController.mount()
+  fungibleAirdropTableController.mount()
+})
+onBeforeUnmount(() => {
+  nftsTableController.unmount()
+  fungibleTableController.unmount()
+  nftsAirdropTableController.unmount()
+  fungibleAirdropTableController.unmount()
+})
+
 
 //
 // Reject

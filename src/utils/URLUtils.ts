@@ -66,7 +66,7 @@ export function isIPFSHash(blob: string): boolean {
 }
 
 export function isArweaveHash(hash: string): boolean {
-    const re: RegExp = /^[a-zA-Z0-9_\-]{43}$/
+    const re: RegExp = /^[a-zA-Z0-9_-]{43}$/
     return re.test(hash)
 }
 

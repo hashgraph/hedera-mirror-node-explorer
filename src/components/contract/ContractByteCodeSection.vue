@@ -221,13 +221,9 @@ const props = defineProps({
 
 const isSmallScreen = inject('isSmallScreen', true)
 
-const isVerified = computed(() => props.contractAnalyzer.sourcifyURL.value != null)
-
-const isFullMatch = computed(() => props.contractAnalyzer.fullMatch.value)
-
-const contractName = computed(
-    () => isVerified.value ? props.contractAnalyzer.contractName.value : null)
-
+const isVerified = props.contractAnalyzer.isVerified
+const isFullMatch = props.contractAnalyzer.fullMatch
+const contractName = props.contractAnalyzer.contractName
 const evmVersion = props.contractAnalyzer.evmVersion
 
 // True when the verification is ENABLED by configuration and the current verification STATUS is known, which

@@ -29,6 +29,8 @@ import {
     BlockSearchAgent,
     ContractSearchAgent,
     DomainNameSearchAgent,
+    ERC20SearchAgent,
+    ERC721SearchAgent,
     FullTokenNameSearchAgent,
     NarrowTokenNameSearchAgent,
     SearchAgent,
@@ -101,6 +103,8 @@ export class SearchController {
     private readonly blockSearchAgent = new BlockSearchAgent()
     private readonly narrowTokenNameSearchAgent = new NarrowTokenNameSearchAgent()
     public readonly fullTokenNameSearchAgent = new FullTokenNameSearchAgent()
+    public readonly erc20SearchAgent = new ERC20SearchAgent()
+    public readonly erc721SearchAgent = new ERC721SearchAgent()
 
     private readonly allAgents: SearchAgent<unknown, unknown>[] = []
     public readonly domainNameSearchAgents: DomainNameSearchAgent[] = []
@@ -120,6 +124,8 @@ export class SearchController {
             this.topicSearchAgent,
             this.transactionSearchAgent,
             this.blockSearchAgent,
+            this.erc20SearchAgent,
+            this.erc721SearchAgent,
         )
         for (const p of nameServiceProviders) {
             const a = new DomainNameSearchAgent(p)
@@ -217,6 +223,8 @@ export class SearchController {
         this.blockSearchAgent.loc.value = blockNb ?? hexBytes
         this.narrowTokenNameSearchAgent.loc.value = tokenName
         this.fullTokenNameSearchAgent.loc.value = tokenName
+        this.erc20SearchAgent.loc.value = tokenName
+        this.erc721SearchAgent.loc.value = tokenName
 
         for (const a of this.domainNameSearchAgents) {
             a.loc.value = domainName

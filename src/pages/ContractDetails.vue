@@ -29,7 +29,23 @@
 
       <DashboardCard collapsible-key="contractDetails">
         <template v-slot:title>
-          <span class="h-is-primary-title">Contract </span>
+          <div class="is-flex is-align-items-end is-flex-wrap-wrap">
+            <span>
+              <span class="h-is-primary-title">Contract </span>
+              <span v-if="contractName" class="h-is-tertiary-text h-is-extra-text should-wrap ml-3">
+                {{ contractName }}
+              </span>
+            </span>
+            <div v-if="isVerified" class="h-is-text-size-2 mb-1 ml-3">
+              <div class="h-has-pill has-background-success">VERIFIED</div>
+            </div>
+            <div v-if="isErc20" class="h-is-text-size-2 mb-1 ml-3">
+              <div class="h-has-pill">ERC 20</div>
+            </div>
+            <div v-if="isErc721" class="h-is-text-size-2 mb-1 ml-3">
+              <div class="h-has-pill">ERC 721</div>
+            </div>
+          </div>
         </template>
 
         <template v-slot:subtitle>
@@ -107,63 +123,84 @@
             </template>
           </Property>
           <Property
-              v-if="enableExpiry"
-              id="expiresAt"
-              tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+              id="maxAutoAssociation"
+              tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
           >
-            <template v-slot:name>
-              <span>Expires at</span>
-            </template>
-            <template v-slot:value>
-              <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
-            </template>
-          </Property>
-          <Property
-              v-if="enableExpiry"
-              id="autoRenewPeriod"
-              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-          >
-            <template v-slot:name>
-              <span>Auto Renew Period</span>
-            </template>
-            <template v-slot:value>
-              <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
-            </template>
-          </Property>
-          <Property
-              v-if="enableExpiry"
-              id="autoRenewAccount"
-              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-          >
-            <template v-slot:name>
-              <span>Auto Renew Account</span>
-            </template>
-            <template v-slot:value>
-              <AccountLink :account-id="autoRenewAccount"/>
-            </template>
-          </Property>
-          <Property id="maxAutoAssociation"
-                    tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0).">
             <template v-slot:name>Max. Auto. Association</template>
             <template v-slot:value>
               <StringValue :string-value="maxAutoAssociationValue"/>
             </template>
           </Property>
+
+          <template v-if="enableExpiry">
+            <Property
+                id="expiresAt"
+                tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+            >
+              <template v-slot:name>
+                <span>Expires at</span>
+              </template>
+              <template v-slot:value>
+                <TimestampValue v-bind:timestamp="contract?.expiration_timestamp" v-bind:show-none="true"/>
+              </template>
+            </Property>
+            <Property
+                id="autoRenewPeriod"
+                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+            >
+              <template v-slot:name>
+                <span>Auto Renew Period</span>
+              </template>
+              <template v-slot:value>
+                <DurationValue v-bind:number-value="contract?.auto_renew_period ?? undefined"/>
+              </template>
+            </Property>
+            <Property
+                id="autoRenewAccount"
+                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+            >
+              <template v-slot:name>
+                <span>Auto Renew Account</span>
+              </template>
+              <template v-slot:value>
+                <AccountLink :account-id="autoRenewAccount"/>
+              </template>
+            </Property>
+          </template>
+          <template v-else>
+            <Property id="obtainer">
+              <template v-slot:name>Obtainer</template>
+              <template v-slot:value>
+                <AccountLink :account-id="obtainerId"/>
+              </template>
+            </Property>
+            <Property id="proxyAccount">
+              <template v-slot:name>Proxy Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="proxyAccountId"/>
+              </template>
+            </Property>
+          </template>
         </template>
 
         <template v-slot:rightContent>
-          <Property id="obtainer">
-            <template v-slot:name>Obtainer</template>
-            <template v-slot:value>
-              <AccountLink :account-id="obtainerId"/>
-            </template>
-          </Property>
-          <Property id="proxyAccount">
-            <template v-slot:name>Proxy Account</template>
-            <template v-slot:value>
-              <AccountLink :account-id="proxyAccountId"/>
-            </template>
-          </Property>
+          <template v-if="enableExpiry">
+            <Property id="obtainer">
+              <template v-slot:name>Obtainer</template>
+              <template v-slot:value>
+                <AccountLink :account-id="obtainerId"/>
+              </template>
+            </Property>
+            <Property id="proxyAccount">
+              <template v-slot:name>Proxy Account</template>
+              <template v-slot:value>
+                <AccountLink :account-id="proxyAccountId"/>
+              </template>
+            </Property>
+          </template>
+          <template v-else>
+          </template>
+
           <Property id="validFrom">
             <template v-slot:name>Valid from</template>
             <template v-slot:value>
@@ -194,6 +231,12 @@
 
       <TokensSection :account-id="normalizedContractId"/>
 
+      <ContractERCSection
+          :contract-id="normalizedContractId"
+          v-model:is-erc20="isErc20"
+          v-model:is-erc721="isErc721"
+      />
+
       <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
       <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
@@ -213,7 +256,7 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -244,12 +287,14 @@ import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
+import ContractERCSection from "@/components/contract/ContractERCSection.vue";
 
 export default defineComponent({
 
   name: 'ContractDetails',
 
   components: {
+    ContractERCSection,
     TokensSection,
     InfoTooltip,
     EntityIOL,
@@ -342,9 +387,18 @@ export default defineComponent({
       return normalizedContractId.value !== null ? routeManager.makeRouteToAccount(normalizedContractId.value) : null
     })
 
+    //
+    // ContractAnalyzer
+    //
     const contractAnalyzer = new ContractAnalyzer(normalizedContractId)
     onMounted(() => contractAnalyzer.mount())
     onBeforeUnmount(() => contractAnalyzer.unmount())
+
+    //
+    // ERC
+    //
+    const isErc20 = ref(false)
+    const isErc721 = ref(false)
 
     //
     // contract results logs - event logs at contract level
@@ -369,6 +423,8 @@ export default defineComponent({
       ethereumAddress: contractLocParser.ethereumAddress,
       displayNonce,
       accountChecksum,
+      isErc20,
+      isErc721,
       notification: contractLocParser.errorNotification,
       autoRenewAccount: autoRenewAccount,
       obtainerId: obtainerId,
@@ -376,6 +432,8 @@ export default defineComponent({
       normalizedContractId,
       accountRoute,
       contractAnalyzer,
+      isVerified: contractAnalyzer.isVerified,
+      contractName: contractAnalyzer.contractName,
       logs: contractResultsLogsAnalyzer.logs,
       domainName: nameQuery.name,
       domainProviderName: nameQuery.providerName,
