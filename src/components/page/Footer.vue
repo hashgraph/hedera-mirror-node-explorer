@@ -30,7 +30,7 @@
       <a v-if="builtOnURL" :href="builtOnURL">
         <img id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
       </a>
-      <img id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
+      <img v-else id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
 
       <div class="footer-text">
         <p class="footer-text-item">{{ productDescription }}</p>
@@ -132,10 +132,10 @@ div.footer-text {
   justify-content: flex-start;
 }
 
-.footer-text-item {
+span.footer-text-item {
   font-family: 'Inter', sans-serif;
   font-size: 10px;
-  color: var(--light-text-primary);
+  color: var(--text-primary);
 }
 
 .footer-logo {
