@@ -133,7 +133,7 @@
 
 import {walletManager} from "@/router";
 import DoneDialog from '../DoneDialog.vue';
-import ConfirmDialog from '../ConfirmDialog.vue';
+import ConfirmDialog from '../../dialogs/ConfirmDialog.vue';
 import DynamicDialog from '../DynamicDialog.vue';
 import {computed, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";

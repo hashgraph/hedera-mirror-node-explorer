@@ -153,7 +153,7 @@
 import {computed, defineComponent, ref} from "vue"
 import FileList from "@/components/verification/FileList.vue"
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
 import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import {SourcifyUtils} from "@/utils/sourcify/SourcifyUtils";
 import {gtagVerifyContract} from "@/gtag";
