@@ -24,18 +24,18 @@
 
 <template>
 
-  <DashboardCard v-if="message" class="h-card" collapsible-key="messageSubmitted">
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Message Submitted</span>
+  <DashboardCardV2 v-if="props.message" collapsible-key="messageSubmitted">
+    <template #title>
+      <span>Message Submitted</span>
     </template>
-    <template v-slot:content>
+    <template #content>
       <Property id="sequenceNumber" :full-width="true">
         <template v-slot:name>Sequence Number</template>
         <template v-slot:value>
           {{ sequence_number }}
         </template>
       </Property>
-      <Property id="message" :full-width="true">
+      <Property id="props.message" :full-width="true">
         <template v-slot:name>Message</template>
         <template v-slot:value>
           <BlobValue :blob-value="messageContent" :show-none="true" :base64="true" :pretty="true"/>
@@ -54,7 +54,7 @@
         </template>
       </Property>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -62,52 +62,26 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {computed, PropType} from 'vue';
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {TopicMessage} from "@/schemas/MirrorNodeSchemas";
 import BlobValue from "@/components/values/BlobValue.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
-export default defineComponent({
+const props = defineProps({
+  message: Object as PropType<TopicMessage | null>
+})
 
-  name: 'TopicMessage',
+const messageContent = computed(() => props.message?.message ?? null)
 
-  components: {
-    PlainAmount,
-    BlobValue,
-    Property,
-    DashboardCard
-  },
+const sequence_number = computed(() => props.message?.sequence_number ?? null)
 
-  props: {
-    message: Object as PropType<TopicMessage | null>
-  },
+const running_hash_version = computed(() => props.message?.running_hash_version ?? null)
 
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const messageContent = computed(() => props.message?.message ?? null)
-
-    const sequence_number = computed(() => props.message?.sequence_number ?? null)
-
-    const running_hash_version = computed(() => props.message?.running_hash_version ?? null)
-
-    const running_hash = computed(() => props.message?.running_hash ?? null)
-
-    return {
-      isSmallScreen,
-      isTouchDevice,
-      messageContent,
-      sequence_number,
-      running_hash_version,
-      running_hash
-    }
-  },
-});
+const running_hash = computed(() => props.message?.running_hash ?? null)
 
 </script>
 
