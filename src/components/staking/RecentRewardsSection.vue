@@ -24,10 +24,9 @@
 
 <template>
 
-  <CSVDownloadDialog
+  <RewardDownloadDialog
       v-if="accountId"
-      v-model:show-dialog="showDownloadDialog"
-      :downloader="downloader"
+      v-model:visible="showDownloadDialog"
       :account-id="accountId"
   />
 
@@ -58,8 +57,7 @@ import DownloadButton from "@/components/DownloadButton.vue";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController.ts";
 import {AppStorage} from "@/AppStorage.ts";
-import {RewardDownloader} from "@/utils/downloader/RewardDownloader.ts";
-import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
+import RewardDownloadDialog from "@/dialogs/RewardDownloadDialog.vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
@@ -78,11 +76,6 @@ const transactionTableController = new StakingRewardsTableController(
 )
 onMounted(() => transactionTableController.mount())
 onBeforeUnmount(() => transactionTableController.unmount())
-
-//
-// Rewards transaction downloader
-//
-const downloader = new RewardDownloader(accountId, ref(null), ref(null), 1000)
 
 </script>
 
