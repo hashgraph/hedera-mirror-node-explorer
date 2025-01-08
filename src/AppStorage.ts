@@ -211,19 +211,6 @@ export class AppStorage {
     }
 
     //
-    // preferred tabs in account ERC tokens section
-    //
-    private static readonly ACCOUNT_ERCTOKEN_TAB_KEY = 'accountERCTokenTab'
-
-    static getAccountERCTokenTab() {
-        return this.getLocalStorageItem(this.ACCOUNT_ERCTOKEN_TAB_KEY)
-    }
-
-    static setAccountERCTokenTab(newValue: string | null) {
-        this.setLocalStorageItem(this.ACCOUNT_ERCTOKEN_TAB_KEY, newValue)
-    }
-
-    //
     // preferred tabs in account tokens section
     //
 
