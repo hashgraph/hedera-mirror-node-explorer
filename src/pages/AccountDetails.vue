@@ -288,7 +288,7 @@
             <option value="LATEST">LATEST</option>
             <option value="JUMP">JUMP TO DATE</option>
           </SelectView>
-          <DownloadButton @click="downloadController.visible.value = true"/>
+          <DownloadButton @click="transactionDownloadDialogVisible = true"/>
           <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
         </div>
         <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
@@ -331,7 +331,9 @@
 
     <MirrorLink :network="network" entityUrl="accounts" :loc="accountIdRef ?? undefined"/>
 
-    <TransactionDownloadDialog :account-id="accountIdRef ?? undefined" :controller="downloadController"/>
+    <TransactionDownloadDialog
+        :account-id="accountIdRef ?? undefined"
+        v-model:visible="transactionDownloadDialogVisible"/>
 
     <UpdateAccountDialog
         :account-info="account"
@@ -541,7 +543,7 @@ const rewardsTableController = new StakingRewardsTableController(
 // Transactions download
 //
 
-const downloadController = new DialogController()
+const transactionDownloadDialogVisible = ref(false)
 
 //
 // Naming
