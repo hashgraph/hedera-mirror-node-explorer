@@ -102,7 +102,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref, watch} from "vue";
+import {computed, ref, watch} from "vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import DownloadDialog from "@/components/download/DownloadDialog.vue";
@@ -120,12 +120,15 @@ import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransati
 import SelectView from "@/components/SelectView.vue";
 
 const props = defineProps({
-  controller: {
-    type: Object as PropType<DialogController>,
-    required: true
-  },
   accountId: String
 })
+
+const visible = defineModel("visible", {
+  type: Boolean,
+  required: true
+})
+
+const controller = new DialogController(visible)
 
 const dialogTitle = computed(() => "Download transactions from " + props.accountId)
 
