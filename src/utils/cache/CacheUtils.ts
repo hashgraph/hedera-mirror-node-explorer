@@ -57,8 +57,6 @@ import {ERC20Cache} from "@/utils/cache/ERC20Cache";
 import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
 import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
-import {AccountERC20Cache} from "@/utils/cache/AccountERC20Cache.ts";
-import {AccountERC721Cache} from "@/utils/cache/AccountERC721Cache.ts";
 
 export class CacheUtils {
 
@@ -66,8 +64,6 @@ export class CacheUtils {
         AccountByAddressCache.instance.clear()
         AccountByAliasCache.instance.clear()
         AccountByIdCache.instance.clear()
-        AccountERC20Cache.instance.clear()
-        AccountERC721Cache.instance.clear()
         AdminContractCache.instance.clear()
         AssetCache.instance.clear()
         BalanceCache.instance.clear()
