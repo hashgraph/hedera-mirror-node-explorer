@@ -100,9 +100,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType, ref, watch} from "vue";
+import {computed, PropType, ref, watch} from "vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
 import DownloadDialog from "@/components/download/DownloadDialog.vue";
@@ -119,173 +119,149 @@ import {HbarTransferDownloader} from "@/utils/downloader/HBarTransferDownloader"
 import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
 import SelectView from "@/components/SelectView.vue";
 
-export default defineComponent({
-  name: 'TransactionDownloadDialog',
-  components: {SelectView, Datepicker, TransactionFilterSelect, DialogTitle, DownloadDialog},
-  props: {
-    controller: {
-      type: Object as PropType<DialogController>,
-      required: true
-    },
-    accountId: String
+const props = defineProps({
+  controller: {
+    type: Object as PropType<DialogController>,
+    required: true
   },
-  setup(props) {
+  accountId: String
+})
 
-    const dialogTitle = computed(() => "Download transactions from " + props.accountId)
+const dialogTitle = computed(() => "Download transactions from " + props.accountId)
 
-    const accountId = computed(() => props.accountId ?? null)
-    const scopes = [
-      'HBAR TRANSFERS',
-      'TOKEN TRANSFERS',
-      'TOKEN TRANSFERS BY ID',
-      'NFT TRANSFERS',
-      'NFT TRANSFERS BY ID',
-      'TRANSACTION TYPE'
-    ]
-    const selectedScope = ref<string>("HBAR TRANSFERS")
-    const selectedFilter = ref<string>("CRYPTOTRANSFER")
-    const tokenId = ref<string | null>(null)
-    const isTokenIdRequired = computed(
-        () => selectedScope.value === 'TOKEN TRANSFERS BY ID' || selectedScope.value === 'NFT TRANSFERS BY ID'
-    )
-    const isTokenIdValid = ref(false)
-    const topicIdFeedback = ref<string>('')
+const accountId = computed(() => props.accountId ?? null)
+const scopes = [
+  'HBAR TRANSFERS',
+  'TOKEN TRANSFERS',
+  'TOKEN TRANSFERS BY ID',
+  'NFT TRANSFERS',
+  'NFT TRANSFERS BY ID',
+  'TRANSACTION TYPE'
+]
+const selectedScope = ref<string>("HBAR TRANSFERS")
+const selectedFilter = ref<string>("CRYPTOTRANSFER")
+const tokenId = ref<string | null>(null)
+const isTokenIdRequired = computed(
+    () => selectedScope.value === 'TOKEN TRANSFERS BY ID' || selectedScope.value === 'NFT TRANSFERS BY ID'
+)
+const isTokenIdValid = ref(false)
+const topicIdFeedback = ref<string>('')
 
-    const lastMidnight = new Date(new Date().setHours(0, 0, 0, 0))
-    const nextMidnight = new Date(new Date().setHours(24, 0, 0, 0))
+const lastMidnight = new Date(new Date().setHours(0, 0, 0, 0))
+const nextMidnight = new Date(new Date().setHours(24, 0, 0, 0))
 
-    const selectedStartDate = ref<Date | null>(new Date())
-    const startDate = computed<Date | null>(() => {
-          let result
-          if (selectedStartDate.value != null) {
-            result = new Date(selectedStartDate.value)
-            result.setHours(0, 0, 0, 0)
-          } else {
-            result = null
-          }
-          return result
-        }
-    )
-    const isStartDateValid = computed(
-        () => startDate.value !== null && startDate.value <= lastMidnight
-    )
-
-    const selectedEndDate = ref<Date | null>(new Date())
-    const endDate = computed<Date | null>(() => {
-          let result
-          if (selectedEndDate.value != null) {
-            result = new Date(selectedEndDate.value)
-            result.setHours(24, 0, 0, 0)
-          } else {
-            result = null
-          }
-          return result
-        }
-    )
-    const isEndDateValid = computed(
-        () => endDate.value !== null
-            && endDate.value <= nextMidnight
-            && (startDate.value == null || startDate.value < endDate.value)
-    )
-
-    const transactionType = computed(
-        () => selectedFilter.value !== '' ? selectedFilter.value as TransactionType : null
-    )
-    const downloader = computed<AbstractTransactionDownloader>(() => {
-      let result: AbstractTransactionDownloader
-      if (selectedScope.value === 'TOKEN TRANSFERS' || selectedScope.value === 'TOKEN TRANSFERS BY ID') {
-        result = new TokenTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
-      } else if (selectedScope.value === 'NFT TRANSFERS' || selectedScope.value === 'NFT TRANSFERS BY ID') {
-        result = new NFTTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
-      } else if (selectedScope.value === 'HBAR TRANSFERS') {
-        result = new HbarTransferDownloader(accountId, startDate, endDate, 1000)
+const selectedStartDate = ref<Date | null>(new Date())
+const startDate = computed<Date | null>(() => {
+      let result
+      if (selectedStartDate.value != null) {
+        result = new Date(selectedStartDate.value)
+        result.setHours(0, 0, 0, 0)
       } else {
-        result = new TransactionDownloader(accountId, startDate, endDate, transactionType, 1000)
+        result = null
       }
       return result
-    })
-
-    const downloadEnabled = computed(() => {
-      return isStartDateValid.value
-          && isEndDateValid.value
-          && (!isTokenIdRequired.value || isTokenIdValid.value)
-    })
-
-    let validationTimerId = -1
-    watch(tokenId, () => {
-      isTokenIdValid.value = false
-      topicIdFeedback.value = ''
-
-      if (validationTimerId != -1) {
-        window.clearTimeout(validationTimerId)
-        validationTimerId = -1
-      }
-      if (tokenId.value?.length) {
-        validationTimerId = window.setTimeout(() => validate(), 500)
-      } else {
-        tokenId.value = null
-      }
-    })
-
-    const validate = async () => {
-      let entity = EntityID.normalize(tokenId.value ?? '')
-      isTokenIdValid.value = entity != null && await TokenInfoCache.instance.lookup(entity) != null
-      topicIdFeedback.value = isTokenIdValid.value ? 'valid' : 'invalid'
     }
+)
+const isStartDateValid = computed(
+    () => startDate.value !== null && startDate.value <= lastMidnight
+)
 
-    const handleInput = (event: Event) => {
-      const input = (event.target as HTMLInputElement).value
-      const previousValue = tokenId.value
-      let isValidInput = true
-      let pastDigits = 0
-      let pastDots = 0
+const selectedEndDate = ref<Date | null>(new Date())
+const endDate = computed<Date | null>(() => {
+      let result
+      if (selectedEndDate.value != null) {
+        result = new Date(selectedEndDate.value)
+        result.setHours(24, 0, 0, 0)
+      } else {
+        result = null
+      }
+      return result
+    }
+)
+const isEndDateValid = computed(
+    () => endDate.value !== null
+        && endDate.value <= nextMidnight
+        && (startDate.value == null || startDate.value < endDate.value)
+)
 
-      for (const c of input) {
-        if ((c >= '0' && c <= '9') || c === '.') {
-          if (c === '.') {
-            if (++pastDots > 2 || !pastDigits) {
-              isValidInput = false
-              break
-            } else {
-              pastDigits = 0
-            }
-          } else if (++pastDigits > 10) {
-            isValidInput = false
-            break
-          }
-        } else {
+const transactionType = computed(
+    () => selectedFilter.value !== '' ? selectedFilter.value as TransactionType : null
+)
+const downloader = computed<AbstractTransactionDownloader>(() => {
+  let result: AbstractTransactionDownloader
+  if (selectedScope.value === 'TOKEN TRANSFERS' || selectedScope.value === 'TOKEN TRANSFERS BY ID') {
+    result = new TokenTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
+  } else if (selectedScope.value === 'NFT TRANSFERS' || selectedScope.value === 'NFT TRANSFERS BY ID') {
+    result = new NFTTransferDownloader(accountId, startDate, endDate, tokenId, 1000)
+  } else if (selectedScope.value === 'HBAR TRANSFERS') {
+    result = new HbarTransferDownloader(accountId, startDate, endDate, 1000)
+  } else {
+    result = new TransactionDownloader(accountId, startDate, endDate, transactionType, 1000)
+  }
+  return result
+})
+
+const downloadEnabled = computed(() => {
+  return isStartDateValid.value
+      && isEndDateValid.value
+      && (!isTokenIdRequired.value || isTokenIdValid.value)
+})
+
+let validationTimerId = -1
+watch(tokenId, () => {
+  isTokenIdValid.value = false
+  topicIdFeedback.value = ''
+
+  if (validationTimerId != -1) {
+    window.clearTimeout(validationTimerId)
+    validationTimerId = -1
+  }
+  if (tokenId.value?.length) {
+    validationTimerId = window.setTimeout(() => validate(), 500)
+  } else {
+    tokenId.value = null
+  }
+})
+
+const validate = async () => {
+  let entity = EntityID.normalize(tokenId.value ?? '')
+  isTokenIdValid.value = entity != null && await TokenInfoCache.instance.lookup(entity) != null
+  topicIdFeedback.value = isTokenIdValid.value ? 'valid' : 'invalid'
+}
+
+const handleInput = (event: Event) => {
+  const input = (event.target as HTMLInputElement).value
+  const previousValue = tokenId.value
+  let isValidInput = true
+  let pastDigits = 0
+  let pastDots = 0
+
+  for (const c of input) {
+    if ((c >= '0' && c <= '9') || c === '.') {
+      if (c === '.') {
+        if (++pastDots > 2 || !pastDigits) {
           isValidInput = false
           break
+        } else {
+          pastDigits = 0
         }
+      } else if (++pastDigits > 10) {
+        isValidInput = false
+        break
       }
-
-      if (isValidInput) {
-        tokenId.value = input
-      } else {
-        tokenId.value = ""
-        tokenId.value = previousValue
-      }
-    }
-
-    return {
-      dialogTitle,
-      scopes,
-      selectedScope,
-      selectedFilter,
-      tokenId,
-      isTokenIdValid,
-      topicIdFeedback,
-      selectedStartDate,
-      selectedEndDate,
-      isStartDateValid,
-      isEndDateValid,
-      downloader,
-      downloadEnabled,
-      handleInput
+    } else {
+      isValidInput = false
+      break
     }
   }
 
-})
+  if (isValidInput) {
+    tokenId.value = input
+  } else {
+    tokenId.value = ""
+    tokenId.value = previousValue
+  }
+}
 
 </script>
 
