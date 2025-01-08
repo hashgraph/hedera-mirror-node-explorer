@@ -226,7 +226,7 @@ import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, wa
 import {routeManager, walletManager} from "@/router";
 import {EntityID} from "@/utils/EntityID";
 import {NetworkConfig} from "@/config/NetworkConfig";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
+import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
 import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/MirrorNodeSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
