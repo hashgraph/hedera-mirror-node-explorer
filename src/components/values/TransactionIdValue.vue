@@ -24,7 +24,7 @@
 
 <template>
 
-  <div>
+  <div class="is-inline-block">
     <span>{{ transactionId }}</span>
   </div>
 
