@@ -24,7 +24,7 @@
 
 <template>
 
-  <PageFrameV2 page-title="Contract Details">
+  <PageFrameV2 page-title="Account Details">
     <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
       <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
     </div>
