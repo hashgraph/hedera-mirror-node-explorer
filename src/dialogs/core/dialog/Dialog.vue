@@ -131,6 +131,7 @@ div.dialog-modal {
   position: fixed;
   right: 0;
   top: 0;
+  z-index: 40;
 }
 
 div.dialog-content {
