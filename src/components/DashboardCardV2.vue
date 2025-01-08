@@ -44,15 +44,21 @@
       <slot name="content" v-if="slots.content"/>
 
       <div v-if="slots.mediaContent || slots.mediaDescription" class="media-content">
-        <slot name="mediaContent"/>
+        <slot name="media-content"/>
         <div v-if="isMediumScreen" class="h-has-column-separator"/>
         <slot name="mediaDescription"/>
       </div>
 
-      <div v-if="slots.leftContent || slots.rightContent" class="split-content">
-        <slot name="leftContent"/>
-        <div v-if="slots.rightContent&&isMediumScreen" class="h-has-column-separator"/>
-        <slot name="rightContent"/>
+      <div v-if="slots['left-content'] || slots['right-content']" class="split-content">
+        <div class="left-content">
+          <slot name="left-content"/>
+        </div>
+        <!--
+                <div v-if="slots.rightContent&&isMediumScreen" class="h-has-column-separator"/>
+        -->
+        <div class="right-content">
+          <slot name="right-content"/>
+        </div>
       </div>
     </div>
   </div>
@@ -160,6 +166,24 @@ div.right-header {
   gap: 16px;
   height: 26px;
   justify-content: flex-end;
+}
+
+div.split-content {
+  display: grid;
+  column-gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+
+div.left-content {
+  align-content: flex-start;
+  display: flex;
+  flex-direction: column;
+}
+
+div.right-content {
+  align-content: flex-start;
+  display: flex;
+  flex-direction: column;
 }
 
 </style>
