@@ -214,21 +214,21 @@ import {
   makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
-} from "@/schemas/MirrorNodeSchemas";
+} from "@/schemas/MirrorNodeSchemas.ts";
 import Property from "@/components/Property.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
-import {EntityID} from "@/utils/EntityID";
+import {EntityID} from "@/utils/EntityID.ts";
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
 import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
 import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
-import {NetworkConfig} from "@/config/NetworkConfig";
-import {routeManager, walletManager} from "@/router";
-import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+import {routeManager, walletManager} from "@/router.ts";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer.ts";
 import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 import SelectView from "@/components/SelectView.vue";
 import {TransactionID} from "@/utils/TransactionID.ts";
