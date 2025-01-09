@@ -23,12 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <button class="dialog-button"
-          @click="handleClick"
-          :class="{'is-default': props.isDefault}"
-          :disabled="!buttonEnabled">
+  <ButtonView
+      @action="handleAction"
+      :is-default="props.isDefault"
+      :disabled="!buttonEnabled"
+  >
     <slot/>
-  </button>
+  </ButtonView>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -39,7 +40,7 @@
 
 import {computed, PropType} from "vue";
 import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
-
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
 const props = defineProps({
   controller: {
@@ -62,15 +63,16 @@ const props = defineProps({
 
 const emit = defineEmits(["action"])
 
-const handleClick = () => {
+const handleAction = () => {
   emit("action")
   if (props.autoClose) {
     props.controller.visible.value = false
   }
 }
 
-const buttonEnabled = computed(
-    () => props.enabled && props.controller.mode.value !== DialogMode.Busy)
+const buttonEnabled = computed(() =>
+    props.enabled && props.controller.mode.value !== DialogMode.Busy
+)
 
 </script>
 
@@ -79,26 +81,5 @@ const buttonEnabled = computed(
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-button.dialog-button {
-  appearance: none;
-  color: var(--button-text-secondary);
-  background-color: var(--button-background-secondary);
-  border-radius: 32px;
-  height: 48px;
-  padding: 15px 24px 15px 24px;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-button.dialog-button:disabled {
-  cursor: not-allowed;
-  opacity: 0.3;
-}
-
-button.dialog-button.is-default {
-  color: var(--button-text-primary);
-  background-color: var(--button-background-primary);
-}
 
 </style>
