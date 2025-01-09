@@ -29,7 +29,7 @@
     <StakingDialog v-model:show-dialog="stakingDialogVisible"
                    :account="account ?? undefined"
                    :currently-staked-to="stakedTo ?? undefined"
-                   v-on:change-staking="handleChangeStaking"/>
+                   v-on:staking-changed="stakingChanged"/>
 
     <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
                    :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
@@ -159,18 +159,13 @@
 import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
-import {Transaction} from "@/schemas/MirrorNodeSchemas";
-import {waitFor} from "@/utils/TimerUtils";
 import StakingDialog from "@/components/staking/StakingDialog.vue";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
-import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import {TransactionID} from "@/utils/TransactionID";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
-import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {gtagTransaction} from "@/gtag";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {CoreConfig} from "@/config/CoreConfig.ts";
@@ -179,12 +174,8 @@ import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue
 import RecentRewardsSection from "@/components/staking/RecentRewardsSection.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
-const props = defineProps({
-  network: String,
-  polling: { // For testing purpose
-    type: Number,
-    default: 3000 // Because a transaction emerges 3 or 4 seconds in mirror node after its completion in network
-  }
+defineProps({
+  network: String
 })
 
 const cryptoName = CoreConfig.inject().cryptoName
@@ -268,7 +259,7 @@ const showStopConfirmDialog = () => {
 }
 
 const handleStopStaking = () => {
-  changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
+  // changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
 }
 
 const showStakingDialog = () => {
@@ -279,74 +270,9 @@ const showStakingDialog = () => {
   }
 }
 
-const handleChangeStaking = (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
-  changeStaking(nodeId, accountId, declineReward)
-}
-
-const changeStaking = async (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
-
-  try {
-
-    showProgressDialog.value = true
-    progressDialogMode.value = Mode.Busy
-    progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
-    progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
-    progressExtraMessage.value = "Check your wallet for any approval request"
-    progressExtraTransactionId.value = null
-    showProgressSpinner.value = false
-    const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward))
-    progressMainMessage.value = "Completing operation…"
-    progressExtraMessage.value = "This may take a few seconds"
-    showProgressSpinner.value = true
-    await waitForTransactionRefresh(transactionId)
-
-    progressDialogMode.value = Mode.Success
-    progressMainMessage.value = "Operation completed"
-    showProgressSpinner.value = false
-    progressExtraMessage.value = "with transaction ID:"
-    progressExtraTransactionId.value = transactionId
-
-  } catch (error) {
-
-    if (error instanceof WalletClientRejectError) {
-      showProgressDialog.value = false
-    } else {
-      progressDialogMode.value = Mode.Error
-      if (error instanceof WalletClientError) {
-        progressMainMessage.value = error.message
-        progressExtraMessage.value = error.extra
-      } else {
-        progressMainMessage.value = "Operation did not complete"
-        progressExtraMessage.value = JSON.stringify(error)
-      }
-      progressExtraTransactionId.value = null
-      showProgressSpinner.value = false
-    }
-
-  } finally {
-    accountLocParser.remount()
-    gtagTransaction("change_staking")
-  }
-
-}
-
-const waitForTransactionRefresh = async (transactionId: string) => {
-  let result: Promise<Transaction | string>
-
-  try {
-    let counter = 10
-    let transaction: Transaction | null = null
-    while (counter > 0 && transaction === null) {
-      await waitFor(props.polling)
-      transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
-      counter -= 1
-    }
-    result = Promise.resolve(transaction ?? transactionId)
-  } catch {
-    result = Promise.resolve(transactionId)
-  }
-
-  return result
+const stakingChanged = () => {
+  accountLocParser.remount()
+  gtagTransaction("change_staking")
 }
 
 const enableWallet = routeManager.enableWallet
