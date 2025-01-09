@@ -53,7 +53,7 @@
         <Property id="amountStaked">
           <template v-slot:name>Amount Staked</template>
           <template v-slot:value>
-            <HbarAmount v-if="account?.balance?.balance" :amount="account.balance.balance" timestamp="0"
+            <HbarAmount v-if="props.account?.balance?.balance" :amount="props.account.balance.balance" timestamp="0"
                         :show-extra="true"/>
           </template>
         </Property>
@@ -61,11 +61,11 @@
         <Property id="currentlyStakedTo">
           <template v-slot:name>Currently Staked To</template>
           <template v-slot:value>
-            <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
+            <span v-if="props.account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
                   style="font-size: 16px">
               <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
             </span>
-            <StringValue v-if="account" :string-value="currentlyStakedTo"/>
+            <StringValue v-if="props.account" :string-value="props.currentlyStakedTo"/>
           </template>
         </Property>
 
@@ -106,7 +106,7 @@
               <div class="column is-one-fifth pt-0">
                 <div class="control" style="width: 100px">
                   <label class="radio h-radio-button ml-0">
-                    <input name="stakeTarget" type="radio" value="account" v-model="stakeChoice">
+                    <input name="stakeTarget" type="radio" value="props.account" v-model="stakeChoice">
                     Account
                   </label>
                 </div>
@@ -116,7 +116,7 @@
                   <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234"
                          :class="{'has-text-grey': !isAccountSelected}"
                          :value="selectedAccount"
-                         @focus="stakeChoice='account'"
+                         @focus="stakeChoice='props.account'"
                          @input="handleInput"
                          style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
                          background-color: var(--h-theme-box-background-color)">
@@ -146,7 +146,7 @@
         <Property v-if="false" id="changeCost">
           <template v-slot:name>Change Transaction Cost</template>
           <template v-slot:value>
-            <HbarAmount v-if="account" :amount="10000000" timestamp="0" :show-extra="true" :decimals="1"/>
+            <HbarAmount v-if="props.account" :amount="10000000" timestamp="0" :show-extra="true" :decimals="1"/>
           </template>
         </Property>
 
@@ -166,12 +166,13 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
+import {computed, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse, makeNodeSelectorDescription,
+  AccountsResponse,
+  makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/MirrorNodeSchemas";
@@ -193,249 +194,222 @@ const INVALID_ACCOUNTID_MESSAGE = "Invalid account ID"
 const INVALID_CHECKSUM_MESSAGE = "Invalid checksum"
 const CANT_STAKE_SAME_ACCOUNT_MESSAGE = "Cannot stake to one's own account"
 
-export default defineComponent({
-  name: "StakingDialog",
-  components: {SelectView, ConfirmDialog, StringValue, HbarAmount, Property},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
-    },
-    account: Object as PropType<AccountBalanceTransactions>,
-    currentlyStakedTo: String,
-  },
-  emits: ["changeStaking", "update:showDialog"],
-  setup(props, context) {
-    const accountId = computed(() => props.account?.account)
-    const network = routeManager.currentNetwork.value
-    const nr = NetworkConfig.inject()
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
 
-    const showConfirmDialog = ref(false)
-    const confirmMessage = computed(() => {
-      let result: string
-      if (isNodeSelected.value) {
-        if (selectedNode.value !== props.account?.staked_node_id) {
-          result = "Do you want to stake to Node " + selectedNodeDescription.value + "?"
-        } else {
-          result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
-        }
+const props = defineProps({
+  account: Object as PropType<AccountBalanceTransactions>,
+  currentlyStakedTo: String,
+})
+
+const emit = defineEmits(["changeStaking", "update:showDialog"])
+
+
+const accountId = computed(() => props.account?.account)
+const network = routeManager.currentNetwork.value
+const nr = NetworkConfig.inject()
+
+const showConfirmDialog = ref(false)
+const confirmMessage = computed(() => {
+  let result: string
+  if (isNodeSelected.value) {
+    if (selectedNode.value !== props.account?.staked_node_id) {
+      result = "Do you want to stake to Node " + selectedNodeDescription.value + "?"
+    } else {
+      result = declineChoice.value ? "Do you want to decline rewards?" : "Do you want to accept rewards?"
+    }
+  } else {
+    result = "Do you want to stake to account "
+        + nr.makeAddressWithChecksum(selectedAccountEntity.value ?? "", network)
+        + " ?"
+  }
+  return result
+})
+
+const nodeAnalyzer = new NodeAnalyzer(computed(() => props.account?.staked_node_id ?? 0))
+onMounted(() => nodeAnalyzer.mount())
+onBeforeUnmount(() => nodeAnalyzer.unmount())
+
+const nodes = nodeAnalyzer.networkAnalyzer.nodes
+const hasCommunityNode = nodeAnalyzer.networkAnalyzer.hasCommunityNode
+
+const currentStakedNodeIcon = computed(() => {
+  let result: string | null
+  if (props.account?.staked_node_id !== null) {
+    result = nodeAnalyzer.isCouncilNode.value
+        ? "fas fa-building"
+        : "fas fa-users"
+  } else {
+    result = null
+  }
+  return result
+})
+
+const stakeChoice = ref("node")
+const isNodeSelected = computed(() => stakeChoice.value === 'node')
+const isAccountSelected = computed(() => stakeChoice.value === 'account')
+
+const selectedAccount = ref<string | null>(null)
+const selectedAccountEntity = computed(
+    () => EntityID.normalize(stripChecksum(selectedAccount.value ?? "")))
+const selectedAccountChecksum = computed(
+    () => extractChecksum(selectedAccount.value ?? ""))
+const isSelectedAccountValid = ref(false)
+const inputFeedbackMessage = ref<string | null>(null)
+
+let validationTimerId = -1
+
+watch(selectedAccount, () => {
+  isSelectedAccountValid.value = false
+  inputFeedbackMessage.value = null
+
+  if (validationTimerId != -1) {
+    window.clearTimeout(validationTimerId)
+    validationTimerId = -1
+  }
+  if (selectedAccount.value?.length) {
+    validationTimerId = window.setTimeout(() => validateAccount(), 500)
+  } else {
+    selectedAccount.value = null
+  }
+})
+
+const selectedNode = ref<number | null>(null)
+//
+// const selectedNodeIcon = computed(() => {
+//   let result
+//   if (selectedNode.value !== null) {
+//     const nodes = nodeAnalyzer.networkAnalyzer.nodes
+//     result = isCouncilNode(nodes.value[selectedNode.value]) ? "building" : "users"
+//   } else {
+//     result = ""
+//   }
+//   return result
+// })
+
+const selectedNodeDescription = computed(() => {
+  const nodes = nodeAnalyzer.networkAnalyzer.nodes
+  return selectedNode.value !== null
+      ? makeNodeDescription(nodes.value[selectedNode.value])
+      : null
+})
+watch(accountId, () => {
+  if (isNodeSelected.value && selectedNode.value == null) {
+    selectedNode.value = props.account?.staked_node_id ?? null
+  }
+})
+
+const declineChoice = ref(false)
+watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
+
+const enableChangeButton = computed(() => {
+  return (
+          isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
+      || (isNodeSelected.value && selectedNode.value !== null && props.account?.staked_node_id != selectedNode.value)
+      || (props.account?.decline_reward != declineChoice.value)
+})
+
+const handleCancel = () => {
+  showDialog.value = false
+}
+
+const handleChange = () => {
+  showDialog.value = false
+  showConfirmDialog.value = true
+}
+
+const handleCancelChange = () => {
+  showDialog.value = true
+}
+
+const handleConfirmChange = () => {
+  const stakedNode = isNodeSelected.value ? selectedNode.value : null
+  const stakedAccount = isAccountSelected.value ? stripChecksum(selectedAccount.value ?? "") : null
+  const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
+  emit("changeStaking", stakedNode, stakedAccount, declineReward)
+}
+
+//
+// Nodes
+//
+
+const makeNodeDescription = (node: NetworkNode) => {
+  let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
+  return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
+}
+
+const handleInput = (event: Event) => {
+  const previousValue = selectedAccount.value
+  let isValidInput = true
+  let isValidID = false
+  let isPastDash = false
+
+  const value = (event.target as HTMLInputElement).value
+  for (const c of value) {
+    if ((c >= '0' && c <= '9') || c === '.') {
+      if (isPastDash) {
+        isValidInput = false
+        break
       } else {
-        result = "Do you want to stake to account "
-            + nr.makeAddressWithChecksum(selectedAccountEntity.value ?? "", network)
-            + " ?"
+        isValidID = EntityID.parse(stripChecksum(value)) !== null
       }
-      return result
-    })
-
-    const nodeAnalyzer = new NodeAnalyzer(computed(() => props.account?.staked_node_id ?? 0))
-    onMounted(() => nodeAnalyzer.mount())
-    onBeforeUnmount(() => nodeAnalyzer.unmount())
-
-    const currentStakedNodeIcon = computed(() => {
-      let result: string | null
-      if (props.account?.staked_node_id !== null) {
-        result = nodeAnalyzer.isCouncilNode.value
-            ? "fas fa-building"
-            : "fas fa-users"
+    } else if (c === '-') {
+      if (!isValidID || isPastDash) {
+        isValidInput = false
+        break
       } else {
-        result = null
+        isPastDash = true
       }
-      return result
-    })
-
-    const stakeChoice = ref("node")
-    const isNodeSelected = computed(() => stakeChoice.value === 'node')
-    const isAccountSelected = computed(() => stakeChoice.value === 'account')
-
-    const selectedAccount = ref<string | null>(null)
-    const selectedAccountEntity = computed(
-        () => EntityID.normalize(stripChecksum(selectedAccount.value ?? "")))
-    const selectedAccountChecksum = computed(
-        () => extractChecksum(selectedAccount.value ?? ""))
-    const isSelectedAccountValid = ref(false)
-    const inputFeedbackMessage = ref<string | null>(null)
-
-    let validationTimerId = -1
-
-    watch(selectedAccount, () => {
-      isSelectedAccountValid.value = false
-      inputFeedbackMessage.value = null
-
-      if (validationTimerId != -1) {
-        window.clearTimeout(validationTimerId)
-        validationTimerId = -1
-      }
-      if (selectedAccount.value?.length) {
-        validationTimerId = window.setTimeout(() => validateAccount(), 500)
-      } else {
-        selectedAccount.value = null
-      }
-    })
-
-    const selectedNode = ref<number | null>(null)
-
-    const selectedNodeIcon = computed(() => {
-      let result
-      if (selectedNode.value !== null) {
-        const nodes = nodeAnalyzer.networkAnalyzer.nodes
-        result = isCouncilNode(nodes.value[selectedNode.value]) ? "building" : "users"
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const selectedNodeDescription = computed(() => {
-      const nodes = nodeAnalyzer.networkAnalyzer.nodes
-      return selectedNode.value !== null
-          ? makeNodeDescription(nodes.value[selectedNode.value])
-          : null
-    })
-    watch(accountId, () => {
-      if (isNodeSelected.value && selectedNode.value == null) {
-        selectedNode.value = props.account?.staked_node_id ?? null
-      }
-    })
-
-    const declineChoice = ref(false)
-    watch(accountId, () => declineChoice.value = props.account?.decline_reward ?? false)
-
-    const enableChangeButton = computed(() => {
-      return (
-              isAccountSelected.value && isSelectedAccountValid.value && props.account?.staked_account_id != selectedAccountEntity.value)
-          || (isNodeSelected.value && selectedNode.value !== null && props.account?.staked_node_id != selectedNode.value)
-          || (props.account?.decline_reward != declineChoice.value)
-    })
-
-    const handleCancel = () => {
-      context.emit('update:showDialog', false)
-    }
-
-    const handleChange = () => {
-      context.emit('update:showDialog', false)
-      showConfirmDialog.value = true
-    }
-
-    const handleCancelChange = () => {
-      context.emit('update:showDialog', true)
-    }
-
-    const handleConfirmChange = () => {
-      const stakedNode = isNodeSelected.value ? selectedNode.value : null
-      const stakedAccount = isAccountSelected.value ? stripChecksum(selectedAccount.value ?? "") : null
-      const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
-      context.emit("changeStaking", stakedNode, stakedAccount, declineReward)
-    }
-
-    //
-    // Nodes
-    //
-
-    const makeNodeDescription = (node: NetworkNode) => {
-      let description = node.description ?? makeDefaultNodeDescription(node.node_id ?? null)
-      return description ? (node.node_id + " - " + makeShortNodeDescription(description)) : null
-    }
-
-    const handleInput = (event: Event) => {
-      const previousValue = selectedAccount.value
-      let isValidInput = true
-      let isValidID = false
-      let isPastDash = false
-
-      const value = (event.target as HTMLInputElement).value
-      for (const c of value) {
-        if ((c >= '0' && c <= '9') || c === '.') {
-          if (isPastDash) {
-            isValidInput = false
-            break
-          } else {
-            isValidID = EntityID.parse(stripChecksum(value)) !== null
-          }
-        } else if (c === '-') {
-          if (!isValidID || isPastDash) {
-            isValidInput = false
-            break
-          } else {
-            isPastDash = true
-          }
-        } else if (c < 'a' || c > 'z' || !isPastDash) {
-          isValidInput = false
-          break
-        }
-      }
-
-      if (isValidInput) {
-        selectedAccount.value = value
-      } else {
-        selectedAccount.value = ""
-        selectedAccount.value = previousValue
-      }
-    }
-
-    const validateAccount = () => {
-      if (selectedAccountEntity.value === null) {
-        inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
-      } else if (selectedAccountChecksum.value === null
-          || nr.isValidChecksum(selectedAccountEntity.value ?? "", selectedAccountChecksum.value, network)) {
-
-        if (selectedAccountEntity.value == accountId.value) {
-          inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
-        } else {
-
-          const params = {
-            'account.id': selectedAccountEntity.value,
-            balance: false
-          }
-          axios
-              .get<AccountsResponse>("api/v1/accounts", {params: params})
-              .then((response) => {
-                const accounts = response.data.accounts
-                if (accounts && accounts.length > 0) {
-                  isSelectedAccountValid.value = true
-                  if (props.account?.staked_account_id != selectedAccountEntity.value) {
-                    inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
-                  }
-                } else {
-                  inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE
-                }
-              })
-              .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
-
-        }
-      } else {
-        inputFeedbackMessage.value = INVALID_CHECKSUM_MESSAGE
-      }
-    }
-
-    return {
-      accountId,
-      showConfirmDialog,
-      confirmMessage,
-      currentStakedNodeIcon,
-      stakeChoice,
-      isNodeSelected,
-      isAccountSelected,
-      isSelectedAccountValid,
-      inputFeedbackMessage,
-      selectedAccount,
-      selectedNode,
-      selectedNodeIcon,
-      selectedNodeDescription,
-      declineChoice,
-      enableChangeButton,
-      nodes: nodeAnalyzer.networkAnalyzer.nodes,
-      handleCancel,
-      handleChange,
-      handleCancelChange,
-      handleConfirmChange,
-      makeNodeDescription,
-      isCouncilNode,
-      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
-      makeNodeSelectorDescription: makeNodeSelectorDescription,
-      handleInput
+    } else if (c < 'a' || c > 'z' || !isPastDash) {
+      isValidInput = false
+      break
     }
   }
-});
+
+  if (isValidInput) {
+    selectedAccount.value = value
+  } else {
+    selectedAccount.value = ""
+    selectedAccount.value = previousValue
+  }
+}
+
+const validateAccount = () => {
+  if (selectedAccountEntity.value === null) {
+    inputFeedbackMessage.value = INVALID_ACCOUNTID_MESSAGE
+  } else if (selectedAccountChecksum.value === null
+      || nr.isValidChecksum(selectedAccountEntity.value ?? "", selectedAccountChecksum.value, network)) {
+
+    if (selectedAccountEntity.value == accountId.value) {
+      inputFeedbackMessage.value = CANT_STAKE_SAME_ACCOUNT_MESSAGE
+    } else {
+
+      const params = {
+        'account.id': selectedAccountEntity.value,
+        balance: false
+      }
+      axios
+          .get<AccountsResponse>("api/v1/accounts", {params: params})
+          .then((response) => {
+            const accounts = response.data.accounts
+            if (accounts && accounts.length > 0) {
+              isSelectedAccountValid.value = true
+              if (props.account?.staked_account_id != selectedAccountEntity.value) {
+                inputFeedbackMessage.value = VALID_ACCOUNT_MESSAGE
+              }
+            } else {
+              inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE
+            }
+          })
+          .catch(() => inputFeedbackMessage.value = UNKNOWN_ACCOUNT_MESSAGE)
+
+    }
+  } else {
+    inputFeedbackMessage.value = INVALID_CHECKSUM_MESSAGE
+  }
+}
 
 </script>
 
