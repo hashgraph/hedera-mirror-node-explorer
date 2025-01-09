@@ -24,6 +24,171 @@
 
 <template>
 
+  <Dialog :controller="controller" :width="900">
+
+    <!-- title -->
+    <template #dialogTitle>
+      <DialogTitle>
+        <span>
+          <span class="h-is-primary-title">Change Staking </span>
+          <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
+          <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+        </span>
+      </DialogTitle>
+    </template>
+
+    <!-- input -->
+    <template #dialogInput>
+
+      <Property id="amountStaked">
+        <template v-slot:name>Amount Staked</template>
+        <template v-slot:value>
+          <HbarAmount v-if="props.account?.balance?.balance" :amount="props.account.balance.balance" timestamp="0"
+                      :show-extra="true"/>
+        </template>
+      </Property>
+
+      <Property id="currentlyStakedTo">
+        <template v-slot:name>Currently Staked To</template>
+        <template v-slot:value>
+            <span v-if="props.account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
+                  style="font-size: 16px">
+              <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
+            </span>
+          <StringValue v-if="props.account" :string-value="props.currentlyStakedTo"/>
+        </template>
+      </Property>
+
+      <div class="columns">
+        <div class="column is-one-third has-text-weight-light">
+          Stake To
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column is-one-fifth">
+              <div class="control" style="width: 100px">
+                <label class="radio h-radio-button">
+                  <input name="stakeTarget" type="radio" value="node" v-model="stakeChoice">
+                  Node
+                </label>
+              </div>
+            </div>
+            <div class="column">
+              <SelectView v-model="selectedNode" @focus="stakeChoice='node'">
+                <optgroup label="Hedera council nodes">
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-box-background-color)"
+                          v-show="isCouncilNode(n)">
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
+                </optgroup>
+                <optgroup v-if="hasCommunityNode" label="Community nodes">
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-box-background-color)"
+                          v-show="!isCouncilNode(n)">
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
+                </optgroup>
+              </SelectView>
+            </div>
+          </div>
+          <div class="columns">
+            <div class="column is-one-fifth pt-0">
+              <div class="control" style="width: 100px">
+                <label class="radio h-radio-button ml-0">
+                  <input name="stakeTarget" type="radio" value="props.account" v-model="stakeChoice">
+                  Account
+                </label>
+              </div>
+            </div>
+            <div class="column pt-0">
+              <div class="is-flex is-align-items-center">
+                <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234"
+                       :class="{'has-text-grey': !isAccountSelected}"
+                       :value="selectedAccount"
+                       @focus="stakeChoice='props.account'"
+                       @input="handleInput"
+                       style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
+                         background-color: var(--h-theme-box-background-color)">
+
+                <div v-if="isAccountSelected" id="feedbackMessage"
+                     :class="{'has-text-grey': isSelectedAccountValid, 'has-text-danger': !isSelectedAccountValid}"
+                     class="is-inline-block h-is-text-size-2 ml-3">
+                  {{ inputFeedbackMessage }}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column is-one-third has-text-weight-light pt-0">
+          Decline Rewards
+        </div>
+        <div class="column pt-0">
+          <label class="checkbox">
+            <input type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
+          </label>
+        </div>
+      </div>
+
+      <Property v-if="false" id="changeCost">
+        <template v-slot:name>Change Transaction Cost</template>
+        <template v-slot:value>
+          <HbarAmount v-if="props.account" :amount="10000000" timestamp="0" :show-extra="true" :decimals="1"/>
+        </template>
+      </Property>
+
+    </template>
+
+    <!-- busy -->
+    <template #dialogBusy>
+      <div class="h-is-tertiary-text mb-4">
+        Connecting to Hedera Network using your wallet…
+      </div>
+      <div class="h-is-property-text">
+        Check your wallet for any approval request
+      </div>
+    </template>
+
+    <!-- success -->
+    <template #dialogSuccess>
+      <div class="is-flex is-align-items-baseline">
+        <div class="icon is-medium has-text-success ml-0">
+          <i class="fas fa-check"/>
+        </div>
+        <div class="h-is-tertiary-text mb-4">
+          Operation completed
+        </div>
+      </div>
+      <div v-if="progressExtraTransactionId" class="h-is-property-text">
+        {{ 'With transaction ID: ' + progressExtraTransactionId }}
+      </div>
+    </template>
+
+    <!-- error -->
+    <template #dialogError>
+      <div class="is-flex is-align-items-baseline">
+        <div class="icon is-medium has-text-danger">
+          <span style="font-size: 18px; font-weight: 900">X</span>
+        </div>
+        <div class="h-is-tertiary-text mb-4">
+          {{ mainErrorMessage }}
+        </div>
+      </div>
+      <div class="h-is-property-text">
+        {{ extraErrorMessage }}
+      </div>
+    </template>
+
+    <template #dialogInputButtons>
+      <DialogButton :controller="controller">CANCEL</DialogButton>
+      <CommitButton :controller="controller" :enabled="enableChangeButton" @action="handleChange">CHANGE</CommitButton>
+    </template>
+
+  </Dialog>
+
   <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
                  @onConfirm="handleConfirmChange" @onCancel="handleCancelChange">
     <template v-slot:confirmTitle>
@@ -34,132 +199,6 @@
     </template>
   </ConfirmDialog>
 
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
-        <div class="is-flex is-justify-content-space-between is-align-items-self-end">
-          <span>
-            <span class="h-is-primary-title">Change Staking </span>
-            <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-            <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
-          </span>
-          <a @click="handleCancel">
-            <img alt="Search bar" src="@/assets/close-icon.png" style="max-height: 20px;">
-          </a>
-        </div>
-        <hr class="h-card-separator"/>
-
-        <Property id="amountStaked">
-          <template v-slot:name>Amount Staked</template>
-          <template v-slot:value>
-            <HbarAmount v-if="props.account?.balance?.balance" :amount="props.account.balance.balance" timestamp="0"
-                        :show-extra="true"/>
-          </template>
-        </Property>
-
-        <Property id="currentlyStakedTo">
-          <template v-slot:name>Currently Staked To</template>
-          <template v-slot:value>
-            <span v-if="props.account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
-                  style="font-size: 16px">
-              <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
-            </span>
-            <StringValue v-if="props.account" :string-value="props.currentlyStakedTo"/>
-          </template>
-        </Property>
-
-        <div class="columns">
-          <div class="column is-one-third has-text-weight-light">
-            Stake To
-          </div>
-          <div class="column">
-            <div class="columns">
-              <div class="column is-one-fifth">
-                <div class="control" style="width: 100px">
-                  <label class="radio h-radio-button">
-                    <input name="stakeTarget" type="radio" value="node" v-model="stakeChoice">
-                    Node
-                  </label>
-                </div>
-              </div>
-              <div class="column">
-                <SelectView v-model="selectedNode" @focus="stakeChoice='node'">
-                  <optgroup label="Hedera council nodes">
-                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                            style="background-color: var(--h-theme-box-background-color)"
-                            v-show="isCouncilNode(n)">
-                      {{ makeNodeSelectorDescription(n) }}
-                    </option>
-                  </optgroup>
-                  <optgroup v-if="hasCommunityNode" label="Community nodes">
-                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                            style="background-color: var(--h-theme-box-background-color)"
-                            v-show="!isCouncilNode(n)">
-                      {{ makeNodeSelectorDescription(n) }}
-                    </option>
-                  </optgroup>
-                </SelectView>
-              </div>
-            </div>
-            <div class="columns">
-              <div class="column is-one-fifth pt-0">
-                <div class="control" style="width: 100px">
-                  <label class="radio h-radio-button ml-0">
-                    <input name="stakeTarget" type="radio" value="props.account" v-model="stakeChoice">
-                    Account
-                  </label>
-                </div>
-              </div>
-              <div class="column pt-0">
-                <div class="is-flex is-align-items-center">
-                  <input class="input is-small has-text-right has-text-white" type="text" placeholder="0.0.1234"
-                         :class="{'has-text-grey': !isAccountSelected}"
-                         :value="selectedAccount"
-                         @focus="stakeChoice='props.account'"
-                         @input="handleInput"
-                         style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px;
-                         background-color: var(--h-theme-box-background-color)">
-
-                  <div v-if="isAccountSelected" id="feedbackMessage"
-                       :class="{'has-text-grey': isSelectedAccountValid, 'has-text-danger': !isSelectedAccountValid}"
-                       class="is-inline-block h-is-text-size-2 ml-3">
-                    {{ inputFeedbackMessage }}
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-        <div class="columns">
-          <div class="column is-one-third has-text-weight-light pt-0">
-            Decline Rewards
-          </div>
-          <div class="column pt-0">
-            <label class="checkbox">
-              <input type="checkbox" v-model="declineChoice" :disabled="!isNodeSelected || selectedNode == null">
-            </label>
-          </div>
-        </div>
-
-        <Property v-if="false" id="changeCost">
-          <template v-slot:name>Change Transaction Cost</template>
-          <template v-slot:value>
-            <HbarAmount v-if="props.account" :amount="10000000" timestamp="0" :show-extra="true" :decimals="1"/>
-          </template>
-        </Property>
-
-        <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button class="button is-info is-small ml-4"
-                  :disabled="!enableChangeButton" @click="handleChange">CHANGE
-          </button>
-        </div>
-
-      </div>
-    </div>
-  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -181,12 +220,19 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import axios from "axios";
 import {EntityID} from "@/utils/EntityID";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
+import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
+import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
-import {routeManager} from "@/router";
+import {routeManager, walletManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 import SelectView from "@/components/SelectView.vue";
+import {TransactionID} from "@/utils/TransactionID.ts";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -204,8 +250,9 @@ const props = defineProps({
   currentlyStakedTo: String,
 })
 
-const emit = defineEmits(["changeStaking", "update:showDialog"])
+const emit = defineEmits(["stakingChanged"])
 
+const controller = new DialogController(showDialog)
 
 const accountId = computed(() => props.account?.account)
 const network = routeManager.currentNetwork.value
@@ -311,12 +358,7 @@ const enableChangeButton = computed(() => {
       || (props.account?.decline_reward != declineChoice.value)
 })
 
-const handleCancel = () => {
-  showDialog.value = false
-}
-
 const handleChange = () => {
-  showDialog.value = false
   showConfirmDialog.value = true
 }
 
@@ -328,8 +370,59 @@ const handleConfirmChange = () => {
   const stakedNode = isNodeSelected.value ? selectedNode.value : null
   const stakedAccount = isAccountSelected.value ? stripChecksum(selectedAccount.value ?? "") : null
   const declineReward = declineChoice.value != props.account?.decline_reward ? declineChoice.value : null;
-  emit("changeStaking", stakedNode, stakedAccount, declineReward)
+  changeStaking(stakedNode, stakedAccount, declineReward)
 }
+
+//
+// changeStaking
+//
+
+const progressExtraTransactionId = ref<string | null>(null)
+const transactionError = ref<unknown>(null)
+
+const changeStaking = async (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
+
+  try {
+
+    controller.mode.value = DialogMode.Busy
+    const transactionId = await walletManager.changeStaking(nodeId, accountId, declineReward)
+    controller.mode.value = DialogMode.Success
+    progressExtraTransactionId.value = TransactionID.normalize(transactionId)
+    emit("stakingChanged")
+
+  } catch (error) {
+
+    if (error instanceof WalletClientRejectError) {
+      controller.visible.value = false
+    } else {
+      controller.mode.value = DialogMode.Error
+      transactionError.value = error
+      progressExtraTransactionId.value = null
+    }
+
+  }
+
+}
+
+const mainErrorMessage = computed(() => {
+  let result: string
+  if (transactionError.value instanceof WalletClientError) {
+    result = transactionError.value.message
+  } else {
+    result = "Operation did not complete"
+  }
+  return result
+})
+
+const extraErrorMessage = computed(() => {
+  let result: string
+  if (transactionError.value instanceof WalletClientError) {
+    result = transactionError.value.extra
+  } else {
+    result = JSON.stringify(transactionError.value)
+  }
+  return result
+})
 
 //
 // Nodes
