@@ -26,7 +26,7 @@
 
   <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
                  @onConfirm="handleConfirmChange" @onCancel="handleCancelChange">
-    <template v-slot:dialogTitle>
+    <template v-slot:confirmTitle>
       <span class="h-is-primary-title">Change Staking </span>
       <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
       <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3"

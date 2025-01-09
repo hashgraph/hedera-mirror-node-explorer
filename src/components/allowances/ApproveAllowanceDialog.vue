@@ -193,7 +193,7 @@
 
   <ConfirmDialog v-model:show-dialog="showConfirmDialog" :main-message="confirmMessage"
                  @onConfirm="handleConfirmApprove">
-    <template v-slot:dialogTitle>
+    <template v-slot:confirmTitle>
       <span v-if="isEditing" class="h-is-primary-title">Modify allowance </span>
       <span v-else class="h-is-primary-title">Approve allowance </span>
       <span v-if="selectedSpender"> to account </span>
