@@ -23,93 +23,89 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 768px; border-radius: 16px">
-      <div class="box">
 
-        <div class="h-is-primary-title">
-          <slot name="dialogTitle"/>
-        </div>
+  <Dialog :controller="controller">
 
-        <hr class="h-card-separator"/>
+    <template #dialogTitle>
+      <DialogTitle>
+        <slot name="confirmTitle"/>
+      </DialogTitle>
+    </template>
 
-        <div v-if="mainMessage" class="block h-is-tertiary-text mt-2">{{ mainMessage }}</div>
-        <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-        <div v-if="extraMessage" class="my-4" style="line-height: 21px">
-          <span v-if="extraMessage" class="h-is-property-text">{{ extraMessage }}</span>
-          <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-        </div>
+    <template #dialogInput>
 
-
-        <div v-if="slots.dialogOption">
-          <slot name="dialogOption"/>
-        </div>
-
-        <div class="is-flex is-justify-content-flex-end">
-          <button class="button is-white is-small" @click="handleCancel">{{ cancelLabel }}</button>
-          <button class="button is-info is-small ml-4" @click="handleConfirm">{{ confirmLabel }}</button>
-        </div>
-
+      <div v-if="props.mainMessage" class="block h-is-tertiary-text mt-2">{{ props.mainMessage }}</div>
+      <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
+      <div v-if="props.extraMessage" class="my-4" style="line-height: 21px">
+        <span v-if="props.extraMessage" class="h-is-property-text">{{ props.extraMessage }}</span>
+        <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
       </div>
-    </div>
-  </div>
+
+
+      <div v-if="slots.dialogOption">
+        <slot name="dialogOption"/>
+      </div>
+
+    </template>
+
+    <template #dialogInputButtons>
+      <DialogButton :controller="controller" @action="handleCancel">{{ props.cancelLabel }}</DialogButton>
+      <DialogButton :controller="controller" @action="handleConfirm">{{ props.confirmLabel }}</DialogButton>
+    </template>
+
+  </Dialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType, useSlots} from "vue";
+import {PropType, useSlots} from "vue";
+import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
+import Dialog from "@/dialogs/core/dialog/Dialog.vue";
+import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
+import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 
-export default defineComponent({
-  name: "ConfirmDialog",
-  components: {},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
-    },
-    mainMessage: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    extraMessage: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    confirmLabel: {
-      type: String as PropType<string>,
-      default: "CONFIRM"
-    },
-    cancelLabel: {
-      type: String as PropType<string>,
-      default: "CANCEL"
-    },
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
+
+const props = defineProps({
+  mainMessage: {
+    type: String as PropType<string | null>,
+    default: null
   },
+  extraMessage: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  confirmLabel: {
+    type: String as PropType<string>,
+    default: "CONFIRM"
+  },
+  cancelLabel: {
+    type: String as PropType<string>,
+    default: "CANCEL"
+  },
+})
 
-  setup(props, context) {
-    const slots = useSlots()
+const emit = defineEmits(["onCancel", "onConfirm"])
 
-    const handleCancel = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onCancel')
-    }
+const controller = new DialogController(showDialog)
 
-    const handleConfirm = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onConfirm')
-    }
+const slots = useSlots()
 
-    return {
-      slots,
-      handleCancel,
-      handleConfirm,
-    }
-  }
-});
+const handleCancel = () => {
+  emit("onCancel")
+}
+
+const handleConfirm = () => {
+  emit("onConfirm")
+}
 
 </script>
 

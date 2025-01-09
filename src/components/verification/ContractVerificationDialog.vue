@@ -109,7 +109,7 @@
                  @onConfirm="handleMetadataContinue"
                  @onCancel="handleCancelVerification"
                  confirm-label="CONTINUE">
-    <template v-slot:dialogTitle>
+    <template v-slot:confirmTitle>
             <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
@@ -121,7 +121,7 @@
                  :extra-message="confirmExtraMessage"
                  @onConfirm="handleConfirmVerification"
                  @onCancel="handleCancelVerification">
-    <template v-slot:dialogTitle>
+    <template v-slot:confirmTitle>
             <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>

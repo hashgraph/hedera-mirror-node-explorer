@@ -53,7 +53,7 @@
                    :extra-message="confirmExtraMessage"
                    @onConfirm="handleConfirm"
                    @onCancel="handleCancel">
-      <template v-slot:dialogTitle>
+      <template v-slot:confirmTitle>
             <span class="h-is-primary-title">
                 {{ dialogTitle }}
             </span>
