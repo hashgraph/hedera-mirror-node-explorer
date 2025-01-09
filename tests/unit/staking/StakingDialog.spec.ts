@@ -46,7 +46,7 @@ import router from "@/router";
 
 HMSF.forceUTC = true
 
-describe("StakingDialog.vue", () => {
+describe("ChangeStakingDialog.vue", () => {
 
     it("provides valid account to stake to", async () => {
 

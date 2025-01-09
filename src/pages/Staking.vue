@@ -159,7 +159,7 @@
 import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
-import StakingDialog from "@/dialogs/StakingDialog.vue";
+import StakingDialog from "@/dialogs/ChangeStakingDialog.vue";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
