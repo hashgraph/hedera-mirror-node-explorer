@@ -24,9 +24,15 @@
 
 <template>
 
-  <RoundButton :disabled="connecting" id="connectWalletButton" @click="chooseWallet">
-    {{ connecting ? "Connecting…" : "CONNECT WALLET…" }}
-  </RoundButton>
+  <ButtonView
+      id="connectWalletButton"
+      :is-small="true"
+      :is-default="true"
+      :enabled="!connecting"
+      @action="chooseWallet"
+  >
+    {{ connecting ? "Connecting…" : "CONNECT WALLET" }}
+  </ButtonView>
 
   <WalletChooser v-model:show-dialog="showWalletChooser" v-on:choose-wallet="handleChooseWallet"/>
   <ConnectWalletDialog :error="connectError" :controller="connectDialogController"/>
@@ -47,7 +53,7 @@ import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
 import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
-import RoundButton from "@/components/page/header/wallet/RoundButton.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
 //
 // Connection state
@@ -100,7 +106,6 @@ const navigateToMyAccount = () => {
 
 const connectDialogController = new DialogController()
 const connectError = ref<unknown>()
-
 
 
 </script>
