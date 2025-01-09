@@ -26,7 +26,13 @@
 
   <DropdownPanel v-model:deployed="showWalletInfo" :right-aligned="true">
     <template #button>
-      <RoundButton id="walletInfoBanner" @click="showWalletInfo = !showWalletInfo">
+      <ButtonView
+          id="walletInfoBanner"
+          :is-transparent="true"
+          :is-default="true"
+          :is-small="true"
+          @action="showWalletInfo = !showWalletInfo"
+      >
         <div class="left">
           <img :src="walletIconURL ?? undefined" alt="wallet logo">
           {{ accountId !== null ? accountId : "No account" }}
@@ -35,7 +41,7 @@
           <i v-if="!showWalletInfo" class="fas fa-solid fa-angle-down"/>
           <i v-else class="fas fa-solid fa-angle-up"/>
         </div>
-      </RoundButton>
+      </ButtonView>
     </template>
     <template #panel>
       <WalletInfo
@@ -58,12 +64,12 @@
 
 <script setup lang="ts">
 
-import RoundButton from "@/components/page/header/wallet/RoundButton.vue";
 import WalletInfo from "@/components/wallet/WalletInfo.vue";
 import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import DropdownPanel from "@/components/DropdownPanel.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
 
 //
