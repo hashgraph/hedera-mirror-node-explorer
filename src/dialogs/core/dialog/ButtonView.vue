@@ -25,11 +25,13 @@
 <template>
   <button
       class="button-view"
-      :class="{'is-small': props.isSmall,'is-default': props.isDefault}"
+      :class="{'is-small': props.isSmall,'is-default': props.isDefault,'is-transparent': props.isTransparent}"
       :disabled="!props.enabled"
       @click="handleClick"
   >
-    <slot/>
+    <span class="button-slot">
+      <slot/>
+    </span>
   </button>
 </template>
 
@@ -49,6 +51,10 @@ const props = defineProps({
     default: false
   },
   isSmall: {
+    type: Boolean,
+    default: false
+  },
+  isTransparent: {
     type: Boolean,
     default: false
   }
@@ -77,13 +83,12 @@ button.button-view {
   font-size: 14px;
   font-weight: 500;
   height: 48px;
-  padding: 15px 24px 15px 24px;
+  padding: 0 24px;
 }
 
 button.button-view.is-small {
   border-radius: 24px;
   height: 40px;
-  padding: 11px 24px 11px 24px;
 }
 
 button.button-view:disabled {
@@ -93,7 +98,21 @@ button.button-view:disabled {
 
 button.button-view.is-default {
   color: var(--button-text-primary);
-  background-color: var(--button-background-primary);
+  background-color: var(--network-theme-color);
+}
+
+button.button-view.is-transparent {
+  background-color: transparent;
+  border-color: var(--network-theme-color);
+  border-style: solid;
+  border-width: 2px;
+  color: var(--text-primary);
+}
+
+span.button-slot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 </style>
