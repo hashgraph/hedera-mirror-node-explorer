@@ -105,20 +105,20 @@
               </div>
 
               <div v-if="isHieroWallet" class="my-staking-buttons">
-                <button
+                <ButtonView
                     id="stopStakingButton"
-                    class="secondary-button"
-                    :disabled="!stakedTo"
-                    @click="showStopConfirmDialog"
+                    :enabled="stakedTo !== null"
+                    @action="showStopConfirmDialog"
                 >
                   STOP STAKING
-                </button>
-                <button
+                </ButtonView>
+                <ButtonView
                     id="showStakingDialog"
-                    class="primary-button"
-                    @click="showStakingDialog">
+                    :is-default="true"
+                    @action="showStakingDialog"
+                >
                   CHANGE STAKING
-                </button>
+                </ButtonView>
               </div>
               <p v-else class="connect-wallet-text">
                 To change your staking options use Blade or HashPack.
@@ -177,6 +177,7 @@ import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 import RecentRewardsSection from "@/components/staking/RecentRewardsSection.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
 const props = defineProps({
   network: String,
@@ -363,27 +364,6 @@ const stakedNode = stakedNodeAnalyzer.node
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-button {
-  border-radius: 24px;
-  border-style: solid;
-  border-width: 0;
-  font-family: "Styrene A Web", sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  height: 48px;
-  padding: 14px 24px 16px;
-}
-
-button.primary-button {
-  color: white;
-  background-color: var(--button-background-primary);
-}
-
-button.secondary-button {
-  color: var(--text-primary);
-  background-color: var(--button-background-secondary);
-}
 
 div.page-container {
   display: flex;
