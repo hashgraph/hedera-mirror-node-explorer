@@ -272,14 +272,14 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
-import {routeManager, walletManager} from "@/router";
-import {EntityID} from "@/utils/EntityID";
-import {NetworkConfig} from "@/config/NetworkConfig";
+import {routeManager, walletManager} from "@/router.ts";
+import {EntityID} from "@/utils/EntityID.ts";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
-import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/MirrorNodeSchemas";
-import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
+import {CryptoAllowance, TokenAllowance, TokenType} from "@/schemas/MirrorNodeSchemas.ts";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
+import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
 import {
   extractChecksum,
   formatTokenAmount,
@@ -289,8 +289,8 @@ import {
   stripChecksum,
   waitForTransactionRefresh
 } from "@/schemas/MirrorNodeUtils.ts";
-import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils";
-import {TransactionID} from "@/utils/TransactionID";
+import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils.ts";
+import {TransactionID} from "@/utils/TransactionID.ts";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
