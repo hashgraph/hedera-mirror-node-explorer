@@ -24,25 +24,22 @@
 
 <template>
 
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
+  <div
+      class="property-root"
+      :style="{'justify-content': isSmallScreen ? 'flex-start' : 'space-between'}"
+      :id="id"
+  >
+    <div
+        class="property-left-side"
+        :style="{'width': leftSideWidth}"
+        :id="nameId"
+    >
+      <span class="property-name">
         <slot name="name"/>
-        <span v-if="tooltip" class="ml-2"/>
-        <InfoTooltip v-if="tooltip" :label="tooltip"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
-    </div>
-  </div>
-
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div :class="nbColClass" class="property-name column has-text-weight-light" :id="nameId">
-      <slot name="name"/>
+      </span>
       <InfoTooltip v-if="tooltip" :label="tooltip"/>
     </div>
-    <div class="column has-text-left property-value" :id="valueId">
+    <div class="property-value" :id="valueId">
       <slot name="value"/>
     </div>
   </div>
@@ -53,43 +50,45 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject} from "vue";
+import {computed, inject} from "vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 
-export default defineComponent({
-  name: "Property",
-  components: {InfoTooltip},
-  props: {
-    id: String,
-    fullWidth: {
-      type: Boolean,
-      default: false
-    },
-    wideName: {
-      type: Boolean,
-      default: false
-    },
-    customNbColClass: String,
-    tooltip: String
+const props = defineProps({
+  id: String,
+  fullWidth: {
+    type: Boolean,
+    default: false
   },
-  setup(props) {
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
+  wideName: {
+    type: Boolean,
+    default: false
+  },
+  customNbColClass: String,
+  tooltip: String
+})
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.customNbColClass ?? (props.wideName ? '' : props.fullWidth ? 'is-2' : 'is-one-third'))
+const nameId = props.id + 'Name'
+const valueId = props.id + 'Value'
+const isSmallScreen = inject('isSmallScreen', true)
 
-    return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice,
-      nbColClass
+const leftSideWidth = computed(() => {
+  let result
+  if (props.customNbColClass) {
+    if (props.customNbColClass === 'is-one-quarter') {
+      result = '25%'
+    } else if (props.customNbColClass === 'is-one-fifth') {
+      result = '20%'
+    } else {
+      result = props.customNbColClass
     }
+  } else if (props.fullWidth) {
+    result = '16.66666674%'
+  } else {
+    result = '33.3333%'
   }
+  return result
 })
 
 </script>
@@ -100,7 +99,19 @@ export default defineComponent({
 
 <style scoped>
 
-div.property-name {
+div.property-root {
+  align-items: flex-start;
+  display: flex;
+}
+
+div.property-left-side {
+  flex: none;
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+span.property-name {
   color: var(--text-secondary);
   font-family: 'Inter', sans-serif;
   font-size: 12px;
@@ -116,9 +127,5 @@ div.property-value {
   font-weight: 400;
   line-height: 18px;
 }
-
-/*
-height: 18px;
-*/
 
 </style>
