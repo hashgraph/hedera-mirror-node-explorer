@@ -23,15 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ul  v-if="props.tabIds.length >= 1">
-    <li
+  <ul v-if="props.tabIds.length >= 1">
+    <li :class="{'is-active':selectedTab === tab}"
         v-for="(tab, i) in props.tabIds"
         :key="tab"
         :id="'tab-' + tab"
-        :class="{'is-active':selectedTab === tab}"
         @click="handleSelect(tab, true)"
     >
-      <a>{{ props.tabLabels[i] ?? tab }}</a>
+      <a>
+        {{ props.tabLabels[i] ?? tab }}
+      </a>
     </li>
   </ul>
 </template>
@@ -105,19 +106,27 @@ watch(() => props.tabIds, adjustSelectedTab, {immediate: true})
 
 ul {
   align-items: center;
-  color: var(--text-secondary);
   display: flex;
   font-size: 14px;
   font-weight: 600;
   column-gap: 16px;
+  line-height: 18px;
 }
 
 li {
   padding: 8px 8px 8px 8px;
   border-radius: 8px;
 }
+
 li.is-active {
-  background-color: blue;
+  background-color: var(--tab-background);
+}
+
+a {
+  color: var(--text-secondary);
+}
+
+.is-active a {
   color: var(--text-primary);
 }
 
