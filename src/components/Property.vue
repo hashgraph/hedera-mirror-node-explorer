@@ -38,12 +38,11 @@
   </div>
 
   <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
+    <div :class="nbColClass" class="property-name column has-text-weight-light" :id="nameId">
       <slot name="name"/>
-      <span v-if="tooltip" class="ml-2"/>
       <InfoTooltip v-if="tooltip" :label="tooltip"/>
     </div>
-    <div class="column has-text-left" :id="valueId">
+    <div class="column has-text-left property-value" :id="valueId">
       <slot name="value"/>
     </div>
   </div>
@@ -99,5 +98,27 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.property-name {
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  height: 16px;
+  text-transform: uppercase;
+}
+
+div.property-value {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+}
+
+/*
+height: 18px;
+*/
+
 </style>
