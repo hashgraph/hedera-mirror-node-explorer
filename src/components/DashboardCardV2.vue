@@ -49,13 +49,13 @@
         <slot name="mediaDescription"/>
       </div>
 
+      <hr class="horizontal-line">
+
       <div v-if="slots['left-content'] || slots['right-content']" class="split-content">
         <div class="left-content">
           <slot name="left-content"/>
         </div>
-        <!--
-                <div v-if="slots.rightContent&&isMediumScreen" class="h-has-column-separator"/>
-        -->
+        <div class="vertical-line"/>
         <div class="right-content">
           <slot name="right-content"/>
         </div>
@@ -170,20 +170,36 @@ div.right-header {
 
 div.split-content {
   display: grid;
-  column-gap: 1rem;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 49px 1fr;
 }
 
 div.left-content {
   align-content: flex-start;
   display: flex;
   flex-direction: column;
+  gap: 16px;
 }
 
 div.right-content {
   align-content: flex-start;
   display: flex;
   flex-direction: column;
+  gap: 16px;
+}
+
+hr.horizontal-line {
+  background-color: var(--border-secondary);
+  height: 1px;
+  margin: 24px 0;
+}
+
+div.vertical-line {
+  border-color: var(--border-secondary);
+  border-style: solid;
+  border-width: 0.5px;
+  margin-left: 24px;
+  margin-right: 24px;
+  width: 1px;
 }
 
 </style>
