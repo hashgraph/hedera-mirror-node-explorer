@@ -24,7 +24,14 @@
 
 <template>
 
-  <o-tooltip v-if="props.text" :label="props.text" :delay="delay" multiline class="tooltip">
+  <o-tooltip
+      v-if="props.text"
+      :label="props.text"
+      :position="position ?? 'auto'"
+      :delay="props.delay"
+      multiline
+      class="tooltip"
+  >
     <slot/>
   </o-tooltip>
 
@@ -38,21 +45,24 @@
 
 <script setup lang="ts">
 
-import {computed, PropType} from 'vue';
+import {PropType} from 'vue';
+
+const DEFAULT_DELAY = 500
 
 const props = defineProps({
   text: {
     type: String as PropType<string | null>,
     default: null
   },
+  position: {
+    type: String as PropType<string | null>,
+    default: 'auto'
+  },
   delay: {
     type: Number as PropType<number | null>,
-    default: null
+    default: DEFAULT_DELAY
   }
 })
-
-const DEFAULT_DELAY = 500
-const delay = computed(() => props.delay ?? DEFAULT_DELAY)
 
 </script>
 
