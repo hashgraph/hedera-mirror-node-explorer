@@ -25,311 +25,285 @@
 <template>
 
   <PageFrameV2 page-title="Account Details">
-    <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-      <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
-    </div>
 
-    <DashboardCard collapsible-key="accountDetails">
-      <template v-if="!isInactiveEvmAddress" v-slot:title>
-        <figure
-            v-if="isMyAccount"
-            class="is-flex is-align-items-center"
-            style="height: 40px;"
-        >
-          <img
-              v-if="isMyAccount"
-              :src="walletIconURL ?? undefined"
-              style="height: 100%"
-              alt="wallet logo"
-              class="mr-3"
+    <div class="page-container">
+
+      <DashboardCardV2 collapsible-key="accountDetails">
+        <template #title>
+          <span v-if="isInactiveEvmAddress">
+            Inactive EVM Address
+          </span>
+          <span v-else-if="isMyAccount" class="my-account">
+            <img :src="walletIconURL ?? undefined" alt="wallet logo">
+            <span>My Account</span>
+          </span>
+          <span v-else>
+            Account
+          </span>
+        </template>
+
+        <template #right-control>
+          <ButtonView
+              v-if="isAccountEditable"
+              id="update-button"
+              :is-default="true"
+              :is-small="true"
+              @action="onUpdateAccount"
           >
-          <span class="h-is-primary-title">My Account</span>
-        </figure>
-        <span v-else class="h-is-primary-title">Account</span>
-      </template>
-      <template v-else v-slot:title>
-        <span class="h-is-primary-title">Inactive EVM Address</span>
-      </template>
+            UPDATE ACCOUNT
+          </ButtonView>
+        </template>
 
-      <template v-if="!isInactiveEvmAddress" v-slot:subtitle>
-        <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:</div>
-          <Copyable :content-to-copy="normalizedAccountId ?? ''">
-            <template v-slot:content>
-              <span :class="{'h-is-secondary-title': isMyAccount}">{{ normalizedAccountId ?? "" }}</span>
+        <template #content>
+          <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
+
+          <Property id="entityId" :full-width="true">
+            <template #name>
+              Account ID
             </template>
-          </Copyable>
-          <span v-if="accountChecksum" class="has-text-grey h-is-smaller">-{{ accountChecksum }}</span>
-        </div>
-        <div v-if="operatorNodeRoute" id="nodeLink" class="h-is-tertiary-text mt-2">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Node:</div>
-          <router-link :to="operatorNodeRoute">
-            <span>{{ nodeId }} - {{ accountDescription }}</span>
-          </router-link>
-        </div>
-        <div v-else-if="ethereumAddress" id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:</div>
-          <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-          </div>
-        </div>
-        <div v-if="domainName" id="names" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Domain:</div>
-          <div class="is-inline-block h-is-property-text">
-            <EntityIOL :label="domainName"/>
-            <span class="ml-2">
+            <template #value>
+              <span v-if="isInactiveEvmAddress">
+                Assigned upon activation
+              </span>
+              <template v-else>
+                <Copyable :content-to-copy="normalizedAccountId ?? ''">
+                  <template #content>
+                    <span>{{ normalizedAccountId ?? "" }}</span>
+                  </template>
+                </Copyable>
+                <span v-if="accountChecksum">-{{ accountChecksum }}</span>
+                <router-link v-if="showContractVisible && contractRoute" :to="contractRoute" id="showContractLink">
+                  <span class="h-is-property-text">Associated contract</span>
+                </router-link>
+              </template>
+            </template>
+          </Property>
+          <Property v-if="operatorNodeRoute" id="nodeLink" :full-width="true">
+            <template #name>
+              Node
+            </template>
+            <template #value>
+              <router-link :to="operatorNodeRoute">
+                <span>{{ nodeId }} - {{ accountDescription }}</span>
+              </router-link>
+            </template>
+          </Property>
+          <Property v-else id="evmAddress" :full-width="true">
+            <template #name>
+              EVM Address
+            </template>
+            <template #value>
+              <EVMAddress
+                  :show-id="false"
+                  :has-custom-font="true"
+                  :address="isInactiveEvmAddress ? accountIdRef : ethereumAddress"/>
+            </template>
+          </Property>
+          <Property v-if="domainName" id="names" :full-width="true">
+            <template #name>
+              Domain
+            </template>
+            <template #value>
+              <EntityIOL :label="domainName"/>
               <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
-            </span>
-          </div>
-        </div>
-
-        <div v-if="!isMediumScreen && showContractVisible && contractRoute" id="showContractLink"
-             class="is-inline-block mt-2">
-          <router-link :to="contractRoute">
-            <span class="h-is-property-text">Show associated contract</span>
-          </router-link>
-        </div>
-      </template>
-      <template v-else v-slot:subtitle>
-        <div class="h-is-tertiary-text mt-3" id="entityId">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">Account ID:
-          </div>
-          <span class="has-text-grey">Assigned upon activation</span>
-        </div>
-        <div id="evmAddress" class="h-is-tertiary-text mt-2" style="word-break: keep-all">
-          <div class="is-inline-block h-is-property-text has-text-weight-light" style="min-width: 115px">EVM Address:
-          </div>
-          <div class="is-inline-block">
-            <EVMAddress :show-id="false" :has-custom-font="true" :address="accountIdRef"/>
-          </div>
-        </div>
-
-        <div v-if="!isMediumScreen && showContractVisible" id="showContractLink" class="is-inline-block mt-2">
-          <router-link :to="contractRoute">
-            <span class="h-is-property-text">Show associated contract</span>
-          </router-link>
-        </div>
-      </template>
-
-      <template v-slot:control>
-        <button v-if="isAccountEditable" id="update-button" class="button is-white is-small"
-                @click="onUpdateAccount">UPDATE ACCOUNT…
-        </button>
-
-        <div v-if="isMediumScreen && showContractVisible && contractRoute" id="showContractLink"
-             class="is-inline-block ml-3">
-          <router-link :to="contractRoute">
-            <span class="h-is-property-text">Show associated contract</span>
-          </router-link>
-        </div>
-      </template>
-
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
-
-        <div class="h-is-property-text">
-          <Property id="balance" :full-width="isMediumScreen">
-            <template v-slot:name>
-              <span class="h-is-tertiary-text">Balance</span>
             </template>
-            <template v-slot:value>
+          </Property>
+        </template>
+
+        <template #left-content>
+
+          <Property id="balance">
+            <template #name>
+              Balance
+            </template>
+            <template #value>
               <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
             </template>
           </Property>
-        </div>
-      </template>
-
-      <template v-slot:leftContent>
-        <EditableProperty
-            v-if="enableStaking"
-            id="stakedTo"
-            :editable="isAccountEditable"
-            @edit="onUpdateAccount"
-        >
-          <template v-slot:name>
-            Staked to
-          </template>
-          <template v-slot:value>
-            <div v-if="stakedAccountId">
-              Account
-              <div class="is-inline-block">
+          <EditableProperty
+              v-if="enableStaking"
+              id="stakedTo"
+              :editable="isAccountEditable"
+              @edit="onUpdateAccount"
+          >
+            <template #name>
+              Staked to
+            </template>
+            <template #value>
+              <div v-if="stakedAccountId">
+                Account
                 <AccountLink :accountId="account?.staked_account_id" v-bind:show-extra="true"/>
               </div>
-            </div>
-            <div v-else-if="stakedNodeRoute">
-              <router-link :to="stakedNodeRoute">
-                <span class="icon is-small has-text-info mr-1">
-                  <i :class="stakedNodeIcon"></i>
-                </span>
-                Node {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
-              </router-link>
-            </div>
-            <span v-else class="has-text-grey">None</span>
-          </template>
-        </EditableProperty>
+              <div v-else-if="stakedNodeRoute">
+                <router-link :to="stakedNodeRoute">
+                  Node {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
+                </router-link>
+              </div>
+              <span v-else>None</span>
+            </template>
+          </EditableProperty>
+          <Property v-if="enableStaking" id="pendingReward">
+            <template #name>Pending Reward</template>
+            <template #value>
+              <HbarAmount :amount="account?.pending_reward" :show-extra="true" timestamp="0"/>
+              <div v-if="stakePeriodStart" class="text-secondary">
+                {{ "Period Started " + stakePeriodStart }}
+              </div>
+            </template>
+          </Property>
+          <Property v-if="enableStaking && account?.staked_node_id != null" id="declineReward">
+            <template #name>Rewards</template>
+            <template #value>
+              <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
+            </template>
+          </Property>
+          <EditableProperty
+              id="memo"
+              :editable="isAccountEditable"
+              @edit="onUpdateAccount"
+          >
+            <template #name>Memo</template>
+            <template #value>
+              <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"
+                         :show-base64-as-extra="true"/>
+            </template>
+          </EditableProperty>
+          <Property id="createTransaction">
+            <template #name>Create Transaction</template>
+            <template #value>
+              <TransactionLink :transactionLoc="account?.created_timestamp ?? undefined"/>
+            </template>
+          </Property>
+          <Property
+              v-if="enableExpiry"
+              id="expiresAt"
+              tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being."
+          >
+            <template #name>
+              <span>Expires at</span>
+            </template>
+            <template #value>
+              <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
+            </template>
+          </Property>
+          <EditableProperty
+              v-if="enableExpiry"
+              id="autoRenewPeriod"
+              tooltip="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
+              :editable="isAccountEditable"
+              @edit="onUpdateAccount"
+          >
+            <template #name>
+              <span>Auto Renew Period</span>
+            </template>
+            <template #value>
+              <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
+            </template>
+          </EditableProperty>
+          <EditableProperty
+              id="maxAutoAssociation"
+              tooltip="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+              :editable="isAccountEditable"
+              @edit="onUpdateAccount"
+          >
+            <template #name>Max. Auto. Associations</template>
+            <template #value>
+              <StringValue :string-value="maxAutoAssociationsValue"/>
+            </template>
+          </EditableProperty>
+          <EditableProperty
+              id="receiverSigRequired"
+              :editable="isAccountEditable"
+              @edit="onUpdateAccount"
+          >
+            <template #name>Receiver Sig. Required</template>
+            <template #value>
+              <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
+            </template>
+          </EditableProperty>
+        </template>
 
-        <Property v-if="enableStaking" id="pendingReward">
-          <template v-slot:name>Pending Reward</template>
-          <template v-slot:value>
-            <HbarAmount :amount="account?.pending_reward" :show-extra="true" timestamp="0"/>
-            <div v-if="stakePeriodStart" class="h-is-extra-text h-is-text-size-2">
-              {{ "Period Started " + stakePeriodStart }}
-            </div>
-          </template>
-        </Property>
-        <Property v-if="enableStaking && account?.staked_node_id != null" id="declineReward">
-          <template v-slot:name>Rewards</template>
-          <template v-slot:value>
-            <StringValue :string-value="account?.decline_reward ? 'Declined' : 'Accepted'"/>
-          </template>
-        </Property>
-        <EditableProperty
-            id="memo"
-            :editable="isAccountEditable"
-            @edit="onUpdateAccount"
-        >
-          <template v-slot:name>Memo</template>
-          <template v-slot:value>
-            <BlobValue v-bind:base64="true" v-bind:blob-value="account?.memo" v-bind:show-none="true"
-                       :show-base64-as-extra="true"/>
-          </template>
-        </EditableProperty>
+        <template #right-content>
+          <EditableProperty
+              id="key"
+              :editable="false"
+              @edit="onUpdateAccount"
+          >
+            <template #name>Admin Key</template>
+            <template #value>
+              <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key"
+                        :key-type="account?.key?._type"
+                        :show-none="true"/>
+            </template>
+          </EditableProperty>
+          <Property id="ethereumNonce">
+            <template #name>Ethereum Nonce</template>
+            <template #value>
+              <StringValue :string-value="account?.ethereum_nonce?.toString()"/>
+            </template>
+          </Property>
+        </template>
+      </DashboardCardV2>
 
-        <Property id="createTransaction">
-          <template v-slot:name>Create Transaction</template>
-          <template v-slot:value>
-            <TransactionLink :transactionLoc="account?.created_timestamp ?? undefined"/>
-          </template>
-        </Property>
+      <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
-        <Property
-            v-if="enableExpiry"
-            id="expiresAt"
-            tooltip="Account expiry is not turned on yet. This value is not taken into account for the time being."
-        >
-          <template v-slot:name>
-            <span>Expires at</span>
-          </template>
-          <template v-slot:value>
-            <TimestampValue v-bind:show-none="true" v-bind:timestamp="account?.expiry_timestamp"/>
-          </template>
-        </Property>
-        <EditableProperty
-            v-if="enableExpiry"
-            id="autoRenewPeriod"
-            tooltip="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
-            :editable="isAccountEditable"
-            @edit="onUpdateAccount"
-        >
-          <template v-slot:name>
-            <span>Auto Renew Period</span>
-          </template>
-          <template v-slot:value>
-            <DurationValue v-bind:number-value="account?.auto_renew_period ?? undefined"/>
-          </template>
-        </EditableProperty>
-        <EditableProperty
-            id="maxAutoAssociation"
-            tooltip="Max.Auto.Associations sets the amount of airdrops. Unlimited(-1), Limited(>0), No airdrop slots(0)."
-            :editable="isAccountEditable"
-            @edit="onUpdateAccount"
-        >
-          <template v-slot:name>Max. Auto. Associations</template>
-          <template v-slot:value>
-            <StringValue :string-value="maxAutoAssociationsValue"/>
-          </template>
-        </EditableProperty>
-        <EditableProperty
-            id="receiverSigRequired"
-            :editable="isAccountEditable"
-            @edit="onUpdateAccount"
-        >
-          <template v-slot:name>Receiver Sig. Required</template>
-          <template v-slot:value>
-            <StringValue :string-value="account?.receiver_sig_required?.toString()"/>
-          </template>
-        </EditableProperty>
-      </template>
+      <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
+        <template v-slot:title>
+          <p id="recentTransactions" class="h-is-secondary-title">Recent Operations</p>
+        </template>
+        <template v-slot:control>
+          <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
+            <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
+            <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
+            <SelectView v-model="timeSelection" :small="true">
+              <option value="LATEST">LATEST</option>
+              <option value="JUMP">JUMP TO DATE</option>
+            </SelectView>
+            <DownloadButton @click="transactionDownloadDialogVisible = true"/>
+            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
+          </div>
+          <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
+            <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
+            <PlayPauseButton v-else :controller="verifiedContractsController"/>
+            <span class="ml-5 mr-2">All</span>
+            <SwitchView v-model="filterVerified"/>
+            <span class="ml-2">Verified</span>
+          </div>
+        </template>
+        <template v-slot:content>
+          <Tabs
+              :selected-tab="selectedTab"
+              :tab-ids="tabIds"
+              :tabLabels="tabLabels"
+              @update:selected-tab="handleTabUpdate($event)"
+          />
 
-      <template v-slot:rightContent>
-        <EditableProperty
-            id="key"
-            :editable="false"
-            @edit="onUpdateAccount"
-        >
-          <template v-slot:name>Admin Key</template>
-          <template v-slot:value>
-            <KeyValue :account-id="normalizedAccountId ?? undefined" :key-bytes="account?.key?.key"
-                      :key-type="account?.key?._type"
-                      :show-none="true"/>
-          </template>
-        </EditableProperty>
+          <div v-if="selectedTab === 'transactions'" id="recentTransactionsTable">
+            <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
+          </div>
 
-        <Property id="ethereumNonce">
-          <template v-slot:name>Ethereum Nonce</template>
-          <template v-slot:value>
-            <StringValue :string-value="account?.ethereum_nonce?.toString()"/>
-          </template>
-        </Property>
-      </template>
-    </DashboardCard>
+          <div v-else-if="selectedTab === 'contracts'" id="recentContractsTable">
+            <AccountCreatedContractsTable v-if="account && !filterVerified"
+                                          :controller="contractCreateTableController"/>
+            <VerifiedContractsTable
+                v-else-if="account"
+                :controller="verifiedContractsController"
+                :loaded="loaded"
+                :overflow="overflow"/>
+            <EmptyTable v-else/>
+          </div>
 
-    <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
+          <div v-else id="recentRewardsTable">
+            <StakingRewardsTable :controller="rewardsTableController"/>
+          </div>
+        </template>
+      </DashboardCard>
 
-    <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
-      <template v-slot:title>
-        <p id="recentTransactions" class="h-is-secondary-title">Recent Operations</p>
-      </template>
-      <template v-slot:control>
-        <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
-          <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
-          <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
-          <SelectView v-model="timeSelection" :small="true">
-            <option value="LATEST">LATEST</option>
-            <option value="JUMP">JUMP TO DATE</option>
-          </SelectView>
-          <DownloadButton @click="transactionDownloadDialogVisible = true"/>
-          <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-        </div>
-        <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
-          <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
-          <PlayPauseButton v-else :controller="verifiedContractsController"/>
-          <span class="ml-5 mr-2">All</span>
-          <SwitchView v-model="filterVerified"/>
-          <span class="ml-2">Verified</span>
-        </div>
-      </template>
-      <template v-slot:content>
-        <Tabs
-            :selected-tab="selectedTab"
-            :tab-ids="tabIds"
-            :tabLabels="tabLabels"
-            @update:selected-tab="handleTabUpdate($event)"
-        />
+      <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
 
-        <div v-if="selectedTab === 'transactions'" id="recentTransactionsTable">
-          <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
-        </div>
+      <MirrorLink :network="network" entityUrl="accounts" :loc="accountIdRef ?? undefined"/>
 
-        <div v-else-if="selectedTab === 'contracts'" id="recentContractsTable">
-          <AccountCreatedContractsTable v-if="account && !filterVerified" :controller="contractCreateTableController"/>
-          <VerifiedContractsTable
-              v-else-if="account"
-              :controller="verifiedContractsController"
-              :loaded="loaded"
-              :overflow="overflow"/>
-          <EmptyTable v-else/>
-        </div>
-
-        <div v-else id="recentRewardsTable">
-          <StakingRewardsTable :controller="rewardsTableController"/>
-        </div>
-      </template>
-    </DashboardCard>
-
-    <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
-
-    <MirrorLink :network="network" entityUrl="accounts" :loc="accountIdRef ?? undefined"/>
+    </div>
 
     <TransactionDownloadDialog
         :account-id="accountIdRef ?? undefined"
@@ -340,6 +314,7 @@
         :controller="updateDialogController"
         @updated="onUpdateCompleted"
     />
+
   </PageFrameV2>
 
 </template>
@@ -402,13 +377,13 @@ import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
 const props = defineProps({
   accountId: String,
   network: String,
 })
-
-const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 
 const isMediumScreen = inject('isMediumScreen', true)
 const networkConfig = NetworkConfig.inject()
@@ -467,16 +442,6 @@ const showContractVisible = computed(() => {
 const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
 onMounted(() => stakedNodeAnalyzer.mount())
 onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
-
-const stakedNodeIcon = computed(() => {
-  let result
-  if (accountLocParser.stakedNodeId.value !== null) {
-    result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
-  } else {
-    result = ""
-  }
-  return result
-})
 
 const contractRoute = computed(() => {
   const accountId = accountLocParser.accountId.value
@@ -592,4 +557,29 @@ const domainProviderName = nameQuery.providerName
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+span.my-account {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.my-account img {
+  height: 32px;
+}
+
+div.text-secondary {
+  color: var(--text-secondary);
+}
+
+</style>
+
