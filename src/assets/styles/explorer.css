@@ -43,6 +43,7 @@
     --light-chip-text-primary: white;
     --light-button-background-primary: #7A1B80;
     --light-button-background-secondary: #EFEFEF;
+    --light-tab-background: rgba(5, 5, 5, 0.05);
 
     /* default overriden by the current NetworkEntry.lightThemeColor configuration parameter */
     --light-network-theme-color: lightgrey;
@@ -63,6 +64,7 @@
     --dark-chip-text-primary: white;
     --dark-button-background-primary: #7A1B80;
     --dark-button-background-secondary: #2C2C2C;
+    --dark-tab-background: rgba(255, 255, 255, 0.05);
 
     /* default overriden by the current NetworkEntry.darkThemeColor configuration parameter */
     --dark-network-theme-color: lightgrey;
@@ -85,6 +87,8 @@
     --button-text-secondary: var(--text-primary);
     --button-background-primary: var(--light-button-background-primary);
     --button-background-secondary: var(--light-button-background-secondary);
+    --icon-default-color: #A2A2A2;
+    --tab-background: var(--light-tab-background);
 
     --network-theme-color: var(--light-network-theme-color);
 }
@@ -131,16 +135,6 @@ a {
 
 .h-box-border {
     border: 1px solid var(--table-border);
-}
-
-.tabs {
-    --bulma-tabs-toggle-link-radius: 4px;
-    --bulma-tabs-toggle-link-border-color: grey;
-    --bulma-tabs-toggle-link-border-width: 1px;
-    --bulma-tabs-border-bottom-color: var(--background-tertiary);
-    --bulma-tabs-link-active-border-bottom-color: var(--network-theme-color);
-    --bulma-tabs-link-hover-border-bottom-color: white;
-    --bulma-tabs-link-hover-color: var(--network-theme-color);
 }
 
 /*  ============================================================================
@@ -204,7 +198,7 @@ table.o-table > thead > tr > th {
 table.o-table > tbody > tr > td {
     align-self: center;
     font-style: normal;
-    font-weight: 500;
+    font-weight: 400;
     font-size: 14px;
     padding-top: 16px;
     padding-bottom: 16px;
