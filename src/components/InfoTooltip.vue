@@ -23,19 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-tooltip
-      v-if="props.warningLabel || props.label"
+  <Tooltip
       id="info-tooltip"
-      :label="props.warningLabel ?? props.label"
-      :delay="props.delay"
-      multiline="multiline"
-      :position="props.position ?? 'auto'"
-      class="h-tooltip">
-    <span class="icon is-small h-is-property-text h-is-extra-text">
+      :text="props.warningLabel ?? props.label"
+      :position="props.position"
+  >
+    <span class="icon is-small h-is-extra-text">
       <i v-if="props.warningLabel" class="fa fa-exclamation-triangle has-text-danger"/>
       <i v-else class="fas fa-info-circle"></i>
     </span>
-  </o-tooltip>
+  </Tooltip>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -45,6 +42,7 @@
 <script setup lang="ts">
 
 import {PropType} from "vue";
+import Tooltip from "@/components/Tooltip.vue";
 
 const props = defineProps({
   warningLabel: {
@@ -54,10 +52,6 @@ const props = defineProps({
   label: {
     type: String as PropType<string | null>,
     default: null
-  },
-  delay: {
-    type: Number,
-    default: 200
   },
   position: String
 })
