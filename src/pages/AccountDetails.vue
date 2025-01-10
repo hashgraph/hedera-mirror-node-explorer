@@ -57,7 +57,7 @@
         <template #content>
           <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
 
-          <Property id="entityId" :full-width="true">
+          <Property id="entityId" :full-width="isMediumScreen">
             <template #name>
               Account ID
             </template>
@@ -78,7 +78,7 @@
               </template>
             </template>
           </Property>
-          <Property v-if="operatorNodeRoute" id="nodeLink" :full-width="true">
+          <Property v-if="operatorNodeRoute" id="nodeLink" :full-width="isMediumScreen">
             <template #name>
               Node
             </template>
@@ -88,7 +88,7 @@
               </router-link>
             </template>
           </Property>
-          <Property v-else id="evmAddress" :full-width="true">
+          <Property v-else id="evmAddress" :full-width="isMediumScreen">
             <template #name>
               EVM Address
             </template>
@@ -99,7 +99,7 @@
                   :address="isInactiveEvmAddress ? accountIdRef : ethereumAddress"/>
             </template>
           </Property>
-          <Property v-if="domainName" id="names" :full-width="true">
+          <Property v-if="domainName" id="names" :full-width="isMediumScreen">
             <template #name>
               Domain
             </template>
