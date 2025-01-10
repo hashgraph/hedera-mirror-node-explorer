@@ -100,7 +100,10 @@
         />
       </div>
 
-      <div v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable">
+      <div
+          v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable"
+          class="pending-airdrops-container"
+      >
         <Tabs
             :selected-tab="airdropSelectedTab"
             :tab-ids="airdropTabIds"
@@ -127,7 +130,10 @@
       </div>
 
       <router-link v-if="showAllTokensLink" :to="routeManager.makeRouteToTokensByAccount(accountId)">
-        <div class="h-is-property-text h-is-extra-text has-text-centered">Show all tokens</div>
+        <div class="all-tokens-link">
+          <span class="all-tokens-text">All tokens</span>
+          <img src="@/assets/right-arrow.png" alt="Link" style="height: 16px;"/>
+        </div>
       </router-link>
 
     </template>
@@ -381,4 +387,27 @@ const candidateAirdrops = ref<TokenAirdrop[]>([])
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.pending-airdrops-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+div.all-tokens-link {
+  align-items: center;
+  color: var(--icon-default-color);
+  display: flex;
+  gap: 2px;
+  height: 18px;
+  justify-content: center;
+}
+
+span.all-tokens-text {
+  font-family: "Styrene A Web", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+</style>
