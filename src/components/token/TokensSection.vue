@@ -24,58 +24,57 @@
 
 <template>
 
-  <DashboardCard v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
+  <DashboardCardV2 v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
 
-    <template v-slot:title>
+    <template #title>
       <div v-if="fullPage">
-        <span class="h-is-primary-title">HTS Tokens of Account </span>
+        <span>HTS Tokens of Account </span>
         <router-link :to="routeManager.makeRouteToAccount(accountId)">
-          <span class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+          <span>{{ accountId }}</span>
         </router-link>
       </div>
-      <span v-else class="h-is-secondary-title">HTS Tokens</span>
+      <span v-else>HTS Tokens</span>
     </template>
 
-    <template v-slot:control>
+    <template #right-control>
       <div
           v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled"
-          class="is-flex is-align-items-baseline"
+          class=""
       >
-        <span class="mr-2 h-is-property-text has-text-grey">{{ rejectButtonHint }}</span>
-        <button
+        <span class="">{{ rejectButtonHint }}</span>
+        <ButtonView
             id="reject-button"
-            class="button is-white is-small"
-            :disabled=!rejectButtonEnabled
-            @click="onReject"
+            :enabled="rejectButtonEnabled"
+            :is-default="true"
+            :is-small="true"
+            @action="onReject"
         >
           REJECT
-        </button>
+        </ButtonView>
       </div>
       <div
           v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
-          class="is-flex is-align-items-baseline"
+          class=""
       >
-        <span class="mr-2 h-is-property-text has-text-grey">{{ claimButtonHint }}</span>
-        <o-tooltip
+        <span class="">{{ claimButtonHint }}</span>
+        <Tooltip
             id="claim-button-tooltip"
-            :active="!claimActionEnabled"
-            label="Coming soon"
-            delay="200"
-            position="top"
-            class="h-tooltip">
-          <button
+            text="Coming soon"
+        >
+          <ButtonView
               id="claim-button"
-              class="button is-white is-small"
-              :disabled="!claimActionEnabled"
-              @click="onClaim"
+              :enabled="claimActionEnabled"
+              :is-default="true"
+              :is-small="true"
+              @action="onClaim"
           >
             {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
-          </button>
-        </o-tooltip>
+          </ButtonView>
+        </Tooltip>
       </div>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <Tabs
           :selected-tab="selectedTab"
           :tab-ids="tabIds"
@@ -133,7 +132,7 @@
 
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
   <RejectTokenDialog
       :tokens="checkedTokens"
@@ -157,7 +156,6 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import {useRouter} from "vue-router";
@@ -174,6 +172,9 @@ import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import Tooltip from "@/components/Tooltip.vue";
 
 const props = defineProps({
   accountId: {
@@ -303,7 +304,7 @@ const rejectButtonHint = computed(() => {
   } else if (checkedCount == 1) {
     result = `${tokenOrNftId(checkedTokens.value[0])} selected`
   } else {
-    result = "Select tokens"
+    result = ""
   }
   return result
 })
