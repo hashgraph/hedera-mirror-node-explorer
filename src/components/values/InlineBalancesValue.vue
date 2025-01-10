@@ -24,9 +24,9 @@
 
 <template>
 
-  <div class="is-flex is-justify-content-space-between">
-    <div v-if="accountId" class="h-is-tertiary-text">
-      <HbarAmount timestamp="0" v-bind:amount="hbarBalance" v-bind:show-extra="true"/>
+  <div class="balance-root">
+    <div v-if="accountId">
+      <HbarAmount timestamp="0" :amount="hbarBalance" :show-extra="true"/>
     </div>
     <div v-if="isSmallScreen && elapsed" class="has-text-right has-text-grey mt-1">
       {{ elapsed }}
@@ -39,67 +39,54 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {computed, inject, PropType, ref} from 'vue';
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 
-export default defineComponent({
-
-  name: 'InlineBalancesValue',
-
-  components: {
-    HbarAmount,
-  },
-
-  props: {
-    balanceAnalyzer: {
-      type: Object as PropType<BalanceAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const accountId = props.balanceAnalyzer.accountId ?? ref(null)
-
-    const elapsed = computed(() => {
-      let result: string | null
-      const duration = props.balanceAnalyzer.balanceAge.value
-      if (duration !== null) {
-        if (duration.years > 0) {
-          result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
-        } else if (duration.days > 0) {
-          result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
-        } else if (duration.hours > 0) {
-          result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"
-        } else if (duration.minutes > 0) {
-          result = duration.minutes + " min ago"
-        } else {
-          result = null
-        }
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    return {
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      accountId,
-      balanceTimeStamp: props.balanceAnalyzer.balanceTimeStamp,
-      hbarBalance: props.balanceAnalyzer.hbarBalance,
-      elapsed,
-    }
+const props = defineProps({
+  balanceAnalyzer: {
+    type: Object as PropType<BalanceAnalyzer>,
+    required: true
   }
-});
+})
+
+const isSmallScreen = inject('isSmallScreen', true)
+
+const accountId = props.balanceAnalyzer.accountId ?? ref(null)
+
+const elapsed = computed(() => {
+  let result: string | null
+  const duration = props.balanceAnalyzer.balanceAge.value
+  if (duration !== null) {
+    if (duration.years > 0) {
+      result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
+    } else if (duration.days > 0) {
+      result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
+    } else if (duration.hours > 0) {
+      result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"
+    } else if (duration.minutes > 0) {
+      result = duration.minutes + " min ago"
+    } else {
+      result = null
+    }
+  } else {
+    result = null
+  }
+  return result
+})
+
+const hbarBalance = props.balanceAnalyzer.hbarBalance
 
 </script>
 
-<style/>
+<style scoped>
+
+div.balance-root {
+  align-items: baseline;
+  display: flex;
+  gap: 8px;
+}
+
+</style>
