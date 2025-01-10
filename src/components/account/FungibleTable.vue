@@ -29,9 +29,9 @@
       :loading="props.controller.loading.value"
       :paginated="props.controller.paginated.value && props.fullPage"
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="props.controller.totalRowCount.value"
       v-model:current-page="props.controller.currentPage.value"
       :per-page="props.controller.pageSize.value"
@@ -51,19 +51,19 @@
       aria-previous-label="Previous page"
       customRowKey="token_id"
   >
-    <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
-      <TokenIOL :token-id="row.token_id"/>
+    <o-table-column v-slot="{ row }" field="token_id" label="TOKEN ID">
+      <TokenIOL class="token-id-label" :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="Name">
+    <o-table-column v-slot="{ row }" field="name" label="NAME">
       {{ row.name }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="symbol" label="Symbol">
+    <o-table-column v-slot="{ row }" field="symbol" label="SYMBOL">
       {{ row.symbol }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="balance" label="Balance">
+    <o-table-column v-slot="{ row }" field="balance" label="BALANCE">
       <TokenCell
           :account-id="props.controller.accountId.value"
           :token-id="row.token_id"
@@ -149,5 +149,9 @@ const handleClick = (balance: TokenBalance, c: unknown, i: number, ci: number, e
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.token-id-label {
+  font-weight: 600;
+}
 
 </style>

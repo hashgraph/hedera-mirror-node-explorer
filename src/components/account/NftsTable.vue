@@ -29,9 +29,9 @@
       :loading="props.controller.loading.value"
       :paginated="props.controller.paginated.value && props.fullPage"
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="props.controller.totalRowCount.value"
       v-model:current-page="props.controller.currentPage.value"
       :per-page="props.controller.pageSize.value"
@@ -51,7 +51,7 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="{ row }" field="image" label="Image">
+    <o-table-column v-slot="{ row }" field="image" label="IMAGE">
       <NftCell
           :token-id="row.token_id"
           :serial-number="row.serial_number"
@@ -60,27 +60,27 @@
       />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-id" label="Token ID">
-      <TokenIOL :token-id="row.token_id"/>
+    <o-table-column v-slot="{ row }" field="token-id" label="TOKEN ID">
+      <TokenIOL class="token-id-label" :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="serial" label="Serial #">
+    <o-table-column v-slot="{ row }" field="serial" label="SERIAL #">
       {{ row.serial_number }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-name" label="Collection Name">
+    <o-table-column v-slot="{ row }" field="token-name" label="COLLECTION NAME">
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-name" label="Symbol">
+    <o-table-column v-slot="{ row }" field="token-name" label="SYMBOL">
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="NFT Name">
+    <o-table-column v-slot="{ row }" field="name" label="NFT NAME">
       <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.name"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="creator" label="Creator">
+    <o-table-column v-slot="{ row }" field="creator" label="CREATOR">
       <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.creator"/>
     </o-table-column>
 
@@ -163,5 +163,9 @@ const handleClick = (nft: Nft, c: unknown, i: number, ci: number, event: MouseEv
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.token-id-label {
+  font-weight: 600;
+}
 
 </style>
