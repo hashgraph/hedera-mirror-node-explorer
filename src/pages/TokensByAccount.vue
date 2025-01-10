@@ -25,10 +25,14 @@
 <template>
 
   <PageFrameV2 page-title="Tokens by Account">
-    <TokensSection
-        :account-id="accountId"
-        :full-page="true"
-    />
+
+    <div class="page-container">
+      <TokensSection
+          :account-id="props.accountId"
+          :full-page="true"
+      />
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -37,28 +41,19 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
+import {PropType} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import TokensSection from "@/components/token/TokensSection.vue";
 
-export default defineComponent({
-  name: 'TokensByAccount',
-
-  props: {
-    network: String,
-    accountId: {
-      type: String as PropType<string | null>,
-      default: null
-    }
-  },
-
-  components: {
-    TokensSection,
-    PageFrameV2,
-  },
-});
+const props = defineProps({
+  network: String,
+  accountId: {
+    type: String as PropType<string | null>,
+    default: null
+  }
+})
 
 </script>
 
@@ -66,4 +61,15 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+</style>
+
