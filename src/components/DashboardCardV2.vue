@@ -41,7 +41,10 @@
     <slot name="subtitle"/>
 
     <div v-if="!isCollapsed">
-      <slot name="content" v-if="slots.content"/>
+
+      <div v-if="slots['content']" class="left-content">
+        <slot name="content"/>
+      </div>
 
       <div v-if="slots.mediaContent || slots.mediaDescription" class="media-content">
         <slot name="media-content"/>
@@ -49,14 +52,16 @@
         <slot name="mediaDescription"/>
       </div>
 
-      <hr class="horizontal-line">
+      <hr v-if="showHorizontalSeparation" class="horizontal-line">
 
-      <div v-if="slots['left-content'] || slots['right-content']" class="split-content">
+      <div
+          v-if="slots['left-content'] || slots['right-content']"
+          :class="{'split-content': isMediumScreen, 'left-content': !isMediumScreen}"
+      >
         <div class="left-content">
           <slot name="left-content"/>
         </div>
-        <div class="vertical-line"/>
-        <div class="right-content">
+        <div class="right-content" :class="{'split-separator': isMediumScreen}">
           <slot name="right-content"/>
         </div>
       </div>
@@ -99,6 +104,10 @@ const isCollapsed = ref(false)
 const darkSelected = ThemeController.inject().darkSelected
 const arrowUpURL = computed(() => darkSelected.value ? arrowUpDarkURL : arrowUpLightURL)
 const arrowDownURL = computed(() => darkSelected.value ? arrowDownDarkURL : arrowDownLightURL)
+
+const showHorizontalSeparation = computed(() =>
+    slots['content'] && (slots['left-content'] || slots['right-content'])
+)
 
 onMounted(() => {
   if (isCollapsible.value) {
@@ -170,7 +179,7 @@ div.right-header {
 
 div.split-content {
   display: grid;
-  grid-template-columns: 1fr 49px 1fr;
+  grid-template-columns: 1fr 1fr;
 }
 
 div.left-content {
@@ -187,19 +196,15 @@ div.right-content {
   gap: 16px;
 }
 
+div.split-separator {
+  border-left: 1px solid var(--border-secondary);
+  padding-left: 24px;
+}
+
 hr.horizontal-line {
   background-color: var(--border-secondary);
   height: 1px;
   margin: 24px 0;
-}
-
-div.vertical-line {
-  border-color: var(--border-secondary);
-  border-style: solid;
-  border-width: 0.5px;
-  margin-left: 24px;
-  margin-right: 24px;
-  width: 1px;
 }
 
 </style>
