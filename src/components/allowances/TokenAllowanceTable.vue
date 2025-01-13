@@ -32,9 +32,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="paginated"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       :striped="true"
 
@@ -49,27 +49,28 @@
       default-sort="spender"
       @page-change="onPageChange">
 
-    <o-table-column v-slot="props" field="spender" label="Spender">
-      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
+    <o-table-column v-slot="props" field="spender" label="SPENDER">
+      <AccountLink class="entity-id" :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Amount">
+    <o-table-column v-slot="props" field="amount" label="AMOUNT">
       <TokenAmount :token-id="props.row.token_id" :amount="BigInt(props.row.amount_granted)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token ID">
+    <o-table-column v-slot="props" field="token" label="TOKEN ID">
       <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Time">
+    <o-table-column v-slot="props" field="timestamp" label="TIME">
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props" field="edit-icon" position="right">
-      <span v-if="props.row.isEditable" class="icon is-small has-text-right">
-        <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
-      </span>
-      <InfoTooltip v-else label="The allowance cannot be modified because the token is no longer associated with this account."/>
+      <i v-if="props.row.isEditable" class="fa fa-pen" @click="emit('editAllowance', props.row)"/>
+      <InfoTooltip
+          v-else
+          label="The allowance cannot be modified because the token is no longer associated with this account."
+      />
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -96,9 +97,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
+import {computed, PropType, ref, watch} from 'vue';
 import {TokenAllowance} from "@/schemas/MirrorNodeSchemas";
 import {isValidAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
@@ -117,62 +118,38 @@ interface DisplayedTokenAllowance extends TokenAllowance {
   isEditable: boolean
 }
 
-export default defineComponent({
-  name: 'TokenAllowanceTable',
+const emit = defineEmits(["editAllowance"])
 
-  components: {TablePageSize, InfoTooltip, TokenLink, TokenAmount, AccountLink, EmptyTable, TimestampValue},
-
-  emits: ["editAllowance"],
-
-  props: {
-    controller: {
-      type: Object as PropType<TokenAllowanceTableController>,
-      required: true
-    }
-  },
-
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const isWalletConnected = computed(
-        () => walletManager.isHieroWallet.value
-            && walletManager.accountId.value === props.controller.accountId.value
-    )
-    // const isWalletConnected = computed(() => false)
-
-    const allowances = ref<DisplayedTokenAllowance[]>([])
-    watch(props.controller.rows, async () => {
-      const result = []
-      for (const a of props.controller.rows.value) {
-        let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
-        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
-        allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
-        result.push(allowance)
-      }
-      allowances.value = result
-    })
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      isWalletConnected,
-      allowances,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TokenAllowanceTableController>,
+    required: true
   }
-});
+})
+
+const isWalletConnected = computed(() =>
+    walletManager.isHieroWallet.value
+    && walletManager.accountId.value === props.controller.accountId.value
+)
+
+const allowances = ref<DisplayedTokenAllowance[]>([])
+watch(props.controller.rows, async () => {
+  const result = []
+  for (const a of props.controller.rows.value) {
+    let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
+    allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
+    result.push(allowance)
+  }
+  allowances.value = result
+})
+
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -181,5 +158,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.entity-id {
+  font-weight: 600;
+}
 
 </style>
