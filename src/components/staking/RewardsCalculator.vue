@@ -24,62 +24,66 @@
 
 <template>
 
-  <DashboardCard collapsible-key="rewardsEstimator">
-    <template v-slot:title>
-      <p class="h-is-secondary-title">Rewards Estimator</p>
+  <DashboardCardV2 collapsible-key="rewardsEstimator">
+    <template #title>
+      Rewards Estimator
     </template>
-    <template v-slot:content>
 
-      <div class="columns">
-        <div class="column is-three-fifths">
-          <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-            <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
-            <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
-            <SelectView v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
-              <optgroup label="Hedera council nodes">
-                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                        style="background-color: var(--h-theme-box-background-color)"
-                        v-show="isCouncilNode(n)">
-                  {{ makeNodeSelectorDescription(n) }}
-                </option>
-              </optgroup>
-              <optgroup v-if="hasCommunityNode" label="Community nodes">
-                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                        style="background-color: var(--h-theme-box-background-color)"
-                        v-show="!isCouncilNode(n)">
-                  {{ makeNodeSelectorDescription(n) }}
-                </option>
-              </optgroup>
+    <template #content>
+      <div class="calculator-root">
+        <div class="calculator-input">
+          <div class="node-selector">
+            <p>Choose a node to stake to</p>
+            <SelectView v-model="selectedNodeId" width="100%">
+              <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                      style="background-color: var(--h-theme-box-background-color)"
+              >
+                {{ makeNodeSelectorDescription(n) }}
+              </option>
             </SelectView>
           </div>
-        </div>
-        <div class="column">
-          <div class="is-flex is-flex-direction-column is-align-items-flex-start">
-            <p v-if="isMediumScreen" class="h-is-property-text mb-3">{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
-            <p v-else class="h-is-text-size-3 mb-1">{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
-            <input class="input is-small has-text-right" type="text" placeholder="0"
-                   :value="amountStaked"
-                   @input="handleInput"
-                   style="width: 100%; height: 26px; margin-top: 1.5px; border-radius: 4px; border-width: 1px;
-                     color: white; background-color: var(--h-theme-box-background-color)">
+          <div class="amount-chooser">
+            <p>{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
+            <input
+                class="input"
+                type="text"
+                placeholder="0"
+                :value="amountStaked"
+                @input="handleInput"
+            >
           </div>
         </div>
+
+        <div class="calculator-dashboard">
+          <NetworkDashboardItemV2
+              id="currentReward"
+              title="Current 24h Period Reward"
+              :value="currentReward.toString()"
+              :unit="cryptoName"
+          />
+          <NetworkDashboardItemV2
+              id="monthlyReward"
+              title="Approx Monthly Reward"
+              :value="monthlyReward.toString()"
+              :unit=cryptoName
+          />
+          <NetworkDashboardItemV2
+              id="yearlyReward"
+              title="Approx. Yearly Reward"
+              :value="yearlyReward.toString()"
+              :unit=cryptoName
+          />
+          <NetworkDashboardItemV2
+              id="yearlyRate"
+              title="Approx Yearly Reward Rate"
+              :value="annualizedRate"
+          />
+        </div>
+
+        <div v-html="htmlNotice"/>
       </div>
-
-      <div class="is-flex is-justify-content-space-between">
-        <NetworkDashboardItem id="currentReward" :name=cryptoName title="Current 24h Period Reward"
-                              :value="currentReward.toString()"/>
-        <NetworkDashboardItem id="monthlyReward" :name=cryptoName title="Approx Monthly Reward"
-                              :value="monthlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyReward" :name=cryptoName title="Approx Yearly Reward"
-                              :value="yearlyReward.toString()"/>
-        <NetworkDashboardItem id="yearlyRate" title="Approx Yearly Reward Rate" :value="annualizedRate"/>
-      </div>
-
-      <div v-html="htmlNotice"/>
-
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -87,108 +91,62 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import {computed, onBeforeMount, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {isCouncilNode, makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {CoreConfig} from "@/config/CoreConfig";
 import SelectView from "@/components/SelectView.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 
-export default defineComponent({
-  name: 'RewardsCalculator',
+const props = defineProps({
+  network: String,
+  amountInHbar: Number,
+  nodeId: Number,
+})
 
-  props: {
-    network: String,
-    amountInHbar: Number,
-    nodeId: Number,
-  },
+const coreConfig = CoreConfig.inject()
+const htmlNotice = coreConfig.estimatorNotice ?? ""
+const cryptoName = coreConfig.cryptoName
 
-  components: {
-    SelectView,
-    DashboardCard,
-    NetworkDashboardItem,
-  },
+const selectedNodeId = ref<number | null>(props.nodeId ?? null)
+watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
 
-  setup(props) {
-    const coreConfig = CoreConfig.inject()
-    const htmlNotice = coreConfig.estimatorNotice ?? ""
-    const cryptoName = coreConfig.cryptoName
+//
+// Node
+//
+const nodeAnalyzer = new NodeAnalyzer(selectedNodeId)
+onMounted(() => nodeAnalyzer.mount())
+onBeforeUnmount(() => nodeAnalyzer.unmount())
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
+const amountStaked = ref<number>(100)
+const updateAmountStaked = () => {
+  amountStaked.value = props.amountInHbar ?? 100
+}
+watch(() => props.amountInHbar, updateAmountStaked)
+onBeforeMount(updateAmountStaked)
 
-    const selectedNodeId = ref<number | null>(props.nodeId ?? null)
-    watch(() => props.nodeId, () => selectedNodeId.value = props.nodeId ?? null)
+const rewardRate = computed(() => nodeAnalyzer.rewardRate.value)
+const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
+const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
+const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
-    //
-    // Node
-    //
-    const nodeAnalyzer = new NodeAnalyzer(selectedNodeId)
-    onMounted(() => nodeAnalyzer.mount())
-    onBeforeUnmount(() => nodeAnalyzer.unmount())
-
-    const nodeIcon = computed(() => {
-      let result
-      if (selectedNodeId.value !== null) {
-        result = nodeAnalyzer.isCouncilNode.value ? "building" : "users"
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const amountStaked = ref<number>(100)
-    const updateAmountStaked = () => {
-      amountStaked.value = props.amountInHbar ?? 100
-    }
-    watch(() => props.amountInHbar, updateAmountStaked)
-    onBeforeMount(updateAmountStaked)
-
-    const rewardRate = computed(() => nodeAnalyzer.rewardRate.value)
-    const currentReward = computed(() => rewardRate.value && amountStaked.value ? Math.round(amountStaked.value * rewardRate.value * 10000) / 10000 : 0)
-    const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
-    const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
-
-    const handleInput = (event: Event) => {
-      const previousAmount = amountStaked.value
-      const value = (event.target as HTMLInputElement).value
-      const newAmount = Number(value)
-      if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
-        amountStaked.value = newAmount
-      } else {
-        amountStaked.value = -1
-        amountStaked.value = previousAmount
-      }
-    }
-
-    return {
-      htmlNotice,
-      cryptoName,
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      selectedNodeId,
-      nodeIcon,
-      amountStaked,
-      rewardRate,
-      currentReward,
-      monthlyReward,
-      yearlyReward,
-      annualizedRate: nodeAnalyzer.annualizedRate,
-      nodes: nodeAnalyzer.networkAnalyzer.nodes,
-      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
-      makeNodeDescription,
-      makeNodeSelectorDescription,
-      isCouncilNode,
-      handleInput
-    }
+const handleInput = (event: Event) => {
+  const previousAmount = amountStaked.value
+  const value = (event.target as HTMLInputElement).value
+  const newAmount = Number(value)
+  if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
+    amountStaked.value = newAmount
+  } else {
+    amountStaked.value = -1
+    amountStaked.value = previousAmount
   }
-});
+}
+
+const annualizedRate = nodeAnalyzer.annualizedRate
+const nodes = nodeAnalyzer.networkAnalyzer.nodes
 
 </script>
 
@@ -196,8 +154,37 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-.o-ctrl-sel {
-  width: 100%;
+<style scoped>
+
+div.calculator-root {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
+
+div.calculator-input {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+  min-height: 128px;
+}
+
+div.node-selector{
+  flex-grow: 1.3;
+}
+
+div.amount-chooser{
+  flex-grow: 1;
+}
+
+
+div.calculator-dashboard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+}
+
 </style>
