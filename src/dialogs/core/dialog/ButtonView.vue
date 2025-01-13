@@ -134,7 +134,12 @@ button.button-view.is-transparent {
 span.button-slot {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
+  gap: 10px;
+}
+
+.is-small .button-slot {
+  gap: 8px;
 }
 
 </style>
