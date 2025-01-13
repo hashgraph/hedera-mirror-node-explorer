@@ -47,7 +47,7 @@
               v-if="isAccountEditable"
               id="update-button"
               :is-default="true"
-              :size="ButtonSize.medium"
+              :size="ButtonSize.small"
               @action="onUpdateAccount"
           >
             UPDATE ACCOUNT
