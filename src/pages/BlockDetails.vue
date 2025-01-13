@@ -40,9 +40,8 @@
               :size="ButtonSize.small"
               @action="handlePreviousBlock"
           >
-            <div class="block-navigation-button">
-              {{ isSmallScreen ? 'PREV. BLOCK' : 'PREV.' }}
-            </div>
+            <ArrowLeft :size="18" class="block-navigation-button"/>
+            <span class="block-navigation-button">{{ isSmallScreen ? 'PREV. BLOCK' : 'PREV.' }}</span>
           </ButtonView>
           <ButtonView
               id="next-block-button"
@@ -50,9 +49,8 @@
               :size="ButtonSize.small"
               @action="handleNextBlock"
           >
-            <div class="block-navigation-button">
-              {{ isSmallScreen ? 'NEXT BLOCK' : 'NEXT' }}
-            </div>
+            <span class="block-navigation-button">{{ isSmallScreen ? 'NEXT BLOCK' : 'NEXT' }}</span>
+            <ArrowRight :size="18" class="block-navigation-button"/>
           </ButtonView>
         </template>
 
@@ -136,7 +134,7 @@ import {routeManager} from "@/router";
 import MirrorLink from "@/components/MirrorLink.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
-
+import {ArrowLeft, ArrowRight} from 'lucide-vue-next';
 
 const props = defineProps({
   blockHon: String,
@@ -192,7 +190,7 @@ div.page-container {
   margin-right: 32px;
 }
 
-div.block-navigation-button {
+.block-navigation-button {
   color: var(--text-primary);
 }
 
