@@ -513,11 +513,14 @@ body {
 }
 
 .h-has-pill {
-    color: var(--chip-text-primary);
-    font-weight: bold;
     background: var(--light-chip-primary);
-    border-radius: 15px;
-    padding: 3px 8px 3px;
+    border-radius: 32px;
+    color: var(--chip-text-primary);
+    font-family: "Styrene A Web", sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    height: 20px;
+    padding: 2px 8px;
 }
 
 .h-has-low-contrast {
