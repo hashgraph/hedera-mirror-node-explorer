@@ -46,7 +46,7 @@
   >
 
     <o-table-column v-slot="props" field="contract_id" label="ID">
-      <ContractIOL class="contract_id" :contract-id="props.row.contract_id"/>
+      <ContractIOL class="entity-id" :contract-id="props.row.contract_id"/>
     </o-table-column>
 
     <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
@@ -129,7 +129,7 @@ const showPageSizeSelector = props.controller.showPageSizeSelector
 
 <style scoped>
 
-.contract_id {
+.entity-id {
   font-weight: 600;
 }
 
