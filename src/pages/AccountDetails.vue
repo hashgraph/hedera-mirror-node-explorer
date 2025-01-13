@@ -247,30 +247,43 @@
 
       <TokensSection :account-id="normalizedAccountId" :full-page="false"/>
 
-      <DashboardCard v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
-        <template v-slot:title>
-          <p id="recentTransactions" class="h-is-secondary-title">Recent Operations</p>
+      <DashboardCardV2 v-if="!isInactiveEvmAddress" collapsible-key="recentTransactions">
+        <template #title>
+          <p id="recentTransactions">Recent Operations</p>
         </template>
-        <template v-slot:control>
-          <div v-if="selectedTab === 'transactions'" class="is-flex is-align-items-flex-end">
-            <PlayPauseButton v-if="timeSelection == 'LATEST'" :controller="transactionTableController"/>
-            <DateTimePicker v-else :controller="transactionTableController" @dateCleared="onDateCleared"/>
+
+        <template #left-control>
+          <template v-if="selectedTab === 'transactions' && timeSelection === 'LATEST'">
+            <PlayPauseButtonV2 :controller="transactionTableController"/>
+          </template>
+          <template v-else-if="selectedTab === 'contracts'">
+            <PlayPauseButtonV2 v-if="!filterVerified" :controller="contractCreateTableController"/>
+            <PlayPauseButtonV2 v-else :controller="verifiedContractsController"/>
+          </template>
+        </template>
+
+        <template #right-control>
+          <template v-if="selectedTab === 'transactions'">
+            <DateTimePicker
+                v-if="timeSelection !== 'LATEST'"
+                :controller="transactionTableController"
+                @dateCleared="onDateCleared"
+            />
             <SelectView v-model="timeSelection" :small="true">
               <option value="LATEST">LATEST</option>
               <option value="JUMP">JUMP TO DATE</option>
             </SelectView>
             <DownloadButton @click="transactionDownloadDialogVisible = true"/>
-            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-          </div>
-          <div v-else-if="selectedTab === 'contracts'" class="is-flex is-justify-content-end is-align-items-center">
-            <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
-            <PlayPauseButton v-else :controller="verifiedContractsController"/>
-            <span class="ml-5 mr-2">All</span>
+            <TransactionFilterSelect v-model:selected-filter="transactionType"/>
+          </template>
+          <template v-else-if="selectedTab === 'contracts'">
+            <span>All</span>
             <SwitchView v-model="filterVerified"/>
-            <span class="ml-2">Verified</span>
-          </div>
+            <span>Verified</span>
+          </template>
         </template>
-        <template v-slot:content>
+
+        <template #content>
           <Tabs
               :selected-tab="selectedTab"
               :tab-ids="tabIds"
@@ -283,8 +296,10 @@
           </div>
 
           <div v-else-if="selectedTab === 'contracts'" id="recentContractsTable">
-            <AccountCreatedContractsTable v-if="account && !filterVerified"
-                                          :controller="contractCreateTableController"/>
+            <AccountCreatedContractsTable
+                v-if="account && !filterVerified"
+                :controller="contractCreateTableController"
+            />
             <VerifiedContractsTable
                 v-else-if="account"
                 :controller="verifiedContractsController"
@@ -297,7 +312,7 @@
             <StakingRewardsTable :controller="rewardsTableController"/>
           </div>
         </template>
-      </DashboardCard>
+      </DashboardCardV2>
 
       <AllowancesSection :account-id="normalizedAccountId ?? undefined"/>
 
@@ -327,11 +342,9 @@
 
 import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
@@ -379,6 +392,7 @@ import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 const props = defineProps({
   accountId: String,
