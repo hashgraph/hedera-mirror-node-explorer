@@ -26,7 +26,7 @@
 
   <ButtonView
       id="connectWalletButton"
-      :is-small="true"
+      :size="ButtonSize.medium"
       :is-default="true"
       :enabled="!connecting"
       @action="chooseWallet"
@@ -53,7 +53,7 @@ import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
 import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 
 //
 // Connection state

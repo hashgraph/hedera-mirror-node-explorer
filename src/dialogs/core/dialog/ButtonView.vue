@@ -25,7 +25,12 @@
 <template>
   <button
       class="button-view"
-      :class="{'is-small': props.isSmall,'is-default': props.isDefault,'is-transparent': props.isTransparent}"
+      :class="{
+        'is-small': props.size === 'small',
+        'is-medium': props.size === 'medium',
+        'is-default': props.isDefault,
+        'is-transparent': props.isTransparent
+      }"
       :disabled="!props.enabled"
       @click="handleClick"
   >
@@ -39,7 +44,17 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
+<script lang="ts">
+export enum ButtonSize {
+  normal = 'normal',
+  medium = 'medium',
+  small = 'small'
+}
+</script>
+
 <script setup lang="ts">
+
+import {PropType} from "vue";
 
 const props = defineProps({
   enabled: {
@@ -50,13 +65,13 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  isSmall: {
-    type: Boolean,
-    default: false
-  },
   isTransparent: {
     type: Boolean,
     default: false
+  },
+  size: {
+    type: String as PropType<ButtonSize>,
+    default: ButtonSize.normal
   }
 })
 
@@ -86,9 +101,16 @@ button.button-view {
   padding: 0 24px;
 }
 
-button.button-view.is-small {
+button.button-view.is-medium {
   border-radius: 24px;
   height: 40px;
+}
+
+button.button-view.is-small {
+  border-radius: 16px;
+  font-size: 12px;
+  height: 30px;
+  padding: 0 14px;
 }
 
 button.button-view:disabled {

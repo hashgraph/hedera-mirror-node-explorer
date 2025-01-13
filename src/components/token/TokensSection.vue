@@ -46,7 +46,7 @@
             id="reject-button"
             :enabled="rejectButtonEnabled"
             :is-default="true"
-            :is-small="true"
+            :size="ButtonSize.medium"
             @action="onReject"
         >
           REJECT
@@ -65,7 +65,7 @@
               id="claim-button"
               :enabled="claimActionEnabled"
               :is-default="true"
-              :is-small="true"
+              :size="ButtonSize.medium"
               @action="onClaim"
           >
             {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
@@ -179,7 +179,7 @@ import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 import Tooltip from "@/components/Tooltip.vue";
 
 const props = defineProps({
