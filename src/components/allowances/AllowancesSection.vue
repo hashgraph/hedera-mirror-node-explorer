@@ -24,19 +24,25 @@
 
 <template>
 
-  <DashboardCard v-if="accountId" collapsible-key="allowances">
+  <DashboardCardV2 v-if="accountId" collapsible-key="allowances">
 
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Allowances</span>
+    <template #title>
+      Allowances
     </template>
 
-    <template v-slot:control>
-      <button v-if="isWalletConnected && isHieroWallet" id="approve-button" class="button is-white is-small"
-              @click="onClick">APPROVE ALLOWANCE…
-      </button>
+    <template #right-control>
+      <ButtonView
+          v-if="isWalletConnected && isHieroWallet"
+          id="approve-button"
+          :is-default="true"
+          :is-small="true"
+          @action="onClick"
+      >
+        APPROVE ALLOWANCE
+      </ButtonView>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <Tabs
           :selected-tab="selectedTab"
           :tab-ids="tabIds"
@@ -44,15 +50,9 @@
           @update:selected-tab="onUpdate($event)"
       />
 
-      <div v-if="selectedTab === 'nft'" id="approvedForAll"
-           class="is-flex is-align-items-center is-justify-content-end">
-        <p class="has-text-weight-light">Approved for all</p>
-        <label class="checkbox pt-1 ml-3">
-          <input
-              type="checkbox"
-              v-model="selectApprovedForAll"
-          >
-        </label>
+      <div v-if="selectedTab === 'nft'" id="approvedForAll" class="approved-for-all-checkbox">
+        <input type="checkbox" v-model="selectApprovedForAll" id="approvedForAll" name="approvedForAll"/>
+        <label for="approvedForAll">Approved for all</label>
       </div>
 
       <div v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
@@ -83,7 +83,7 @@
       </div>
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
   <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
                           :owner-account-id="ownerAccountId"
@@ -122,7 +122,6 @@ import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router, {walletManager} from "@/router";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
-import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/dialogs/ApproveAllowanceDialog.vue";
@@ -138,6 +137,8 @@ import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 
 const props = defineProps({
   accountId: String,
@@ -147,8 +148,9 @@ const isMediumScreen = inject('isMediumScreen', true)
 const cryptoName = CoreConfig.inject().cryptoName
 
 const computedAccountId = computed(() => props.accountId || null)
-const isWalletConnected = computed(
-        () => walletManager.accountId.value === props.accountId)
+const isWalletConnected = computed(() =>
+    walletManager.accountId.value === props.accountId
+)
 
 const showApproveAllowanceDialog = ref(false)
 
@@ -340,5 +342,12 @@ const ownerAccountId = walletManager.accountId
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.approved-for-all-checkbox {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
 
 </style>
