@@ -171,7 +171,7 @@
 
   <ContractVerificationDialog
       v-model:show-dialog="showVerifyDialog"
-      :contract-id="contractId ?? undefined"
+      :contract-id="contractId"
       v-on:verify-did-complete="verifyDidComplete"/>
 
 </template>

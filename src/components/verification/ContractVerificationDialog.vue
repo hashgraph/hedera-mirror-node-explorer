@@ -148,9 +148,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, ref} from "vue"
+import {computed, PropType, ref} from "vue"
 import FileList from "@/components/verification/FileList.vue"
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
@@ -158,235 +158,201 @@ import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
 import {SourcifyUtils} from "@/utils/sourcify/SourcifyUtils";
 import {gtagVerifyContract} from "@/gtag";
 
-export default defineComponent({
-  name: "ContractVerificationDialog",
-  components: {ConfirmDialog, ProgressDialog, FileList},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
-    },
-    contractId: {
-      type: String,
-      default: null
-    }
-  },
-  emits: ["update:showDialog", "verifyDidComplete"],
-  setup(props, context) {
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
 
-    const dialogTitle = computed(() => `Verify contract ${props.contractId}`)
-
-    // File Chooser
-    const fileChooser = ref<HTMLInputElement | null>(null)
-
-    const showFileChooser = () => {
-      if (fileChooser.value !== null) {
-        fileChooser.value.value = ''
-        fileChooser.value.click()
-      }
-    }
-
-    const handleFileSelected = async () => {
-      const selectedFiles = fileChooser.value?.files ?? null
-      if (selectedFiles && selectedFiles.length >= 1) {
-        await contractSourceAnalyzer.chooseFiles(selectedFiles)
-      } else {
-        console.log("Selected file is undefined")
-      }
-    }
-
-    //
-    // Buttons
-    //
-
-    const handleCancel = async () => {
-      context.emit('update:showDialog', false)
-      await contractSourceAnalyzer.reset()
-    }
-
-    const verifyButtonEnabled = computed(
-        () => !contractSourceAnalyzer.analyzing.value && contractSourceAnalyzer.matchingContractName.value !== null)
-
-    //
-    // Drag & drop
-    //
-    const handleDragOver = (e: DragEvent) => {
-      if (e.dataTransfer) {
-        e.dataTransfer.dropEffect = "copy";
-      }
-      e.preventDefault()
-    }
-
-    const handleDrop = async (e: DragEvent) => {
-      e.preventDefault()
-      if (e.dataTransfer) {
-        e.dataTransfer.dropEffect = "copy"
-        await contractSourceAnalyzer.dropFiles(e.dataTransfer.items)
-      }
-    }
-
-    const items = computed(() => contractSourceAnalyzer.items.value)
-
-    //
-    // ContractSourceAnalyzer
-    //
-
-    const contractSourceAnalyzer = new ContractSourceAnalyzer(computed(() => props.contractId))
-
-    //
-    // Verify
-    //
-
-    const handleVerify = async () => {
-      showConfirmDialog.value = true
-    }
-
-    //
-    // Status
-    //
-
-    const status = computed(() => {
-      let result: string
-      if (contractSourceAnalyzer.analyzing.value) {
-        result = "Analyzing…"
-      } else if (contractSourceAnalyzer.failure.value) {
-        result = "Analysis failed"
-      } else if (contractSourceAnalyzer.matchingContract.value !== null) {
-        const matchingContract = contractSourceAnalyzer.matchingContract.value
-        const note = matchingContract.status == "perfect" ? "full match" : "partial match"
-        result = "Ready to verify contract \"" + contractSourceAnalyzer.matchingContractName.value + "\" (" + note + ")"
-      } else if (contractSourceAnalyzer.contractCount.value == 0 && contractSourceAnalyzer.unusedCount.value >= 1) {
-        result = "Add contract metadata json"
-      } else {
-        result = "Drop files…"
-      }
-      return result
-    })
-
-    const handleClearAllFiles = async () => {
-      await contractSourceAnalyzer.reset()
-    }
-
-    // Metadata dialog
-    const showMetadataDialog = ref(false)
-    const metadataMessage = ref<string | null>(null)
-    const metadataExtraMessage = ref<string | null>(null)
-
-    const handleMetadataContinue = async () => {
-      showMetadataDialog.value = false
-      showConfirmDialog.value = true
-    }
-
-    //
-    // Confirm dialog
-    //
-    const showConfirmDialog = ref(false)
-    const confirmMessage = ref<string | null>(
-        "Once verified, the contract status and source files will be public."
-    )
-    const confirmExtraMessage = ref<string | null>(null)
-
-    const handleConfirmVerification = async () => {
-      const contractId = props.contractId
-      const matchingContract = contractSourceAnalyzer.matchingContract.value!
-
-      showConfirmDialog.value = false
-      showProgressDialog.value = true
-      showProgressSpinner.value = true
-      progressDialogMode.value = Mode.Busy
-      progressMainMessage.value = `Verifying ${matchingContract.name} contract…`
-      progressExtraMessage.value = null
-
-      try {
-        const verificationIds = [matchingContract.verificationId]
-        const response = await SourcifyUtils.sessionVerifyChecked(contractId, verificationIds, true)
-        showProgressSpinner.value = false
-
-        const matchingContractBis = SourcifyUtils.fetchMatchingContract(response)
-        if (matchingContractBis !== null) {
-          const status = matchingContractBis.status
-          if (status == "perfect" || status == "partial") {
-            progressDialogMode.value = Mode.Success
-            progressMainMessage.value = "Verification succeeded"
-            if (status == "perfect") {
-              progressExtraMessage.value = "Full Match"
-            } else {
-              progressExtraMessage.value = "Partial Match"
-            }
-          } else {
-            progressDialogMode.value = Mode.Error
-            progressMainMessage.value = "Verification failed"
-            progressExtraMessage.value = matchingContractBis.statusMessage ?? null
-          }
-        } else {
-          // Bug
-          progressDialogMode.value = Mode.Error
-          progressMainMessage.value = "Verification cannot be done"
-          progressExtraMessage.value = null
-        }
-      } catch (reason) {
-        showProgressSpinner.value = false
-        progressDialogMode.value = Mode.Error
-        progressMainMessage.value = "Verification failed"
-        progressExtraMessage.value = (reason as any).toString()
-      } finally {
-        gtagVerifyContract(progressMainMessage.value)
-      }
-    }
-
-    const handleCancelVerification = () => {
-      context.emit('update:showDialog', true)
-      showMetadataDialog.value = false
-      showConfirmDialog.value = false
-    }
-
-    //
-    // Progress dialog
-    //
-    const showProgressDialog = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressMainMessage = ref<string | null>(null)
-    const progressExtraMessage = ref<string | null>(null)
-    const showProgressSpinner = ref(false)
-
-    const progressDialogClosing = () => {
-      if (progressDialogMode.value == Mode.Success) {
-        context.emit('update:showDialog', false) // => call ContractSourceAnalyzer.unmount()
-        context.emit("verifyDidComplete")
-      }
-    }
-
-    return {
-      dialogTitle,
-      handleCancel,
-      handleVerify,
-      handleDragOver,
-      handleDrop,
-      items,
-      verifyButtonEnabled,
-      status,
-      handleClearAllFiles,
-      showMetadataDialog,
-      metadataMessage,
-      metadataExtraMessage,
-      showConfirmDialog,
-      confirmMessage,
-      confirmExtraMessage,
-      showProgressDialog,
-      progressDialogMode,
-      progressMainMessage,
-      progressExtraMessage,
-      showProgressSpinner,
-      fileChooser,
-      showFileChooser,
-      handleFileSelected,
-      handleMetadataContinue,
-      handleConfirmVerification,
-      handleCancelVerification,
-      progressDialogClosing
-    }
+const props = defineProps({
+  contractId: {
+    type: String as PropType<string|null>,
+    required: true
   }
 })
+
+const emit = defineEmits(["verifyDidComplete"])
+
+const dialogTitle = computed(() => `Verify contract ${props.contractId}`)
+
+// File Chooser
+const fileChooser = ref<HTMLInputElement | null>(null)
+
+const showFileChooser = () => {
+  if (fileChooser.value !== null) {
+    fileChooser.value.value = ''
+    fileChooser.value.click()
+  }
+}
+
+const handleFileSelected = async () => {
+  const selectedFiles = fileChooser.value?.files ?? null
+  if (selectedFiles && selectedFiles.length >= 1) {
+    await contractSourceAnalyzer.chooseFiles(selectedFiles)
+  } else {
+    console.log("Selected file is undefined")
+  }
+}
+
+//
+// Buttons
+//
+
+const handleCancel = async () => {
+  showDialog.value = false
+  await contractSourceAnalyzer.reset()
+}
+
+const verifyButtonEnabled = computed(
+    () => !contractSourceAnalyzer.analyzing.value && contractSourceAnalyzer.matchingContractName.value !== null)
+
+//
+// Drag & drop
+//
+const handleDragOver = (e: DragEvent) => {
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = "copy";
+  }
+  e.preventDefault()
+}
+
+const handleDrop = async (e: DragEvent) => {
+  e.preventDefault()
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = "copy"
+    await contractSourceAnalyzer.dropFiles(e.dataTransfer.items)
+  }
+}
+
+const items = computed(() => contractSourceAnalyzer.items.value)
+
+//
+// ContractSourceAnalyzer
+//
+
+const contractSourceAnalyzer = new ContractSourceAnalyzer(computed(() => props.contractId))
+
+//
+// Verify
+//
+
+const handleVerify = async () => {
+  showConfirmDialog.value = true
+}
+
+//
+// Status
+//
+
+const status = computed(() => {
+  let result: string
+  if (contractSourceAnalyzer.analyzing.value) {
+    result = "Analyzing…"
+  } else if (contractSourceAnalyzer.failure.value) {
+    result = "Analysis failed"
+  } else if (contractSourceAnalyzer.matchingContract.value !== null) {
+    const matchingContract = contractSourceAnalyzer.matchingContract.value
+    const note = matchingContract.status == "perfect" ? "full match" : "partial match"
+    result = "Ready to verify contract \"" + contractSourceAnalyzer.matchingContractName.value + "\" (" + note + ")"
+  } else if (contractSourceAnalyzer.contractCount.value == 0 && contractSourceAnalyzer.unusedCount.value >= 1) {
+    result = "Add contract metadata json"
+  } else {
+    result = "Drop files…"
+  }
+  return result
+})
+
+const handleClearAllFiles = async () => {
+  await contractSourceAnalyzer.reset()
+}
+
+// Metadata dialog
+const showMetadataDialog = ref(false)
+const metadataMessage = ref<string | null>(null)
+const metadataExtraMessage = ref<string | null>(null)
+
+const handleMetadataContinue = async () => {
+  showMetadataDialog.value = false
+  showConfirmDialog.value = true
+}
+
+//
+// Confirm dialog
+//
+const showConfirmDialog = ref(false)
+const confirmMessage = ref<string | null>(
+    "Once verified, the contract status and source files will be public."
+)
+const confirmExtraMessage = ref<string | null>(null)
+
+const handleConfirmVerification = async () => {
+  const contractId = props.contractId!
+  const matchingContract = contractSourceAnalyzer.matchingContract.value!
+
+  showConfirmDialog.value = false
+  showProgressDialog.value = true
+  showProgressSpinner.value = true
+  progressDialogMode.value = Mode.Busy
+  progressMainMessage.value = `Verifying ${matchingContract.name} contract…`
+  progressExtraMessage.value = null
+
+  try {
+    const verificationIds = [matchingContract.verificationId]
+    const response = await SourcifyUtils.sessionVerifyChecked(contractId, verificationIds, true)
+    showProgressSpinner.value = false
+
+    const matchingContractBis = SourcifyUtils.fetchMatchingContract(response)
+    if (matchingContractBis !== null) {
+      const status = matchingContractBis.status
+      if (status == "perfect" || status == "partial") {
+        progressDialogMode.value = Mode.Success
+        progressMainMessage.value = "Verification succeeded"
+        if (status == "perfect") {
+          progressExtraMessage.value = "Full Match"
+        } else {
+          progressExtraMessage.value = "Partial Match"
+        }
+      } else {
+        progressDialogMode.value = Mode.Error
+        progressMainMessage.value = "Verification failed"
+        progressExtraMessage.value = matchingContractBis.statusMessage ?? null
+      }
+    } else {
+      // Bug
+      progressDialogMode.value = Mode.Error
+      progressMainMessage.value = "Verification cannot be done"
+      progressExtraMessage.value = null
+    }
+  } catch (reason) {
+    showProgressSpinner.value = false
+    progressDialogMode.value = Mode.Error
+    progressMainMessage.value = "Verification failed"
+    progressExtraMessage.value = (reason as any).toString()
+  } finally {
+    gtagVerifyContract(progressMainMessage.value)
+  }
+}
+
+const handleCancelVerification = () => {
+  showDialog.value = true
+  showMetadataDialog.value = false
+  showConfirmDialog.value = false
+}
+
+//
+// Progress dialog
+//
+const showProgressDialog = ref(false)
+const progressDialogMode = ref(Mode.Busy)
+const progressMainMessage = ref<string | null>(null)
+const progressExtraMessage = ref<string | null>(null)
+const showProgressSpinner = ref(false)
+
+const progressDialogClosing = () => {
+  if (progressDialogMode.value == Mode.Success) {
+    showDialog.value = false // => call ContractSourceAnalyzer.unmount()
+    emit("verifyDidComplete")
+  }
+}
 
 </script>
 
