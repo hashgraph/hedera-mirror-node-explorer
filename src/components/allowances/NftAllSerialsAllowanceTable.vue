@@ -32,9 +32,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="paginated"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       :striped="true"
 
@@ -49,24 +49,24 @@
       default-sort="spender"
       @page-change="onPageChange">
 
-    <o-table-column v-slot="props" field="spender" label="Spender">
-      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
+    <o-table-column v-slot="props" field="spender" label="SPENDER">
+      <AccountLink class="entity-id" :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Token ID">
+    <o-table-column v-slot="props" field="token" label="TOKEN ID">
       <TokenLink :token-id="props.row.token_id" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Time">
+    <o-table-column v-slot="props" field="timestamp" label="TIME">
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props" field="action" position="right">
-      <span v-if="props.row.isEditable" class="h-is-property-text icon is-small">
-        <i class="far fa-trash-alt" @click="$emit('deleteAllowance', props.row)"></i>
-      </span>
-      <InfoTooltip v-else
-                   label="The allowance cannot be modified because the NFT collection is no longer associated with this account."/>
+      <i v-if="props.row.isEditable" class="far fa-trash-alt" @click="emit('deleteAllowance', props.row)"/>
+      <InfoTooltip
+          v-else
+          label="The allowance cannot be modified because the NFT collection is no longer associated with this account."
+      />
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -93,9 +93,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, ref, Ref, watch} from 'vue';
+import {computed, PropType, ref, watch} from 'vue';
 import {NftAllowance} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -113,61 +113,39 @@ interface DisplayedNftAllowance extends NftAllowance {
   isEditable: boolean
 }
 
-export default defineComponent({
-  name: 'NftAllSerialsAllowanceTable',
+const emit = defineEmits(["deleteAllowance"])
 
-  components: {TablePageSize, InfoTooltip, TokenLink, AccountLink, EmptyTable, TimestampValue},
-
-  emits: ["deleteAllowance"],
-
-  props: {
-    controller: {
-      type: Object as PropType<NftAllSerialsAllowanceTableController>,
-      required: true
-    }
-  },
-
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const isWalletConnected = computed(
-        () => walletManager.isHieroWallet.value
-            && walletManager.accountId.value === props.controller.accountId.value
-    )
-
-    const allowances = ref<DisplayedNftAllowance[]>([])
-    watch(props.controller.rows, async () => {
-      const result = []
-      for (const a of props.controller.rows.value) {
-        let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
-        // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
-        allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
-        result.push(allowance)
-      }
-      allowances.value = result
-    })
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      isWalletConnected,
-      allowances,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<NftAllSerialsAllowanceTableController>,
+    required: true
   }
-});
+})
+
+const isWalletConnected = computed(() =>
+    walletManager.isHieroWallet.value
+    && walletManager.accountId.value === props.controller.accountId.value
+)
+
+const allowances = ref<DisplayedNftAllowance[]>([])
+watch(props.controller.rows, async () => {
+  const result = []
+  for (const a of props.controller.rows.value) {
+    let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
+    // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
+    allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
+    result.push(allowance)
+  }
+  allowances.value = result
+})
+
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -176,5 +154,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.entity-id {
+  font-weight: 600;
+}
 
 </style>
