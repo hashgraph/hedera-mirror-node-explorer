@@ -26,10 +26,14 @@
 
   <PageFrameV2 page-title="Staking">
 
-    <StakingDialog v-model:show-dialog="stakingDialogVisible"
-                   :account="account ?? undefined"
-                   :currently-staked-to="stakedTo ?? undefined"
-                   v-on:staking-changed="stakingChanged"/>
+    <ChangeStakingDialog v-model:show-dialog="changeStakingDialogVisible"
+                         :account="account ?? undefined"
+                         :currently-staked-to="stakedTo ?? undefined"
+                         v-on:staking-changed="stakingChanged"/>
+
+    <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
+                         :account="account ?? undefined"
+                         v-on:staking-changed="stakingChanged"/>
 
     <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
                    :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
@@ -159,7 +163,8 @@
 import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
-import StakingDialog from "@/dialogs/ChangeStakingDialog.vue";
+import ChangeStakingDialog from "@/dialogs/ChangeStakingDialog.vue";
+import StopStakingDialog from "@/dialogs/StopStakingDialog.vue";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
@@ -181,7 +186,8 @@ defineProps({
 const cryptoName = CoreConfig.inject().cryptoName
 const networkConfig = NetworkConfig.inject()
 
-const stakingDialogVisible = ref(false)
+const changeStakingDialogVisible = ref(false)
+const stopStakingDialogVisible = ref(false)
 const stopConfirmDialogVisible = ref(false)
 const showProgressDialog = ref(false)
 const progressDialogMode = ref(Mode.Busy)
@@ -259,12 +265,12 @@ const showStopConfirmDialog = () => {
 }
 
 const handleStopStaking = () => {
-  // changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
+  stopStakingDialogVisible.value = true
 }
 
 const showStakingDialog = () => {
   if (walletManager.isHieroWallet.value) {
-    stakingDialogVisible.value = true
+    changeStakingDialogVisible.value = true
   } else {
     notWithMetamaskDialogVisible.value = true
   }

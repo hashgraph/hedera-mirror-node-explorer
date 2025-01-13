@@ -106,7 +106,7 @@ const dialogSuccessVisible = computed(() => props.controller.mode.value === Dial
 const dialogErrorVisible = computed(() => props.controller.mode.value === DialogMode.Error)
 
 watch(props.controller.visible, () => {
-  if (props.controller.visible.value) {
+  if (!props.controller.visible.value) {
     props.controller.mode.value = DialogMode.Input
   }
 })
