@@ -159,12 +159,12 @@
 <script setup lang="ts">
 
 import {computed, PropType, ref} from "vue"
-import FileList from "@/components/verification/FileList.vue"
+import FileList from "@/dialogs/verification/FileList.vue"
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
-import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer";
-import {SourcifyUtils, SourcifyVerifyCheckedContract} from "@/utils/sourcify/SourcifyUtils";
-import {gtagVerifyContract} from "@/gtag";
+import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer.ts";
+import {SourcifyUtils, SourcifyVerifyCheckedContract} from "@/utils/sourcify/SourcifyUtils.ts";
+import {gtagVerifyContract} from "@/gtag.ts";
 import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
 import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";

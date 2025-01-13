@@ -86,7 +86,7 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, PropType, ref} from "vue";
-import {ContractSourceAnalyzerItem} from "@/utils/analyzer/ContractSourceAnalyzer";
+import {ContractSourceAnalyzerItem} from "@/utils/analyzer/ContractSourceAnalyzer.ts";
 
 export default defineComponent({
   name: 'FileList',
