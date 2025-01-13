@@ -31,9 +31,9 @@
       :hoverable="true"
       :narrowed="narrowed"
       :paginated="paginated"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       :striped="true"
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
@@ -45,20 +45,24 @@
       @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
+      <TransactionLabel
+          class="transaction-label"
+          :transaction-id="props.row.transaction_id"
+          :result="props.row.result"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Type">
+    <o-table-column v-slot="props" field="name" label="TYPE">
       <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
+        {{ makeTypeLabel(props.row.name) }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" label="Content">
+    <o-table-column v-slot="props" label="CONTENT">
       <TransactionSummary v-bind:transaction="props.row"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time & Date">
+    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
@@ -86,9 +90,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
+import {computed, PropType, ref} from 'vue';
 import {Transaction} from '@/schemas/MirrorNodeSchemas.ts';
 import {makeTypeLabel} from "@/utils/TransactionTools";
 import {routeManager} from "@/router";
@@ -100,55 +104,27 @@ import TransactionSummary from "@/components/transaction/TransactionSummary.vue"
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'BlockTransactionTable',
-
-  components: {TablePageSize, TransactionSummary, EmptyTable, TimestampValue, TransactionLabel},
-
-  props: {
-    narrowed: Boolean,
-    nbItems: Number,
-    transactions: {
-      type: Array as PropType<Array<Transaction>>,
-      default: () => []
-    },
-    accountId: String
+const props = defineProps({
+  narrowed: Boolean,
+  nbItems: Number,
+  transactions: {
+    type: Array as PropType<Array<Transaction>>,
+    default: () => []
   },
+  accountId: String
+},)
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
+const DEFAULT_PAGE_SIZE = 15
+const perPage = ref(props.nbItems ?? DEFAULT_PAGE_SIZE)
 
-    const DEFAULT_PAGE_SIZE = 15
-    const perPage = ref(props.nbItems ?? DEFAULT_PAGE_SIZE)
+const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  routeManager.routeToTransaction(t, event)
+}
 
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransaction(t, event)
-    }
+let currentPage = ref(1)
 
-    let currentPage = ref(1)
-
-    const paginated = computed(() => props.transactions.length > perPage.value)
-    const showPageSizeSelector = computed(() => props.transactions.length > 5)
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      perPage,
-      paginated,
-      showPageSizeSelector,
-      handleClick,
-      currentPage,
-      AppStorage,
-
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-
-      // From TransactionTools
-      makeTypeLabel,
-    }
-  }
-});
+const paginated = computed(() => props.transactions.length > perPage.value)
+const showPageSizeSelector = computed(() => props.transactions.length > 5)
 
 </script>
 
@@ -157,5 +133,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.transaction-label {
+  font-weight: 600;
+}
 
 </style>
