@@ -35,7 +35,7 @@
           v-if="isWalletConnected && isHieroWallet"
           id="approve-button"
           :is-default="true"
-          :is-small="true"
+          :size="ButtonSize.medium"
           @action="onClick"
       >
         APPROVE ALLOWANCE
@@ -138,7 +138,7 @@ import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowance
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 
 const props = defineProps({
   accountId: String,

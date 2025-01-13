@@ -30,7 +30,7 @@
           id="walletInfoBanner"
           :is-transparent="true"
           :is-default="true"
-          :is-small="true"
+          :size="ButtonSize.medium"
           @action="showWalletInfo = !showWalletInfo"
       >
         <div class="left">
@@ -69,7 +69,7 @@ import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import DropdownPanel from "@/components/DropdownPanel.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 
 
 //
