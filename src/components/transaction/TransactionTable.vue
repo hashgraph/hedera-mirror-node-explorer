@@ -60,7 +60,7 @@
 
     <o-table-column v-slot="props" field="name" label="TYPE">
       <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">{{ makeTypeLabel(props.row.name) }}</div>
+        {{ makeTypeLabel(props.row.name) }}
       </div>
     </o-table-column>
 
