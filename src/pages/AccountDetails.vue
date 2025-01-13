@@ -47,7 +47,7 @@
               v-if="isAccountEditable"
               id="update-button"
               :is-default="true"
-              :is-small="true"
+              :size="ButtonSize.medium"
               @action="onUpdateAccount"
           >
             UPDATE ACCOUNT
@@ -391,7 +391,7 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 const props = defineProps({
