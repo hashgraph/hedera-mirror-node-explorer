@@ -35,7 +35,7 @@
           v-if="isWalletConnected && isHieroWallet"
           id="approve-button"
           :is-default="true"
-          :size="ButtonSize.medium"
+          :size="ButtonSize.small"
           @action="onClick"
       >
         APPROVE ALLOWANCE

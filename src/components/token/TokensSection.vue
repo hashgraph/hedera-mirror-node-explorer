@@ -46,7 +46,7 @@
             id="reject-button"
             :enabled="rejectButtonEnabled"
             :is-default="true"
-            :size="ButtonSize.medium"
+            :size="ButtonSize.small"
             @action="onReject"
         >
           REJECT
@@ -65,7 +65,7 @@
               id="claim-button"
               :enabled="claimActionEnabled"
               :is-default="true"
-              :size="ButtonSize.medium"
+              :size="ButtonSize.small"
               @action="onClaim"
           >
             {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
