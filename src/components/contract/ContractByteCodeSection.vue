@@ -190,7 +190,7 @@ import Property from "@/components/Property.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
+import ContractVerificationDialog from "@/dialogs/verification/ContractVerificationDialog.vue";
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import {AppStorage} from "@/AppStorage";
 import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
