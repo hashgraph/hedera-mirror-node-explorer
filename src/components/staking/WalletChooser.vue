@@ -59,14 +59,7 @@
 
 
   <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
-                @onClose="handleCancelDisclaimer" @onAgree="handleAgreeDisclaimer">
-    <template v-slot:dialogMessage>
-      <span>Disclaimer</span>
-    </template>
-    <template v-slot:dialogDetails>
-      <div v-html="disclaimer"/>
-    </template>
-  </OptOutDialog>
+                @onAgree="handleAgreeDisclaimer"></OptOutDialog>
 
 </template>
 
@@ -88,7 +81,7 @@ const showDialog = defineModel("showDialog", {
 })
 const chosenWallet =ref<WalletItem|null>(null)
 const showDisclaimerDialog = ref(false)
-    const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup ?? ""
+const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup
 
 const emit = defineEmits(["chooseWallet"])
 
@@ -121,7 +114,7 @@ const isSelected = (wallet: WalletItem) => {
 
 const handleConnect = () => {
   showDialog.value = false
-  if (disclaimer && !AppStorage.getSkipDisclaimer()) {
+  if (disclaimer !== null && !AppStorage.getSkipDisclaimer()) {
     showDisclaimerDialog.value = true
   } else if (chosenWallet.value !== null) {
     emit('chooseWallet', chosenWallet.value)
@@ -137,12 +130,7 @@ const handleCancel = () => {
 // Disclaimer
 //
 
-const handleCancelDisclaimer = () => {
-  showDisclaimerDialog.value = false
-}
-
 const handleAgreeDisclaimer = () => {
-  showDisclaimerDialog.value = false
   emit('chooseWallet', chosenWallet.value)
 }
 

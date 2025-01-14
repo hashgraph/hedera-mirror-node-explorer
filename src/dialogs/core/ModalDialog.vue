@@ -23,33 +23,35 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="modal has-text-white" v-bind:class="{'is-active': showDialog}">
-    <div class="modal-background"/>
-    <div class="modal-content h-modal-content" style="border-radius: 16px">
-      <div class="box">
 
-        <div class="is-flex is-justify-content-space-between is-align-items-baseline">
-          <div class="is-flex is-justify-content-start is-align-items-baseline">
-            <span v-if="props.iconClass" class="icon ml-2 mr-5"><i :class="props.iconClass"/></span>
-            <div class="block h-is-tertiary-text mt-2">
-              <slot name="dialogMessage"/>
-            </div>
-          </div>
-          <a v-if="props.showCloseIcon" @click="handleClose">
-            <img alt="Modal close icon" src="../../assets/close-icon.png" style="max-height: 20px;">
-          </a>
+  <div v-if="showDialog" class="modal-dialog">
+    <div class="modal-dialog-box" :style="{'width': props.width+'px'}">
 
+      <div v-if="slots.modalDialogTitle" class="modal-dialog-header">
+        <slot name="modalDialogTitle"/>
+      </div>
+
+      <div class="modal-dialog-body">
+        <slot name="modalDialogContent"/>
+      </div>
+
+      <div class="modal-dialog-footer">
+
+        <div class="modal-dialog-footer-right">  <!-- right comes first because flex-direction: row-reverse -->
+          <slot name="modalDialogButtons">
+            <ModalDialogButton v-model:show-dialog="showDialog">CLOSE</ModalDialogButton>
+          </slot>
         </div>
 
-        <hr class="h-card-separator"/>
-
-        <div class="block h-is-property-text has-text-grey mb-2" style="line-height: 1.5">
-          <slot name="dialogDetails"/>
+        <div v-if="slots.modalDialogControls" class="modal-dialog-footer-left">
+          <slot name="modalDialogControls"/>
         </div>
 
       </div>
+
     </div>
   </div>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -58,6 +60,9 @@
 
 <script setup lang="ts">
 
+import {useSlots, watch} from "vue";
+import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
+
 const showDialog = defineModel("showDialog", {
   type: Boolean,
   required: true
@@ -65,18 +70,21 @@ const showDialog = defineModel("showDialog", {
 
 const props = defineProps({
   iconClass: String,
-  showCloseIcon: {
-    type: Boolean,
-    default: true
+  width: {
+    type: Number,
+    default: 768
   },
 })
 
+const slots = useSlots()
+
 const emit = defineEmits(["onClose"])
 
-const handleClose = () => {
-  showDialog.value = false
-  emit('onClose')
-}
+watch(showDialog, () => {
+  if (!showDialog.value) {
+    emit("onClose")
+  }
+})
 
 </script>
 
@@ -85,8 +93,59 @@ const handleClose = () => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-span.icon {
-  align-items: flex-start;
+
+
+div.modal-dialog {
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(2px);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 40;
 }
+
+div.modal-dialog-box {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: var(--background-tertiary);
+  border-radius: 16px;
+  row-gap: 24px;
+  color: var(--text-primary);
+}
+
+div.modal-dialog-header {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+div.modal-dialog-body {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+div.modal-dialog-footer {
+  column-gap: 1em;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: space-between;
+}
+
+div.modal-dialog-footer > div {
+  column-gap: 1em;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
 </style>
 
