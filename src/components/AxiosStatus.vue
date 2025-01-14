@@ -68,7 +68,7 @@
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
 import {errorKey, explanationKey, loadingKey, suggestionKey} from "@/AppKeys"
-import ModalDialog from "@/components/ModalDialog.vue";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 
 export default defineComponent({
 

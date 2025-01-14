@@ -55,7 +55,7 @@
 <script setup lang="ts">
 
 import {ref} from "vue";
-import ModalDialog from "@/components/ModalDialog.vue";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {AppStorage} from "@/AppStorage.ts";
 
 
