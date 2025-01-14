@@ -84,56 +84,29 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, PropType} from 'vue';
+import {PropType} from 'vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
-import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 
-export default defineComponent({
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<TokenInfoAnalyzer>,
+    required: true
+  }
+})
 
-  name: 'TokenCustomFees',
-
-  components: {
-    RoyaltyFeeTable,
-    FractionalFeeTable,
-    FixedFeeTable,
-    TimestampValue,
-    Property,
-    DashboardCard
-  },
-
-  props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    return {
-      fees: props.analyzer?.customFees,
-      hasFixedFees: props.analyzer?.hasFixedFees,
-      hasFractionalFees: props.analyzer?.hasFractionalFees,
-      hasRoyaltyFees: props.analyzer?.hasRoyaltyFees,
-      isFungible: props.analyzer?.isFungible,
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  },
-});
+const fees = props.analyzer?.customFees
+const hasFixedFees = props.analyzer?.hasFixedFees
+const hasFractionalFees = props.analyzer?.hasFractionalFees
+const hasRoyaltyFees = props.analyzer?.hasRoyaltyFees
+const isFungible = props.analyzer?.isFungible
 
 </script>
 
