@@ -60,7 +60,7 @@ import SearchHelp from "@/pages/SearchHelp.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
 import MobileSearch from "@/pages/MobileSearch.vue";
 import axios from "axios";
-import {Transaction} from "@/schemas/MirrorNodeSchemas";
+import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
@@ -478,8 +478,12 @@ export class RouteManager {
         return this.router.push(this.makeRouteToMainDashboard(network))
     }
 
-    public makeRouteToTransactions(): RouteLocationRaw {
-        return {name: 'Transactions', params: {network: this.currentNetwork.value}}
+    public makeRouteToTransactions(type: TransactionType | null = null): RouteLocationRaw {
+        return {
+            name: 'Transactions',
+            params: {network: this.currentNetwork.value},
+            query: type !== null ? {type: type} : undefined
+        }
     }
 
     public makeRouteToTokens(): RouteLocationRaw {
