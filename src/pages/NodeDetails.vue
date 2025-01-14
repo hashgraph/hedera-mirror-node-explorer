@@ -26,171 +26,142 @@
 
   <PageFrameV2 page-title="Node Details">
 
-    <DashboardCard>
-      <template v-slot:title>
-        <div class="is-flex is-align-items-center">
-          <span class="h-is-primary-title mr-2">Node </span>
-          <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
-        </div>
-        <div v-if="isCouncilNode">
-          <span class="icon has-text-info mr-2"><i class="fas fa-building"></i></span>
-          <span class="h-is-tertiary-text has-text-grey">Hedera Council Node</span>
-        </div>
-        <div v-else>
-          <span class="icon has-text-info mr-2"><i class="fas fa-users"></i></span>
-          <span class="h-is-tertiary-text has-text-grey">Community Node</span>
-        </div>
-      </template>
+    <div class="page-container">
+      <DashboardCardV2>
+        <template #title>
+          {{ `Node ${nodeIdNb}` }}
+        </template>
 
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-      </template>
+        <!--        <template #subtitle>-->
+        <!--          <div v-if="isCouncilNode">Hedera Council Node</div>-->
+        <!--          <div v-else>Community Node</div>-->
+        <!--        </template>-->
 
-      <template v-slot:leftContent>
-        <Property id="nodeAccount">
-          <template v-slot:name>Node Account</template>
-          <template v-slot:value>
-            <AccountLink :accountId="node?.node_account_id"/>
-          </template>
-        </Property>
-        <Property id="description">
-          <template v-slot:name>Description</template>
-          <template v-slot:value>
-            <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true"/>
-          </template>
-        </Property>
-        <Property id="file">
-          <template v-slot:name>Address Book File</template>
-          <template v-slot:value>
-            <StringValue :string-value="node?.file_id"/>
-          </template>
-        </Property>
-        <Property id="rangeFrom">
-          <template v-slot:name>Node existed since</template>
-          <template v-slot:value>
-            <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
-          </template>
-        </Property>
-        <Property id="rangeTo">
-          <template v-slot:name>Node expiry date</template>
-          <template v-slot:value>
-            <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
-          </template>
-        </Property>
-        <Property id="serviceEndpoints">
-          <template v-slot:name>Service Endpoints</template>
-          <template v-slot:value>
-            <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
-          </template>
-        </Property>
-        <Property v-if="enableStaking" id="publicKey">
-          <template v-slot:name>Public Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
-          </template>
-        </Property>
-        <Property v-if="enableStaking" id="nodeCertHash">
-          <template v-slot:name>Certificate Hash</template>
-          <template v-slot:value>
-            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
-          </template>
-        </Property>
-      </template>
+        <template v-if="notification" #content>
+          <NotificationBanner :message="notification"/>
+        </template>
 
-      <template v-if="enableStaking" v-slot:rightContent>
-        <div>
-          <NetworkDashboardItem
+        <template #left-content>
+          <Property id="nodeAccount">
+            <template #name>Node Account</template>
+            <template #value>
+              <AccountLink :accountId="node?.node_account_id"/>
+            </template>
+          </Property>
+          <Property id="description">
+            <template #name>Description</template>
+            <template #value>
+              <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true"/>
+            </template>
+          </Property>
+          <Property id="file">
+            <template #name>Address Book File</template>
+            <template #value>
+              <StringValue :string-value="node?.file_id"/>
+            </template>
+          </Property>
+          <Property id="rangeFrom">
+            <template #name>Node existed since</template>
+            <template #value>
+              <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
+            </template>
+          </Property>
+          <Property id="rangeTo">
+            <template #name>Node expiry date</template>
+            <template #value>
+              <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
+            </template>
+          </Property>
+          <Property id="serviceEndpoints">
+            <template #name>Service Endpoints</template>
+            <template #value>
+              <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
+            </template>
+          </Property>
+          <template v-if="enableStaking">
+            <Property id="publicKey">
+              <template #name>Public Key</template>
+              <template #value>
+                <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
+              </template>
+            </Property>
+            <Property id="nodeCertHash">
+              <template #name>Certificate Hash</template>
+              <template #value>
+                <HexaValue :byteString="formattedHash" :show-none="true"/>
+              </template>
+            </Property>
+          </template>
+        </template>
+
+        <template v-if="enableStaking" #right-content>
+          <NetworkDashboardItemV2
               id="yearlyRate"
-              :value="annualizedRate.toString()"
-              name="APPROX ANNUAL EQUIVALENT"
               title="Last Period Reward Rate"
+              :value="annualizedRate.toString()"
+              unit="APPROX ANNUAL EQUIVALENT"
           />
-        </div>
-
-        <div class="mt-5">
-          <NetworkDashboardItem
+          <NetworkDashboardItemV2
               id="consensusStake"
-              :value="makeFloorHbarAmount(stake)"
-              :name=cryptoName
               title="Stake for Consensus"
+              :value="makeFloorHbarAmount(stake)"
+              :unit=cryptoName
               :info-label="stakeLabel"
+              :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
           />
-          <p v-if="stake > 0" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">
-            {{ stakePercentage }} of total
-          </p>
-        </div>
-
-        <div class="mt-5">
-          <NetworkDashboardItem
+          <NetworkDashboardItemV2
               id="rewarded"
-              :value="makeFloorHbarAmount(stakeRewarded)"
-              :name=cryptoName
               title="Staked for Reward"
+              :value="makeFloorHbarAmount(stakeRewarded)"
+              :unit=cryptoName
+              :extra="`${stakeRewardedPercentage} of total`"
           />
-          <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
-            {{ stakeRewardedPercentage }}% of total
-          </p>
-        </div>
-
-        <div class="mt-5">
-          <NetworkDashboardItem
+          <NetworkDashboardItemV2
               id="notRewarded"
-              :value="makeFloorHbarAmount(stakeUnrewarded)"
-              :name=cryptoName
               title="Staked For No Reward"
+              :value="makeFloorHbarAmount(stakeUnrewarded)"
+              :unit=cryptoName
+              :extra="`${stakeUnrewardedPercentage} of total`"
           />
-          <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
-            {{ stakeUnrewardedPercentage }}% of total
-          </p>
-        </div>
-
-        <div class="mt-5">
-          <NetworkDashboardItem
+          <NetworkDashboardItemV2
               id="minStake"
-              :value="makeFloorHbarAmount(minStake)"
-              :name=cryptoName
               title="Min Stake"
+              :value="makeFloorHbarAmount(minStake)"
+              :unit=cryptoName
           />
-        </div>
-
-        <div class="mt-5">
-          <NetworkDashboardItem
+          <NetworkDashboardItemV2
               id="maxStake"
-              :value="makeFloorHbarAmount(maxStake)"
-              :name=cryptoName
               title="Max Stake"
+              :value="makeFloorHbarAmount(maxStake)"
+              :unit=cryptoName
           />
-        </div>
-
-        <div class="mt-5">
-          <NetworkDashboardItem
-              id="stakingPeriod"
-              name="HOURS"
+          <NetworkDashboardItemV2
               title="Current Staking Period"
+              id="stakingPeriod"
               value="24"
+              unit="HOURS"
+              extra="from 00:00 am today to 11:59 pm today UTC"
           />
-          <p class="h-is-property-text h-is-extra-text mt-1">
-            from 00:00 am today to 11:59 pm today UTC
-          </p>
-        </div>
-      </template>
+        </template>
 
-      <template v-else v-slot:rightContent>
-        <Property id="publicKey">
-          <template v-slot:name>Public Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
-          </template>
-        </Property>
-        <Property id="nodeCertHash">
-          <template v-slot:name>Certificate Hash</template>
-          <template v-slot:value>
-            <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
-          </template>
-        </Property>
-      </template>
+        <template v-else #right-content>
+          <Property id="publicKey">
+            <template #name>Public Key</template>
+            <template #value>
+              <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
+            </template>
+          </Property>
+          <Property id="nodeCertHash">
+            <template #name>Certificate Hash</template>
+            <template #value>
+              <HexaValue :byteString="formattedHash" :show-none="true"/>
+            </template>
+          </Property>
+        </template>
+      </DashboardCardV2>
 
-    </DashboardCard>
+      <MirrorLink :network="props.network" entityUrl="network/nodes" :query="`node.id=${props.nodeId}`"/>
+    </div>
 
   </PageFrameV2>
 
@@ -206,7 +177,6 @@ import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
@@ -214,7 +184,6 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
@@ -222,6 +191,9 @@ import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {makeStakePercentage} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
+import MirrorLink from "@/components/MirrorLink.vue";
 
 const props = defineProps({
   nodeId: {
@@ -291,4 +263,14 @@ const formattedHash = nodeAnalyzer.certificateHash
 
 </script>
 
-<style/>
+<style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+</style>
