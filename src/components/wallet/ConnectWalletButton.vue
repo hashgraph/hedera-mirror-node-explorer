@@ -62,17 +62,6 @@
       @wallet-reconnect="reconnectToWallet"
       @change-account="handleChangeAccount"/>
 
-  <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
-                @onClose="handleCancelDisclaimer"
-                @onAgree="handleAgreeDisclaimer">
-    <template v-slot:dialogMessage>
-      <span>Disclaimer</span>
-    </template>
-    <template v-slot:dialogDetails>
-      <div v-html="disclaimer"/>
-    </template>
-  </OptOutDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -90,7 +79,6 @@ import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
 import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import OptOutDialog from "@/dialogs/OptOutDialog.vue";
 
 //
 // Wallet manager
@@ -173,23 +161,6 @@ const reconnectToWallet = async () => {
 //
 
 const showWalletInfo = ref(false)
-
-
-//
-// Disclaimer
-//
-
-const disclaimer = import.meta.env.VITE_APP_WALLET_CHOOSER_DISCLAIMER_POPUP ?? ""
-const showDisclaimerDialog = ref(false)
-
-const handleCancelDisclaimer = () => {
-  showDisclaimerDialog.value = false
-}
-
-const handleAgreeDisclaimer = () => {
-  showDisclaimerDialog.value = false
-  chooseWallet()
-}
 
 </script>
 

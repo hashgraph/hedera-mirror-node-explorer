@@ -23,27 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog v-model:show-dialog="showDialog">
-
-    <template #modalDialogTitle>Disclaimer</template>
-
-    <template #modalDialogContent>
-      <div v-html="disclaimer"/>
-    </template>
-
-    <template #modalDialogControls>
-      <label>
-        <input v-model="dontShowNextTime" type="checkbox" style="margin-right: 0.5em; vertical-align: text-top" />
-        <span>Please don't show me this next time</span>
-      </label>
-    </template>
-
-    <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showDialog" @action="handleAgree">AGREE</ModalDialogButton>
-    </template>
-
-  </ModalDialog>
+  <ButtonView
+      @action="handleAction"
+      :is-default="props.isDefault"
+      :disabled="!props.enabled"
+  >
+    <slot/>
+  </ButtonView>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,28 +38,35 @@
 
 <script setup lang="ts">
 
-import {ref} from "vue";
-import ModalDialog from "@/dialogs/core/ModalDialog.vue";
-import {AppStorage} from "@/AppStorage.ts";
-import {CoreConfig} from "@/config/CoreConfig.ts";
-import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
-
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue"
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
   required: true
 })
 
-const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup ?? ""
-
-const emit = defineEmits(["onAgree"])
-
-const dontShowNextTime = ref(false)
-const handleAgree = () => {
-  if (dontShowNextTime.value) {
-    AppStorage.setSkipDisclaimer(true)
+const props = defineProps({
+  autoClose: {
+    type: Boolean,
+    default: true
+  },
+  enabled: {
+    type: Boolean,
+    default: true
+  },
+  isDefault: {
+    type: Boolean,
+    default: false
   }
-  emit('onAgree')
+})
+
+const emit = defineEmits(["action"])
+
+const handleAction = () => {
+  emit("action")
+  if (props.autoClose) {
+    showDialog.value = false
+  }
 }
 
 </script>
@@ -83,5 +76,5 @@ const handleAgree = () => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-</style>
 
+</style>
