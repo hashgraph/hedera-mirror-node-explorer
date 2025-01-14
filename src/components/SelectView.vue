@@ -26,7 +26,7 @@
   <select
       v-model="selected"
       :style="{ 'width': width }"
-      :class="{'border-visible': props.borderVisible, 'small': props.small}"
+      :class="{ 'border-visible': props.borderVisible, 'small': props.small, 'dark-mode': darkSelected }"
   >
     <slot/>
   </select>
@@ -37,6 +37,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script setup lang="ts">
+
+import {ThemeController} from "@/components/ThemeController.ts";
 
 const props = defineProps({
   borderVisible: {
@@ -53,6 +55,7 @@ const props = defineProps({
   }
 })
 const selected = defineModel()
+const darkSelected = ThemeController.inject().darkSelected
 
 </script>
 
@@ -65,7 +68,7 @@ const selected = defineModel()
 select {
   appearance: none;
   background-color: transparent;
-  background-image: url("@/assets/chevron-down.svg");
+  background-image: url("@/assets/chevron-down-light.svg");
   background-position: calc(100% - 6px);
   background-repeat: no-repeat;
   border-width: 0;
@@ -75,6 +78,10 @@ select {
   height: 40px;
   outline: none;
   padding: 0 24px 0 8px;
+}
+
+select.dark-mode {
+  background-image: url("@/assets/chevron-down-dark.svg");
 }
 
 select.border-visible {
