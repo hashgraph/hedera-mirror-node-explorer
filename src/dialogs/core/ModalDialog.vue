@@ -36,7 +36,7 @@
             </div>
           </div>
           <a v-if="showCloseIcon" @click="handleClose">
-            <img alt="Modal close icon" src="@/assets/close-icon.png" style="max-height: 20px;">
+            <img alt="Modal close icon" src="../../assets/close-icon.png" style="max-height: 20px;">
           </a>
 
         </div>

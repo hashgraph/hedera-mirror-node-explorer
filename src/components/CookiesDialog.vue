@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 
-import ModalDialog from "@/components/ModalDialog.vue";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
 const props = defineProps({
