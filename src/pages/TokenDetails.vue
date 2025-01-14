@@ -311,7 +311,7 @@
 
     </DashboardCard>
 
-    <TokenCustomFees v-if="hasCustomFees" :analyzer="analyzer"/>
+    <TokenFeesSection v-if="hasCustomFees" :analyzer="analyzer"/>
 
     <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
