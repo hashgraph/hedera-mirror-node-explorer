@@ -94,6 +94,7 @@ const handleClick = () => {
 div.root {
   height: 26px;
   width: 26px;
+  padding-top: 2px;
 }
 
 </style>
