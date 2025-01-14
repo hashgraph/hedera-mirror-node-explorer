@@ -90,7 +90,7 @@ import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag";
 import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import OptOutDialog from "@/components/staking/OptOutDialog.vue";
+import OptOutDialog from "@/dialogs/OptOutDialog.vue";
 
 //
 // Wallet manager

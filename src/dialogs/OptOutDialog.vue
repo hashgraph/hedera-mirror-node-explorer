@@ -56,7 +56,7 @@
 
 import {ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
-import {AppStorage} from "@/AppStorage";
+import {AppStorage} from "@/AppStorage.ts";
 
 
 const showDialog = defineModel("showDialog", {

@@ -77,7 +77,7 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
-import OptOutDialog from "@/components/staking/OptOutDialog.vue";
+import OptOutDialog from "@/dialogs/OptOutDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {CoreConfig} from "@/config/CoreConfig";
 import {EIP6963Agent} from "@/utils/wallet/EIP6963Agent";
