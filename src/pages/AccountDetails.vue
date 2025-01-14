@@ -43,15 +43,23 @@
         </template>
 
         <template #right-control>
-          <ButtonView
-              v-if="isAccountEditable"
-              id="update-button"
-              :is-default="true"
-              :size="ButtonSize.small"
-              @action="onUpdateAccount"
-          >
-            UPDATE ACCOUNT
-          </ButtonView>
+          <template v-if="isAccountEditable">
+            <ButtonView
+                v-if="isAccountEditable"
+                id="update-button"
+                :is-default="true"
+                :size="ButtonSize.small"
+                @action="onUpdateAccount"
+            >
+              UPDATE ACCOUNT
+            </ButtonView>
+          </template>
+          <template v-else-if="showContractVisible && contractRoute">
+            <ArrowLink
+                :route="contractRoute" id="showContractLink"
+                text="Associated contract"
+            />
+          </template>
         </template>
 
         <template #content>
@@ -72,9 +80,6 @@
                   </template>
                 </Copyable>
                 <span v-if="accountChecksum">-{{ accountChecksum }}</span>
-                <router-link v-if="showContractVisible && contractRoute" :to="contractRoute" id="showContractLink">
-                  <span class="h-is-property-text">Associated contract</span>
-                </router-link>
               </template>
             </template>
           </Property>
@@ -393,6 +398,7 @@ import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import ArrowLink from "@/components/ArrowLink.vue";
 
 const props = defineProps({
   accountId: String,
