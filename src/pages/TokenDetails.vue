@@ -325,9 +325,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import {walletManager} from "@/router";
 import KeyValue from "@/components/values/KeyValue.vue";
@@ -348,7 +348,7 @@ import {NftHolderTableController} from "@/components/token/NftHolderTableControl
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import TokenCustomFees from "@/components/token/TokenCustomFees.vue";
+import TokenFeesSection from "@/components/token/TokenFeesSection.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
@@ -363,146 +363,97 @@ import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 
-export default defineComponent({
-
-  name: 'TokenDetails',
-
-  components: {
-    MetadataSection,
-    TransactionLink,
-    MirrorLink,
-    Copyable,
-    ContractResultsSection,
-    EVMAddress,
-    TokenCustomFees,
-    PlayPauseButton,
-    NftHolderTable,
-    StringValue,
-    AccountLink,
-    NotificationBanner,
-    Property,
-    PageFrameV2,
-    BlobValue,
-    DashboardCard,
-    TimestampValue,
-    DurationValue,
-    TokenBalanceTable,
-    TokenAmount,
-    KeyValue,
-    TokenActions,
+const props = defineProps({
+  tokenId: {
+    type: String,
+    required: true
   },
+  network: String
+})
 
-  props: {
-    tokenId: {
-      type: String,
-      required: true
-    },
-    network: String
-  },
+const isMediumScreen = inject('isMediumScreen', true)
+const networkConfig = NetworkConfig.inject()
 
-  setup(props) {
-    const isMediumScreen = inject('isMediumScreen', true)
-    const networkConfig = NetworkConfig.inject()
+const normalizedTokenId = computed(() => {
+  const result = EntityID.parse(props.tokenId) ?? EntityID.fromAddress(props.tokenId)
+  return result !== null ? result.toString() : null
+})
+const validEntityId = computed(() => normalizedTokenId.value != null)
 
-    const normalizedTokenId = computed(() => {
-      const result = EntityID.parse(props.tokenId) ?? EntityID.fromAddress(props.tokenId)
-      return result !== null ? result.toString() : null
-    })
-    const validEntityId = computed(() => normalizedTokenId.value != null)
+const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+onMounted(() => tokenLookup.mount())
+onBeforeUnmount(() => tokenLookup.unmount())
 
-    const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
-    onMounted(() => tokenLookup.mount())
-    onBeforeUnmount(() => tokenLookup.unmount())
+const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity, networkConfig)
+onMounted(() => tokenAnalyzer.mount())
+onBeforeUnmount(() => tokenAnalyzer.unmount())
 
-    const tokenAnalyzer = new TokenInfoAnalyzer(tokenLookup.entity, networkConfig)
-    onMounted(() => tokenAnalyzer.mount())
-    onBeforeUnmount(() => tokenAnalyzer.unmount())
+const coreConfig = CoreConfig.inject()
+const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
+const arweaveServerURL = coreConfig.arweaveServerURL
 
-    const coreConfig = CoreConfig.inject()
-    const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
-    const arweaveServerURL = coreConfig.arweaveServerURL
+const metadata = computed(() => tokenLookup.entity.value?.metadata ?? '')
+const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
+onMounted(() => metadataAnalyzer.mount())
+onBeforeUnmount(() => metadataAnalyzer.unmount())
 
-    const metadata = computed(() => tokenLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
-    onMounted(() => metadataAnalyzer.mount())
-    onBeforeUnmount(() => metadataAnalyzer.unmount())
+const displayName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
+const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
 
-    const displayName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
-    const displaySymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
-
-    const notification = computed(() => {
-      let result
-      if (!validEntityId.value) {
-        result = "Invalid token ID: " + props.tokenId
-      } else if (tokenLookup.entity.value == null) {
-        if (tokenLookup.isLoaded()) {
-          result = "Token with ID " + props.tokenId + " was not found"
-        } else {
-          result = null
-        }
-      } else if (tokenLookup.entity.value?.deleted) {
-        result = "Token is deleted"
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const perPage = ref(isMediumScreen ? 10 : 5)
-
-    //
-    // TokenBalanceTableController
-    //
-    const fungibleTokenId = computed(() => tokenAnalyzer.isFungible.value ? normalizedTokenId.value : null)
-    const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
-    onMounted(() => tokenBalanceTableController.mount())
-    onBeforeUnmount(() => tokenBalanceTableController.unmount())
-
-    //
-    // NftHolderTableController
-    //
-    const nftTokenId = computed(() => tokenAnalyzer.isNft.value ? normalizedTokenId.value : null)
-    const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
-    onMounted(() => nftHolderTableController.mount())
-    onBeforeUnmount(() => nftHolderTableController.unmount())
-
-    const isWalletConnected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
-
-    const onActionCompleted = () => {
-      if (tokenAnalyzer.isNft.value) {
-        nftHolderTableController.refresh()
-      } else {
-        tokenBalanceTableController.refresh()
-      }
+const notification = computed(() => {
+  let result
+  if (!validEntityId.value) {
+    result = "Invalid token ID: " + props.tokenId
+  } else if (tokenLookup.entity.value == null) {
+    if (tokenLookup.isLoaded()) {
+      result = "Token with ID " + props.tokenId + " was not found"
+    } else {
+      result = null
     }
+  } else if (tokenLookup.entity.value?.deleted) {
+    result = "Token is deleted"
+  } else {
+    result = null
+  }
+  return result
+})
 
-    return {
-      isMediumScreen,
-      displaySymbol,
-      displayName,
-      analyzer: tokenAnalyzer,
-      tokenInfo: tokenLookup.entity,
-      isNft: tokenAnalyzer.isNft,
-      isFungible: tokenAnalyzer.isFungible,
-      hasCustomFees: tokenAnalyzer.hasCustomFees,
-      tokenChecksum: tokenAnalyzer.tokenChecksum,
-      validEntityId,
-      normalizedTokenId,
-      notification,
-      parseBigIntString,
-      tokenAnalyzer,
-      ethereumAddress: tokenAnalyzer.ethereumAddress,
-      isWalletConnected,
-      tokenBalanceTableController,
-      nftHolderTableController,
-      metadata,
-      metadataAnalyzer,
-      onActionCompleted,
-    }
-  },
-});
+const perPage = ref(isMediumScreen ? 10 : 5)
 
-function parseBigIntString(s: string | undefined): bigint | undefined {
+//
+// TokenBalanceTableController
+//
+const fungibleTokenId = computed(() => tokenAnalyzer.isFungible.value ? normalizedTokenId.value : null)
+const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
+onMounted(() => tokenBalanceTableController.mount())
+onBeforeUnmount(() => tokenBalanceTableController.unmount())
+
+//
+// NftHolderTableController
+//
+const nftTokenId = computed(() => tokenAnalyzer.isNft.value ? normalizedTokenId.value : null)
+const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
+onMounted(() => nftHolderTableController.mount())
+onBeforeUnmount(() => nftHolderTableController.unmount())
+
+const isWalletConnected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
+
+const onActionCompleted = () => {
+  if (tokenAnalyzer.isNft.value) {
+    nftHolderTableController.refresh()
+  } else {
+    tokenBalanceTableController.refresh()
+  }
+}
+
+const analyzer = tokenAnalyzer
+const tokenInfo = tokenLookup.entity
+const isNft = tokenAnalyzer.isNft
+const hasCustomFees = tokenAnalyzer.hasCustomFees
+const tokenChecksum = tokenAnalyzer.tokenChecksum
+const ethereumAddress = tokenAnalyzer.ethereumAddress
+
+const parseBigIntString = (s: string | undefined): bigint | undefined => {
   let result: bigint | undefined
   try {
     result = s ? BigInt(s) : undefined
@@ -511,7 +462,6 @@ function parseBigIntString(s: string | undefined): bigint | undefined {
   }
   return result
 }
-
 
 </script>
 
