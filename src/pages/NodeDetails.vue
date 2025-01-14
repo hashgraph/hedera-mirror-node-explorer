@@ -200,9 +200,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -223,100 +223,71 @@ import {makeStakePercentage} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
-export default defineComponent({
-
-  name: 'NodeDetails',
-
-  components: {
-    NetworkDashboardItem,
-    Endpoints,
-    HexaValue,
-    Property,
-    NotificationBanner,
-    PageFrameV2,
-    BlobValue,
-    DashboardCard,
-    AccountLink,
-    TimestampValue,
-    KeyValue,
-    StringValue,
+const props = defineProps({
+  nodeId: {
+    type: String,
+    required: true
   },
+  network: String
+})
 
-  props: {
-    nodeId: {
-      type: String,
-      required: true
-    },
-    network: String
-  },
+const cryptoName = CoreConfig.inject().cryptoName
 
-  setup(props) {
-    const cryptoName = CoreConfig.inject().cryptoName
+const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
+const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
+onMounted(() => nodeAnalyzer.mount())
+onBeforeUnmount(() => nodeAnalyzer.unmount())
+const networkAnalyzer = nodeAnalyzer.networkAnalyzer // Mounted / unmounted by nodeAnalyzer
 
-    const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
-    const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
-    onMounted(() => nodeAnalyzer.mount())
-    onBeforeUnmount(() => nodeAnalyzer.unmount())
-    const networkAnalyzer = nodeAnalyzer.networkAnalyzer // Mounted / unmounted by nodeAnalyzer
+const stakeLookup = StakeCache.instance.makeLookup()
+onMounted(() => stakeLookup.mount())
+onBeforeUnmount(() => stakeLookup.unmount())
 
-    const stakeLookup = StakeCache.instance.makeLookup()
-    onMounted(() => stakeLookup.mount())
-    onBeforeUnmount(() => stakeLookup.unmount())
+const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
+const stakePercentage = computed(() =>
+    nodeAnalyzer.node.value && stakeTotal.value
+        ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
+        : "0"
+)
+const stakeLabel = computed(() =>
+    nodeAnalyzer.stake.value === 0
+        ? 'Stake for consensus is 0 because (Staked for Reward + Staked For No Reward) was less than Min Stake at the beginning of the current staking period.'
+        : null
+)
+const stakeRewardedPercentage = computed(() =>
+    networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0
+)
+const stakeUnrewardedPercentage = computed(() =>
+    networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0
+)
 
-    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
-    const stakePercentage = computed(() =>
-        nodeAnalyzer.node.value && stakeTotal.value
-            ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
-            : "0")
+const unknownNodeId = ref(false)
 
-    const stakeLabel = computed(() =>
-        nodeAnalyzer.stake.value === 0
-            ? 'Stake for consensus is 0 because (Staked for Reward + Staked For No Reward) was less than Min Stake at the beginning of the current staking period.'
-            : null)
+const notification = computed(() => {
+  let result
+  if (unknownNodeId.value) {
+    result = "Node with ID " + props.nodeId + " was not found"
+  } else {
+    result = null
+  }
+  return result
+})
 
-    const stakeRewardedPercentage = computed(() =>
-        networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
+const makeFloorHbarAmount = (tinyBarAmount: number) => {
+  return Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
+}
 
-    const stakeUnrewardedPercentage = computed(() =>
-        networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0)
-
-    const unknownNodeId = ref(false)
-    const notification = computed(() => {
-      let result
-      if (unknownNodeId.value) {
-        result = "Node with ID " + props.nodeId + " was not found"
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
-
-    return {
-      cryptoName,
-      enableStaking: routeManager.enableStaking,
-      nodeIdNb,
-      node: nodeAnalyzer.node,
-      annualizedRate: nodeAnalyzer.annualizedRate,
-      stake: nodeAnalyzer.stake,
-      stakeLabel,
-      minStake: nodeAnalyzer.minStake,
-      maxStake: nodeAnalyzer.maxStake,
-      stakePercentage,
-      unclampedStake: nodeAnalyzer.unclampedStake,
-      stakeRewarded: nodeAnalyzer.stakeRewarded,
-      stakeRewardedPercentage,
-      stakeUnrewarded: nodeAnalyzer.stakeUnrewarded,
-      stakeUnrewardedPercentage,
-      notification,
-      isCouncilNode: nodeAnalyzer.isCouncilNode,
-      nodeDescription: nodeAnalyzer.nodeDescription,
-      formattedHash: nodeAnalyzer.certificateHash,
-      makeFloorHbarAmount
-    }
-  },
-});
+const enableStaking = routeManager.enableStaking
+const node = nodeAnalyzer.node
+const annualizedRate = nodeAnalyzer.annualizedRate
+const stake = nodeAnalyzer.stake
+const minStake = nodeAnalyzer.minStake
+const maxStake = nodeAnalyzer.maxStake
+const stakeRewarded = nodeAnalyzer.stakeRewarded
+const stakeUnrewarded = nodeAnalyzer.stakeUnrewarded
+const isCouncilNode = nodeAnalyzer.isCouncilNode
+const nodeDescription = nodeAnalyzer.nodeDescription
+const formattedHash = nodeAnalyzer.certificateHash
 
 </script>
 
