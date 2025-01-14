@@ -30,9 +30,9 @@
         :loading="loading"
         :paginated="!isTouchDevice && paginated"
         backend-pagination
-        pagination-order="left"
-        :range-before="0"
-        :range-after="0"
+        pagination-order="centered"
+        :range-before="1"
+        :range-after="1"
         :total="total"
         v-model:current-page="currentPage"
         :per-page="perPage"
@@ -48,26 +48,22 @@
         aria-previous-label="Previous page"
         customRowKey="consensus_timestamp"
     >
-      <o-table-column v-slot="props" field="sequence_number" label="Sequence #">
-        <div class="is-numeric">
-          {{ props.row.sequence_number != null ? props.row.sequence_number : "" }}
+      <o-table-column v-slot="props" field="sequence_number" label="SEQ.#">
+        {{ props.row.sequence_number != null ? props.row.sequence_number : "" }}
+      </o-table-column>
+
+      <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
+        <div style="text-wrap: nowrap">
+          <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-        <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+      <o-table-column v-slot="props" field="chunk" label="CHUNK">
+        {{ formatChunk(props.row) }}
       </o-table-column>
 
-      <o-table-column v-slot="props" field="chunk" label="Chunk">
-        <div class="is-numeric">
-          {{ formatChunk(props.row) }}
-        </div>
-      </o-table-column>
-
-      <o-table-column v-slot="props" field="message" label="Message">
-        <div class="should-wrap">
-          <BlobValue :blob-value="props.row.message" :base64="true" :show-none="true"/>
-        </div>
+      <o-table-column v-slot="props" field="message" label="MESSAGE">
+        <BlobValue :blob-value="props.row.message" :base64="true" :show-none="true"/>
       </o-table-column>
 
       <template v-slot:bottom-left>
@@ -95,9 +91,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {inject, PropType} from 'vue';
 import {TopicMessageTableController} from "@/components/topic/TopicMessageTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
@@ -108,50 +104,32 @@ import {routeManager} from "@/router";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-
-  name: 'TopicMessageTable',
-
-  components: {TablePageSize, EmptyTable, BlobValue, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<TopicMessageTableController>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const formatChunk = (t: TopicMessage) => t.chunk_info ? `${t.chunk_info.number}/${t.chunk_info.total}` : ''
-
-    const handleClick = (t: TopicMessage, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      const consensusTimestamp = t.consensus_timestamp
-      if (consensusTimestamp) {
-        routeManager.routeToTransactionByTs(consensusTimestamp, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      messages: props.controller.rows as ComputedRef<TopicMessage[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      ORUGA_MOBILE_BREAKPOINT,
-      AppStorage,
-      formatChunk,
-      handleClick
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TopicMessageTableController>,
+    required: true
   }
-});
+})
+
+const isTouchDevice = inject('isTouchDevice', false)
+
+const formatChunk = (t: TopicMessage) => t.chunk_info ? `${t.chunk_info.number}/${t.chunk_info.total}` : ''
+
+const handleClick = (t: TopicMessage, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  const consensusTimestamp = t.consensus_timestamp
+  if (consensusTimestamp) {
+    routeManager.routeToTransactionByTs(consensusTimestamp, event)
+  }
+}
+
+const messages = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
