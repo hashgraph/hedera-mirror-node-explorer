@@ -26,9 +26,7 @@
   <div class="card-root">
     <div class="card-header">
       <div class="left-header">
-        <div class="card-title">
-          <slot name="title"/>
-        </div>
+        <slot name="title"/>
         <slot name="left-control" v-if="!isCollapsed"/>
       </div>
       <div class="right-header">
@@ -155,18 +153,13 @@ div.card-header {
 div.left-header {
   align-items: center;
   display: flex;
-  gap: 12px;
+  gap: 8px;
   height: 26px;
   justify-content: flex-start;
-}
-
-div.card-title {
   color: var(--text-primary);
   font-family: 'Styrene A Web', serif;
   font-size: 20px;
   font-weight: 500;
-  height: 26px;
-  margin-bottom: 8px;
 }
 
 div.right-header {
