@@ -132,7 +132,7 @@
       <router-link v-if="showAllTokensLink" :to="routeManager.makeRouteToTokensByAccount(accountId)">
         <div class="all-tokens-link">
           <span class="all-tokens-text">All tokens</span>
-          <img src="@/assets/right-arrow.png" alt="Link" style="height: 16px;"/>
+          <ArrowRight :size="16"/>
         </div>
       </router-link>
 
@@ -165,6 +165,7 @@ import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import {useRouter} from "vue-router";
+import {ArrowRight} from 'lucide-vue-next';
 import {NftsTableController} from "@/components/account/NftsTableController";
 import NftsTable from "@/components/account/NftsTable.vue";
 import FungibleTable from "@/components/account/FungibleTable.vue";
