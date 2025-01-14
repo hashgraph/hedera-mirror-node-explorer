@@ -24,16 +24,16 @@
 
 <template>
 
-  <DashboardCard v-if="props.topicMemo" collapsible-key="hcs1Content">
+  <DashboardCardV2 v-if="props.topicMemo" collapsible-key="hcs1Content">
 
-    <template v-slot:title>
-      <span class="h-is-secondary-title">HCS-1 Content</span>
+    <template #title>
+      HCS-1 Content
     </template>
 
     <template #content>
-      <Property id="hash" :full-width="true">
-        <template v-slot:name>Hash</template>
-        <template v-slot:value>
+      <Property id="hash" :full-width="isMediumScreen">
+        <template #name>Hash</template>
+        <template #value>
           {{ props.topicMemo?.hash }}
           <div v-if="hashMatch" class="icon is-small ml-1" id="check-mark">
             <i class="fas fa-check has-text-success"/>
@@ -45,27 +45,27 @@
           />
         </template>
       </Property>
-      <Property id="compression" :full-width="true">
-        <template v-slot:name>Compression</template>
-        <template v-slot:value>
+      <Property id="compression" :full-width="isMediumScreen">
+        <template #name>Compression</template>
+        <template #value>
           {{ props.topicMemo?.algo }}
         </template>
       </Property>
-      <Property id="encoding" :full-width="true">
-        <template v-slot:name>Encoding</template>
-        <template v-slot:value>
+      <Property id="encoding" :full-width="isMediumScreen">
+        <template #name>Encoding</template>
+        <template #value>
           {{ props.topicMemo?.encoding }}
         </template>
       </Property>
-      <Property v-if="hcs1DataType" id="mime-type" :full-width="true">
-        <template v-slot:name>MIME Type</template>
-        <template v-slot:value>
+      <Property v-if="hcs1DataType" id="mime-type" :full-width="isMediumScreen">
+        <template #name>MIME Type</template>
+        <template #value>
           {{ hcs1DataType }}
         </template>
       </Property>
-      <Property v-if="hashMatch && (hcs1DataURL || jsonContent)" id="preview" :full-width="true">
-        <template v-slot:name>Preview</template>
-        <template v-slot:value>
+      <Property v-if="hashMatch && (hcs1DataURL || jsonContent)" id="preview" :full-width="isMediumScreen">
+        <template #name>Preview</template>
+        <template #value>
           <MediaContent
               v-if="hcs1DataURL"
               :url="hcs1DataURL"
@@ -83,7 +83,7 @@
         </template>
       </Property>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -93,14 +93,14 @@
 
 <script setup lang="ts">
 
-import {computed, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {computed, inject, PropType} from 'vue';
 import Property from "@/components/Property.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
 import MediaContent from "@/components/MediaContent.vue";
 import {HCSAsset} from "@/utils/cache/HCSAsset.ts";
 import InfoTooltip from "@/components/InfoTooltip.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const props = defineProps({
   topicMemo: {
@@ -112,6 +112,8 @@ const props = defineProps({
     default: null
   }
 })
+
+const isMediumScreen = inject('isMediumScreen', true)
 
 const INCOMPLETE_ASSET_TOOLTIP =
     'This topic contains too many messages for the HCS-1 content to be fully retrieved. ' +
