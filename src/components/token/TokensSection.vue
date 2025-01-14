@@ -128,14 +128,11 @@
           />
         </div>
       </div>
-
-      <router-link v-if="showAllTokensLink" :to="routeManager.makeRouteToTokensByAccount(accountId)">
-        <div class="all-tokens-link">
-          <span class="all-tokens-text">All tokens</span>
-          <ArrowRight :size="16"/>
-        </div>
-      </router-link>
-
+      <ArrowLink
+          v-if="showAllTokensLink"
+          :route="routeManager.makeRouteToTokensByAccount(accountId)"
+          text="All tokens"
+      />
     </template>
 
   </DashboardCardV2>
@@ -165,7 +162,6 @@ import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import {useRouter} from "vue-router";
-import {ArrowRight} from 'lucide-vue-next';
 import {NftsTableController} from "@/components/account/NftsTableController";
 import NftsTable from "@/components/account/NftsTable.vue";
 import FungibleTable from "@/components/account/FungibleTable.vue";
@@ -182,6 +178,7 @@ import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAir
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 import Tooltip from "@/components/Tooltip.vue";
+import ArrowLink from "@/components/ArrowLink.vue";
 
 const props = defineProps({
   accountId: {
@@ -394,21 +391,6 @@ div.pending-airdrops-container {
   display: flex;
   flex-direction: column;
   gap: 16px;
-}
-
-div.all-tokens-link {
-  align-items: center;
-  color: var(--icon-default-color);
-  display: flex;
-  gap: 2px;
-  height: 18px;
-  justify-content: center;
-}
-
-span.all-tokens-text {
-  font-family: "Styrene A Web", sans-serif;
-  font-size: 14px;
-  font-weight: 400;
 }
 
 </style>
