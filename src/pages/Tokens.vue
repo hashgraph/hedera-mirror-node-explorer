@@ -30,13 +30,10 @@
 
       <DashboardCardV2>
         <template #title>
-          <span>Recent Non Fungible Tokens</span>
+          <span>Recent NFTs</span>
         </template>
         <template #left-control>
           <PlayPauseButtonV2 :controller="nftTableController"/>
-        </template>
-        <template #right-control>
-          TBD: 'All NFTs' link
         </template>
         <template #content>
           <TokenTable :controller="nftTableController"/>
@@ -49,9 +46,6 @@
         </template>
         <template #left-control>
           <PlayPauseButtonV2 :controller="tokenTableController"/>
-        </template>
-        <template #right-control>
-          TBD: 'All Fungible Tokens' link
         </template>
         <template #content>
           <TokenTable :controller="tokenTableController"/>
