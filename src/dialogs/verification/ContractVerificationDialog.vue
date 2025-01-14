@@ -143,11 +143,7 @@
                  :extra-message="confirmExtraMessage"
                  @onConfirm="handleConfirmVerification"
                  @onCancel="handleCancelVerification">
-    <template v-slot:confirmTitle>
-            <span class="h-is-primary-title">
-                {{ dialogTitle }}
-            </span>
-    </template>
+    <template v-slot:confirmTitle>{{ dialogTitle }}</template>
   </ConfirmDialog>
 
 </template>
