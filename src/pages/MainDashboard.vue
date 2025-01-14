@@ -36,7 +36,10 @@
           <PlayPauseButtonV2 :controller="cryptoTableController"/>
         </template>
         <template #right-control>
-          TBD: 'All Crypto Transfers' link
+          <ArrowLink
+              :route="routeManager.makeRouteToTransactions(TransactionType.CRYPTOTRANSFER)"
+              text="All Crypto Transfers"
+          />
         </template>
         <template #content>
           <SimpleTransactionTable :controller="cryptoTableController"/>
@@ -53,7 +56,10 @@
             <PlayPauseButtonV2 :controller="contractTableController"/>
           </template>
           <template #right-control>
-            TBD: 'All Smart Contract Calls' link
+            <ArrowLink
+                :route="routeManager.makeRouteToTransactions(TransactionType.CONTRACTCALL)"
+                text="All Smart Contract Calls"
+            />
           </template>
           <template #content>
             <SimpleTransactionTable :controller="contractTableController"/>
@@ -67,7 +73,10 @@
             <PlayPauseButtonV2 :controller="messageTableController"/>
           </template>
           <template #right-control>
-            TBD: 'All HCS Messages' link
+            <ArrowLink
+                :route="routeManager.makeRouteToTransactions(TransactionType.CONSENSUSSUBMITMESSAGE)"
+                text="All HCS Messages"
+            />
           </template>
           <template #content>
             <MessageTransactionTable v-bind:controller="messageTableController"/>
@@ -97,6 +106,8 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import {useRouter} from "vue-router";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import ArrowLink from "@/components/ArrowLink.vue";
+import {routeManager} from "@/router.ts";
 
 const props = defineProps({
   network: String
