@@ -30,12 +30,12 @@
 
         <div class="is-flex is-justify-content-space-between is-align-items-baseline">
           <div class="is-flex is-justify-content-start is-align-items-baseline">
-            <span v-if="iconClass" class="icon ml-2 mr-5"><i :class="iconClass"/></span>
+            <span v-if="props.iconClass" class="icon ml-2 mr-5"><i :class="props.iconClass"/></span>
             <div class="block h-is-tertiary-text mt-2">
               <slot name="dialogMessage"/>
             </div>
           </div>
-          <a v-if="showCloseIcon" @click="handleClose">
+          <a v-if="props.showCloseIcon" @click="handleClose">
             <img alt="Modal close icon" src="../../assets/close-icon.png" style="max-height: 20px;">
           </a>
 
@@ -56,33 +56,27 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent} from "vue";
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
 
-export default defineComponent({
-  name: "ModalDialog",
-  components: {},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
-    },
-    iconClass: String,
-    showCloseIcon: {
-      type: Boolean,
-      default: true
-    },
+const props = defineProps({
+  iconClass: String,
+  showCloseIcon: {
+    type: Boolean,
+    default: true
   },
+})
 
-  setup(props, context) {
-    const handleClose = () => {
-      context.emit('update:showDialog', false)
-      context.emit('onClose')
-    }
-    return {handleClose}
-  }
-});
+const emit = defineEmits(["onClose"])
+
+const handleClose = () => {
+  showDialog.value = false
+  emit('onClose')
+}
 
 </script>
 
