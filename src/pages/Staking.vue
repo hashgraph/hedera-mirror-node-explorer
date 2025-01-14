@@ -44,18 +44,6 @@
       </template>
     </ConfirmDialog>
 
-    <ProgressDialog v-model:show-dialog="showProgressDialog"
-                    :mode="progressDialogMode"
-                    :main-message="progressMainMessage"
-                    :extra-message="progressExtraMessage"
-                    :extra-transaction-id="progressExtraTransactionId"
-                    :show-spinner="showProgressSpinner"
-    >
-      <template v-slot:dialogTitle>
-        <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
-      </template>
-    </ProgressDialog>
-
     <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
                     :mode="Mode.Error"
                     main-message="This operation cannot be done using Metamask"
@@ -189,13 +177,6 @@ const networkConfig = NetworkConfig.inject()
 const changeStakingDialogVisible = ref(false)
 const stopStakingDialogVisible = ref(false)
 const stopConfirmDialogVisible = ref(false)
-const showProgressDialog = ref(false)
-const progressDialogMode = ref(Mode.Busy)
-const progressDialogTitle = ref<string | null>(null)
-const progressMainMessage = ref<string | null>(null)
-const progressExtraMessage = ref<string | null>(null)
-const progressExtraTransactionId = ref<string | null>(null)
-const showProgressSpinner = ref(false)
 
 //
 // Account
