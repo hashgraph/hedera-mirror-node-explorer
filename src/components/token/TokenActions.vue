@@ -53,18 +53,12 @@
                    :extra-message="confirmExtraMessage"
                    @onConfirm="handleConfirm"
                    @onCancel="handleCancel">
-      <template v-slot:confirmTitle>
-            <span class="h-is-primary-title">
-                {{ dialogTitle }}
-            </span>
-      </template>
+      <template v-slot:confirmTitle>{{ dialogTitle }}</template>
       <template v-if="showWatchOption && isWatchAssetSupported" v-slot:dialogOption>
-        <div class="is-flex is-align-items-center">
-          <label class="checkbox mr-3">
-            <input type="checkbox" v-model="watchInWallet">
-          </label>
-          <p class="h-is-property-text">Import {{ tokenSymbol }} to {{ walletManager.walletName.value }}</p>
-        </div>
+        <label>
+          <input type="checkbox" style="margin-right: 0.5em; vertical-align: middle" v-model="watchInWallet">
+          <span>Import {{ tokenSymbol }} to {{ walletManager.walletName.value }}</span>
+        </label>
       </template>
     </ConfirmDialog>
 

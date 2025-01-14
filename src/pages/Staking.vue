@@ -38,9 +38,9 @@
     <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
                    :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
       <template v-slot:confirmTitle>
-        <span class="h-is-primary-title">My Staking </span>
-        <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-        <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+        <span>My Staking </span>
+        <span v-if="accountId"> for account </span>
+        <span v-if="accountId">{{ accountId }}</span>
       </template>
     </ConfirmDialog>
 

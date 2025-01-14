@@ -24,36 +24,27 @@
 
 <template>
 
-  <Dialog :controller="controller">
+  <ModalDialog v-model:show-dialog="showDialog">
 
-    <template #dialogTitle>
-      <DialogTitle>
-        <slot name="confirmTitle"/>
-      </DialogTitle>
+    <template #modalDialogTitle>
+      <slot name="confirmTitle"/>
     </template>
 
-    <template #dialogInput>
-
-      <div v-if="props.mainMessage" class="block h-is-tertiary-text mt-2">{{ props.mainMessage }}</div>
-      <div v-else class="block h-is-property-text" style="visibility: hidden">Filler</div>
-      <div v-if="props.extraMessage" class="my-4" style="line-height: 21px">
-        <span v-if="props.extraMessage" class="h-is-property-text">{{ props.extraMessage }}</span>
-        <span v-else class="h-is-property-text" style="visibility: hidden">Filler</span>
-      </div>
-
-
-      <div v-if="slots.dialogOption">
-        <slot name="dialogOption"/>
-      </div>
-
+    <template #modalDialogContent>
+      <div>{{ props.mainMessage }}</div>
+      <div v-if="props.extraMessage" class="extra-message">{{ props.extraMessage }}</div>
     </template>
 
-    <template #dialogInputButtons>
-      <DialogButton :controller="controller" @action="handleCancel">{{ props.cancelLabel }}</DialogButton>
-      <DialogButton :controller="controller" @action="handleConfirm">{{ props.confirmLabel }}</DialogButton>
+    <template v-if="slots.dialogOption" #modalDialogControls>
+      <slot name="dialogOption"/>
     </template>
 
-  </Dialog>
+    <template #modalDialogButtons>
+      <ModalDialogButton v-model:show-dialog="showDialog" @action="handleCancel">{{ props.cancelLabel }}</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog" :is-default="true" @action="handleConfirm">{{ props.confirmLabel }}</ModalDialogButton>
+    </template>
+
+  </ModalDialog>
 
 </template>
 
@@ -64,10 +55,8 @@
 <script setup lang="ts">
 
 import {PropType, useSlots} from "vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
-import Dialog from "@/dialogs/core/dialog/Dialog.vue";
-import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
-import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
+import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -95,10 +84,6 @@ const props = defineProps({
 
 const emit = defineEmits(["onCancel", "onConfirm"])
 
-const controller = new DialogController(showDialog)
-
-const slots = useSlots()
-
 const handleCancel = () => {
   emit("onCancel")
 }
@@ -107,11 +92,21 @@ const handleConfirm = () => {
   emit("onConfirm")
 }
 
+const slots = useSlots()
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.extra-message {
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 18px;
+}
+
+</style>
 
