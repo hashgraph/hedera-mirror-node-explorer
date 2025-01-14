@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog :icon-class="iconClass" :show-dialog="showDialog">
+  <ModalDialog :icon-class="props.iconClass" :show-dialog="showDialog">
     <template v-slot:dialogMessage>
       <slot name="dialogMessage"/>
     </template>
@@ -52,43 +52,37 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, ref} from "vue";
+import {ref} from "vue";
 import ModalDialog from "@/components/ModalDialog.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: "OptOutDialog",
-  components: {ModalDialog},
-  props: {
-    showDialog: {
-      type: Boolean,
-      default: false
-    },
-    iconClass: String
-  },
-  setup(props, context) {
-    const dontShowNextTime = ref(false)
-    const handleAgree = () => {
-      if (dontShowNextTime.value) {
-        AppStorage.setSkipDisclaimer(true)
-      }
-      context.emit('update:showDialog', false)
-      context.emit('onAgree')
-    }
-    const handleCancel = () => {
-      dontShowNextTime.value = false
-      context.emit('update:showDialog', false)
-      context.emit('onClose')
-    }
-    return {
-      dontShowNextTime,
-      handleAgree,
-      handleCancel
-    }
+
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
+
+const props = defineProps({
+  iconClass: String
+})
+
+const emit = defineEmits(["onAgree", "onClose"])
+
+const dontShowNextTime = ref(false)
+const handleAgree = () => {
+  if (dontShowNextTime.value) {
+    AppStorage.setSkipDisclaimer(true)
   }
-});
+  showDialog.value = false
+  emit('onAgree')
+}
+const handleCancel = () => {
+  dontShowNextTime.value = false
+  showDialog.value = false
+  emit('onClose')
+}
 
 </script>
 
