@@ -24,59 +24,59 @@
 
 <template>
 
-  <DashboardCard collapsible-key="customFees">
+  <DashboardCardV2 collapsible-key="customFees">
 
-    <template v-slot:title>
-      <div class="h-is-secondary-title mb-2">Custom Fees</div>
+    <template #title>
+      Custom Fees
     </template>
 
-    <template v-slot:content>
-      <Property id="customFeeCreatedAt" :full-width="true">
-        <template v-slot:name>Created at</template>
-        <template v-slot:value>
+    <template #content>
+      <Property id="customFeeCreatedAt" :full-width="isMediumScreen">
+        <template #name>Created at</template>
+        <template #value>
           <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp?.toString()"/>
         </template>
       </Property>
 
-      <Property id="fixedFee" :full-width="true">
-        <template v-slot:name>Fixed Fees</template>
-        <template v-if="hasFixedFees" v-slot:value>
+      <Property id="fixedFee" :full-width="isMediumScreen">
+        <template #name>Fixed Fees</template>
+        <template v-if="hasFixedFees" #value>
           <div class="h-is-table-compact">
             <FixedFeeTable :analyzer="analyzer"/>
           </div>
         </template>
-        <template v-else v-slot:value>
+        <template v-else #value>
           <span class="has-text-grey">None</span>
         </template>
       </Property>
 
-      <Property v-if="isFungible" id="fractionalFee" :full-width="true">
-        <template v-slot:name>Fractional Fees</template>
-        <template v-if="hasFractionalFees" v-slot:value>
+      <Property v-if="isFungible" id="fractionalFee" :full-width="isMediumScreen">
+        <template #name>Fractional Fees</template>
+        <template v-if="hasFractionalFees" #value>
           <div class="h-is-table-compact">
             <FractionalFeeTable :analyzer="analyzer"/>
           </div>
         </template>
-        <template v-else v-slot:value>
+        <template v-else #value>
           <span class="has-text-grey">None</span>
         </template>
       </Property>
 
-      <Property v-else id="royalteeFee" :full-width="true">
-        <template v-slot:name>Percentage & Fallback Fees</template>
-        <template v-if="hasRoyaltyFees" v-slot:value>
+      <Property v-else id="royalteeFee" :full-width="isMediumScreen">
+        <template #name>Percentage & Fallback Fees</template>
+        <template v-if="hasRoyaltyFees" #value>
           <div class="h-is-table-compact">
             <RoyaltyFeeTable class="h-is-table-compact" :analyzer="analyzer"/>
           </div>
         </template>
-        <template v-else v-slot:value>
+        <template v-else #value>
           <span class="has-text-grey">None</span>
         </template>
       </Property>
 
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -86,14 +86,14 @@
 
 <script setup lang="ts">
 
-import {PropType} from 'vue';
+import {inject, PropType} from 'vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const props = defineProps({
   analyzer: {
@@ -101,6 +101,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const isMediumScreen = inject('isMediumScreen', true)
 
 const fees = props.analyzer?.customFees
 const hasFixedFees = props.analyzer?.hasFixedFees
