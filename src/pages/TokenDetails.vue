@@ -225,91 +225,7 @@
 
     <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
 
-    <DashboardCard v-if="tokenInfo" collapsible-key="tokenKeys">
-
-      <template v-slot:title>
-        <div class="h-is-secondary-title mb-2">Token Keys</div>
-      </template>
-
-      <template v-slot:leftContent>
-        <Property id="adminKey">
-          <template v-slot:name>Admin Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.admin_key?.key"
-                      :key-type="tokenInfo?.admin_key?._type"
-                      :show-none="true"
-                      none-extra="Token is immutable"/>
-          </template>
-        </Property>
-        <Property id="feeScheduleKey">
-          <template v-slot:name>Fee Schedule Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.fee_schedule_key?.key"
-                      :key-type="tokenInfo?.fee_schedule_key?._type"
-                      :show-none="true"
-                      none-extra="Custom fee schedule is immutable"/>
-          </template>
-        </Property>
-        <Property id="freezeKey">
-          <template v-slot:name>Freeze Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.freeze_key?.key"
-                      :key-type="tokenInfo?.freeze_key?._type"
-                      :show-none="true"
-                      none-extra="Token cannot be frozen"/>
-          </template>
-        </Property>
-        <Property id="kycKey">
-          <template v-slot:name>KYC Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.kyc_key?.key"
-                      :key-type="tokenInfo?.kyc_key?._type"
-                      :show-none="true"
-                      none-extra="KYC is not required"/>
-          </template>
-        </Property>
-      </template>
-
-      <template v-slot:rightContent>
-        <Property id="metadataKey">
-          <template v-slot:name>Metadata Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.metadata_key?.key"
-                      :key-type="tokenInfo?.metadata_key?._type"
-                      :show-none="true"
-                      none-extra="Token metadata is immutable"/>
-          </template>
-        </Property>
-        <Property id="pauseKey">
-          <template v-slot:name>Pause Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.pause_key?.key"
-                      :key-type="tokenInfo?.pause_key?._type"
-                      :show-none="true"
-                      none-extra="Token cannot be paused"/>
-          </template>
-        </Property>
-        <Property id="supplyKey">
-          <template v-slot:name>Supply Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.supply_key?.key"
-                      :key-type="tokenInfo?.supply_key?._type"
-                      :show-none="true"
-                      none-extra="Token cannot be minted or burnt"/>
-          </template>
-        </Property>
-        <Property id="wipeKey">
-          <template v-slot:name>Wipe Key</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="tokenInfo?.wipe_key?.key"
-                      :key-type="tokenInfo?.wipe_key?._type"
-                      :show-none="true"
-                      none-extra="Token cannot be wiped"/>
-          </template>
-        </Property>
-      </template>
-
-    </DashboardCard>
+    <TokenKeysSection :token-info="tokenInfo"/>
 
     <TokenFeesSection v-if="hasCustomFees" :analyzer="analyzer"/>
 
@@ -330,7 +246,6 @@
 import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import {useRouter} from "vue-router";
 import {walletManager} from "@/router";
-import KeyValue from "@/components/values/KeyValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
@@ -362,6 +277,7 @@ import TransactionLink from "@/components/values/TransactionLink.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
+import TokenKeysSection from "@/components/token/TokenKeysSection.vue";
 
 const props = defineProps({
   tokenId: {
