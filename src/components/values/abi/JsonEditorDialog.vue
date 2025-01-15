@@ -23,19 +23,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="props.controller">
-    <template v-slot:dialogTitle>
-      <DialogTitle>{{ dialogTitle }}</DialogTitle>
-    </template>
-    <template v-slot:dialogInput>
+
+  <ModalDialog v-model:show-dialog="showDialog">
+
+    <template #modalDialogTitle>{{ dialogTitle }}</template>
+
+    <template #modalDialogContent>
       <div style="margin-bottom: 1em">{{ typeDeclaration }}</div>
       <TextAreaView style="width: 728px; height: 100px; margin-bottom: 16px" v-model="currentText"/>
     </template>
-    <template v-slot:dialogInputButtons>
-      <DialogButton :controller="controller">CANCEL</DialogButton>
-      <DialogButton :controller="controller" :enabled="isValidText">OK</DialogButton>
+
+    <template #modalDialogButtons>
+      <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog" :enabled="isValidText">OK</ModalDialogButton>
     </template>
-  </Dialog>
+
+  </ModalDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -47,18 +51,17 @@
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
 import {AppStorage} from "@/AppStorage";
-import Dialog from "@/dialogs/core/dialog/Dialog.vue";
-import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
-import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
+import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 import {ethers} from "ethers";
 import TextAreaView from "@/components/TextAreaView.vue";
 
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
+
 const props = defineProps({
-  controller: {
-    type: Object as PropType<DialogController>,
-    required: true
-  },
   paramBuilder: {
     type: Object as PropType<ContractParamBuilder>,
     required: true

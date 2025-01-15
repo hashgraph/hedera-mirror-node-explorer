@@ -23,8 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <button class="button is-white h-is-smaller" @click="jsonEditorController.visible.value = true">EDIT…</button>
-  <JsonEditorDialog :controller="jsonEditorController" :param-builder="props.paramBuilder"/>
+  <button class="button is-white h-is-smaller" @click="showDialog = true">EDIT…</button>
+  <JsonEditorDialog v-model:show-dialog="showDialog" :param-builder="props.paramBuilder"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -33,9 +33,8 @@
 
 <script setup lang="ts">
 
-import {PropType} from "vue";
+import {PropType, ref} from "vue";
 import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import JsonEditorDialog from "@/components/values/abi/JsonEditorDialog.vue";
 
 const props = defineProps({
@@ -45,7 +44,7 @@ const props = defineProps({
   },
 })
 
-const jsonEditorController = new DialogController()
+const showDialog = ref(false)
 
 </script>
 
