@@ -155,7 +155,14 @@ const showPageSizeSelector = props.controller.showPageSizeSelector
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
+<style>
+
+div#nft-holder-table {
+  td {
+    padding-top: 2px;
+    padding-bottom: 2px;
+  }
+}
 
 span.serial-number {
   font-weight: 600;
