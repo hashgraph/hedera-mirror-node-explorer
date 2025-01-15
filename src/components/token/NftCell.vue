@@ -25,10 +25,10 @@
 <template>
 
   <NftPreview
-      v-if="property === NftCellItem.image"
+      v-if="props.property === NftCellItem.image"
       :url="url"
       :type="type"
-      :size="size"
+      :size="props.size"
       :auto="false"
       :no-anchor="true"
   />
@@ -46,13 +46,6 @@
 
 <script lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
-import {NftBySerialCache} from "@/utils/cache/NftBySerialCache";
-import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
-import BlobValue from "@/components/values/BlobValue.vue";
-import NftPreview from "@/components/token/NftPreview.vue";
-import {CoreConfig} from "@/config/CoreConfig";
-
 export enum NftCellItem {
   name = "name",
   creator = "creator",
@@ -60,75 +53,74 @@ export enum NftCellItem {
   image = "image",
 }
 
-export default defineComponent({
-  name: "NftCell",
-  components: {NftPreview, BlobValue},
+</script>
 
-  props: {
-    tokenId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    serialNumber: {
-      type: Number as PropType<Number | null>,
-      default: null
-    },
-    property: {
-      type: String as PropType<NftCellItem>,
-      default: NftCellItem.name
-    },
-    size: {
-      type: Number,
-      default: 50
-    },
+<script setup lang="ts">
+
+import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {NftBySerialCache} from "@/utils/cache/NftBySerialCache";
+import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
+import BlobValue from "@/components/values/BlobValue.vue";
+import NftPreview from "@/components/token/NftPreview.vue";
+import {CoreConfig} from "@/config/CoreConfig";
+
+const props = defineProps({
+  tokenId: {
+    type: String as PropType<string | null>,
+    default: null
   },
-
-  setup(props) {
-    const id = computed(() => props.tokenId)
-    const serial = computed(() => props.serialNumber?.toString() ?? null)
-
-    const nftLookup = NftBySerialCache.instance.makeNftLookup(id, serial)
-    onMounted(() => nftLookup.mount())
-    onBeforeUnmount(() => nftLookup.unmount())
-
-    const coreConfig = CoreConfig.inject()
-    const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
-    const arweaveServerURL = coreConfig.arweaveServerURL
-
-    const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
-    onMounted(() => metadataAnalyzer.mount())
-    onBeforeUnmount(() => metadataAnalyzer.unmount())
-
-    const propertyValue = computed(() => {
-      let result: string | null
-      switch (props.property) {
-        case NftCellItem.name:
-        case NftCellItem.creator:
-          result = truncate(metadataAnalyzer[props.property].value ?? '', 40)
-          break
-        case NftCellItem.description:
-          result = truncate(metadataAnalyzer.description.value ?? '', 150)
-          break
-        default:
-          result = null
-      }
-      return result
-    })
-
-    const truncate = (value: string, length: number): string => {
-      return value.length > length ? value.slice(0, length) + '…' : value
-    }
-
-    return {
-      url: metadataAnalyzer.imageUrl,
-      type: metadataAnalyzer.type,
-      NftCellItem,
-      propertyValue,
-      truncate
-    }
-  }
+  serialNumber: {
+    type: Number as PropType<Number | null>,
+    default: null
+  },
+  property: {
+    type: String as PropType<NftCellItem>,
+    default: NftCellItem.name
+  },
+  size: {
+    type: Number,
+    default: 40
+  },
 })
+
+const id = computed(() => props.tokenId)
+const serial = computed(() => props.serialNumber?.toString() ?? null)
+
+const nftLookup = NftBySerialCache.instance.makeNftLookup(id, serial)
+onMounted(() => nftLookup.mount())
+onBeforeUnmount(() => nftLookup.unmount())
+
+const coreConfig = CoreConfig.inject()
+const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
+const arweaveServerURL = coreConfig.arweaveServerURL
+
+const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
+const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
+onMounted(() => metadataAnalyzer.mount())
+onBeforeUnmount(() => metadataAnalyzer.unmount())
+
+const propertyValue = computed(() => {
+  let result: string | null
+  switch (props.property) {
+    case NftCellItem.name:
+    case NftCellItem.creator:
+      result = truncate(metadataAnalyzer[props.property].value ?? '', 40)
+      break
+    case NftCellItem.description:
+      result = truncate(metadataAnalyzer.description.value ?? '', 150)
+      break
+    default:
+      result = null
+  }
+  return result
+})
+
+const truncate = (value: string, length: number): string => {
+  return value.length > length ? value.slice(0, length) + '…' : value
+}
+
+const url = metadataAnalyzer.imageUrl
+const type = metadataAnalyzer.type
 
 </script>
 
