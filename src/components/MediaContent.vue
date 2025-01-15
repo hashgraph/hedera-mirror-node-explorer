@@ -24,23 +24,26 @@
 
 <template>
 
-  <div class="media-container mt-1"
-       :class="{'media-container-background': !mediaLoaded}"
-       :style="containerStyle"
-       @click="onClick"
+  <div
+      class="media-container"
+      :class="{'media-container-background': !mediaLoaded}"
+      :style="containerStyle"
+      @click="onClick"
   >
 
     <!--  PLACE-HOLDER  -->
-    <div id="media-placeholder"
-         :class="{'is-invisible': !showPlaceHolder}"
-         class="media-content is-flex is-align-items-center"
+    <div
+        id="media-placeholder"
+        :class="{'invisible-element': !showPlaceHolder}"
+        class="media-content"
     >
       <slot name="placeHolder"></slot>
     </div>
 
     <!--  SPINNER  -->
-    <span :class="{'is-invisible': !showSpinner, 'h-is-primary-title': size >= 100}"
-          class="media-content loader is-inline-block"
+    <span
+        :class="{'invisible-element': !showSpinner}"
+        class="media-content loader"
     />
 
     <!--  IMAGE PREVIEW  -->
@@ -48,11 +51,12 @@
       <figure
           id="image-content"
           class="media-content">
-        <img :class="{'is-invisible': !mediaLoaded}" alt=""
-             :style="contentStyle"
-             :src="imageUrl"
-             @error="onLoadError"
-             @load="onLoadSuccess"
+        <img
+            :class="{'invisible-element': !mediaLoaded}" alt=""
+            :style="contentStyle"
+            :src="imageUrl"
+            @error="onLoadError"
+            @load="onLoadSuccess"
         >
       </figure>
     </template>
@@ -84,140 +88,117 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, onBeforeUnmount, onMounted, PropType, ref} from "vue";
+import {computed, ComputedRef, onBeforeUnmount, onMounted, PropType, ref} from "vue";
 
 const MEDIA_LOAD_TIMEOUT = 10000
 
-export default defineComponent({
-  name: "MediaContent",
-  components: {},
-
-  props: {
-    url: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    type: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    size: {
-      type: Number,
-      default: 50
-    },
-    auto: {
-      type: Boolean,
-      default: false
-    },
-    noAnchor: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  url: {
+    type: String as PropType<string | null>,
+    default: null
   },
+  type: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  size: {
+    type: Number,
+    default: 40
+  },
+  auto: {
+    type: Boolean,
+    default: false
+  },
+  noAnchor: {
+    type: Boolean,
+    default: false
+  },
+})
 
-  emits: ['onLoadSuccess', 'onLoadError'],
+const emit = defineEmits(['onLoadSuccess', 'onLoadError'])
 
-  setup(props, ctx) {
+const videoUrl: ComputedRef<string | null> = computed(
+    () => props.type?.startsWith('video') || props.type?.startsWith('audio')
+        ? props.url
+        : null
+)
+const imageUrl: ComputedRef<string | null> = computed(
+    () => videoUrl.value === null || props.type?.startsWith('image')
+        ? props.url
+        : null
+)
+const plainFileUrl: ComputedRef<string | null> = computed(
+    () => videoUrl.value === null && imageUrl.value === null
+        ? props.url
+        : null
+)
 
-    const videoUrl: ComputedRef<string | null> = computed(
-        () => props.type?.startsWith('video') || props.type?.startsWith('audio')
-            ? props.url
-            : null
-    )
-    const imageUrl: ComputedRef<string | null> = computed(
-        () => videoUrl.value === null || props.type?.startsWith('image')
-            ? props.url
-            : null
-    )
-    const plainFileUrl: ComputedRef<string | null> = computed(
-        () => videoUrl.value === null && imageUrl.value === null
-            ? props.url
-            : null
-    )
-
-    const containerStyle = computed(() => {
-      return {
-        width: props.size + 'px',
-        height: props.size + "px"
-      }
-    })
-
-    const contentStyle = computed(() => {
-      return {
-        'width': '100%',
-        'max-width': props.size - 2 + 'px',
-        'max-height': props.size - 2 + 'px'
-      }
-    })
-
-    const mediaLoaded = ref(false)
-    const onLoadSuccess = () => {
-      mediaLoaded.value = true
-      stopTimeout()
-      ctx.emit('onLoadSuccess')
-    }
-
-    const mediaError = ref(false)
-    const onLoadError = () => {
-      mediaError.value = true
-      ctx.emit('onLoadError')
-    }
-
-    const showSpinner = computed(
-        () => (props.url) && !mediaLoaded.value && !mediaError.value
-    )
-
-    const showPlaceHolder = computed(
-        () => !props.url || mediaError.value
-    )
-
-    const onClick = () => {
-      if (props.url && !props.noAnchor) {
-        window.location.assign(props.url)
-      }
-    }
-
-    onMounted(() => {
-      startTimeout()
-    })
-    onBeforeUnmount(() => {
-      stopTimeout()
-    })
-
-    let timeoutID = -1
-    const startTimeout = () => {
-      if (props.url !== null && timeoutID === -1) {
-        timeoutID = window.setTimeout(() => {
-          mediaError.value = true
-          timeoutID = -1
-        }, MEDIA_LOAD_TIMEOUT)
-      }
-    }
-    const stopTimeout = () => {
-      if (timeoutID !== -1) {
-        window.clearTimeout(timeoutID)
-        timeoutID = -1
-      }
-    }
-
-    return {
-      videoUrl,
-      imageUrl,
-      plainFileUrl,
-      containerStyle,
-      contentStyle,
-      mediaLoaded,
-      mediaError,
-      showSpinner,
-      showPlaceHolder,
-      onLoadSuccess,
-      onLoadError,
-      onClick,
-    }
+const containerStyle = computed(() => {
+  return {
+    width: props.size + 'px',
+    height: props.size + "px"
   }
 })
+
+const contentStyle = computed(() => {
+  return {
+    'width': '100%',
+    'max-width': props.size - 2 + 'px',
+    'max-height': props.size - 2 + 'px'
+  }
+})
+
+const mediaLoaded = ref(false)
+const onLoadSuccess = () => {
+  mediaLoaded.value = true
+  stopTimeout()
+  emit('onLoadSuccess')
+}
+
+const mediaError = ref(false)
+const onLoadError = () => {
+  mediaError.value = true
+  emit('onLoadError')
+}
+
+const showSpinner = computed(
+    () => (props.url) && !mediaLoaded.value && !mediaError.value
+)
+
+const showPlaceHolder = computed(
+    () => !props.url || mediaError.value
+)
+
+const onClick = () => {
+  if (props.url && !props.noAnchor) {
+    window.location.assign(props.url)
+  }
+}
+
+onMounted(() => {
+  startTimeout()
+})
+onBeforeUnmount(() => {
+  stopTimeout()
+})
+
+let timeoutID = -1
+const startTimeout = () => {
+  if (props.url !== null && timeoutID === -1) {
+    timeoutID = window.setTimeout(() => {
+      mediaError.value = true
+      timeoutID = -1
+    }, MEDIA_LOAD_TIMEOUT)
+  }
+}
+const stopTimeout = () => {
+  if (timeoutID !== -1) {
+    window.clearTimeout(timeoutID)
+    timeoutID = -1
+  }
+}
 
 </script>
 
@@ -247,6 +228,10 @@ export default defineComponent({
 video, img {
   object-fit: contain;
   object-position: center;
+}
+
+.invisible-element {
+  visibility: hidden;
 }
 
 </style>
