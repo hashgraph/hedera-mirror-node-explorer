@@ -24,28 +24,24 @@
 
 <template>
 
-  <DashboardCard
+  <DashboardCardV2
       id="metadata-section"
-      class="h-card"
       collapsible-key="metadataSection"
       :collapsed="true"
   >
     <template #title>
-      <span class="h-is-secondary-title">Metadata Details</span>
+      Metadata Details
     </template>
 
-    <template #control>
-      <div v-if="metadataString" class="is-flex is-align-items-baseline is-justify-content-end">
-        <p class="has-text-weight-light">Raw content</p>
-        <label class="checkbox pt-1 ml-3">
-          <input type="checkbox" v-model="showRawMetadata">
-        </label>
+    <template #right-control>
+      <div v-if="metadataString" id="raw-metadata-checkbox">
+        <input type="checkbox" v-model="showRawMetadata" name="raw-metadata-checkbox"/>
+        <label for="raw-metadata-checkbox">Raw content</label>
       </div>
     </template>
 
     <template #content>
-
-      <Property id="raw-metadata-property" :full-width="true">
+      <Property id="raw-metadata-property" :full-width="isMediumScreen">
         <template #name>
           Raw Metadata
         </template>
@@ -53,7 +49,7 @@
           <BlobValue :blob-value="rawMetadata" :show-none="true"/>
         </template>
       </Property>
-      <Property v-if="rawMetadata" id="metadata-location" :full-width="true">
+      <Property v-if="rawMetadata" id="metadata-location" :full-width="isMediumScreen">
         <template #name>Content Location</template>
         <template #value>
           <BlobValue
@@ -71,7 +67,7 @@
       </Property>
 
       <template v-if="showRawMetadata">
-        <Property id="raw-content" :full-width="true">
+        <Property id="raw-content" :full-width="isMediumScreen">
           <template #name>
             Content
           </template>
@@ -85,7 +81,7 @@
       </template>
 
       <template v-else>
-        <Property v-if="format" id="format" :full-width="true">
+        <Property v-if="format" id="format" :full-width="isMediumScreen">
           <template #name>
             Format
           </template>
@@ -93,7 +89,7 @@
             <BlobValue :blob-value="format" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="image" id="image" :full-width="true">
+        <Property v-if="image" id="image" :full-width="isMediumScreen">
           <template #name>
             Image
           </template>
@@ -101,7 +97,7 @@
             <BlobValue :blob-value="image" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="type" id="type" :full-width="true">
+        <Property v-if="type" id="type" :full-width="isMediumScreen">
           <template #name>
             Type
           </template>
@@ -109,7 +105,7 @@
             <BlobValue :blob-value="type" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="checksum" id="checksum" :full-width="true">
+        <Property v-if="checksum" id="checksum" :full-width="isMediumScreen">
           <template #name>
             Checksum
           </template>
@@ -117,7 +113,7 @@
             <BlobValue :blob-value="checksum" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="creatorDID" id="creator-did" :full-width="true">
+        <Property v-if="creatorDID" id="creator-did" :full-width="isMediumScreen">
           <template #name>
             Creator DID
           </template>
@@ -125,7 +121,7 @@
             <BlobValue :blob-value="creatorDID" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="properties" id="properties" :full-width="true">
+        <Property v-if="properties" id="properties" :full-width="isMediumScreen">
           <template #name>
             Properties
           </template>
@@ -135,29 +131,30 @@
         </Property>
 
         <template v-if="attributes.length">
-          <p class="h-is-tertiary-text mt-5 mb-3">Attributes</p>
           <template v-for="attr in attributes" :key="attr.trait_type">
             <NftAttribute :attribute="attr"/>
           </template>
         </template>
 
         <template v-if="files.length">
-          <p class="h-is-tertiary-text mt-5 mb-3">Files</p>
-          <div id="file-container-area" class="file-container">
-            <NftFile
-                v-for="(file) in files" :key="file.uri"
-                class="file-container-item mt-3"
-                :type="file.type"
-                :url="file.url"
-                :size="200"
-            />
-          </div>
+          <Property :full-width="isMediumScreen">
+            <template #name>Files</template>
+            <template #value>
+              <div id="file-container-area" class="file-container">
+                <NftFile
+                    v-for="(file) in files" :key="file.uri"
+                    class="file-container-item mt-3"
+                    :type="file.type"
+                    :url="file.url"
+                    :size="200"
+                />
+              </div>
+            </template>
+          </Property>
         </template>
       </template>
-
     </template>
-
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -165,59 +162,40 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-import {defineComponent, inject, PropType, ref,} from "vue"
-import DashboardCard from "@/components/DashboardCard.vue"
+<script setup lang="ts">
+import {inject, PropType, ref,} from "vue"
 import BlobValue from "@/components/values/BlobValue.vue"
 import Property from "@/components/Property.vue"
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import NftAttribute from "@/components/token/NftAttribute.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import NftFile from "@/components/token/NftFile.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
-export default defineComponent({
-  name: "MetadataSection",
-
-  components: {
-    NftFile,
-    InfoTooltip,
-    NftAttribute,
-    BlobValue,
-    Property,
-    DashboardCard,
-  },
-
-  props: {
-    metadataAnalyzer: {
-      type: Object as PropType<TokenMetadataAnalyzer>,
-      required: true,
-    }
-  },
-
-  setup(props) {
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const showRawMetadata = ref(false)
-
-    return {
-      isMediumScreen,
-      showRawMetadata,
-      metadataInfo: props.metadataAnalyzer.metadataInfo,
-      metadataWarning: props.metadataAnalyzer.metadataWarning,
-      metadata: props.metadataAnalyzer.metadata,
-      rawMetadata: props.metadataAnalyzer.rawMetadata,
-      metadataString: props.metadataAnalyzer.metadataString,
-      attributes: props.metadataAnalyzer.attributes,
-      creatorDID: props.metadataAnalyzer.creatorDID,
-      checksum: props.metadataAnalyzer.checksum,
-      image: props.metadataAnalyzer.image,
-      type: props.metadataAnalyzer.type,
-      format: props.metadataAnalyzer.format,
-      properties: props.metadataAnalyzer.properties,
-      files: props.metadataAnalyzer.files,
-    }
-  },
+const props = defineProps({
+  metadataAnalyzer: {
+    type: Object as PropType<TokenMetadataAnalyzer>,
+    required: true,
+  }
 })
+
+const isMediumScreen = inject('isMediumScreen', true)
+
+const showRawMetadata = ref(false)
+
+const metadataInfo = props.metadataAnalyzer.metadataInfo
+const metadataWarning = props.metadataAnalyzer.metadataWarning
+const metadata = props.metadataAnalyzer.metadata
+const rawMetadata = props.metadataAnalyzer.rawMetadata
+const metadataString = props.metadataAnalyzer.metadataString
+const attributes = props.metadataAnalyzer.attributes
+const creatorDID = props.metadataAnalyzer.creatorDID
+const checksum = props.metadataAnalyzer.checksum
+const image = props.metadataAnalyzer.image
+const type = props.metadataAnalyzer.type
+const format = props.metadataAnalyzer.format
+const properties = props.metadataAnalyzer.properties
+const files = props.metadataAnalyzer.files
 
 </script>
 
@@ -227,13 +205,19 @@ export default defineComponent({
 
 <style scoped>
 
+div#raw-metadata-checkbox {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
 .file-container {
   display: flex;
   flex-wrap: wrap;
-  overflow-x: auto;
-
+  gap: 8px;
   max-height: 520px;
-  margin-bottom: 20px;
+  overflow-x: auto;
   width: 100%;
   -webkit-overflow-scrolling: touch;
   /*
@@ -244,8 +228,6 @@ export default defineComponent({
 
   .file-container-item {
     flex: 0 0 auto;
-    margin-right: 10px;
-    margin-top: 10px;
     border: 0.5px solid grey;
     padding: 0.5px;
     background-color: var(--h-theme-page-background-color);
