@@ -30,9 +30,9 @@
         :loading="loading"
         :paginated="paginated"
         backend-pagination
-        pagination-order="left"
-        :range-before="0"
-        :range-after="0"
+        pagination-order="centered"
+        :range-before="1"
+        :range-after="1"
         :total="total"
         v-model:current-page="currentPage"
         :per-page="perPage"
@@ -50,7 +50,7 @@
         aria-previous-label="Previous page"
         customRowKey="serial_number"
     >
-      <o-table-column v-slot="props" field="image" label="Preview">
+      <o-table-column v-slot="props" field="image" label="PREVIEW">
         <NftCell
             class="w400"
             :token-id="props.row.token_id"
@@ -59,28 +59,30 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="serial" label="#">
-        {{ props.row.serial_number }}
+        <span class="serial-number">
+          {{ props.row.serial_number }}
+        </span>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="name" label="Name">
+      <o-table-column v-slot="props" field="name" label="NAME">
         <NftCell
             :token-id="props.row.token_id"
             :serial-number="props.row.serial_number"
             :property="NftCellItem.name"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="creator" label="Creator">
+      <o-table-column v-slot="props" field="creator" label="CREATOR">
         <NftCell
             :token-id="props.row.token_id"
             :serial-number="props.row.serial_number"
             :property="NftCellItem.creator"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="account_id" label="Owner">
+      <o-table-column v-slot="props" field="account_id" label="OWNER">
         <AccountIOL :account-id="props.row.account_id"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="description" label="Description">
+      <o-table-column v-slot="props" field="description" label="DESCRIPTION">
         <NftCell
             :token-id="props.row.token_id"
             :serial-number="props.row.serial_number"
@@ -112,9 +114,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {Nft} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -125,52 +127,27 @@ import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'NftHolderTable',
-
-  components: {TablePageSize, NftCell, AccountIOL, EmptyTable},
-
-  props: {
-    controller: {
-      type: Object as PropType<NftHolderTableController>,
-      required: true
-    },
+const props = defineProps({
+  controller: {
+    type: Object as PropType<NftHolderTableController>,
+    required: true
   },
+})
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const handleClick = (
-        n: Nft,
-        c: unknown,
-        i: number,
-        ci: number,
-        event: MouseEvent,
-    ) => {
-      if (n.token_id && n.serial_number) {
-        routeManager.routeToSerial(n.token_id, n.serial_number, event);
-      }
-    };
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      nfts: props.controller.rows as ComputedRef<Nft[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      ORUGA_MOBILE_BREAKPOINT,
-      NftCellItem,
-      handleClick,
-      AppStorage,
-    }
+const handleClick = (n: Nft, c: unknown, i: number, ci: number, event: MouseEvent,) => {
+  if (n.token_id && n.serial_number) {
+    routeManager.routeToSerial(n.token_id, n.serial_number, event);
   }
-});
+};
+
+const nfts = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -178,4 +155,10 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+span.serial-number {
+  font-weight: 600;
+}
+
+</style>
