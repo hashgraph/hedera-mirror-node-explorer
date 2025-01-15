@@ -30,28 +30,23 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :striped="false"
-
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Percentage Fee">
+    <o-table-column v-slot="props" field="amount" label="PERCENTAGE FEE">
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="collector" label="Collector Account">
+    <o-table-column v-slot="props" field="collector" label="COLLECTOR ACCOUNT">
       <AccountLink :account-id="props.row.collector_account_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackAmount" label="Fallback Fee">
+    <o-table-column v-slot="props" field="fallbackAmount" label="FALLBACK FEE">
       <PlainAmount v-if="props.row.fallback_fee?.denominating_token_id"
                    :amount="props.row.fallback_fee?.amount" none-label="None"/>
       <HbarAmount v-else :amount="props.row.fallback_fee?.amount" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackToken" label="Fee Currency">
+    <o-table-column v-slot="props" field="fallbackToken" label="FEE CURRENCY">
       <TokenLink v-if="props.row.fallback_fee?.denominating_token_id"
                  :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true"/>
       <div v-else-if="props.row.fallback_fee?.amount">{{ cryptoName }}</div>
@@ -65,9 +60,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
+import {PropType} from 'vue';
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
@@ -78,50 +73,30 @@ import TokenLink from "@/components/values/link/TokenLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
-export default defineComponent({
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<TokenInfoAnalyzer>,
+    required: true
+  }
+})
 
-  name: 'RoyaltyFeeTable',
+const cryptoName = CoreConfig.inject().cryptoName
 
-  components: {
-    HbarAmount,
-    TokenLink,
-    StringValue,
-    PlainAmount,
-    AccountLink,
-  },
+const makeAmount = (fraction: FractionAmount): string => {
+  let result: string
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: 'percent',
+    maximumFractionDigits: 2
+  })
+  if (fraction.numerator && fraction.denominator) {
+    result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
+  } else {
+    result = ""
+  }
+  return result
+}
 
-  props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const cryptoName = CoreConfig.inject().cryptoName
-
-    const makeAmount = (fraction: FractionAmount): string => {
-      let result: string
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 2
-      })
-      if (fraction.numerator && fraction.denominator) {
-        result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
-      } else {
-        result = ""
-      }
-      return result
-    }
-
-    return {
-      cryptoName,
-      fees: props.analyzer.royaltyFees,
-      makeAmount,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  },
-});
+const fees = props.analyzer.royaltyFees
 
 </script>
 
