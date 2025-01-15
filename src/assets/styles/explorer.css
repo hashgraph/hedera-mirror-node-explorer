@@ -286,6 +286,10 @@ table.o-table th.o-table__th--left {
     Explorer classes
 */
 
+.has-text-grey {
+    color: var(--text-secondary) !important;
+}
+
 .h-is-table-compact table.o-table {
     margin: 0;
 }
