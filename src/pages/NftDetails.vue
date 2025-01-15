@@ -68,7 +68,7 @@
               <span class="h-is-extra-text mr-2">{{ tokenName }}</span>
             </router-link>
             <span>(</span>
-            <TokenLink :token-id="tokenId" :show-extra="false"/>
+            <TokenLink :token-id="props.tokenId" :show-extra="false"/>
             <span>)</span>
           </template>
         </Property>
@@ -167,7 +167,7 @@
 
     <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
-    <MirrorLink :network="network" entityUrl="tokens" :loc="normalizedTokenId + '/nfts/' + serialNumber"/>
+    <MirrorLink :network="props.network" entityUrl="tokens" :loc="normalizedTokenId + '/nfts/' + serialNumber"/>
 
   </PageFrameV2>
 
@@ -177,8 +177,8 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
+<script setup lang="ts">
+import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
 import router, {routeManager} from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
 import DashboardCard from "@/components/DashboardCard.vue"
@@ -194,7 +194,7 @@ import ContractResultsSection from "@/components/contract/ContractResultsSection
 import NftTransactionTable from "@/components/transaction/NftTransactionTable.vue"
 import {NftTransactionTableController} from "@/components/transaction/NftTransactionTableController"
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue"
-import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
+import {makeTokenName} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import MetadataSection from "@/components/token/MetadataSection.vue";
@@ -204,169 +204,120 @@ import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import NftPreview from "@/components/token/NftPreview.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 
-export default defineComponent({
-  name: "NftDetails",
-
-  components: {
-    NftPreview,
-    TransactionLink,
-    MirrorLink,
-    MetadataSection,
-    TokenLink,
-    ContractResultsSection,
-    PlayPauseButton,
-    AccountLink,
-    NotificationBanner,
-    Property,
-    BlobValue,
-    DashboardCard,
-    TimestampValue,
-    NftTransactionTable,
-    TransactionFilterSelect,
-    PageFrameV2,
+const props = defineProps({
+  tokenId: {
+    type: String,
+    required: true,
   },
-
-  props: {
-    tokenId: {
-      type: String,
-      required: true,
-    },
-    serialNumber: {
-      type: String,
-      required: true,
-    },
-    network: String,
+  serialNumber: {
+    type: String,
+    required: true,
   },
-
-  setup(props) {
-    const isSmallScreen = inject("isSmallScreen", true)
-    const isMediumScreen = inject("isMediumScreen", true)
-
-    const normalizedTokenId = computed(() => {
-      const result =
-          EntityID.parse(props.tokenId) ??
-          EntityID.fromAddress(props.tokenId)
-      return result !== null ? result.toString() : null
-    })
-    const validEntityId = computed(() => normalizedTokenId.value != null)
-
-    const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
-    onMounted(() => tokenLookup.mount())
-    onBeforeUnmount(() => tokenLookup.unmount())
-
-    const tokenName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
-    const tokenSymbol = computed(() => makeTokenSymbol(tokenLookup.entity.value, 80))
-
-    const serialNumber = ref(props.serialNumber)
-    const nftLookup = NftBySerialCache.instance.makeNftLookup(
-        normalizedTokenId,
-        serialNumber,
-    )
-    onMounted(() => nftLookup.mount())
-    onBeforeUnmount(() => nftLookup.unmount())
-
-    const coreConfig = CoreConfig.inject()
-    const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
-    const arweaveServerURL = coreConfig.arweaveServerURL
-
-    const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
-    const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
-    onMounted(() => metadataAnalyzer.mount())
-    onBeforeUnmount(() => metadataAnalyzer.unmount())
-
-    const notification = computed(() => {
-      let result
-      if (!validEntityId.value) {
-        result = "Invalid token ID: " + props.tokenId
-      } else if (nftLookup.entity.value == null) {
-        if (nftLookup.isLoaded()) {
-          result =
-              "Token with ID " + props.tokenId + " was not found"
-        } else {
-          result = null
-        }
-      } else if (nftLookup.entity.value?.deleted) {
-        result = "Token is deleted"
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const perPage = computed(() => (isMediumScreen ? 10 : 5))
-
-    const tokenRoute = computed(() => routeManager.makeRouteToToken(props.tokenId))
-
-    const tokenId = ref(props.tokenId)
-
-    //
-    // TransactionTableController
-    //
-    const transactionTableController = new NftTransactionTableController(
-        router,
-        tokenId,
-        serialNumber,
-        perPage,
-        "p1",
-        "k1",
-    )
-
-    let mounted = false
-    onMounted(() => {
-      mounted = true
-      if (serialNumber.value !== null) {
-        transactionTableController.mount()
-      }
-    })
-    onBeforeUnmount(() => {
-      mounted = false
-      if (serialNumber.value !== null) {
-        transactionTableController.unmount()
-      }
-    })
-    watch(serialNumber, () => {
-      if (mounted) {
-        if (serialNumber.value !== null) {
-          transactionTableController.mount()
-        } else {
-          transactionTableController.unmount()
-        }
-      }
-    })
-
-    return {
-      isSmallScreen,
-      isMediumScreen,
-      nftInfo: nftLookup.entity,
-      validEntityId,
-      normalizedTokenId,
-      notification,
-      parseBigIntString,
-      transactionTableController,
-      transactionType: transactionTableController.transactionType,
-      tokenSymbol,
-      tokenName,
-      tokenRoute,
-      metadata,
-      metadataAnalyzer,
-      nftName: metadataAnalyzer.name,
-      creator: metadataAnalyzer.creator,
-      description: metadataAnalyzer.description,
-      type: metadataAnalyzer.type,
-      imageUrl: metadataAnalyzer.imageUrl,
-    }
-  },
+  network: String,
 })
 
-function parseBigIntString(s: string | undefined): bigint | undefined {
-  let result: bigint | undefined
-  try {
-    result = s ? BigInt(s) : undefined
-  } catch {
-    result = undefined
+const isSmallScreen = inject("isSmallScreen", true)
+const isMediumScreen = inject("isMediumScreen", true)
+
+const normalizedTokenId = computed(() => {
+  const result =
+      EntityID.parse(props.tokenId) ??
+      EntityID.fromAddress(props.tokenId)
+  return result !== null ? result.toString() : null
+})
+const validEntityId = computed(() => normalizedTokenId.value != null)
+
+const tokenLookup = TokenInfoCache.instance.makeLookup(normalizedTokenId)
+onMounted(() => tokenLookup.mount())
+onBeforeUnmount(() => tokenLookup.unmount())
+
+const tokenName = computed(() => makeTokenName(tokenLookup.entity.value, 80))
+
+const serialNumber = ref(props.serialNumber)
+const nftLookup = NftBySerialCache.instance.makeNftLookup(
+    normalizedTokenId,
+    serialNumber,
+)
+onMounted(() => nftLookup.mount())
+onBeforeUnmount(() => nftLookup.unmount())
+
+const coreConfig = CoreConfig.inject()
+const ipfsGatewayPrefix = coreConfig.ipfsGatewayURL
+const arweaveServerURL = coreConfig.arweaveServerURL
+
+const metadata = computed(() => nftLookup.entity.value?.metadata ?? '')
+const metadataAnalyzer = new TokenMetadataAnalyzer(metadata, ipfsGatewayPrefix, arweaveServerURL)
+onMounted(() => metadataAnalyzer.mount())
+onBeforeUnmount(() => metadataAnalyzer.unmount())
+
+const notification = computed(() => {
+  let result
+  if (!validEntityId.value) {
+    result = "Invalid token ID: " + props.tokenId
+  } else if (nftLookup.entity.value == null) {
+    if (nftLookup.isLoaded()) {
+      result =
+          "Token with ID " + props.tokenId + " was not found"
+    } else {
+      result = null
+    }
+  } else if (nftLookup.entity.value?.deleted) {
+    result = "Token is deleted"
+  } else {
+    result = null
   }
   return result
-}
+})
+
+const perPage = computed(() => (isMediumScreen ? 10 : 5))
+
+const tokenRoute = computed(() => routeManager.makeRouteToToken(props.tokenId))
+
+const tokenId = ref(props.tokenId)
+
+//
+// TransactionTableController
+//
+const transactionTableController = new NftTransactionTableController(
+    router,
+    tokenId,
+    serialNumber,
+    perPage,
+    "p1",
+    "k1",
+)
+
+let mounted = false
+onMounted(() => {
+  mounted = true
+  if (serialNumber.value !== null) {
+    transactionTableController.mount()
+  }
+})
+onBeforeUnmount(() => {
+  mounted = false
+  if (serialNumber.value !== null) {
+    transactionTableController.unmount()
+  }
+})
+watch(serialNumber, () => {
+  if (mounted) {
+    if (serialNumber.value !== null) {
+      transactionTableController.mount()
+    } else {
+      transactionTableController.unmount()
+    }
+  }
+})
+
+const nftInfo = nftLookup.entity
+const transactionType = transactionTableController.transactionType
+const nftName = metadataAnalyzer.name
+const creator = metadataAnalyzer.creator
+const description = metadataAnalyzer.description
+const type = metadataAnalyzer.type
+const imageUrl = metadataAnalyzer.imageUrl
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
