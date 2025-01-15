@@ -23,9 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Dialog :controller="controller">
+  <ModalDialog v-model:show-dialog="visible">
 
-    <template v-slot:dialogInput>
+    <template #modalDialogContent>
       <div>
         <span class="icon">
             <i class="fas fa-exclamation-triangle"></i>
@@ -34,11 +34,11 @@
       </div>
     </template>
 
-    <template v-slot:dialogInputButtons>
-      <DialogButton :controller="controller">CLOSE</DialogButton>
+    <template #modalDialogButtons>
+      <ModalDialogButton v-model:show-dialog="visible">CLOSE</ModalDialogButton>
     </template>
 
-  </Dialog>
+  </ModalDialog>
 
 </template>
 
@@ -48,16 +48,13 @@
 
 <script setup lang="ts">
 
-import Dialog from "@/dialogs/core/dialog/Dialog.vue";
-import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
+import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 
 const visible = defineModel("visible", {
   type: Boolean,
   required: true
 })
-
-const controller = new DialogController(visible)
 
 </script>
 
