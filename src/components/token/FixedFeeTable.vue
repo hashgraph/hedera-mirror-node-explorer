@@ -30,25 +30,20 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :striped="false"
-
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Fixed Fee">
+    <o-table-column v-slot="props" field="amount" label="FIXED FEE">
       <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
       <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Fee Currency">
+    <o-table-column v-slot="props" field="currency" label="FEE CURRENCY">
       <TokenLink v-if="props.row.denominating_token_id"
                  :show-extra="true" :token-id="props.row.denominating_token_id"/>
       <div v-else>{{ cryptoName }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="account_id" label="Collector Account">
+    <o-table-column v-slot="props" field="collector" label="COLLECTOR ACCOUNT">
       <AccountLink :account-id="props.row.collector_account_id"/>
     </o-table-column>
 
@@ -60,9 +55,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
+import {PropType} from 'vue';
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
@@ -71,34 +66,15 @@ import HbarAmount from "@/components/values/HbarAmount.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 
-export default defineComponent({
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<TokenInfoAnalyzer>,
+    required: true
+  }
+})
 
-  name: 'FixedFeeTable',
-
-  components: {
-    PlainAmount,
-    HbarAmount,
-    TokenLink,
-    AccountLink,
-  },
-
-  props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const cryptoName = CoreConfig.inject().cryptoName
-
-    return {
-      cryptoName,
-      fees: props.analyzer.fixedFees,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  },
-});
+const cryptoName = CoreConfig.inject().cryptoName
+const fees = props.analyzer.fixedFees
 
 </script>
 
