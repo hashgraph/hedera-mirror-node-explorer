@@ -24,66 +24,69 @@
 
 <template>
 
-  <o-table
-      :data="tokenBalances"
-      :loading="loading"
-      :paginated="paginated"
-      backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+  <div id="token-balance-table">
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    <o-table
+        :data="tokenBalances"
+        :loading="loading"
+        :paginated="paginated"
+        backend-pagination
+        pagination-order="centered"
+        :range-before="1"
+        :range-after="1"
+        :total="total"
+        v-model:current-page="currentPage"
+        :per-page="perPage"
+        @page-change="onPageChange"
+        @cell-click="handleClick"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="account"
-  >
-    <o-table-column v-slot="props" field="account" label="Account ID">
-      <AccountIOL :account-id="props.row.account"/>
-    </o-table-column>
+        :hoverable="true"
+        :narrowed="true"
+        :striped="true"
+        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
-      <TokenAmount v-bind:amount="BigInt(props.row.balance)" v-bind:token-id="tokenId"/>
-    </o-table-column>
+        aria-current-label="Current page"
+        aria-next-label="Next page"
+        aria-page-label="Page"
+        aria-previous-label="Previous page"
+        customRowKey="account"
+    >
+      <o-table-column v-slot="props" field="account" label="ACCOUNT ID">
+        <AccountIOL class="account-id" :account-id="props.row.account"/>
+      </o-table-column>
 
-    <template v-slot:bottom-left>
-      <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
-      />
-    </template>
+      <o-table-column v-slot="props" field="balance" label="BALANCE" position="right">
+        <TokenAmount :amount="BigInt(props.row.balance)" :token-id="tokenId"/>
+      </o-table-column>
 
-  </o-table>
+      <template v-slot:bottom-left>
+        <TablePageSize
+            v-model:size="perPage"
+            :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
+        />
+      </template>
 
-  <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
-  />
+    </o-table>
 
-  <EmptyTable v-if="!tokenBalances.length"/>
+    <TablePageSize
+        v-if="!paginated && showPageSizeSelector"
+        v-model:size="perPage"
+        :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
+        style="width: 116px; margin-left: 4px"
+    />
 
+    <EmptyTable v-if="!tokenBalances.length"/>
+
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {TokenDistribution} from "@/schemas/MirrorNodeSchemas";
 import {routeManager} from "@/router";
 import TokenAmount from "@/components/values/TokenAmount.vue";
@@ -94,46 +97,28 @@ import AccountIOL from "@/components/values/link/AccountIOL.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'TokenBalanceTable',
-
-  components: {TablePageSize, AccountIOL, EmptyTable, TokenAmount},
-
-  props: {
-    controller: {
-      type: Object as PropType<TokenBalanceTableController>,
-      required: true
-    },
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TokenBalanceTableController>,
+    required: true
   },
+})
 
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const handleClick = (t: TokenDistribution, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (t.account) {
-        routeManager.routeToAccount(t.account, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      tokenId: props.controller.tokenId.value,
-      tokenBalances: props.controller.rows as ComputedRef<TokenDistribution[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      handleClick,
-      AppStorage,
-      ORUGA_MOBILE_BREAKPOINT
-    }
+const handleClick = (t: TokenDistribution, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (t.account) {
+    routeManager.routeToAccount(t.account, event)
   }
-});
+}
+
+const tokenId = props.controller.tokenId.value
+const tokenBalances = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -142,5 +127,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.account-id {
+  font-weight: 600;
+}
 
 </style>
