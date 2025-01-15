@@ -57,7 +57,7 @@ export enum NftCellItem {
 
 <script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, onBeforeUnmount, onMounted, PropType} from "vue";
 import {NftBySerialCache} from "@/utils/cache/NftBySerialCache";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import BlobValue from "@/components/values/BlobValue.vue";
