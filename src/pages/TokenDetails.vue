@@ -26,212 +26,204 @@
 
   <PageFrameV2 page-title="Token Details">
 
-    <DashboardCard collapsible-key="tokenDetails">
-      <template v-slot:title>
-        <span v-if="tokenInfo" class="h-is-primary-title mr-2">
-          <span v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'">NFT Collection</span>
-          <span v-else>Fungible Token</span>
-        </span>
-        <div class="is-inline-block h-is-tertiary-text h-is-extra-text should-wrap" style="word-break: break-all">
-          {{ `${displayName} (${displaySymbol})` }}
-        </div>
-      </template>
-
-      <template v-slot:subtitle>
-        <div id="entityId" class="headline-grid h-is-tertiary-text mt-3 is-align-items-baseline">
-          <div class="h-is-property-text has-text-weight-light">Token ID:</div>
-          <div>
-            <Copyable :content-to-copy="normalizedTokenId ?? ''">
-              <template v-slot:content>
-                <span>{{ normalizedTokenId ?? "" }}</span>
-              </template>
-            </Copyable>
-            <span v-if="tokenChecksum" class="has-text-grey h-is-smaller">-{{ tokenChecksum }}</span>
+    <div class="page-container">
+      <DashboardCardV2 collapsible-key="tokenDetails">
+        <template #title>
+          <span v-if="tokenInfo">
+            {{ tokenInfo.type === 'NON_FUNGIBLE_UNIQUE' ? 'NFT Collection' : 'Fungible Token' }}
+          </span>
+          <div class="title-extra">
+            {{ `${displayName} (${displaySymbol})` }}
           </div>
-        </div>
-        <div v-if="ethereumAddress" id="evmAddress"
-             class="headline-grid is-align-items-baseline h-is-property-text mt-2" style="word-break: keep-all">
-          <div class="has-text-weight-light">EVM Address:</div>
-          <div class="is-flex is-align-items-baseline">
-            <EVMAddress class="mr-3" :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
-          </div>
-        </div>
-      </template>
+        </template>
 
-      <template v-slot:control>
-        <div v-if="ethereumAddress && isWalletConnected"
-             class="h-is-property-text is-flex algin-items-center is-relative">
-          <TokenActions
-              :analyzer="tokenAnalyzer"
-              @completed="onActionCompleted"
-          />
-        </div>
-      </template>
 
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-      </template>
-
-      <template v-slot:leftContent>
-        <Property id="name">
-          <template v-slot:name>Name</template>
-          <template v-slot:value>
-            <BlobValue v-bind:blob-value="tokenInfo?.name" v-bind:show-none="true"/>
-          </template>
-        </Property>
-        <Property id="symbol">
-          <template v-slot:name>Symbol</template>
-          <template v-slot:value>
-            <BlobValue v-bind:blob-value="tokenInfo?.symbol" v-bind:show-none="true"/>
-          </template>
-        </Property>
-        <Property id="memo">
-          <template v-slot:name>Memo</template>
-          <template v-slot:value>
-            <BlobValue :blob-value="tokenInfo?.memo" :show-none="true"/>
-          </template>
-        </Property>
-        <Property id="metadata">
-          <template #name>Metadata</template>
-          <template #value>
-            <BlobValue
-                :base64="true"
-                :blob-value="tokenInfo?.metadata"
-                :show-none="true"
+        <template #right-control>
+          <div v-if="ethereumAddress && isWalletConnected" class="is-relative">
+            <TokenActions
+                :analyzer="tokenAnalyzer"
+                @completed="onActionCompleted"
             />
-          </template>
-        </Property>
-        <Property id="createTransaction">
-          <template v-slot:name>Create Transaction</template>
-          <template v-slot:value>
-            <TransactionLink :transactionLoc="tokenInfo?.created_timestamp ?? undefined"/>
-          </template>
-        </Property>
-        <Property id="expiresAt" tooltip="Token expiry is not turned on yet. Value in this field is not relevant.">
-          <template v-slot:name>
-            <span>Expires at</span>
-          </template>
-          <template v-slot:value>
-            <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
-          </template>
-        </Property>
-        <Property id="autoRenewPeriod"
-                  tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
-          <template v-slot:name>
-            <span>Auto Renew Period</span>
-          </template>
-          <template v-slot:value>
-            <DurationValue v-bind:number-value="tokenInfo?.auto_renew_period ?? undefined"/>
-          </template>
-        </Property>
-        <Property id="autoRenewAccount"
-                  tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
-          <template v-slot:name>
-            <span>Auto Renew Account</span>
-          </template>
-          <template v-slot:value>
-            <AccountLink :account-id="tokenInfo?.auto_renew_account"/>
-          </template>
-        </Property>
-        <Property id="freezeDefault">
-          <template v-slot:name>Freeze Default</template>
-          <template v-slot:value>
-            <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
-          </template>
-        </Property>
-      </template>
+          </div>
+        </template>
 
-      <template v-slot:rightContent>
-        <Property id="treasuryAccount">
-          <template v-slot:name>Treasury Account</template>
-          <template v-slot:value>
-            <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
-          </template>
-        </Property>
-        <Property id="createdAt">
-          <template v-slot:name>Created at</template>
-          <template v-slot:value>
-            <TimestampValue :show-none="true" :timestamp="tokenInfo?.created_timestamp"/>
-          </template>
-        </Property>
-        <Property id="modifiedAt">
-          <template v-slot:name>Modified at</template>
-          <template v-slot:value>
-            <TimestampValue :show-none="true" :timestamp="tokenInfo?.modified_timestamp"/>
-          </template>
-        </Property>
-        <Property id="totalSupply">
-          <template v-slot:name>Total Supply</template>
-          <template v-if="validEntityId" v-slot:value>
-            <TokenAmount :amount="parseBigIntString(tokenInfo?.total_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId"/>
-          </template>
-        </Property>
-        <Property id="initialSupply">
-          <template v-slot:name>Initial Supply</template>
-          <template v-if="validEntityId" v-slot:value>
-            <TokenAmount :amount="parseBigIntString(tokenInfo?.initial_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId"/>
-          </template>
-        </Property>
-        <Property id="maxSupply">
-          <template v-slot:name>Max Supply</template>
-          <template v-if="validEntityId" v-slot:value>
-            <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
-            <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
-                         :token-id="normalizedTokenId"/>
-          </template>
-        </Property>
-        <Property id="decimals">
-          <template v-slot:name>Decimals</template>
-          <template v-if="validEntityId" v-slot:value>
-            <StringValue :string-value="tokenInfo?.decimals"/>
-          </template>
-        </Property>
-        <Property id="pauseStatus">
-          <template v-slot:name>Pause Status</template>
-          <template v-slot:value>
-            <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
-                         class="has-text-grey" string-value="Not applicable"/>
-            <StringValue v-else :string-value="tokenInfo?.pause_status"/>
-          </template>
-        </Property>
-      </template>
+        <template #content>
+          <NotificationBanner v-if="notification" :message="notification"/>
 
-    </DashboardCard>
+          <Property id="entityId" :full-width="isMediumScreen">
+            <template #name>Token ID</template>
+            <template #value>
+              <Copyable :content-to-copy="normalizedTokenId ?? ''">
+                <template #content>
+                  <span>{{ normalizedTokenId ?? "" }}</span>
+                </template>
+              </Copyable>
+              <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+            </template>
+          </Property>
+          <Property v-if="ethereumAddress" id="evmAddress" :full-width="isMediumScreen">
+            <template #name>EVM Address</template>
+            <template #value>
+              <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+            </template>
+          </Property>
+        </template>
 
-    <DashboardCard v-if="tokenInfo" collapsible-key="nftHolders">
+        <template #left-content>
+          <Property id="name">
+            <template #name>Name</template>
+            <template #value>
+              <BlobValue :blob-value="tokenInfo?.name" :show-none="true"/>
+            </template>
+          </Property>
+          <Property id="symbol">
+            <template #name>Symbol</template>
+            <template #value>
+              <BlobValue :blob-value="tokenInfo?.symbol" :show-none="true"/>
+            </template>
+          </Property>
+          <Property id="memo">
+            <template #name>Memo</template>
+            <template #value>
+              <BlobValue :blob-value="tokenInfo?.memo" :show-none="true"/>
+            </template>
+          </Property>
+          <Property id="metadata">
+            <template #name>Metadata</template>
+            <template #value>
+              <BlobValue
+                  :base64="true"
+                  :blob-value="tokenInfo?.metadata"
+                  :show-none="true"
+              />
+            </template>
+          </Property>
+          <Property id="createTransaction">
+            <template #name>Create Transaction</template>
+            <template #value>
+              <TransactionLink :transactionLoc="tokenInfo?.created_timestamp ?? undefined"/>
+            </template>
+          </Property>
+          <Property id="expiresAt" tooltip="Token expiry is not turned on yet. Value in this field is not relevant.">
+            <template #name>
+              <span>Expires at</span>
+            </template>
+            <template #value>
+              <TimestampValue :nano="true" :show-none="true" :timestamp="tokenInfo?.expiry_timestamp?.toString()"/>
+            </template>
+          </Property>
+          <Property id="autoRenewPeriod"
+                    tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
+            <template #name>
+              <span>Auto Renew Period</span>
+            </template>
+            <template #value>
+              <DurationValue :number-value="tokenInfo?.auto_renew_period ?? undefined"/>
+            </template>
+          </Property>
+          <Property id="autoRenewAccount"
+                    tooltip="Token auto-renew is not turned on yet. Value in this field is not relevant.">
+            <template #name>
+              <span>Auto Renew Account</span>
+            </template>
+            <template #value>
+              <AccountLink :account-id="tokenInfo?.auto_renew_account"/>
+            </template>
+          </Property>
+          <Property id="freezeDefault">
+            <template #name>Freeze Default</template>
+            <template #value>
+              <StringValue :string-value="tokenInfo?.freeze_default?.toString()"/>
+            </template>
+          </Property>
+        </template>
 
-      <template v-slot:title>
-        <div v-if="tokenInfo.type === 'NON_FUNGIBLE_UNIQUE'" class="h-is-secondary-title mb-2">NFTs</div>
-        <div v-else class="h-is-secondary-title mb-2">Balances</div>
-      </template>
+        <template #right-content>
+          <Property id="treasuryAccount">
+            <template #name>Treasury Account</template>
+            <template #value>
+              <AccountLink :account-id="tokenInfo?.treasury_account_id"/>
+            </template>
+          </Property>
+          <Property id="createdAt">
+            <template #name>Created at</template>
+            <template #value>
+              <TimestampValue :show-none="true" :timestamp="tokenInfo?.created_timestamp"/>
+            </template>
+          </Property>
+          <Property id="modifiedAt">
+            <template #name>Modified at</template>
+            <template #value>
+              <TimestampValue :show-none="true" :timestamp="tokenInfo?.modified_timestamp"/>
+            </template>
+          </Property>
+          <Property id="totalSupply">
+            <template #name>Total Supply</template>
+            <template v-if="validEntityId" #value>
+              <TokenAmount :amount="parseBigIntString(tokenInfo?.total_supply)" :show-extra="false"
+                           :token-id="normalizedTokenId"/>
+            </template>
+          </Property>
+          <Property id="initialSupply">
+            <template #name>Initial Supply</template>
+            <template v-if="validEntityId" #value>
+              <TokenAmount :amount="parseBigIntString(tokenInfo?.initial_supply)" :show-extra="false"
+                           :token-id="normalizedTokenId"/>
+            </template>
+          </Property>
+          <Property id="maxSupply">
+            <template #name>Max Supply</template>
+            <template v-if="validEntityId" #value>
+              <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
+              <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
+                           :token-id="normalizedTokenId"/>
+            </template>
+          </Property>
+          <Property id="decimals">
+            <template #name>Decimals</template>
+            <template v-if="validEntityId" #value>
+              <StringValue :string-value="tokenInfo?.decimals"/>
+            </template>
+          </Property>
+          <Property id="pauseStatus">
+            <template #name>Pause Status</template>
+            <template #value>
+              <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
+                           class="has-text-grey" string-value="Not applicable"/>
+              <StringValue v-else :string-value="tokenInfo?.pause_status"/>
+            </template>
+          </Property>
+        </template>
 
-      <template v-slot:control>
-        <PlayPauseButton v-if="isNft" :controller="nftHolderTableController"/>
-        <PlayPauseButton v-else :controller="tokenBalanceTableController"/>
-      </template>
+      </DashboardCardV2>
 
-      <template v-slot:content>
-        <div v-if="isNft" id="nft-holder-table">
-          <NftHolderTable :controller="nftHolderTableController"/>
-        </div>
-        <div v-else id="token-balance-table">
-          <TokenBalanceTable :controller="tokenBalanceTableController"/>
-        </div>
-      </template>
+      <DashboardCardV2 v-if="tokenInfo" collapsible-key="nftHolders">
 
-    </DashboardCard>
+        <template #title>
+          {{ tokenInfo.type === 'NON_FUNGIBLE_UNIQUE' ? 'NFTs' : 'Balances' }}
+        </template>
 
-    <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
+        <template #left-control>
+          <PlayPauseButtonV2 :controller="isNft ? nftHolderTableController : tokenBalanceTableController"/>
+        </template>
 
-    <TokenKeysSection :token-info="tokenInfo"/>
+        <template #content>
+          <NftHolderTable v-if="isNft" :controller="nftHolderTableController"/>
+          <TokenBalanceTable v-else :controller="tokenBalanceTableController"/>
+        </template>
 
-    <TokenFeesSection v-if="hasCustomFees" :analyzer="analyzer"/>
+      </DashboardCardV2>
 
-    <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
+      <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
 
-    <MirrorLink :network="network" entityUrl="tokens" :loc="tokenId"/>
+      <TokenKeysSection :token-info="tokenInfo"/>
+
+      <TokenFeesSection v-if="hasCustomFees" :analyzer="analyzer"/>
+
+      <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
+
+      <MirrorLink :network="network" entityUrl="tokens" :loc="tokenId"/>
+    </div>
 
   </PageFrameV2>
 
@@ -249,7 +241,6 @@ import {walletManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import TokenBalanceTable from "@/components/token/TokenBalanceTable.vue";
 import DurationValue from "@/components/values/DurationValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
@@ -258,7 +249,6 @@ import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import NftHolderTable from "@/components/token/NftHolderTable.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import {NftHolderTableController} from "@/components/token/NftHolderTableController";
 import {TokenBalanceTableController} from "@/components/token/TokenBalanceTableController";
 import AccountLink from "@/components/values/link/AccountLink.vue";
@@ -278,6 +268,8 @@ import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 import TokenKeysSection from "@/components/token/TokenKeysSection.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 const props = defineProps({
   tokenId: {
@@ -386,6 +378,19 @@ const parseBigIntString = (s: string | undefined): bigint | undefined => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-left: 32px;
+  margin-right: 32px;
+}
+
+div.title-extra {
+  color: var(--text-accent);
+  word-break: break-all;
+}
 
 .headline-grid {
   display: grid;
