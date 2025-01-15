@@ -27,7 +27,7 @@
   <DashboardCardV2 v-if="props.tokenInfo" collapsible-key="tokenKeys">
 
     <template #title>
-      <div class="h-is-secondary-title mb-2">Token Keys</div>
+      Token Keys
     </template>
 
     <template #left-content>
