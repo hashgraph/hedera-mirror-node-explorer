@@ -24,13 +24,23 @@
 
 <!--suppress HtmlWrongAttributeValue -->
 <template>
-  <div v-if="sourceFiles.length > 0" id="source-code"
-       class="mt-2 h-code-box h-has-page-background" style="max-height: 400px;">
-    <template v-for="(file, index) in sourceFiles" :key="file.path">
-      <p v-if="isFiltered(file)" class="pt-2 mx-3 h-is-extra-text">{{ file.name }}</p>
-      <SolidityCode v-if="isFiltered(file)" style="background-color: #171920; font-size: 0.7rem">{{file.content}}</SolidityCode>
-      <hr v-if="filter==='' && index < sourceFiles.length - 1" class="has-background-grey-dark m-0"
-          style="height: 0.5px"/>
+  <div
+      v-if="props.sourceFiles.length > 0"
+      id="source-code"
+      class="source-container"
+  >
+    <template v-for="(file, index) in props.sourceFiles" :key="file.path">
+      <template v-if="isFiltered(file)">
+        <div class="source-filename">
+          {{ file.name }}
+        </div>
+        <SolidityCode class="source-code">
+          {{ file.content }}
+        </SolidityCode>
+      </template>
+      <hr v-if="props.filter === '' && index < props.sourceFiles.length - 1"
+          class="horizontal-line"
+      />
     </template>
   </div>
 
@@ -43,9 +53,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import "prismjs/prism";
@@ -55,30 +65,19 @@ import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
 import SolidityCode from "@/components/SolidityCode.vue";
 
-export default defineComponent({
-  name: 'SourceCodeValue',
-  components: {SolidityCode},
-
-  props: {
-    sourceFiles: {
-      type: Object as PropType<SourcifyResponseItem[]>,
-      default: [] as SourcifyResponseItem[] /* to please eslint */
-    },
-    filter: {
-      type: String,
-      default: ''
-    }
+const props = defineProps({
+  sourceFiles: {
+    type: Object as PropType<SourcifyResponseItem[]>,
+    default: [] as SourcifyResponseItem[] /* to please eslint */
   },
-
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    const isFiltered = (file: SourcifyResponseItem) => props.filter == '' || props.filter == file.name
-    return {
-      initialLoading,
-      isFiltered,
-    }
+  filter: {
+    type: String,
+    default: ''
   }
-});
+})
+
+const initialLoading = inject(initialLoadingKey, ref(false))
+const isFiltered = (file: SourcifyResponseItem) => props.filter == '' || props.filter == file.name
 
 </script>
 
@@ -86,4 +85,31 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.source-container {
+  background-color: var(--background-secondary);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  max-height: 400px;
+  min-height: 5rem;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+div.source-filename {
+  color: var(--text-accent);
+}
+
+.source-code {
+  font-size: 10.5px;
+  background-color: var(--background-secondary);
+}
+
+hr.horizontal-line {
+  background-color: var(--border-secondary);
+  height: 2px;
+  margin: 16px 0;
+}
+
+</style>
