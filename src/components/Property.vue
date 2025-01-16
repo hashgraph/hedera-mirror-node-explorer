@@ -39,7 +39,11 @@
       </span>
       <InfoTooltip v-if="tooltip" :label="tooltip"/>
     </div>
-    <div class="property-value" :id="valueId">
+    <div
+        class="property-value"
+        :style="{'text-align': isSmallScreen ? 'left' : 'right'}"
+        :id="valueId"
+    >
       <slot name="value"/>
     </div>
   </div>
