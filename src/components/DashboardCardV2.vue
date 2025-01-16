@@ -44,10 +44,17 @@
         <slot name="content"/>
       </div>
 
-      <div v-if="slots.mediaContent || slots.mediaDescription" class="media-content">
-        <slot name="media-content"/>
-        <div v-if="isMediumScreen" class="h-has-column-separator"/>
-        <slot name="mediaDescription"/>
+      <div
+          v-if="slots['media-content'] || slots['media-description']"
+          class="split-media"
+          :class="{'left-content': !isMediumScreen}"
+      >
+        <div class="media-content">
+          <slot name="media-content"/>
+        </div>
+        <div class="media-description" :class="{'split-separator': isMediumScreen}">
+          <slot name="media-description"/>
+        </div>
       </div>
 
       <hr v-if="showHorizontalSeparation" class="horizontal-line">
@@ -183,6 +190,24 @@ div.left-content {
 }
 
 div.right-content {
+  align-content: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+div.split-media {
+  display: flex;
+  gap: 32px
+}
+
+div.media-content {
+  display: flex;
+  flex-grow: 0;
+  justify-content: center;
+}
+
+div.media-description {
   align-content: flex-start;
   display: flex;
   flex-direction: column;
