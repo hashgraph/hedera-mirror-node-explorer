@@ -126,8 +126,8 @@
             </template>
           </Property>
           <Property id="createTransaction" custom-nb-col-class="is-one-quarter">>
-            <template v-slot:name>Mint Transaction</template>
-            <template v-slot:value>
+            <template #name>Mint Transaction</template>
+            <template #value>
               <TransactionLink :transactionLoc="nftInfo?.created_timestamp ?? undefined"/>
             </template>
           </Property>
@@ -137,31 +137,27 @@
 
       <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
 
-      <DashboardCard v-if="nftInfo" collapsible-key="recentNftTransactions">
+      <DashboardCardV2 v-if="nftInfo" id="recentTransactions" collapsible-key="recentNftTransactions">
         <template #title>
-          <p id="recentTransactions" class="h-is-secondary-title">
-            Recent Transactions
-          </p>
+          Recent Transactions
         </template>
-        <template #control>
-          <div class="is-flex is-align-items-flex-end">
-            <PlayPauseButton
-                v-bind:controller="transactionTableController"
-            />
-            <TransactionFilterSelect v-model:selected-filter="transactionType" nft-filter
-                                     class="ml-2"
-            />
-          </div>
+
+        <template #left-control>
+          <PlayPauseButtonV2 :controller="transactionTableController"/>
         </template>
+
+        <template #right-control>
+          <TransactionFilterSelect v-model:selected-filter="transactionType" nft-filter/>
+        </template>
+
         <template #content>
-          <div id="recentTransactionsTable">
-            <NftTransactionTable
-                v-bind:controller="transactionTableController"
-                v-bind:narrowed="true"
-            />
-          </div>
+          <NftTransactionTable
+              :controller="transactionTableController"
+              :narrowed="true"
+              id="recentTransactionsTable"
+          />
         </template>
-      </DashboardCard>
+      </DashboardCardV2>
 
       <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
@@ -180,13 +176,11 @@
 import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
 import router, {routeManager} from "@/router"
 import TimestampValue from "@/components/values/TimestampValue.vue"
-import DashboardCard from "@/components/DashboardCard.vue"
 import BlobValue from "@/components/values/BlobValue.vue"
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {EntityID} from "@/utils/EntityID"
 import Property from "@/components/Property.vue"
 import NotificationBanner from "@/components/NotificationBanner.vue"
-import PlayPauseButton from "@/components/PlayPauseButton.vue"
 import AccountLink from "@/components/values/link/AccountLink.vue"
 import {NftBySerialCache} from "@/utils/cache/NftBySerialCache"
 import ContractResultsSection from "@/components/contract/ContractResultsSection.vue"
@@ -203,6 +197,7 @@ import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import NftPreview from "@/components/token/NftPreview.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
 const props = defineProps({
   tokenId: {
