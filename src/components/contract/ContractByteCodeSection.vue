@@ -24,42 +24,40 @@
 
 <template>
 
-  <DashboardCard collapsible-key="contractBytecode">
-    <template v-slot:title>
-      <div class="is-flex is-align-items-center is-flex-wrap-wrap">
-        <span class="h-is-secondary-title mr-3">Contract Bytecode</span>
-        <div v-if="isVerificationAvailable" class="h-is-text-size-2 mt-1">
-          <div v-if="isVerified" class="h-has-pill has-background-success">VERIFIED</div>
-          <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
-        </div>
+  <DashboardCardV2 collapsible-key="contractBytecode">
+    <template #title>
+      Contract Bytecode
+      <div v-if="isVerificationAvailable" class="h-has-pill" style="margin-top: 2px">
+        {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>
     </template>
 
-    <template v-slot:control>
-      <template v-if="isVerificationAvailable">
-        <template v-if="!isVerified">
-          <button id="verify-button"
-                  class="button is-white is-small has-text-right"
-                  @click="showVerifyDialog = true">
-            VERIFY CONTRACT
-          </button>
-        </template>
-      </template>
+    <template #right-control>
+      <ButtonView
+          v-if="isVerificationAvailable && !isVerified"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="showVerifyDialog = true"
+      >
+        VERIFY
+      </ButtonView>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <Property v-if="isVerified" id="verificationStatus" :full-width="true">
         <template v-slot:name>Verification Status</template>
         <template v-slot:value>
-          <div class="is-flex is-align-items-center">
-            <p class="mr-2">{{ isFullMatch ? "Full Match" : "Partial Match" }}</p>
-            <InfoTooltip :label="tooltipText"/>
-            <button v-if="!isFullMatch" id="verify-button"
-                    class="button is-white h-is-smaller ml-3"
-                    @click="showVerifyDialog = true">
-              RE-VERIFY CONTRACT
-            </button>
-          </div>
+          {{ isFullMatch ? "Full Match" : "Partial Match" }}
+          <InfoTooltip :label="tooltipText"/>
+          <ButtonView
+              v-if="!isFullMatch"
+              id="verify-button"
+              :is-default="true"
+              :size="ButtonSize.small"
+              @action="showVerifyDialog = true"
+          >
+            RE-VERIFY
+          </ButtonView>
         </template>
       </Property>
       <Property v-if="isVerified" id="contractName" :full-width="true">
@@ -80,7 +78,7 @@
           <StringValue :string-value="evmVersion"/>
         </template>
       </Property>
-      <template  v-if="logicContractId">
+      <template v-if="logicContractId">
         <Property id="logicContract" :full-width="true">
           <template v-slot:name>Proxying to Logic Contract</template>
           <template v-slot:value>
@@ -96,6 +94,7 @@
           </template>
         </Property>
       </template>
+
       <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
         <Tabs :tab-ids=tabIds :tab-labels=tabLabels
               :selected-tab="selectedOption"
@@ -116,7 +115,7 @@
               </option>
             </optgroup>
           </SelectView>
-       </div>
+        </div>
         <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
           <p class="has-text-weight-light">Show hexa opcode</p>
           <label class="checkbox pt-1 ml-3">
@@ -139,7 +138,7 @@
           </SelectView>
         </div>
       </div>
-      <SourceCodeValue v-if="isVerified && selectedOption==='source'"
+      <ContractSourceValue v-if="isVerified && selectedOption==='source'"
                        :source-files="solidityFiles ?? undefined"
                        :filter="selectedSource"/>
       <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text"
@@ -167,7 +166,7 @@
                         :abiController="abiController"
                         :fragment-type="selectedType as FragmentType"/>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
   <ContractVerificationDialog
       v-model:show-dialog="showVerifyDialog"
@@ -183,7 +182,6 @@
 <script setup lang="ts">
 
 import {computed, ComputedRef, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
@@ -193,7 +191,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/dialogs/verification/ContractVerificationDialog.vue";
 import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import {AppStorage} from "@/AppStorage";
-import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
+import ContractSourceValue from "@/components/values/ContractSourceValue.vue";
 import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
@@ -205,10 +203,11 @@ import {ABIController, ABIMode} from "@/components/contract/ABIController";
 import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 import SelectView from "@/components/SelectView.vue";
 import SwitchView from "@/components/SwitchView.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
-
 
 const props = defineProps({
   contractAnalyzer: {
@@ -245,8 +244,8 @@ watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? 
 
 const tabIds = ['abi', 'source', 'bytecode']
 const tabLabels = ['ABI', 'Source', 'Bytecode']
-const selectedOption = ref<string|null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
-const handleTabUpdate = (tab: string|null) => {
+const selectedOption = ref<string | null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
+const handleTabUpdate = (tab: string | null) => {
   selectedOption.value = tab
   AppStorage.setContractByteCodeTab(tab)
 }
@@ -326,7 +325,7 @@ const handleDownloadABI = () => {
   }
 }
 
-const abiAnalyzer  = new ABIAnalyzer(props.contractAnalyzer)
+const abiAnalyzer = new ABIAnalyzer(props.contractAnalyzer)
 onMounted(() => abiAnalyzer.mount())
 onBeforeUnmount(() => abiAnalyzer.unmount())
 

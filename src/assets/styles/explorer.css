@@ -36,6 +36,7 @@
     --light-text-danger: #AA0000;
     --light-text-disabled: #BDBDBD;
     --light-background-primary: #F6F6F6;
+    --light-background-secondary: #EFEFEF;
     --light-background-tertiary: #FFFFFF;
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
@@ -57,6 +58,7 @@
     --dark-text-danger: #FF0000;
     --dark-text-disabled: #A2A2A2;
     --dark-background-primary: #131313;
+    --dark-background-secondary: #050505;
     --dark-background-tertiary: #171717;
     --dark-border-secondary: #2C2C2C;
     --dark-table-border: #1F1F1F;
@@ -78,6 +80,7 @@
     --text-danger: var(--light-text-danger);
     --text-disabled: var(--light-text-disabled);
     --background-primary: var(--light-background-primary);
+    --background-secondary: var(--light-background-secondary);
     --background-tertiary: var(--light-background-tertiary);
     --border-secondary: var(--light-border-secondary);
     --table-border: var(--light-table-border);
