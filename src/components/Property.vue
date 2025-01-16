@@ -130,6 +130,7 @@ div.property-value {
   font-size: 14px;
   font-weight: 400;
   line-height: 18px;
+  width: 100%;
 }
 
 </style>
