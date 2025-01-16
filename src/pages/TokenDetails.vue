@@ -37,7 +37,6 @@
           </div>
         </template>
 
-
         <template #right-control>
           <div v-if="ethereumAddress && isWalletConnected" class="is-relative">
             <TokenActions
@@ -390,12 +389,6 @@ div.page-container {
 div.title-extra {
   color: var(--text-accent);
   word-break: break-all;
-}
-
-.headline-grid {
-  display: grid;
-  grid-template-columns: 2fr 10fr;
-  grid-column-gap: 0.5rem;
 }
 
 </style>
