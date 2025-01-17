@@ -24,10 +24,7 @@
 
 <template>
 
-  <div v-if="nonNullValue" id="bytecode"
-       class="h-code-box h-has-page-background pt-1 pl-3 pr-2 pb-2 mt-2 mr-1"
-       style="min-height:20px"
-       :style="{'max-height':heightInPixel+'px'}">
+  <div v-if="nonNullValue" id="bytecode">
     <HexaValue :byte-string="textValue" :copyable="false"/>
   </div>
 
@@ -53,10 +50,6 @@ export default defineComponent({
 
   props: {
     byteCode: String,
-    heightInPixel: {
-      type: Number,
-      default: 400
-    }
   },
 
   setup(props) {
