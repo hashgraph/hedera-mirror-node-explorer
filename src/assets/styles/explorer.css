@@ -101,7 +101,6 @@
  */
 :root {
     --h-theme-highlight-color: var(--network-theme-color);
-    --h-theme-background-color: var(--background-primary);
     --h-theme-page-background-color: var(--background-primary);
     --h-theme-box-background-color: var(--background-tertiary);
 }
@@ -109,6 +108,7 @@
 /*  ============================================================================
     Bulma customization
 */
+/*
 :root {
     --bulma-text: var(--text-primary);
     --bulma-scheme-main: var(--background-primary);
@@ -139,6 +139,7 @@ a {
 .h-box-border {
     border: 1px solid var(--table-border);
 }
+*/
 
 /*  ============================================================================
     Oruga customization
@@ -298,7 +299,7 @@ table.o-table th.o-table__th--left {
 }
 
 .h-has-background-color {
-    background: var(--h-theme-background-color);
+    background: var(--h-theme-page-background-color);
 }
 
 .h-has-opacity-40 {
@@ -689,7 +690,7 @@ body {
 }
 
 .h-card-separator {
-    background: var(--h-theme-background-color);
+    background: var(--h-theme-page-background-color);
     margin: 16px 0;
 }
 
