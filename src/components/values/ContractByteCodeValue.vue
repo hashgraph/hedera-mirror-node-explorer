@@ -129,7 +129,7 @@ div.property-name {
 
 .code-value {
   background-color: var(--background-secondary);
-  border: 1px solid transparent;
+  border-width: 0;
   border-radius: 8px;
   font-size: 11px;
   font-weight: 400;

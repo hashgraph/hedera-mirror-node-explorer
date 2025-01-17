@@ -98,12 +98,12 @@
       <hr class="horizontal-line">
 
       <template v-if="isVerified">
-        <div class="is-flex is-justify-content-space-between is-align-items-center mb-0">
+        <div class="contract-code-header">
           <Tabs :tab-ids=tabIds :tab-labels=tabLabels
                 :selected-tab="selectedOption"
                 @update:selected-tab="handleTabUpdate($event)"
           />
-          <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
+          <div v-if="selectedOption==='source'" class="contract-code-controls">
             <DownloadButton @click="handleDownload"/>
             <SelectView v-model="selectedSource" :small="true">
               <option value="">All source files</option>
@@ -119,7 +119,7 @@
               </optgroup>
             </SelectView>
           </div>
-          <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
+          <div v-else-if="selectedOption==='abi'" class="contract-code-controls">
             <template v-if="logicModeAvailable">
               <p>Show Logic Contract ABI</p>
               <SwitchView v-model="showLogicABI"/>
@@ -135,12 +135,18 @@
             </SelectView>
           </div>
         </div>
-        <ContractSourceValue v-if="selectedOption==='source'" :source-files="solidityFiles ?? undefined"
-                             :filter="selectedSource"/>
-        <ContractByteCodeValue v-if="selectedOption==='bytecode'" :byte-code="byteCode"
-                               :show-hexa-opcode="showHexaOpcode"/>
-        <ContractAbiValue v-if="selectedOption==='abi'" :abiController="abiController"
-                          :fragment-type="selectedType as FragmentType"/>
+
+        <template v-if="selectedOption==='source'">
+          <ContractSourceValue :source-files="solidityFiles" :filter="selectedSource"/>
+        </template>
+
+        <template v-else-if="selectedOption==='bytecode'">
+          <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
+        </template>
+
+        <template v-else>
+          <ContractAbiValue :abiController="abiController" :fragment-type="selectedType as FragmentType"/>
+        </template>
       </template>
       <template v-else>
         <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
@@ -341,6 +347,19 @@ const logicModeAvailable = abiController.logicModeAvailable
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.contract-code-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+div.contract-code-controls {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
 
 hr.horizontal-line {
   background-color: var(--border-secondary);
