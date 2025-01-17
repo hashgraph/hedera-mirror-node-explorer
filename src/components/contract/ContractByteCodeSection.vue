@@ -95,76 +95,56 @@
         </Property>
       </template>
 
-      <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
-        <Tabs :tab-ids=tabIds :tab-labels=tabLabels
-              :selected-tab="selectedOption"
-              @update:selected-tab="handleTabUpdate($event)"
-        />
-        <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
-          <DownloadButton @click="handleDownload"/>
-          <SelectView v-model="selectedSource" :small="true">
-            <option value="">All source files</option>
-            <optgroup label="Main contract file">
-              <option :value="contractFileName">{{ sourceFileName }}</option>
-            </optgroup>
-            <optgroup label="Include files">
-              <option v-for="file in solidityFiles" v-bind:key="file.path"
-                      v-bind:value="file.name"
-                      v-show="isImportFile(file)">
-                {{ relevantPath(file.path) }}
-              </option>
-            </optgroup>
-          </SelectView>
-        </div>
-        <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
-          <p class="has-text-weight-light">Show hexa opcode</p>
-          <label class="checkbox pt-1 ml-3">
-            <input type="checkbox" v-model="showHexaOpcode">
-          </label>
-        </div>
-        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
-          <template v-if="logicModeAvailable">
-            <p>Show Logic Contract ABI</p>
-            <SwitchView v-model="showLogicABI"/>
-          </template>
-          <DownloadButton @click="handleDownloadABI"/>
-          <SelectView v-model="selectedType" :small="true">
-            <option :value="FragmentType.ALL">All definitions</option>
-            <option :value="FragmentType.READONLY">Read-only functions</option>
-            <option :value="FragmentType.READWRITE">Read-write functions</option>
-            <option :value="FragmentType.EVENTS">Events</option>
-            <option :value="FragmentType.ERRORS">Errors</option>
-            <option :value="FragmentType.OTHER">Other definitions</option>
-          </SelectView>
-        </div>
-      </div>
-      <ContractSourceValue v-if="isVerified && selectedOption==='source'"
-                       :source-files="solidityFiles ?? undefined"
-                       :filter="selectedSource"/>
-      <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text"
-           :class="{'mt-3':!isVerified,'mt-0':isVerified}">
-        <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
-          <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
-          <div>
-            <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':!isVerified}"/>
+      <hr class="horizontal-line">
+
+      <template v-if="isVerified">
+        <div class="is-flex is-justify-content-space-between is-align-items-center mb-0">
+          <Tabs :tab-ids=tabIds :tab-labels=tabLabels
+                :selected-tab="selectedOption"
+                @update:selected-tab="handleTabUpdate($event)"
+          />
+          <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
+            <DownloadButton @click="handleDownload"/>
+            <SelectView v-model="selectedSource" :small="true">
+              <option value="">All source files</option>
+              <optgroup label="Main contract file">
+                <option :value="contractFileName">{{ sourceFileName }}</option>
+              </optgroup>
+              <optgroup label="Include files">
+                <option v-for="file in solidityFiles" v-bind:key="file.path"
+                        v-bind:value="file.name"
+                        v-show="isImportFile(file)">
+                  {{ relevantPath(file.path) }}
+                </option>
+              </optgroup>
+            </SelectView>
+          </div>
+          <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
+            <template v-if="logicModeAvailable">
+              <p>Show Logic Contract ABI</p>
+              <SwitchView v-model="showLogicABI"/>
+            </template>
+            <DownloadButton @click="handleDownloadABI"/>
+            <SelectView v-model="selectedType" :small="true">
+              <option :value="FragmentType.ALL">All definitions</option>
+              <option :value="FragmentType.READONLY">Read-only functions</option>
+              <option :value="FragmentType.READWRITE">Read-write functions</option>
+              <option :value="FragmentType.EVENTS">Events</option>
+              <option :value="FragmentType.ERRORS">Errors</option>
+              <option :value="FragmentType.OTHER">Other definitions</option>
+            </SelectView>
           </div>
         </div>
-        <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
-          <div v-if="!isVerified" class="is-flex is-align-items-center is-justify-content-space-between">
-            <p class="has-text-weight-light">Assembly Bytecode</p>
-            <div class="is-flex is-align-items-center is-justify-content-end">
-              <p class="has-text-weight-light">Show hexa opcode</p>
-              <label class="checkbox pt-1 ml-3">
-                <input type="checkbox" v-model="showHexaOpcode">
-              </label>
-            </div>
-          </div>
-          <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mb-0"/>
-        </div>
-      </div>
-      <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                        :abiController="abiController"
-                        :fragment-type="selectedType as FragmentType"/>
+        <ContractSourceValue v-if="selectedOption==='source'" :source-files="solidityFiles ?? undefined"
+                             :filter="selectedSource"/>
+        <ContractByteCodeValue v-if="selectedOption==='bytecode'" :byte-code="byteCode"
+                               :show-hexa-opcode="showHexaOpcode"/>
+        <ContractAbiValue v-if="selectedOption==='abi'" :abiController="abiController"
+                          :fragment-type="selectedType as FragmentType"/>
+      </template>
+      <template v-else>
+        <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
+      </template>
     </template>
   </DashboardCardV2>
 
@@ -182,14 +162,12 @@
 <script setup lang="ts">
 
 import {computed, ComputedRef, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
-import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/dialogs/verification/ContractVerificationDialog.vue";
-import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
 import {AppStorage} from "@/AppStorage";
 import ContractSourceValue from "@/components/values/ContractSourceValue.vue";
 import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
@@ -205,6 +183,7 @@ import SelectView from "@/components/SelectView.vue";
 import SwitchView from "@/components/SwitchView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
+import ContractByteCodeValue from "@/components/values/ContractByteCodeValue.vue";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
@@ -361,4 +340,12 @@ const logicModeAvailable = abiController.logicModeAvailable
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+hr.horizontal-line {
+  background-color: var(--border-secondary);
+  height: 1px;
+  margin: 8px 0;
+}
+
+</style>
