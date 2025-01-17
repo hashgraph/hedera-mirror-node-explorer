@@ -23,16 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <Dialog :controller="controller">
+  <TaskDialog :controller="controller" @task-dialog-did-succeed="emit('verifyDidComplete')">
 
     <!-- title -->
-    <template #dialogTitle>
-      <DialogTitle>{{ dialogTitle }}</DialogTitle>
-    </template>
+    <template #taskDialogTitle>{{ dialogTitle }}</template>
+
+    <!-- execute label -->
+    <template #taskExecuteLabel>VERIFY</template>
 
     <!-- input -->
-    <template #dialogInput>
+    <template #taskDialogInput>
       <div>
         Please upload the Solidity source files and metadata associated with the Hedera contract.
         Once submitted the verification service will compile the source code and match it with
@@ -45,11 +45,11 @@
           Add files
         </div>
         <div class="mb-4">
-          {{ status }}
+          {{ controller.status.value }}
         </div>
         <div class="mb-4 p-3 h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
           <template v-if="items.length >= 1">
-            <FileList :audit-items="items" @clear-all-files="handleClearAllFiles"/>
+            <FileList :audit-items="items" @clear-all-files="controller.handleClearAllFiles()"/>
           </template>
           <div v-else class="is-flex is-justify-content-center is-align-items-center my-5">
             <img alt="Add file" class="image mr-1" style="width: 30px; height: 30px;"
@@ -77,41 +77,46 @@
       </div>
     </template>
 
+    <!-- confirm -->
+    <template #taskDialogConfirm>
+      Once verified, the contract status and source files will be public.
+    </template>
+
     <!-- busy -->
-    <template #dialogBusy>
-      Verifying {{ matchingContractName }} contract…
+    <template #taskDialogBusy>
+      Verifying {{ controller.matchingContractName.value }} contract…
     </template>
 
     <!-- success -->
-    <template #dialogSuccess>
+    <template #taskDialogSuccess>
       <div class="is-flex is-align-items-baseline">
         <div class="icon is-medium has-text-success ml-0">
           <i class="fas fa-check"/>
         </div>
         <div class="h-is-tertiary-text mb-4">
-          {{ mainSuccessMessage }}
+          {{ controller.mainSuccessMessage.value }}
         </div>
       </div>
-      <div v-if="extraSuccessMessage" class="h-is-property-text">
-        {{ extraSuccessMessage }}
+      <div v-if="controller.extraSuccessMessage.value" class="h-is-property-text">
+        {{ controller.extraSuccessMessage.value }}
       </div>
     </template>
 
     <!-- error -->
-    <template #dialogError>
+    <template #taskDialogError>
       <div class="is-flex is-align-items-baseline">
         <div class="icon is-medium has-text-danger">
           <span style="font-size: 18px; font-weight: 900">X</span>
         </div>
         <div class="h-is-tertiary-text mb-4">Verification failed</div>
       </div>
-      <div v-if="extraErrorMessage !== null" class="h-is-property-text">
-        {{ extraErrorMessage }}
+      <div v-if="controller.extraErrorMessage.value !== null" class="h-is-property-text">
+        {{ controller.extraErrorMessage.value }}
       </div>
     </template>
 
     <!-- feedback -->
-    <template #dialogFeedback>
+    <template #taskDialogControls>
       <div>
         <button class="button is-white is-small"
                 :class="{'is-invisible': items.length === 0}"
@@ -130,22 +135,8 @@
       </div>
     </template>
 
-    <!-- buttons -->
-    <template #dialogInputButtons>
-      <DialogButton :controller="controller" @action="handleCancel">CANCEL</DialogButton>
-      <CommitButton :controller="controller" :enabled="verifyButtonEnabled" @action="handleVerify">VERIFY</CommitButton>
-    </template>
 
-  </Dialog>
-
-  <ConfirmDialog :show-dialog="showConfirmDialog"
-                 :main-message="confirmMessage"
-                 :extra-message="confirmExtraMessage"
-                 @onConfirm="handleConfirmVerification"
-                 @onCancel="handleCancelVerification">
-    <template v-slot:confirmTitle>{{ dialogTitle }}</template>
-  </ConfirmDialog>
-
+  </TaskDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -154,17 +145,14 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref} from "vue"
-import FileList from "@/dialogs/verification/FileList.vue"
-import Dialog from "@/dialogs/core/dialog/Dialog.vue";
-import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
-import {ContractSourceAnalyzer} from "@/utils/analyzer/ContractSourceAnalyzer.ts";
-import {SourcifyUtils, SourcifyVerifyCheckedContract} from "@/utils/sourcify/SourcifyUtils.ts";
-import {gtagVerifyContract} from "@/gtag.ts";
-import {DialogController, DialogMode} from "@/dialogs/core/dialog/DialogController.ts";
-import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
-import DialogButton from "@/dialogs/core/dialog/DialogButton.vue";
-import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
+import {computed, PropType, ref} from "vue";
+import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
+import FileList from "@/dialogs/verification/FileList.vue";
+import {ContractVerificationController} from "@/dialogs/verification/ContractVerificationController.ts";
+
+//
+// ModalDialog
+//
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -174,13 +162,14 @@ const showDialog = defineModel("showDialog", {
 const props = defineProps({
   contractId: {
     type: String as PropType<string|null>,
-    required: true
+    default: null
   }
 })
 
 const emit = defineEmits(["verifyDidComplete"])
 
-const controller = new DialogController(showDialog)
+const contractId = computed(() => props.contractId)
+const controller = new ContractVerificationController(showDialog, contractId)
 
 const dialogTitle = computed(() => `Verify contract ${props.contractId}`)
 
@@ -197,23 +186,11 @@ const showFileChooser = () => {
 const handleFileSelected = async () => {
   const selectedFiles = fileChooser.value?.files ?? null
   if (selectedFiles && selectedFiles.length >= 1) {
-    await contractSourceAnalyzer.chooseFiles(selectedFiles)
+    await controller.chooseFiles(selectedFiles)
   } else {
     console.log("Selected file is undefined")
   }
 }
-
-//
-// Buttons
-//
-
-const handleCancel = async () => {
-  showDialog.value = false
-  await contractSourceAnalyzer.reset()
-}
-
-const verifyButtonEnabled = computed(
-    () => !contractSourceAnalyzer.analyzing.value && contractSourceAnalyzer.matchingContractName.value !== null)
 
 //
 // Drag & drop
@@ -229,138 +206,11 @@ const handleDrop = async (e: DragEvent) => {
   e.preventDefault()
   if (e.dataTransfer) {
     e.dataTransfer.dropEffect = "copy"
-    await contractSourceAnalyzer.dropFiles(e.dataTransfer.items)
+    await controller.dropFiles(e.dataTransfer.items)
   }
 }
 
-const items = computed(() => contractSourceAnalyzer.items.value)
-
-//
-// ContractSourceAnalyzer
-//
-
-const contractSourceAnalyzer = new ContractSourceAnalyzer(computed(() => props.contractId))
-
-//
-// Verify
-//
-
-const handleVerify = async () => {
-  showConfirmDialog.value = true
-}
-
-//
-// Status
-//
-
-const status = computed(() => {
-  let result: string
-  if (contractSourceAnalyzer.analyzing.value) {
-    result = "Analyzing…"
-  } else if (contractSourceAnalyzer.failure.value) {
-    result = "Analysis failed"
-  } else if (contractSourceAnalyzer.matchingContract.value !== null) {
-    const matchingContract = contractSourceAnalyzer.matchingContract.value
-    const note = matchingContract.status == "perfect" ? "full match" : "partial match"
-    result = "Ready to verify contract \"" + contractSourceAnalyzer.matchingContractName.value + "\" (" + note + ")"
-  } else if (contractSourceAnalyzer.contractCount.value == 0 && contractSourceAnalyzer.unusedCount.value >= 1) {
-    result = "Add contract metadata json"
-  } else {
-    result = "Drop files…"
-  }
-  return result
-})
-
-const handleClearAllFiles = async () => {
-  await contractSourceAnalyzer.reset()
-}
-
-//
-// Confirm dialog
-//
-const showConfirmDialog = ref(false)
-const confirmMessage = ref<string | null>(
-    "Once verified, the contract status and source files will be public."
-)
-const confirmExtraMessage = ref<string | null>(null)
-
-//
-// handleConfirmVerification
-//
-
-const matchingContractName = computed(
-    () => contractSourceAnalyzer.matchingContract.value?.name ?? null)
-
-const mainSuccessMessage = computed(() => {
-  let result: string|null
-  if (newMatchingContract.value !== null) {
-    const status = newMatchingContract.value.status
-    if (status == "perfect" || status == "partial") {
-      result = "Verification succeeded"
-    } else {
-      result = "Verification failed"
-    }
-  } else {
-    result = null
-  }
-  return result
-})
-
-const extraSuccessMessage = computed(() => {
-  let result: string|null
-  if (newMatchingContract.value !== null) {
-    const status = newMatchingContract.value.status
-    if (status == "perfect" || status == "partial") {
-      result = status == "perfect" ? "Full Match" : "Partial Match"
-    } else {
-      result = newMatchingContract.value.statusMessage ?? null
-    }
-  } else {
-    result = null
-  }
-  return result
-})
-
-const extraErrorMessage = computed(() => {
-  let result: string|null
-  if (verificationError.value !== null) {
-    result = (verificationError.value as any).toString()
-  } else {
-    result = null
-  }
-  return result
-})
-
-const newMatchingContract = ref<SourcifyVerifyCheckedContract|null>(null)
-const verificationError = ref<unknown>(null)
-
-const handleConfirmVerification = async () => {
-  const contractId = props.contractId!
-  const matchingContract = contractSourceAnalyzer.matchingContract.value!
-
-  showConfirmDialog.value = false
-  controller.mode.value = DialogMode.Busy
-
-  try {
-    const verificationIds = [matchingContract.verificationId]
-    const response = await SourcifyUtils.sessionVerifyChecked(contractId, verificationIds, true)
-    newMatchingContract.value = SourcifyUtils.fetchMatchingContract(response)
-    verificationError.value = null
-    controller.mode.value = DialogMode.Success
-    emit("verifyDidComplete")
-  } catch (reason) {
-    newMatchingContract.value = null
-    verificationError.value = reason
-    controller.mode.value = DialogMode.Error
-  } finally {
-    gtagVerifyContract(mainSuccessMessage.value ?? "Verification failed")
-  }
-}
-
-const handleCancelVerification = () => {
-  showDialog.value = true
-  showConfirmDialog.value = false
-}
+const items = controller.items
 
 </script>
 
@@ -368,4 +218,6 @@ const handleCancelVerification = () => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+</style>
