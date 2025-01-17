@@ -133,8 +133,9 @@ import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBloc
 import {routeManager} from "@/router";
 import MirrorLink from "@/components/MirrorLink.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import {ArrowLeft, ArrowRight} from 'lucide-vue-next';
+import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 
 const props = defineProps({
   blockHon: String,

@@ -53,7 +53,8 @@ import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
 import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
-import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 
 //
 // Connection state

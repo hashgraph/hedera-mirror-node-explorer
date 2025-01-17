@@ -335,7 +335,7 @@ import CommitButton from "@/dialogs/core/dialog/CommitButton.vue";
 import {routeManager, walletManager} from "@/router.ts";
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";
 import {AccountUpdateTransaction} from "@hashgraph/sdk";
-import {inputEntityID} from "@/utils/InputUtils.ts";
+import {inputEntityID} from "@/dialogs/core/dialog/DialogUtils.ts";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer.ts";
 import {EntityID} from "@/utils/EntityID.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";

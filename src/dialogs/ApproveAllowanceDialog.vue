@@ -287,7 +287,7 @@ import {
   stripChecksum,
   waitForTransactionRefresh
 } from "@/schemas/MirrorNodeUtils.ts";
-import {inputAmount, inputEntityID, inputIntList} from "@/utils/InputUtils.ts";
+import {inputAmount, inputEntityID, inputIntList} from "@/dialogs/core/dialog/DialogUtils.ts";
 import {TransactionID} from "@/utils/TransactionID.ts";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import Dialog from "@/dialogs/core/dialog/Dialog.vue";

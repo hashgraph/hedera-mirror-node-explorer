@@ -138,7 +138,8 @@ import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowance
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 
 const props = defineProps({
   accountId: String,
