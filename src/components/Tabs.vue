@@ -24,7 +24,8 @@
 
 <template>
   <ul v-if="props.tabIds.length >= 1">
-    <li :class="{'is-active':selectedTab === tab}"
+    <li
+        :class="{'is-active':selectedTab === tab,'sub-tab': props.subTabs}"
         v-for="(tab, i) in props.tabIds"
         :key="tab"
         :id="'tab-' + tab"
@@ -106,16 +107,21 @@ watch(() => props.tabIds, adjustSelectedTab, {immediate: true})
 
 ul {
   align-items: center;
-  display: flex;
-  font-size: 14px;
-  font-weight: 600;
   column-gap: 16px;
-  line-height: 18px;
+  display: flex;
 }
 
 li {
-  padding: 8px 8px 8px 8px;
   border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 18px;
+  padding: 8px 8px;
+}
+
+li.sub-tab {
+  font-size: 12px;
+  line-height: 15px;
 }
 
 li.is-active {
