@@ -22,20 +22,21 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
+
 <template>
 
   <div id="contractActionsTable">
     <o-table
-        :data="actions ?? []"
+        :data="props.actions ?? []"
         :paginated="isPaginated"
-        pagination-order="left"
-        :range-before="0"
-        :range-after="0"
+        pagination-order="centered"
+        :range-before="1"
+        :range-after="1"
         :per-page="NB_ACTIONS_PER_PAGE"
 
         detailed
         custom-detail-row
-        :openedDetailed="expandedActions"
+        :detailed-rows="props.expandedActions"
         @update:openedDetailed="onOpenedDetailedChange"
 
         :hoverable="false"
@@ -49,7 +50,7 @@
         aria-previous-label="Previous page"
     >
 
-      <o-table-column v-slot="props" field="call_type" label="Call Type">
+      <o-table-column v-slot="props" field="call_type" label="CALL TYPE">
         <div class="is-flex is-align-items-baseline">
           <span class="is-family-monospace h-is-text-size-3 has-text-grey">
             {{ props.row.depthPath }}
@@ -63,29 +64,29 @@
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="from" label="From">
+      <o-table-column v-slot="props" field="from" label="FROM">
         <EVMAddress :address="props.row.action.from"
                     :id="props.row.action.caller"
                     :entity-type="props.row.action.caller_type"
                     :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="amount" label="Amount">
+      <o-table-column v-slot="props" field="amount" label="AMOUNT">
         <div class="is-flex is-align-items-end is-align-content-end is-numeric">
           <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
           <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
-          <span style="font-size: 13px; margin-left: 2px;: 2px">&#8594;</span>
+          <span style="font-size: 13px; margin-left: 2px; margin-right: 2px">&#8594;</span>
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="to" label="To">
+      <o-table-column v-slot="props" field="to" label="TO">
         <EVMAddress :address="props.row.action.to"
                     :id="props.row.action.recipient??''"
                     :entity-type="props.row.action.recipient_type"
                     :compact="!isLargeScreen && isMediumScreen"/>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="gas_limit" label="Gas Limit">
+      <o-table-column v-slot="props" field="gas_limit" label="GAS LIMIT">
         <div class="is-numeric">
           {{ props.row.action.gas }}
         </div>
@@ -103,7 +104,7 @@
     </o-table>
   </div>
 
-  <EmptyTable v-if="!actions?.length"/>
+  <EmptyTable v-if="!props.actions?.length"/>
 
 </template>
 
@@ -111,9 +112,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType} from 'vue';
+import {computed, inject, PropType} from 'vue';
 import {ContractAction} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
@@ -129,53 +130,32 @@ import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 
 const NB_ACTIONS_PER_PAGE = 10
 
-export default defineComponent({
-  name: 'ContractActionsTable',
-
-  components: {EVMAddress, HbarAmount, ContractActionDetails, EmptyTable},
-
-  props: {
-    actions: Array as PropType<Array<ContractActionWithPath> | undefined>,
-    expandedActions: {
-      type: Array as PropType<Array<ContractActionWithPath>>,
-      default: () => []
-    },
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    }
+const props = defineProps({
+  actions: Array as PropType<Array<ContractActionWithPath> | undefined>,
+  expandedActions: {
+    type: Array as PropType<Array<ContractActionWithPath>>,
+    default: () => []
   },
-
-  setup(props, context) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isLargeScreen = inject('isLargeScreen', true)
-
-    const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER_PAGE)
-
-    const isSuccessful = (action: ContractAction) => action.result_data_type == "OUTPUT"
-
-    const makeOperationType = (action: ContractAction) => action.call_operation_type ?? action.call_type
-
-    const onOpenedDetailedChange = (newValue: ContractAction[]) => {
-      context.emit("update:expandedActions", newValue)
-    }
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      isLargeScreen,
-      NB_ACTIONS_PER_PAGE,
-      isPaginated,
-      isSuccessful,
-      makeOperationType,
-      onOpenedDetailedChange,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+  analyzer: {
+    type: Object as PropType<FunctionCallAnalyzer>,
+    required: true
   }
-});
+})
+
+const emit = defineEmits(['update:expandedActions'])
+
+const isMediumScreen = inject('isMediumScreen', true)
+const isLargeScreen = inject('isLargeScreen', true)
+
+const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER_PAGE)
+
+const isSuccessful = (action: ContractAction) => action.result_data_type == "OUTPUT"
+
+const makeOperationType = (action: ContractAction) => action.call_operation_type ?? action.call_type
+
+const onOpenedDetailedChange = (newValue: ContractAction[]) => {
+  emit("update:expandedActions", newValue)
+}
 
 </script>
 
