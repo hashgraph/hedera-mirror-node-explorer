@@ -326,8 +326,9 @@
     </div>
 
     <TransactionDownloadDialog
-        :account-id="accountIdRef ?? undefined"
-        v-model:visible="transactionDownloadDialogVisible"/>
+        v-if="accountIdRef"
+        v-model:show-dialog="transactionDownloadDialogVisible"
+        :account-id="accountIdRef"/>
 
     <UpdateAccountDialog
         :account-info="account"
@@ -384,7 +385,7 @@ import {VerifiedContractsController} from "@/components/contract/VerifiedContrac
 import DateTimePicker from "@/components/DateTimePicker.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
-import TransactionDownloadDialog from "@/components/download/TransactionDownloadDialog.vue";
+import TransactionDownloadDialog from "@/dialogs/download/TransactionDownloadDialog.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";

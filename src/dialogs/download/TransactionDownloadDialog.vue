@@ -23,15 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DownloadDialog :controller="controller" :downloader="downloader" :download-enabled="downloadEnabled">
+  <DownloadDialog v-model:show-dialog="showDialog" :downloader="downloader" :download-enabled="downloadEnabled">
 
-    <!-- title -->
-    <template v-slot:dialogTitle>
-      <DialogTitle>{{ dialogTitle }}</DialogTitle>
-    </template>
+    <template #downloadDialogTitle>{{ dialogTitle }}</template>
 
-    <!-- input -->
-    <template v-slot:dialogInput>
+    <template #downloadDialogInput>
       <div class="columns">
         <p class="column is-one-fifth has-text-weight-light">
           Select scope:
@@ -93,7 +89,6 @@
     </template>
 
   </DownloadDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -102,33 +97,33 @@
 
 <script setup lang="ts">
 
+import DownloadDialog from "@/dialogs/download/DownloadDialog.vue";
 import {computed, ref, watch} from "vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
-import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader";
-import DownloadDialog from "@/components/download/DownloadDialog.vue";
-import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
-import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {TransactionType} from "@/schemas/MirrorNodeSchemas";
-import Datepicker from '@vuepic/vue-datepicker';
-import '@vuepic/vue-datepicker/dist/main.css';
-import {TokenTransferDownloader} from "@/utils/downloader/TokenTransferDownloader";
-import {EntityID} from "@/utils/EntityID";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
-import {NFTTransferDownloader} from "@/utils/downloader/NFTTransferDownloader";
-import {HbarTransferDownloader} from "@/utils/downloader/HBarTransferDownloader";
-import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader";
+import {AbstractTransactionDownloader} from "@/utils/downloader/AbstractTransationDownloader.ts";
+import {TokenTransferDownloader} from "@/utils/downloader/TokenTransferDownloader.ts";
+import {NFTTransferDownloader} from "@/utils/downloader/NFTTransferDownloader.ts";
+import {HbarTransferDownloader} from "@/utils/downloader/HBarTransferDownloader.ts";
+import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader.ts";
+import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
+import {EntityID} from "@/utils/EntityID.ts";
+import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 import SelectView from "@/components/SelectView.vue";
+import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
+import Datepicker from "@vuepic/vue-datepicker";
 
-const props = defineProps({
-  accountId: String
-})
 
-const visible = defineModel("visible", {
+const showDialog = defineModel("showDialog", {
   type: Boolean,
   required: true
 })
 
-const controller = new DialogController(visible)
+const props = defineProps({
+  accountId: {
+    type: String,
+    required: true
+  }
+})
+
 
 const dialogTitle = computed(() => "Download transactions from " + props.accountId)
 
@@ -190,6 +185,7 @@ const isEndDateValid = computed(
 const transactionType = computed(
     () => selectedFilter.value !== '' ? selectedFilter.value as TransactionType : null
 )
+
 const downloader = computed<AbstractTransactionDownloader>(() => {
   let result: AbstractTransactionDownloader
   if (selectedScope.value === 'TOKEN TRANSFERS' || selectedScope.value === 'TOKEN TRANSFERS BY ID') {
@@ -272,19 +268,6 @@ const handleInput = (event: Event) => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-.dp__theme_dark {
-  --dp-background-color: var(--h-theme-box-background-color);
-  --dp-primary-color: #575757;
-  --dp-border-color: white;
-  --dp-border-color-hover: white;
-  --dp-icon-color: white;
-}
+<style scoped>
 
-:root {
-  --dp-font-family: "Styrene A Web", sans-serif;
-  --dp-border-radius: 0;
-  --dp-font-size: 11px;
-  --dp-input-padding: 3.5px 30px 3.5px 12px
-}
 </style>
