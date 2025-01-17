@@ -38,7 +38,7 @@
       <div class="assembly-header">
         <div class="property-name">Assembly Bytecode</div>
         <div class="show-hexa-opcode-checkbox">
-          <input type="checkbox" v-model="props.showHexaOpcode" id="show-hexa-opcode" name="show-hexa-opcode"/>
+          <input type="checkbox" v-model="showHexaOpcode" id="show-hexa-opcode" name="show-hexa-opcode"/>
           <label for="show-hexa-opcode">Show hexa opcode</label>
         </div>
       </div>
@@ -46,7 +46,7 @@
       <DisassembledCodeValue
           class="code-value"
           :byte-code="props.byteCode ?? undefined"
-          :show-hexa-opcode="props.showHexaOpcode"
+          :show-hexa-opcode="showHexaOpcode"
       />
     </div>
   </div>
@@ -71,11 +71,12 @@ const props = defineProps({
   byteCode: {
     type: String as PropType<string | null>,
     default: null
-  },
-  showHexaOpcode: {
-    type: Boolean,
-    default: false
   }
+})
+
+const showHexaOpcode = defineModel("showHexaOpcode", {
+  type: Boolean,
+  default: false
 })
 
 const isMediumScreen = inject('isMediumScreen', true)
