@@ -26,7 +26,7 @@
   <Copyable v-if="normByteString"
             :content-to-copy="'0x' + normByteString" :enable-copy="isCopyEnabled">
     <template v-slot:content>
-      <div class="is-family-monospace h-is-text-size-3 mt-1" :class="{'has-text-grey': lowContrast}">
+      <div class="is-family-monospace" :class="{'has-text-grey': lowContrast}">
         {{ flow(isMediumScreen ? wordWrapMedium : wordWrapSmall) }}
       </div>
     </template>
