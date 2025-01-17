@@ -85,6 +85,22 @@
     </template>
 
   </ModalDialog>
+
+  <!-- Confirmation dialog -->
+
+  <ModalDialog v-if="confirmationRequired"
+               v-model:show-dialog="showConfirmDialog"
+               :width="300"
+  >
+    <template #modalDialogContent>
+      <slot name="taskDialogConfirm"/>
+    </template>
+    <template #modalDialogButtons>
+      <ModalDialogButton v-model:show-dialog="showConfirmDialog">CANCEL</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showConfirmDialog" @action="handleConfirmExecute">CONFIRM</ModalDialogButton>
+    </template>
+  </ModalDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -93,7 +109,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType, ref, watch} from "vue";
+import {computed, PropType, ref, useSlots, watch} from "vue";
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
@@ -127,19 +143,25 @@ const emit = defineEmits(["taskDialogDidSucceed"])
 
 const handleExecute = async () => {
 
-  if (state.value == TaskDialogState.Input && executeButtonEnabled.value) {
-    changeState(TaskDialogState.Busy)
-    try {
-      await props.controller.execute()
-      changeState(TaskDialogState.Success)
-    } catch(error) {
-      changeState(TaskDialogState.Error)
-    }
+  if (confirmationRequired) {
+    showConfirmDialog.value = true
   } else {
-    console.log("Unexpected call to handleExecute()")
+    await handleConfirmExecute()
   }
 
 }
+
+const handleConfirmExecute = async () => {
+  changeState(TaskDialogState.Busy)
+  try {
+    await props.controller.execute()
+    changeState(TaskDialogState.Success)
+  } catch(error) {
+    changeState(TaskDialogState.Error)
+  }
+}
+
+const confirmationRequired = "taskDialogConfirm" in useSlots()
 
 const cancelButtonEnabled = computed(
     () => state.value == TaskDialogState.Input)
@@ -161,6 +183,8 @@ const changeState = (newValue: TaskDialogState) => {
     emit("taskDialogDidSucceed")
   }
 }
+
+const showConfirmDialog = ref(false)
 
 </script>
 
