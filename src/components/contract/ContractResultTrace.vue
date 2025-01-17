@@ -24,26 +24,41 @@
 
 <template>
 
-  <DashboardCard v-if="actions?.length" class="h-card" collapsible-key="callTrace">
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Call Trace</span>
+  <DashboardCardV2 v-if="actions?.length" collapsible-key="callTrace">
+    <template #title>
+      <span>Call Trace</span>
     </template>
 
-    <template v-slot:control>
-      <div class="is-flex is-justify-content-flex-end is-align-items-baseline">
-        <button v-if="collapseAllVisible" id="collapseAllButton" :disabled="collapseAllDisabled"
-                class="button is-white is-small ml-4" @click="collapseAll">COLLAPSE ALL
-        </button>
-        <button v-else id="expandAllButton"
-                class="button is-white is-small ml-4" @click="expandAll">EXPAND ALL
-        </button>
-      </div>
+    <template #right-control>
+      <ButtonView
+          v-if="collapseAllVisible"
+          id="collapseAllButton"
+          :enabled="!collapseAllDisabled"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="collapseAll"
+      >
+        COLLAPSE ALL
+      </ButtonView>
+      <ButtonView
+          v-else
+          id="expandAllButton"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="expandAll"
+      >
+        EXPAND ALL
+      </ButtonView>
     </template>
 
-    <template v-slot:content>
-      <ContractActionsTable :actions="actions" v-model:expandedActions="expandedActions" :analyzer="analyzer"/>
+    <template #content>
+      <ContractActionsTable
+          :actions="actions"
+          v-model:expandedActions="expandedActions"
+          :analyzer="props.analyzer"
+      />
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -51,67 +66,50 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, Ref, ref} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {computed, onBeforeUnmount, onMounted, PropType, Ref, ref} from 'vue';
 import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
 
-export default defineComponent({
+const props = defineProps({
+  transactionIdOrHash: String,
+  analyzer: {
+    type: Object as PropType<FunctionCallAnalyzer>,
+    required: true
+  }
+})
 
-  name: 'ContractResultTrace',
+const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
+onMounted(() => contractActionsLoader.mount())
+onBeforeUnmount(() => contractActionsLoader.unmount())
 
-  components: {
-    ContractActionsTable,
-    DashboardCard
-  },
+const expandedActions: Ref<ContractActionWithPath[]> = ref([])
 
-  props: {
-    transactionIdOrHash: String,
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    }
-  },
+const collapseAllVisible = computed(() => {
+  const actionCount = contractActionsLoader.actions.value?.length ?? 0
+  return expandedActions.value.length >= 1 || actionCount == 0
+})
 
-  setup(props) {
-    // const isSmallScreen = inject('isSmallScreen', true)
-    // const isTouchDevice = inject('isTouchDevice', false)
+const collapseAllDisabled = computed(() => {
+  return expandedActions.value.length == 0
+})
 
-    const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
-    onMounted(() => contractActionsLoader.mount())
-    onBeforeUnmount(() => contractActionsLoader.unmount())
+const collapseAll = (): void => {
+  expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
+}
 
-    const expandedActions: Ref<ContractActionWithPath[]> = ref([])
-    const collapseAllVisible = computed(() => {
-      const actionCount = contractActionsLoader.actions.value?.length ?? 0
-      return expandedActions.value.length >= 1 || actionCount == 0
-    })
-    const collapseAllDisabled = computed(() => {
-      return expandedActions.value.length == 0
-    })
-    const collapseAll = (): void => {
-      expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
-    }
-    const expandAll = (): void => {
-      collapseAll()
-      for (const a of contractActionsLoader.actionsWithPath.value ?? []) {
-        expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
-      }
-    }
+const expandAll = (): void => {
+  collapseAll()
+  for (const a of actions.value ?? []) {
+    expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
+  }
+}
 
-    return {
-      actions: contractActionsLoader.actionsWithPath,
-      expandedActions,
-      collapseAll,
-      expandAll,
-      collapseAllVisible,
-      collapseAllDisabled,
-    }
-  },
-});
+const actions = contractActionsLoader.actionsWithPath
 
 </script>
 
@@ -120,13 +118,5 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-.columns button {
-  vertical-align: initial;
-}
-
-.button.is-small {
-  font-size: 0.65rem;
-}
 
 </style>
