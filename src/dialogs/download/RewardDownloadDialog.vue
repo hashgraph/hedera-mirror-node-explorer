@@ -23,20 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DownloadDialog :controller="controller" :downloader="downloader" :download-enabled="true">
+  <DownloadDialog v-model:show-dialog="showDialog" :downloader="downloader" :download-enabled="true">
 
-    <!-- title -->
-    <template v-slot:dialogTitle>
-      <DialogTitle>
-          <span>
-            <span class="h-is-primary-title">Download rewards</span>
-            <span v-if="accountId" class="h-is-tertiary-text"> for account {{ accountId }}</span>
-          </span>
-      </DialogTitle>
+    <template #downloadDialogTitle>
+      <span>
+        <span>Download rewards</span>
+        <span v-if="accountId"> for account {{ accountId }}</span>
+      </span>
     </template>
 
-    <!-- input -->
-    <template v-slot:dialogInput>
+    <template #downloadDialogInput>
       <div class="columns">
         <div class="column is-one-third has-text-weight-light">
           Select period
@@ -74,12 +70,14 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader.ts";
-import DownloadDialog from "@/components/download/DownloadDialog.vue";
-import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
+import DownloadDialog from "@/dialogs/download/DownloadDialog.vue";
 import SelectView from "@/components/SelectView.vue";
 
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
 
 const props = defineProps({
   accountId: {
@@ -88,25 +86,13 @@ const props = defineProps({
   }
 })
 
-const visible = defineModel("visible", {
-  type: Boolean,
-  required: true
-})
-
-enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
-const periodOption = ref(1)
-
-//
-// Dialog controller
-//
-
-const controller = new DialogController(visible)
-
 
 //
 // Rewards transaction downloader
 //
 
+enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
+const periodOption = ref(1)
 const accountId = computed(() => props.accountId)
 const startDate = computed(() => {
   const now = new Date()
