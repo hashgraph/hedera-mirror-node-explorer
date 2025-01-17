@@ -22,19 +22,20 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
+<!-- TODO: remove BULMA styling, use Lucide icons, redo chips,...-->
+
 <template>
   <div class="entry-container m-0">
     <!-- Row 0 -->
     <button
-        class="button h-is-smaller has-text-white"
         data-cy="execFunction"
-        style="background-color: #202532; border:0; border-radius: 0;"
+        style="background-color: transparent; border:0; border-radius: 0;"
         v-on:click="handleClick()">
-      <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs" style="background-color: #202532"/>
+      <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs"/>
     </button>
     <div class="is-flex is-align-items-baseline ml-3">
       <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ index }}.</div>
-      <SolidityCode style="background-color: #171920; font-size: 0.7rem">{{ signature }}</SolidityCode>
+      <SolidityCode class="source-code">{{ signature }}</SolidityCode>
       <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{
           mutability
         }}
@@ -174,6 +175,11 @@ export default defineComponent({
   display: grid;
   grid-template-columns: min-content auto;
   align-items: center;
+}
+
+.source-code {
+  font-size: 10.5px;
+  background-color: var(--background-secondary);
 }
 
 </style>

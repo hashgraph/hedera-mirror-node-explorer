@@ -22,21 +22,21 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
+<!-- TODO: remove BULMA styling -->
+
 <template>
 
-  <div id="abi"
-       class="h-code-box h-has-page-background mt-2 px-3 py-1"
-       style="max-height: 400px;">
+  <div id="abi" class="abi-container">
 
     <template v-if="showAll && roContractCallBuilders.length == 0 && rwContractCallBuilders.length == 0">
-      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode class="source-code">
         {{ "//\n// No function\n//" }}
       </SolidityCode>
     </template>
     <template v-else>
       <template v-if="showReadOnly">
         <template v-if="roContractCallBuilders.length >= 1">
-          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode class="source-code">
             {{ "//\n// Functions (read-only)\n//" }}
           </SolidityCode>
           <div v-for="(b,i) in roContractCallBuilders" :key="b.fragment.selector">
@@ -47,7 +47,7 @@
           </div>
         </template>
         <template v-else>
-          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode class="source-code">
             {{ "//\n// No read-only function\n//" }}
           </SolidityCode>
         </template>
@@ -57,7 +57,7 @@
 
       <template v-if="showReadWrite">
         <template v-if="rwContractCallBuilders.length >= 1">
-          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode class="source-code">
             {{ "//\n// Functions (read-write)\n//" }}
           </SolidityCode>
           <div v-for="(b,i) in rwContractCallBuilders" :key="b.fragment.selector">
@@ -68,7 +68,7 @@
           </div>
         </template>
         <template v-else>
-          <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+          <SolidityCode class="source-code">
             {{ "//\n// No read-write function\n//" }}
           </SolidityCode>
         </template>
@@ -78,7 +78,7 @@
     <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
 
     <template v-if="showEvents">
-      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode class="source-code">
         {{ eventList }}
       </SolidityCode>
     </template>
@@ -86,7 +86,7 @@
     <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
 
     <template v-if="showErrors">
-      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode class="source-code">
         {{ errorList }}
       </SolidityCode>
     </template>
@@ -94,7 +94,7 @@
     <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
 
     <template v-if="showOther">
-      <SolidityCode style="background-color: #171920; font-size: 0.7rem">
+      <SolidityCode class="source-code">
         {{ otherList }}
       </SolidityCode>
     </template>
@@ -313,4 +313,21 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.abi-container {
+  background-color: var(--background-secondary);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  max-height: 400px;
+  min-height: 5rem;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.source-code {
+  font-size: 10.5px;
+  background-color: var(--background-secondary);
+}
+
+</style>
