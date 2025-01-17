@@ -26,7 +26,8 @@
 
   <div
       class="property-root"
-      :style="{'justify-content': isSmallScreen ? 'flex-start' : 'space-between'}"
+      :class="{'property-root': !vertical ? 'property-root-vertical' : 'vertical'}"
+      :style="{'justify-content': (isSmallScreen || vertical) ? 'flex-start' : 'space-between'}"
       :id="id"
   >
     <div
@@ -37,7 +38,7 @@
       <span class="property-name">
         <slot name="name"/>
       </span>
-      <InfoTooltip v-if="tooltip" :label="tooltip"/>
+      <InfoTooltip v-if="tooltip" :label="tooltip"  />
     </div>
     <div
         class="property-value"
@@ -67,6 +68,10 @@ const props = defineProps({
   },
   wideName: {
     type: Boolean,
+    default: false
+  },
+  vertical: {
+    type:Boolean,
     default: false
   },
   customNbColClass: String,
@@ -106,13 +111,12 @@ const leftSideWidth = computed(() => {
 div.property-root {
   align-items: flex-start;
   display: flex;
+  gap: 16px
 }
 
 div.property-left-side {
   flex: none;
-  align-items: center;
-  display: flex;
-  gap: 8px;
+  display: inline-block;
 }
 
 span.property-name {
@@ -121,6 +125,7 @@ span.property-name {
   font-size: 12px;
   font-weight: 500;
   height: 16px;
+  margin-right: 4px;
   text-transform: uppercase;
 }
 
