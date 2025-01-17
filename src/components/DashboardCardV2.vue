@@ -180,6 +180,7 @@ div.right-header {
 div.split-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 24px;
 }
 
 div.left-content {
