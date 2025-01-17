@@ -28,7 +28,7 @@
     <p v-if="showHexaOpcode" class="h-is-extra-text">{{ opcode.hex }}</p>
     <p v-if="showHexaOpcode" class="has-text-grey">-</p>
     <p :class="{'has-text-grey':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
-    <div v-if="opcode.operand.length > 0" class="ml-">
+    <div v-if="opcode.operand.length > 0">
       <ContractLink v-if="contract" :contract-id="displayAddress"/>
       <AccountLink v-else-if="account" :account-id="displayAddress"/>
       <p v-else>{{ displayAddress }}</p>
@@ -48,7 +48,7 @@
 
 <script lang="ts">
 
-import {defineComponent, PropType, computed, onMounted, ref, Ref} from 'vue';
+import {computed, defineComponent, onMounted, PropType, ref, Ref} from 'vue';
 import {DisassembledOpcodeOutput, Helpers} from '@/utils/bytecode_tools/disassembler/utils/helpers';
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
