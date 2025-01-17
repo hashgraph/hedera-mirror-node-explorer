@@ -396,9 +396,10 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
+import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 
 const props = defineProps({
   accountId: String,

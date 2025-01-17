@@ -21,6 +21,11 @@
 import {EntityID} from "@/utils/EntityID";
 import {stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
+export enum ButtonSize {
+    normal = 'normal',
+    medium = 'medium',
+    small = 'small'
+}
 export function inputEntityID(event: Event, entityID: string | null): string | null {
     let result: string | null
     let isValidInput = true

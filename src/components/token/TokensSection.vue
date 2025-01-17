@@ -176,9 +176,10 @@ import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView, {ButtonSize} from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
+import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 
 const props = defineProps({
   accountId: {

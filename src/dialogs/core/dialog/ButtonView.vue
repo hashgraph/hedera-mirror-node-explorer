@@ -44,17 +44,10 @@
 <!--                                                     TEMPLATE                                                    -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-export enum ButtonSize {
-  normal = 'normal',
-  medium = 'medium',
-  small = 'small'
-}
-</script>
-
 <script setup lang="ts">
 
 import {PropType} from "vue";
+import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 
 const props = defineProps({
   enabled: {
