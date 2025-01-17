@@ -26,7 +26,7 @@
 
   <RewardDownloadDialog
       v-if="accountId"
-      v-model:visible="showDownloadDialog"
+      v-model:show-dialog="showDownloadDialog"
       :account-id="accountId"
   />
 
@@ -57,7 +57,7 @@ import DownloadButton from "@/components/DownloadButton.vue";
 import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController.ts";
 import {AppStorage} from "@/AppStorage.ts";
-import RewardDownloadDialog from "@/dialogs/RewardDownloadDialog.vue";
+import RewardDownloadDialog from "@/dialogs/download/RewardDownloadDialog.vue";
 import {useRouter} from "vue-router";
 
 const router = useRouter()
