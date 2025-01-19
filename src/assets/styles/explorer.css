@@ -298,6 +298,10 @@ table.o-table th.o-table__th--left {
     margin-right: 32px;
 }
 
+.h-is-bold {
+    font-weight: 600;
+}
+
 .has-text-grey {
     color: var(--text-secondary) !important;
 }
