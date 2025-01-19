@@ -25,15 +25,18 @@
 <template>
 
   <PageFrameV2 page-title="Tokens by Name">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Tokens matching </span>
-        <span class="h-is-secondary-text">"{{ name }}"</span>
-      </template>
-      <template v-slot:content>
-        <TokensByNameTable :name="name"/>
-      </template>
-    </DashboardCard>
+
+    <div class="h-page-root">
+      <DashboardCardV2>
+        <template #title>
+          {{ `Tokens matching "${props.name}"` }}
+        </template>
+        <template #content>
+          <TokensByNameTable :name="props.name"/>
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -42,30 +45,20 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {PropType} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import TokensByNameTable from "@/components/token/TokensByNameTable.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
-export default defineComponent({
-  name: 'TokensByName',
-
-  props: {
-    network: String,
-    name: {
-      type: String as PropType<string|null>,
-      default: null
-    }
-  },
-
-  components: {
-    TokensByNameTable,
-    PageFrameV2,
-    DashboardCard,
-  },
-});
+const props = defineProps({
+  network: String,
+  name: {
+    type: String as PropType<string | null>,
+    default: null
+  }
+})
 
 </script>
 
