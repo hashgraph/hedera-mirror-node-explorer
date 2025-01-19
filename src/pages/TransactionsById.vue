@@ -26,7 +26,7 @@
 
   <PageFrameV2 page-title="Transactions by ID">
 
-    <div class="h-page-root">
+    <div class="h-page-content">
       <DashboardCardV2>
         <template #title>
           {{ `Transactions with ID ${normalizedTransactionId}` }}
