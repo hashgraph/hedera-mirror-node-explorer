@@ -26,7 +26,7 @@
 
   <PageFrameV2 page-title="Tokens by Name">
 
-    <div class="h-page-root">
+    <div class="h-page-content">
       <DashboardCardV2>
         <template #title>
           {{ `Tokens matching "${props.name}"` }}

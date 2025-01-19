@@ -290,7 +290,11 @@ table.o-table th.o-table__th--left {
     Explorer classes
 */
 
-.h-page-root {
+:root {
+    background: var(--h-theme-page-background-color);
+}
+
+.h-page-content {
     display: flex;
     flex-direction: column;
     gap: 16px;

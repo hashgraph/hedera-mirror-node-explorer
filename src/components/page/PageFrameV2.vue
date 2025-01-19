@@ -24,13 +24,11 @@
 
 <template>
 
-  <div class="h-has-background-color">
     <PageHeader :page-title="props.pageTitle"/>
 
     <slot/>
 
     <Footer/>
-  </div>
 
 </template>
 
