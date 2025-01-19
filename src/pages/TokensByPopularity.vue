@@ -25,15 +25,18 @@
 <template>
 
   <PageFrameV2 page-title="Tokens by Popularity">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Popular tokens matching </span>
-        <span class="h-is-secondary-text">"{{ name }}"</span>
-      </template>
-      <template v-slot:content>
-        <TokensByPopularityTable :name="name"/>
-      </template>
-    </DashboardCard>
+
+    <div class="h-page-content">
+      <DashboardCardV2>
+        <template #title>
+          {{ `Popular tokens matching "${props.name}"` }}
+        </template>
+        <template #content>
+          <TokensByPopularityTable :name="props.name"/>
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -42,30 +45,20 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {PropType} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import TokensByPopularityTable from "@/components/token/TokensByPopularityTable.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
-export default defineComponent({
-  name: 'TokensByPopularity',
-
-  props: {
-    network: String,
-    name: {
-      type: String as PropType<string|null>,
-      default: null
-    }
-  },
-
-  components: {
-    TokensByPopularityTable,
-    PageFrameV2,
-    DashboardCard,
-  },
-});
+const props = defineProps({
+  network: String,
+  name: {
+    type: String as PropType<string | null>,
+    default: null
+  }
+})
 
 </script>
 
