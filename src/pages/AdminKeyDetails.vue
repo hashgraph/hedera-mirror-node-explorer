@@ -25,23 +25,33 @@
 <template>
 
   <PageFrameV2 page-title="Admin Key Details">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Admin Key for Account </span>
-        <div id="accountId" v-if="normalizedAccountId"
-             class="h-is-secondary-text has-text-weight-light is-inline-block">
-          <AccountLink :account-id="normalizedAccountId">{{ normalizedAccountId }}</AccountLink>
-        </div>
-        <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 28px">-{{ accountChecksum }}</span>
-      </template>
 
-      <template v-slot:content>
-        <NotificationBanner v-if="notification" :message="notification"/>
+    <div class="h-page-content">
+      <DashboardCardV2>
+        <template #title>
+          <span>Admin Key for Account </span>
+          <div v-if="normalizedAccountId">
+            <AccountLink id="accountId" :account-id="normalizedAccountId">
+              {{ normalizedAccountId }}
+            </AccountLink>
+            <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+          </div>
+        </template>
 
-        <KeyValue v-if="normalizedAccountId" :details="true" :key-bytes="key?.key" :key-type="key?._type"
-                  :show-none="true"/>
-      </template>
-    </DashboardCard>
+        <template #content>
+          <NotificationBanner v-if="notification" :message="notification"/>
+
+          <KeyValue
+              v-if="normalizedAccountId"
+              :details="true"
+              :key-bytes="key?.key"
+              :key-type="key?._type"
+              :show-none="true"
+          />
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -50,55 +60,37 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
+import {computed, onBeforeUnmount, onMounted} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
-export default defineComponent({
+const props = defineProps({
+  accountId: String,
+  network: String
+})
 
-  name: 'AdminKeyDetails',
+const networkConfig = NetworkConfig.inject()
 
-  components: {
-    NotificationBanner,
-    KeyValue,
-    AccountLink,
-    PageFrameV2,
-    DashboardCard,
-  },
+//
+// account
+//
 
-  props: {
-    accountId: String,
-    network: String
-  },
+const accountLocator = computed(() => props.accountId ?? null)
+const accountLocParser = new AccountLocParser(accountLocator, networkConfig)
+onMounted(() => accountLocParser.mount())
+onBeforeUnmount(() => accountLocParser.unmount())
 
-  setup(props) {
-    const networkConfig = NetworkConfig.inject()
-
-    //
-    // account
-    //
-
-    const accountLocator = computed(() => props.accountId ?? null)
-    const accountLocParser = new AccountLocParser(accountLocator, networkConfig)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    return {
-      notification: accountLocParser.errorNotification,
-      account: accountLocParser.accountInfo,
-      normalizedAccountId: accountLocParser.accountId,
-      accountChecksum: accountLocParser.accountChecksum,
-      key: accountLocParser.key,
-    }
-  }
-});
+const notification = accountLocParser.errorNotification
+const normalizedAccountId = accountLocParser.accountId
+const accountChecksum = accountLocParser.accountChecksum
+const key = accountLocParser.key
 
 </script>
 
