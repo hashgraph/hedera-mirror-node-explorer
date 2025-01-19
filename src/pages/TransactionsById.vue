@@ -25,15 +25,18 @@
 <template>
 
   <PageFrameV2 page-title="Transactions by ID">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">Transactions with ID </span>
-        <span class="h-is-secondary-text">{{ normalizedTransactionId }}</span>
-      </template>
-      <template v-slot:content>
-        <TransactionByIdTable v-bind:transactions="transactions"/>
-      </template>
-    </DashboardCard>
+
+    <div class="h-page-root">
+      <DashboardCardV2>
+        <template #title>
+          {{ `Transactions with ID ${normalizedTransactionId}` }}
+        </template>
+        <template #content>
+          <TransactionByIdTable :transactions="transactions"/>
+        </template>
+      </DashboardCardV2>
+    </div>
+
   </PageFrameV2>
 
 </template>
@@ -45,11 +48,11 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const props = defineProps({
   network: String,
