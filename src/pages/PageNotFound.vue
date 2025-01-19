@@ -25,20 +25,12 @@
 <template>
 
   <PageFrameV2 page-title="Page not found">
-    <section class="section has-text-centered" style="min-height: 450px">
 
-      <p class="h-is-secondary-text" style="font-weight: 300">Page not found</p>
-      <br/>
+    <div class="h-page-content page-not-found">
+      <p>No page matches the specified URL.</p>
+      <p>Check URL value or use tabs in navigation bar.</p>
+    </div>
 
-      <div class="block">
-        <p class="h-is-tertiary-text" style="font-weight: 300">
-          No page matches the specified URL.
-          <br>
-          Check URL value or use tabs in navigation bar.
-        </p>
-      </div>
-
-    </section>
   </PageFrameV2>
 
 </template>
@@ -47,16 +39,8 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-
-import {defineComponent} from 'vue';
+<script setup lang="ts">
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
-
-export default defineComponent({
-  name: 'PageNotFound',
-  components: {PageFrameV2}
-})
-
 </script>
 
 
@@ -64,4 +48,16 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+.page-not-found {
+  color: var(--text-secondary);
+  min-height: 450px;
+  text-align: center;
+  padding-top: 100px;
+  font-family: "Styrene A Web", sans-serif;
+  font-weight: 300;
+  font-size: 24px;
+}
+
+</style>
