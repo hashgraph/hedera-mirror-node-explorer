@@ -42,51 +42,33 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted} from 'vue';
+import {computed, onBeforeUnmount, onMounted} from 'vue';
 import DashboardCard from "@/components/DashboardCard.vue";
 import TransactionByIdTable from "@/components/transaction/TransactionByIdTable.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionGroupCache} from "@/utils/cache/TransactionGroupCache";
 
-export default defineComponent({
-  name: 'TransactionsById',
+const props = defineProps({
+  network: String,
+  transactionId: String
+})
 
-  props: {
-    network: String,
-    transactionId: String
-  },
+const normalizedTransactionId = computed(() => {
+  return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : "?";
+})
 
-  components: {
-    PageFrameV2,
-    DashboardCard,
-    TransactionByIdTable,
-  },
+const paramTransactionId = computed(() => {
+  return props.transactionId ? TransactionID.normalize(props.transactionId) : null
+})
 
-  setup(props) {
+const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)
+onMounted(() => groupLookup.mount())
+onBeforeUnmount(() => groupLookup.unmount())
 
-    const normalizedTransactionId = computed(() => {
-      return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : "?";
-    })
-
-    const paramTransactionId = computed(() => {
-      return props.transactionId ? TransactionID.normalize(props.transactionId) : null
-    })
-
-    const groupLookup = TransactionGroupCache.instance.makeLookup(paramTransactionId)
-    onMounted(() => groupLookup.mount())
-    onBeforeUnmount(() => groupLookup.unmount())
-
-    const transactions = computed(() => groupLookup.entity.value ?? [])
-
-    return {
-      transactions,
-      normalizedTransactionId
-    }
-  }
-});
+const transactions = computed(() => groupLookup.entity.value ?? [])
 
 </script>
 
