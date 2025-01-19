@@ -32,7 +32,7 @@
       <span>
         <span v-if="timePart" class="mr-3 is-numeric">
           <span>{{ timePart.hour }}:{{ timePart.minute }}</span>
-          <span class="h-is-text-size-3 has-text-grey">:{{ timePart.second }}.{{
+          <span class="has-text-grey">:{{ timePart.second }}.{{
               timePart.fractionalSecond
             }}&nbsp;{{ timePart.dayPeriod }}</span>
         </span>
