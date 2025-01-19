@@ -29,9 +29,9 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -48,17 +48,17 @@
       aria-previous-label="Previous page"
       customRowKey="token_id"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
-      <TokenIOL :token-id="props.row.token_id"/>
+    <o-table-column v-slot="props" field="token_id" label="TOKEN">
+      <TokenIOL class="h-is-bold" :token-id="props.row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
+    <o-table-column v-slot="props" field="name" label="NAME">
       <div class="w400">
         {{ props.row.name }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
+    <o-table-column v-slot="props" field="symbol" label="SYMBOL">
       <div class="w400">
         {{ props.row.symbol }}
       </div>
@@ -66,7 +66,7 @@
 
     <template v-slot:bottom-left>
       <TablePageSize
-          v-model:size="perPage"
+          v-model:size="pageSize"
           :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
       />
     </template>
@@ -80,9 +80,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
 import {Token} from '@/schemas/MirrorNodeSchemas.ts';
 import {routeManager} from "@/router";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
@@ -92,58 +92,38 @@ import TokenIOL from "@/components/values/link/TokenIOL.vue";
 import {AppStorage} from "@/AppStorage";
 import {TokensByNameTableLoader} from "@/components/token/TokensByNameTableLoader";
 
-export default defineComponent({
-  name: 'TokensByNameTable',
-  computed: {
-    AppStorage() {
-      return AppStorage
-    }
-  },
-
-  components: {TokenIOL, TablePageSize, EmptyTable},
-
-  props: {
-    narrowed: Boolean,
-    nbItems: Number,
-    name: {
-      type: String as PropType<string|null>,
-      default: null
-    }
-  },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const perPage = ref(isMediumScreen ? 15 : 10)
-    const targetName = computed(() => props.name)
-    const loader = new TokensByNameTableLoader(perPage, targetName)
-    onMounted(() => {
-      loader.mount()
-    })
-    onBeforeUnmount(() => {
-      loader.unmount()
-    })
-
-    const handleClick = (t: Token, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (t.token_id !== null) {
-        routeManager.routeToToken(t.token_id, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      tokens: loader.rows,
-      loading: loader.loading,
-      total: loader.totalRowCount,
-      currentPage: loader.currentPage,
-      perPage: loader.pageSize,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  narrowed: Boolean,
+  nbItems: Number,
+  name: {
+    type: String as PropType<string | null>,
+    default: null
   }
-});
+})
+
+const isMediumScreen = inject('isMediumScreen', true)
+
+const perPage = ref(isMediumScreen ? 15 : 10)
+const targetName = computed(() => props.name)
+const loader = new TokensByNameTableLoader(perPage, targetName)
+onMounted(() => {
+  loader.mount()
+})
+onBeforeUnmount(() => {
+  loader.unmount()
+})
+
+const handleClick = (t: Token, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (t.token_id !== null) {
+    routeManager.routeToToken(t.token_id, event)
+  }
+}
+
+const tokens = loader.rows
+const loading = loader.loading
+const total = loader.totalRowCount
+const currentPage = loader.currentPage
+const pageSize = loader.pageSize
 
 </script>
 
