@@ -37,6 +37,7 @@ envFrom: []
 # - secretRef:
 #     name: '{{ .Release.Name }}-env'
 
+nameOverride: ""
 fullnameOverride: ""
 
 global:
@@ -49,6 +50,7 @@ image:
   repository: hedera-registry/hedera-mirror-node-explorer
   tag: ""  # Defaults to the chart's app version
 
+ingressClassName: ""
 ingress:
   annotations: {}
   className: ""
@@ -102,10 +104,9 @@ replicas: 1
 
 resources:
   limits:
-    cpu: 1150m
     memory: 250Mi
   requests:
-    cpu: 200m
+    cpu: 1150m
     memory: 100Mi
 
 revisionHistoryLimit: 3
@@ -124,7 +125,7 @@ service:
 serviceAccount:
   create: true
   # The name of the service account to use. If not set and create is true, a name is generated using the fullname template
-  name:
+  name: ""
 
 terminationGracePeriodSeconds: 30
 
@@ -143,7 +144,7 @@ volumeMounts:
   nginx-config:
     mountPath: /etc/nginx/nginx.conf
     subPath: nginx.conf
-  hiero-explorer-config:
+  hiero-network-config:
     mountPath: /app/networks-config.json
     subPath: networks-config.json
   hiero-core-config:
@@ -157,7 +158,7 @@ volumes:
   nginx-config:
     configMap:
       name: '{{ include "hiero-explorer.fullname" . }}-config'
-  hiero-explorer-config:
+  hiero-network-config:
     configMap:
       name: '{{ include "hiero-explorer.fullname" . }}-config'
   hiero-core-config:
