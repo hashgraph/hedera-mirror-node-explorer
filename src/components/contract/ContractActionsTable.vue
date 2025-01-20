@@ -36,8 +36,7 @@
 
         detailed
         custom-detail-row
-        :detailed-rows="props.expandedActions"
-        @update:openedDetailed="onOpenedDetailedChange"
+        v-model:detailed-rows="expandedActions"
 
         :hoverable="false"
         :narrowed="true"
@@ -124,22 +123,19 @@ import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 
-//
-// defineComponent
-//
-
 const NB_ACTIONS_PER_PAGE = 10
 
 const props = defineProps({
   actions: Array as PropType<Array<ContractActionWithPath> | undefined>,
-  expandedActions: {
-    type: Array as PropType<Array<ContractActionWithPath>>,
-    default: () => []
-  },
   analyzer: {
     type: Object as PropType<FunctionCallAnalyzer>,
     required: true
   }
+})
+
+const expandedActions = defineModel('expandedActions', {
+  type: Array as PropType<Array<ContractActionWithPath>>,
+  default: () => []
 })
 
 const emit = defineEmits(['update:expandedActions'])
@@ -152,10 +148,6 @@ const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER
 const isSuccessful = (action: ContractAction) => action.result_data_type == "OUTPUT"
 
 const makeOperationType = (action: ContractAction) => action.call_operation_type ?? action.call_type
-
-const onOpenedDetailedChange = (newValue: ContractAction[]) => {
-  emit("update:expandedActions", newValue)
-}
 
 </script>
 
