@@ -6,7 +6,7 @@ affinity:
           topologyKey: kubernetes.io/hostname
           labelSelector:
             matchLabels:
-              app.kubernetes.io/component: hiero-explorer
+              app.kubernetes.io/component: hedera-explorer
 
 annotations: {}
 
@@ -157,7 +157,7 @@ volumes:
     emptyDir: {}
   nginx-config:
     configMap:
-      name: '{{ include "hiero-explorer.fullname" . }}-config'
+      name: '{{ include "hedera-explorer.fullname" . }}-config'
   explorer-network-config:
     configMap:
       name: '{{ include "hedera-explorer.fullname" . }}-config'
