@@ -99,15 +99,15 @@ const collapseAllDisabled = computed(() => {
   return expandedActions.value.length == 0
 })
 
-const collapseAll = (): void => {
-  expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
-}
-
-const expandAll = (): void => {
-  collapseAll()
-  for (const a of actions.value ?? []) {
-    expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
+  const collapseAll = (): void => {
+    expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
   }
+
+  const expandAll = (): void => {
+    collapseAll()
+    for (const a of actions.value ?? []) {
+      expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
+    }
 }
 
 const actions = contractActionsLoader.actionsWithPath
