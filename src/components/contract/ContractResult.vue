@@ -124,7 +124,7 @@
           <template v-slot:value>
             <HbarAmount :amount="gasPrice"/>
             <span v-if="gasPrice"
-                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(gasPrice) }}</span>
+                  class="h-is-extra-text is-numeric ml-1">{{ gWeiExtra(gasPrice) }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">

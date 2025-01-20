@@ -31,7 +31,7 @@
     </EntityLink>
 
     <template v-if="showExtra && extra.length > 0">
-      <span class="ml-2 h-is-smaller h-is-extra-text is-numeric">
+      <span class="ml-2 h-is-extra-text is-numeric">
         {{ extra }}
       </span>
     </template>
