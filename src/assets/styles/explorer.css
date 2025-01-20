@@ -302,6 +302,14 @@ table.o-table th.o-table__th--left {
     margin-right: 32px;
 }
 
+.h-sub-section {
+    color: var(--text-primary);
+    font-family: "Styrene A Web", sans-serif;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 32px;
+}
+
 .h-is-bold {
     font-weight: 600;
 }

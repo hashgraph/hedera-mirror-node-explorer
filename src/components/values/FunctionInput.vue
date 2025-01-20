@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="signature">
+  <template v-if="signature">
 
     <Property :custom-nb-col-class="customNbColClass" id="function">
       <template v-slot:name>Signature</template>
@@ -35,7 +35,7 @@
 
     <template v-if="inputs && inputs.length >= 1">
 
-      <div class="h-is-tertiary-text my-2">Input</div>
+      <div class="h-sub-section">Input</div>
 
       <template v-for="arg in inputs" :key="arg.name">
         <Property :custom-nb-col-class="customNbColClass">
@@ -62,7 +62,7 @@
 
     </template>
 
-  </div>
+  </template>
   <template v-else>
     <Property :custom-nb-col-class="customNbColClass" id="functionInput">
       <template v-slot:name>Input - Function & Args</template>
