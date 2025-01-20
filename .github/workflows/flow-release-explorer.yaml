@@ -32,6 +32,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
           fetch-depth: 0
 
       - name: Setup Node
@@ -48,6 +49,8 @@ jobs:
             marked-mangle@1.1.10 marked-gfm-heading-id@4.1.1 semantic-release-conventional-commits@3.0.0
 
       - name: Calculate Next Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
         run: npx semantic-release --dry-run
 
       - name: Retrieve Version
