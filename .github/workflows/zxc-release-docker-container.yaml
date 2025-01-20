@@ -133,6 +133,7 @@ jobs:
         env:
           SOURCE_DATE_EPOCH: ${{ steps.commit.outputs.source-date }}
         with:
+          context: ${{ github.workspace }}
           push: ${{ inputs.dry-run-enabled != true }}
           no-cache: true
           build-args: |
