@@ -25,44 +25,52 @@
 <template v-if="change">
 
   <template v-if="change?.header===true">
-    <div class="is-flex is-align-items-baseline">
-      <ContractLink :contract-id="change?.changes.contract_id"></ContractLink>
-      <EVMAddress :address="change.changes.address" :compact="isSmallScreen && !isMediumScreen" class="ml-3"/>
-      <span class="mb-2 h-is-text-size-3">
-            <span class="ml-4 mr-2">Contract HBar Balance Difference:</span>
-            <HbarAmount :amount="change?.balanceChange" :timestamp="timestamp" :colored="true" :show-extra="true"/>
-          </span>
+    <div class="state-header">
+      <div class="property-value">
+        <EVMAddress
+            style="display: inline-block"
+            :id="change?.changes.contract_id"
+            :address="change.changes.address"
+            compact
+            has-custom-font
+        />
+      </div>
+      <div class="balance-info">
+        <div class="property-name">
+          HBar Balance Difference:
+        </div>
+        <div class="property-value">
+          <HbarAmount :amount="change?.balanceChange" :timestamp="timestamp" :colored="true" :show-extra="true"/>
+        </div>
+      </div>
     </div>
-    <hr class="h-card-separator" style="margin-bottom: 12px; margin-top: 0"/>
+    <hr class="table-separator"/>
   </template>
 
-  <div class="columns" style="margin-bottom:0">
+  <div class="state-change">
 
-    <div class="column is-1 py-1"></div>
-
-    <div class="column py-1">
+    <div></div>
+    <div>
       <HexaValue :byte-string="change?.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
-      <div class="h-is-extra-text h-is-text-size-2">
+      <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.slotDecimal ?? 'not available') }}
       </div>
     </div>
-
-    <div class="column py-1">
+    <div>
       <HexaValue :byte-string="change?.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change?.valueReadDecimal === 0"/>
-      <div class="h-is-extra-text h-is-text-size-2">
+      <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.valueReadDecimal ?? 'not available') }}
       </div>
     </div>
-
-    <div class="column py-1">
+    <div>
       <HexaValue :byte-string="change?.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change?.valueWrittenDecimal === 0"/>
-      <div class="h-is-extra-text h-is-text-size-2">
-              <span v-if="change?.changes.value_written">
-                {{ 'Decimal: ' + (change?.valueWrittenDecimal ?? 'not available') }}
-              </span>
-        <span v-if="change?.valueChange" class="ml-2">
+      <div class="h-is-extra-text">
+        <span v-if="change?.changes.value_written">
+          {{ 'Decimal: ' + (change?.valueWrittenDecimal ?? 'not available') }}
+        </span>
+        <span v-if="change?.valueChange">
           {{ '(Difference: ' + change?.valueChange + ')' }}
         </span>
       </div>
@@ -84,10 +92,11 @@ import ContractLink from "@/components/values/link/ContractLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import Property from "@/components/Property.vue";
 
 export default defineComponent({
   name: "ContractResultStateChangeEntry",
-  components: {HexaValue, HbarAmount, EVMAddress, ContractLink},
+  components: {Property, HexaValue, HbarAmount, EVMAddress, ContractLink},
   props: {
     change: Object as PropType<DisplayStateChange | undefined>,
     timestamp: {
@@ -111,4 +120,47 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.state-header {
+  display: flex;
+  gap: 32px;
+  justify-content: flex-start;
+}
+
+div.balance-info {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-start;
+}
+
+div.property-name {
+  color: var(--text-secondary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+div.property-value {
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+hr.table-separator {
+  background-color: var(--table-border);
+  height: 1px;
+  margin: 0;
+}
+
+div.state-change {
+  display: grid;
+  grid-template-columns: 1.5fr 3fr 3fr 3fr;
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+</style>
