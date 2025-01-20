@@ -144,10 +144,10 @@ volumeMounts:
   nginx-config:
     mountPath: /etc/nginx/nginx.conf
     subPath: nginx.conf
-  hiero-network-config:
+  explorer-network-config:
     mountPath: /app/networks-config.json
     subPath: networks-config.json
-  hiero-core-config:
+  explorer-core-config:
     mountPath: /app/core-config.json
     subPath: core-config.json
 
@@ -158,12 +158,12 @@ volumes:
   nginx-config:
     configMap:
       name: '{{ include "hiero-explorer.fullname" . }}-config'
-  hiero-network-config:
+  explorer-network-config:
     configMap:
-      name: '{{ include "hiero-explorer.fullname" . }}-config'
-  hiero-core-config:
+      name: '{{ include "hedera-explorer.fullname" . }}-config'
+  explorer-core-config:
     configMap:
-      name: '{{ include "hiero-explorer.fullname" . }}-config'
+      name: '{{ include "hedera-explorer.fullname" . }}-config'
 
 # Add custom reverse proxy configuration.
 # It is a key-value map where key is the path and value being a URL.
