@@ -1,4 +1,4 @@
-name: "ZC: Compile"
+name: "ZXC: Compile"
 on:
   workflow_call:
     inputs:

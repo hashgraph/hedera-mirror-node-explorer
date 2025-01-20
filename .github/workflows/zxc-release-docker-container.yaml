@@ -1,14 +1,14 @@
-name: "ZXF: Release Docker Image"
+name: "ZXC: Release Docker Container"
 on:
-  push:
-    tags:
-      - 'release/v[0-9]+.[0-9]+.[0-9]+-?*'
-      - 'v[0-9]+.[0-9]+.[0-9]+-?*'
-  workflow_dispatch:
+  workflow_call:
     inputs:
       new-version:
         description: "New Release Version (ie. 0.30.0):"
         type: string
+        required: true
+      dry-run-enabled:
+        description: "Perform Dry Run"
+        type: boolean
         required: true
 
 defaults:
@@ -17,60 +17,16 @@ defaults:
 
 permissions:
   id-token: write
+  packages: write
   contents: read
 
 env:
   LC_ALL: C.UTF-8
 
 jobs:
-  prepare-release:
-    name: Release / Prepare
+  container:
+    name: Container
     runs-on: mirror-node-linux-medium
-    outputs:
-      version: ${{ steps.extract.outputs.version }}
-    steps:
-      - name: Harden Runner
-        uses: step-security/harden-runner@c95a14d0e5bab51a9f56296a4eb0e416910cd350 # v2.10.3
-        with:
-          egress-policy: audit
-
-      - name: Install Semantic Version Tools
-        run: |
-          echo "::group::Download SemVer Binary"
-          sudo curl -L -o /usr/local/bin/semver https://raw.githubusercontent.com/fsaintjacques/semver-tool/master/src/semver
-          echo "::endgroup::"
-          echo "::group::Change SemVer Binary Permissions"
-          sudo chmod -v +x /usr/local/bin/semver
-          echo "::endgroup::"
-          echo "::group::Show SemVer Binary Version Info"
-          semver --version
-          echo "::endgroup::"
-
-      - name: Validate Version
-        run: |
-          VALID_VERSION="$(semver validate "${{ inputs.new-version || github.ref_name }}")"
-          
-          if [[ "${VALID_VERSION}" != "valid" ]]; then 
-            echo "::error title=Version Error::The supplied new-version parameter of '${{ inputs.new_version || github.ref_name }}' is invalid and does not conform to the semantic versioning specifications."
-            exit 2
-          fi
-
-      - name: Extract Version
-        id: extract
-        run: |
-          RELEASE_VERSION="$(semver get release "${{ inputs.new-version || github.ref_name }}")"
-          PRERELEASE_VERSION="$(semver get prerel "${{ inputs.new-version || github.ref_name }}")"
-
-          FINAL_VERSION="${RELEASE_VERSION}"
-          [[ -n "${PRERELEASE_VERSION}" ]] && FINAL_VERSION="${RELEASE_VERSION}-${PRERELEASE_VERSION}"
-
-          echo "version=${FINAL_VERSION}" >>"${GITHUB_OUTPUT}"
-
-  deploy-docker-image:
-    name: Deploy / Docker / Image
-    runs-on: mirror-node-linux-medium
-    needs:
-      - prepare-release
     steps:
       - name: Harden Runner
         uses: step-security/harden-runner@c95a14d0e5bab51a9f56296a4eb0e416910cd350 # v2.10.3
@@ -108,16 +64,26 @@ jobs:
           jq --version
           echo "::endgroup::"
 
+      - name: Retrieve Commit Hash
+        id: commit
+        run: |
+          echo "sha=$(git rev-parse HEAD)" >> "${GITHUB_OUTPUT}"
+          echo "sha-abbrev=$(git rev-parse HEAD | tr -d '[:space:]' | cut -c1-8)" >> "${GITHUB_OUTPUT}"
+          echo "source-date=$(git log -1 --pretty=%ct)" >> "${GITHUB_OUTPUT}"
+
       - name: Update Application Version
         run: |
           cat package.json | \
-            jq --arg version "${{ needs.prepare-release.outputs.version }}" '.version = $version' | \
+            jq --arg version "${{ inputs.new-version }}" '.version = $version' | \
             tee package.json
+
+      - name: Show Package Configuration
+        run: cat package.json
 
       - name: Setup NodeJS
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: 19
+          node-version: 22
           cache: npm
 
       - name: Authenticate to Google Cloud
@@ -133,13 +99,28 @@ jobs:
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@6524bf65af31da8d45b59e8c27de4bd072b392f5 # v3.8.0
+        with:
+          version: v0.16.2
+          driver-opts: network=host
+          buildkitd-config-inline: |
+            [registry."docker.io"]
+              mirrors = ["https://hub.mirror.docker.lat.ope.eng.hashgraph.io"]
 
       - name: Authorize Docker
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        if: ${{ inputs.dry-run-enabled != true }}
         with:
           registry: gcr.io
           username: oauth2accesstoken
           password: ${{ steps.google-auth.outputs.access_token }}
+
+      - name: Authorize Docker
+        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
+        if: ${{ inputs.dry-run-enabled != true }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ github.token }}
 
       - name: Install Dependencies
         run: npm ci
@@ -147,18 +128,24 @@ jobs:
       - name: Compile Code
         run: npm run build
 
-      - name: Build and Push Image
+      - name: Build Image
         uses: docker/build-push-action@67a2d409c0a876cbe6b11854e3e25193efe4e62d # v6.12.0
+        env:
+          SOURCE_DATE_EPOCH: ${{ steps.commit.outputs.source-date }}
         with:
-          push: true
-          file: Dockerfile
-          context: .
+          context: ${{ github.workspace }}
+          push: ${{ inputs.dry-run-enabled != true }}
+          no-cache: true
+          build-args: |
+            SOURCE_DATE_EPOCH=${{ steps.commit.outputs.source-date }}
           platforms: |
             linux/arm64
             linux/amd64
           tags: |
-            gcr.io/hedera-registry/hedera-mirror-node-explorer:${{ needs.prepare-release.outputs.version }}
+            gcr.io/hedera-registry/hedera-mirror-node-explorer:${{ inputs.new-version }}
             gcr.io/hedera-registry/hedera-mirror-node-explorer:latest
+            ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer:${{ inputs.new-version }}
+            ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer:latest
 
       - name: Render Job Summary
         run: |
@@ -167,14 +154,26 @@ jobs:
           printf "| ---------- | ------- | --- | ----------------------- |\n" >> "${GITHUB_STEP_SUMMARY}"
           printf "| %s | %s | %s | %s |\n" \
             "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
-            "${{ needs.prepare-release.outputs.version }}" \
+            "${{ inputs.new-version }}" \
             "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
-            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
+            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"          
           
           printf "| %s | %s | %s | %s |\n" \
             "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
             "latest" \
             "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
+            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
+          
+          printf "| %s | %s | %s | %s |\n" \
+            "ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer" \
+            "${{ inputs.new-version }}" \
+            "[Github Console](https://github.com/hashgraph/hedera-mirror-node-explorer/pkgs/container/hedera-mirror-node-explorer%2Fhedera-explorer)" \
+            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"          
+          
+          printf "| %s | %s | %s | %s |\n" \
+            "ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer" \
+            "latest" \
+            "[Github Console](https://github.com/hashgraph/hedera-mirror-node-explorer/pkgs/container/hedera-mirror-node-explorer%2Fhedera-explorer)" \
             "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
 
           printf "\n\n" >> "${GITHUB_STEP_SUMMARY}"

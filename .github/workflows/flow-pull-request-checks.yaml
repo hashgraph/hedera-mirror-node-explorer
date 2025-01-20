@@ -12,11 +12,10 @@ defaults:
     shell: bash
 
 permissions:
-  contents: read
-  packages: write
   checks: write
-  issues: read
   pull-requests: write
+  contents: read
+  issues: read
 
 concurrency:
   group: pr-checks-${{ github.workflow }}-${{ github.head_ref || github.run_id }}
@@ -25,13 +24,13 @@ concurrency:
 jobs:
   build:
     name: Code
-    uses: ./.github/workflows/comp-compile-explorer-code.yaml
+    uses: ./.github/workflows/zxc-compile-explorer-code.yaml
     secrets:
       access-token: ${{ secrets.GITHUB_TOKEN }}
 
   unit-tests:
     name: Unit Tests
-    uses: ./.github/workflows/comp-compile-explorer-code.yaml
+    uses: ./.github/workflows/zxc-compile-explorer-code.yaml
     with:
       custom-job-label: Standard
       enable-unit-tests: true
@@ -40,7 +39,7 @@ jobs:
 
   e2e-tests:
     name: E2E Tests
-    uses: ./.github/workflows/comp-compile-explorer-code.yaml
+    uses: ./.github/workflows/zxc-compile-explorer-code.yaml
     with:
       custom-job-label: Standard
       enable-e2e-tests: true
@@ -49,7 +48,7 @@ jobs:
 
   sonar-analysis:
     name: Sonar Analysis
-    uses: ./.github/workflows/comp-compile-explorer-code.yaml
+    uses: ./.github/workflows/zxc-compile-explorer-code.yaml
     with:
       custom-job-label: Standard
       enable-sonar-analysis: true

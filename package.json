@@ -1,12 +1,13 @@
 {
-  "name": "@hiero-ledger/hiero-explorer",
-  "version": "0.1.0",
+  "name": "@hashgraph/hedera-explorer",
+  "version": "0.0.1",
   "type": "module",
   "private": true,
   "scripts": {
     "dev": "npm run install:branding && vite --host",
     "dev:http": "npm run install:branding && cp networks-config-http-example.json ./public/networks-config.json  && vite --config nossl.config.ts",
     "build": "run-p type-check build-only",
+    "clean": "rm -rf dist",
     "preview": "npm run install:branding && vite preview",
     "test:unit": "vitest run",
     "cover:unit": "vitest run --coverage",

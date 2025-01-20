@@ -1,5 +1,5 @@
 {{- if .Values.ingress.enabled -}}
-{{- $fullName := include "hiero-explorer.fullname" $ -}}
+{{- $fullName := include "hedera-explorer.fullname" $ -}}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -9,9 +9,9 @@ metadata:
     {{ $key }}: {{ tpl $value $ | quote }}
     {{- end }}
   {{- end }}
-  labels: {{ include "hiero-explorer.labels" . | nindent 4 }}
+  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
   name: {{ $fullName }}
-  namespace: {{ include "hiero-explorer.namespace" . }}
+  namespace: {{ include "hedera-explorer.namespace" . }}
 spec:
   {{- with (coalesce .Values.ingressClassName .Values.ingress.className) }}
   ingressClassName: {{ . }}

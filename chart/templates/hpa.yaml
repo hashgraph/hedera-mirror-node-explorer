@@ -2,9 +2,9 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  labels: {{ include "hiero-explorer.labels" . | nindent 4 }}
-  name: {{ include "hiero-explorer.fullname" . }}
-  namespace: {{ include "hiero-explorer.namespace" . }}
+  labels: {{ include "hedera-explorer.labels" . | nindent 4 }}
+  name: {{ include "hedera-explorer.fullname" . }}
+  namespace: {{ include "hedera-explorer.namespace" . }}
 spec:
   behavior: {{ toYaml .Values.autoscaling.behavior | nindent 4 }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
@@ -13,5 +13,5 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "hiero-explorer.fullname" . }}
+    name: {{ include "hedera-explorer.fullname" . }}
 {{- end -}}

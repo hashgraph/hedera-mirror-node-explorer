@@ -1,0 +1,113 @@
+name: "Release Explorer"
+on:
+  workflow_dispatch:
+    inputs:
+      dry-run-enabled:
+        description: "Perform Dry Run"
+        type: boolean
+        required: false
+        default: false
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  id-token: write
+  packages: write
+  contents: read
+
+jobs:
+  prepare-release:
+    name: Release / Prepare
+    runs-on: mirror-node-linux-medium
+    outputs:
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c95a14d0e5bab51a9f56296a4eb0e416910cd350 # v2.10.3
+        with:
+          egress-policy: audit
+
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 22
+
+      - name: Install Semantic Release
+        run: |
+          npm install -g semantic-release@24.2.0 @semantic-release/git@10.0.1 @semantic-release/github@11.0.1 \
+            @semantic-release/exec@6.0.3 semantic-release-helm3@2.9.3 \
+            conventional-changelog-conventionalcommits@8.0.0 \
+            @commitlint/cli@19.5.0 @commitlint/config-conventional@19.5.0 \
+            marked-mangle@1.1.10 marked-gfm-heading-id@4.1.1 semantic-release-conventional-commits@3.0.0
+
+      - name: Calculate Next Version
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: npx semantic-release --dry-run
+
+      - name: Retrieve Version
+        id: release
+        run: echo "version=$(cat VERSION)" >> "${GITHUB_OUTPUT}"
+
+  publish-container:
+    name: Publish
+    uses: ./.github/workflows/zxc-release-docker-container.yaml
+    needs:
+      - prepare-release
+    with:
+      new-version: ${{ needs.prepare-release.outputs.version }}
+      dry-run-enabled: ${{ inputs.dry-run-enabled }}
+
+  publish-chart:
+    name: Publish
+    uses: ./.github/workflows/zxc-release-helm-chart.yaml
+    needs:
+      - prepare-release
+    with:
+      new-version: ${{ needs.prepare-release.outputs.version }}
+      dry-run-enabled: ${{ inputs.dry-run-enabled }}
+
+  finalize-release:
+    name: Release / Finalize
+    runs-on: mirror-node-linux-medium
+    needs:
+      - publish-container
+      - publish-chart
+    if: ${{ inputs.dry-run-enabled != true }}
+    steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@c95a14d0e5bab51a9f56296a4eb0e416910cd350 # v2.10.3
+        with:
+          egress-policy: audit
+
+      - name: Checkout Code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          token: ${{ secrets.GH_ACCESS_TOKEN }}
+          fetch-depth: 0
+
+      - name: Setup Node
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: 22
+
+      - name: Install Semantic Release
+        run: |
+          npm install -g semantic-release@24.2.0 @semantic-release/git@10.0.1 @semantic-release/github@11.0.1 \
+            @semantic-release/exec@6.0.3 semantic-release-helm3@2.9.3 \
+            conventional-changelog-conventionalcommits@8.0.0 \
+            @commitlint/cli@19.5.0 @commitlint/config-conventional@19.5.0 \
+            marked-mangle@1.1.10 marked-gfm-heading-id@4.1.1 semantic-release-conventional-commits@3.0.0
+
+      - name: Finalize Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_ACCESS_TOKEN }}
+        run: npx semantic-release
