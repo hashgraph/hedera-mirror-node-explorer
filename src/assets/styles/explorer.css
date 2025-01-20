@@ -294,6 +294,11 @@ table.o-table th.o-table__th--left {
     background: var(--h-theme-page-background-color);
 }
 
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
 .h-page-content {
     display: flex;
     flex-direction: column;
