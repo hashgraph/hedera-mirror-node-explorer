@@ -1,19 +1,19 @@
-name: "ZXC: Compile"
+name: "ZXC: Compile Explorer Code"
 on:
   workflow_call:
     inputs:
       enable-unit-tests:
-        description: "Unit Testing Enabled:"
+        description: "Unit Testing Enabled"
         type: boolean
         required: false
         default: false
       enable-e2e-tests:
-        description: "E2E Testing Enabled:"
+        description: "E2E Testing Enabled"
         type: boolean
         required: false
         default: false
       enable-sonar-analysis:
-        description: "Sonar Analysis Enabled:"
+        description: "Sonar Analysis Enabled"
         type: boolean
         required: false
         default: false
