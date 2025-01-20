@@ -24,8 +24,8 @@
 
 <template>
   <template v-if="errorSignature">
-    <div v-if="error">
-      <div class="h-is-tertiary-text my-2">Error</div>
+    <template v-if="error">
+      <div class="h-sub-section">Error</div>
 
       <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
         <template v-slot:name>Signature</template>
@@ -43,7 +43,7 @@
           </template>
         </Property>
       </template>
-    </div>
+    </template>
 
     <template v-else>
       <Property :custom-nb-col-class="customNbColClass" id="functionInput">

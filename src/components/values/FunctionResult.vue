@@ -26,7 +26,7 @@
 
   <template v-if="outputs && outputs.length >= 1">
 
-    <div class="h-is-tertiary-text my-2">Output</div>
+    <div class="h-sub-section">Output</div>
 
     <template v-for="result in outputs" :key="result.name">
       <Property :custom-nb-col-class="customNbColClass">
