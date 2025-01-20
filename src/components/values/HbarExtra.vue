@@ -24,7 +24,6 @@
 
 <template>
   <span v-if="tbarAmount !== 0 || !hideZero"
-        v-bind:class="{'h-is-smaller': smallExtra}"
         class="h-is-extra-text is-numeric">
     {{ dollarAmount }}
   </span>
