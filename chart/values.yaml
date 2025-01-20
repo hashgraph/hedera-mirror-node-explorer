@@ -46,8 +46,8 @@ global:
 image:
   pullPolicy: IfNotPresent
   pullSecrets: []
-  registry: gcr.io
-  repository: hedera-registry/hedera-mirror-node-explorer
+  registry: ghcr.io
+  repository: hashgraph/hedera-mirror-node-explorer/hedera-explorer
   tag: ""  # Defaults to the chart's app version
 
 ingressClassName: ""
@@ -104,7 +104,7 @@ replicas: 1
 
 resources:
   limits:
-    memory: 250Mi
+    memory: 500Mi
   requests:
     cpu: 1150m
     memory: 100Mi
@@ -115,7 +115,7 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop: [ALL]
-#  readOnlyRootFilesystem: true
+  readOnlyRootFilesystem: true
 
 service:
   annotations: {}

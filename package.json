@@ -1,6 +1,6 @@
 {
-  "name": "@hiero-ledger/hiero-explorer",
-  "version": "0.1.0",
+  "name": "@hashgraph/hedera-explorer",
+  "version": "0.0.1",
   "type": "module",
   "private": true,
   "scripts": {
