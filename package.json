@@ -7,6 +7,7 @@
     "dev": "npm run install:branding && vite --host",
     "dev:http": "npm run install:branding && cp networks-config-http-example.json ./public/networks-config.json  && vite --config nossl.config.ts",
     "build": "run-p type-check build-only",
+    "clean": "rm -rf dist",
     "preview": "npm run install:branding && vite preview",
     "test:unit": "vitest run",
     "cover:unit": "vitest run --coverage",

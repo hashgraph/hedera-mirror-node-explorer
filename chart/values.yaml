@@ -115,7 +115,7 @@ securityContext:
   allowPrivilegeEscalation: false
   capabilities:
     drop: [ALL]
-  readOnlyRootFilesystem: true
+#  readOnlyRootFilesystem: true
 
 service:
   annotations: {}

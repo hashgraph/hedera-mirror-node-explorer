@@ -1,8 +1,8 @@
+name: hedera-explorer
 apiVersion: v2
-appVersion: 24.11.0
+version: 24.12.0-alpha.1
+appVersion: 24.12.0-alpha.1
 description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
 home: https://github.com/hashgraph/hedera-mirror-node-explorer
-name: hiero-explorer
 sources:
   - https://github.com/hashgraph/hedera-mirror-node-explorer
-version: 0.2.1

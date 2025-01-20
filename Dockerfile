@@ -11,7 +11,7 @@ ARG SOURCE_DATE_EPOCH="0"
 # Setup Production Container Image
 #
 ########################################################################################################################
-FROM nginx:${NGINX_TAG} as production-interim
+FROM nginx:${NGINX_TAG} AS production-interim
 
 ARG SOURCE_DATE_EPOCH
 
@@ -38,7 +38,7 @@ RUN find $( ls / | grep -E -v "^(dev|mnt|proc|sys)$" ) \
 # Final Image
 #
 ########################################################################################################################
-FROM scratch as production-final
+FROM scratch AS production-final
 COPY --from=production-interim / /
 
 ENV NGINX_VERSION=1.27.3
