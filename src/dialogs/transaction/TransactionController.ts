@@ -23,6 +23,7 @@ import {TaskController} from "@/dialogs/core/task/TaskController.ts";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache.ts";
 import {isSuccessfulResult} from "@/utils/TransactionTools.ts";
+import {TransactionID} from "@/utils/TransactionID.ts";
 
 export abstract class TransactionController extends TaskController {
 
@@ -87,7 +88,8 @@ export abstract class TransactionController extends TaskController {
             }
         }
         if (this.transactionId.value !== null) {
-            const t = await TransactionByIdCache.instance.lookup(this.transactionId.value)
+            const tid = TransactionID.normalize(this.transactionId.value)
+            const t = await TransactionByIdCache.instance.lookup(tid)
             this.transactionResult.value = t?.result ?? null
         } else {
             this.transactionResult.value = null
