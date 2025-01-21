@@ -30,7 +30,7 @@
 
       <DashboardCardV2 collapsible-key="contractDetails">
         <template #title>
-          {{ `Contract ${contractName}` }}
+          {{ `Contract ${contractName ?? ''}` }}
           <div v-if="isVerified" class="h-has-pill" style="margin-top: 2px">
             VERIFIED
           </div>
