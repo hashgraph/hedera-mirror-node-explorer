@@ -128,32 +128,32 @@ export class ApproveAllowanceController extends TransactionController {
     public async executeTransaction(): Promise<string|null> {
         let result: string|null
 
-    const spender = this.spender.value!
-    switch(this.allowanceChoice.value) {
-        case "hbar": {
-            const hbarAmount = this.hbarAmount.value!
-            result = await walletManager.approveHbarAllowance(spender, hbarAmount)
-            break
+        const spender = this.spender.value!
+        switch(this.allowanceChoice.value) {
+            case "hbar": {
+                const hbarAmount = this.hbarAmount.value!
+                result = await walletManager.approveHbarAllowance(spender, hbarAmount)
+                break
+            }
+            case "token": {
+                const tokenId = this.tokenId.value!
+                const tokenAmount = this.tokenAmount.value!
+                result = await walletManager.approveTokenAllowance(tokenId, spender, Number(tokenAmount))
+                break
+            }
+            case "nft": {
+                const nftId = this.nftId.value!
+                const nftSerials = this.nftSerials.value!
+                result = await walletManager.approveNFTAllowance(nftId, spender, nftSerials)
+                break
+            }
+            default: {
+                result = null
+                break
+            }
         }
-        case "token": {
-            const tokenId = this.tokenId.value!
-            const tokenAmount = this.tokenAmount.value!
-            result = await walletManager.approveTokenAllowance(tokenId, spender, Number(tokenAmount))
-            break
-        }
-        case "nft": {
-            const nftId = this.nftId.value!
-            const nftSerials = this.nftSerials.value!
-            result = await walletManager.approveNFTAllowance(nftId, spender, nftSerials)
-            break
-        }
-        default: {
-            result = null
-            break
-        }
-    }
 
-    return Promise.resolve(result)
+        return Promise.resolve(result)
     }
 
     //

@@ -86,10 +86,6 @@
   </DashboardCardV2>
 
   <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
-                          :owner-account-id="ownerAccountId"
-                          :current-hbar-allowance="currentHbarAllowance"
-                          :current-token-allowance="currentTokenAllowance"
-                          :token-decimals="tokenDecimals"
                           @allowance-approved="onAllowanceApproved"
   />
 
@@ -124,7 +120,7 @@ import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanc
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
-import ApproveAllowanceDialog from "@/dialogs/ApproveAllowanceDialog.vue";
+import ApproveAllowanceDialog from "@/dialogs/transaction/allowance/approve/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/MirrorNodeSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import Tabs from "@/components/Tabs.vue";
