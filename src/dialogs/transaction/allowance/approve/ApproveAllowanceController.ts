@@ -131,8 +131,8 @@ export class ApproveAllowanceController extends TransactionController {
         const spender = this.spender.value!
         switch(this.allowanceChoice.value) {
             case "crypto": {
-                const cryptoAmount = this.cryptoAmount.value!
-                result = await walletManager.approveHbarAllowance(spender, Number(cryptoAmount))
+                const cryptoUserAmount = this.cryptoUserAmount.value!
+                result = await walletManager.approveHbarAllowance(spender, Number(cryptoUserAmount))
                 break
             }
             case "token": {
@@ -200,7 +200,7 @@ export class ApproveAllowanceController extends TransactionController {
 
     private readonly cryptoOK = computed(() => this.cryptoController.tinyAmount.value !== null)
 
-    private readonly cryptoAmount = computed(() => this.cryptoController.tinyAmount.value)
+    private readonly cryptoUserAmount = computed(() => this.cryptoController.userAmount.value)
 
     private readonly crytpoFeedbackMessage = computed(() => {
         let result: string|null
