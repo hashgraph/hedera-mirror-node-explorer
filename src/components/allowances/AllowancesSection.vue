@@ -125,7 +125,7 @@ import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanc
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
-import ApproveAllowanceDialog from "@/dialogs/transaction/allowance/approve/ApproveAllowanceDialog.vue";
+import ApproveAllowanceDialog from "@/dialogs/transaction/allowance/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/MirrorNodeSchemas";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import Tabs from "@/components/Tabs.vue";
@@ -141,7 +141,7 @@ import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
-import UpdateCryptoAllowanceDialog from "@/dialogs/transaction/allowance/approve/UpdateCryptoAllowanceDialog.vue";
+import UpdateCryptoAllowanceDialog from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceDialog.vue";
 
 const props = defineProps({
   accountId: String,
