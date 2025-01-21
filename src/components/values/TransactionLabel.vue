@@ -23,11 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span>
+  <span style="display: flex; gap: 8px;">
     <span class="is-numeric">{{ transactionText }}</span>
-    <span v-if="errorFlagVisible" class="icon has-text-danger">
-      <i class="fas fa-exclamation-triangle"></i>
-    </span>
+    <TriangleAlert v-if="errorFlagVisible" :size="18" class="h-is-error"/>
   </span>
 </template>
 
@@ -35,32 +33,24 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent} from "vue";
+import {computed} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
 import {isSuccessfulResult} from "@/utils/TransactionTools";
+import {TriangleAlert} from 'lucide-vue-next';
 
-export default defineComponent({
-  name: "TransactionLabel",
+const props = defineProps({
+  transactionId: String,
+  result: String
+})
 
-  props: {
-    transactionId: String,
-    result: String
-  },
+const transactionText = computed(() => {
+  return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : ""
+})
 
-  setup(props) {
-    const transactionText = computed(() => {
-      return props.transactionId ? TransactionID.normalizeForDisplay(props.transactionId) : ""
-    })
-
-    const errorFlagVisible = computed(() => {
-      return props.result && !isSuccessfulResult(props.result)
-    })
-
-    return {transactionText, errorFlagVisible}
-  }
-
+const errorFlagVisible = computed(() => {
+  return props.result && !isSuccessfulResult(props.result)
 })
 
 </script>
