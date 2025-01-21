@@ -33,7 +33,7 @@
   </Copyable>
   <div v-else-if="showNone && !initialLoading">
     <div class="has-text-grey">None</div>
-    <div v-if="noneExtra" class="has-text-grey h-is-text-size-3">{{ noneExtra }}</div>
+    <div v-if="noneExtra" class="has-text-grey">{{ noneExtra }}</div>
   </div>
   <div v-else/>
 </template>
