@@ -22,7 +22,7 @@ import {ethers} from "ethers";
 import {computed, ref, Ref} from "vue";
 import {InputChangeController} from "@/components/utils/InputChangeController.ts";
 
-export class HbarTextFieldController {
+export class CryptoTextFieldController {
 
     private readonly inputChangeController: InputChangeController
 
@@ -54,23 +54,26 @@ export class HbarTextFieldController {
         return result
     })
 
-    public readonly amount = computed(() => {
-        let result: number|null
-        if (this.state.value === HbarTextFieldState.ok) {
-            const trimmedValue = this.inputChangeController.outputText.value.trim()
-            const f = parseFloat(trimmedValue)
-            result = isNaN(f) ? null : f
+    public readonly userAmount = computed<string|null>(() => {
+        let result: string|null
+        const tinyAmount = this.tinyAmount.value
+        if (tinyAmount !== null) {
+            result = ethers.formatUnits(tinyAmount, 8)
         } else {
             result = null
         }
         return result
     })
 
-    public readonly tbarAmount = computed(() => {
+    public readonly tinyAmount = computed<bigint|null>(() => {
         let result: bigint|null
-        const amount = this.amount.value
-        if (amount !== null) {
-            result = ethers.parseUnits(amount.toString(), 8)
+        if (this.state.value === HbarTextFieldState.ok) {
+            const trimmedValue = this.inputChangeController.outputText.value.trim()
+            try {
+                result = ethers.parseUnits(trimmedValue, 8)
+            } catch {
+                result = null
+            }
         } else {
             result = null
         }

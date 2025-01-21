@@ -51,7 +51,7 @@
         <template #cellTitle>Allowance Type</template>
         <template #cellContent>
           <div style="display: flex; column-gap: 12px">
-            <RabioBoxView name="allowanceType" value="hbar" v-model="allowanceChoice">HBAR</RabioBoxView>
+            <RabioBoxView name="allowanceType" value="crypto" v-model="allowanceChoice">HBAR</RabioBoxView>
             <RabioBoxView name="allowanceType" value="token" v-model="allowanceChoice">Fungible Token</RabioBoxView>
             <RabioBoxView name="allowanceType" value="nft" v-model="allowanceChoice">NFT</RabioBoxView>
           </div>
@@ -64,7 +64,7 @@
           <template #cellTitle>HBAR Amount</template>
           <template #cellContent>
             <TextFieldView
-                v-model="hbarAmountInput"
+                v-model="cryptoAmountInput"
                 placeholder="HBAR Amount"
                 style="width: 100%"/>
           </template>
@@ -146,7 +146,7 @@ const controller = new ApproveAllowanceController(showDialog, networkConfig)
 const spenderInput = controller.spenderController.input
 const tokenInput = controller.tokenController.input
 const nftInput = controller.nftController.input
-const hbarAmountInput = controller.hbarController.input
+const cryptoAmountInput = controller.cryptoController.input
 const tokenAmountInput = controller.tokenAmountController.input
 
 const feedbackMessage = controller.feedbackMessage
@@ -160,7 +160,7 @@ const visibleIndex = computed(() => {
   let result: number
   switch(controller.allowanceChoice.value) {
     default:
-    case "hbar":
+    case "crypto":
       result = 0
       break
     case "token":
