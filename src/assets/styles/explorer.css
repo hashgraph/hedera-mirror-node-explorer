@@ -86,14 +86,23 @@
     --table-border: var(--light-table-border);
     --chip-primary: var(--light-chip-primary);
     --chip-text-primary: var(--light-chip-text-primary);
-    --button-text-primary: #FFFFFF;
     --button-text-secondary: var(--text-primary);
     --button-background-primary: var(--light-button-background-primary);
     --button-background-secondary: var(--light-button-background-secondary);
-    --icon-default-color: #A2A2A2;
     --tab-background: var(--light-tab-background);
 
     --network-theme-color: var(--light-network-theme-color);
+}
+
+/*
+    Colors independent from the Dark/Light theme
+ */
+
+:root {
+    --button-text-primary: #FFFFFF;
+    --icon-default-color: #A2A2A2;
+    --status-success-color: #00722D;
+    --status-error-color: #C40E3A;
 }
 
 /*
@@ -322,6 +331,19 @@ a {
 .has-text-grey {
     color: var(--text-secondary) !important;
 }
+
+.h-is-success {
+    color: var(--status-success-color) !important;
+}
+
+.h-is-error {
+    color: var(--status-error-color) !important;
+}
+
+/*  =========THOSE ABOVE STAY - THOSE BELOW NEED TRIAGE ==========
+ */
+
+
 
 .h-is-table-compact table.o-table {
     margin: 0;
