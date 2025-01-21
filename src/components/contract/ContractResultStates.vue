@@ -50,7 +50,10 @@
 
       <div class="state-changes">
         <template v-for="s in nbChangeDisplayed" :key="s">
-          <ContractResultStateChangeEntry :change="displayStateChanges[changeCursor + s - 1]" :timestamp="timeStamp"/>
+          <ContractResultStateChangeEntry
+              :change="displayStateChanges[changeCursor + s - 1]"
+              :timestamp="timeStamp"
+          />
           <hr class="table-separator"/>
         </template>
       </div>
@@ -305,4 +308,5 @@ div.pagination {
   display: flex;
   justify-content: flex-end;
 }
+
 </style>
