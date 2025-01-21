@@ -33,7 +33,7 @@
     </div>
     <div v-else>
       <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
-      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ keyType }}</div>
+      <div v-if="keyBytes" class="h-is-extra-text">{{ keyType }}</div>
     </div>
   </template>
 </template>
