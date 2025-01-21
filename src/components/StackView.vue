@@ -47,7 +47,7 @@ const render = () => {
   if (slots.default) {
     let i = 0
     for (const c of slots.default()) {
-      const visibility = i == props.visibleIndex ? 'visible' : 'hidden'
+      const visibility = i == props.visibleIndex ? 'inherit' : 'hidden'
       const style = "visibility: " + visibility + "; grid-area: 1 / 1 / 2 / 2"
       childNodes.push(h('div', {'style': style}, c))
       i += 1

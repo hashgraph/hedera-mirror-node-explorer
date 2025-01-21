@@ -31,26 +31,25 @@
 
     <template #modalDialogContent>
 
-      <div class="dialog-stack">
-
-        <div class="dialog-layer-input" :style="{'visibility': inputVisibility}">
+      <StackView :visible-index="visibleIndex">
+        <div class="dialog-layer-input">
           <slot name="taskDialogInput"/>
         </div>
-        <div class="dialog-layer-busy" :style="{'visibility': busyVisibility}">
+        <div class="dialog-layer-busy">
           <slot name="taskDialogBusy">Task is on-going…</slot>
         </div>
-        <div  class="dialog-layer-success" :style="{'visibility': successVisibility}">
+        <div  class="dialog-layer-success">
           <slot name="taskDialogSuccess">Task did succeed</slot>
         </div>
-        <div  class="dialog-layer-error" :style="{'visibility': errorVisibility}">
+        <div  class="dialog-layer-error">
           <slot name="taskDialogError">Task did fail</slot>
         </div>
-      </div>
+      </StackView>
 
     </template>
 
     <template #modalDialogControls>
-      <div class="dialog-layer-controls" :style="{'visibility': inputVisibility}">
+      <div class="dialog-layer-controls" :style="{'visibility': controlVisibility}">
         <slot name="taskDialogControls"/>
       </div>
     </template>
@@ -113,6 +112,7 @@ import {computed, PropType, ref, useSlots, watch} from "vue";
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
+import StackView from "@/components/StackView.vue";
 
 const props = defineProps({
   controller: {
@@ -169,13 +169,27 @@ const cancelButtonEnabled = computed(
 const executeButtonEnabled = computed(
     () => state.value == TaskDialogState.Input && props.controller.canBeExecuted())
 
-const inputVisibility = computed(() => state.value == TaskDialogState.Input ? "visible" : "hidden")
+const visibleIndex = computed((): number => {
+  let result: number
+  switch(state.value) {
+    case TaskDialogState.Input:
+      result = 0
+      break
+    case TaskDialogState.Busy:
+      result = 1
+      break
+    case TaskDialogState.Success:
+      result = 2
+      break
+    case TaskDialogState.Error:
+      result = 3
+      break
+  }
+  return result
+})
 
-const busyVisibility = computed(() => state.value == TaskDialogState.Busy ? "visible" : "hidden")
 
-const successVisibility = computed(() => state.value == TaskDialogState.Success ? "visible" : "hidden")
-
-const errorVisibility = computed(() => state.value == TaskDialogState.Error ? "visible" : "hidden")
+const controlVisibility = computed(() => state.value == TaskDialogState.Input ? "inherit" : "hidden")
 
 const changeState = (newValue: TaskDialogState) => {
   state.value = newValue
@@ -193,19 +207,6 @@ const showConfirmDialog = ref(false)
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.dialog-stack {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  justify-items: stretch;
-  place-items: stretch;
-}
-
-div.dialog-stack div {
-  grid-column-start: 1;
-  grid-row-start: 1
-}
 
 div.dialog-layer-input {
   display: flex;
