@@ -19,8 +19,6 @@
  */
 
 const STROKE_WIDTH = 1
-const STROKE_COLOR = "white"
-
 
 /*
 
@@ -44,7 +42,10 @@ export function makeTransferSVG(width: number, height: number, dy: number,
     const path = makeTransferPathZ(width, height, dy, sourceCount, destCount, rowIndex)
 
     let result = "<svg style='width: 100%; height: 100%; position: absolute; left:0; top:0' viewBox='0 0 " + width + " " + height + "'>\n"
-    result += "<path d='" + path + "' stroke=" + STROKE_COLOR + " stroke-width='" + STROKE_WIDTH + "' fill='none' />\n"
+    result += "<path d='" + path
+        + "' stroke=" + window.getComputedStyle(document.body).getPropertyValue('--text-primary')
+        + " stroke-width='" + STROKE_WIDTH
+        + "' fill='none' />\n"
     result += "</svg>"
 
     return result
