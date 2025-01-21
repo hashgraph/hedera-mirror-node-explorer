@@ -25,14 +25,13 @@
 <template>
 
   <div
-      class="property-root"
-      :class="{'property-root': !vertical ? 'property-root-vertical' : 'vertical'}"
+      :class="{'property-root': !vertical, 'property-root-vertical' : vertical}"
       :style="{'justify-content': (isSmallScreen || vertical) ? 'flex-start' : 'space-between'}"
       :id="id"
   >
     <div
         class="property-left-side"
-        :style="{'width': leftSideWidth}"
+        :style="{'width': vertical ? '100%' : leftSideWidth}"
         :id="nameId"
     >
       <span class="property-name">
@@ -112,6 +111,12 @@ div.property-root {
   align-items: flex-start;
   display: flex;
   gap: 16px
+}
+
+div.property-root-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 div.property-left-side {
