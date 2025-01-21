@@ -24,7 +24,7 @@
 
 <template>
   <label style="font-size: 14px">
-    <input type="radio" name="stakeTarget" :value="value" v-model="model" style="vertical-align: middle"/>
+    <input type="radio" :name="props.name" :value="props.value" v-model="model" style="vertical-align: middle"/>
     <span style="padding-left: 6px">
       <slot/>
     </span>
