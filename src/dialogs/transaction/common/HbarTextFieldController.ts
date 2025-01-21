@@ -18,6 +18,7 @@
  *
  */
 
+import {ethers} from "ethers";
 import {computed, ref, Ref} from "vue";
 import {InputChangeController} from "@/components/utils/InputChangeController.ts";
 
@@ -65,6 +66,16 @@ export class HbarTextFieldController {
         return result
     })
 
+    public readonly tbarAmount = computed(() => {
+        let result: bigint|null
+        const amount = this.amount.value
+        if (amount !== null) {
+            result = ethers.parseUnits(amount.toString(), 8)
+        } else {
+            result = null
+        }
+        return result
+    })
 }
 
 export enum HbarTextFieldState {
