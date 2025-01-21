@@ -26,7 +26,7 @@ import {
     AccountTextFieldState
 } from "@/dialogs/transaction/common/AccountTextFieldController.ts";
 import {TokenTextFieldController, TokenTextFieldState} from "@/dialogs/transaction/common/TokenTextFieldController.ts";
-import {NetworkConfig} from "@/config/NetworkConfig";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/transaction/common/CryptoTextFieldController.ts";
 import {
     TokenAmountTextFieldController,

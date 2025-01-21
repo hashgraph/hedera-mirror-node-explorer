@@ -126,9 +126,9 @@
 
 import {computed} from "vue";
 import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
-import {ApproveAllowanceController} from "@/dialogs/transaction/allowance/approve/ApproveAllowanceController.ts";
+import {ApproveAllowanceController} from "@/dialogs/transaction/allowance/ApproveAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
-import {NetworkConfig} from "@/config/NetworkConfig";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import RabioBoxView from "@/components/RabioBoxView.vue";
 import StackView from "@/components/StackView.vue";
 import TextFieldView from "@/components/TextFieldView.vue";

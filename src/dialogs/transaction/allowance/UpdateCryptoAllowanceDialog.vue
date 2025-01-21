@@ -63,7 +63,7 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {UpdateCryptoAllowanceController} from "@/dialogs/transaction/allowance/approve/UpdateCryptoAllowanceController.ts";
+import {UpdateCryptoAllowanceController} from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceController.ts";
 import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
