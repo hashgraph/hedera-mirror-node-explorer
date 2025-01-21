@@ -34,7 +34,7 @@
         :style="{'width': vertical ? '100%' : leftSideWidth}"
         :id="nameId"
     >
-      <span class="property-name">
+      <span class="property-name" :class="{'uppercase': !props.keepCase}">
         <slot name="name"/>
       </span>
       <InfoTooltip v-if="tooltip" :label="tooltip"  />
@@ -65,7 +65,7 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  wideName: {
+  keepCase: {
     type: Boolean,
     default: false
   },
@@ -131,6 +131,9 @@ span.property-name {
   font-weight: 500;
   height: 16px;
   margin-right: 4px;
+}
+
+span.uppercase {
   text-transform: uppercase;
 }
 
