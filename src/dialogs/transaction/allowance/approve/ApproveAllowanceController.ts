@@ -27,7 +27,7 @@ import {
 } from "@/dialogs/transaction/common/AccountTextFieldController.ts";
 import {TokenTextFieldController, TokenTextFieldState} from "@/dialogs/transaction/common/TokenTextFieldController.ts";
 import {NetworkConfig} from "@/config/NetworkConfig";
-import {HbarTextFieldController, HbarTextFieldState} from "@/dialogs/transaction/common/HbarTextFieldController.ts";
+import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/transaction/common/CryptoTextFieldController.ts";
 import {
     TokenAmountTextFieldController,
     TokenAmountTextFieldState
@@ -38,7 +38,7 @@ export class ApproveAllowanceController extends TransactionController {
     public readonly spenderController: AccountTextFieldController
     public readonly tokenController: TokenTextFieldController
     public readonly nftController: TokenTextFieldController
-    public readonly hbarController: HbarTextFieldController
+    public readonly cryptoController: CryptoTextFieldController
     public readonly tokenAmountController: TokenAmountTextFieldController
 
     //
@@ -50,7 +50,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.spenderController = new AccountTextFieldController(networkConfig)
         this.tokenController = new TokenTextFieldController(networkConfig)
         this.nftController = new TokenTextFieldController(networkConfig)
-        this.hbarController = new HbarTextFieldController(true)
+        this.cryptoController = new CryptoTextFieldController(true)
         this.tokenAmountController = new TokenAmountTextFieldController(this.tokenId, true)
     }
 
@@ -58,7 +58,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.spenderController.mount()
         this.tokenController.mount()
         this.nftController.mount()
-        // no mount() for this.hbarController
+        // no mount() for this.cryptoController
         this.tokenAmountController.mount()
     }
 
@@ -66,18 +66,18 @@ export class ApproveAllowanceController extends TransactionController {
         this.spenderController.input.value = ""
         this.tokenController.input.value = ""
         this.nftController.input.value = ""
-        this.hbarController.input.value = ""
+        this.cryptoController.input.value = ""
         this.tokenAmountController.input.value = ""
 
         this.spenderController.unmount()
         this.tokenController.unmount()
         this.nftController.unmount()
-        // no unmount() for this.hbarController
+        // no unmount() for this.cryptoController
         this.tokenAmountController.unmount()
     }
 
 
-    public readonly allowanceChoice = ref("hbar") // hbar, token, nft
+    public readonly allowanceChoice = ref("crypto") // crypto, token, nft
 
     public readonly feedbackMessage = computed(() => {
         let result: string|null
@@ -85,8 +85,8 @@ export class ApproveAllowanceController extends TransactionController {
             result = this.spenderFeedbackMessage.value
         } else {
             switch(this.allowanceChoice.value) {
-                case "hbar":
-                    result = this.hbarFeedbackMessage.value
+                case "crypto":
+                    result = this.crytpoFeedbackMessage.value
                     break
                 case "token":
                     result = this.tokenFeedbackMessage.value ?? this.tokenAmountFeedbackMessage.value
@@ -109,8 +109,8 @@ export class ApproveAllowanceController extends TransactionController {
     public canBeExecuted(): boolean {
         let result: boolean
         switch(this.allowanceChoice.value) {
-            case "hbar":
-                result = this.hbarOK.value
+            case "crypto":
+                result = this.cryptoOK.value
                 break
             case "token":
                 result = this.tokenOK.value && this.tokenAmountOK.value
@@ -130,9 +130,9 @@ export class ApproveAllowanceController extends TransactionController {
 
         const spender = this.spender.value!
         switch(this.allowanceChoice.value) {
-            case "hbar": {
-                const hbarAmount = this.hbarAmount.value!
-                result = await walletManager.approveHbarAllowance(spender, hbarAmount)
+            case "crypto": {
+                const cryptoAmount = this.cryptoAmount.value!
+                result = await walletManager.approveHbarAllowance(spender, Number(cryptoAmount))
                 break
             }
             case "token": {
@@ -195,16 +195,16 @@ export class ApproveAllowanceController extends TransactionController {
     })
 
     //
-    // hbar
+    // crypto
     //
 
-    private readonly hbarOK = computed(() => this.hbarController.amount.value !== null)
+    private readonly cryptoOK = computed(() => this.cryptoController.tinyAmount.value !== null)
 
-    private readonly hbarAmount = computed(() => this.hbarController.amount.value)
+    private readonly cryptoAmount = computed(() => this.cryptoController.tinyAmount.value)
 
-    private readonly hbarFeedbackMessage = computed(() => {
+    private readonly crytpoFeedbackMessage = computed(() => {
         let result: string|null
-        switch(this.hbarController.state.value) {
+        switch(this.cryptoController.state.value) {
             case HbarTextFieldState.empty:
                 result = null
                 break
