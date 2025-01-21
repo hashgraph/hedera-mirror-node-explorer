@@ -24,29 +24,34 @@
 
 <template>
 
-  <DashboardCard v-if="logs?.length" class="h-card" collapsible-key="contractEvents">
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Events</span>
+  <DashboardCardV2 v-if="props.logs?.length" collapsible-key="contractEvents">
+    <template #title>
+      Events
     </template>
 
-    <template v-slot:control v-if="logs.length > 2">
+    <template #right-control v-if="props.logs.length > 2">
       <SelectView v-model="pageSize" :small="true">
         <option v-for="n of actualSizeOptions" :key="n" :value="n">
-          {{ (n >= logs?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
+          {{ (n >= props.logs?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
         </option>
       </SelectView>
     </template>
-    <template v-slot:content>
+
+    <template #content>
       <template v-for="l in nbLogDisplayed" :key="l">
-        <ContractResultLogEntry :log="logs[logCursor + l - 1]" :block-number="blockNumber"
-                                :transaction-hash="transactionHash"/>
-        <hr class="h-card-separator" style="height: 1px; background: grey"/>
+        <ContractResultLogEntry
+            :log="props.logs[logCursor + l - 1]"
+            :block-number="props.blockNumber"
+            :transaction-hash="props.transactionHash"
+        />
+        <hr class="table-separator"/>
       </template>
 
-      <div v-if="isPaginated" class="is-flex is-justify-content-flex-end">
+      <div v-if="isPaginated" class="pagination">
         <o-pagination
-            :total="logs.length"
+            :total="props.logs.length"
             v-model:current="currentPage"
+            order="centered"
             :range-before="1"
             :range-after="1"
             :per-page="pageSize"
@@ -60,7 +65,7 @@
 
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -68,77 +73,55 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, Ref, ref, watch} from "vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import {computed, onMounted, PropType, Ref, ref, watch} from "vue";
 import ContractResultLogEntry from "@/components/contract/ContractResultLogEntry.vue";
 import {ContractLog} from "@/schemas/MirrorNodeSchemas";
 import {AppStorage} from "@/AppStorage";
 import SelectView from "@/components/SelectView.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const DEFAULT_PAGE_SIZE = 3
 
-export default defineComponent({
-
-  name: "ContractResultLogs",
-
-  components: {
-    SelectView,
-    ContractResultLogEntry,
-    DashboardCard
+const props = defineProps({
+  logs: Object as PropType<Array<ContractLog> | undefined>,
+  blockNumber: {
+    type: Number,
   },
+  transactionHash: {
+    type: String
+  }
+})
 
-  props: {
-    logs: Object as PropType<Array<ContractLog> | undefined>,
-    blockNumber: {
-      type: Number,
-    },
-    transactionHash: {
-      type: String
-    }
-  },
+const sizeOptions: Array<number> = [3, 5, 10, 15, 20, 30]
+const actualSizeOptions: Ref<Array<number>> = ref([])
 
-  setup(props) {
-    const sizeOptions: Array<number> = [3, 5, 10, 15, 20, 30]
-    const actualSizeOptions: Ref<Array<number>> = ref([])
+const currentPage = ref(1)
+const pageSize = ref(AppStorage.getLogsTablePageSize() ?? DEFAULT_PAGE_SIZE)
+watch(pageSize, () => {
+  AppStorage.setLogsTablePageSize(pageSize.value)
+  currentPage.value = 1
+})
 
-    const currentPage = ref(1)
-    const pageSize = ref(AppStorage.getLogsTablePageSize() ?? DEFAULT_PAGE_SIZE)
-    watch(pageSize, () => {
-      AppStorage.setLogsTablePageSize(pageSize.value)
-      currentPage.value = 1
-    })
-
-    onMounted(() => updatePageSize())
-    watch(() => props.logs, () => updatePageSize())
-    const updatePageSize = () => {
-      let options: Array<number> = sizeOptions
-      for (let i = 0; i < options.length - 1; i++) {
-        if (options[i] > (props.logs?.length ?? 0)) {
-          options = options.slice(0, i + 1)
-          pageSize.value = Math.min(pageSize.value, options[i])
-          break
-        }
-      }
-      actualSizeOptions.value = options
-    }
-
-    const isPaginated = computed(() => props.logs?.length && props.logs?.length > pageSize.value)
-    const logCursor = computed(() => (currentPage.value - 1) * pageSize.value)
-    const nbLogDisplayed = computed(() => {
-      return props.logs?.length ? Math.min(pageSize.value, props.logs?.length - logCursor.value) : 0
-    })
-
-    return {
-      actualSizeOptions,
-      currentPage,
-      isPaginated,
-      logCursor,
-      pageSize,
-      nbLogDisplayed
+onMounted(() => updatePageSize())
+watch(() => props.logs, () => updatePageSize())
+const updatePageSize = () => {
+  let options: Array<number> = sizeOptions
+  for (let i = 0; i < options.length - 1; i++) {
+    if (options[i] > (props.logs?.length ?? 0)) {
+      options = options.slice(0, i + 1)
+      pageSize.value = Math.min(pageSize.value, options[i])
+      break
     }
   }
+  actualSizeOptions.value = options
+}
+
+const isPaginated = computed(() => props.logs?.length && props.logs?.length > pageSize.value)
+const logCursor = computed(() => (currentPage.value - 1) * pageSize.value)
+const nbLogDisplayed = computed(() => {
+  return props.logs?.length ? Math.min(pageSize.value, props.logs?.length - logCursor.value) : 0
 })
 
 </script>
@@ -148,4 +131,16 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+hr.table-separator {
+  background-color: var(--border-secondary);
+  height: 1px;
+  margin: 0;
+}
+
+div.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
 </style>

@@ -24,78 +24,84 @@
 
 <template>
 
-  <div v-if="log" :class="{'log-wrapper-grid': isMediumScreen, 'log-wrapper-flex': !isMediumScreen}">
+  <div v-if="props.log" :class="{'log-wrapper-grid': isMediumScreen, 'log-wrapper-flex': !isMediumScreen}">
+
     <!-- left content-->
     <div :class="{'log-left-content-grid': isMediumScreen}">
-      <PropertyVertical id="transactionHash" :is-horizontal="!isMediumScreen">
+      <Property id="transactionHash" :vertical="isMediumScreen">
         <template v-slot:name>Transaction Hash</template>
         <template v-slot:value>
-          <HexaValue v-bind:byteString="txHashToShow" v-bind:show-none="true"/>
+          <HexaValue :byteString="txHashToShow" :show-none="true"/>
         </template>
-      </PropertyVertical>
+      </Property>
 
-      <PropertyVertical id="blockNumber" :is-horizontal="!isMediumScreen">
+      <Property id="blockNumber" :vertical="isMediumScreen">
         <template v-slot:name>Block</template>
         <template v-slot:value>
-          <p class="h-is-text-size-3">
-            <BlockLink :block-number="blockNumber"/>
-          </p>
+          <BlockLink :block-number="blockNumberToShow"/>
         </template>
-      </PropertyVertical>
+      </Property>
 
-      <PropertyVertical id="address" :is-horizontal="!isMediumScreen">
+      <Property id="address" :vertical="isMediumScreen">
         <template v-slot:name>Address</template>
         <template v-slot:value>
-          <EVMAddress :address="log.address" :enable-copy="true" :compact="!isSmallScreen && !isMediumScreen"/>
+          <EVMAddress :address="props.log.address" enable-copy compact has-custom-font/>
         </template>
-      </PropertyVertical>
+      </Property>
     </div>
 
     <!-- right content -->
-    <PropertyVertical id="Args" style="grid-column: span 14;">
+    <Property id="Args" vertical style="grid-column: span 14;">
       <template v-slot:name>Logs</template>
       <template v-slot:value>
-        <!-- not verified -->
-        <div v-if="!isContractVerified" class="is-flex is-flex-direction-column mt-1" style="gap: 0.75rem;">
-          <div v-for="(t, ti) in log.topics" :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}"
-               :key="t" class="is-flex" style="gap: 1rem;">
-            <div class="topic-title-box">
-              <span style="font-size: 0.85rem">{{ 'Topic ' + ti }}</span>
-            </div>
 
-            <HexaValue :show-none="true" v-bind:byteString="t" :low-contrast="ti === 0"
-                       :word-wrap-small="0" :word-wrap-medium="8"/>
+        <!-- not verified -->
+        <div v-if="!isContractVerified" class="log-content">
+          <div
+              v-for="(t, ti) in props.log.topics"
+              :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}"
+              :key="t"
+              class="unverified-log-entry"
+          >
+            <div class="topic-title-box">
+              <span>{{ 'Topic ' + ti }}</span>
+            </div>
+            <HexaValue :show-none="true" :byteString="t" :word-wrap-small="0" :word-wrap-medium="8"/>
           </div>
         </div>
 
         <!-- verified -->
-        <div v-else class="log-content-box">
-          <span class="h-is-property-text h-is-text-size-3 should-wrap">{{ fullLogSignature }}</span>
+        <div v-else class="log-content">
+          <span class="should-wrap">{{ fullLogSignature }}</span>
 
-          <template v-for="(arg, i) in args" :key="arg.name">
-            <PropertyVertical :id="'logArg_' + arg.name" :full-width="true" :is-horizontal="!isMediumScreen">
-              <template v-slot:name>
-                <div class="is-flex is-align-items-center" style="gap: 0.5rem;">
-                  <div v-if="arg.indexed" class="topic-title-box">
-                    <span style="font-size: 0.85rem">{{ 'Topic ' + i }}</span>
-                  </div>
-                  <span class="h-is-property-text is-italic log-arg-title">
+          <div
+              v-for="(arg, i) in args"
+              :key="arg.name"
+              class="verified-log-entry"
+          >
+            <div v-if="arg.indexed" class="topic-title-box">{{ 'Topic ' + i }}</div>
+            <div v-else/>
+
+            <div class="log-entry-arg">
+              <Property :id="'logArg_' + arg.name" keep-case full-width :vertical="isMediumScreen">
+                <template v-slot:name>
+                  <span class=" log-arg-title">
                       <span class="h-is-extra-text">
                         {{ arg.type }}
                       </span>
                       {{ " " + arg.name }}
                     </span>
-                </div>
-
-              </template>
-              <template v-slot:value>
-                <FunctionValue :ntv="arg" :hide-type="true" :low-contrast="i === 0"/>
-              </template>
-            </PropertyVertical>
-          </template>
+                </template>
+                <template v-slot:value>
+                  <FunctionValue :ntv="arg" :hide-type="true" :low-contrast="i === 0"/>
+                </template>
+              </Property>
+            </div>
+          </div>
         </div>
+
       </template>
-    </PropertyVertical>
+    </Property>
 
   </div>
 
@@ -105,63 +111,43 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, inject, onBeforeUnmount, onMounted, PropType} from "vue";
 import {ContractLog} from "@/schemas/MirrorNodeSchemas";
-import PropertyVertical from "@/components/PropertyVertical.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractLogAnalyzer} from "@/utils/analyzer/ContractLogAnalyzer";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 import BlockLink from "@/components/values/BlockLink.vue";
+import Property from "@/components/Property.vue";
 
-export default defineComponent({
-  name: "ContractResultLogEntry",
-  components: {
-    BlockLink,
-    FunctionValue,
-    EVMAddress,
-    HexaValue,
-    PropertyVertical,
+const props = defineProps({
+  log: {
+    type: Object as PropType<ContractLog | null>,
+    default: null
   },
-  props: {
-    log: {
-      type: Object as PropType<ContractLog | null>,
-      default: null
-    },
-    blockNumber: {
-      type: Number,
-    },
-    transactionHash: {
-      type: String
-    }
+  blockNumber: {
+    type: Number,
   },
-  setup(props) {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-
-    const blockNumberToShow = computed(() => props.blockNumber || props.log?.block_number)
-    const txHashToShow = computed(() => props.transactionHash || props.log?.transaction_hash)
-
-    const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
-    onMounted(() => logAnalyzer.mount())
-    onBeforeUnmount(() => logAnalyzer.unmount())
-
-    return {
-      isSmallScreen,
-      isMediumScreen,
-      isTouchDevice,
-      args: logAnalyzer.args,
-      signature: logAnalyzer.signature,
-      fullLogSignature: logAnalyzer.fullLogSignature,
-      blockNumberToShow,
-      txHashToShow,
-      isContractVerified: logAnalyzer.isContractVerified
-    }
+  transactionHash: {
+    type: String
   }
 })
+
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
+
+const blockNumberToShow = computed(() => props.blockNumber || props.log?.block_number)
+const txHashToShow = computed(() => props.transactionHash || props.log?.transaction_hash)
+
+const logAnalyzer = new ContractLogAnalyzer(computed(() => props.log))
+onMounted(() => logAnalyzer.mount())
+onBeforeUnmount(() => logAnalyzer.unmount())
+
+const args = logAnalyzer.args
+const fullLogSignature = logAnalyzer.fullLogSignature
+const isContractVerified = logAnalyzer.isContractVerified
 
 </script>
 
@@ -196,21 +182,37 @@ export default defineComponent({
   justify-content: space-between;
 }
 
+div.log-content {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+div.unverified-log-entry {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+}
+
+div.verified-log-entry {
+  display: grid;
+  grid-template-columns: 75px 1fr;
+  gap: 8px;
+}
+
 .topic-title-box {
-  border: 1px solid grey;
+  border-width: 0;
+  border-radius: 8px;
+  background-color: var(--background-secondary);
+  font-size: 0.85rem;
   width: 70px;
   text-align: center;
   padding: 3px 0;
-  border-radius: 3px;
+  height: fit-content;
 }
 
-.log-content-box {
-  border: 1px solid grey;
-  padding: 9px;
-  border-radius: 3px;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem
+div.log-entry-arg {
+  padding-top: 2px;
 }
 
 .log-arg-title {
