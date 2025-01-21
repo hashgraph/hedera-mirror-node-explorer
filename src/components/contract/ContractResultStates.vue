@@ -303,6 +303,6 @@ hr.table-separator {
 
 div.pagination {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
 }
 </style>
