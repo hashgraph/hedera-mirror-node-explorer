@@ -27,54 +27,54 @@ import {routeManager} from "@/router.ts";
 
 export class EntityTextFieldController {
 
-    public readonly input: Ref<string> = ref("")
     private readonly inputChangeController: InputChangeController
-    private readonly stateRef = ref(EntityTextFieldState.empty)
-    private readonly entityIdRef: Ref<string|null> = ref(null)
 
     //
     // Public
     //
 
-    public constructor(public readonly networkConfig: NetworkConfig) {
+    public constructor(public readonly networkConfig: NetworkConfig, public readonly input: Ref<string>) {
         this.inputChangeController = new InputChangeController(this.input)
-        watch(this.inputChangeController.outputText, this.outputTextDidChange)
-
+        watch(this.entityId, () => {
+            if (this.entityId.value !== null) {
+                this.input.value = this.entityId.value
+            }
+        })
     }
 
-    public readonly state = computed(() => this.stateRef.value)
-
-    public readonly entityId = computed(() => this.entityIdRef.value)
-
-
-    //
-    // Private
-    //
-
-    private readonly outputTextDidChange = async (newValue: string) => {
-        const trimmedValue = newValue.trim()
+    public readonly state = computed(() => {
+        let result: EntityTextFieldState
+        const trimmedValue = this.inputChangeController.outputText.value.trim()
         if (trimmedValue !== "") {
-            const entityID = EntityID.parse(stripChecksum(newValue), true)
+            const entityID = EntityID.parse(stripChecksum(trimmedValue), true)
             if (entityID !== null) {
-                const checksum = extractChecksum(newValue)
+                const checksum = extractChecksum(trimmedValue)
                 const network = routeManager.currentNetwork.value
                 if (checksum === null ||  this.networkConfig.isValidChecksum(entityID.toString(), checksum, network)) {
-                    this.entityIdRef.value = entityID.toString()
-                    this.stateRef.value = EntityTextFieldState.ok
-                    this.input.value = this.entityIdRef.value
+                    result = EntityTextFieldState.ok
                 } else {
-                    this.entityIdRef.value = null
-                    this.stateRef.value = EntityTextFieldState.invalidChecksum
+                    result = EntityTextFieldState.invalidChecksum
                 }
             } else {
-                this.entityIdRef.value = null
-                this.stateRef.value = EntityTextFieldState.invalidSyntax
+                result = EntityTextFieldState.invalidSyntax
             }
         } else {
-            this.entityIdRef.value = null
-            this.stateRef.value = EntityTextFieldState.empty
+            result = EntityTextFieldState.empty
         }
-    }
+        return result
+    })
+
+    public readonly entityId = computed(() => {
+        let result: string|null
+        const trimmedValue = this.inputChangeController.outputText.value.trim()
+        if (trimmedValue !== "") {
+            const entityID = EntityID.parse(stripChecksum(trimmedValue), true)
+            result = entityID?.toString() ?? null
+        } else {
+            result = null
+        }
+        return result
+    })
 }
 
 export enum EntityTextFieldState {

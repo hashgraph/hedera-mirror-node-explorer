@@ -27,7 +27,6 @@ import {TokenInfo} from "@/schemas/MirrorNodeSchemas.ts";
 
 export class TokenAmountTextFieldController {
 
-    public readonly input: Ref<string> = ref("")
     private readonly inputChangeController: InputChangeController
     private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
 
@@ -37,8 +36,9 @@ export class TokenAmountTextFieldController {
 
     public constructor(
         public readonly tokenId: Ref<string|null>,
-        private readonly rejectZero: boolean) {
-        this.inputChangeController = new InputChangeController(this.input)
+        private readonly rejectZero: boolean,
+        public readonly input: Ref<string> = ref("")) {
+        this.inputChangeController = new InputChangeController(input)
         this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
     }
 

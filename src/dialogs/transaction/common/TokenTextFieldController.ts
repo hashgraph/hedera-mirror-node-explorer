@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
+import {computed, ref, Ref} from "vue";
 import {TokenInfo} from "@/schemas/MirrorNodeSchemas.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {
@@ -26,39 +26,32 @@ import {
     EntityTextFieldState
 } from "@/dialogs/transaction/common/EntityTextFieldController.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
+import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 
 export class TokenTextFieldController {
 
-    public readonly input: Ref<string>
     private readonly entityFieldController: EntityTextFieldController
-    private readonly tokenInfoRef: Ref<TokenInfo|null> = ref(null)
-    private readonly searchingRef = ref(false)
-    private readonly searchError = ref<unknown>(null)
-    private watchStopHandle: WatchStopHandle|null = null
+    private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
+    // private readonly tokenInfoRef: Ref<TokenInfo|null> = ref(null)
+    // private readonly searchingRef = ref(false)
+    // private readonly searchError = ref<unknown>(null)
+    // private watchStopHandle: WatchStopHandle|null = null
 
     //
     // Public
     //
 
-    public constructor(public readonly networkConfig: NetworkConfig) {
-        this.entityFieldController = new EntityTextFieldController(networkConfig)
-        this.input = this.entityFieldController.input
+    public constructor(public readonly networkConfig: NetworkConfig, public readonly input: Ref<string> = ref("")) {
+        this.entityFieldController = new EntityTextFieldController(networkConfig, input)
+        this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
     }
 
     public mount(): void {
-        this.watchStopHandle = watch(
-            this.entityFieldController.entityId,
-            this.entityIdDidChange,
-            { immediate: true })
+        this.tokenLookup.mount()
     }
 
     public unmount(): void {
-        if (this.watchStopHandle !== null) {
-            this.watchStopHandle()
-            this.watchStopHandle = null
-        }
-        this.tokenInfoRef.value = null
-        this.searchError.value = null
+        this.tokenLookup.unmount()
     }
 
     public readonly state = computed(() => {
@@ -73,51 +66,25 @@ export class TokenTextFieldController {
             case EntityTextFieldState.invalidChecksum:
                 result = TokenTextFieldState.invalidChecksum
                 break
+            default:
             case EntityTextFieldState.ok:
-                if (this.searchError.value !== null) {
-                    result = TokenTextFieldState.error
-                } else {
-                    result = TokenTextFieldState.ok
-                }
+                result = TokenTextFieldState.ok
                 break
         }
         return result
     })
 
-    public readonly searching = computed(() => this.searchingRef.value)
-
     public readonly tokenId = computed(() => this.entityFieldController.entityId.value)
 
-    public readonly tokenInfo = computed(() => this.tokenInfoRef.value)
+    public readonly tokenInfo = computed(() => this.tokenLookup.entity.value)
 
+    public readonly isLoaded = computed(() => this.tokenLookup.isLoaded())
 
-    //
-    // Private
-    //
-
-    private readonly entityIdDidChange = async (newValue: string|null) => {
-        if (newValue !== null) {
-            this.searchingRef.value = true
-            try {
-                this.tokenInfoRef.value = await TokenInfoCache.instance.lookup(newValue)
-                this.searchError.value = null
-            } catch(reason) {
-                this.tokenInfoRef.value = null
-                this.searchError.value = reason
-            } finally {
-                this.searchingRef.value = false
-            }
-        } else {
-            this.tokenInfoRef.value = null
-            this.searchError.value = null
-        }
-    }
 }
 
 export enum TokenTextFieldState {
     empty,
     invalid, // Invalid entity id syntax
     invalidChecksum, // Checksum does not match
-    error, // Error while searching on mirror node
     ok
 }
