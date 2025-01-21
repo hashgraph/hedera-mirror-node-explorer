@@ -58,7 +58,8 @@ export class HbarTextFieldController {
         let result: number|null
         if (this.state.value === HbarTextFieldState.ok) {
             const trimmedValue = this.inputChangeController.outputText.value.trim()
-            result = parseFloat(trimmedValue)
+            const f = parseFloat(trimmedValue)
+            result = isNaN(f) ? null : f
         } else {
             result = null
         }
@@ -69,7 +70,7 @@ export class HbarTextFieldController {
 
 export enum HbarTextFieldState {
     empty,
-    invalidSyntax, // Invalid entity id syntax
+    invalidSyntax, // Invalid float syntax
     unexpectedZero, // Amount is zero and props.rejectZero is true
     unexpectedNegative, // Amount is negative
     ok
