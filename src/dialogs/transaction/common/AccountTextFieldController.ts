@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
+import {computed, ref, Ref} from "vue";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
 import {AccountBalanceTransactions} from "@/schemas/MirrorNodeSchemas.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
@@ -26,42 +26,31 @@ import {
     EntityTextFieldController,
     EntityTextFieldState
 } from "@/dialogs/transaction/common/EntityTextFieldController.ts";
+import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 
 export class AccountTextFieldController {
 
-    public readonly input: Ref<string>
     private readonly entityFieldController: EntityTextFieldController
-    private readonly accountInfoRef: Ref<AccountBalanceTransactions|null> = ref(null)
-    private readonly searchingRef = ref(false)
-    private readonly searchError = ref<unknown>(null)
-    private watchStopHandle: WatchStopHandle|null = null
+    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions|null>
 
     //
     // Public
     //
 
-    public constructor(public readonly networkConfig: NetworkConfig) {
-        this.entityFieldController = new EntityTextFieldController(networkConfig)
-        this.input = this.entityFieldController.input
+    public constructor(public readonly networkConfig: NetworkConfig, public readonly input: Ref<string> = ref("")) {
+        this.entityFieldController = new EntityTextFieldController(networkConfig, input)
+        this.accountLookup = AccountByIdCache.instance.makeLookup(this.accountId)
     }
 
     public mount(): void {
-        this.watchStopHandle = watch(
-            this.entityFieldController.entityId,
-            this.entityIdDidChange,
-            { immediate: true })
+        this.accountLookup.mount()
     }
 
     public unmount(): void {
-        if (this.watchStopHandle !== null) {
-            this.watchStopHandle()
-            this.watchStopHandle = null
-        }
-        this.accountInfoRef.value = null
-        this.searchError.value = null
+        this.accountLookup.unmount()
     }
 
-    public readonly state = computed(() => {
+    public readonly state = computed<AccountTextFieldState>(() => {
         let result: AccountTextFieldState
         switch(this.entityFieldController.state.value) {
             case EntityTextFieldState.empty:
@@ -73,52 +62,25 @@ export class AccountTextFieldController {
             case EntityTextFieldState.invalidChecksum:
                 result = AccountTextFieldState.invalidChecksum
                 break
+            default:
             case EntityTextFieldState.ok:
-                if (this.searchError.value !== null) {
-                    result = AccountTextFieldState.error
-                } else {
-                    result = AccountTextFieldState.ok
-                }
+                result = AccountTextFieldState.ok
                 break
         }
         return result
     })
 
-    public readonly searching = computed(() => this.searchingRef.value)
-
 
     public readonly accountId = computed(() => this.entityFieldController.entityId.value)
 
-    public readonly accountInfo = computed(() => this.accountInfoRef.value)
+    public readonly accountInfo = computed(() => this.accountLookup.entity.value)
 
-
-    //
-    // Private
-    //
-
-    private readonly entityIdDidChange = async (newValue: string|null) => {
-        if (newValue !== null) {
-            this.searchingRef.value = true
-            try {
-                this.accountInfoRef.value = await AccountByIdCache.instance.lookup(newValue)
-                this.searchError.value = null
-            } catch(reason) {
-                this.accountInfoRef.value = null
-                this.searchError.value = reason
-            } finally {
-                this.searchingRef.value = false
-            }
-        } else {
-            this.accountInfoRef.value = null
-            this.searchError.value = null
-        }
-    }
+    public readonly isLoaded = computed(() => this.accountLookup.isLoaded())
 }
 
 export enum AccountTextFieldState {
     empty,
     invalid, // Invalid entity id syntax
     invalidChecksum, // Checksum does not match
-    error, // Error while searching on mirror node
     ok
 }

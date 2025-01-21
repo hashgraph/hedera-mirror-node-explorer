@@ -23,15 +23,14 @@ import {InputChangeController} from "@/components/utils/InputChangeController.ts
 
 export class HbarTextFieldController {
 
-    public readonly input: Ref<string> = ref("")
     private readonly inputChangeController: InputChangeController
 
     //
     // Public
     //
 
-    public constructor(private readonly rejectZero: boolean) {
-        this.inputChangeController = new InputChangeController(this.input)
+    public constructor(private readonly rejectZero: boolean, public readonly input: Ref<string> = ref("")) {
+        this.inputChangeController = new InputChangeController(input)
     }
 
     public readonly state = computed<HbarTextFieldState>(() => {
