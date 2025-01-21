@@ -89,6 +89,11 @@
                           @allowance-approved="onAllowanceApproved"
   />
 
+  <UpdateCryptoAllowanceDialog v-model:show-dialog="showUpdateHbarAllowanceDialog"
+                             :hbar-allowance="currentHbarAllowance"
+                             @allowance-approved="onAllowanceApproved"
+  />
+
   <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
                   :mode="Mode.Error"
                   main-message="This operation cannot be done using Metamask"
@@ -136,6 +141,7 @@ import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import UpdateCryptoAllowanceDialog from "@/dialogs/transaction/allowance/approve/UpdateCryptoAllowanceDialog.vue";
 
 const props = defineProps({
   accountId: String,
@@ -150,6 +156,7 @@ const isWalletConnected = computed(() =>
 )
 
 const showApproveAllowanceDialog = ref(false)
+const showUpdateHbarAllowanceDialog = ref(false)
 
 watch(showApproveAllowanceDialog, (newValue) => {
   if (!newValue) {
@@ -270,8 +277,7 @@ const onEditHbar = (allowance: CryptoAllowance) => {
   // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
   if (walletManager.isHieroWallet.value) {
     currentHbarAllowance.value = allowance
-    currentTokenAllowance.value = null
-    showApproveAllowanceDialog.value = true
+    showUpdateHbarAllowanceDialog.value = true
   } else {
     notWithMetamaskDialogVisible.value = true
   }
