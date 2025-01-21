@@ -24,23 +24,21 @@
 
 <template>
 
-  <DashboardCard v-if="showContractResults" collapsible-key="contractCalls">
-    <template v-slot:title>
-      <p class="h-is-secondary-title">Recent Contract Calls</p>
+  <DashboardCardV2 v-if="showContractResults" collapsible-key="contractCalls">
+    <template #title>
+      Recent Contract Calls
     </template>
 
-    <template v-slot:control>
-      <div class="is-flex is-align-items-flex-end">
-        <PlayPauseButton v-bind:controller="resultTableController"/>
-      </div>
+    <template #left-control>
+      <PlayPauseButtonV2 :controller="resultTableController"/>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <div id="contract-results-table">
-        <ContractResultTable v-if="contractId" :controller="resultTableController"/>
+        <ContractResultTable v-if="props.contractId" :controller="resultTableController"/>
       </div>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -48,51 +46,33 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import router from "@/router";
-import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
 
-export default defineComponent({
-  name: 'ContractResultsSection',
+const props = defineProps({
+  contractId: String,
+})
 
-  components: {ContractResultTable, PlayPauseButton, DashboardCard},
+const isMediumScreen = inject('isMediumScreen', true)
 
-  props: {
-    contractId: String,
-  },
+const computedContractId = computed(() => props.contractId ?? null)
+const perPage = ref(isMediumScreen ? 10 : 5)
 
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
+const showContractResults = computed(() => resultTableController.rows.value.length)
 
-    const computedContractId = computed(() => props.contractId ?? null)
-    const perPage = ref(isMediumScreen ? 10 : 5)
+//
+// resultTableController
+//
 
-    const showContractResults = computed(() => resultTableController.rows.value.length)
-
-    //
-    // resultTableController
-    //
-
-    const resultTableController = new ContractResultTableController(router, computedContractId, perPage)
-    onMounted(() => resultTableController.mount())
-    onBeforeUnmount(() => resultTableController.unmount())
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      showContractResults,
-      resultTableController
-    }
-  }
-});
+const resultTableController = new ContractResultTableController(router, computedContractId, perPage)
+onMounted(() => resultTableController.mount())
+onBeforeUnmount(() => resultTableController.unmount())
 
 </script>
 
