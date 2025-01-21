@@ -32,9 +32,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="paginated"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       :striped="true"
 
@@ -50,22 +50,22 @@
       @cell-click="handleClick"
       @page-change="onPageChange">
 
-    <o-table-column v-slot="props" field="timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.timestamp"/>
-      <span v-if="props.row.error_message" class="icon has-text-danger">
-        <i class="fas fa-exclamation-triangle"></i>
-      </span>
+    <o-table-column v-slot="props" field="timestamp" label="TIME">
+      <div style="display: flex; gap: 8px;">
+        <TimestampValue class="h-is-bold" :timestamp="props.row.timestamp"/>
+        <TriangleAlert v-if="props.row.error_message" :size="16" class="h-is-error"/>
+      </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="from" label="From">
-      <EVMAddress :address="props.row.from" :compact="false" :enable-copy="false"/>
+    <o-table-column v-slot="props" field="from" label="FROM">
+      <EVMAddress :address="props.row.from" has-custom-font :compact="!isLargeScreen" :enable-copy="false"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="message" label="Error Message" position="left">
+    <o-table-column v-slot="props" field="message" label="MESSAGE" position="left">
       <StringValue :string-value="makeErrorMessage(props.row)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Transfer Amount" position="right">
+    <o-table-column v-slot="props" field="amount" label="TRANSFER AMOUNT" position="right">
       <HbarAmount :amount="props.row.amount"/>
     </o-table-column>
 
@@ -93,9 +93,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {inject, PropType} from 'vue';
 import {ContractResult} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
@@ -108,52 +108,33 @@ import {decodeSolidityErrorMessage} from "@/schemas/MirrorNodeUtils.ts";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
+import {TriangleAlert} from 'lucide-vue-next';
 
-export default defineComponent({
-  name: 'ContractResultTable',
-
-  components: {TablePageSize, HbarAmount, EVMAddress, StringValue, EmptyTable, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<ContractResultTableController>,
-      required: true
-    }
-  },
-
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const handleClick = (result: ContractResult, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToTransactionByTs(result.timestamp, event)
-    }
-
-    const makeErrorMessage = (result: ContractResult) => {
-      return decodeSolidityErrorMessage(result.error_message ?? null)
-    }
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      results: props.controller.rows as ComputedRef<ContractResult[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      handleClick,
-      makeErrorMessage,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<ContractResultTableController>,
+    required: true
   }
-});
+})
+
+const isLargeScreen = inject('isLargeScreen', true)
+
+const handleClick = (result: ContractResult, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  routeManager.routeToTransactionByTs(result.timestamp, event)
+}
+
+const makeErrorMessage = (result: ContractResult) => {
+  return decodeSolidityErrorMessage(result.error_message ?? null)
+}
+
+const results = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
