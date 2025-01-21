@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref, Ref, watch} from "vue";
+import {computed, Ref, watch} from "vue";
 import {InputChangeController} from "@/components/utils/InputChangeController.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {EntityID} from "@/utils/EntityID.ts";
