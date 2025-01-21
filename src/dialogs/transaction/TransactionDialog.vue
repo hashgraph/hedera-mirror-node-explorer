@@ -41,7 +41,7 @@
     </template>
 
     <!-- confirm -->
-    <template #taskDialogConfirm>
+    <template v-if="$slots.transactionDialogConfirm" #taskDialogConfirm>
       <slot name="transactionDialogConfirm"/>
     </template>
 
