@@ -312,7 +312,7 @@ const notification = computed(() => {
   if (!validEntityId.value) {
     result = "Invalid token ID: " + props.tokenId
   } else if (tokenLookup.entity.value == null) {
-    if (tokenLookup.isLoaded()) {
+    if (tokenLookup.isLoaded.value) {
       result = "Token with ID " + props.tokenId + " was not found"
     } else {
       result = null

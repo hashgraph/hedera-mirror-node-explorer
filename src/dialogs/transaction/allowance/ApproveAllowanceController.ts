@@ -48,8 +48,8 @@ export class ApproveAllowanceController extends TransactionController {
     public constructor(showDialog: Ref<boolean>, networkConfig: NetworkConfig) {
         super(showDialog)
         this.spenderController = new AccountTextFieldController(networkConfig)
-        this.tokenController = new TokenTextFieldController(networkConfig)
-        this.nftController = new TokenTextFieldController(networkConfig)
+        this.tokenController = new TokenTextFieldController(networkConfig, walletManager.accountId)
+        this.nftController = new TokenTextFieldController(networkConfig, walletManager.accountId)
         this.cryptoController = new CryptoTextFieldController(true)
         this.tokenAmountController = new TokenAmountTextFieldController(this.tokenId, true)
     }
@@ -232,7 +232,8 @@ export class ApproveAllowanceController extends TransactionController {
     private readonly tokenOK = computed(() =>
         this.tokenController.tokenId.value !== null &&
         this.tokenController.tokenInfo.value !== null &&
-        this.tokenController.tokenInfo.value.type == "FUNGIBLE_COMMON")
+        this.tokenController.tokenInfo.value.type == "FUNGIBLE_COMMON" &&
+        this.tokenController.isTokenAssociated.value)
 
     private readonly tokenId = computed(() => this.tokenController.tokenId.value)
 
@@ -248,9 +249,19 @@ export class ApproveAllowanceController extends TransactionController {
             case TokenTextFieldState.ok: {
                 const tokenInfo = this.tokenController.tokenInfo.value
                 if (tokenInfo !== null) {
-                    result = tokenInfo.type === "FUNGIBLE_COMMON" ? null : "Token is not fungible"
+                    if (tokenInfo.type !== "FUNGIBLE_COMMON") {
+                        result = "Token is not fungible"
+                    } else {
+                        const isAssociated = this.tokenController.isTokenAssociated.value
+                        const isAssociationLoaded = this.tokenController.isTokenAssociationLoaded.value
+                        if (isAssociationLoaded && !isAssociated) {
+                            result = "Not associated with this account"
+                        } else {
+                            result = null
+                        }
+                    }
                 } else if (this.tokenController.isLoaded.value) {
-                    result = "Unknown token"
+                    result = "Unknown token ID"
                 } else {
                     result = null
                 }
@@ -269,7 +280,7 @@ export class ApproveAllowanceController extends TransactionController {
 
     private readonly tokenAmountOK = computed(() => this.tokenAmount.value !== null)
 
-    private readonly tokenAmount = computed(() => this.tokenAmountController.amount.value)
+    private readonly tokenAmount = computed(() => this.tokenAmountController.tinyAmount.value)
 
     private readonly tokenAmountFeedbackMessage = computed(() => {
         let result: string|null
