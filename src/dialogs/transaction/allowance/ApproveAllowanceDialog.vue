@@ -105,7 +105,13 @@
 
           <ContentCell>
             <template #cellTitle>Serial Numbers</template>
-            <template #cellContent>1,2,3</template>
+            <template #cellContent>
+              <TextFieldView
+                  v-model="nftSerialInput"
+                  placeholder="serial numbers (1, 2, 3…)"
+                  style="width: 100%"/>
+              <span class="nft-inline-help">leave empty to approve for ALL</span>
+            </template>
           </ContentCell>
         </div>
 
@@ -148,6 +154,7 @@ const tokenInput = controller.tokenController.input
 const nftInput = controller.nftController.input
 const cryptoAmountInput = controller.cryptoController.input
 const tokenAmountInput = controller.tokenAmountController.input
+const nftSerialInput = controller.nftSerialsController.input
 
 const feedbackMessage = controller.feedbackMessage
 const allowanceChoice = controller.allowanceChoice
@@ -180,5 +187,11 @@ const visibleIndex = computed(() => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.nft-inline-help {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 400
+}
 
 </style>

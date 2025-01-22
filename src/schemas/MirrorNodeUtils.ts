@@ -30,7 +30,6 @@ import {
     NetworkFeesResponse,
     NetworkNode,
     Nft,
-    Nfts,
     NftTransfer,
     REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
     Token,
@@ -383,39 +382,6 @@ export async function isValidAssociation(accountId: string | null, tokenId: stri
         const response = await axios.get<TokenRelationshipResponse>(uRL, {params: params})
         const tokens = response.data?.tokens ?? []
         result = tokens.length > 0 && tokens[0].token_id === tokenId
-    } else {
-        result = false
-    }
-    return Promise.resolve(result)
-}
-
-export async function isOwnedSerials(accountId: string | null, tokenId: string | null, serials: number[]): Promise<boolean> {
-    let result: boolean
-
-    if (accountId && tokenId && serials.length) {
-        const uRL = "api/v1/accounts/" + accountId + "/nfts"
-        const params = {
-            'token.id': tokenId,
-        }
-        const response = await axios.get<Nfts>(uRL, {params: params})
-        const nfts = response.data.nfts ?? []
-        if (nfts.length > 0) {
-            const serialsInAccount = Array<number>()
-            for (const nft of nfts) {
-                if (nft.serial_number) {
-                    serialsInAccount.push(nft.serial_number)
-                }
-            }
-            result = true
-            for (const s of serials) {
-                if (!serialsInAccount.includes(s)) {
-                    result = false
-                    break
-                }
-            }
-        } else {
-            result = false
-        }
     } else {
         result = false
     }
