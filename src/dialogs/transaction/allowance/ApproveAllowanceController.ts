@@ -32,6 +32,10 @@ import {
     TokenAmountTextFieldController,
     TokenAmountTextFieldState
 } from "@/dialogs/transaction/common/TokenAmountTextFieldController.ts";
+import {
+    NftSerialsTextFieldController,
+    NftSerialsTextFieldState
+} from "@/dialogs/transaction/common/NftSerialsTextFieldController.ts";
 
 export class ApproveAllowanceController extends TransactionController {
 
@@ -40,6 +44,7 @@ export class ApproveAllowanceController extends TransactionController {
     public readonly nftController: TokenTextFieldController
     public readonly cryptoController: CryptoTextFieldController
     public readonly tokenAmountController: TokenAmountTextFieldController
+    public readonly nftSerialsController: NftSerialsTextFieldController
 
     //
     // Public
@@ -52,6 +57,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.nftController = new TokenTextFieldController(networkConfig, walletManager.accountId)
         this.cryptoController = new CryptoTextFieldController(true)
         this.tokenAmountController = new TokenAmountTextFieldController(this.tokenId, true)
+        this.nftSerialsController = new NftSerialsTextFieldController(this.nftId)
     }
 
     public mount() {
@@ -60,6 +66,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.nftController.mount()
         // no mount() for this.cryptoController
         this.tokenAmountController.mount()
+        this.nftSerialsController.mount()
     }
 
     public unmount() {
@@ -74,6 +81,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.nftController.unmount()
         // no unmount() for this.cryptoController
         this.tokenAmountController.unmount()
+        this.nftSerialsController.unmount()
     }
 
 
@@ -116,6 +124,7 @@ export class ApproveAllowanceController extends TransactionController {
                 result = this.tokenOK.value && this.tokenAmountOK.value
                 break
             case "nft":
+                console.log("nftOK=" + this.nftOK.value + ", nftSerialsOK=" + this.nftSerialsOK.value)
                 result = this.nftOK.value && this.nftSerialsOK.value
                 break
             default:
@@ -346,11 +355,32 @@ export class ApproveAllowanceController extends TransactionController {
     // nft serials
     //
 
-    private readonly nftSerialsOK = computed(() => false)
+    private readonly nftSerialsOK = computed(() =>
+        this.nftSerials.value !== null &&
+        this.rejectNftSerials.value !== null &&
+        this.rejectNftSerials.value.length == 0)
 
-    private readonly nftSerials = computed(() => null)
+    private readonly nftSerials = computed(() => this.nftSerialsController.serials.value)
 
-    private readonly nftSerialsFeedbackMessage = computed(() => "To be implemented")
+    private readonly rejectNftSerials = computed(() => this.nftSerialsController.rejectedSerials.value)
+
+    private readonly nftSerialsFeedbackMessage = computed(() => {
+        let result: string|null
+        switch(this.nftSerialsController.state.value) {
+            case NftSerialsTextFieldState.invalidSyntax:
+                result = "Invalid number list"
+                break
+            default:
+            case NftSerialsTextFieldState.ok:
+                if (this.rejectNftSerials.value !== null && this.rejectNftSerials.value.length > 0) {
+                    result = "Not owned by this account"
+                } else {
+                    result = null
+                }
+                break
+        }
+        return result
+    })
 
 
 }
