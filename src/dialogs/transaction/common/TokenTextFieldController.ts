@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref} from "vue";
-import {TokenInfo} from "@/schemas/MirrorNodeSchemas.ts";
+import {TokenInfo, TokenRelationship} from "@/schemas/MirrorNodeSchemas.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {
     EntityTextFieldController,
@@ -27,31 +27,35 @@ import {
 } from "@/dialogs/transaction/common/EntityTextFieldController.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
+import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";
 
 export class TokenTextFieldController {
 
     private readonly entityFieldController: EntityTextFieldController
     private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
-    // private readonly tokenInfoRef: Ref<TokenInfo|null> = ref(null)
-    // private readonly searchingRef = ref(false)
-    // private readonly searchError = ref<unknown>(null)
-    // private watchStopHandle: WatchStopHandle|null = null
+    private readonly tokenAssociationLookup: EntityLookup<string, TokenRelationship[] | null>
 
     //
     // Public
     //
 
-    public constructor(public readonly networkConfig: NetworkConfig, public readonly input: Ref<string> = ref("")) {
+    public constructor(
+        public readonly networkConfig: NetworkConfig,
+        public readonly accountId: Ref<string|null> = ref(null),
+        public readonly input: Ref<string> = ref("")) {
         this.entityFieldController = new EntityTextFieldController(networkConfig, input)
         this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
+        this.tokenAssociationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(this.accountId,this.tokenId)
     }
 
     public mount(): void {
         this.tokenLookup.mount()
+        this.tokenAssociationLookup.mount()
     }
 
     public unmount(): void {
         this.tokenLookup.unmount()
+        this.tokenAssociationLookup.unmount()
     }
 
     public readonly state = computed(() => {
@@ -78,9 +82,16 @@ export class TokenTextFieldController {
 
     public readonly tokenInfo = computed(() => this.tokenLookup.entity.value)
 
-    public readonly isLoaded = computed(() => this.tokenLookup.isLoaded())
+    public readonly isLoaded = computed(() => this.tokenLookup.isLoaded.value)
 
+    public readonly isTokenAssociationLoaded = computed(() => this.tokenAssociationLookup.isLoaded.value)
+
+    public readonly isTokenAssociated = computed(() => {
+        const associations = this.tokenAssociationLookup.entity.value ?? []
+        return associations && associations.length >= 1
+    })
 }
+
 
 export enum TokenTextFieldState {
     empty,

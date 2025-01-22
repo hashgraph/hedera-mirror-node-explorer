@@ -251,7 +251,7 @@ const notification = computed(() => {
   if (!validEntityId.value) {
     result = "Invalid token ID: " + props.tokenId
   } else if (nftLookup.entity.value == null) {
-    if (nftLookup.isLoaded()) {
+    if (nftLookup.isLoaded.value) {
       result =
           "Token with ID " + props.tokenId + " was not found"
     } else {

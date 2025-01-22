@@ -90,8 +90,13 @@
   />
 
   <UpdateCryptoAllowanceDialog v-model:show-dialog="showUpdateHbarAllowanceDialog"
-                             :hbar-allowance="currentHbarAllowance"
-                             @allowance-approved="onAllowanceApproved"
+                               :hbar-allowance="currentHbarAllowance"
+                               @allowance-approved="onAllowanceApproved"
+  />
+
+  <UpdateTokenAllowanceDialog v-model:show-dialog="showUpdateTokenAllowanceDialog"
+                               :token-allowance="currentTokenAllowance"
+                               @allowance-approved="onAllowanceApproved"
   />
 
   <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
@@ -136,12 +141,12 @@ import {NftAllSerialsAllowanceTableController} from "@/components/allowances/Nft
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 import UpdateCryptoAllowanceDialog from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceDialog.vue";
+import UpdateTokenAllowanceDialog from "@/dialogs/transaction/allowance/UpdateTokenAllowanceDialog.vue";
 
 const props = defineProps({
   accountId: String,
@@ -157,6 +162,7 @@ const isWalletConnected = computed(() =>
 
 const showApproveAllowanceDialog = ref(false)
 const showUpdateHbarAllowanceDialog = ref(false)
+const showUpdateTokenAllowanceDialog = ref(false)
 
 watch(showApproveAllowanceDialog, (newValue) => {
   if (!newValue) {
@@ -200,7 +206,6 @@ const perPage = ref(isMediumScreen ? 10 : 5)
 
 const currentHbarAllowance = ref<CryptoAllowance | null>(null)
 const currentTokenAllowance = ref<TokenAllowance | null>(null)
-const tokenDecimals = ref<string | null>(null)
 const currentNftAllowance = ref<Nft | null>(null)
 const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
 
@@ -283,14 +288,11 @@ const onEditHbar = (allowance: CryptoAllowance) => {
   }
 }
 
-const onEditToken = async (allowance: TokenAllowance) => {
+const onEditToken = (allowance: TokenAllowance) => {
   // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
   if (walletManager.isHieroWallet.value) {
-    const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
-    tokenDecimals.value = info?.decimals ?? null
-    currentHbarAllowance.value = null
     currentTokenAllowance.value = allowance
-    showApproveAllowanceDialog.value = true
+    showUpdateTokenAllowanceDialog.value = true
   } else {
     notWithMetamaskDialogVisible.value = true
   }
@@ -336,7 +338,6 @@ const cleanUpRouteQuery = async () => {
 }
 
 const isHieroWallet = walletManager.isHieroWallet
-const ownerAccountId = walletManager.accountId
 
 </script>
 

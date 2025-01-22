@@ -173,7 +173,7 @@ const notification = computed(() => {
   if (!validEntityId.value) {
     result = "Invalid topic ID: " + props.topicId
   } else if (topicLookup.entity.value === null) {
-    if (topicLookup.isLoaded()) {
+    if (topicLookup.isLoaded.value) {
       result = "Topic with ID " + props.topicId + " was not found"
     } else {
       result = null

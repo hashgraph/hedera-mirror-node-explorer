@@ -70,18 +70,23 @@ export class TokenAmountTextFieldController {
         return result
     })
 
-    public readonly amount = computed(() => {
+    public readonly userAmount = computed<string|null>(() => {
+        let result: string|null
+        if (this.tinyAmount.value !== null && this.decimals.value !== null) {
+            result = ethers.formatUnits(this.tinyAmount.value, this.decimals.value)
+        } else {
+            result = null
+        }
+        return result
+    })
+
+    public readonly tinyAmount = computed<bigint|null>(() => {
         let result: bigint|null
-        if (this.state.value === TokenAmountTextFieldState.ok) {
+        if (this.state.value === TokenAmountTextFieldState.ok && this.decimals.value !== null) {
             const trimmedValue = this.inputChangeController.outputText.value.trim()
-            const decimals = this.tokenLookup.entity.value?.decimals ?? null
-            if (decimals !== null) {
-                try {
-                    result = ethers.parseUnits(trimmedValue, Number(decimals))
-                } catch {
-                    result = null
-                }
-            } else {
+            try {
+                result = ethers.parseUnits(trimmedValue, this.decimals.value)
+            } catch {
                 result = null
             }
         } else {
@@ -90,6 +95,10 @@ export class TokenAmountTextFieldController {
         return result
     })
 
+    public readonly decimals = computed(() => {
+        const d = this.tokenLookup.entity.value?.decimals
+        return d ? Number(d) : null
+    })
 }
 
 export enum TokenAmountTextFieldState {

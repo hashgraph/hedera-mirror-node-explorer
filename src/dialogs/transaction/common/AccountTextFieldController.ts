@@ -75,7 +75,7 @@ export class AccountTextFieldController {
 
     public readonly accountInfo = computed(() => this.accountLookup.entity.value)
 
-    public readonly isLoaded = computed(() => this.accountLookup.isLoaded())
+    public readonly isLoaded = computed(() => this.accountLookup.isLoaded.value)
 }
 
 export enum AccountTextFieldState {

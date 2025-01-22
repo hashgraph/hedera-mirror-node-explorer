@@ -56,9 +56,8 @@ export class CryptoTextFieldController {
 
     public readonly userAmount = computed<string|null>(() => {
         let result: string|null
-        const tinyAmount = this.tinyAmount.value
-        if (tinyAmount !== null) {
-            result = ethers.formatUnits(tinyAmount, 8)
+        if (this.tinyAmount.value !== null) {
+            result = ethers.formatUnits(this.tinyAmount.value, 8)
         } else {
             result = null
         }
