@@ -33,23 +33,27 @@
       <img v-else id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
 
       <div class="footer-text">
-        <p class="footer-text-item">{{ productDescription }}</p>
+        <div class="footer-text-item">
+          {{ productDescription }}
+        </div>
 
         <template v-if="termsOfUseURL">
           <div class="line"></div>
 
           <a data-cy="termsOfUse" :href="termsOfUseURL" style="line-height: 1rem">
-            <span class="footer-text-item">See Terms of Service</span>
+            <div class="footer-text-item">
+              See Terms of Service
+            </div>
           </a>
         </template>
 
         <div class="line"></div>
 
-        <span class="footer-text-item">
+        <div class="footer-text-item">
           <span>Release </span>
           <a :href="buildReleaseUrl">{{ buildRelease }}</a>
           <span> built {{ buildTime }}</span>
-        </span>
+        </div>
       </div>
     </div>
 
@@ -132,7 +136,7 @@ div.footer-text {
   justify-content: flex-start;
 }
 
-span.footer-text-item {
+div.footer-text-item {
   font-family: 'Inter', sans-serif;
   font-size: 10px;
   color: var(--text-primary);
