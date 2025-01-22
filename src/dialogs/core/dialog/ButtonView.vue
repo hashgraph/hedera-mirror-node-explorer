@@ -86,6 +86,7 @@ button.button-view {
   appearance: none;
   color: var(--button-text-secondary);
   background-color: var(--button-background-secondary);
+  border-style: none;
   border-radius: 32px;
   font-family: "Styrene A Web", sans-serif;
   font-size: 14px;
