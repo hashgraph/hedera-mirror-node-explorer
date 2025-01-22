@@ -48,8 +48,8 @@ const productLogoURL = ThemeController.inject().productLogoURL
 <style scoped>
 
 img {
-  height: 32px;
-  width: auto;
+  height: auto;
+  min-width: 130px;
 }
 
 </style>
