@@ -119,7 +119,7 @@ button.button-view.is-default {
 
 button.button-view.is-transparent {
   background-color: transparent;
-  border-color: var(--network-theme-color);
+  border-color: var(--network-button-color);
   border-style: solid;
   border-width: 2px;
   color: var(--text-primary);
