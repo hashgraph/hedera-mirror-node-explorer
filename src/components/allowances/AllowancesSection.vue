@@ -110,10 +110,11 @@
   </ProgressDialog>
 
   <DeleteNftAllowanceDialog
-      :controller="deleteDialogController"
-      :nft-allowance="currentNftAllowance"
-      :nft-all-serials-allowance="currentNftAllSerialsAllowance"
-      @deleted="onNftDeleted"
+      :show-dialog="showDeleteNftAllowanceDialog"
+      :token-id="currentNftId"
+      :spender-id="currentSpenderId"
+      :serial-number="currentNftSerialNumber"
+      @allowance-deleted="onNftDeleted"
   />
 
 </template>
@@ -139,14 +140,13 @@ import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
 import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
-import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 import UpdateCryptoAllowanceDialog from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceDialog.vue";
 import UpdateTokenAllowanceDialog from "@/dialogs/transaction/allowance/UpdateTokenAllowanceDialog.vue";
+import DeleteNftAllowanceDialog from "@/dialogs/transaction/allowance/DeleteNftAllowanceDialog.vue";
 
 const props = defineProps({
   accountId: String,
@@ -163,6 +163,7 @@ const isWalletConnected = computed(() =>
 const showApproveAllowanceDialog = ref(false)
 const showUpdateHbarAllowanceDialog = ref(false)
 const showUpdateTokenAllowanceDialog = ref(false)
+const showDeleteNftAllowanceDialog = ref(false)
 
 watch(showApproveAllowanceDialog, (newValue) => {
   if (!newValue) {
@@ -208,6 +209,36 @@ const currentHbarAllowance = ref<CryptoAllowance | null>(null)
 const currentTokenAllowance = ref<TokenAllowance | null>(null)
 const currentNftAllowance = ref<Nft | null>(null)
 const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
+
+const currentNftId = computed(() => {
+  let result: string|null
+  if (selectApprovedForAll.value) {
+    result = currentNftAllSerialsAllowance.value?.token_id ?? null
+  } else {
+    result = currentNftAllowance.value?.token_id ?? null
+  }
+  return result
+})
+
+const currentSpenderId = computed(() => {
+  let result: string|null
+  if (selectApprovedForAll.value) {
+    result = currentNftAllSerialsAllowance.value?.spender ?? null
+  } else {
+    result = currentNftAllowance.value?.spender ?? null
+  }
+  return result
+})
+
+const currentNftSerialNumber = computed(() => {
+  let result: number|null
+  if (selectApprovedForAll.value) {
+    result = null
+  } else {
+    result = currentNftAllowance.value?.serial_number ?? null
+  }
+  return result
+})
 
 //
 // HBAR Allowances Table Controller
@@ -257,8 +288,6 @@ onBeforeUnmount(() => {
   nftAllSerialsAllowanceTableController.unmount()
 })
 
-const deleteDialogController = new DialogController()
-
 const notWithMetamaskDialogVisible = ref(false)
 
 const onClick = () => {
@@ -303,7 +332,7 @@ const onDeleteNft = async (nft: Nft) => {
   if (walletManager.isHieroWallet.value) {
     currentNftAllowance.value = nft
     currentNftAllSerialsAllowance.value = null
-    deleteDialogController.visible.value = true
+    showDeleteNftAllowanceDialog.value = true
   } else {
     notWithMetamaskDialogVisible.value = true
   }
@@ -314,7 +343,7 @@ const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
   if (walletManager.isHieroWallet.value) {
     currentNftAllowance.value = null
     currentNftAllSerialsAllowance.value = allowance
-    deleteDialogController.visible.value = true
+    showDeleteNftAllowanceDialog.value = true
   } else {
     notWithMetamaskDialogVisible.value = true
   }
