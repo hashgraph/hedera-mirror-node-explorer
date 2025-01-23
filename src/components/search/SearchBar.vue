@@ -39,7 +39,7 @@
             size="70"
         />
         <button type="submit" value="searchBar" :disabled="submitDisabled">
-          <img src="@/assets/search-icon.svg" alt="search button"/>
+          <Search :size="18" style="color: var(--network-button-text-color); margin-top: 4px;"/>
         </button>
       </form>
     </template>
@@ -61,6 +61,7 @@ import router from "@/router";
 import {SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
 import DropdownPanel from "@/components/DropdownPanel.vue";
 import SearchDropdown from "@/components/search/SearchDropdown.vue";
+import {Search} from "lucide-vue-next";
 
 // const isMediumScreen = inject('isMediumScreen', true)
 // const isTouchDevice = inject('isTouchDevice', false)
@@ -68,12 +69,12 @@ const searchedText = ref<string>("")
 
 const searchController = new SearchController(searchedText)
 
-const inputElement = ref<HTMLInputElement|null>(null)
+const inputElement = ref<HTMLInputElement | null>(null)
 
-const selectedAgentId = ref<string|null>(null)
+const selectedAgentId = ref<string | null>(null)
 
 const selectedAgent = computed(() => {
-  let result: SearchAgent<unknown, unknown>|null
+  let result: SearchAgent<unknown, unknown> | null
   if (selectedAgentId.value !== null) {
     result = searchController.findAgentById(selectedAgentId.value)
   } else {
@@ -93,7 +94,7 @@ const candidates = computed(() => {
 })
 
 const defaultCandidate = computed(() => {
-  let result: SearchCandidate<unknown>|null
+  let result: SearchCandidate<unknown> | null
   if (candidates.value.length >= 1) {
     result = candidates.value[0]
   } else {
