@@ -670,8 +670,19 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        document.documentElement.style.setProperty('--light-network-theme-color', this.currentNetworkEntry.value.lightThemeColor)
-        document.documentElement.style.setProperty('--dark-network-theme-color', this.currentNetworkEntry.value.darkThemeColor)
+        // Apply network theme colors to Light mode
+        document.documentElement.style.setProperty('--light-network-button-text-color', this.currentNetworkEntry.value.lightButtonTextColor)
+        document.documentElement.style.setProperty('--light-network-button-color', this.currentNetworkEntry.value.lightButtonColor)
+        document.documentElement.style.setProperty('--light-network-chip-color', this.currentNetworkEntry.value.lightChipColor)
+        document.documentElement.style.setProperty('--light-network-text-accent-color', this.currentNetworkEntry.value.lightTextAccentColor)
+        document.documentElement.style.setProperty('--light-network-border-accent-color', this.currentNetworkEntry.value.lightBorderAccentColor)
+
+        // Apply network theme to Dark mode
+        document.documentElement.style.setProperty('--dark-network-button-text-color', this.currentNetworkEntry.value.darkButtonTextColor)
+        document.documentElement.style.setProperty('--dark-network-button-color', this.currentNetworkEntry.value.darkButtonColor)
+        document.documentElement.style.setProperty('--dark-network-chip-color', this.currentNetworkEntry.value.darkChipColor)
+        document.documentElement.style.setProperty('--dark-network-text-accent-color', this.currentNetworkEntry.value.darkTextAccentColor)
+        document.documentElement.style.setProperty('--dark-network-border-accent-color', this.currentNetworkEntry.value.darkBorderAccentColor)
     }
 }
 

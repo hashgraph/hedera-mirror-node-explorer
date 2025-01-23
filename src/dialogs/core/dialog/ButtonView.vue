@@ -113,8 +113,8 @@ button.button-view:disabled {
 }
 
 button.button-view.is-default {
-  color: var(--button-text-primary);
-  background-color: var(--network-theme-color);
+  color: var(--network-button-text-color);
+  background-color: var(--network-button-color);
 }
 
 button.button-view.is-transparent {

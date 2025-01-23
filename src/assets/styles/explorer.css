@@ -25,12 +25,23 @@
 @import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
 
 /*  ============================================================================
-    Themes
+    Color Themes / Modes
 */
 :root {
+
+    /* LIGHT MODE */
+
+    /* the following are defaults for network theme colors
+       the actual values will be provided by configuration parameters in networks-config.json
+    */
+    --light-network-button-text-color: #FFFFFF;      /* NetworkEntry.lightButtonTextColor */
+    --light-network-button-color: #7A1B80;           /* NetworkEntry.lightButtonColor */
+    --light-network-chip-color: #A7449D;             /* NetworkEntry.lightChipColor */
+    --light-network-text-accent-color: #E0007B;      /* NetworkEntry.lightTextAccentColor */
+    --light-network-border-accent-color: #B664AE;    /* NetworkEntry.lightBorderAccentColor */
+
     --light-text-primary: #050505;
     --light-text-secondary: #888888;
-    --light-text-accent: #E0007B;
     --light-text-accent2: #255CF4;
     --light-text-success: #00722D;
     --light-text-danger: #AA0000;
@@ -40,19 +51,28 @@
     --light-background-tertiary: #FFFFFF;
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
-    --light-chip-primary: var(--light-network-theme-color);
     --light-chip-text-primary: white;
-    --light-button-background-primary: #7A1B80;
+    --light-button-text-secondary: var(--text-primary);
     --light-button-background-secondary: #EFEFEF;
     --light-tab-background: rgba(5, 5, 5, 0.05);
+    --light-icon-default-color: #A2A2A2;
+    --light-status-success-color: #00722D;
+    --light-status-error-color: #C40E3A;
 
-    /* default overriden by the current NetworkEntry.lightThemeColor configuration parameter */
-    --light-network-theme-color: lightgrey;
+    /* DARK MODE */
+
+    /* the following are defaults for network theme colors
+       the actual values will be provided by configuration parameters in networks-config.json
+    */
+    --dark-network-button-text-color: #FFFFFF;      /* NetworkEntry.darkButtonTextColor */
+    --dark-network-button-color: #7A1B80;           /* NetworkEntry.darkButtonColor */
+    --dark-network-chip-color: #A7449D;             /* NetworkEntry.darkChipColor */
+    --dark-network-text-accent-color: #F258AC;      /* NetworkEntry.darkTextAccentColor */
+    --dark-network-border-accent-color: #7A1B80;    /* NetworkEntry.darkBorderAccentColor */
 
 
     --dark-text-primary: #FFFFFF;
     --dark-text-secondary: #A2A2A2;
-    --dark-text-accent: #F258AC;
     --dark-text-accent2: #255CF4;
     --dark-text-success: #29BC63;
     --dark-text-danger: #FF0000;
@@ -62,19 +82,17 @@
     --dark-background-tertiary: #171717;
     --dark-border-secondary: #2C2C2C;
     --dark-table-border: #1F1F1F;
-    --dark-chip-primary: var(--light-network-theme-color);
     --dark-chip-text-primary: white;
-    --dark-button-background-primary: #7A1B80;
+    --dark-button-text-secondary: var(--text-primary);
     --dark-button-background-secondary: #2C2C2C;
     --dark-tab-background: rgba(255, 255, 255, 0.05);
+    --dark-icon-default-color: #A2A2A2;
+    --dark-status-success-color: #00722D;
+    --dark-status-error-color: #C40E3A;
 
-    /* default overriden by the current NetworkEntry.darkThemeColor configuration parameter */
-    --dark-network-theme-color: lightgrey;
-
-
+    /* CURRENT MODE */
     --text-primary: var(--light-text-primary);
     --text-secondary: var(--light-text-secondary);
-    --text-accent: var(--light-text-accent);
     --text-accent2: var(--light-text-accent2);
     --text-success: var(--light-text-success);
     --text-danger: var(--light-text-danger);
@@ -84,31 +102,26 @@
     --background-tertiary: var(--light-background-tertiary);
     --border-secondary: var(--light-border-secondary);
     --table-border: var(--light-table-border);
-    --chip-primary: var(--light-chip-primary);
     --chip-text-primary: var(--light-chip-text-primary);
-    --button-text-secondary: var(--text-primary);
-    --button-background-primary: var(--light-button-background-primary);
+    --button-text-secondary: var(--light-button-text-secondary);
     --button-background-secondary: var(--light-button-background-secondary);
     --tab-background: var(--light-tab-background);
+    --icon-default-color: var(--light-icon-default-color);
+    --status-success-color: var(--light-status-success-color);
+    --status-error-color: var(--light-status-error-color);
 
-    --network-theme-color: var(--light-network-theme-color);
-}
-
-/*
-    Colors independent from the Dark/Light theme
- */
-
-:root {
-    --button-text-primary: #FFFFFF;
-    --icon-default-color: #A2A2A2;
-    --status-success-color: #00722D;
-    --status-error-color: #C40E3A;
+    --network-button-text-color: var(--light-network-button-text-color);
+    --network-button-color: var(--light-network-button-color);
+    --network-chip-color: var(--light-network-chip-color);
+    --network-text-accent-color: var(--light-network-text-accent-color);
+    --network-border-accent-color: var(--light-network-border-accent-color);
 }
 
 /*
     Compatibility with existing variables
  */
 :root {
+    --network-theme-color: var(--network-button-color);
     --h-theme-highlight-color: var(--network-theme-color);
     --h-theme-page-background-color: var(--background-primary);
     --h-theme-box-background-color: var(--background-tertiary);
@@ -572,7 +585,7 @@ body {
 }
 
 .h-has-pill {
-    background: var(--light-chip-primary);
+    background: var(--network-chip-color);
     border-radius: 32px;
     color: var(--chip-text-primary);
     font-family: "Styrene A Web", sans-serif;
