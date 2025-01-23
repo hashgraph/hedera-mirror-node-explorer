@@ -31,7 +31,7 @@
   >
     <div
         class="property-left-side"
-        :style="{'width': vertical ? '100%' : leftSideWidth}"
+        :style="{'width': vertical ? '100%' : (props.fullWidth && isMediumScreen) ? '16.66666674%' : leftSideWidth}"
         :id="nameId"
     >
       <span class="property-name" :class="{'uppercase': !props.keepCase}">
@@ -80,6 +80,7 @@ const props = defineProps({
 const nameId = props.id + 'Name'
 const valueId = props.id + 'Value'
 const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
 
 const leftSideWidth = computed(() => {
   let result
@@ -91,8 +92,6 @@ const leftSideWidth = computed(() => {
     } else {
       result = props.customNbColClass
     }
-  } else if (props.fullWidth) {
-    result = '16.66666674%'
   } else {
     result = '33.3333%'
   }

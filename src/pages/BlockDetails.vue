@@ -57,37 +57,37 @@
         <template #content>
           <NotificationBanner v-if="notification" :message="notification"/>
 
-          <Property id="count" :full-width="isMediumScreen">
+          <Property id="count" full-width>
             <template #name>No. Transactions</template>
             <template v-slot:value>
               <PlainAmount :amount="block?.count"/>
             </template>
           </Property>
-          <Property id="blockHash" :full-width="isMediumScreen">
+          <Property id="blockHash" full-width>
             <template v-slot:name>Hash</template>
             <template v-slot:value>
               <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
             </template>
           </Property>
-          <Property id="fromTimestamp" :full-width="isMediumScreen">
+          <Property id="fromTimestamp" full-width>
             <template v-slot:name>From Timestamp</template>
             <template v-slot:value>
               <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
             </template>
           </Property>
-          <Property id="toTimestamp" :full-width="isMediumScreen">
+          <Property id="toTimestamp" full-width>
             <template v-slot:name>To Timestamp</template>
             <template v-slot:value>
               <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
             </template>
           </Property>
-          <Property id="gasUsed" :full-width="isMediumScreen">
+          <Property id="gasUsed" full-width>
             <template v-slot:name>Gas Used</template>
             <template v-slot:value>
               <PlainAmount :amount="block?.gas_used"/>
             </template>
           </Property>
-          <Property id="recordFileName" :full-width="isMediumScreen">
+          <Property id="recordFileName" full-width>
             <template v-slot:name>Record File Name</template>
             <template v-slot:value>
               <StringValue :string-value="block?.name"/>

@@ -31,7 +31,7 @@
     </template>
 
     <template #content>
-      <Property id="hash" :full-width="isMediumScreen">
+      <Property id="hash" full-width>
         <template #name>Hash</template>
         <template #value>
           {{ props.topicMemo?.hash }}
@@ -45,25 +45,25 @@
           />
         </template>
       </Property>
-      <Property id="compression" :full-width="isMediumScreen">
+      <Property id="compression" full-width>
         <template #name>Compression</template>
         <template #value>
           {{ props.topicMemo?.algo }}
         </template>
       </Property>
-      <Property id="encoding" :full-width="isMediumScreen">
+      <Property id="encoding" full-width>
         <template #name>Encoding</template>
         <template #value>
           {{ props.topicMemo?.encoding }}
         </template>
       </Property>
-      <Property v-if="hcs1DataType" id="mime-type" :full-width="isMediumScreen">
+      <Property v-if="hcs1DataType" id="mime-type" full-width>
         <template #name>MIME Type</template>
         <template #value>
           {{ hcs1DataType }}
         </template>
       </Property>
-      <Property v-if="hashMatch && (hcs1DataURL || jsonContent)" id="preview" :full-width="isMediumScreen">
+      <Property v-if="hashMatch && (hcs1DataURL || jsonContent)" id="preview" full-width>
         <template #name>Preview</template>
         <template #value>
           <MediaContent

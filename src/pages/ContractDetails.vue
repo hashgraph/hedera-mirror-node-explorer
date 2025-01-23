@@ -54,7 +54,7 @@
         <template #content>
           <NotificationBanner v-if="notification" :message="notification"/>
 
-          <Property id="entityId" :full-width="isMediumScreen">
+          <Property id="entityId" full-width>
             <template #name>
               Contract ID
             </template>
@@ -67,7 +67,7 @@
               <span v-if="accountChecksum">-{{ accountChecksum }}</span>
             </template>
           </Property>
-          <Property id="evmAddress" :full-width="isMediumScreen">
+          <Property id="evmAddress" full-width>
             <template #name>
               EVM Address
             </template>
@@ -78,7 +78,7 @@
                   :address="ethereumAddress"/>
             </template>
           </Property>
-          <Property v-if="domainName" id="names" :full-width="isMediumScreen">
+          <Property v-if="domainName" id="names" full-width>
             <template #name>
               Domain
             </template>
