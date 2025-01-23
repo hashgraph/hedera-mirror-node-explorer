@@ -25,15 +25,14 @@
 <template>
 
   <PageFrameV2 page-title="ERC721 Token by Name">
-    <DashboardCard>
-      <template v-slot:title>
-        <span class="h-is-primary-title">ERC 721 Tokens matching </span>
-        <span class="h-is-secondary-text">"{{ props.name }}"</span>
+    <DashboardCardV2>
+      <template #title>
+        ERC 721 Tokens matching "{{ props.name }}"
       </template>
-      <template v-slot:content>
+      <template #content>
         <ERC721ByNameTable :name="props.name"/>
       </template>
-    </DashboardCard>
+    </DashboardCardV2>
   </PageFrameV2>
 
 </template>
@@ -45,9 +44,9 @@
 <script setup lang="ts">
 
 import {PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import ERC721ByNameTable from "@/components/contract/ERC721ByNameTable.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const props = defineProps({
   network: String,
