@@ -330,7 +330,7 @@ div.page-container {
 }
 
 div.title-extra {
-  color: var(--text-accent);
+  color: var(--network-text-accent-color);
   word-break: break-all;
 }
 
