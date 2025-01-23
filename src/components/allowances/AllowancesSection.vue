@@ -100,7 +100,7 @@
   />
 
   <DeleteNftAllowanceDialog
-      :show-dialog="showDeleteNftAllowanceDialog"
+      v-model:show-dialog="showDeleteNftAllowanceDialog"
       :token-id="currentNftId"
       :spender-id="currentSpenderId"
       :serial-number="currentNftSerialNumber"
