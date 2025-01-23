@@ -31,14 +31,14 @@
     </template>
 
     <template #content>
-      <Property id="customFeeCreatedAt" :full-width="isMediumScreen">
+      <Property id="customFeeCreatedAt" full-width>
         <template #name>Created at</template>
         <template #value>
           <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp?.toString()"/>
         </template>
       </Property>
 
-      <Property id="fixedFee" :full-width="isMediumScreen">
+      <Property id="fixedFee" full-width>
         <template #name>Fixed Fees</template>
         <template v-if="hasFixedFees" #value>
           <div class="h-is-table-compact">
@@ -50,7 +50,7 @@
         </template>
       </Property>
 
-      <Property v-if="isFungible" id="fractionalFee" :full-width="isMediumScreen">
+      <Property v-if="isFungible" id="fractionalFee" full-width>
         <template #name>Fractional Fees</template>
         <template v-if="hasFractionalFees" #value>
           <div class="h-is-table-compact">
@@ -62,7 +62,7 @@
         </template>
       </Property>
 
-      <Property v-else id="royalteeFee" :full-width="isMediumScreen">
+      <Property v-else id="royalteeFee" full-width>
         <template #name>Percentage & Fallback Fees</template>
         <template v-if="hasRoyaltyFees" #value>
           <div class="h-is-table-compact">

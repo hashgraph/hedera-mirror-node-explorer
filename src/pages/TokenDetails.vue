@@ -49,7 +49,7 @@
         <template #content>
           <NotificationBanner v-if="notification" :message="notification"/>
 
-          <Property id="entityId" :full-width="isMediumScreen">
+          <Property id="entityId" full-width>
             <template #name>Token ID</template>
             <template #value>
               <Copyable :content-to-copy="normalizedTokenId ?? ''">
@@ -60,7 +60,7 @@
               <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
             </template>
           </Property>
-          <Property v-if="ethereumAddress" id="evmAddress" :full-width="isMediumScreen">
+          <Property v-if="ethereumAddress" id="evmAddress" full-width>
             <template #name>EVM Address</template>
             <template #value>
               <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
@@ -387,7 +387,7 @@ div.page-container {
 }
 
 div.title-extra {
-  color: var(--text-accent);
+  color: var(--network-text-accent-color);
   word-break: break-all;
 }
 

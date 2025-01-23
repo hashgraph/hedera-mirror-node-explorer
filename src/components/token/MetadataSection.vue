@@ -41,7 +41,7 @@
     </template>
 
     <template #content>
-      <Property id="raw-metadata-property" :full-width="isMediumScreen">
+      <Property id="raw-metadata-property" full-width>
         <template #name>
           Raw Metadata
         </template>
@@ -49,7 +49,7 @@
           <BlobValue :blob-value="rawMetadata" :show-none="true"/>
         </template>
       </Property>
-      <Property v-if="rawMetadata" id="metadata-location" :full-width="isMediumScreen">
+      <Property v-if="rawMetadata" id="metadata-location" full-width>
         <template #name>Content Location</template>
         <template #value>
           <BlobValue
@@ -67,7 +67,7 @@
       </Property>
 
       <template v-if="showRawMetadata">
-        <Property id="raw-content" :full-width="isMediumScreen">
+        <Property id="raw-content" full-width>
           <template #name>
             Content
           </template>
@@ -81,7 +81,7 @@
       </template>
 
       <template v-else>
-        <Property v-if="format" id="format" :full-width="isMediumScreen">
+        <Property v-if="format" id="format" full-width>
           <template #name>
             Format
           </template>
@@ -89,7 +89,7 @@
             <BlobValue :blob-value="format" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="image" id="image" :full-width="isMediumScreen">
+        <Property v-if="image" id="image" full-width>
           <template #name>
             Image
           </template>
@@ -97,7 +97,7 @@
             <BlobValue :blob-value="image" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="type" id="type" :full-width="isMediumScreen">
+        <Property v-if="type" id="type" full-width>
           <template #name>
             Type
           </template>
@@ -105,7 +105,7 @@
             <BlobValue :blob-value="type" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="checksum" id="checksum" :full-width="isMediumScreen">
+        <Property v-if="checksum" id="checksum" full-width>
           <template #name>
             Checksum
           </template>
@@ -113,7 +113,7 @@
             <BlobValue :blob-value="checksum" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="creatorDID" id="creator-did" :full-width="isMediumScreen">
+        <Property v-if="creatorDID" id="creator-did" full-width>
           <template #name>
             Creator DID
           </template>
@@ -121,7 +121,7 @@
             <BlobValue :blob-value="creatorDID" :show-none="true"/>
           </template>
         </Property>
-        <Property v-if="properties" id="properties" :full-width="isMediumScreen">
+        <Property v-if="properties" id="properties" full-width>
           <template #name>
             Properties
           </template>
@@ -137,7 +137,7 @@
         </template>
 
         <template v-if="files.length">
-          <Property :full-width="isMediumScreen">
+          <Property full-width>
             <template #name>Files</template>
             <template #value>
               <div id="file-container-area" class="file-container">
