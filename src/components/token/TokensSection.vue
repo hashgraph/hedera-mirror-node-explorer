@@ -138,8 +138,8 @@
   </DashboardCardV2>
 
   <RejectTokenDialog
+      v-model:show-dialog="showRejectTokenDialog"
       :tokens="checkedTokens"
-      :controller="rejectDialogController"
       @rejected="onRejectCompleted"
   />
 
@@ -169,7 +169,7 @@ import {FungibleTableController} from "@/components/account/FungibleTableControl
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
-import RejectTokenDialog from "@/dialogs/RejectTokenDialog.vue";
+import RejectTokenDialog from "@/dialogs/transaction/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
@@ -281,10 +281,10 @@ onBeforeUnmount(() => {
 // Reject
 //
 
-const rejectDialogController = new DialogController()
+const showRejectTokenDialog = ref(false)
 
 const onReject = () => {
-  rejectDialogController.visible.value = true
+  showRejectTokenDialog.value = true
 }
 
 const onRejectCompleted = () => {

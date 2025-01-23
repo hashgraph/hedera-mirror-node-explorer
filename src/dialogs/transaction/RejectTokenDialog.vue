@@ -1,0 +1,125 @@
+<!--
+  -
+  - Hedera Mirror Node Explorer
+  -
+  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+  -
+  - Licensed under the Apache License, Version 2.0 (the "License");
+  - you may not use this file except in compliance with the License.
+  - You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  - Unless required by applicable law or agreed to in writing, software
+  - distributed under the License is distributed on an "AS IS" BASIS,
+  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  - See the License for the specific language governing permissions and
+  - limitations under the License.
+  -
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+  <TransactionDialog
+      :controller="controller"
+      :native-wallet-only="true"
+      @transaction-did-execute="transactionDidExecute"
+      :width="500">
+
+    <template #transactionDialogTitle>{{ transactionTitle }}</template>
+
+    <template #transactionExecutionLabel>DELETE</template>
+
+    <template #transactionDialogInput>
+
+      <template v-if="filtering">
+
+      </template>
+
+      <template v-else>
+        <div>
+          {{ inputMessage }}
+        </div>
+        <div>
+          {{ inputMessageDetails1 }}
+        </div>
+        <div v-if="inputMessageDetails2">
+          {{ inputMessageDetails2 }}
+        </div>
+        <div v-if="inputMessageDetails3">
+          {{ inputMessageDetails3 }}
+        </div>
+        <div v-if="inputMessageDetails4">
+          {{ inputMessageDetails4 }}
+        </div>
+        <div v-if="inputMessageDetails5">
+          {{ inputMessageDetails5 }}
+        </div>
+      </template>
+
+    </template>
+
+  </TransactionDialog>
+</template>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                      SCRIPT                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<script setup lang="ts">
+
+import {computed, onBeforeUnmount, onMounted, watch, PropType} from "vue";
+import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import {RejectTokenController} from "@/dialogs/transaction/RejectTokenController.ts";
+import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
+
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
+})
+
+watch(showDialog, () => console.log("showDialog.value=" + showDialog.value))
+
+const props = defineProps({
+  tokens: {
+    type: Object as PropType<(Token | Nft)[] | null>,
+    default: null
+  },
+})
+
+const emit = defineEmits(["rejected"])
+
+
+const tokens = computed(() => props.tokens ?? [])
+const controller = new RejectTokenController(showDialog, tokens)
+onMounted(() => controller.mount())
+onBeforeUnmount(() => controller.unmount())
+
+const filtering = controller.filtering
+const inputMessage = controller.inputMessage
+const inputMessageDetails1 = controller.inputMessageDetails1
+const inputMessageDetails2 = controller.inputMessageDetails2
+const inputMessageDetails3 = controller.inputMessageDetails3
+const inputMessageDetails4 = controller.inputMessageDetails4
+const inputMessageDetails5 = controller.inputMessageDetails5
+
+const transactionTitle = computed(
+    () =>  controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens' )
+
+const transactionDidExecute = async (/* transactionId: string|null */) => {
+  emit('rejected')
+}
+
+
+</script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<style scoped>
+
+</style>
