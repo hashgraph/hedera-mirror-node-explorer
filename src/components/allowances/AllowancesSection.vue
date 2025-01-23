@@ -99,16 +99,6 @@
                                @allowance-approved="onAllowanceApproved"
   />
 
-  <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
-                  :mode="Mode.Error"
-                  main-message="This operation cannot be done using Metamask"
-                  extra-message="Use another wallet (Blade or Hashpack)"
-  >
-    <template v-slot:dialogTitle>
-      <span class="h-is-primary-title">Unsupported Operation</span>
-    </template>
-  </ProgressDialog>
-
   <DeleteNftAllowanceDialog
       :show-dialog="showDeleteNftAllowanceDialog"
       :token-id="currentNftId"
@@ -133,7 +123,6 @@ import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
 import ApproveAllowanceDialog from "@/dialogs/transaction/allowance/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/MirrorNodeSchemas";
-import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
@@ -288,16 +277,10 @@ onBeforeUnmount(() => {
   nftAllSerialsAllowanceTableController.unmount()
 })
 
-const notWithMetamaskDialogVisible = ref(false)
-
 const onClick = () => {
-  if (walletManager.isHieroWallet.value) {
-    showApproveAllowanceDialog.value = true
-    currentHbarAllowance.value = null
-    currentTokenAllowance.value = null
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  showApproveAllowanceDialog.value = true
+  currentHbarAllowance.value = null
+  currentTokenAllowance.value = null
 }
 
 const onAllowanceApproved = () => {
@@ -309,44 +292,28 @@ const onAllowanceApproved = () => {
 
 const onEditHbar = (allowance: CryptoAllowance) => {
   // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHieroWallet.value) {
-    currentHbarAllowance.value = allowance
-    showUpdateHbarAllowanceDialog.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentHbarAllowance.value = allowance
+  showUpdateHbarAllowanceDialog.value = true
 }
 
 const onEditToken = (allowance: TokenAllowance) => {
   // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHieroWallet.value) {
-    currentTokenAllowance.value = allowance
-    showUpdateTokenAllowanceDialog.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentTokenAllowance.value = allowance
+  showUpdateTokenAllowanceDialog.value = true
 }
 
 const onDeleteNft = async (nft: Nft) => {
   // console.log("Delete NFT Allowance: " + JSON.stringify(nft))
-  if (walletManager.isHieroWallet.value) {
-    currentNftAllowance.value = nft
-    currentNftAllSerialsAllowance.value = null
-    showDeleteNftAllowanceDialog.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentNftAllowance.value = nft
+  currentNftAllSerialsAllowance.value = null
+  showDeleteNftAllowanceDialog.value = true
 }
 
 const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
   // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHieroWallet.value) {
-    currentNftAllowance.value = null
-    currentNftAllSerialsAllowance.value = allowance
-    showDeleteNftAllowanceDialog.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentNftAllowance.value = null
+  currentNftAllSerialsAllowance.value = allowance
+  showDeleteNftAllowanceDialog.value = true
 }
 
 const onNftDeleted = () => {

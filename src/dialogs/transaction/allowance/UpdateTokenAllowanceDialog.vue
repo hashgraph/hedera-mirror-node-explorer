@@ -25,6 +25,7 @@
 <template>
   <TransactionDialog
       :controller="controller"
+      :name-wallet-only="true"
       @transaction-did-execute="transactionDidExecute"
       :width="500">
 

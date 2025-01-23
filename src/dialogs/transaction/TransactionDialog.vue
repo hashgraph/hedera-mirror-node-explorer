@@ -32,7 +32,13 @@
 
     <!-- input -->
     <template #taskDialogInput>
-      <slot name="transactionDialogInput"/>
+      <template v-if="walletSupported">
+        <slot name="transactionDialogInput"/>
+      </template>
+      <template v-else>
+        <div>This operation cannot be done using {{ walletName }}</div>
+        <div>Use another wallet (Blade or HashPack)</div>
+      </template>
     </template>
 
     <!-- label -->
@@ -90,6 +96,10 @@ const props = defineProps({
     type: Object as PropType<TransactionController>,
     required: true
   },
+  nativeWalletOnly: {
+    type: Boolean,
+    default: false
+  },
   width: {
     type: Number,
     default: 768
@@ -100,6 +110,7 @@ const emit = defineEmits(["transactionDidExecute"])
 
 const walletName = walletManager.walletName
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? "")
+const walletSupported = computed(() => !props.nativeWalletOnly || walletManager.isHieroWallet.value)
 
 const taskDidSucceed = () => {
   emit("transactionDidExecute", props.controller.transactionId.value)
