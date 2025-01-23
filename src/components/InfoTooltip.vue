@@ -27,11 +27,9 @@
       id="info-tooltip"
       :text="props.warningLabel ?? props.label"
       :position="props.position"
+      style="height: 16px;"
   >
-    <span class="icon is-small h-is-extra-text">
-      <i v-if="props.warningLabel" class="fa fa-exclamation-triangle has-text-danger"/>
-      <i v-else class="fas fa-info-circle"></i>
-    </span>
+    <Info :size="16" style="color: var(--network-text-accent-color);"/>
   </Tooltip>
 </template>
 
@@ -43,6 +41,7 @@
 
 import {PropType} from "vue";
 import Tooltip from "@/components/Tooltip.vue";
+import {Info} from "lucide-vue-next"
 
 const props = defineProps({
   warningLabel: {

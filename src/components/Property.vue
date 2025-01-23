@@ -120,8 +120,10 @@ div.property-root-vertical {
 }
 
 div.property-left-side {
+  align-items: center;
+  display: flex;
   flex: none;
-  display: inline-block;
+  gap: 4px;
 }
 
 span.property-name {
