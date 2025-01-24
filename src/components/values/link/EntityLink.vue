@@ -24,7 +24,7 @@
 
 <template>
 
-  <div class="is-inline-block">
+  <div class="entity-link">
 
     <template v-if="route === null">
       <slot/>
@@ -32,7 +32,7 @@
 
     <template v-else>
       <router-link :to="route">
-        <span class="h-is-hoverable">
+        <span class="hoverable">
           <slot/>
         </span>
       </router-link>
@@ -68,5 +68,15 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.entity-link {
+  display: inline-block;
+}
+
+span.hoverable:hover {
+  color: grey;
+}
+
+</style>
 
