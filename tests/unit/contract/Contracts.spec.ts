@@ -18,13 +18,13 @@
  *
  */
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {SAMPLE_CONTRACTS} from "../Mocks";
 import Contracts from "@/pages/Contracts.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ContractTable from "@/components/contract/ContractTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -63,7 +63,7 @@ describe("Contracts.vue", () => {
 
         expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
 
-        const card = wrapper.findComponent(DashboardCard)
+        const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Contracts"))
 

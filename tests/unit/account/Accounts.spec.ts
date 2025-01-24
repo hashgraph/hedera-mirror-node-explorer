@@ -24,7 +24,7 @@ import router from "@/router";
 import axios from "axios";
 import {SAMPLE_ACCOUNTS, SAMPLE_TOKEN} from "../Mocks";
 import Accounts from "@/pages/Accounts.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import AccountTable from "@/components/account/AccountTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -63,7 +63,7 @@ describe("Accounts.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        const card = wrapper.findComponent(DashboardCard)
+        const card = wrapper.findComponent(DashboardCardV2)
         expect(wrapper.vm.accountTableController.mounted.value).toBe(true)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Accounts"))

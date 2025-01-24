@@ -23,7 +23,7 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {SAMPLE_NETWORK_NODES, SAMPLE_NETWORK_STAKE} from "../Mocks";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
@@ -83,7 +83,7 @@ describe("Nodes.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        const cards = wrapper.findAllComponents(DashboardCard)
+        const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(2)
 
         expect(cards[0].text()).toMatch(RegExp("^Network"))

@@ -24,7 +24,7 @@ import router from "@/router";
 import axios from "axios";
 import {SAMPLE_TOKEN, SAMPLE_TRANSACTION, SAMPLE_TRANSACTIONS} from "../Mocks";
 import Transactions from "@/pages/Transactions.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import TablePageSize from "../../../src/components/transaction/TablePageSize.vue";
@@ -66,7 +66,7 @@ describe("Transactions.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        const card = wrapper.findComponent(DashboardCard)
+        const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 
@@ -131,7 +131,7 @@ describe("Transactions.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        const card = wrapper.findComponent(DashboardCard)
+        const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 
@@ -174,7 +174,7 @@ describe("Transactions.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        const card = wrapper.findComponent(DashboardCard)
+        const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
 

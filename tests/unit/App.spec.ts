@@ -26,12 +26,12 @@ import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY, SAMPLE_TOKEN, SAMPLE
 import App from "@/App.vue";
 import TopNavBar from "@/components/page/TopNavBar.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import {NetworkConfig} from "../../src/config/NetworkConfig";
 import {routeManager} from "../../src/router";
+import DashboardCardV2 from "../../src/components/DashboardCardV2.vue";
 
 /*
     Bookmarks
@@ -124,7 +124,7 @@ describe("App.vue", () => {
 
         expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
 
-        const cards = wrapper.findAllComponents(DashboardCard)
+        const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(3)
         expect(cards[0].text()).toMatch(RegExp("^Crypto Transfers"))
         expect(cards[1].text()).toMatch(RegExp("^Smart Contract Calls"))
