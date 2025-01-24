@@ -24,7 +24,7 @@ import router from "@/router";
 import axios from "axios";
 import {SAMPLE_TOKENS} from "../Mocks";
 import Tokens from "@/pages/Tokens.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import TokenTable from "@/components/token/TokenTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -63,7 +63,7 @@ describe("Tokens.vue", () => {
         expect(wrapper.vm.nftTableController.mounted.value).toBe(true)
         expect(wrapper.vm.tokenTableController.mounted.value).toBe(true)
 
-        const cards = wrapper.findAllComponents(DashboardCard)
+        const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(2)
 
         expect(cards[0].text()).toMatch(RegExp("^Recent Non Fungible Tokens"))

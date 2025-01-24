@@ -18,12 +18,12 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {SAMPLE_BLOCKSRESPONSE} from "../Mocks";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
@@ -62,7 +62,7 @@ describe("Blocks.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.vm.blockTableController.mounted.value).toBe(true)
-        const card = wrapper.findComponent(DashboardCard)
+        const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Blocks"))
 

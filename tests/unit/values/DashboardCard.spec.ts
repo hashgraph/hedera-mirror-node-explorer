@@ -20,17 +20,17 @@
 
 import {describe, expect, it} from 'vitest'
 import {mount} from "@vue/test-utils"
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 /*
     https://test-utils.vuejs.org/guide/advanced/slots.html
  */
 
-describe("DashboardCard.vue", () => {
+describe("DashboardCardV2.vue", () => {
 
     it("should have all slots empty", async () => {
 
-        const wrapper = mount(DashboardCard, {});
+        const wrapper = mount(DashboardCardV2, {});
 
         expect(wrapper.text()).toBe("")
 
@@ -48,7 +48,7 @@ describe("DashboardCard.vue", () => {
         const sampleLeftContent = "ZeLeftContent"
         const sampleRightContent = "ZeRightContent"
 
-        const wrapper = mount(DashboardCard, {
+        const wrapper = mount(DashboardCardV2, {
             slots: {
                 title: sampleTitle,
                 subtitle: sampleSubtitle,

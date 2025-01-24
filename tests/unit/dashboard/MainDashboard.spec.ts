@@ -33,7 +33,7 @@ import {
 } from "../Mocks";
 import MainDashboard from "@/pages/MainDashboard.vue";
 import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
 import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
@@ -107,7 +107,7 @@ describe("MainDashboard.vue", () => {
             "50,000,000,000" +
             "HBAR TOTAL")
 
-        const cards = wrapper.findAllComponents(DashboardCard)
+        const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(3)
 
         expect(cards[0].text()).toMatch(RegExp("^Crypto Transfers"))
