@@ -71,7 +71,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, watch, PropType} from "vue";
+import {computed, PropType} from "vue";
 import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
 import {RejectTokenController} from "@/dialogs/transaction/RejectTokenController.ts";
 import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";

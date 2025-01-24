@@ -62,7 +62,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, PropType} from "vue";
 import {TokenAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import {UpdateTokenAllowanceController} from "@/dialogs/transaction/allowance/UpdateTokenAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";

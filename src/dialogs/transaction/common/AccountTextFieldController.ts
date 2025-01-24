@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref, Ref} from "vue";
+import {computed, Ref} from "vue";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
 import {AccountBalanceTransactions} from "@/schemas/MirrorNodeSchemas.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
@@ -30,6 +30,8 @@ import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 
 export class AccountTextFieldController {
 
+    public readonly oldAccountId: Ref<string|null>
+    public readonly inputText: Ref<string>
     private readonly entityFieldController: EntityTextFieldController
     private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions|null>
 
@@ -37,9 +39,11 @@ export class AccountTextFieldController {
     // Public
     //
 
-    public constructor(public readonly networkConfig: NetworkConfig, public readonly input: Ref<string> = ref("")) {
-        this.entityFieldController = new EntityTextFieldController(networkConfig, input)
-        this.accountLookup = AccountByIdCache.instance.makeLookup(this.accountId)
+    public constructor(oldAccountId: Ref<string|null>, networkConfig: NetworkConfig) {
+        this.oldAccountId = oldAccountId
+        this.entityFieldController = new EntityTextFieldController(this.oldAccountId, networkConfig)
+        this.inputText = this.entityFieldController.inputText
+        this.accountLookup = AccountByIdCache.instance.makeLookup(this.newAccountId)
     }
 
     public mount(): void {
@@ -49,6 +53,12 @@ export class AccountTextFieldController {
     public unmount(): void {
         this.accountLookup.unmount()
     }
+
+    public readonly newAccountId = computed(() => this.entityFieldController.newEntityId.value)
+
+    public readonly newAccountInfo = computed(() => this.accountLookup.entity.value)
+
+    public readonly isLoaded = computed(() => this.accountLookup.isLoaded.value)
 
     public readonly state = computed<AccountTextFieldState>(() => {
         let result: AccountTextFieldState
@@ -69,13 +79,6 @@ export class AccountTextFieldController {
         }
         return result
     })
-
-
-    public readonly accountId = computed(() => this.entityFieldController.entityId.value)
-
-    public readonly accountInfo = computed(() => this.accountLookup.entity.value)
-
-    public readonly isLoaded = computed(() => this.accountLookup.isLoaded.value)
 }
 
 export enum AccountTextFieldState {

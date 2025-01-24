@@ -87,7 +87,7 @@ const emit = defineEmits(["allowanceApproved"])
 const hbarAllowance = computed(() => props.hbarAllowance)
 const controller = new UpdateCryptoAllowanceController(showDialog, hbarAllowance)
 
-const hbarAmountInput = controller.input
+const hbarAmountInput = controller.inputText
 const feedbackMessage = controller.feedbackMessage
 
 const transactionTitle = computed(() => {
