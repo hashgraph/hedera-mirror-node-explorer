@@ -109,11 +109,11 @@ export class UpdateTokenAllowanceController extends TransactionController {
         return await walletManager.approveTokenAllowance(tokenId, spenderId, Number(newUserAmount))
     }
 
-    public mount(): void {
+    public dialogStartShowing(): void {
         this.tokenAmountController.mount()
     }
 
-    public unmount(): void {
+    public dialogStopShowing(): void {
         this.tokenAmountController.unmount()
     }
 

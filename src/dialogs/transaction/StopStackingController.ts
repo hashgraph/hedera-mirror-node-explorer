@@ -43,12 +43,12 @@ export class StopStackingController extends TransactionController {
         this.stakedNodeAnalyzer = new NodeAnalyzer(this.stakedNodeId)
     }
 
-    public mount(): void {
+    public dialogStartShowing(): void {
         this.accountLookup.mount()
         this.stakedNodeAnalyzer.mount()
     }
 
-    public unmount(): void {
+    public dialogStopShowing(): void {
         this.accountLookup.unmount()
         this.stakedNodeAnalyzer.unmount()
     }

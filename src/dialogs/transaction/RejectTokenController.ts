@@ -49,11 +49,11 @@ export class RejectTokenController extends TransactionController {
         super(showDialog)
     }
 
-    public mount(): void {
+    public dialogStartShowing(): void {
         this.watchStopHandle = watch(this.tokens, this.tokensDidChange, {immediate: true})
     }
 
-    public unmount(): void {
+    public dialogStopShowing(): void {
 
         if (this.watchStopHandle !== null) {
             this.watchStopHandle()

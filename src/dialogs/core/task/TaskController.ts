@@ -32,11 +32,11 @@ export abstract class TaskController {
         throw "Must be subclassed"
     }
 
-    protected mount(): void {
+    protected dialogStartShowing(): void {
         // Dialog did start showing
     }
 
-    protected unmount(): void {
+    protected dialogStopShowing(): void {
         // Dialog did stop showing
     }
 
@@ -47,9 +47,9 @@ export abstract class TaskController {
     protected constructor(public readonly showDialog: Ref<boolean>) {
         watch(this.showDialog, (show) => {
             if (show) {
-                this.mount()
+                this.dialogStartShowing()
             } else {
-                this.unmount()
+                this.dialogStopShowing()
             }
         })
     }

@@ -42,11 +42,11 @@ export class DeleteNftAllowanceController extends TransactionController {
         this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
     }
 
-    public mount(): void {
+    public dialogStartShowing(): void {
         this.tokenLookup.mount()
     }
 
-    public unmount(): void {
+    public dialogStopShowing(): void {
         this.tokenLookup.unmount()
     }
 

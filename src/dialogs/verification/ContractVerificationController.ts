@@ -164,7 +164,7 @@ export class ContractVerificationController extends TaskController {
         }
     }
 
-    public unmount(): void {
+    public dialogStopShowing(): void {
         this.contractSourceAnalyzer.reset().catch()
     }
 }
