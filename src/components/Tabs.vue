@@ -134,6 +134,7 @@ a {
 
 .is-active a {
   color: var(--text-primary);
+  font-weight: 700;
 }
 
 </style>
