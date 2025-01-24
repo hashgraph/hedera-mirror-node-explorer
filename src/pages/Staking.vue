@@ -32,17 +32,8 @@
                          v-on:staking-changed="stakingChanged"/>
 
     <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
-                         :account="account ?? undefined"
+                         :account-id="accountId"
                          v-on:staking-changed="stakingChanged"/>
-
-    <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
-                   :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
-      <template v-slot:confirmTitle>
-        <span>My Staking </span>
-        <span v-if="accountId"> for account </span>
-        <span v-if="accountId">{{ accountId }}</span>
-      </template>
-    </ConfirmDialog>
 
     <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
                     :mode="Mode.Error"
@@ -100,14 +91,14 @@
                 <ButtonView
                     id="stopStakingButton"
                     :enabled="stakedTo !== null"
-                    @action="showStopConfirmDialog"
+                    @action="stopStakingDialogVisible = true"
                 >
                   STOP STAKING
                 </ButtonView>
                 <ButtonView
                     id="showStakingDialog"
                     :is-default="true"
-                    @action="showStakingDialog"
+                    @action="changeStakingDialogVisible = true"
                 >
                   CHANGE STAKING
                 </ButtonView>
@@ -152,8 +143,7 @@ import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
 import ChangeStakingDialog from "@/dialogs/ChangeStakingDialog.vue";
-import StopStakingDialog from "@/dialogs/StopStakingDialog.vue";
-import ConfirmDialog from "@/dialogs/ConfirmDialog.vue";
+import StopStakingDialog from "@/dialogs/transaction/StopStakingDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
@@ -176,7 +166,6 @@ const networkConfig = NetworkConfig.inject()
 
 const changeStakingDialogVisible = ref(false)
 const stopStakingDialogVisible = ref(false)
-const stopConfirmDialogVisible = ref(false)
 
 //
 // Account
@@ -236,26 +225,6 @@ onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
 //
 
 const notWithMetamaskDialogVisible = ref(false)
-
-const showStopConfirmDialog = () => {
-  if (walletManager.isHieroWallet.value) {
-    stopConfirmDialogVisible.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
-}
-
-const handleStopStaking = () => {
-  stopStakingDialogVisible.value = true
-}
-
-const showStakingDialog = () => {
-  if (walletManager.isHieroWallet.value) {
-    changeStakingDialogVisible.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
-}
 
 const stakingChanged = () => {
   accountLocParser.remount()

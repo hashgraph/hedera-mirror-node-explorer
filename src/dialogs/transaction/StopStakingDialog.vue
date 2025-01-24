@@ -29,37 +29,12 @@
       @transaction-did-execute="transactionDidExecute"
       :width="500">
 
-    <template #transactionDialogTitle>{{ transactionTitle }}</template>
+    <template #transactionDialogTitle>My Staking for account {{ accountId }}</template>
 
-    <template #transactionExecutionLabel>DELETE</template>
+    <template #transactionExecutionLabel>STOP STAKING</template>
 
     <template #transactionDialogInput>
-
-      <template v-if="filtering">
-
-      </template>
-
-      <template v-else>
-        <div>
-          {{ inputMessage }}
-        </div>
-        <div>
-          {{ inputMessageDetails1 }}
-        </div>
-        <div v-if="inputMessageDetails2">
-          {{ inputMessageDetails2 }}
-        </div>
-        <div v-if="inputMessageDetails3">
-          {{ inputMessageDetails3 }}
-        </div>
-        <div v-if="inputMessageDetails4">
-          {{ inputMessageDetails4 }}
-        </div>
-        <div v-if="inputMessageDetails5">
-          {{ inputMessageDetails5 }}
-        </div>
-      </template>
-
+      Do you want to stop staking to {{ stakedTo }} ?
     </template>
 
   </TransactionDialog>
@@ -71,10 +46,9 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, watch, PropType} from "vue";
 import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
-import {RejectTokenController} from "@/dialogs/transaction/RejectTokenController.ts";
-import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
+import {computed, PropType} from "vue";
+import {StopStackingController} from "@/dialogs/transaction/StopStackingController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -82,35 +56,21 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  tokens: {
-    type: Object as PropType<(Token | Nft)[] | null>,
-    default: null
+  accountId: {
+    type: String as PropType<string|null>,
+    default: true
   },
 })
 
-const emit = defineEmits(["rejected"])
+const emit = defineEmits(["stakingChanged"])
 
+const accountId = computed(() => props.accountId)
+const controller = new StopStackingController(showDialog, accountId)
+const stakedTo = controller.stakedTo
 
-const tokens = computed(() => props.tokens ?? [])
-const controller = new RejectTokenController(showDialog, tokens)
-onMounted(() => controller.mount())
-onBeforeUnmount(() => controller.unmount())
-
-const filtering = controller.filtering
-const inputMessage = controller.inputMessage
-const inputMessageDetails1 = controller.inputMessageDetails1
-const inputMessageDetails2 = controller.inputMessageDetails2
-const inputMessageDetails3 = controller.inputMessageDetails3
-const inputMessageDetails4 = controller.inputMessageDetails4
-const inputMessageDetails5 = controller.inputMessageDetails5
-
-const transactionTitle = computed(
-    () =>  controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens' )
-
-const transactionDidExecute = async (/* transactionId: string|null */) => {
-  emit('rejected')
+const transactionDidExecute = async (transactionId: string|null) => {
+  emit('stakingChanged', transactionId)
 }
-
 
 </script>
 
