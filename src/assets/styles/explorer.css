@@ -332,8 +332,8 @@ a {
 .h-sub-section {
     color: var(--text-primary);
     font-family: "Styrene A Web", sans-serif;
-    font-weight: 500;
-    font-size: 16px;
+    font-weight: 700;
+    font-size: 14px;
     line-height: 32px;
 }
 
@@ -562,10 +562,6 @@ body {
     padding: 3px 6px 3px;
     letter-spacing: normal;
     align-content: center;
-}
-
-.h-is-hoverable:hover {
-    color: grey;
 }
 
 .h-is-compact-label {
