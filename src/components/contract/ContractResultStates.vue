@@ -78,17 +78,15 @@
 
   </DashboardCardV2>
 
-  <DashboardCard v-else-if="stateChanges?.length" class="h-card" collapsible-key="stateChanges">
-    <template v-slot:title>
-      <div class="h-is-secondary-title">Contract States Accessed & Changed</div>
+  <DashboardCardV2 v-else-if="stateChanges?.length" collapsible-key="stateChanges">
+    <template #title>
+      Contract States Accessed & Changed
     </template>
 
-    <template v-slot:content>
-      <div class="h-is-tertiary-text-text has-text-grey">
-        <span>Not available on this screen size</span>
-      </div>
+    <template #content>
+      <p class="not-supported">Not available on this screen size</p>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -99,7 +97,6 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, Ref, watch} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultStateChange} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
@@ -134,7 +131,6 @@ export default defineComponent({
     DashboardCardV2,
     SelectView,
     ContractResultStateChangeEntry,
-    DashboardCard
   },
 
   props: {
@@ -307,6 +303,13 @@ hr.table-separator {
 div.pagination {
   display: flex;
   justify-content: flex-end;
+}
+
+p.not-supported {
+  color: var(--text-secondary);
+  font-family: "Styrene A Web", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
 }
 
 </style>
