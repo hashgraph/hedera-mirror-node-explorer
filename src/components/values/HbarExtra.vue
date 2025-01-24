@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="props.tbarAmount !== 0 || !props.hideZero" class="dollar-amount">
+  <span v-if="props.tbarAmount !== 0 || !props.hideZero">
     {{ dollarAmount }}
   </span>
 </template>
@@ -97,10 +97,6 @@ const dollarFormatting = new Intl.NumberFormat('en-US', {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-span.dollar-amount {
-  color: var(--text-accent2);
-}
 
 </style>
 
