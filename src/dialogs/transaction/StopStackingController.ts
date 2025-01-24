@@ -43,16 +43,6 @@ export class StopStackingController extends TransactionController {
         this.stakedNodeAnalyzer = new NodeAnalyzer(this.stakedNodeId)
     }
 
-    public dialogStartShowing(): void {
-        this.accountLookup.mount()
-        this.stakedNodeAnalyzer.mount()
-    }
-
-    public dialogStopShowing(): void {
-        this.accountLookup.unmount()
-        this.stakedNodeAnalyzer.unmount()
-    }
-
     public readonly stakedTo = computed(() => {
         let result: string | null
         if (this.stakedNodeId.value !== null) {
@@ -88,6 +78,16 @@ export class StopStackingController extends TransactionController {
             AccountByAliasCache.instance.forget(this.accountInfo.value.alias)
         }
         return result
+    }
+
+    protected dialogStartShowing(): void {
+        this.accountLookup.mount()
+        this.stakedNodeAnalyzer.mount()
+    }
+
+    protected dialogStopShowing(): void {
+        this.accountLookup.unmount()
+        this.stakedNodeAnalyzer.unmount()
     }
 
     //

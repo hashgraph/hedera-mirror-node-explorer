@@ -60,31 +60,6 @@ export class ApproveAllowanceController extends TransactionController {
         this.nftSerialsController = new NftSerialsTextFieldController(this.nftId)
     }
 
-    public dialogStartShowing() {
-        this.spenderController.mount()
-        this.tokenController.mount()
-        this.nftController.mount()
-        // no mount() for this.cryptoController
-        this.tokenAmountController.mount()
-        this.nftSerialsController.mount()
-    }
-
-    public dialogStopShowing() {
-        this.spenderController.input.value = ""
-        this.tokenController.input.value = ""
-        this.nftController.input.value = ""
-        this.cryptoController.input.value = ""
-        this.tokenAmountController.input.value = ""
-
-        this.spenderController.unmount()
-        this.tokenController.unmount()
-        this.nftController.unmount()
-        // no unmount() for this.cryptoController
-        this.tokenAmountController.unmount()
-        this.nftSerialsController.unmount()
-    }
-
-
     public readonly allowanceChoice = ref("crypto") // crypto, token, nft
 
     public readonly feedbackMessage = computed(() => {
@@ -164,6 +139,31 @@ export class ApproveAllowanceController extends TransactionController {
 
         return Promise.resolve(result)
     }
+
+    protected dialogStartShowing() {
+        this.spenderController.mount()
+        this.tokenController.mount()
+        this.nftController.mount()
+        // no mount() for this.cryptoController
+        this.tokenAmountController.mount()
+        this.nftSerialsController.mount()
+    }
+
+    protected dialogStopShowing() {
+        this.spenderController.input.value = ""
+        this.tokenController.input.value = ""
+        this.nftController.input.value = ""
+        this.cryptoController.input.value = ""
+        this.tokenAmountController.input.value = ""
+
+        this.spenderController.unmount()
+        this.tokenController.unmount()
+        this.nftController.unmount()
+        // no unmount() for this.cryptoController
+        this.tokenAmountController.unmount()
+        this.nftSerialsController.unmount()
+    }
+
 
     //
     // Private

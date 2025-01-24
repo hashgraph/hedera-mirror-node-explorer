@@ -42,14 +42,6 @@ export class DeleteNftAllowanceController extends TransactionController {
         this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
     }
 
-    public dialogStartShowing(): void {
-        this.tokenLookup.mount()
-    }
-
-    public dialogStopShowing(): void {
-        this.tokenLookup.unmount()
-    }
-
     public readonly tokenName = computed(() => this.tokenLookup.entity.value?.name ?? null)
 
 
@@ -73,6 +65,14 @@ export class DeleteNftAllowanceController extends TransactionController {
             result = await walletManager.deleteNftAllSerialsAllowance(tokenId, spenderId)
         }
         return result
+    }
+
+    protected dialogStartShowing(): void {
+        this.tokenLookup.mount()
+    }
+
+    protected dialogStopShowing(): void {
+        this.tokenLookup.unmount()
     }
 
 }

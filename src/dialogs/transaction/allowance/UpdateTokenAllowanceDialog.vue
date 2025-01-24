@@ -85,8 +85,6 @@ const emit = defineEmits(["allowanceApproved"])
 
 const tokenAllowance = computed(() => props.tokenAllowance)
 const controller = new UpdateTokenAllowanceController(showDialog, tokenAllowance)
-onMounted(() => controller.mount())
-onBeforeUnmount(() => controller.unmount())
 
 const tokenAmountInput = controller.tokenAmountInput
 const feedbackMessage = controller.feedbackMessage

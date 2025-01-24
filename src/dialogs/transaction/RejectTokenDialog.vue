@@ -93,8 +93,6 @@ const emit = defineEmits(["rejected"])
 
 const tokens = computed(() => props.tokens ?? [])
 const controller = new RejectTokenController(showDialog, tokens)
-onMounted(() => controller.mount())
-onBeforeUnmount(() => controller.unmount())
 
 const filtering = controller.filtering
 const inputMessage = controller.inputMessage
