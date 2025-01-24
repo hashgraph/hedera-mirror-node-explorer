@@ -60,7 +60,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.nftSerialsController = new NftSerialsTextFieldController(this.nftId)
     }
 
-    public mount() {
+    public dialogStartShowing() {
         this.spenderController.mount()
         this.tokenController.mount()
         this.nftController.mount()
@@ -69,7 +69,7 @@ export class ApproveAllowanceController extends TransactionController {
         this.nftSerialsController.mount()
     }
 
-    public unmount() {
+    public dialogStopShowing() {
         this.spenderController.input.value = ""
         this.tokenController.input.value = ""
         this.nftController.input.value = ""
