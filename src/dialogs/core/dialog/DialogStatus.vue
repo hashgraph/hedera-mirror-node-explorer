@@ -29,7 +29,7 @@
     <div v-if="dialogSuccessVisible" class="icon is-medium has-text-success">
       <i class="fas fa-check"/>
     </div>
-    <div v-else-if="dialogErrorVisible" class="icon is-medium has-text-danger">
+    <div v-else-if="dialogErrorVisible" class="icon is-medium has-text-error">
       <span style="font-size: 18px; font-weight: 900">X</span>
     </div>
     <div v-else/>
@@ -95,8 +95,8 @@ div.icon.has-text-success {
   color: var(--text-success);
 }
 
-div.icon.has-text-danger {
-  color: var(--text-danger);
+div.icon.has-text-error {
+  color: var(--text-error);
 }
 
 div.main-message {

@@ -44,7 +44,7 @@
     --light-text-secondary: #888888;
     --light-text-accent2: #255CF4;
     --light-text-success: #00722D;
-    --light-text-danger: #AA0000;
+    --light-text-error: #EA1548;
     --light-text-disabled: #BDBDBD;
     --light-background-primary: #F6F6F6;
     --light-background-secondary: #EFEFEF;
@@ -75,7 +75,7 @@
     --dark-text-secondary: #A2A2A2;
     --dark-text-accent2: #255CF4;
     --dark-text-success: #29BC63;
-    --dark-text-danger: #FF0000;
+    --dark-text-error: #EA1548;
     --dark-text-disabled: #A2A2A2;
     --dark-background-primary: #131313;
     --dark-background-secondary: #050505;
@@ -95,7 +95,7 @@
     --text-secondary: var(--light-text-secondary);
     --text-accent2: var(--light-text-accent2);
     --text-success: var(--light-text-success);
-    --text-danger: var(--light-text-danger);
+    --text-error: var(--light-text-error);
     --text-disabled: var(--light-text-disabled);
     --background-primary: var(--light-background-primary);
     --background-secondary: var(--light-background-secondary);
@@ -122,7 +122,7 @@
  */
 :root {
     --network-theme-color: var(--network-button-color);
-    --h-theme-highlight-color: var(--network-theme-color);
+    --h-theme-highlight-color: var(--light-network-text-accent-color);
     --h-theme-page-background-color: var(--background-primary);
     --h-theme-box-background-color: var(--background-tertiary);
 }
@@ -187,7 +187,7 @@ a {
     --oruga-pagination-link-min-width: 36px;
     --oruga-pagination-link-current-color: var(--text-primary);
     --oruga-pagination-link-current-background-color: var(--background-tertiary);
-    --oruga-pagination-link-current-border-color: var(--network-theme-color);
+    --oruga-pagination-link-current-border-color: var(--light-network-button-color);
     --oruga-select-color: var(--text-primary);
     --oruga-select-background-color: var(--background-tertiary);
     --oruga-select-border-color: var(--text-primary);
@@ -353,9 +353,12 @@ a {
     color: var(--status-error-color) !important;
 }
 
-/*  =========THOSE ABOVE STAY - THOSE BELOW NEED TRIAGE ==========
- */
+.h-is-extra-text {
+    color: var(--network-text-accent-color) !important;
+}
 
+/*  ========= THOSE ABOVE SHOULD STAY - THOSE BELOW NEED TRIAGE ==========
+ */
 
 
 .h-is-table-compact table.o-table {
@@ -547,10 +550,6 @@ body {
     font-size: 0.7em;
 }
 
-.h-is-extra-text {
-    color: var(--network-theme-color);
-}
-
 .h-is-label {
     color: #DDD;
     background: #383838;
@@ -593,10 +592,6 @@ body {
     font-weight: 400;
     height: 20px;
     padding: 2px 8px;
-}
-
-.h-has-low-contrast {
-    opacity: 0.4;
 }
 
 .is-numeric {
@@ -650,14 +645,6 @@ body {
 
 .should-wrap {
     word-break: break-word;
-}
-
-.h-is-debit {
-    color: #FE687A;
-}
-
-.h-is-credit {
-    color: #27D19E;
 }
 
 .h-button {
