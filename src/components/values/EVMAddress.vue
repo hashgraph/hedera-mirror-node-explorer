@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="evmAddress">
-    <div :class="{'is-flex': isSmallScreen, 'h-is-text-size-3': !hasCustomFont, 'is-family-monospace': !hasCustomFont}"
+    <div :class="{'is-flex': isSmallScreen}"
          class="is-inline-block" style="line-height: 20px">
       <Copyable :content-to-copy="evmAddress ?? ''" :enable-copy="enableCopy">
         <template v-slot:content>
@@ -48,7 +48,7 @@
         <span>)</span>
       </span>
     </div>
-    <div v-if="showType" class="h-is-text-size-2">
+    <div v-if="showType">
       <span class="h-is-extra-text">{{ entityType }}</span>
       <span v-if="verified" class="ml-1">{{ contractName }}</span>
       <span v-if="verified" class="icon is-small has-text-success ml-1">
@@ -113,10 +113,6 @@ export default defineComponent({
     bytesKept: {
       type: Number,
       default: 6
-    },
-    hasCustomFont: {
-      type: Boolean,
-      default: false
     },
     enableCopy: {
       type: Boolean,

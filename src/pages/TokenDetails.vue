@@ -63,7 +63,7 @@
           <Property v-if="ethereumAddress" id="evmAddress" full-width>
             <template #name>EVM Address</template>
             <template #value>
-              <EVMAddress :show-id="false" :has-custom-font="true" :address="ethereumAddress"/>
+              <EVMAddress :show-id="false" :address="ethereumAddress"/>
             </template>
           </Property>
         </template>
