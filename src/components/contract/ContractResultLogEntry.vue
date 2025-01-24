@@ -45,7 +45,7 @@
       <Property id="address" :vertical="isMediumScreen">
         <template v-slot:name>Address</template>
         <template v-slot:value>
-          <EVMAddress :address="props.log.address" enable-copy compact has-custom-font/>
+          <EVMAddress :address="props.log.address" enable-copy compact/>
         </template>
       </Property>
     </div>
