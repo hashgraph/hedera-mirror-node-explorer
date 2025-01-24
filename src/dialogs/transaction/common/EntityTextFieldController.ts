@@ -19,32 +19,40 @@
  */
 
 import {computed, Ref, watch} from "vue";
-import {InputChangeController} from "@/components/utils/InputChangeController.ts";
+import {routeManager} from "@/router.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {EntityID} from "@/utils/EntityID.ts";
+import {BaseTextFieldController} from "@/dialogs/transaction/common/BaseTextFieldController.ts"
 import {extractChecksum, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
-import {routeManager} from "@/router.ts";
 
 export class EntityTextFieldController {
 
-    private readonly inputChangeController: InputChangeController
+    public readonly oldEntityId: Ref<string|null>
+    public readonly inputText: Ref<string>
+    private readonly networkConfig: NetworkConfig
+    private readonly baseTextFieldController: BaseTextFieldController
 
     //
     // Public
     //
 
-    public constructor(public readonly networkConfig: NetworkConfig, public readonly input: Ref<string>) {
-        this.inputChangeController = new InputChangeController(this.input)
-        watch(this.entityId, () => {
-            if (this.entityId.value !== null) {
-                this.input.value = this.entityId.value
+    public constructor(oldEntityId: Ref<string|null>, networkConfig: NetworkConfig) {
+
+        this.oldEntityId = oldEntityId
+        this.baseTextFieldController = new BaseTextFieldController(oldEntityId)
+        this.inputText = this.baseTextFieldController.inputText
+        this.networkConfig = networkConfig
+
+        watch(this.newEntityId, () => {
+            if (this.newEntityId.value !== null) {
+                this.inputText.value = this.newEntityId.value
             }
         })
     }
 
     public readonly state = computed(() => {
         let result: EntityTextFieldState
-        const trimmedValue = this.inputChangeController.outputText.value.trim()
+        const trimmedValue = this.baseTextFieldController.newText.value.trim()
         if (trimmedValue !== "") {
             const entityID = EntityID.parse(stripChecksum(trimmedValue), true)
             if (entityID !== null) {
@@ -64,9 +72,9 @@ export class EntityTextFieldController {
         return result
     })
 
-    public readonly entityId = computed(() => {
+    public readonly newEntityId = computed(() => {
         let result: string|null
-        const trimmedValue = this.inputChangeController.outputText.value.trim()
+        const trimmedValue = this.baseTextFieldController.newText.value.trim()
         if (trimmedValue !== "") {
             const entityID = EntityID.parse(stripChecksum(trimmedValue), true)
             result = entityID?.toString() ?? null

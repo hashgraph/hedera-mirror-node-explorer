@@ -18,7 +18,7 @@
  *
  */
 
-import {computed, ref, Ref} from "vue";
+import {computed, Ref} from "vue";
 import {TokenInfo, TokenRelationship} from "@/schemas/MirrorNodeSchemas.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {
@@ -31,6 +31,9 @@ import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";
 
 export class TokenTextFieldController {
 
+    public readonly oldTokenId: Ref<string|null>
+    public readonly accountId: Ref<string|null>
+    public readonly inputText: Ref<string>
     private readonly entityFieldController: EntityTextFieldController
     private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
     private readonly tokenAssociationLookup: EntityLookup<string, TokenRelationship[] | null>
@@ -39,13 +42,13 @@ export class TokenTextFieldController {
     // Public
     //
 
-    public constructor(
-        public readonly networkConfig: NetworkConfig,
-        public readonly accountId: Ref<string|null> = ref(null),
-        public readonly input: Ref<string> = ref("")) {
-        this.entityFieldController = new EntityTextFieldController(networkConfig, input)
-        this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
-        this.tokenAssociationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(this.accountId,this.tokenId)
+    public constructor(oldTokenId: Ref<string|null>, accountId: Ref<string|null>, networkConfig: NetworkConfig) {
+        this.oldTokenId = oldTokenId
+        this.accountId = accountId
+        this.entityFieldController = new EntityTextFieldController(this.oldTokenId, networkConfig)
+        this.inputText = this.entityFieldController.inputText
+        this.tokenLookup = TokenInfoCache.instance.makeLookup(this.newTokenId)
+        this.tokenAssociationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(this.accountId,this.newTokenId)
     }
 
     public mount(): void {
@@ -78,9 +81,9 @@ export class TokenTextFieldController {
         return result
     })
 
-    public readonly tokenId = computed(() => this.entityFieldController.entityId.value)
+    public readonly newTokenId = computed(() => this.entityFieldController.newEntityId.value)
 
-    public readonly tokenInfo = computed(() => this.tokenLookup.entity.value)
+    public readonly newTokenInfo = computed(() => this.tokenLookup.entity.value)
 
     public readonly isLoaded = computed(() => this.tokenLookup.isLoaded.value)
 

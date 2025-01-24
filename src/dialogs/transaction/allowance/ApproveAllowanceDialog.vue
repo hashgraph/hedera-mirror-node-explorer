@@ -150,10 +150,10 @@ const emit = defineEmits(["allowanceApproved"])
 const networkConfig = NetworkConfig.inject()
 const controller = new ApproveAllowanceController(showDialog, networkConfig)
 
-const spenderInput = controller.spenderController.input
-const tokenInput = controller.tokenController.input
-const nftInput = controller.nftController.input
-const cryptoAmountInput = controller.cryptoController.input
+const spenderInput = controller.spenderController.inputText
+const tokenInput = controller.tokenController.inputText
+const nftInput = controller.nftController.inputText
+const cryptoAmountInput = controller.cryptoController.inputText
 const tokenAmountInput = controller.tokenAmountController.input
 const nftSerialInput = controller.nftSerialsController.input
 

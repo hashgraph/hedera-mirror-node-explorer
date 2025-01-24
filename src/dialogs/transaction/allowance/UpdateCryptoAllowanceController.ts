@@ -18,8 +18,7 @@
  *
  */
 
-import {ethers} from "ethers";
-import {computed, Ref, watch} from "vue";
+import {computed, Ref} from "vue";
 import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/transaction/common/CryptoTextFieldController.ts";
 import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
@@ -27,29 +26,31 @@ import {walletManager} from "@/router.ts";
 
 export class UpdateCryptoAllowanceController extends TransactionController {
 
-    public readonly input: Ref<string>
-    private readonly cryptoController= new CryptoTextFieldController(false)
+    public readonly inputText: Ref<string>
+    private readonly hbarAllowance: Ref<CryptoAllowance | null>
+    private readonly cryptoController: CryptoTextFieldController
 
     //
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, public readonly hbarAllowance: Ref<CryptoAllowance | null>) {
+    public constructor(showDialog: Ref<boolean>, hbarAllowance: Ref<CryptoAllowance | null>) {
         super(showDialog)
-        this.input = this.cryptoController.input
-        watch(this.hbarAllowance, this.cryptoAllowanceDidChange, {immediate: true})
+        this.hbarAllowance = hbarAllowance
+        this.cryptoController = new CryptoTextFieldController(this.oldTinyAmount, true)
+        this.inputText = this.cryptoController.inputText
     }
 
     public readonly spenderId = computed(() => this.hbarAllowance.value?.spender ?? null)
 
-    public readonly currentTinyAmount = computed(() => {
+    public readonly oldTinyAmount = computed(() => {
         const a = this.hbarAllowance.value?.amount_granted
         return a ? BigInt(a) : null
     })
 
-    public readonly newTinyAmount = computed(() => this.cryptoController.tinyAmount.value)
+    public readonly newTinyAmount = computed(() => this.cryptoController.newTinyAmount.value)
 
-    public readonly newUserAmount = computed(() => this.cryptoController.userAmount.value)
+    public readonly newUserAmount = computed(() => this.cryptoController.newUserAmount.value)
 
     public readonly feedbackMessage = computed(() => {
         let result: string|null
@@ -81,26 +82,13 @@ export class UpdateCryptoAllowanceController extends TransactionController {
     public canBeExecuted(): boolean {
         return this.spenderId.value !== null
             && this.newTinyAmount.value !== null
-            && this.newTinyAmount.value !== this.currentTinyAmount.value
+            && this.newTinyAmount.value !== this.oldTinyAmount.value
     }
 
     public async executeTransaction(): Promise<string|null> {
         const spenderId = this.spenderId.value!
         const newUserAmount = this.newUserAmount.value!
         return await walletManager.approveHbarAllowance(spenderId, Number(newUserAmount))
-    }
-
-    //
-    // Private
-    //
-
-    private readonly cryptoAllowanceDidChange = (): void => {
-        const currentAmount = this.currentTinyAmount.value
-        if (currentAmount !== null) {
-            this.cryptoController.input.value = ethers.formatUnits(currentAmount, 8)
-        } else {
-            this.cryptoController.input.value = ""
-        }
     }
 
 }

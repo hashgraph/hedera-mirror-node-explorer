@@ -52,10 +52,10 @@ export class ApproveAllowanceController extends TransactionController {
 
     public constructor(showDialog: Ref<boolean>, networkConfig: NetworkConfig) {
         super(showDialog)
-        this.spenderController = new AccountTextFieldController(networkConfig)
-        this.tokenController = new TokenTextFieldController(networkConfig, walletManager.accountId)
-        this.nftController = new TokenTextFieldController(networkConfig, walletManager.accountId)
-        this.cryptoController = new CryptoTextFieldController(true)
+        this.spenderController = new AccountTextFieldController(ref(null), networkConfig)
+        this.tokenController = new TokenTextFieldController(ref(null), walletManager.accountId, networkConfig)
+        this.nftController = new TokenTextFieldController(ref(null), walletManager.accountId, networkConfig)
+        this.cryptoController = new CryptoTextFieldController(ref(null), true)
         this.tokenAmountController = new TokenAmountTextFieldController(this.tokenId, true)
         this.nftSerialsController = new NftSerialsTextFieldController(this.nftId)
     }
@@ -150,10 +150,10 @@ export class ApproveAllowanceController extends TransactionController {
     }
 
     protected dialogStopShowing() {
-        this.spenderController.input.value = ""
-        this.tokenController.input.value = ""
-        this.nftController.input.value = ""
-        this.cryptoController.input.value = ""
+        this.spenderController.inputText.value = ""
+        this.tokenController.inputText.value = ""
+        this.nftController.inputText.value = ""
+        this.cryptoController.inputText.value = ""
         this.tokenAmountController.input.value = ""
 
         this.spenderController.unmount()
@@ -173,12 +173,12 @@ export class ApproveAllowanceController extends TransactionController {
     // sender
     //
 
-    private readonly spender = computed(() => this.spenderController.accountId.value)
+    private readonly spender = computed(() => this.spenderController.newAccountId.value)
 
     private readonly spenderOK = computed(() =>
-        this.spenderController.accountId.value !== null &&
-        this.spenderController.accountId.value !== walletManager.accountId.value &&
-        this.spenderController.accountInfo.value !== null)
+        this.spenderController.newAccountId.value !== null &&
+        this.spenderController.newAccountId.value !== walletManager.accountId.value &&
+        this.spenderController.newAccountInfo.value !== null)
 
     private readonly spenderFeedbackMessage = computed(() => {
         let result: string|null
@@ -190,7 +190,7 @@ export class ApproveAllowanceController extends TransactionController {
                 result = "Invalid spender ID"
                 break
             case AccountTextFieldState.ok:
-                if (this.spenderController.accountInfo.value === null && this.spenderController.isLoaded.value) {
+                if (this.spenderController.newAccountInfo.value === null && this.spenderController.isLoaded.value) {
                     result = "Unknown spender"
                 } else {
                     result = null
@@ -207,9 +207,9 @@ export class ApproveAllowanceController extends TransactionController {
     // crypto
     //
 
-    private readonly cryptoOK = computed(() => this.cryptoController.tinyAmount.value !== null)
+    private readonly cryptoOK = computed(() => this.cryptoController.newTinyAmount.value !== null)
 
-    private readonly cryptoUserAmount = computed(() => this.cryptoController.userAmount.value)
+    private readonly cryptoUserAmount = computed(() => this.cryptoController.newUserAmount.value)
 
     private readonly crytpoFeedbackMessage = computed(() => {
         let result: string|null
@@ -239,12 +239,12 @@ export class ApproveAllowanceController extends TransactionController {
     //
 
     private readonly tokenOK = computed(() =>
-        this.tokenController.tokenId.value !== null &&
-        this.tokenController.tokenInfo.value !== null &&
-        this.tokenController.tokenInfo.value.type == "FUNGIBLE_COMMON" &&
+        this.tokenController.newTokenId.value !== null &&
+        this.tokenController.newTokenInfo.value !== null &&
+        this.tokenController.newTokenInfo.value.type == "FUNGIBLE_COMMON" &&
         this.tokenController.isTokenAssociated.value)
 
-    private readonly tokenId = computed(() => this.tokenController.tokenId.value)
+    private readonly tokenId = computed(() => this.tokenController.newTokenId.value)
 
     private readonly tokenFeedbackMessage = computed(() => {
         let result: string|null
@@ -256,7 +256,7 @@ export class ApproveAllowanceController extends TransactionController {
                 result = "Invalid token ID"
                 break
             case TokenTextFieldState.ok: {
-                const tokenInfo = this.tokenController.tokenInfo.value
+                const tokenInfo = this.tokenController.newTokenInfo.value
                 if (tokenInfo !== null) {
                     if (tokenInfo.type !== "FUNGIBLE_COMMON") {
                         result = "Token is not fungible"
@@ -318,11 +318,11 @@ export class ApproveAllowanceController extends TransactionController {
     //
 
     private readonly nftOK = computed(() =>
-        this.nftController.tokenId.value !== null &&
-        this.nftController.tokenInfo.value !== null &&
-        this.nftController.tokenInfo.value.type == "NON_FUNGIBLE_UNIQUE")
+        this.nftController.newTokenId.value !== null &&
+        this.nftController.newTokenInfo.value !== null &&
+        this.nftController.newTokenInfo.value.type == "NON_FUNGIBLE_UNIQUE")
 
-    private readonly nftId = computed(() => this.nftController.tokenId.value)
+    private readonly nftId = computed(() => this.nftController.newTokenId.value)
 
     private readonly nftFeedbackMessage = computed(() => {
         let result: string|null
@@ -334,7 +334,7 @@ export class ApproveAllowanceController extends TransactionController {
                 result = "Invalid token ID"
                 break
             case TokenTextFieldState.ok: {
-                const tokenInfo = this.tokenController.tokenInfo.value
+                const tokenInfo = this.tokenController.newTokenInfo.value
                 if (tokenInfo !== null) {
                     result = tokenInfo.type === "NON_FUNGIBLE_UNIQUE" ? null : "Token is not an NFT"
                 } else if (this.tokenController.isLoaded.value) {

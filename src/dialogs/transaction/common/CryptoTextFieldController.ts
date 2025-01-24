@@ -19,24 +19,59 @@
  */
 
 import {ethers} from "ethers";
-import {computed, ref, Ref} from "vue";
-import {InputChangeController} from "@/components/utils/InputChangeController.ts";
+import {computed, Ref} from "vue";
+import {BaseTextFieldController} from "@/dialogs/transaction/common/BaseTextFieldController.ts";
 
 export class CryptoTextFieldController {
 
-    private readonly inputChangeController: InputChangeController
+    public readonly oldTinyAmount: Ref<bigint|null>
+    public readonly inputText: Ref<string>
+    public readonly rejectZero: boolean
+    private readonly baseTextFieldController: BaseTextFieldController
 
     //
     // Public
     //
 
-    public constructor(private readonly rejectZero: boolean, public readonly input: Ref<string> = ref("")) {
-        this.inputChangeController = new InputChangeController(input)
+    public constructor(oldTinyAmount: Ref<bigint|null>, rejectZero: boolean) {
+        this.oldTinyAmount = oldTinyAmount
+        this.rejectZero = rejectZero
+        this.baseTextFieldController = new BaseTextFieldController(this.oldUserAmount)
+        this.inputText = this.baseTextFieldController.inputText
     }
+
+    public readonly oldUserAmount = computed(() => {
+        return this.oldTinyAmount.value !== null ? ethers.formatUnits(this.oldTinyAmount.value, 8) : null
+    })
+
+    public readonly newUserAmount = computed<string|null>(() => {
+        let result: string|null
+        if (this.newTinyAmount.value !== null) {
+            result = ethers.formatUnits(this.newTinyAmount.value, 8)
+        } else {
+            result = null
+        }
+        return result
+    })
+
+    public readonly newTinyAmount = computed<bigint|null>(() => {
+        let result: bigint|null
+        if (this.state.value === HbarTextFieldState.ok) {
+            const trimmedValue = this.baseTextFieldController.newText.value.trim()
+            try {
+                result = ethers.parseUnits(trimmedValue, 8)
+            } catch {
+                result = null
+            }
+        } else {
+            result = null
+        }
+        return result
+    })
 
     public readonly state = computed<HbarTextFieldState>(() => {
         let result: HbarTextFieldState
-        const trimmedValue = this.inputChangeController.outputText.value.trim()
+        const trimmedValue = this.baseTextFieldController.newText.value.trim()
         if (trimmedValue !== "") {
             const f = parseFloat(trimmedValue)
             if (isNaN(f)) {
@@ -50,31 +85,6 @@ export class CryptoTextFieldController {
             }
         } else {
             result = HbarTextFieldState.empty
-        }
-        return result
-    })
-
-    public readonly userAmount = computed<string|null>(() => {
-        let result: string|null
-        if (this.tinyAmount.value !== null) {
-            result = ethers.formatUnits(this.tinyAmount.value, 8)
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    public readonly tinyAmount = computed<bigint|null>(() => {
-        let result: bigint|null
-        if (this.state.value === HbarTextFieldState.ok) {
-            const trimmedValue = this.inputChangeController.outputText.value.trim()
-            try {
-                result = ethers.parseUnits(trimmedValue, 8)
-            } catch {
-                result = null
-            }
-        } else {
-            result = null
         }
         return result
     })

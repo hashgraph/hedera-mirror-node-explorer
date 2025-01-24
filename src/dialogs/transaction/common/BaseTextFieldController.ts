@@ -1,0 +1,62 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+import {computed, Ref, ref, watch} from "vue";
+
+export class BaseTextFieldController {
+
+    public readonly oldText: Ref<string|null>
+    public readonly inputText: Ref<string> = ref("")
+    private readonly newTextRef: Ref<string> = ref("")
+    private timeoutID = -1
+
+
+    //
+    // Public
+    //
+
+    public constructor(oldText: Ref<string|null>) {
+        this.oldText = oldText
+        watch(this.inputText, this.inputTextDidChange, {immediate: true})
+    }
+
+    public readonly newText = computed(
+        () => this.newTextRef.value)
+
+    //
+    // Private
+    //
+
+    private readonly inputTextDidChange = () => {
+        const milliseconds = 500
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+        if (this.inputText.value == "") {
+            this.newTextRef.value = this.inputText.value
+        } else {
+            this.timeoutID = window.setTimeout(() => {
+                this.newTextRef.value = this.inputText.value.trim()
+                this.timeoutID = -1
+            }, milliseconds)
+        }
+    }
+}
