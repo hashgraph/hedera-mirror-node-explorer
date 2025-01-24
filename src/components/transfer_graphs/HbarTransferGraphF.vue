@@ -82,7 +82,7 @@
           <div class="justify-end dollar-amount">
             <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
                        :tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"
-                       :timestamp="transaction?.consensus_timestamp"/>
+                       :timestamp="props.transaction?.consensus_timestamp"/>
           </div>
 
         </template>
@@ -116,7 +116,7 @@
           <div class="justify-end dollar-amount">
             <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
                        :tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"
-                       :timestamp="transaction?.consensus_timestamp"/>
+                       :timestamp="props.transaction?.consensus_timestamp"/>
           </div>
 
           <!-- #7 : description -->
@@ -182,11 +182,12 @@ const dollarVisible = inject("isSmallScreen", true)
 <style scoped>
 
 .graph-container {
+  column-gap: 1em;
   display: inline-grid;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
   grid-template-columns: repeat(5, auto);
   line-height: 1.6rem;
-  column-gap: 1em;
-  font-size: 14px;
 }
 
 .graph-container-8 {
@@ -202,7 +203,6 @@ div.transfer-header {
   color: var(--text-secondary);
   font-weight: 500;
   font-size: 12px;
-  font-family: Inter, sans-serif;
 }
 
 div.transfer-account {
