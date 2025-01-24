@@ -48,7 +48,7 @@
 
 import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
 import {computed, PropType} from "vue";
-import {StopStackingController} from "@/dialogs/transaction/StopStackingController.ts";
+import {StopStackingController} from "@/dialogs/transaction/staking/StopStackingController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
