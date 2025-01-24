@@ -49,27 +49,6 @@ export class RejectTokenController extends TransactionController {
         super(showDialog)
     }
 
-    public dialogStartShowing(): void {
-        this.watchStopHandle = watch(this.tokens, this.tokensDidChange, {immediate: true})
-    }
-
-    public dialogStopShowing(): void {
-
-        if (this.watchStopHandle !== null) {
-            this.watchStopHandle()
-            this.watchStopHandle = null
-        }
-
-        this.rejectCandidates.value = []
-        this.treasuryTokens.value = []
-        this.pausedTokens.value = []
-        this.frozenTokens.value = []
-        this.zeroBalanceTokens.value = []
-
-        this.transactionIds.value = []
-        this.transactionErrors.value = []
-    }
-
     public readonly isNft = computed(() => {
         let nftCount = 0
         for (const t of this.tokens.value ?? []) {
@@ -232,6 +211,27 @@ export class RejectTokenController extends TransactionController {
         }
 
         return result
+    }
+
+    protected dialogStartShowing(): void {
+        this.watchStopHandle = watch(this.tokens, this.tokensDidChange, {immediate: true})
+    }
+
+    protected dialogStopShowing(): void {
+
+        if (this.watchStopHandle !== null) {
+            this.watchStopHandle()
+            this.watchStopHandle = null
+        }
+
+        this.rejectCandidates.value = []
+        this.treasuryTokens.value = []
+        this.pausedTokens.value = []
+        this.frozenTokens.value = []
+        this.zeroBalanceTokens.value = []
+
+        this.transactionIds.value = []
+        this.transactionErrors.value = []
     }
 
 
