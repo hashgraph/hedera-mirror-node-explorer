@@ -23,8 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="tbarAmount !== 0 || !hideZero"
-        class="h-is-extra-text is-numeric">
+  <span v-if="props.tbarAmount !== 0 || !props.hideZero" class="dollar-amount">
     {{ dollarAmount }}
   </span>
 </template>
@@ -33,66 +32,54 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted} from "vue";
+import {computed, onBeforeUnmount, onMounted} from "vue";
 import {HbarPriceCache} from "@/utils/cache/HbarPriceCache";
 
-export default defineComponent({
-  name: "HbarExtra",
-
-  props: {
-    tbarAmount: {
-      type: Number,
-      default: 0
-    },
-    timestamp: {
-      type: String,
-      default: "0"
-    },
-    smallExtra: {
-      type: Boolean,
-      default: true
-    },
-    hideZero: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  tbarAmount: {
+    type: Number,
+    default: 0
   },
+  timestamp: {
+    type: String,
+    default: "0"
+  },
+  hideZero: {
+    type: Boolean,
+    default: false
+  },
+})
 
-  setup(props) {
-    const hbarAmount = computed(() => {
-      return props.tbarAmount / 100000000
-    })
-    const dollarAmount = computed(() => {
-      let result: string
-      if (hbarPrice.value !== null) {
-        const resolution = Math.pow(10, -fractionDigits)
-        let usdAmount = hbarAmount.value * hbarPrice.value
-        if (0 < usdAmount && usdAmount < +resolution) {
-          usdAmount = resolution
-        } else if (-resolution < usdAmount && usdAmount < 0) {
-          usdAmount = -resolution
-        }
-        result = dollarFormatting.format(usdAmount)
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const hbarPriceLookup = HbarPriceCache.instance.makeLookup(computed(() => props.timestamp ?? null))
-    onMounted(() => hbarPriceLookup.mount())
-    onBeforeUnmount(() => hbarPriceLookup.unmount())
-
-    const hbarPrice = computed(() => {
-      const rate = hbarPriceLookup.entity.value?.current_rate
-      return rate ? (rate.cent_equivalent / rate.hbar_equivalent / 100) : null
-    })
-
-    return {dollarAmount}
+const hbarAmount = computed(() => {
+  return props.tbarAmount / 100000000
+})
+const dollarAmount = computed(() => {
+  let result: string
+  if (hbarPrice.value !== null) {
+    const resolution = Math.pow(10, -fractionDigits)
+    let usdAmount = hbarAmount.value * hbarPrice.value
+    if (0 < usdAmount && usdAmount < +resolution) {
+      usdAmount = resolution
+    } else if (-resolution < usdAmount && usdAmount < 0) {
+      usdAmount = -resolution
+    }
+    result = dollarFormatting.format(usdAmount)
+  } else {
+    result = ""
   }
-});
+  return result
+})
+
+const hbarPriceLookup = HbarPriceCache.instance.makeLookup(computed(() => props.timestamp ?? null))
+onMounted(() => hbarPriceLookup.mount())
+onBeforeUnmount(() => hbarPriceLookup.unmount())
+
+const hbarPrice = computed(() => {
+  const rate = hbarPriceLookup.entity.value?.current_rate
+  return rate ? (rate.cent_equivalent / rate.hbar_equivalent / 100) : null
+})
 
 const fractionDigits = 5
 
@@ -109,5 +96,11 @@ const dollarFormatting = new Intl.NumberFormat('en-US', {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+span.dollar-amount {
+  color: var(--text-accent2);
+}
+
+</style>
 

@@ -71,7 +71,7 @@
         <p class="has-text-white" style="font-size: 1.2rem">{{ formattedAmount }} ℏ</p>
 
         <span>
-              <HbarExtra :hide-zero="false" :small-extra="false" :tbar-amount="tbarBalance ?? 0"/>
+              <HbarExtra :hide-zero="false" :tbar-amount="tbarBalance ?? 0"/>
             </span>
       </div>
 
