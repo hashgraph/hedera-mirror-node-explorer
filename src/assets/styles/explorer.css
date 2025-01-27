@@ -330,11 +330,25 @@ a {
 }
 
 .h-sub-section {
+    background-color: var(--tab-background);
+    border-radius: 8px;
     color: var(--text-primary);
     font-family: "Styrene A Web", sans-serif;
     font-weight: 700;
     font-size: 14px;
-    line-height: 32px;
+    max-width: fit-content;
+    padding: 8px 8px;
+}
+
+.h-has-pill {
+    background: var(--network-chip-color);
+    border-radius: 32px;
+    color: var(--chip-text-primary);
+    font-family: "Styrene A Web", sans-serif;
+    font-size: 10px;
+    font-weight: 400;
+    height: 20px;
+    padding: 2px 8px;
 }
 
 .h-is-bold {
@@ -577,17 +591,6 @@ body {
     width: fit-content;
     letter-spacing: normal;
     align-content: center;
-}
-
-.h-has-pill {
-    background: var(--network-chip-color);
-    border-radius: 32px;
-    color: var(--chip-text-primary);
-    font-family: "Styrene A Web", sans-serif;
-    font-size: 10px;
-    font-weight: 400;
-    height: 20px;
-    padding: 2px 8px;
 }
 
 .is-numeric {
