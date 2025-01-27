@@ -24,11 +24,7 @@
 
 <template>
   <template v-if="transaction">
-    <NftTransferGraphSection
-        v-if="shouldGraph"
-        v-bind:transaction="transactionDetail"
-        v-bind:compact="true"
-    />
+    <NftDetailsTransferGraph v-if="shouldGraph" :transaction="transactionDetail"/>
     <div v-else-if="isTokenAssociation">
       {{ transaction?.sender_account_id }}
       <span v-if="tokens.length">
@@ -42,9 +38,7 @@
                 </span>
             </span>
     </div>
-    <!-- <div v-else class="should-wrap">
-        {{ makeSummaryLabel(transaction) }}
-    </div> -->
+    <div v-else/>
   </template>
   <div v-else/>
 </template>
@@ -53,13 +47,12 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType,} from "vue"
+<script setup lang="ts">
+import {computed, onBeforeUnmount, onMounted, PropType,} from "vue"
 import {NftTransactionTransfer, TransactionType,} from "@/schemas/MirrorNodeSchemas"
-import {makeSummaryLabel} from "@/utils/TransactionTools"
-import NftTransferGraphSection from "@/components/transfer_graphs/NftTransferGraphSection.vue"
 import TokenExtra from "@/components/values/link/TokenExtra.vue"
 import {NftTransactionAnalyzer} from "./NftTransactionAnalyzer"
+import NftDetailsTransferGraph from "@/components/transfer_graphs/NftDetailsTransferGraph.vue";
 
 const GRAPH_TRANSACTION_TYPES = [
   TransactionType.CRYPTOTRANSFER,
@@ -67,47 +60,34 @@ const GRAPH_TRANSACTION_TYPES = [
   TransactionType.TOKENMINT,
 ]
 
-export default defineComponent({
-  name: "NftTransactionSummary",
-  components: {TokenExtra, NftTransferGraphSection},
-  props: {
-    transaction: Object as PropType<NftTransactionTransfer | undefined>,
-  },
-
-  setup(props) {
-    const shouldGraph = computed(() => {
-      return (
-          props.transaction?.type &&
-          GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.type) != -1
-      )
-    })
-
-    const transactionAnalyzer = new NftTransactionAnalyzer(
-        computed(() => props.transaction ?? null),
-    )
-    onMounted(() => transactionAnalyzer.mount())
-    onBeforeUnmount(() => transactionAnalyzer.unmount())
-
-    const additionalTokensNumber = computed(() =>
-        Math.max(0, transactionAnalyzer.tokens.value.length - 1),
-    )
-
-    const transactionDetail = computed(() => {
-      return props.transaction
-    })
-
-    return {
-      shouldGraph,
-      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
-      tokens: transactionAnalyzer.tokens,
-      additionalTokensNumber,
-      // From TransactionTools
-      makeSummaryLabel,
-      TransactionType,
-      transactionDetail,
-    }
-  },
+const props = defineProps({
+  transaction: Object as PropType<NftTransactionTransfer | undefined>,
 })
+
+const shouldGraph = computed(() => {
+  return (
+      props.transaction?.type &&
+      GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.type) != -1
+  )
+})
+
+const transactionAnalyzer = new NftTransactionAnalyzer(
+    computed(() => props.transaction ?? null),
+)
+onMounted(() => transactionAnalyzer.mount())
+onBeforeUnmount(() => transactionAnalyzer.unmount())
+
+const additionalTokensNumber = computed(() =>
+    Math.max(0, transactionAnalyzer.tokens.value.length - 1),
+)
+
+const transactionDetail = computed(() => {
+  return props.transaction
+})
+
+const isTokenAssociation = transactionAnalyzer.isTokenAssociation
+const tokens = transactionAnalyzer.tokens
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
