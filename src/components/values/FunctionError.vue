@@ -28,17 +28,21 @@
       <div class="h-sub-section">Error</div>
 
       <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
-        <template v-slot:name>Signature</template>
-        <template v-slot:value>
+        <template #name>
+          <span style="padding-left: 16px;">Signature</span>
+        </template>
+        <template #value>
           <HexaValue :byte-string="errorHash" :show-none="true"/>
-          <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ errorSignature }}</div>
+          <div class="h-is-extra-text should-wrap">{{ errorSignature }}</div>
         </template>
       </Property>
 
       <template v-for="arg in errorInputs" :key="arg.name">
         <Property :custom-nb-col-class="customNbColClass">
-          <template v-slot:name>{{ arg.name != "" ? arg.name : "message" }}</template>
-          <template v-slot:value>
+          <template #name>
+            <span style="padding-left: 16px;">{{ arg.name != "" ? arg.name : "message" }}</span>
+          </template>
+          <template #value>
             <FunctionValue :ntv="arg"/>
           </template>
         </Property>
@@ -47,8 +51,8 @@
 
     <template v-else>
       <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-        <template v-slot:name>Error Message</template>
-        <template v-slot:value>
+        <template #name>Error Message</template>
+        <template #value>
           <HexaValue :show-none="true"/>
         </template>
       </Property>
@@ -57,12 +61,12 @@
 
   <template v-else>
     <Property :custom-nb-col-class="customNbColClass" id="errorMessage">
-      <template v-slot:name>Error Message</template>
-      <template v-slot:value>
+      <template #name>Error Message</template>
+      <template #value>
         <StringValue v-if="decodedError" :string-value="decodedError"/>
         <template v-else>
           <HexaValue :byte-string="error" :show-none="true"/>
-          <div v-if="errorDecodingStatus" class="h-is-extra-text h-is-text-size-3">
+          <div v-if="errorDecodingStatus" class="h-is-extra-text">
             <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
             <span>{{ errorDecodingStatus }}</span>
           </div>
@@ -77,10 +81,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
+import {computed, PropType} from 'vue';
 import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
@@ -88,37 +91,26 @@ import {decodeSolidityErrorMessage} from "@/schemas/MirrorNodeUtils.ts";
 import StringValue from "@/components/values/StringValue.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 
-export default defineComponent({
-  name: 'FunctionError',
-  components: {FunctionValue, StringValue, Property, HexaValue},
-  props: {
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    },
-    customNbColClass: String,
-    showNone: {
-      type: Boolean,
-      default: false
-    }
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<FunctionCallAnalyzer>,
+    required: true
   },
-
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    const decodedError = computed(() =>
-        props.analyzer.normalizedError.value != null ? decodeSolidityErrorMessage(props.analyzer.normalizedError.value) : null)
-
-    return {
-      error: props.analyzer.normalizedError,
-      errorSignature: props.analyzer.errorSignature,
-      errorHash: props.analyzer.errorHash,
-      errorInputs: props.analyzer.errorInputs,
-      errorDecodingStatus: props.analyzer.errorDecodingStatus,
-      decodedError,
-      initialLoading
-    }
+  customNbColClass: String,
+  showNone: {
+    type: Boolean,
+    default: false
   }
-});
+})
+
+const decodedError = computed(() =>
+    props.analyzer.normalizedError.value != null ? decodeSolidityErrorMessage(props.analyzer.normalizedError.value) : null)
+
+const error = props.analyzer.normalizedError
+const errorSignature = props.analyzer.errorSignature
+const errorHash = props.analyzer.errorHash
+const errorInputs = props.analyzer.errorInputs
+const errorDecodingStatus = props.analyzer.errorDecodingStatus
 
 </script>
 
