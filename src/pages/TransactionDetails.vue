@@ -45,9 +45,10 @@
           <SelectView
               data-cy="select-format"
               v-model="txIdForm"
+              small
           >
-            <option value="atForm">Default format</option>
-            <option value="dashForm">Exchange format</option>
+            <option value="atForm">DEFAULT FORMAT</option>
+            <option value="dashForm">EXCHANGE FORMAT</option>
           </SelectView>
         </template>
         <!--
