@@ -29,7 +29,10 @@
       NFT Transfers
     </div>
 
-    <div class="graph-container" :class="{'graph-container-6': !compact && descriptionVisible}">
+    <div
+        class="graph-container"
+        :class="{'graph-full': !compact,'graph-container-6': !compact && descriptionVisible}"
+    >
 
       <template v-if="!compact">
 
@@ -141,6 +144,9 @@ const descriptionVisible = inject("isSmallScreen", true)
   font-size: 14px;
   grid-template-columns: repeat(5, auto);
   line-height: 1.4rem;
+}
+
+.graph-full {
   padding-left: 16px;
   padding-top: 8px;
 }
