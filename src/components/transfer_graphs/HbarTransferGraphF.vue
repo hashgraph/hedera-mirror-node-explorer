@@ -24,9 +24,11 @@
 
 <template>
   <div v-if="hbarTransferLayout.rowCount >= 1">
-    <p class="h-sub-section">{{ title }}</p>
-    <div class="graph-container" :class="{'graph-container-8': dollarVisible }">
+    <div class="h-sub-section">
+      {{ title }}
+    </div>
 
+    <div class="graph-container" :class="{'graph-container-8': dollarVisible }">
       <template v-if="dollarVisible">
         <div style="grid-column-end: span 1" class="transfer-header">
           ACCOUNT
@@ -127,7 +129,6 @@
           </div>
 
         </template>
-
       </template>
 
     </div>
@@ -188,11 +189,12 @@ const dollarVisible = inject("isSmallScreen", true)
   font-size: 14px;
   grid-template-columns: repeat(5, auto);
   line-height: 1.6rem;
+  padding-left: 16px;
+  padding-top: 8px;
 }
 
 .graph-container-8 {
   grid-template-columns: repeat(8, auto);
-  line-height: 1.6rem;
 }
 
 div.justify-end {
