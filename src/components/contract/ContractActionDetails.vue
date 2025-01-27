@@ -25,7 +25,7 @@
 <template>
   <template v-if="isMediumScreen">
     <div class="columns pt-2 pb-0 mb-0">
-      <div class="column">
+      <div class="column property-container">
         <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>From</template>
           <template v-slot:value>
@@ -41,7 +41,7 @@
           </template>
         </Property>
       </div>
-      <div class="column h-has-column-dashed-separator">
+      <div class="column property-container h-has-column-dashed-separator">
         <Property id="actionDetailValue" :custom-nb-col-class="propertySizeClass">
           <template v-slot:name>Value</template>
           <template v-slot:value>
@@ -67,10 +67,10 @@
     <hr class="dotted"/>
 
     <div class="columns pt-0 mt-0 pb-2">
-      <div class="column">
+      <div class="column property-container">
         <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
       </div>
-      <div class="column h-has-column-dashed-separator">
+      <div class="column property-container h-has-column-dashed-separator">
         <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
       </div>
     </div>
@@ -170,5 +170,12 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.property-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 </style>
