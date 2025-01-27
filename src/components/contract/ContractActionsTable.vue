@@ -65,7 +65,7 @@
         <EVMAddress :address="props.row.action.from"
                     :id="props.row.action.caller"
                     :entity-type="props.row.action.caller_type"
-                    :compact="!isLargeScreen && isMediumScreen"/>
+                    :compact="!isXLargeScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="AMOUNT">
@@ -80,7 +80,7 @@
         <EVMAddress :address="props.row.action.to"
                     :id="props.row.action.recipient??''"
                     :entity-type="props.row.action.recipient_type"
-                    :compact="!isLargeScreen && isMediumScreen"/>
+                    :compact="!isXLargeScreen"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="GAS LIMIT">
@@ -138,8 +138,7 @@ const expandedActions = defineModel('expandedActions', {
 
 const emit = defineEmits(['update:expandedActions'])
 
-const isMediumScreen = inject('isMediumScreen', true)
-const isLargeScreen = inject('isLargeScreen', true)
+const isXLargeScreen = inject('isXLargeScreen', true)
 
 const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER_PAGE)
 
