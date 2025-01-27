@@ -93,6 +93,7 @@ button.button-view {
   font-weight: 500;
   height: 48px;
   padding: 0 24px;
+  text-wrap: nowrap;
 }
 
 button.button-view.is-medium {
