@@ -25,7 +25,9 @@
 <template>
 
   <div v-if="tokenTransferLayout.length >= 1">
-    <p class="h-sub-section">Token Transfers</p>
+    <div class="h-sub-section">
+      Token Transfers
+    </div>
 
     <div class="graph-container" :class="{'graph-container-8': symbolVisible}">
 
@@ -108,10 +110,8 @@
             </div>
 
             <!-- #7 : description -->
-            <div class="description">
-              <template v-if="i <= tokenTransferLayout[s-1].descriptions.length">
-                {{ tokenTransferLayout[s - 1].descriptions[i - 1] }}
-              </template>
+            <div v-if="i <= tokenTransferLayout[s-1].descriptions.length" class="description">
+              {{ tokenTransferLayout[s - 1].descriptions[i - 1] }}
             </div>
           </template>
 
@@ -165,11 +165,12 @@ const symbolVisible = inject("isSmallScreen", true)
   font-size: 14px;
   grid-template-columns: repeat(5, auto);
   line-height: 1.4rem;
+  padding-left: 16px;
+  padding-top: 8px;
 }
 
 .graph-container-8 {
   grid-template-columns: repeat(8, auto);
-  line-height: 1.4rem;
 }
 
 div.justify-end {
