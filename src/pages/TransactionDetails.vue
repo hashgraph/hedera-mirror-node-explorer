@@ -32,12 +32,14 @@
         <template #title>
           <span>Transaction </span>
           <TransactionIdValue :id="formattedTransactionId"/>
-          <div v-if="transaction" style="display: inline-block">
-            <div v-if="transactionSucceeded" class="h-has-pill has-background-success">
+          <template v-if="transaction">
+            <div v-if="transactionSucceeded" class="h-has-pill h-status-success" style="margin-top: 2px">
               SUCCESS
             </div>
-            <div v-else class="h-has-pill has-background-danger">FAILURE</div>
-          </div>
+            <div v-else class="h-has-pill h-status-error" style="margin-top: 2px">
+              FAILURE
+            </div>
+          </template>
         </template>
         <template #right-control>
           <SelectView
