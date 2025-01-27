@@ -24,31 +24,49 @@
 
 <template>
   <div v-if="rewardTransferLayout.destinations.length >= 1">
-    <p class="h-is-tertiary-text mb-2">Staking Rewards</p>
+    <div class="h-sub-section">
+      Staking Rewards
+    </div>
 
-    <div class="graph-container" v-bind:class="{'graph-container-8': dollarVisible }">
+    <div class="graph-container" :class="{'graph-container-8': dollarVisible }">
 
       <template v-if="dollarVisible">
-        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Reward Account</div>
+        <div style="grid-column-end: span 2" class="transfer-header">
+          REWARD ACC.
+        </div>
         <div/>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div style="grid-column-end: span 2" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Amount Rewarded</div>
+        <div style="grid-column-end: span 1" class="transfer-header">
+          ACCOUNT
+        </div>
+        <div style="grid-column-end: span 2" class="transfer-header">
+          AMOUNT
+        </div>
         <div/>
         <div/>
       </template>
       <template v-else>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
+        <div style="grid-column-end: span 1" class="transfer-header">
+          REWARD ACCOUNT
+        </div>
         <div/>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Account</div>
-        <div style="grid-column-end: span 1" class="h-is-text-size-3 has-text-grey-light has-text-weight-light mb-2">Amount Rewarded</div>
+        <div style="grid-column-end: span 1" class="transfer-header">
+          ACCOUNT
+        </div>
+        <div style="grid-column-end: span 1" class="transfer-header">
+          AMOUNT
+        </div>
         <div/>
       </template>
 
-      <template v-for="i in rewardTransferLayout.destinations.length" v-bind:key="i">
+      <template v-for="i in rewardTransferLayout.destinations.length" :key="i">
 
         <!-- #0 : account id -->
-        <div>
-          <AccountLink v-if="i === 1" account-id="0.0.800" data-cy="awardSourceAccount"/>
+        <div class="transfer-account">
+          <AccountLink
+              v-if="i === 1"
+              account-id="0.0.800"
+              data-cy="awardSourceAccount"
+          />
           <div v-else/>
         </div>
         <div/>
@@ -62,26 +80,26 @@
         </div>
 
         <!-- #2 : account id -->
-        <div>
+        <div class="transfer-account">
           <AccountLink v-if="i <= rewardTransferLayout.destinations.length"
-                       v-bind:account-id="rewardTransferLayout.destinations[i-1].account"
+                       :account-id="rewardTransferLayout.destinations[i-1].account"
                        data-cy="destinationAccount"/>
         </div>
 
         <!-- #3 : reward amount -->
         <div class="justify-end">
           <HbarAmount v-if="i <= rewardTransferLayout.destinations.length"
-                      v-bind:amount="rewardTransferLayout.destinations[i-1].amount"
-                      v-bind:colored="true"/>
+                      :amount="rewardTransferLayout.destinations[i-1].amount"
+                      :colored="true"/>
         </div>
 
         <template v-if="dollarVisible">
 
           <!-- #4 : dollar amount -->
-          <div class="justify-end">
+          <div class="justify-end dollar-amount">
             <HbarExtra v-if="i <= rewardTransferLayout.destinations.length"
-                       v-bind:tbarAmount="rewardTransferLayout.destinations[i-1].amount"
-                       v-bind:timestamp="transaction?.consensus_timestamp ?? undefined"/>
+                       :tbarAmount="rewardTransferLayout.destinations[i-1].amount"
+                       :timestamp="transaction?.consensus_timestamp"/>
           </div>
 
         </template>
@@ -98,9 +116,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType} from "vue";
+import {computed, inject, PropType} from "vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import ArrowSegment from "@/components/transfer_graphs/ArrowSegment.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -108,24 +126,13 @@ import HbarExtra from "@/components/values/HbarExtra.vue";
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import {RewardTransferLayout} from "@/components/transfer_graphs/layout/RewardTransferLayout";
 
-export default defineComponent({
-  name: "RewardTransferGraph",
-  components: {HbarAmount, HbarExtra, ArrowSegment, AccountLink},
-  props: {
-    transaction: Object as PropType<Transaction>,
-  },
-  setup(props) {
-
-    const rewardTransferLayout = computed(() => new RewardTransferLayout(props.transaction))
-
-    const dollarVisible = inject("isSmallScreen", true)
-
-    return {
-      rewardTransferLayout,
-      dollarVisible
-    }
-  }
+const props = defineProps({
+  transaction: Object as PropType<Transaction>,
 })
+
+const rewardTransferLayout = computed(() => new RewardTransferLayout(props.transaction))
+
+const dollarVisible = inject("isSmallScreen", true)
 
 </script>
 
@@ -136,17 +143,37 @@ export default defineComponent({
 <style scoped>
 
 .graph-container {
-  display: inline-grid;
-  grid-template-columns: repeat(5, auto);
   column-gap: 1em;
+  display: inline-grid;
+  font-family: Inter, sans-serif;
+  font-size: 14px;
+  grid-template-columns: repeat(5, auto);
+  line-height: 1.6rem;
+  padding-left: 16px;
+  padding-top: 8px;
 }
 
 .graph-container-8 {
   grid-template-columns: repeat(8, auto);
 }
 
-div.graph-container > div.justify-end {
+div.justify-end {
   justify-self: end;
+}
+
+div.transfer-header {
+  color: var(--text-secondary);
+  font-weight: 500;
+  font-size: 12px;
+}
+
+div.transfer-account {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+div.dollar-amount {
+  color: var(--text-accent2);
 }
 
 </style>
