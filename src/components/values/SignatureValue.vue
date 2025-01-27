@@ -25,14 +25,12 @@
 <template>
   <div v-if="functionHash">
     <HexaValue :byte-string="functionHash" show-none/>
-    <div class="h-is-extra-text h-is-text-size-3 should-wrap">{{ signature }}</div>
-    <div v-if="is4byteSignature" class="mt-1">
-      <o-tooltip label="Decoding of the signature provided by the 4byte.directory Signature Database"
-                 :delay="200"
-                 multiline="multiline"
-                 class="h-tooltip">
-        <span class="h-has-pill h-is-text-size-1 has-background-grey" style="cursor:default;">4byte</span>
-      </o-tooltip>
+    <div class="signature">
+      <div class="h-is-extra-text should-wrap">{{ signature }}</div>
+      <Tooltip v-if="is4byteSignature"
+               text="Decoding of the signature provided by the 4byte.directory Signature Database">
+        <span class="h-has-pill" style="background-color: var(--status-success-color)">4byte</span>
+      </Tooltip>
     </div>
   </div>
   <div v-else-if="initialLoading"/>
@@ -43,34 +41,26 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, PropType, ref} from "vue";
+import {inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import HexaValue from "@/components/values/HexaValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
+import Tooltip from "@/components/Tooltip.vue";
 
-export default defineComponent({
-  name: "SignatureValue",
-  components: {HexaValue},
-  props: {
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    return {
-      functionHash: props.analyzer.functionHash,
-      signature: props.analyzer.signature,
-      is4byteSignature: props.analyzer.is4byteSignature,
-      initialLoading
-    }
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<FunctionCallAnalyzer>,
+    required: true
   }
 })
+
+const initialLoading = inject(initialLoadingKey, ref(false))
+
+const functionHash = props.analyzer.functionHash
+const signature = props.analyzer.signature
+const is4byteSignature = props.analyzer.is4byteSignature
 
 </script>
 
@@ -78,4 +68,12 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.signature {
+  align-items: center;
+  display: flex;
+  gap: 4px
+}
+
+</style>
