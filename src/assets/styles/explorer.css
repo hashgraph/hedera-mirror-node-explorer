@@ -349,6 +349,7 @@ a {
     font-weight: 400;
     height: 20px;
     padding: 2px 8px;
+    text-wrap: nowrap;
 }
 
 .h-is-bold {
