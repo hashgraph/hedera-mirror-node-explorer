@@ -368,6 +368,14 @@ a {
     color: var(--network-text-accent-color) !important;
 }
 
+.h-status-success {
+    background-color: var(--status-success-color) !important;
+}
+
+.h-status-error {
+    background-color: var(--status-error-color) !important;
+}
+
 /*  ========= THOSE ABOVE SHOULD STAY - THOSE BELOW NEED TRIAGE ==========
  */
 
