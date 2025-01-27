@@ -50,14 +50,12 @@
     >
 
       <o-table-column v-slot="props" field="call_type" label="CALL TYPE">
-        <div class="is-flex is-align-items-baseline">
-          <span class="is-family-monospace h-is-text-size-3 has-text-grey">
-            {{ props.row.depthPath }}
-          </span>
-          <span v-if="isSuccessful(props.row.action)" class="ml-2 h-has-pill h-is-text-size-1 has-background-success">
+        <div class="call-type">
+          {{ props.row.depthPath }}
+          <span v-if="isSuccessful(props.row.action)" class="h-has-pill h-status-success">
             {{ makeOperationType(props.row.action) }}
           </span>
-          <span v-else class="ml-2 h-has-pill h-is-text-size-2 has-background-danger">
+          <span v-else class="h-has-pill h-status-error">
             {{ '! ' + makeOperationType(props.row.action) }}
           </span>
         </div>
@@ -155,5 +153,12 @@ const makeOperationType = (action: ContractAction) => action.call_operation_type
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.call-type {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 </style>
