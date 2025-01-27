@@ -53,7 +53,7 @@
     <o-table-column v-slot="props" field="timestamp" label="TIME">
       <div style="display: flex; gap: 8px;">
         <TimestampValue class="h-is-bold" :timestamp="props.row.timestamp"/>
-        <TriangleAlert v-if="props.row.error_message" :size="18" class="h-is-error"/>
+        <TriangleAlert v-if="props.row.error_message" :size="18" class="h-text-error"/>
       </div>
     </o-table-column>
 

@@ -45,7 +45,7 @@
     <template v-else-if="error">
       <TriangleAlert
           :size="18"
-          class="h-is-error"
+          class="h-text-error"
           style="cursor: pointer;"
           @click="showErrorDialog = true"
       />
