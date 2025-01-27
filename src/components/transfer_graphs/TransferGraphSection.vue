@@ -30,12 +30,13 @@
         data-cy="hbarTransfers"
         v-bind:transaction="transaction"/>
   </template>
-  <HbarTransferGraphF
-      v-else
-      data-cy="hbarTransfers"
-      title="Hbar Transfers"
-      v-bind:class="{'mb-4': displayRewardTransfers || displayNftTransfers || displayTokenTransfers}"
-      v-bind:transaction="transaction"/>
+  <template v-else>
+    <HbarTransferGraphF
+        data-cy="hbarTransfers"
+        title="Hbar Transfers"
+        v-bind:class="{'mb-4': displayRewardTransfers || displayNftTransfers || displayTokenTransfers}"
+        v-bind:transaction="transaction"/>
+  </template>
 
   <NftTransferGraph
       data-cy="nftTransfers"
@@ -43,20 +44,23 @@
       v-bind:transaction="transaction"
       v-bind:compact="compact"/>
 
-  <TokenTransferGraphC
-      v-if="compact"
-      data-cy="tokenTransfers"
-      v-bind:transaction="transaction"/>
-  <TokenTransferGraphF
-      v-else
-      data-cy="tokenTransfers"
-      v-bind:class="{'mb-4': displayRewardTransfers}"
-      v-bind:transaction="transaction"/>
+  <template v-if="compact">
+    <TokenTransferGraphC
+        data-cy="tokenTransfers"
+        v-bind:transaction="transaction"/>
+  </template>
+  <template v-else>
+    <TokenTransferGraphF
+        data-cy="tokenTransfers"
+        v-bind:class="{'mb-4': displayRewardTransfers}"
+        v-bind:transaction="transaction"/>
+  </template>
 
-  <RewardTransferGraph
-      v-if="!compact"
-      data-cy="rewardTransfers"
-      v-bind:transaction="transaction"/>
+  <template v-if="!compact">
+    <RewardTransferGraph
+        data-cy="rewardTransfers"
+        v-bind:transaction="transaction"/>
+  </template>
 
 </template>
 
@@ -64,9 +68,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
+import {computed, PropType} from "vue";
 import {TransactionDetail} from "@/schemas/MirrorNodeSchemas";
 import HbarTransferGraphC from "@/components/transfer_graphs/HbarTransferGraphC.vue";
 import HbarTransferGraphF from "@/components/transfer_graphs/HbarTransferGraphF.vue";
@@ -76,41 +80,21 @@ import TokenTransferGraphF from "@/components/transfer_graphs/TokenTransferGraph
 import {computeNetAmount} from "@/utils/TransactionTools";
 import RewardTransferGraph from "@/components/transfer_graphs/RewardTransferGraph.vue";
 
-export default defineComponent({
-  name: "TransferGraphSection",
-  components: {
-    RewardTransferGraph,
-    NftTransferGraph,
-    TokenTransferGraphC,
-    TokenTransferGraphF,
-    HbarTransferGraphC,
-    HbarTransferGraphF,
-  },
-  props: {
-    transaction: Object as PropType<TransactionDetail>,
-    compact: {
-      type: Boolean,
-      default: false
-    }
-  },
-  setup(props) {
-
-    const netAmount = computed(() => {
-      return props.transaction ? computeNetAmount(props.transaction.transfers, props.transaction.charged_tx_fee) : 0
-    })
-
-    const displayRewardTransfers = computed(() => props.transaction?.staking_reward_transfers && props.transaction?.staking_reward_transfers.length >= 1)
-    const displayNftTransfers = computed(() => props.transaction?.nft_transfers && props.transaction?.nft_transfers.length >= 1)
-    const displayTokenTransfers = computed(() => props.transaction?.token_transfers && props.transaction?.token_transfers.length >= 1)
-
-    return {
-      netAmount,
-      displayRewardTransfers,
-      displayNftTransfers,
-      displayTokenTransfers
-    }
+const props = defineProps({
+  transaction: Object as PropType<TransactionDetail>,
+  compact: {
+    type: Boolean,
+    default: false
   }
 })
+
+const netAmount = computed(() => {
+  return props.transaction ? computeNetAmount(props.transaction.transfers, props.transaction.charged_tx_fee) : 0
+})
+
+const displayRewardTransfers = computed(() => props.transaction?.staking_reward_transfers && props.transaction?.staking_reward_transfers.length >= 1)
+const displayNftTransfers = computed(() => props.transaction?.nft_transfers && props.transaction?.nft_transfers.length >= 1)
+const displayTokenTransfers = computed(() => props.transaction?.token_transfers && props.transaction?.token_transfers.length >= 1)
 
 </script>
 
