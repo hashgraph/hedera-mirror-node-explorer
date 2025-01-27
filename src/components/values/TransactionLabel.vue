@@ -25,7 +25,7 @@
 <template>
   <span style="display: flex; gap: 8px;">
     <span class="is-numeric">{{ transactionText }}</span>
-    <TriangleAlert v-if="errorFlagVisible" :size="18" class="h-is-error"/>
+    <TriangleAlert v-if="errorFlagVisible" :size="18" class="h-text-error"/>
   </span>
 </template>
 

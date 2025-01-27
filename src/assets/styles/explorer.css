@@ -360,12 +360,8 @@ a {
     color: var(--text-secondary) !important;
 }
 
-.h-is-success {
-    color: var(--status-success-color) !important;
-}
-
-.h-is-error {
-    color: var(--status-error-color) !important;
+.h-text-error {
+    color: var(--text-error) !important;
 }
 
 .h-is-extra-text {
