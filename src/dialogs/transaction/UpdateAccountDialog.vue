@@ -30,109 +30,116 @@
       @transaction-did-execute="emit('updated')">
 
     <!-- title -->
-    <template #transactionDialogTitle>Account Update</template>
+    <template #transactionDialogTitle>
+      <template v-if="props.stakingOnly">Change Staking</template>
+      <template v-else>Account Update</template>
+    </template>
 
     <template #transactionExecutionLabel>UPDATE</template>
 
     <template #transactionDialogInput>
 
-      <!-- Account Memo -->
-      <ContentCell>
-        <template #cellTitle>Account Memo</template>
-        <template #cellContent>
-          <TextFieldView v-model="memoInputText"
-                         placeholder="Memo (string)"
-                         style="width: 100%"
-          />
-        </template>
-      </ContentCell>
+      <template v-if="!props.stakingOnly">
 
-
-      <!-- Auto Renew Period -->
-      <ContentCell>
-
-        <template #cellTitle>
-          Auto Renew Period
-          <InfoTooltip
-              label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
-          />
-        </template>
-
-        <template #cellContent>
-          <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
-            <TextFieldView v-model="selectedAutoRenewPeriod"
-                           id="selectedAutoRenewPeriod"
-                           placeholder="> 0"
-                           type="number"
-                           min="1"
-                           step="1"
+        <!-- Account Memo -->
+        <ContentCell>
+          <template #cellTitle>Account Memo</template>
+          <template #cellContent>
+            <TextFieldView v-model="memoInputText"
+                           placeholder="Memo (string)"
                            style="width: 100%"
             />
-            <SelectView v-model="selectedUnit" width="100%">
-              <option v-for="p in PeriodUnit" :key="p" :value="p"
-                      style="background-color: var(--h-theme-page-background-color)">
-                {{ p }}
-              </option>
-            </SelectView>
-          </div>
-        </template>
+          </template>
+        </ContentCell>
 
-      </ContentCell>
 
-      <hr style="width: 100%;" />
+        <!-- Auto Renew Period -->
+        <ContentCell>
 
-      <!-- Max. Auto. Associations -->
-      <ContentCell>
-
-        <template #cellTitle>
-          Max. Auto. Associations
-          <span class="ml-1"/>
-          <InfoTooltip
-              label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
-          />
-        </template>
-
-        <template #cellContent>
-          <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
-            <SelectView v-model="autoAssociationMode" width="100%">
-              <option :key="0" :value="AutoAssociationMode.NoAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
-                No Automatic Association
-              </option>
-              <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
-                Limited Automatic Association
-              </option>
-              <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
-                Unlimited Automatic Association
-              </option>
-            </SelectView>
-            <TextFieldView v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
-                           style="width: 100px"
-                           :style="{'visibility': autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'inherit'}"
-                           v-model="maxAutoAssociationInputText"
-                           placeholder="> 0"
-                           type="number"
-                           min="1"
-                           step="1"
+          <template #cellTitle>
+            Auto Renew Period
+            <InfoTooltip
+                label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
             />
-          </div>
-        </template>
+          </template>
 
-      </ContentCell>
+          <template #cellContent>
+            <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
+              <TextFieldView v-model="selectedAutoRenewPeriod"
+                             id="selectedAutoRenewPeriod"
+                             placeholder="> 0"
+                             type="number"
+                             min="1"
+                             step="1"
+                             style="width: 100%"
+              />
+              <SelectView v-model="selectedUnit" width="100%">
+                <option v-for="p in PeriodUnit" :key="p" :value="p"
+                        style="background-color: var(--h-theme-page-background-color)">
+                  {{ p }}
+                </option>
+              </SelectView>
+            </div>
+          </template>
 
-      <!-- Receiver Signature Required -->
-      <ContentCell direction="horizontal">
+        </ContentCell>
 
-        <template #cellTitle>
-          <div>
-            Receiver Signature Required
-          </div>
-        </template>
+        <hr style="width: 100%;" />
 
-        <template #cellContent>
-          <SwitchView v-model="newRecSigRequired"/>
-        </template>
+        <!-- Max. Auto. Associations -->
+        <ContentCell>
 
-      </ContentCell>
+          <template #cellTitle>
+            Max. Auto. Associations
+            <span class="ml-1"/>
+            <InfoTooltip
+                label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+            />
+          </template>
+
+          <template #cellContent>
+            <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
+              <SelectView v-model="autoAssociationMode" width="100%">
+                <option :key="0" :value="AutoAssociationMode.NoAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                  No Automatic Association
+                </option>
+                <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                  Limited Automatic Association
+                </option>
+                <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                  Unlimited Automatic Association
+                </option>
+              </SelectView>
+              <TextFieldView v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
+                             style="width: 100px"
+                             :style="{'visibility': autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'inherit'}"
+                             v-model="maxAutoAssociationInputText"
+                             placeholder="> 0"
+                             type="number"
+                             min="1"
+                             step="1"
+              />
+            </div>
+          </template>
+
+        </ContentCell>
+
+        <!-- Receiver Signature Required -->
+        <ContentCell direction="horizontal">
+
+          <template #cellTitle>
+            <div>
+              Receiver Signature Required
+            </div>
+          </template>
+
+          <template #cellContent>
+            <SwitchView v-model="newRecSigRequired"/>
+          </template>
+
+        </ContentCell>
+
+      </template>
 
       <template v-if="enableStaking">
 
@@ -249,6 +256,13 @@ import {isCouncilNode} from "@/schemas/MirrorNodeUtils.ts";
 const showDialog = defineModel("showDialog", {
   type: Boolean,
   required: true
+})
+
+const props = defineProps({
+  stakingOnly: {
+    type: Boolean,
+    default: false
+  }
 })
 
 const emit = defineEmits(["updated"])
