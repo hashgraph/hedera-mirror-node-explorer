@@ -110,7 +110,6 @@ const nftTransferLayout = computed(() =>
 .graph-container {
   column-gap: 1em;
   display: inline-grid;
-  font-family: Inter, sans-serif;
   font-size: 14px;
   grid-template-columns: repeat(5, auto);
   line-height: 1.4rem;

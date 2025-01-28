@@ -256,7 +256,6 @@ const routes = ref([
   border-width: 0;
   border-radius: 8px;
   background-color: var(--background-secondary);
-  font-family: Inter, sans-serif;
   font-size: 14px;
   font-weight: 600;
   padding: 16px;

@@ -140,7 +140,6 @@ const descriptionVisible = inject("isSmallScreen", true)
 .graph-container {
   column-gap: 1em;
   display: inline-grid;
-  font-family: Inter, sans-serif;
   font-size: 14px;
   grid-template-columns: repeat(5, auto);
   line-height: 1.4rem;
@@ -159,7 +158,6 @@ div.transfer-header {
   color: var(--text-secondary);
   font-weight: 500;
   font-size: 12px;
-  font-family: Inter, sans-serif;
 }
 
 div.transfer-account {
