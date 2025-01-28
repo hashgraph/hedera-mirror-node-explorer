@@ -259,11 +259,11 @@
 
         <template #left-control>
           <template v-if="selectedTab === 'transactions' && timeSelection === 'LATEST'">
-            <PlayPauseButtonV2 :controller="transactionTableController"/>
+            <PlayPauseButton :controller="transactionTableController"/>
           </template>
           <template v-else-if="selectedTab === 'contracts'">
-            <PlayPauseButtonV2 v-if="!filterVerified" :controller="contractCreateTableController"/>
-            <PlayPauseButtonV2 v-else :controller="verifiedContractsController"/>
+            <PlayPauseButton v-if="!filterVerified" :controller="contractCreateTableController"/>
+            <PlayPauseButton v-else :controller="verifiedContractsController"/>
           </template>
         </template>
 
@@ -396,7 +396,7 @@ import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
 

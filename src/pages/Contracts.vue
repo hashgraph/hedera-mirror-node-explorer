@@ -32,8 +32,8 @@
           <span>Recent Contracts</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 v-if="!filterVerified" :controller="contractTableController"/>
-          <PlayPauseButtonV2 v-else :controller="verifiedContractsController"/>
+          <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
+          <PlayPauseButton v-else :controller="verifiedContractsController"/>
         </template>
         <template #right-control>
           <div class="verify-switch">
@@ -77,7 +77,7 @@ import {VerifiedContractsController} from "@/components/contract/VerifiedContrac
 import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {AppStorage} from "@/AppStorage";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import SwitchView from "@/components/SwitchView.vue";
 
 defineProps({

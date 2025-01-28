@@ -106,7 +106,7 @@
         </template>
 
         <template #left-control>
-          <PlayPauseButtonV2 :controller="messageTableController"/>
+          <PlayPauseButton :controller="messageTableController"/>
         </template>
 
         <template #content>
@@ -148,7 +148,7 @@ import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
 import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
 import HCSContentSection from "@/components/topic/HCSContentSection.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 const props = defineProps({
   topicId: {

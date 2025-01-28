@@ -32,7 +32,7 @@
           <span>Recent Accounts</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 :controller="accountTableController"/>
+          <PlayPauseButton :controller="accountTableController"/>
         </template>
         <template #content>
           <AccountTable :controller="accountTableController"/>
@@ -56,7 +56,7 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
 import {useRouter} from "vue-router";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 defineProps({
   network: String
