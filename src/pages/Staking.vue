@@ -26,10 +26,11 @@
 
   <PageFrameV2 page-title="Staking">
 
-    <ChangeStakingDialog v-model:show-dialog="changeStakingDialogVisible"
-                         :account="account ?? undefined"
-                         :currently-staked-to="stakedTo ?? undefined"
-                         v-on:staking-changed="stakingChanged"/>
+    <UpdateAccountDialog
+        v-model:show-dialog="changeStakingDialogVisible"
+        :staking-only="true"
+        @updated="stakingChanged"
+    />
 
     <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
                          :account-id="accountId"
@@ -142,7 +143,7 @@
 import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
-import ChangeStakingDialog from "@/dialogs/ChangeStakingDialog.vue";
+import UpdateAccountDialog from "@/dialogs/transaction/UpdateAccountDialog.vue";
 import StopStakingDialog from "@/dialogs/transaction/staking/StopStakingDialog.vue";
 import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
