@@ -167,7 +167,7 @@
 
 <script setup lang="ts">
 
-import {computed, ComputedRef, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
+import {computed, ComputedRef, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
@@ -201,8 +201,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const isSmallScreen = inject('isSmallScreen', true)
 
 const isVerified = props.contractAnalyzer.isVerified
 const isFullMatch = props.contractAnalyzer.fullMatch

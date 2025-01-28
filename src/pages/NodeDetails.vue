@@ -257,7 +257,6 @@ const minStake = nodeAnalyzer.minStake
 const maxStake = nodeAnalyzer.maxStake
 const stakeRewarded = nodeAnalyzer.stakeRewarded
 const stakeUnrewarded = nodeAnalyzer.stakeUnrewarded
-const isCouncilNode = nodeAnalyzer.isCouncilNode
 const nodeDescription = nodeAnalyzer.nodeDescription
 const formattedHash = nodeAnalyzer.certificateHash
 

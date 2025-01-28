@@ -136,8 +136,6 @@ const expandedActions = defineModel('expandedActions', {
   default: () => []
 })
 
-const emit = defineEmits(['update:expandedActions'])
-
 const isXLargeScreen = inject('isXLargeScreen', true)
 
 const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER_PAGE)

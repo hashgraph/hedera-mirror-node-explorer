@@ -144,7 +144,6 @@ const props = defineProps({
 
 const nullHash = "0x000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"
 const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
 
 //
 // block

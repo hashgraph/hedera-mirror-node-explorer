@@ -332,13 +332,15 @@ onMounted(() => transactionGroupLookup.mount())
 onBeforeUnmount(() => transactionGroupLookup.unmount())
 
 const transactionGroupAnalyzer = new TransactionGroupAnalyzer(transactionGroupLookup.entity)
-const routeToAllTransactions = computed(() => {
-  const count = transactionGroupAnalyzer.transactions.value?.length ?? 0
-  const transactionId = transactionLocParser.transactionId.value ?? null
-  return count >= 2 && transactionId !== null
-      ? routeManager.makeRouteToTransactionsById(transactionId)
-      : null
-})
+
+// const routeToAllTransactions = computed(() => {
+//   const count = transactionGroupAnalyzer.transactions.value?.length ?? 0
+//   const transactionId = transactionLocParser.transactionId.value ?? null
+//   return count >= 2 && transactionId !== null
+//       ? routeManager.makeRouteToTransactionsById(transactionId)
+//       : null
+// })
+
 const displayAllChildrenLinks = computed(() => {
   return transactionGroupAnalyzer.childTransactions.value.length > MAX_INLINE_CHILDREN
 })

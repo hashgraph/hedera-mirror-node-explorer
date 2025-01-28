@@ -163,7 +163,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script setup lang="ts">
-import {inject, PropType, ref,} from "vue"
+import {PropType, ref,} from "vue"
 import BlobValue from "@/components/values/BlobValue.vue"
 import Property from "@/components/Property.vue"
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
@@ -178,8 +178,6 @@ const props = defineProps({
     required: true,
   }
 })
-
-const isMediumScreen = inject('isMediumScreen', true)
 
 const showRawMetadata = ref(false)
 

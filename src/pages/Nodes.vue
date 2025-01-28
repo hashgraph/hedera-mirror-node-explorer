@@ -104,7 +104,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted} from 'vue';
+import {computed, onBeforeUnmount, onMounted} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
 import {formatSeconds} from "@/utils/Duration";
@@ -120,7 +120,6 @@ defineProps({
   network: String
 })
 
-const isSmallScreen = inject('isSmallScreen', true)
 const cryptoName = CoreConfig.inject().cryptoName
 
 const stakeTotalTooltip = `Total amount of ${cryptoName} staked to all validators for consensus.`
