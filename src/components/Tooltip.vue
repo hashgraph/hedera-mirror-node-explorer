@@ -47,8 +47,6 @@
 
 import {PropType} from 'vue';
 
-const DEFAULT_DELAY = 500
-
 const props = defineProps({
   text: {
     type: String as PropType<string | null>,
@@ -60,7 +58,7 @@ const props = defineProps({
   },
   delay: {
     type: Number as PropType<number | null>,
-    default: DEFAULT_DELAY
+    default: 500
   }
 })
 

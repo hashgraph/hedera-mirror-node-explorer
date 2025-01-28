@@ -62,10 +62,6 @@ const darkSelected = ThemeController.inject().darkSelected
 const playURL = computed(() =>  darkSelected.value ? playDarkURL : playLightURL)
 const pauseURL = computed(() => darkSelected.value ? pauseDarkURL : pauseLightURL)
 
-const isAutoStopped = computed(() => {
-  return !isPlaying.value && !userRequestedStop.value
-})
-
 const userRequestedStop = ref(false)
 onMounted(() => userRequestedStop.value = false)
 const handleClick = () => {

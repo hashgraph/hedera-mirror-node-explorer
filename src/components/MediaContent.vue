@@ -124,13 +124,9 @@ const videoUrl: ComputedRef<string | null> = computed(
         ? props.url
         : null
 )
+
 const imageUrl: ComputedRef<string | null> = computed(
     () => videoUrl.value === null || props.type?.startsWith('image')
-        ? props.url
-        : null
-)
-const plainFileUrl: ComputedRef<string | null> = computed(
-    () => videoUrl.value === null && imageUrl.value === null
         ? props.url
         : null
 )

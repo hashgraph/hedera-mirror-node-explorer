@@ -86,7 +86,7 @@
 
 <script setup lang="ts">
 
-import {inject, PropType} from 'vue';
+import {PropType} from 'vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import Property from "@/components/Property.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
@@ -101,8 +101,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const isMediumScreen = inject('isMediumScreen', true)
 
 const fees = props.analyzer?.customFees
 const hasFixedFees = props.analyzer?.hasFixedFees

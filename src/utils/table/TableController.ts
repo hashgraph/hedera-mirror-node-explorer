@@ -23,7 +23,7 @@ import {LocationQuery, Router} from "vue-router";
 import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager";
 import {RowBuffer} from "@/utils/table/RowBuffer";
 import axios, {AxiosError} from "axios";
-import {PlayPauseController} from "@/components/PlayPauseButton.vue";
+import {PlayPauseController} from "@/components/PlayPauseButtonV2.vue";
 
 export abstract class TableController<R, K> implements PlayPauseController {
 

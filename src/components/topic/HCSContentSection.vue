@@ -93,7 +93,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, PropType} from 'vue';
+import {computed, PropType} from 'vue';
 import Property from "@/components/Property.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import {HCSTopicMemo} from "@/utils/HCSTopicMemo.ts";
@@ -112,8 +112,6 @@ const props = defineProps({
     default: null
   }
 })
-
-const isMediumScreen = inject('isMediumScreen', true)
 
 const INCOMPLETE_ASSET_TOOLTIP =
     'This topic contains too many messages for the HCS-1 content to be fully retrieved. ' +

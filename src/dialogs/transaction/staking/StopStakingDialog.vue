@@ -57,8 +57,8 @@ const showDialog = defineModel("showDialog", {
 
 const props = defineProps({
   accountId: {
-    type: String as PropType<string|null>,
-    default: true
+    type: String as PropType<string | null>,
+    default: null
   },
 })
 
@@ -68,7 +68,7 @@ const accountId = computed(() => props.accountId)
 const controller = new StopStackingController(showDialog, accountId)
 const stakedTo = controller.stakedTo
 
-const transactionDidExecute = async (transactionId: string|null) => {
+const transactionDidExecute = async (transactionId: string | null) => {
   emit('stakingChanged', transactionId)
 }
 

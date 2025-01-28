@@ -250,7 +250,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -289,7 +289,6 @@ const props = defineProps({
   network: String
 })
 
-const isMediumScreen = inject('isMediumScreen', true)
 const networkConfig = NetworkConfig.inject()
 
 const normalizedContractId = computed(() => {

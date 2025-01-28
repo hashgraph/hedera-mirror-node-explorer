@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 
-import {inject, PropType} from 'vue';
+import {PropType} from 'vue';
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
@@ -96,8 +96,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const isTouchDevice = inject('isTouchDevice', false)
 
 const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
   if (t.entity_id) {
