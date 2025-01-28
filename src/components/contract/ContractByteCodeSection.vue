@@ -48,17 +48,19 @@
       <Property v-if="isVerified" id="verificationStatus" :full-width="true">
         <template v-slot:name>Verification Status</template>
         <template v-slot:value>
-          {{ isFullMatch ? "Full Match" : "Partial Match" }}
-          <InfoTooltip :label="tooltipText"/>
-          <ButtonView
-              v-if="!isFullMatch"
-              id="verify-button"
-              :is-default="true"
-              :size="ButtonSize.small"
-              @action="showVerifyDialog = true"
-          >
-            RE-VERIFY
-          </ButtonView>
+          <div class="verification-status">
+            {{ isFullMatch ? "Full Match" : "Partial Match" }}
+            <InfoTooltip :label="tooltipText"/>
+            <ButtonView
+                v-if="!isFullMatch"
+                id="verify-button"
+                :is-default="true"
+                :size="ButtonSize.small"
+                @action="showVerifyDialog = true"
+            >
+              RE-VERIFY
+            </ButtonView>
+          </div>
         </template>
       </Property>
       <Property v-if="isVerified" id="contractName" :full-width="true">
@@ -365,6 +367,12 @@ hr.horizontal-line {
   background-color: var(--border-secondary);
   height: 1px;
   margin: 8px 0;
+}
+
+div.verification-status {
+  align-items: center;
+  display: flex;
+  gap: 8px;
 }
 
 </style>
