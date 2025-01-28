@@ -74,9 +74,5 @@ div.entity-link {
   display: inline-block;
 }
 
-span.hoverable:hover {
-  color: grey;
-}
-
 </style>
 
