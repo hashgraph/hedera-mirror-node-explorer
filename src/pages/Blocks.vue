@@ -32,7 +32,7 @@
           <span>Blocks</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 :controller="blockTableController"/>
+          <PlayPauseButton :controller="blockTableController"/>
         </template>
         <template #content>
           <BlockTable :controller="blockTableController"/>
@@ -56,7 +56,7 @@ import BlockTable from "@/components/block/BlockTable.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
 import {useRouter} from "vue-router";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 defineProps({
   network: String

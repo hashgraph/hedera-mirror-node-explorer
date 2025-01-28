@@ -143,7 +143,7 @@
         </template>
 
         <template #left-control>
-          <PlayPauseButtonV2 :controller="transactionTableController"/>
+          <PlayPauseButton :controller="transactionTableController"/>
         </template>
 
         <template #right-control>
@@ -197,7 +197,7 @@ import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import NftPreview from "@/components/token/NftPreview.vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 const props = defineProps({
   tokenId: {

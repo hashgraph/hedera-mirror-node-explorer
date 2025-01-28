@@ -33,7 +33,7 @@
           <span>Recent NFTs</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 :controller="nftTableController"/>
+          <PlayPauseButton :controller="nftTableController"/>
         </template>
         <template #content>
           <TokenTable :controller="nftTableController"/>
@@ -45,7 +45,7 @@
           <span>Recent Fungible Tokens</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 :controller="tokenTableController"/>
+          <PlayPauseButton :controller="tokenTableController"/>
         </template>
         <template #content>
           <TokenTable :controller="tokenTableController"/>
@@ -71,7 +71,7 @@ import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
 import {TokenType} from "@/schemas/MirrorNodeSchemas";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 defineProps({
   network: String

@@ -203,7 +203,7 @@
         </template>
 
         <template #left-control>
-          <PlayPauseButtonV2 :controller="isNft ? nftHolderTableController : tokenBalanceTableController"/>
+          <PlayPauseButton :controller="isNft ? nftHolderTableController : tokenBalanceTableController"/>
         </template>
 
         <template #content>
@@ -268,7 +268,7 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 import TokenKeysSection from "@/components/token/TokenKeysSection.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 const props = defineProps({
   tokenId: {

@@ -32,7 +32,7 @@
           <span>Recent Transactions</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 :controller="transactionTableController"/>
+          <PlayPauseButton :controller="transactionTableController"/>
         </template>
         <template #right-control>
           <TransactionFilterSelect v-model:selected-filter="transactionType"/>
@@ -62,7 +62,7 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {AppStorage} from "@/AppStorage";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 defineProps({
   network: String

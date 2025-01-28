@@ -30,7 +30,7 @@
     </template>
 
     <template #left-control>
-      <PlayPauseButtonV2 :controller="resultTableController"/>
+      <PlayPauseButton :controller="resultTableController"/>
     </template>
 
     <template #content>
@@ -53,7 +53,7 @@ import router from "@/router";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
 const props = defineProps({
   contractId: String,

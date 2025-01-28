@@ -33,7 +33,7 @@
           <span>Crypto Transfers</span>
         </template>
         <template #left-control>
-          <PlayPauseButtonV2 :controller="cryptoTableController"/>
+          <PlayPauseButton :controller="cryptoTableController"/>
         </template>
         <template #right-control>
           <ArrowLink
@@ -53,7 +53,7 @@
             <span>Smart Contract Calls</span>
           </template>
           <template #left-control>
-            <PlayPauseButtonV2 :controller="contractTableController"/>
+            <PlayPauseButton :controller="contractTableController"/>
           </template>
           <template #right-control>
             <ArrowLink
@@ -70,7 +70,7 @@
             <span>HCS Messages</span>
           </template>
           <template #left-control>
-            <PlayPauseButtonV2 :controller="messageTableController"/>
+            <PlayPauseButton :controller="messageTableController"/>
           </template>
           <template #right-control>
             <ArrowLink
@@ -105,7 +105,7 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButtonV2 from "@/components/PlayPauseButtonV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {routeManager} from "@/router.ts";
 
