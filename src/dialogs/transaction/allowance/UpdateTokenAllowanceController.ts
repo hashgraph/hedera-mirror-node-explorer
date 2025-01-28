@@ -20,7 +20,7 @@
 
 import {computed, Ref, watch} from "vue";
 import {ethers} from "ethers";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {
     TokenAmountTextFieldController,
     TokenAmountTextFieldState

@@ -20,7 +20,7 @@
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
 import {walletManager} from "@/router.ts";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {FreezeStatus, Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";

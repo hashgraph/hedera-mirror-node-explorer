@@ -66,7 +66,7 @@ import {computed, PropType} from "vue";
 import {TokenAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import {UpdateTokenAllowanceController} from "@/dialogs/transaction/allowance/UpdateTokenAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
-import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import TextFieldView from "@/components/TextFieldView.vue";
 
 const showDialog = defineModel("showDialog", {

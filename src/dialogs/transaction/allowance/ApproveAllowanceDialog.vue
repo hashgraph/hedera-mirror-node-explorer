@@ -132,7 +132,7 @@
 <script setup lang="ts">
 
 import {computed} from "vue";
-import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {ApproveAllowanceController} from "@/dialogs/transaction/allowance/ApproveAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
