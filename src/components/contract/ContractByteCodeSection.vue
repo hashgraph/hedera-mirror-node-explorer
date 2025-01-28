@@ -27,7 +27,8 @@
   <DashboardCardV2 collapsible-key="contractBytecode">
     <template #title>
       Contract Bytecode
-      <div v-if="isVerificationAvailable" class="h-has-pill" style="margin-top: 2px">
+      <div v-if="isVerificationAvailable" class="h-has-pill" :class="{'h-status-success':isVerified}"
+           style="margin-top: 2px">
         {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>
     </template>
