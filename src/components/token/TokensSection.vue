@@ -169,7 +169,7 @@ import {FungibleTableController} from "@/components/account/FungibleTableControl
 import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
-import RejectTokenDialog from "@/dialogs/transaction/RejectTokenDialog.vue";
+import RejectTokenDialog from "@/dialogs/transaction/token/RejectTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
 import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
