@@ -331,10 +331,9 @@
         :account-id="accountIdRef"/>
 
     <UpdateAccountDialog
-        :account-info="account"
-        :controller="updateDialogController"
+        v-model:show-dialog="showUpdateAccountDialog"
         @updated="onUpdateCompleted"
-    />
+     />
 
   </PageFrameV2>
 
@@ -384,7 +383,6 @@ import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContracts
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import DateTimePicker from "@/components/DateTimePicker.vue";
 import DownloadButton from "@/components/DownloadButton.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import TransactionDownloadDialog from "@/dialogs/download/TransactionDownloadDialog.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
@@ -392,7 +390,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
-import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
+import UpdateAccountDialog from "@/dialogs/transaction/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
@@ -544,9 +542,9 @@ onBeforeUnmount(() => nameQuery.unmount())
 // Account Update
 //
 
-const updateDialogController = new DialogController()
+const showUpdateAccountDialog = ref(false)
 
-const onUpdateAccount = () => updateDialogController.visible.value = true
+const onUpdateAccount = () => showUpdateAccountDialog.value = true
 
 const onUpdateCompleted = () => accountLocParser.remount()
 
