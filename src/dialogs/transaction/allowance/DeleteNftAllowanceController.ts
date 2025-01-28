@@ -20,7 +20,7 @@
 
 import {computed, Ref} from "vue";
 import {walletManager} from "@/router.ts";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {TokenInfo} from "@/schemas/MirrorNodeSchemas.ts";
 import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";

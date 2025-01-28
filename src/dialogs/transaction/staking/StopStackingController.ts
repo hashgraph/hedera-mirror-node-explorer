@@ -19,7 +19,7 @@
  */
 
 import {computed, Ref} from "vue";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {walletManager} from "@/router.ts";
 import {AccountBalanceTransactions} from "@/schemas/MirrorNodeSchemas.ts";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer.ts";

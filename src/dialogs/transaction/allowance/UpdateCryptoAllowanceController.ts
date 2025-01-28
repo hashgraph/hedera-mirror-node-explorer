@@ -21,7 +21,7 @@
 import {computed, Ref} from "vue";
 import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/transaction/common/CryptoTextFieldController.ts";
 import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {walletManager} from "@/router.ts";
 
 export class UpdateCryptoAllowanceController extends TransactionController {

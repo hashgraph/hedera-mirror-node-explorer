@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {
     AccountTextFieldController,
     AccountTextFieldState

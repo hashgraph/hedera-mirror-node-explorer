@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 
-import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {computed, PropType} from "vue";
 import {StopStackingController} from "@/dialogs/transaction/staking/StopStackingController.ts";
 

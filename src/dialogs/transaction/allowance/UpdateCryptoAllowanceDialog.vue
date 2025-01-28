@@ -66,7 +66,7 @@
 import {computed, PropType} from "vue";
 import {UpdateCryptoAllowanceController} from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceController.ts";
 import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
-import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import TextFieldView from "@/components/TextFieldView.vue";
 

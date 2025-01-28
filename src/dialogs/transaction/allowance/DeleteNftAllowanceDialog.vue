@@ -55,7 +55,7 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {DeleteNftAllowanceController} from "@/dialogs/transaction/allowance/DeleteNftAllowanceController.ts";
 
 const showDialog = defineModel("showDialog", {

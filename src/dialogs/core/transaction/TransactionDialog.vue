@@ -88,7 +88,7 @@
 
 import {computed, PropType} from "vue";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {walletManager} from "@/router.ts";
 
 const props = defineProps({

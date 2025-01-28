@@ -72,7 +72,7 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import TransactionDialog from "@/dialogs/transaction/TransactionDialog.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {RejectTokenController} from "@/dialogs/transaction/RejectTokenController.ts";
 import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
 

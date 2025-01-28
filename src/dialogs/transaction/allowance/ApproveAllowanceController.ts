@@ -20,7 +20,7 @@
 
 import {computed, ref, Ref} from "vue";
 import {walletManager} from "@/router.ts";
-import {TransactionController} from "@/dialogs/transaction/TransactionController.ts";
+import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {
     AccountTextFieldController,
     AccountTextFieldState
