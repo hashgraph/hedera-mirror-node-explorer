@@ -274,7 +274,6 @@ div.my-staking-buttons {
 
 p.staking-notice {
   color: var(--text-secondary);
-  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 400;
   height: 13px;

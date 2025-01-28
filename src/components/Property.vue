@@ -127,7 +127,6 @@ div.property-left-side {
 
 span.property-name {
   color: var(--text-secondary);
-  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;
   height: 16px;
@@ -140,7 +139,6 @@ span.uppercase {
 
 div.property-value {
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
   line-height: 18px;

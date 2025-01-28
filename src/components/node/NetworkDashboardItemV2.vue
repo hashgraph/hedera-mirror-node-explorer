@@ -93,7 +93,6 @@ div.item-root {
 
 div.item-l1 {
   color: var(--text-secondary);
-  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 500;
   height: 16px;
@@ -116,7 +115,6 @@ div.item-l2 {
 
 .item-unit {
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 400;
   height: 13px;
@@ -127,8 +125,7 @@ div.item-l2 {
 }
 
 div.item-l3 {
-  color: var(--text-accent);
-  font-family: 'Inter', sans-serif;
+  color: var(--network-text-accent-color);
   font-size: 12px;
   font-weight: 400;
   height: 16px;

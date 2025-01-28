@@ -136,14 +136,12 @@ div.balance-info {
 
 div.property-name {
   color: var(--text-secondary);
-  font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 500;
 }
 
 div.property-value {
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
   font-size: 14px;
   font-weight: 400;
 }
@@ -158,7 +156,6 @@ div.state-change {
   display: grid;
   grid-template-columns: 1.5fr 3fr 3fr 3fr;
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
   font-size: 12px;
   font-weight: 400;
 }

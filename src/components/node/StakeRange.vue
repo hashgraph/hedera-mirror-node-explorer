@@ -177,7 +177,6 @@ div.stake-range-marks {
 
 span.stake-mark {
   color: var(--text-primary);
-  font-family: 'Inter', sans-serif;
   font-size: 10px;
   font-weight: 400;
   height: 12px;

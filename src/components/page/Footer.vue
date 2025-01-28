@@ -137,7 +137,6 @@ div.footer-text {
 }
 
 div.footer-text-item {
-  font-family: 'Inter', sans-serif;
   font-size: 10px;
   color: var(--text-primary);
 }

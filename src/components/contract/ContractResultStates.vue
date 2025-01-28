@@ -276,7 +276,6 @@ export default defineComponent({
 div.state-heading {
   color: var(--text-secondary);
   display: grid;
-  font-family: Inter, sans-serif;
   font-weight: 500;
   font-size: 12px;
   grid-template-columns: 1.5fr 3fr 3fr 3fr;

@@ -167,8 +167,7 @@ a {
     Oruga customization
 */
 :root {
-    --oruga-base-font-size: 12px;
-    --oruga-base-font-family: 'Inter', sans-serif;
+    --oruga-base-font-size: 14px;
     --oruga-table-background-color: var(--background-tertiary);
     --oruga-table-striped-background-color: var(--background-tertiary);
     --oruga-table-border-radius: 0;
@@ -314,6 +313,11 @@ table.o-table th.o-table__th--left {
 
 :root {
     background: var(--h-theme-page-background-color);
+    font-family: Inter, sans-serif;
+    font-feature-settings: 'liga' 1, 'calt' 1, 'kern'; /* fix for Chrome */
+}
+@supports (font-variation-settings: normal) {
+    :root { font-family: InterVariable, sans-serif; }
 }
 
 a {
@@ -428,10 +432,6 @@ a:hover {
     vertical-align: middle;
     width: 48px;
     height: 48px;
-}
-
-body {
-    font-feature-settings: "liga", "kern";
 }
 
 .h-is-primary-title {
@@ -604,6 +604,10 @@ body {
 
 .is-numeric {
     font-variant-numeric: tabular-nums;
+}
+
+.is-family-monospace {
+    font-family: novamonoregular !important;
 }
 
 .h-is-json {
