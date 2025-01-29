@@ -23,13 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog v-model:show-dialog="visible">
+  <ModalDialog v-model:show-dialog="visible" :width="350">
 
     <template #modalDialogContent>
-      <div>
-        <span class="icon">
+      <div class="alert-dialog">
+        <div class="icon">
             <i class="fas fa-exclamation-triangle"></i>
-        </span>
+        </div>
         <slot name="alertMessage"/>
       </div>
     </template>
@@ -64,8 +64,11 @@ const visible = defineModel("visible", {
 
 <style scoped>
 
-div {
+div.alert-dialog {
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  row-gap: 16px;
   justify-content: center;
   font-style: normal;
   font-weight: normal;
@@ -73,7 +76,7 @@ div {
   line-height: 22px;
 }
 
-span.icon {
+div.icon {
   height: 1.5rem;
   width: 1.5rem;
   color: rgb(255, 183, 15);
