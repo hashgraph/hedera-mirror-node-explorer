@@ -58,7 +58,7 @@ const isSelected = computed(() => {
   return selection.value !== null && selection.value.uuid === props.walletItem.uuid
 })
 
-const handleDoubleClick = (e: MouseEvent) => {
+const handleDoubleClick = () => {
   if (selection.value !== null) {
     emit("connect")
   }
