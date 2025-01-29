@@ -390,15 +390,15 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import {labelForAutomaticTokenAssociation} from "@/schemas/MirrorNodeUtils.ts";
 import TokensSection from "@/components/token/TokensSection.vue";
 import EditableProperty from "@/components/EditableProperty.vue";
-import UpdateAccountDialog from "@/dialogs/transaction/UpdateAccountDialog.vue";
+import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import SwitchView from "@/components/SwitchView.vue";
 import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 const props = defineProps({
   accountId: String,

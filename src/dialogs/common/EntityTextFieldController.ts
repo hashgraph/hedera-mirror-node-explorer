@@ -22,7 +22,7 @@ import {computed, Ref, watch} from "vue";
 import {routeManager} from "@/router.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {EntityID} from "@/utils/EntityID.ts";
-import {BaseTextFieldController} from "@/dialogs/transaction/common/BaseTextFieldController.ts"
+import {BaseTextFieldController} from "@/dialogs/common/BaseTextFieldController.ts"
 import {extractChecksum, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
 export class EntityTextFieldController {

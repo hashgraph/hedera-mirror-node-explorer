@@ -19,7 +19,7 @@
  */
 
 import {computed, ref, Ref} from "vue";
-import {EntityLookup} from "@/utils/cache/base/EntityCache";
+import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 import {InputChangeController} from "@/components/utils/InputChangeController.ts";
 import {EntityID} from "@/utils/EntityID.ts";
 import {walletManager} from "@/router.ts";

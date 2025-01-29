@@ -168,17 +168,17 @@ import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
-import RejectTokenDialog from "@/dialogs/transaction/token/RejectTokenDialog.vue";
-import ClaimTokenDialog from "@/dialogs/transaction/token/ClaimTokenDialog.vue";
+import RejectTokenDialog from "@/dialogs/token/RejectTokenDialog.vue";
+import ClaimTokenDialog from "@/dialogs/token/ClaimTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 const props = defineProps({
   accountId: {

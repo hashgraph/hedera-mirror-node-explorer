@@ -23,29 +23,28 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TransactionDialog
+  <TransactionGroupDialog
       :controller="controller"
       :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+      @transaction-group-did-execute="transactionGroupDidExecute"
       :width="500">
 
-    <template #transactionDialogTitle>{{ transactionTitle }}</template>
+    <template #transactionGroupDialogTitle>Claim Token Airdrops</template>
 
-    <template #transactionExecutionLabel>DELETE</template>
+    <template #transactionGroupExecutionLabel>CLAIM</template>
 
-    <template #transactionDialogInput>
+    <template #transactionGroupDialogInput>
 
-      <template v-if="serialNumber === null">
-        Do you want to delete the allowance for all NFTs of collection {{ tokenName }}?
-      </template>
-
-      <template v-else>
-        Do you want to delete the allowance for NFT #{{ serialNumber}} of collection  {{ tokenName }} ?
-      </template>
+      <div>Do you want to claim {{ airdropCount }} token airdrops?</div>
+      <div v-if="!props.drained">(You might have more but we have limited to the first 100)</div>
+      <div v-if="nbRequiredTransactions >= 2">
+        This will require sending {{nbRequiredTransactions}} transactions
+        (maximum of {{ ClaimTokenController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
+      </div>
 
     </template>
 
-  </TransactionDialog>
+  </TransactionGroupDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -55,8 +54,9 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
-import {DeleteNftAllowanceController} from "@/dialogs/transaction/allowance/DeleteNftAllowanceController.ts";
+import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
+import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas.ts";
+import {ClaimTokenController} from "@/dialogs/token/ClaimTokenController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -64,34 +64,29 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  tokenId: {
-    type: Object as PropType<string | null>,
+  airdrops: {
+    type: Object as PropType<TokenAirdrop[] | null>,
     default: null
   },
-  spenderId: {
-    type: Object as PropType<string | null>,
-    default: null
-  },
-  serialNumber: {
-    type: Object as PropType<number | null>,
-    default: null
+  drained: {
+    type: Boolean,
+    default: true
   },
 })
 
-const emit = defineEmits(["allowanceDeleted"])
+const emit = defineEmits(["claimed"])
 
-const tokenId = computed(() => props.tokenId)
-const spenderId = computed(() => props.spenderId)
-const serialNumber = computed(() => props.serialNumber)
-const controller = new DeleteNftAllowanceController(showDialog, tokenId, spenderId, serialNumber)
 
-const transactionTitle = computed(() =>  "Delete allowance to account " + spenderId.value)
+const airdrops = computed(() => props.airdrops ?? [])
+const controller = new ClaimTokenController(showDialog, airdrops)
 
-const tokenName = computed(() => controller.tokenName.value)
+const airdropCount = controller.airdropCount
+const nbRequiredTransactions = controller.nbRequiredTransactions
 
-const transactionDidExecute = async (transactionId: string|null) => {
-  emit('allowanceDeleted', transactionId)
+const transactionGroupDidExecute = async () => {
+  emit('claimed')
 }
+
 
 </script>
 

@@ -20,7 +20,7 @@
 
 import {ethers} from "ethers";
 import {computed, Ref} from "vue";
-import {BaseTextFieldController} from "@/dialogs/transaction/common/BaseTextFieldController.ts";
+import {BaseTextFieldController} from "@/dialogs/common/BaseTextFieldController.ts";
 
 export class CryptoTextFieldController {
 

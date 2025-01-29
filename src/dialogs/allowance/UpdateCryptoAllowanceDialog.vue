@@ -29,15 +29,32 @@
       @transaction-did-execute="transactionDidExecute"
       :width="500">
 
-    <template #transactionDialogTitle>My Staking for account {{ accountId }}</template>
+    <template #transactionDialogTitle>{{ transactionTitle }}</template>
 
-    <template #transactionExecutionLabel>STOP STAKING</template>
+    <template #transactionExecutionLabel>APPROVE</template>
 
     <template #transactionDialogInput>
-      Do you want to stop staking to {{ stakedTo }} ?
+
+      <ContentCell>
+        <template #cellTitle>HBAR Amount</template>
+        <template #cellContent>
+          <TextFieldView
+              v-model="hbarAmountInput"
+              placeholder="HBAR Amount"
+              style="width: 100%"/>
+        </template>
+      </ContentCell>
+
     </template>
 
+    <template #transactionDialogConfirm>
+      Do you want to approve an allowance for {{ allowanceSpec }}
+    </template>
+
+    <template v-if="feedbackMessage" #transactionDialogControls>{{ feedbackMessage }}</template>
+
   </TransactionDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,9 +63,12 @@
 
 <script setup lang="ts">
 
-import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {computed, PropType} from "vue";
-import {StopStackingController} from "@/dialogs/transaction/staking/StopStackingController.ts";
+import {UpdateCryptoAllowanceController} from "@/dialogs/allowance/UpdateCryptoAllowanceController.ts";
+import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
+import ContentCell from "@/dialogs/core/ContentCell.vue";
+import TextFieldView from "@/components/TextFieldView.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -56,20 +76,30 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  accountId: {
-    type: String as PropType<string | null>,
+  "hbarAllowance": {
+    type: Object as PropType<CryptoAllowance | null>,
     default: null
-  },
+  }
 })
 
-const emit = defineEmits(["stakingChanged"])
+const emit = defineEmits(["allowanceApproved"])
 
-const accountId = computed(() => props.accountId)
-const controller = new StopStackingController(showDialog, accountId)
-const stakedTo = controller.stakedTo
+const hbarAllowance = computed(() => props.hbarAllowance)
+const controller = new UpdateCryptoAllowanceController(showDialog, hbarAllowance)
 
-const transactionDidExecute = async (transactionId: string | null) => {
-  emit('stakingChanged', transactionId)
+const hbarAmountInput = controller.inputText
+const feedbackMessage = controller.feedbackMessage
+
+const transactionTitle = computed(() => {
+  return "Modify allowance to account " + controller.spenderId.value
+})
+
+const allowanceSpec = computed(() => {
+  return controller.newUserAmount.value
+})
+
+const transactionDidExecute = async (transactionId: string|null) => {
+  emit("allowanceApproved", transactionId)
 }
 
 </script>

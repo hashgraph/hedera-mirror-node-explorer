@@ -24,18 +24,18 @@ import {TransactionController} from "@/dialogs/core/transaction/TransactionContr
 import {
     AccountTextFieldController,
     AccountTextFieldState
-} from "@/dialogs/transaction/common/AccountTextFieldController.ts";
-import {TokenTextFieldController, TokenTextFieldState} from "@/dialogs/transaction/common/TokenTextFieldController.ts";
+} from "@/dialogs/common/AccountTextFieldController.ts";
+import {TokenTextFieldController, TokenTextFieldState} from "@/dialogs/common/TokenTextFieldController.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
-import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/transaction/common/CryptoTextFieldController.ts";
+import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/common/CryptoTextFieldController.ts";
 import {
     TokenAmountTextFieldController,
     TokenAmountTextFieldState
-} from "@/dialogs/transaction/common/TokenAmountTextFieldController.ts";
+} from "@/dialogs/common/TokenAmountTextFieldController.ts";
 import {
     NftSerialsTextFieldController,
     NftSerialsTextFieldState
-} from "@/dialogs/transaction/common/NftSerialsTextFieldController.ts";
+} from "@/dialogs/common/NftSerialsTextFieldController.ts";
 
 export class ApproveAllowanceController extends TransactionController {
 

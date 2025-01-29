@@ -73,8 +73,8 @@ import {ContractActionsLoader, ContractActionWithPath} from "@/components/contra
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 const props = defineProps({
   transactionIdOrHash: String,

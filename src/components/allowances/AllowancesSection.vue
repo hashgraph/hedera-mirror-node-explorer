@@ -121,7 +121,7 @@ import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanc
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
-import ApproveAllowanceDialog from "@/dialogs/transaction/allowance/ApproveAllowanceDialog.vue";
+import ApproveAllowanceDialog from "@/dialogs/allowance/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/MirrorNodeSchemas";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
@@ -131,11 +131,11 @@ import {NftAllSerialsAllowanceTableController} from "@/components/allowances/Nft
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
-import UpdateCryptoAllowanceDialog from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceDialog.vue";
-import UpdateTokenAllowanceDialog from "@/dialogs/transaction/allowance/UpdateTokenAllowanceDialog.vue";
-import DeleteNftAllowanceDialog from "@/dialogs/transaction/allowance/DeleteNftAllowanceDialog.vue";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
+import UpdateCryptoAllowanceDialog from "@/dialogs/allowance/UpdateCryptoAllowanceDialog.vue";
+import UpdateTokenAllowanceDialog from "@/dialogs/allowance/UpdateTokenAllowanceDialog.vue";
+import DeleteNftAllowanceDialog from "@/dialogs/allowance/DeleteNftAllowanceDialog.vue";
 
 const props = defineProps({
   accountId: String,

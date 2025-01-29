@@ -57,8 +57,8 @@ import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
 import AlertDialog from "@/dialogs/AlertDialog.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
 
 //

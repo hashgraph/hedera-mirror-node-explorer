@@ -47,7 +47,7 @@
 <script setup lang="ts">
 
 import {PropType} from "vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 const props = defineProps({
   enabled: {

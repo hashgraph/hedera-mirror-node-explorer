@@ -24,7 +24,7 @@ import {TransactionController} from "@/dialogs/core/transaction/TransactionContr
 import {
     TokenAmountTextFieldController,
     TokenAmountTextFieldState
-} from "@/dialogs/transaction/common/TokenAmountTextFieldController.ts";
+} from "@/dialogs/common/TokenAmountTextFieldController.ts";
 import {TokenAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import {walletManager} from "@/router.ts";
 

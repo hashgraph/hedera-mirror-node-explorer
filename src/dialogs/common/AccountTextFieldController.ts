@@ -25,7 +25,7 @@ import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {
     EntityTextFieldController,
     EntityTextFieldState
-} from "@/dialogs/transaction/common/EntityTextFieldController.ts";
+} from "@/dialogs/common/EntityTextFieldController.ts";
 import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 
 export class AccountTextFieldController {
