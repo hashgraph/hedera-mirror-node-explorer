@@ -55,7 +55,7 @@ import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
-import WalletChooserDialog, {WalletItem} from "@/dialogs/WalletChooserDialog.vue";
+import WalletChooserDialog, {WalletItem} from "@/dialogs/wallet_chooser/WalletChooserDialog.vue";
 import AlertDialog from "@/dialogs/AlertDialog.vue";
 import ButtonView from "@/dialogs/core/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
