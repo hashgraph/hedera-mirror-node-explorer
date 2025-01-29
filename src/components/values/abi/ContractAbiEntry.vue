@@ -34,7 +34,7 @@
       <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs"/>
     </button>
     <div class="is-flex is-align-items-baseline ml-3">
-      <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ index }}.</div>
+      <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ props.index }}.</div>
       <SolidityCode class="source-code">{{ signature }}</SolidityCode>
       <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{
           mutability
@@ -54,7 +54,7 @@
   </div>
   <ContractAbiDialog
       :controller="dialogController"
-      :contract-call-builder="contractCallBuilder"
+      :contract-call-builder="props.contractCallBuilder"
       @did-update-contract-state="dialogDidUpdateContractState"/>
   <Dialog :controller="alertController">
     <template v-slot:dialogTitle>
@@ -72,9 +72,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref} from "vue";
+import {computed, onMounted, PropType, ref} from "vue";
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/prism.js";
@@ -89,85 +89,71 @@ import {walletManager} from "@/router";
 import DialogStatus from "@/dialogs/core/dialog/DialogStatus.vue";
 import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 
-export default defineComponent({
-  components: {SolidityCode, DialogTitle, DialogStatus, ContractAbiDialog, Dialog},
-  emits: ["didUpdateContractState"],
-  props: {
-    contractCallBuilder: {
-      type: Object as PropType<ContractCallBuilder>,
-      required: true
-    },
-    index: {
-      type: Number,
-      required: true
-    }
+const props = defineProps({
+  contractCallBuilder: {
+    type: Object as PropType<ContractCallBuilder>,
+    required: true
   },
-
-  setup(props, ctx) {
-
-    const running = ref(true)
-
-    const handleClick = () => {
-      if (props.contractCallBuilder.isGetter()) {
-        running.value = true
-        try {
-          props.contractCallBuilder.execute()
-              .finally(() => {
-                running.value = false
-              })
-        } catch {
-          running.value = false
-        }
-      } else {
-        if (props.contractCallBuilder.isReadOnly() || walletManager.accountId.value !== null) {
-          dialogController.visible.value = true
-        } else {
-          alertController.visible.value = true
-        }
-      }
-    }
-
-    const dialogController = new DialogController()
-    const alertController = new DialogController()
-
-    onMounted(() => {
-      if (props.contractCallBuilder.isGetter()) {
-        handleClick()
-      }
-    })
-
-    const isGetter = computed(() => props.contractCallBuilder.isGetter())
-
-    const signature = computed(() => props.contractCallBuilder.fragment.format("full"))
-
-    const mutability = computed(() => props.contractCallBuilder.fragment.stateMutability.toUpperCase())
-
-    const selector = computed(() => props.contractCallBuilder.fragment.selector)
-
-    const hasResult = computed(() => props.contractCallBuilder.hasResult())
-
-    const dialogDidUpdateContractState = () => {
-      ctx.emit("didUpdateContractState")
-    }
-
-    return {
-      running,
-      signature,
-      mutability,
-      selector,
-      isGetter,
-      hasResult,
-      callOutput: props.contractCallBuilder.callOutput,
-      dialogController,
-      alertController,
-      handleClick,
-      dialogDidUpdateContractState
-    }
+  index: {
+    type: Number,
+    required: true
   }
-
 })
 
+const emit = defineEmits(["didUpdateContractState"])
+
+const running = ref(true)
+
+const handleClick = () => {
+  if (props.contractCallBuilder.isGetter()) {
+    running.value = true
+    try {
+      props.contractCallBuilder.execute()
+          .finally(() => {
+            running.value = false
+          })
+    } catch {
+      running.value = false
+    }
+  } else {
+    if (props.contractCallBuilder.isReadOnly() || walletManager.accountId.value !== null) {
+      dialogController.visible.value = true
+    } else {
+      alertController.visible.value = true
+    }
+  }
+}
+
+const dialogController = new DialogController()
+const alertController = new DialogController()
+
+onMounted(() => {
+  if (props.contractCallBuilder.isGetter()) {
+    handleClick()
+  }
+})
+
+const isGetter = computed(() => props.contractCallBuilder.isGetter())
+
+const signature = computed(() => props.contractCallBuilder.fragment.format("full"))
+
+const mutability = computed(() => props.contractCallBuilder.fragment.stateMutability.toUpperCase())
+
+const selector = computed(() => props.contractCallBuilder.fragment.selector)
+
+const hasResult = computed(() => props.contractCallBuilder.hasResult())
+
+const dialogDidUpdateContractState = () => {
+  emit("didUpdateContractState")
+}
+
+const callOutput = props.contractCallBuilder.callOutput
+
 </script>
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                       STYLE                                                     -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
 
