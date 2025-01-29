@@ -112,7 +112,7 @@
               </SelectView>
               <TextFieldView v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
                              style="width: 100px"
-                             :style="{'visibility': autoAssociationMode!=AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'inherit'}"
+                             :style="{'visibility': autoAssociationMode!==AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'inherit'}"
                              v-model="maxAutoAssociationInputText"
                              placeholder="> 0"
                              type="number"

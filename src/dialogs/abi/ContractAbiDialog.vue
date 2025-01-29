@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TaskDialog :controller="controller">
+  <TaskDialog :controller="controller" @task-dialog-did-succeed="taskDialogDidSucceed">
     <template #taskDialogTitle>{{ dialogTitle }}</template>
     <template #taskDialogInput>
       <template v-if="walletRequired">To execute this function first connect your wallet</template>
@@ -95,6 +95,10 @@ const walletIconURL = computed(() => walletManager.walletIconURL.value ?? "")
 const walletRequired = computed(() => {
   return !props.contractCallBuilder.isReadOnly() && walletManager.accountId.value === null
 })
+
+const taskDialogDidSucceed = () => {
+  emit("didUpdateContractState")
+}
 
 </script>
 
