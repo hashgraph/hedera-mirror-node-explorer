@@ -43,10 +43,10 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import ParamTextEditor from "@/components/values/abi/ParamTextEditor.vue";
-import ParamBooleanEditor from "@/components/values/abi/ParamBooleanEditor.vue";
-import ParamJsonEditor from "@/components/values/abi/ParamJsonEditor.vue";
-import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
+import ParamTextEditor from "@/dialogs/abi/ParamTextEditor.vue";
+import ParamBooleanEditor from "@/dialogs/abi/ParamBooleanEditor.vue";
+import ParamJsonEditor from "@/dialogs/abi/ParamJsonEditor.vue";
+import {ContractParamBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
 
 const props = defineProps({
   paramBuilder: {

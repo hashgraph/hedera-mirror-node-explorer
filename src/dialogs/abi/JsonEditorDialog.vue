@@ -49,8 +49,8 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
-import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
-import {AppStorage} from "@/AppStorage";
+import {ContractParamBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
+import {AppStorage} from "@/AppStorage.ts";
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 import {ethers} from "ethers";

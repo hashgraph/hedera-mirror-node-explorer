@@ -33,8 +33,8 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
-import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
-import {AppStorage} from "@/AppStorage";
+import {ContractParamBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
+import {AppStorage} from "@/AppStorage.ts";
 
 const props = defineProps({
   paramBuilder: {

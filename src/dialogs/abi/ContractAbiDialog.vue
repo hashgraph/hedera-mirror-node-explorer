@@ -63,9 +63,9 @@
 import {computed, PropType} from "vue";
 import {walletManager} from "@/router.ts";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
-import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder.ts";
-import {ContractAbiController} from "@/dialogs/ContractAbiController.ts";
-import ParamTypeEditor from "@/components/values/abi/ParamTypeEditor.vue";
+import {ContractCallBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
+import {ContractAbiController} from "@/dialogs/abi/ContractAbiController.ts";
+import ParamTypeEditor from "@/dialogs/abi/ParamTypeEditor.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

@@ -111,15 +111,15 @@
 
 import {computed, defineComponent, PropType} from "vue";
 import {ethers} from "ethers";
-import ContractAbiEntry from "@/components/values/abi/ContractAbiEntry.vue";
+import ContractAbiEntry from "@/dialogs/abi/ContractAbiEntry.vue";
 import "prismjs/prism";
 import "prismjs/themes/prism-tomorrow.css"
 import "prismjs/prism.js";
 import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
 import SolidityCode from "@/components/SolidityCode.vue";
-import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
-import {ABIController} from "@/components/contract/ABIController";
+import {ContractCallBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
+import {ABIController} from "@/components/contract/ABIController.ts";
 
 export enum FragmentType {
   ALL = "all",

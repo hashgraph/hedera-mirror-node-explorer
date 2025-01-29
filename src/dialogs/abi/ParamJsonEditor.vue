@@ -23,7 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <input class="input is-small has-text-white" type="text" v-model="currentText"/>
+  <button class="button is-white h-is-smaller" @click="showDialog = true">EDIT…</button>
+  <JsonEditorDialog v-model:show-dialog="showDialog" :param-builder="props.paramBuilder"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -32,9 +33,9 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
-import {ContractParamBuilder} from "@/components/values/abi/ContractCallBuilder";
-import {AppStorage} from "@/AppStorage";
+import {PropType, ref} from "vue";
+import {ContractParamBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
+import JsonEditorDialog from "@/dialogs/abi/JsonEditorDialog.vue";
 
 const props = defineProps({
   paramBuilder: {
@@ -43,29 +44,7 @@ const props = defineProps({
   },
 })
 
-const currentText = ref<string>("")
-
-const lastParamData = computed(() => {
-  const functionHash = props.paramBuilder.callBuilder.fragment.selector
-  const paramName = props.paramBuilder.paramType.name
-  return AppStorage.getInputParam(functionHash, paramName)
-})
-
-let watchHandle: WatchStopHandle | null = null
-onMounted(() => {
-  currentText.value = lastParamData.value?.toString() ?? ""
-  watchHandle = watch(currentText, () => {
-    props.paramBuilder.paramData.value = currentText.value
-  }, {immediate: true})
-})
-onBeforeUnmount(() => {
-  if (watchHandle !== null) {
-    watchHandle()
-    watchHandle = null
-  }
-  props.paramBuilder.paramData.value = null
-  currentText.value = ""
-})
+const showDialog = ref(false)
 
 </script>
 
@@ -73,4 +52,4 @@ onBeforeUnmount(() => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped/>

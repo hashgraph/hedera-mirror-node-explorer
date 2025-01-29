@@ -71,8 +71,8 @@ import "prismjs/prism.js";
 import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
 import SolidityCode from "@/components/SolidityCode.vue";
-import ContractAbiDialog from "@/dialogs/ContractAbiDialog.vue";
-import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
+import ContractAbiDialog from "@/dialogs/abi/ContractAbiDialog.vue";
+import {ContractCallBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
 
 const props = defineProps({
   contractCallBuilder: {
