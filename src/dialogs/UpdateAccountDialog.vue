@@ -239,7 +239,7 @@ import {
   PeriodUnit,
   StakeChoice,
   UpdateAccountController
-} from "@/dialogs/transaction/UpdateAccountController.ts";
+} from "@/dialogs/UpdateAccountController.ts";
 import {computed} from "vue";
 import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";

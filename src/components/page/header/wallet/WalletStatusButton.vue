@@ -69,8 +69,8 @@ import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import DropdownPanel from "@/components/DropdownPanel.vue";
-import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
-import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 
 //

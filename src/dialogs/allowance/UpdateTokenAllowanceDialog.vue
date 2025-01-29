@@ -36,11 +36,11 @@
     <template #transactionDialogInput>
 
       <ContentCell>
-        <template #cellTitle>HBAR Amount</template>
+        <template #cellTitle>Token Amount</template>
         <template #cellContent>
           <TextFieldView
-              v-model="hbarAmountInput"
-              placeholder="HBAR Amount"
+              v-model="tokenAmountInput"
+              placeholder="Token Amount"
               style="width: 100%"/>
         </template>
       </ContentCell>
@@ -54,7 +54,6 @@
     <template v-if="feedbackMessage" #transactionDialogControls>{{ feedbackMessage }}</template>
 
   </TransactionDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -64,10 +63,10 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {UpdateCryptoAllowanceController} from "@/dialogs/transaction/allowance/UpdateCryptoAllowanceController.ts";
-import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
-import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
+import {TokenAllowance} from "@/schemas/MirrorNodeSchemas.ts";
+import {UpdateTokenAllowanceController} from "@/dialogs/allowance/UpdateTokenAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import TextFieldView from "@/components/TextFieldView.vue";
 
 const showDialog = defineModel("showDialog", {
@@ -76,18 +75,18 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  "hbarAllowance": {
-    type: Object as PropType<CryptoAllowance | null>,
+  "tokenAllowance": {
+    type: Object as PropType<TokenAllowance | null>,
     default: null
   }
 })
 
 const emit = defineEmits(["allowanceApproved"])
 
-const hbarAllowance = computed(() => props.hbarAllowance)
-const controller = new UpdateCryptoAllowanceController(showDialog, hbarAllowance)
+const tokenAllowance = computed(() => props.tokenAllowance)
+const controller = new UpdateTokenAllowanceController(showDialog, tokenAllowance)
 
-const hbarAmountInput = controller.inputText
+const tokenAmountInput = controller.tokenAmountInput
 const feedbackMessage = controller.feedbackMessage
 
 const transactionTitle = computed(() => {

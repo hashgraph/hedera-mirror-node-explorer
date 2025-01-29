@@ -24,7 +24,7 @@ import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {
     EntityTextFieldController,
     EntityTextFieldState
-} from "@/dialogs/transaction/common/EntityTextFieldController.ts";
+} from "@/dialogs/common/EntityTextFieldController.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";

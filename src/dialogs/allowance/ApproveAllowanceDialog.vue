@@ -133,7 +133,7 @@
 
 import {computed} from "vue";
 import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
-import {ApproveAllowanceController} from "@/dialogs/transaction/allowance/ApproveAllowanceController.ts";
+import {ApproveAllowanceController} from "@/dialogs/allowance/ApproveAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import RabioBoxView from "@/components/RabioBoxView.vue";

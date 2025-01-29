@@ -23,44 +23,29 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TransactionGroupDialog
+  <TransactionDialog
       :controller="controller"
       :native-wallet-only="true"
-      @transaction-group-did-execute="transactionGroupDidExecute"
+      @transaction-did-execute="transactionDidExecute"
       :width="500">
 
-    <template #transactionGroupDialogTitle>{{ transactionTitle }}</template>
+    <template #transactionDialogTitle>{{ transactionTitle }}</template>
 
-    <template #transactionGroupExecutionLabel>REJECT</template>
+    <template #transactionExecutionLabel>DELETE</template>
 
-    <template #transactionGroupDialogInput>
+    <template #transactionDialogInput>
 
-      <template v-if="filtering">Filtering…</template>
+      <template v-if="serialNumber === null">
+        Do you want to delete the allowance for all NFTs of collection {{ tokenName }}?
+      </template>
 
       <template v-else>
-        <div>
-          {{ inputMessage }}
-        </div>
-        <div>
-          {{ inputMessageDetails1 }}
-        </div>
-        <div v-if="inputMessageDetails2">
-          {{ inputMessageDetails2 }}
-        </div>
-        <div v-if="inputMessageDetails3">
-          {{ inputMessageDetails3 }}
-        </div>
-        <div v-if="inputMessageDetails4">
-          {{ inputMessageDetails4 }}
-        </div>
-        <div v-if="inputMessageDetails5">
-          {{ inputMessageDetails5 }}
-        </div>
+        Do you want to delete the allowance for NFT #{{ serialNumber}} of collection  {{ tokenName }} ?
       </template>
 
     </template>
 
-  </TransactionGroupDialog>
+  </TransactionDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -70,9 +55,8 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
-import {RejectTokenController} from "@/dialogs/transaction/token/RejectTokenController.ts";
-import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
+import {DeleteNftAllowanceController} from "@/dialogs/allowance/DeleteNftAllowanceController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -80,33 +64,34 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  tokens: {
-    type: Object as PropType<(Token | Nft)[] | null>,
+  tokenId: {
+    type: Object as PropType<string | null>,
+    default: null
+  },
+  spenderId: {
+    type: Object as PropType<string | null>,
+    default: null
+  },
+  serialNumber: {
+    type: Object as PropType<number | null>,
     default: null
   },
 })
 
-const emit = defineEmits(["rejected"])
+const emit = defineEmits(["allowanceDeleted"])
 
+const tokenId = computed(() => props.tokenId)
+const spenderId = computed(() => props.spenderId)
+const serialNumber = computed(() => props.serialNumber)
+const controller = new DeleteNftAllowanceController(showDialog, tokenId, spenderId, serialNumber)
 
-const tokens = computed(() => props.tokens ?? [])
-const controller = new RejectTokenController(showDialog, tokens)
+const transactionTitle = computed(() =>  "Delete allowance to account " + spenderId.value)
 
-const filtering = controller.filtering
-const inputMessage = controller.inputMessage
-const inputMessageDetails1 = controller.inputMessageDetails1
-const inputMessageDetails2 = controller.inputMessageDetails2
-const inputMessageDetails3 = controller.inputMessageDetails3
-const inputMessageDetails4 = controller.inputMessageDetails4
-const inputMessageDetails5 = controller.inputMessageDetails5
+const tokenName = computed(() => controller.tokenName.value)
 
-const transactionTitle = computed(
-    () =>  controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens' )
-
-const transactionGroupDidExecute = async () => {
-  emit('rejected')
+const transactionDidExecute = async (transactionId: string|null) => {
+  emit('allowanceDeleted', transactionId)
 }
-
 
 </script>
 

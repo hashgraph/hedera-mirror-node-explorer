@@ -23,28 +23,21 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TransactionGroupDialog
+  <TransactionDialog
       :controller="controller"
       :native-wallet-only="true"
-      @transaction-group-did-execute="transactionGroupDidExecute"
+      @transaction-did-execute="transactionDidExecute"
       :width="500">
 
-    <template #transactionGroupDialogTitle>Claim Token Airdrops</template>
+    <template #transactionDialogTitle>My Staking for account {{ accountId }}</template>
 
-    <template #transactionGroupExecutionLabel>CLAIM</template>
+    <template #transactionExecutionLabel>STOP STAKING</template>
 
-    <template #transactionGroupDialogInput>
-
-      <div>Do you want to claim {{ airdropCount }} token airdrops?</div>
-      <div v-if="!props.drained">(You might have more but we have limited to the first 100)</div>
-      <div v-if="nbRequiredTransactions >= 2">
-        This will require sending {{nbRequiredTransactions}} transactions
-        (maximum of {{ ClaimTokenController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
-      </div>
-
+    <template #transactionDialogInput>
+      Do you want to stop staking to {{ stakedTo }} ?
     </template>
 
-  </TransactionGroupDialog>
+  </TransactionDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -53,10 +46,9 @@
 
 <script setup lang="ts">
 
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {computed, PropType} from "vue";
-import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
-import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas.ts";
-import {ClaimTokenController} from "@/dialogs/transaction/token/ClaimTokenController.ts";
+import {StopStackingController} from "@/dialogs/staking/StopStackingController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -64,29 +56,21 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  airdrops: {
-    type: Object as PropType<TokenAirdrop[] | null>,
+  accountId: {
+    type: String as PropType<string | null>,
     default: null
-  },
-  drained: {
-    type: Boolean,
-    default: true
   },
 })
 
-const emit = defineEmits(["claimed"])
+const emit = defineEmits(["stakingChanged"])
 
+const accountId = computed(() => props.accountId)
+const controller = new StopStackingController(showDialog, accountId)
+const stakedTo = controller.stakedTo
 
-const airdrops = computed(() => props.airdrops ?? [])
-const controller = new ClaimTokenController(showDialog, airdrops)
-
-const airdropCount = controller.airdropCount
-const nbRequiredTransactions = controller.nbRequiredTransactions
-
-const transactionGroupDidExecute = async () => {
-  emit('claimed')
+const transactionDidExecute = async (transactionId: string | null) => {
+  emit('stakingChanged', transactionId)
 }
-
 
 </script>
 

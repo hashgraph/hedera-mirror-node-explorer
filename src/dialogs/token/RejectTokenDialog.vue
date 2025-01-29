@@ -23,37 +23,44 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TransactionDialog
+  <TransactionGroupDialog
       :controller="controller"
       :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+      @transaction-group-did-execute="transactionGroupDidExecute"
       :width="500">
 
-    <template #transactionDialogTitle>{{ transactionTitle }}</template>
+    <template #transactionGroupDialogTitle>{{ transactionTitle }}</template>
 
-    <template #transactionExecutionLabel>APPROVE</template>
+    <template #transactionGroupExecutionLabel>REJECT</template>
 
-    <template #transactionDialogInput>
+    <template #transactionGroupDialogInput>
 
-      <ContentCell>
-        <template #cellTitle>Token Amount</template>
-        <template #cellContent>
-          <TextFieldView
-              v-model="tokenAmountInput"
-              placeholder="Token Amount"
-              style="width: 100%"/>
-        </template>
-      </ContentCell>
+      <template v-if="filtering">Filtering…</template>
+
+      <template v-else>
+        <div>
+          {{ inputMessage }}
+        </div>
+        <div>
+          {{ inputMessageDetails1 }}
+        </div>
+        <div v-if="inputMessageDetails2">
+          {{ inputMessageDetails2 }}
+        </div>
+        <div v-if="inputMessageDetails3">
+          {{ inputMessageDetails3 }}
+        </div>
+        <div v-if="inputMessageDetails4">
+          {{ inputMessageDetails4 }}
+        </div>
+        <div v-if="inputMessageDetails5">
+          {{ inputMessageDetails5 }}
+        </div>
+      </template>
 
     </template>
 
-    <template #transactionDialogConfirm>
-      Do you want to approve an allowance for {{ allowanceSpec }}
-    </template>
-
-    <template v-if="feedbackMessage" #transactionDialogControls>{{ feedbackMessage }}</template>
-
-  </TransactionDialog>
+  </TransactionGroupDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -63,11 +70,9 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {TokenAllowance} from "@/schemas/MirrorNodeSchemas.ts";
-import {UpdateTokenAllowanceController} from "@/dialogs/transaction/allowance/UpdateTokenAllowanceController.ts";
-import ContentCell from "@/dialogs/core/ContentCell.vue";
-import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
-import TextFieldView from "@/components/TextFieldView.vue";
+import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
+import {RejectTokenController} from "@/dialogs/token/RejectTokenController.ts";
+import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -75,31 +80,33 @@ const showDialog = defineModel("showDialog", {
 })
 
 const props = defineProps({
-  "tokenAllowance": {
-    type: Object as PropType<TokenAllowance | null>,
+  tokens: {
+    type: Object as PropType<(Token | Nft)[] | null>,
     default: null
-  }
+  },
 })
 
-const emit = defineEmits(["allowanceApproved"])
+const emit = defineEmits(["rejected"])
 
-const tokenAllowance = computed(() => props.tokenAllowance)
-const controller = new UpdateTokenAllowanceController(showDialog, tokenAllowance)
 
-const tokenAmountInput = controller.tokenAmountInput
-const feedbackMessage = controller.feedbackMessage
+const tokens = computed(() => props.tokens ?? [])
+const controller = new RejectTokenController(showDialog, tokens)
 
-const transactionTitle = computed(() => {
-  return "Modify allowance to account " + controller.spenderId.value
-})
+const filtering = controller.filtering
+const inputMessage = controller.inputMessage
+const inputMessageDetails1 = controller.inputMessageDetails1
+const inputMessageDetails2 = controller.inputMessageDetails2
+const inputMessageDetails3 = controller.inputMessageDetails3
+const inputMessageDetails4 = controller.inputMessageDetails4
+const inputMessageDetails5 = controller.inputMessageDetails5
 
-const allowanceSpec = computed(() => {
-  return controller.newUserAmount.value
-})
+const transactionTitle = computed(
+    () =>  controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens' )
 
-const transactionDidExecute = async (transactionId: string|null) => {
-  emit("allowanceApproved", transactionId)
+const transactionGroupDidExecute = async () => {
+  emit('rejected')
 }
+
 
 </script>
 

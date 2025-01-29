@@ -23,7 +23,7 @@ import {TransactionController} from "@/dialogs/core/transaction/TransactionContr
 import {
     AccountTextFieldController,
     AccountTextFieldState
-} from "@/dialogs/transaction/common/AccountTextFieldController.ts";
+} from "@/dialogs/common/AccountTextFieldController.ts";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts"
 import {walletManager} from "@/router.ts";

@@ -18,7 +18,7 @@
  *
  */
 
-import {EntityID} from "@/utils/EntityID";
+import {EntityID} from "@/utils/EntityID.ts";
 import {stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
 export enum ButtonSize {
