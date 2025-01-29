@@ -18,16 +18,9 @@
   -
   -->
 
-<!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                     TEMPLATE                                                    -->
-<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--
 
-<template>
-  <ModalDialog v-model:show-dialog="showDialog">
 
-    <template #modalDialogTitle>Connect Wallet</template>
-
-    <template #modalDialogContent>
       <div style="display: flex; align-items:center; justify-content: space-evenly; flex-wrap: wrap">
         <div v-for="d in walletItems" :key="d.name">
           <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
@@ -38,13 +31,35 @@
           </a>
         </div>
       </div>
+
+
+  -->
+
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+<!--                                                     TEMPLATE                                                    -->
+<!-- --------------------------------------------------------------------------------------------------------------- -->
+
+<template>
+  <ModalDialog v-model:show-dialog="showDialog" :width="0">
+
+    <template #modalDialogTitle>Connect Wallet</template>
+
+    <template #modalDialogContent>
+      <div style="display: flex; align-items: center; justify-content: center;">
+        <div class="wallet-chooser-container" :style="{ 'grid-template-columns': gridTemplateColumns }">
+          <template v-for="i in walletItems" :key="i.name">
+            <WalletChooserItem v-model:selection="chosenWallet" :wallet-item="i" @connect="handleConnect"/>
+          </template>
+        </div>
+      </div>
     </template>
 
     <template #modalDialogButtons>
       <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
       <ModalDialogButton v-model:show-dialog="showDialog"
-                         :enabled="!chosenWallet"
-                         @action="handleConnect">OK</ModalDialogButton>
+                         :enabled="chosenWallet !== null"
+                         :is-default="true"
+                         @action="handleConnect">CONNECT</ModalDialogButton>
     </template>
 
   </ModalDialog>
@@ -60,13 +75,14 @@
 
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
+import {computed, ref, watch} from "vue";
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import OptOutDialog from "@/dialogs/OptOutDialog.vue";
 import {EIP6963Agent} from "@/utils/wallet/EIP6963Agent.ts";
 import {AppStorage} from "@/AppStorage.ts";
+import WalletChooserItem from "@/dialogs/wallet_chooser/WalletChooserItem.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -78,6 +94,7 @@ const showDisclaimerDialog = ref(false)
 
 const emit = defineEmits(["chooseWallet"])
 
+watch(showDialog, (showing) => {if (showing) chosenWallet.value = null})
 
 //
 // Wallet items
@@ -101,10 +118,6 @@ const walletItems = computed<WalletItem[]>(() => {
   return result
 })
 
-const isSelected = (wallet: WalletItem) => {
-  return chosenWallet.value !== null && (chosenWallet.value.name === wallet.name)
-}
-
 const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup
 
 const handleConnect = () => {
@@ -115,12 +128,18 @@ const handleConnect = () => {
   }
 }
 
+const columnCount = computed(() => Math.min(walletItems.value.length, 3))
+
+const gridTemplateColumns = computed(() => {
+  return "repeat(" + columnCount.value + ", 1fr)"
+})
 
 //
 // Disclaimer
 //
 
 const handleAgreeDisclaimer = () => {
+  showDialog.value = false
   emit('chooseWallet', chosenWallet.value)
 }
 
@@ -135,5 +154,11 @@ const WALLECT_CONNECT_LOGO =
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.wallet-chooser-container {
+  display: grid;
+  grid-column-gap: 8px;
+  grid-row-gap: 8px;
+}
 
 </style>
