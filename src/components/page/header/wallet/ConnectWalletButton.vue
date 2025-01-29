@@ -35,7 +35,13 @@
   </ButtonView>
 
   <WalletChooser v-model:show-dialog="showWalletChooser" v-on:choose-wallet="handleChooseWallet"/>
-  <ConnectWalletDialog :error="connectError" :controller="connectDialogController"/>
+
+  <AlertDialog v-model:visible="showConnectErrorDialog">
+    <template #alertMessage>
+      <div>{{ mainMessage }}</div>
+      <div>{{ extraMessage }}</div>
+    </template>
+  </AlertDialog>
 
 </template>
 
@@ -48,13 +54,12 @@
 import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
-import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
-import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
+import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
-import ConnectWalletDialog from "@/components/wallet/ConnectWalletDialog.vue";
+import AlertDialog from "@/dialogs/AlertDialog.vue";
 import ButtonView from "@/dialogs/core/dialog/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/dialog/DialogUtils.ts";
+import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
 
 //
 // Connection state
@@ -84,7 +89,7 @@ const handleChooseWallet = (walletItem: WalletItem) => {
         if (!(reason instanceof WalletClientRejectError)) {
           console.warn("Failed to connect wallet - reason:" + reason.toString())
           connectError.value = reason
-          connectDialogController.visible.value = true
+          showConnectErrorDialog.value = true
           gtagWalletConnectionFailure(walletItem.name)
         }
       })
@@ -102,10 +107,21 @@ const navigateToMyAccount = () => {
 }
 
 //
-// ConnectDialog
+// Error alert
 //
 
-const connectDialogController = new DialogController()
+const mainMessage = computed(
+    () => connectError.value instanceof WalletClientError
+        ? connectError.value.message
+        : "Unexpected error"
+)
+const extraMessage = computed(
+    () => connectError.value instanceof WalletClientError
+        ? connectError.value.extra
+        : JSON.stringify(connectError.value)
+)
+
+const showConnectErrorDialog = ref(false)
 const connectError = ref<unknown>()
 
 
