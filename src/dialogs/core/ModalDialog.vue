@@ -25,7 +25,7 @@
 <template>
 
   <div v-if="showDialog" class="modal-dialog">
-    <div class="modal-dialog-box" :style="{'width': props.width+'px'}">
+    <div class="modal-dialog-box" :style="{'width': dialogWidth}">
 
       <div v-if="slots.modalDialogTitle" class="modal-dialog-header">
         <slot name="modalDialogTitle"/>
@@ -60,7 +60,7 @@
 
 <script setup lang="ts">
 
-import {useSlots, watch} from "vue";
+import {computed, useSlots, watch} from "vue";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 
 const showDialog = defineModel("showDialog", {
@@ -84,6 +84,10 @@ watch(showDialog, () => {
   if (!showDialog.value) {
     emit("onClose")
   }
+})
+
+const dialogWidth = computed(() => {
+  return props.width === 0 ? "auto" : "width: " + props.width + "px"
 })
 
 </script>
@@ -123,7 +127,7 @@ div.modal-dialog-box {
 div.modal-dialog-header {
   font-size: 20px;
   font-weight: 500;
-  line-height: 18px;
+  line-height: 26px;
 }
 
 div.modal-dialog-body {
