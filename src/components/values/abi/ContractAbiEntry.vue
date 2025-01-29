@@ -53,19 +53,9 @@
     </div>
   </div>
   <ContractAbiDialog
-      :controller="dialogController"
+      v-model:show-dialog="showAbiCallDialog"
       :contract-call-builder="props.contractCallBuilder"
       @did-update-contract-state="dialogDidUpdateContractState"/>
-  <Dialog :controller="alertController">
-    <template v-slot:dialogTitle>
-      <DialogTitle>Connect your Wallet</DialogTitle>
-    </template>
-    <template v-slot:dialogInput>
-      <DialogStatus :controller="alertController">
-        <template v-slot:mainMessage>To execute this function first connect your wallet</template>
-      </DialogStatus>
-    </template>
-  </Dialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -81,13 +71,8 @@ import "prismjs/prism.js";
 import "prismjs/components/prism-clike.js";
 import "prismjs/components/prism-solidity.js";
 import SolidityCode from "@/components/SolidityCode.vue";
-import ContractAbiDialog from "@/components/values/abi/ContractAbiDialog.vue";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
+import ContractAbiDialog from "@/dialogs/ContractAbiDialog.vue";
 import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder";
-import Dialog from "@/dialogs/core/dialog/Dialog.vue";
-import {walletManager} from "@/router";
-import DialogStatus from "@/dialogs/core/dialog/DialogStatus.vue";
-import DialogTitle from "@/dialogs/core/dialog/DialogTitle.vue";
 
 const props = defineProps({
   contractCallBuilder: {
@@ -116,16 +101,11 @@ const handleClick = () => {
       running.value = false
     }
   } else {
-    if (props.contractCallBuilder.isReadOnly() || walletManager.accountId.value !== null) {
-      dialogController.visible.value = true
-    } else {
-      alertController.visible.value = true
-    }
+    showAbiCallDialog.value = true
   }
 }
 
-const dialogController = new DialogController()
-const alertController = new DialogController()
+const showAbiCallDialog = ref(false)
 
 onMounted(() => {
   if (props.contractCallBuilder.isGetter()) {
