@@ -144,8 +144,8 @@
   />
 
   <ClaimTokenDialog
+      :showDialog="showClaimDialog"
       :airdrops="candidateAirdrops"
-      :controller="claimDialogController"
       :drained="checkedAirdrops.length < MAX_AIRDROPS"
       @claimed="onClaimCompleted"
   />
@@ -166,13 +166,12 @@ import {NftsTableController} from "@/components/account/NftsTableController";
 import NftsTable from "@/components/account/NftsTable.vue";
 import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
-import {DialogController} from "@/dialogs/core/dialog/DialogController.ts";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
 import RejectTokenDialog from "@/dialogs/transaction/token/RejectTokenDialog.vue";
+import ClaimTokenDialog from "@/dialogs/transaction/token/ClaimTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
-import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
@@ -212,7 +211,7 @@ const perPage = ref(props.fullPage ? 15 : 6)
 
 const accountId = computed(() => props.accountId)
 
-const claimActionEnabled = import.meta.env.VITE_APP_ENABLE_CLAIM_ACTION === 'true'
+const claimActionEnabled = true
 
 const tabIds = ['fungible', 'nfts', 'pendingAirdrop']
 
@@ -335,7 +334,7 @@ const checkedTokens = ref<(Token | Nft)[]>([])
 
 const MAX_AIRDROPS = 100 // for CLAIM ALL
 
-const claimDialogController = new DialogController()
+const showClaimDialog = ref(false)
 
 const onClaim = async () => {
   if (checkedAirdrops.value.length === 0) { // CLAIM ALL was chosen
@@ -346,7 +345,7 @@ const onClaim = async () => {
   } else {
     candidateAirdrops.value = checkedAirdrops.value
   }
-  claimDialogController.visible.value = true
+  showClaimDialog.value = true
 }
 
 const onClaimCompleted = () => {
