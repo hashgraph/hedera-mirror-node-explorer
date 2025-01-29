@@ -156,6 +156,7 @@ const handleConfirmExecute = async () => {
   try {
     await props.controller.execute()
     changeState(TaskDialogState.Success)
+    emit("taskDialogDidSucceed")
   } catch(error) {
     changeState(TaskDialogState.Error)
   }
