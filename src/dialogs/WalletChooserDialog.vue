@@ -23,40 +23,31 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <ModalDialog v-model:show-dialog="showDialog">
 
-  <div :class="{'is-active': showDialog}" class="modal has-text-white">
-    <div class="modal-background"/>
-    <div class="modal-content" style="width: 634px; border-radius: 16px">
-      <div class="box">
-        <div class="is-flex is-justify-content-space-between is-align-items-self-end">
-          <span class="h-is-primary-title">Connect Wallet</span>
-          <a @click="handleCancel">
-            <img alt="" src="@/assets/close-icon.png" style="max-height: 20px;">
+    <template #modalDialogTitle>Connect Wallet</template>
+
+    <template #modalDialogContent>
+      <div style="display: flex; align-items:center; justify-content: space-evenly; flex-wrap: wrap">
+        <div v-for="d in walletItems" :key="d.name">
+          <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
+            <div style="display: flex; align-items: center; column-gap: 16px" :class="{'selected':isSelected(d)}">
+              <img :src="d.iconURL ?? undefined" alt="wallet logo" style="max-height: 20px;">
+              <div>{{ d.name }}</div>
+            </div>
           </a>
         </div>
-        <hr class="h-card-separator"/>
-
-        <div class="is-flex is-justify-content-space-evenly is-align-items-center is-flex-wrap-wrap">
-          <div v-for="d in walletItems" :key="d.name">
-            <a :id="d.name" @click="chosenWallet=d" @dblclick="handleConnect">
-              <div class="is-flex is-flex-direction-row is-align-items-center h-chooser-figure" :class="{'selected':isSelected(d)}">
-                <img :src="d.iconURL ?? undefined" alt="wallet logo" class="h-chooser-img">
-                <div class="ml-3">{{ d.name }}</div>
-              </div>
-            </a>
-          </div>
-        </div>
-
-        <div class="is-flex is-justify-content-flex-end mt-4">
-          <button id="cancelButton" class="button is-white is-small" @click="handleCancel">CANCEL</button>
-          <button id="connectButton" :disabled="!chosenWallet" class="button is-info is-small ml-4"
-                  @click="handleConnect">CONNECT
-          </button>
-        </div>
       </div>
-    </div>
-  </div>
+    </template>
 
+    <template #modalDialogButtons>
+      <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog"
+                         :enabled="!chosenWallet"
+                         @action="handleConnect">OK</ModalDialogButton>
+    </template>
+
+  </ModalDialog>
 
   <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
                 @onAgree="handleAgreeDisclaimer"></OptOutDialog>
@@ -70,18 +61,20 @@
 <script setup lang="ts">
 
 import {computed, ref} from "vue";
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
+import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
+import {CoreConfig} from "@/config/CoreConfig.ts";
 import OptOutDialog from "@/dialogs/OptOutDialog.vue";
-import {AppStorage} from "@/AppStorage";
-import {CoreConfig} from "@/config/CoreConfig";
-import {EIP6963Agent} from "@/utils/wallet/EIP6963Agent";
+import {EIP6963Agent} from "@/utils/wallet/EIP6963Agent.ts";
+import {AppStorage} from "@/AppStorage.ts";
 
 const showDialog = defineModel("showDialog", {
-    type: Boolean,
-    default: false
+  type: Boolean,
+  required: true
 })
+
 const chosenWallet =ref<WalletItem|null>(null)
 const showDisclaimerDialog = ref(false)
-const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup
 
 const emit = defineEmits(["chooseWallet"])
 
@@ -112,17 +105,14 @@ const isSelected = (wallet: WalletItem) => {
   return chosenWallet.value !== null && (chosenWallet.value.name === wallet.name)
 }
 
+const disclaimer = CoreConfig.inject().walletChooserDisclaimerPopup
+
 const handleConnect = () => {
-  showDialog.value = false
   if (disclaimer !== null && !AppStorage.getSkipDisclaimer()) {
     showDisclaimerDialog.value = true
   } else if (chosenWallet.value !== null) {
-    emit('chooseWallet', chosenWallet.value)
+    handleAgreeDisclaimer()
   }
-}
-
-const handleCancel = () => {
-  showDialog.value = false
 }
 
 
@@ -134,17 +124,8 @@ const handleAgreeDisclaimer = () => {
   emit('chooseWallet', chosenWallet.value)
 }
 
-
-
 const WALLECT_CONNECT_LOGO =
     "data:image/svg+xml,%3Csvg fill='none' height='400' viewBox='0 0 400 400' width='400' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink'%3E%3CclipPath id='a'%3E%3Cpath d='m0 0h400v400h-400z'/%3E%3C/clipPath%3E%3Cg clip-path='url(%23a)'%3E%3Ccircle cx='200' cy='200' fill='%233396ff' r='199.5' stroke='%2366b1ff'/%3E%3Cpath d='m122.519 148.965c42.791-41.729 112.171-41.729 154.962 0l5.15 5.022c2.14 2.086 2.14 5.469 0 7.555l-17.617 17.18c-1.07 1.043-2.804 1.043-3.874 0l-7.087-6.911c-29.853-29.111-78.253-29.111-108.106 0l-7.59 7.401c-1.07 1.043-2.804 1.043-3.874 0l-17.617-17.18c-2.14-2.086-2.14-5.469 0-7.555zm191.397 35.529 15.679 15.29c2.14 2.086 2.14 5.469 0 7.555l-70.7 68.944c-2.139 2.087-5.608 2.087-7.748 0l-50.178-48.931c-.535-.522-1.402-.522-1.937 0l-50.178 48.931c-2.139 2.087-5.608 2.087-7.748 0l-70.7015-68.945c-2.1396-2.086-2.1396-5.469 0-7.555l15.6795-15.29c2.1396-2.086 5.6085-2.086 7.7481 0l50.1789 48.932c.535.522 1.402.522 1.937 0l50.177-48.932c2.139-2.087 5.608-2.087 7.748 0l50.179 48.932c.535.522 1.402.522 1.937 0l50.179-48.931c2.139-2.087 5.608-2.087 7.748 0z' fill='%23fff'/%3E%3C/g%3E%3C/svg%3E"
-
-// const HEDERA_LOGO =
-//     'data:image/svg+xml;utf8,<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">' +
-//     '<path d="M20 0a20 20 0 1 0 20 20A20 20 0 0 0 20 0" fill="black"></path>' +
-//     '<path d="M28.13 28.65h-2.54v-5.4H14.41v5.4h-2.54V11.14h2.54v5.27h11.18v-5.27h2.54zm-13.6-7.42h11.18v-2.79H14.53z" fill="white"></path>' +
-//     '</svg>'
-
 
 
 </script>
@@ -153,4 +134,6 @@ const WALLECT_CONNECT_LOGO =
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+</style>

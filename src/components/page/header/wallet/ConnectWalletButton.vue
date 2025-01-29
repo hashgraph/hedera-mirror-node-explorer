@@ -34,7 +34,7 @@
     {{ connecting ? "Connecting…" : "CONNECT WALLET" }}
   </ButtonView>
 
-  <WalletChooser v-model:show-dialog="showWalletChooser" v-on:choose-wallet="handleChooseWallet"/>
+  <WalletChooserDialog v-model:show-dialog="showWalletChooser" @choose-wallet="handleChooseWallet"/>
 
   <AlertDialog v-model:visible="showConnectErrorDialog">
     <template #alertMessage>
@@ -55,7 +55,7 @@ import {computed, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
-import WalletChooser, {WalletItem} from "@/components/staking/WalletChooser.vue";
+import WalletChooserDialog, {WalletItem} from "@/dialogs/WalletChooserDialog.vue";
 import AlertDialog from "@/dialogs/AlertDialog.vue";
 import ButtonView from "@/dialogs/core/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
