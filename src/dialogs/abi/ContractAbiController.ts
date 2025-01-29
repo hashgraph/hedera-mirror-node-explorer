@@ -20,7 +20,7 @@
 
 import {computed, Ref} from "vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
-import {ContractCallBuilder} from "@/components/values/abi/ContractCallBuilder.ts";
+import {ContractCallBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
 
 export class ContractAbiController extends TaskController {
 

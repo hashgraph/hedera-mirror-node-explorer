@@ -179,7 +179,7 @@ import InfoTooltip from "@/components/InfoTooltip.vue";
 import ContractVerificationDialog from "@/dialogs/verification/ContractVerificationDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import ContractSourceValue from "@/components/values/ContractSourceValue.vue";
-import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
+import ContractAbiValue, {FragmentType} from "@/dialogs/abi/ContractAbiValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";

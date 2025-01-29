@@ -20,12 +20,12 @@
 
 import {computed, ref, watch} from "vue";
 import {ethers} from "ethers";
-import {AppStorage} from "@/AppStorage";
-import {ContractCallRequest, ContractCallResponse, extractMessageFromErrorBody} from "@/schemas/MirrorNodeSchemas";
-import {walletManager} from "@/router";
+import {AppStorage} from "@/AppStorage.ts";
+import {ContractCallRequest, ContractCallResponse, extractMessageFromErrorBody} from "@/schemas/MirrorNodeSchemas.ts";
+import {walletManager} from "@/router.ts";
 import axios from "axios";
-import {ABIController} from "@/components/contract/ABIController";
-import {ContractByIdCache} from "@/utils/cache/ContractByIdCache";
+import {ABIController} from "@/components/contract/ABIController.ts";
+import {ContractByIdCache} from "@/utils/cache/ContractByIdCache.ts";
 
 export class ContractCallBuilder {
 
