@@ -79,6 +79,8 @@
     --light-chip-text-primary: white;
     --light-button-text-secondary: var(--text-primary);
     --light-button-background-secondary: #EFEFEF;
+    --light-copy-button-text: #FFFFFF;
+    --light-copy-button-background: #2C2C2C;
     --light-tab-background: rgba(5, 5, 5, 0.05);
     --light-icon-default-color: #A2A2A2;
     --light-status-success-color: #00722D;
@@ -109,6 +111,8 @@
     --dark-chip-text-primary: white;
     --dark-button-text-secondary: var(--text-primary);
     --dark-button-background-secondary: #2C2C2C;
+    --dark-copy-button-text: #050505;
+    --dark-copy-button-background: #EFEFEF;
     --dark-tab-background: rgba(255, 255, 255, 0.05);
     --dark-icon-default-color: #A2A2A2;
     --dark-status-success-color: #00722D;
@@ -129,6 +133,8 @@
     --chip-text-primary: var(--light-chip-text-primary);
     --button-text-secondary: var(--light-button-text-secondary);
     --button-background-secondary: var(--light-button-background-secondary);
+    --copy-button-text: var(--light-copy-button-text);
+    --copy-button-background: var(--light-copy-button-background);
     --tab-background: var(--light-tab-background);
     --icon-default-color: var(--light-icon-default-color);
     --status-success-color: var(--light-status-success-color);
@@ -155,7 +161,7 @@
     Explorer classes
 */
 
-body {
+html, body {
     background: var(--h-theme-page-background-color);
     font-family: var(--font-family-proportional), sans-serif;
     font-weight: 400;
