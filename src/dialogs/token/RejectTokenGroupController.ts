@@ -27,7 +27,7 @@ import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";
 import {walletManager} from "@/router.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 
-export class RejectTokenController extends TransactionGroupController {
+export class RejectTokenGroupController extends TransactionGroupController {
 
     private readonly rejectCandidates = ref<(Token | Nft)[]>([])
     private readonly treasuryTokens = ref<string[]>([])
