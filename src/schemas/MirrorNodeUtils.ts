@@ -34,7 +34,6 @@ import {
     REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
     Token,
     TokenInfo,
-    TokenRelationship,
     TokenRelationshipResponse,
     TokenTransfer,
     Transaction,
@@ -48,6 +47,7 @@ import {EntityID} from "@/utils/EntityID";
 import * as hashgraph from "@hashgraph/proto";
 import axios from "axios";
 import {waitFor} from "@/utils/TimerUtils";
+import {TransactionID} from "@/utils/TransactionID.ts";
 
 export function makeEthAddressForAccount(account: AccountInfo): string | null {
     if (account.evm_address) return account.evm_address;
@@ -282,17 +282,6 @@ export function lookupNodeByAccountId(accountId: string, nodes: NetworkNode[]): 
     return result
 }
 
-export function lookupTokenRelationship(relations: TokenRelationship[], targetTokenId: string): TokenRelationship | null {
-    let result: TokenRelationship | null = null
-    for (const r of relations) {
-        if (r.token_id == targetTokenId) {
-            result = r
-            break
-        }
-    }
-    return result
-}
-
 export function labelForResponseCode(responseCode: bigint): string | null {
     const responseCodeEnum = hashgraph.proto.ResponseCodeEnum;
     const result = Object.keys(responseCodeEnum).find((key: any) => BigInt(responseCodeEnum[key]) === responseCode);
@@ -403,17 +392,18 @@ export function labelForAutomaticTokenAssociation(rawProperty: number): string {
     return result
 }
 
-export async function waitForTransactionRefresh(transactionId: string, attemptIndex: number, polling = 3000) {
+export async function waitForTransactionRefresh(transactionId: string, attemptIndex: number = 10, polling = 3000) {
     let result: Promise<Transaction | string>
 
     if (attemptIndex >= 0) {
-        await waitFor(polling)
+        const tid = TransactionID.normalize(transactionId)
+        await waitFor(500) // Let's be optimistic
         try {
             const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
             const transactions = response.data.transactions ?? []
             result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
         } catch {
-            result = waitForTransactionRefresh(transactionId, attemptIndex - 1, polling)
+            result = waitForTransactionRefresh(tid, attemptIndex - 1, polling)
         }
     } else {
         result = Promise.resolve(transactionId)

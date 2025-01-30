@@ -42,10 +42,12 @@ export class TokenInfoAnalyzer {
 
     public mount() {
         this.associationLookup.mount()
+        this.pendingAirdropLookup.mount()
     }
 
     public unmount() {
         this.associationLookup.unmount()
+        this.pendingAirdropLookup.unmount()
     }
 
     public readonly tokenId = computed(

@@ -39,7 +39,7 @@
 
         <template #right-control>
           <div v-if="ethereumAddress && isWalletConnected" class="is-relative">
-            <TokenActions
+            <TokenActionsV2
                 :analyzer="tokenAnalyzer"
                 @completed="onActionCompleted"
             />
@@ -243,7 +243,7 @@ import DurationValue from "@/components/values/DurationValue.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import TokenAmount from "@/components/values/TokenAmount.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
-import TokenActions from "@/components/token/TokenActions.vue";
+import TokenActionsV2 from "@/components/token/TokenActionsV2.vue";
 import {EntityID} from "@/utils/EntityID";
 import Property from "@/components/Property.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
