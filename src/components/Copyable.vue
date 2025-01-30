@@ -23,10 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="shy-scope">
+  <div class="shy-scope" :class="{'hoverable':enableCopy}">
     <slot name="content"/>
     <div v-if="enableCopy && contentToCopy" id="shyCopyButton" class="shy">
-      <div class="copy-mask"/>
       <div v-if="enableCopy" class="copy-button-container">
         <button class="copy-button" v-on:click.stop="copyToClipboard">Copy</button>
       </div>
@@ -68,6 +67,12 @@ const copyToClipboard = (): void => {
 div.shy-scope {
   display: inline-block;
   position: relative;
+  border-width: 0;
+  border-radius: 4px;
+}
+
+div.shy-scope.hoverable:hover {
+  background-color: var(--background-secondary);
 }
 
 div.shy {
@@ -81,17 +86,6 @@ div.shy {
 
 div.shy-scope:hover > div.shy {
   display: block;
-}
-
-div.copy-mask {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.50);
-  border-width: 0;
-  border-radius: 4px;
 }
 
 div.copy-button-container {
@@ -110,10 +104,11 @@ button.copy-button {
   height: 28px;
   padding: 6px 12px;
   width: 100px;
+  opacity: 80%;
 }
 
 button.copy-button:active {
-  opacity: 75%;
+  opacity: 95%;
 }
 
 </style>
