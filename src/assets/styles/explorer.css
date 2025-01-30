@@ -18,11 +18,35 @@
  *
  */
 
-@import "@/fonts/styreneA/1802-UFGULA.css";
-@import "@/fonts/novamono/stylesheet.css";
-
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
 @import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
+
+/*  ============================================================================
+    Fonts
+*/
+@import "@/fonts/styreneA/1802-UFGULA.css";
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('@/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('@/fonts/Geist_Mono/GeistMono-VariableFont_wght.ttf') format('truetype');
+}
+
+:root {
+    --font-family-heading: 'Styrene A Web';
+    --font-family-proportional: 'Inter';
+    --font-family-monospace: 'Geist Mono';
+}
 
 /*  ============================================================================
     Color Themes / Modes
@@ -69,7 +93,6 @@
     --dark-network-chip-color: #A7449D;             /* NetworkEntry.darkChipColor */
     --dark-network-text-accent-color: #F258AC;      /* NetworkEntry.darkTextAccentColor */
     --dark-network-border-accent-color: #7A1B80;    /* NetworkEntry.darkBorderAccentColor */
-
 
     --dark-text-primary: #FFFFFF;
     --dark-text-secondary: #A2A2A2;
@@ -311,13 +334,11 @@ table.o-table th.o-table__th--left {
     Explorer classes
 */
 
-:root {
+body {
     background: var(--h-theme-page-background-color);
-    font-family: Inter, sans-serif;
-    font-feature-settings: 'liga' 1, 'calt' 1, 'kern'; /* fix for Chrome */
-}
-@supports (font-variation-settings: normal) {
-    :root { font-family: InterVariable, sans-serif; }
+    font-family: var(--font-family-proportional), sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 a {
@@ -362,6 +383,10 @@ a:hover {
 
 .h-is-bold {
     font-weight: 600;
+}
+
+.h-is-monospace {
+    font-family: var(--font-family-monospace), sans-serif;
 }
 
 .has-text-grey {
