@@ -57,6 +57,7 @@ import {ERC20Cache} from "@/utils/cache/ERC20Cache";
 import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
 import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
+import {PendingAirdropCache} from "@/utils/cache/PendingAirdropCache.ts";
 
 export class CacheUtils {
 
@@ -87,6 +88,7 @@ export class CacheUtils {
         NetworkCache.instance.clear()
         NftCollectionCache.instance.clear()
         // SignatureCache.instance => no clear: we preserve it because 4byte content is valid for all networks
+        PendingAirdropCache.instance.clear()
         SourcifyCache.instance.clear()
         StakeCache.instance.clear()
         TokenAssociationCache.instance.clear()
