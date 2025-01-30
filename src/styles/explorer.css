@@ -151,42 +151,6 @@
 }
 
 /*  ============================================================================
-    Bulma customization
-*/
-/*
-:root {
-    --bulma-text: var(--text-primary);
-    --bulma-scheme-main: var(--background-primary);
-    --bulma-radius: 0;
-    --bulma-hero-body-padding-small: 0.5rem 0 0.75rem;
-    --bulma-family-primary: 'Styrene A Web', sans-serif;
-    --bulma-family-monospace: novamonoregular;
-    --bulma-button-color: white;
-    --bulma-control-border-width: 0.5px;
-    --bulma-input-placeholder-color: grey;
-    --bulma-progress-bar-background-color: #444444;
-    --bulma-progress-border-radius: --bulma-box-radius;
-    --bulma-desktop: 1080px;
-
-}
-
-a {
-    --bulma-link-text: var(--text-primary);
-}
-
-.box {
-    --bulma-box-radius: 16px;
-    --bulma-box-background-color: var(--background-tertiary);
-    --bulma-box-shadow: 0 0 0 0;
-    --bulma-box-padding: 32px;
-}
-
-.h-box-border {
-    border: 1px solid var(--table-border);
-}
-*/
-
-/*  ============================================================================
     Oruga customization
 */
 :root {
