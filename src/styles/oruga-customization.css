@@ -1,0 +1,163 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/*  ============================================================================
+    Oruga customization
+*/
+:root {
+    --oruga-base-font-size: 14px;
+    --oruga-table-background-color: var(--background-tertiary);
+    --oruga-table-striped-background-color: var(--background-tertiary);
+    --oruga-table-border-radius: 0;
+    --oruga-table-color: var(--text-primary);
+    --oruga-table-hoverable-background-color: var(--background-primary);
+    --oruga-table-th-color: var(--text-secondary);
+    --oruga-table-th-font-weight: 500 !important;
+    --oruga-table-th-border: 1px solid var(--border-secondary);
+    --oruga-table-td-border: 1px solid var(--table-border);
+    --oruga-pagination-link-margin: 2px;
+    --oruga-pagination-link-color: var(--text-primary);
+    --oruga-pagination-link-border: 2px solid transparent;
+    --oruga-pagination-link-border-color: var(--background-tertiary);
+    --oruga-pagination-link-border-radius: 12px;
+    --oruga-pagination-link-height: 36px;
+    --oruga-pagination-link-min-width: 36px;
+    --oruga-pagination-link-current-color: var(--text-primary);
+    --oruga-pagination-link-current-background-color: var(--background-tertiary);
+    --oruga-pagination-link-current-border-color: var(--light-network-button-color);
+    --oruga-select-color: var(--text-primary);
+    --oruga-select-background-color: var(--background-tertiary);
+    --oruga-select-border-color: var(--text-primary);
+    --oruga-select-border-radius: 4px;
+    --oruga-select-arrow-size: 0.75rem;
+    --oruga-select-height: 26px;
+    --oruga-select-line-height: 1;
+    --oruga-select-padding: 0 8px;
+    --oruga-switch-active-background-color: var(--network-theme-color);
+    --oruga-checkbox-border-color: var(--network-theme-color);
+    --oruga-checkbox-background-color: var(--background-tertiary);
+    --oruga-checkbox-border-width: 1px;
+    --oruga-checkbox-active-background-color: var(--network-theme-color);
+    --oruga-checkbox-checkmark-color: var(--background-tertiary);
+    --oruga-tooltip-background-color: var(--network-theme-color);
+    --oruga-tooltip-arrow-margin: 5px;
+    --oruga-tooltip-content-font-size: 0.75rem;
+    --oruga-tooltip-content-weight-normal: 300;
+}
+
+table.o-table {
+    margin-bottom: 1rem;
+}
+
+table.o-table > thead > tr > th {
+    font-style: normal;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+table.o-table > tbody > tr > td {
+    align-self: center;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    vertical-align: middle;
+}
+
+table.o-table > tbody > tr {
+    cursor: pointer;
+}
+
+table.o-table > tbody > tr {
+    animation: fadeIn linear 1s;
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    25% {
+        opacity: 0;
+    }
+    75% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+div.o-table__pagination {
+    padding: 4px;
+}
+
+@media (max-width: 1079px) {
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child {
+        border-top: #979797 1px solid;
+        border-bottom: #4A4A4A 1px solid;
+    }
+
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:not(:first-child):not(:last-child) {
+        border-top: 0;
+        border-bottom: #4A4A4A 1px solid;
+    }
+
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:last-child {
+        border-top: 0;
+        border-bottom: 0;
+    }
+}
+
+/*
+    Fix Bulma / Oruga conflict
+
+    In Bulma, rules:
+        table td:not([align]), table th:not([align]) {
+            text-align: inherit;
+        }
+        td:not([align]), th:not([align]) {
+            text-align: inherit;
+        }
+    break Oruga table setting:
+        o-table-column with position="right"
+    This prevents right alignment because Bulma rules above take precedence over generated classes:
+        o-table__td--right
+        o-table__th--right
+    (why?)
+
+    Rules below restore the correct precedence.
+ */
+table.o-table {
+    text-align: left;
+}
+
+table.o-table td.o-table__td--right,
+table.o-table th.o-table__th--right {
+    text-align: right;
+}
+
+table.o-table td.o-table__td--left,
+table.o-table th.o-table__th--left {
+    text-align: left;
+}
