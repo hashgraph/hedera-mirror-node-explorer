@@ -71,7 +71,7 @@
 
 import {computed, PropType} from "vue";
 import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
-import {RejectTokenController} from "@/dialogs/token/RejectTokenController.ts";
+import {RejectTokenGroupController} from "@/dialogs/token/RejectTokenGroupController.ts";
 import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
 
 const showDialog = defineModel("showDialog", {
@@ -90,7 +90,7 @@ const emit = defineEmits(["rejected"])
 
 
 const tokens = computed(() => props.tokens ?? [])
-const controller = new RejectTokenController(showDialog, tokens)
+const controller = new RejectTokenGroupController(showDialog, tokens)
 
 const filtering = controller.filtering
 const inputMessage = controller.inputMessage

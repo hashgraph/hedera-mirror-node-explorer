@@ -137,7 +137,7 @@
 
   </DashboardCardV2>
 
-  <RejectTokenDialog
+  <RejectTokenGroupDialog
       v-model:show-dialog="showRejectTokenDialog"
       :tokens="checkedTokens"
       @rejected="onRejectCompleted"
@@ -168,7 +168,7 @@ import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
-import RejectTokenDialog from "@/dialogs/token/RejectTokenDialog.vue";
+import RejectTokenGroupDialog from "@/dialogs/token/RejectTokenGroupDialog.vue";
 import ClaimTokenDialog from "@/dialogs/token/ClaimTokenDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
