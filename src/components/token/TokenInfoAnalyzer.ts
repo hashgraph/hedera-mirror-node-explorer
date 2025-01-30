@@ -24,6 +24,7 @@ import {TokenInfo, TokenType} from "@/schemas/MirrorNodeSchemas";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager, walletManager} from "@/router";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache";
+import {PendingAirdropCache} from "@/utils/cache/PendingAirdropCache.ts";
 
 export class TokenInfoAnalyzer {
 
@@ -92,13 +93,25 @@ export class TokenInfoAnalyzer {
 
     public readonly customFees = computed(() => this.tokenInfo.value?.custom_fees)
 
-    public readonly treasuryAccount = computed(() => this.tokenInfo.value?.treasury_account_id)
+    public readonly treasuryAccount = computed(() => this.tokenInfo.value?.treasury_account_id ?? null)
 
     public readonly tokenChecksum = computed(() =>
         this.tokenInfo.value?.token_id ? this.networkConfig.computeChecksum(
             this.tokenInfo.value?.token_id,
             routeManager.currentNetwork.value
         ) : null)
+
+
+    public readonly balance = computed(() => {
+        let result: number|null
+        const relationships = this.associationLookup.entity.value
+        if (relationships !== null) {
+            result = relationships.length >= 1 ? relationships[0].balance : 0
+        } else {
+            result = null
+        }
+        return result
+    })
 
     public readonly associationStatus = computed(() => {
         let result: TokenAssociationStatus
@@ -119,6 +132,16 @@ export class TokenInfoAnalyzer {
         }
     }
 
+    public readonly pendingAirdrops = computed(() => this.pendingAirdropLookup.entity.value ?? null)
+
+    public pendingAirdropsDidChange(): void {
+        if (walletManager.accountId.value !== null && this.tokenId.value !== null) {
+            PendingAirdropCache.instance.forgetTokenAirdrop(walletManager.accountId.value, this.tokenId.value)
+            this.associationLookup.unmount()
+            this.associationLookup.mount()
+        }
+    }
+
     //
     // Private
     //
@@ -126,6 +149,8 @@ export class TokenInfoAnalyzer {
     private readonly associationLookup
         = TokenAssociationCache.instance.makeTokenAssociationLookup(walletManager.accountId, this.tokenId)
 
+    private readonly pendingAirdropLookup
+        = PendingAirdropCache.instance.makeAirdropLookup(walletManager.accountId, this.tokenId)
 }
 
 export enum TokenAssociationStatus {
