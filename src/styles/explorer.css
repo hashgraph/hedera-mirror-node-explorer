@@ -19,7 +19,7 @@
  */
 
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
-@import "../../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
+@import "../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
 
 /*  ============================================================================
     Fonts
