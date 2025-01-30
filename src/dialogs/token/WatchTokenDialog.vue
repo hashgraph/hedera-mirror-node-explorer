@@ -26,24 +26,17 @@
 
   <TransactionDialog
       :controller="controller"
-      :native-wallet-only="true"
       @transaction-did-execute="transactionDidExecute"
       :width="500">
 
-    <template #transactionDialogTitle>Associate Token</template>
+    <template #transactionDialogTitle>Import Token</template>
 
-    <template #transactionDialogInput>Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?</template>
+    <template #transactionDialogInput>Import {{ tokenType }} {{ tokenId }} to wallet {{ walletName }} ?</template>
 
-    <template #transactionExecutionLabel>ASSOCIATE</template>
-
-    <template v-if="isWatchSupported" #transactionDialogControls>
-      <label>
-        <input type="checkbox" style="margin-right: 0.5em; vertical-align: middle" v-model="watchInWallet">
-        <span>Import to {{ walletName }}</span>
-      </label>
-    </template>
+    <template #transactionExecutionLabel>IMPORT</template>
 
   </TransactionDialog>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,11 +45,11 @@
 
 <script setup lang="ts">
 
-import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {computed, PropType} from "vue";
-import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
-import {AssociateTokenController} from "@/dialogs/token/AssociateTokenController.ts";
 import {walletManager} from "@/router.ts";
+import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
+import {WatchTokenController} from "@/dialogs/token/WatchTokenController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -70,19 +63,16 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(["tokenAssociated"])
+const emit = defineEmits(["tokenWatched"])
 
 const analyzer = computed(() => props.analyzer)
-const controller = new AssociateTokenController(showDialog, analyzer)
-const tokenType = controller.tokenType
+const controller = new WatchTokenController(showDialog, analyzer)
 const tokenId = controller.tokenId
-const accountId = walletManager.accountId
+const tokenType = controller.tokenType
 const walletName = walletManager.walletName
-const watchInWallet = controller.watchInWallet
-const isWatchSupported = walletManager.isWatchSupported
 
-const transactionDidExecute = async (transactionId: string | null) => {
-  emit('tokenAssociated', transactionId)
+const transactionDidExecute = async () => {
+  emit('tokenWatched')
 }
 
 </script>

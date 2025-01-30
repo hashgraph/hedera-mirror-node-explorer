@@ -18,16 +18,13 @@
  *
  */
 
-import {computed, ref, Ref} from "vue";
+import {computed, Ref} from "vue";
 import {walletManager} from "@/router.ts";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
-import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
 import {Transaction} from "@/schemas/MirrorNodeSchemas.ts";
-import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 
-export class AssociateTokenController extends TransactionController {
-
-    public readonly watchInWallet = ref(false)
+export class WatchTokenController extends TransactionController {
 
     //
     // Public
@@ -46,18 +43,14 @@ export class AssociateTokenController extends TransactionController {
     //
 
     public canBeExecuted(): boolean {
-        return this.tokenAnalyzer.value.associationStatus.value === TokenAssociationStatus.Dissociated &&
-                    (walletManager.isWatchSupported.value || !this.watchInWallet.value)
+        return walletManager.isWatchSupported.value
+            && this.tokenAnalyzer.value.isFungible.value !== null
+            && this.tokenAnalyzer.value.isFungible.value
     }
 
 
     protected async executeTransaction(): Promise<Transaction|string|null> {
-        const tid = await walletManager.associateToken(this.tokenId.value!)
-        const result = await waitForTransactionRefresh(tid)
-        this.tokenAnalyzer.value.tokenAssociationDidChange()
-        if (this.watchInWallet.value) {
-            await walletManager.watchToken(this.tokenId.value!)
-        }
-        return Promise.resolve(result)
+        await walletManager.watchToken(this.tokenId.value!)
+        return Promise.resolve(null)
     }
 }

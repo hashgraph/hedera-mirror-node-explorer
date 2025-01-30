@@ -18,16 +18,15 @@
  *
  */
 
-import {computed, ref, Ref} from "vue";
+import {computed, Ref} from "vue";
 import {walletManager} from "@/router.ts";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
-import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
 import {Transaction} from "@/schemas/MirrorNodeSchemas.ts";
 import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
+import {TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 
-export class AssociateTokenController extends TransactionController {
-
-    public readonly watchInWallet = ref(false)
+export class RejectTokenController extends TransactionController {
 
     //
     // Public
@@ -46,18 +45,19 @@ export class AssociateTokenController extends TransactionController {
     //
 
     public canBeExecuted(): boolean {
-        return this.tokenAnalyzer.value.associationStatus.value === TokenAssociationStatus.Dissociated &&
-                    (walletManager.isWatchSupported.value || !this.watchInWallet.value)
+        return this.tokenAnalyzer.value.balance.value !== null
+                && this.tokenAnalyzer.value.balance.value > 0
+                && this.tokenAnalyzer.value.isFungible.value !== null
+                && this.tokenAnalyzer.value.isFungible.value
     }
 
 
     protected async executeTransaction(): Promise<Transaction|string|null> {
-        const tid = await walletManager.associateToken(this.tokenId.value!)
+        const transaction = new TokenRejectTransaction()
+        transaction.addTokenId(TokenId.fromString(this.tokenId.value!))
+        const tid = await walletManager.rejectTokens(transaction)
         const result = await waitForTransactionRefresh(tid)
         this.tokenAnalyzer.value.tokenAssociationDidChange()
-        if (this.watchInWallet.value) {
-            await walletManager.watchToken(this.tokenId.value!)
-        }
         return Promise.resolve(result)
     }
 }
