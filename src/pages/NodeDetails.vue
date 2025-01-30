@@ -88,7 +88,7 @@
             <Property id="nodeCertHash">
               <template #name>Certificate Hash</template>
               <template #value>
-                <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
+                <HexaValue :byteString="formattedHash" :show-none="true"/>
               </template>
             </Property>
           </template>
@@ -194,6 +194,7 @@ import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 const props = defineProps({
   nodeId: {
