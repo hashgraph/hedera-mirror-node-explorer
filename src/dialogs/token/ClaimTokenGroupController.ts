@@ -23,7 +23,7 @@ import {TransactionGroupController} from "@/dialogs/core/transaction/Transaction
 import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas.ts";
 import {walletManager} from "@/router.ts";
 
-export class ClaimTokenController extends TransactionGroupController {
+export class ClaimTokenGroupController extends TransactionGroupController {
 
     public static readonly MAX_AIRDROPS_PER_CLAIM = 10
 
@@ -38,7 +38,7 @@ export class ClaimTokenController extends TransactionGroupController {
     public readonly airdropCount = computed(() => this.airdrops.value?.length ?? 0)
 
     public readonly nbRequiredTransactions = computed(() =>
-        Math.ceil(this.airdropCount.value / ClaimTokenController.MAX_AIRDROPS_PER_CLAIM)
+        Math.ceil(this.airdropCount.value / ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM)
     )
 
     //
@@ -59,8 +59,8 @@ export class ClaimTokenController extends TransactionGroupController {
         const airdrops = this.airdrops.value!
         for (let i = 0; i < this.nbRequiredTransactions.value; i += 1) {
 
-            const start = i * ClaimTokenController.MAX_AIRDROPS_PER_CLAIM
-            const end = Math.min(airdrops.length, start + ClaimTokenController.MAX_AIRDROPS_PER_CLAIM)
+            const start = i * ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM
+            const end = Math.min(airdrops.length, start + ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM)
 
             result.push(walletManager.claimTokenAirdrops(airdrops.slice(start, end)))
         }

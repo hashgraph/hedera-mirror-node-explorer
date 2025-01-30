@@ -143,7 +143,7 @@
       @rejected="onRejectCompleted"
   />
 
-  <ClaimTokenDialog
+  <ClaimTokenGroupDialog
       :showDialog="showClaimDialog"
       :airdrops="candidateAirdrops"
       :drained="checkedAirdrops.length < MAX_AIRDROPS"
@@ -169,7 +169,7 @@ import {FungibleTableController} from "@/components/account/FungibleTableControl
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
 import RejectTokenGroupDialog from "@/dialogs/token/RejectTokenGroupDialog.vue";
-import ClaimTokenDialog from "@/dialogs/token/ClaimTokenDialog.vue";
+import ClaimTokenGroupDialog from "@/dialogs/token/ClaimTokenGroupDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
