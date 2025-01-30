@@ -88,7 +88,7 @@
             <Property id="nodeCertHash">
               <template #name>Certificate Hash</template>
               <template #value>
-                <HexaValue :byteString="formattedHash" :show-none="true"/>
+                <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
               </template>
             </Property>
           </template>
@@ -154,7 +154,7 @@
           <Property id="nodeCertHash">
             <template #name>Certificate Hash</template>
             <template #value>
-              <HexaValue :byteString="formattedHash" :show-none="true"/>
+              <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
             </template>
           </Property>
         </template>
@@ -182,7 +182,7 @@ import StringValue from "@/components/values/StringValue.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";

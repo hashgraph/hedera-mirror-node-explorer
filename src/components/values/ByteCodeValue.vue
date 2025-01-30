@@ -25,7 +25,7 @@
 <template>
 
   <div v-if="nonNullValue" id="bytecode">
-    <HexaValue :byte-string="textValue" :copyable="false"/>
+    <HexaDumpValue :byte-string="textValue" :copyable="false"/>
   </div>
 
   <span v-else-if="initialLoading"/>
@@ -42,11 +42,11 @@
 
 import {computed, defineComponent, inject, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 
 export default defineComponent({
   name: 'ByteCodeValue',
-  components: {HexaValue},
+  components: {HexaDumpValue},
 
   props: {
     byteCode: String,

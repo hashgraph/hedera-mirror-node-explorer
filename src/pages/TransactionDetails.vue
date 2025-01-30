@@ -91,7 +91,7 @@
           <Property id="transactionHash">
             <template #name>Transaction Hash</template>
             <template #value>
-              <HexaValue :byteString="formattedHash" :show-none="true"/>
+              <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
             </template>
           </Property>
           <Property id="blockNumber">
@@ -276,7 +276,7 @@
 import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {getTargetedTokens, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import SmartLink from "@/components/values/link/SmartLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";

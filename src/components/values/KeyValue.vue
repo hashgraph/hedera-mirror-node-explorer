@@ -32,7 +32,7 @@
       <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + keyBytes }}</span>
     </div>
     <div v-else>
-      <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
+      <HexaDumpValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
       <div v-if="keyBytes" class="h-is-extra-text">{{ keyType }}</div>
     </div>
   </template>
@@ -45,12 +45,12 @@
 <script lang="ts">
 
 import {computed, defineComponent, PropType} from "vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 
 export default defineComponent({
   name: "KeyValue",
-  components: {ComplexKeyValue, HexaValue},
+  components: {ComplexKeyValue, HexaDumpValue},
   props: {
     keyBytes: {
       type: String as PropType<string | null>,
