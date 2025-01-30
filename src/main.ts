@@ -27,7 +27,7 @@ import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 import {library} from "@fortawesome/fontawesome-svg-core";
 import {faForward} from "@fortawesome/free-solid-svg-icons";
 
-import "./assets/styles/explorer.css";
+import "@/styles/explorer.css";
 import {AxiosMonitor} from "@/utils/AxiosMonitor";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig} from "@/config/NetworkConfig";
