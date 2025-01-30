@@ -91,7 +91,7 @@
           <Property id="transactionHash">
             <template #name>Transaction Hash</template>
             <template #value>
-              <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
+              <HexaValue :byteString="formattedHash" :show-none="true"/>
             </template>
           </Property>
           <Property id="blockNumber">
@@ -276,7 +276,6 @@
 import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {getTargetedTokens, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
-import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import SmartLink from "@/components/values/link/SmartLink.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
@@ -305,6 +304,7 @@ import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import SelectView from "@/components/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
