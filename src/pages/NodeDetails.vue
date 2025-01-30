@@ -95,53 +95,55 @@
         </template>
 
         <template v-if="enableStaking" #right-content>
-          <NetworkDashboardItemV2
-              id="yearlyRate"
-              title="Last Period Reward Rate"
-              :value="annualizedRate.toString()"
-              unit="APPROX ANNUAL EQUIVALENT"
-          />
-          <NetworkDashboardItemV2
-              id="consensusStake"
-              title="Stake for Consensus"
-              :value="makeFloorHbarAmount(stake)"
-              :unit=cryptoName
-              :info-label="stakeLabel"
-              :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
-          />
-          <NetworkDashboardItemV2
-              id="rewarded"
-              title="Staked for Reward"
-              :value="makeFloorHbarAmount(stakeRewarded)"
-              :unit=cryptoName
-              :extra="`${stakeRewardedPercentage} of total`"
-          />
-          <NetworkDashboardItemV2
-              id="notRewarded"
-              title="Staked For No Reward"
-              :value="makeFloorHbarAmount(stakeUnrewarded)"
-              :unit=cryptoName
-              :extra="`${stakeUnrewardedPercentage} of total`"
-          />
-          <NetworkDashboardItemV2
-              id="minStake"
-              title="Min Stake"
-              :value="makeFloorHbarAmount(minStake)"
-              :unit=cryptoName
-          />
-          <NetworkDashboardItemV2
-              id="maxStake"
-              title="Max Stake"
-              :value="makeFloorHbarAmount(maxStake)"
-              :unit=cryptoName
-          />
-          <NetworkDashboardItemV2
-              title="Current Staking Period"
-              id="stakingPeriod"
-              value="24"
-              unit="HOURS"
-              extra="from 00:00 am today to 11:59 pm today UTC"
-          />
+          <div class="dashboard-items">
+            <NetworkDashboardItemV2
+                id="yearlyRate"
+                title="Last Period Reward Rate"
+                :value="annualizedRate.toString()"
+                unit="APPROX ANNUAL EQUIVALENT"
+            />
+            <NetworkDashboardItemV2
+                id="consensusStake"
+                title="Stake for Consensus"
+                :value="makeFloorHbarAmount(stake)"
+                :unit=cryptoName
+                :info-label="stakeLabel"
+                :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
+            />
+            <NetworkDashboardItemV2
+                id="rewarded"
+                title="Staked for Reward"
+                :value="makeFloorHbarAmount(stakeRewarded)"
+                :unit=cryptoName
+                :extra="`${stakeRewardedPercentage} of total`"
+            />
+            <NetworkDashboardItemV2
+                id="notRewarded"
+                title="Staked For No Reward"
+                :value="makeFloorHbarAmount(stakeUnrewarded)"
+                :unit=cryptoName
+                :extra="`${stakeUnrewardedPercentage} of total`"
+            />
+            <NetworkDashboardItemV2
+                id="minStake"
+                title="Min Stake"
+                :value="makeFloorHbarAmount(minStake)"
+                :unit=cryptoName
+            />
+            <NetworkDashboardItemV2
+                id="maxStake"
+                title="Max Stake"
+                :value="makeFloorHbarAmount(maxStake)"
+                :unit=cryptoName
+            />
+            <NetworkDashboardItemV2
+                title="Current Staking Period"
+                id="stakingPeriod"
+                value="24"
+                unit="HOURS"
+                extra="from 00:00 am today to 11:59 pm today UTC"
+            />
+          </div>
         </template>
 
         <template v-else #right-content>
@@ -271,6 +273,12 @@ div.page-container {
   gap: 16px;
   margin-left: 32px;
   margin-right: 32px;
+}
+
+div.dashboard-items {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
 }
 
 </style>
