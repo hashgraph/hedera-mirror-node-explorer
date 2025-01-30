@@ -24,10 +24,10 @@
 
 <template>
 
-  <div v-if="endpoints && endpoints.length">
-    <div v-for="s in endpoints" :key="s.ip_address_v4">
+  <div v-if="props.endpoints && props.endpoints.length">
+    <div v-for="s in props.endpoints" :key="s.ip_address_v4" class="h-is-monospace">
       <span v-if="s.ip_address_v4">{{ s.ip_address_v4 }}</span>
-      <span v-if="s.ip_address_v4 && s.port != null" class="has-text-grey h-is-smaller">{{ ':' + s.port }}</span>
+      <span v-if="s.ip_address_v4 && s.port != null" class="has-text-grey">{{ ':' + s.port }}</span>
     </div>
   </div>
 
@@ -41,24 +41,17 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
+import {inject, PropType, ref} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
 import {ServiceEndPoint} from "@/schemas/MirrorNodeSchemas";
 
-export default defineComponent({
-  name: 'Endpoints',
+const props = defineProps({
+  endpoints: Object as PropType<Array<ServiceEndPoint> | undefined>,
+})
 
-  props: {
-    endpoints: Object as PropType<Array<ServiceEndPoint> | undefined>,
-  },
-
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {initialLoading}
-  }
-});
+const initialLoading = inject(initialLoadingKey, ref(false))
 
 </script>
 
