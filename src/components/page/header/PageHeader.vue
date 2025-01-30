@@ -83,7 +83,7 @@ const connected = computed(() => walletManager.status.value == WalletManagerStat
 <style scoped>
 
 div.root {
-  background-color: var(--background-tertiary);
+  background: url('@/assets/header-background.svg') top left no-repeat, var(--background-tertiary);
   border-bottom-left-radius: 32px;
   border-bottom-right-radius: 32px;
   margin-bottom: 16px;
