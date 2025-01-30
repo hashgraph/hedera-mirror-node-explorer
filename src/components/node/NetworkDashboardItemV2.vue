@@ -88,7 +88,7 @@ const title = computed(() => props.title?.toUpperCase())
 div.item-root {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 4px;
 }
 
 div.item-l1 {
