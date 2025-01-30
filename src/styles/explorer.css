@@ -216,6 +216,11 @@ a:hover {
     font-family: var(--font-family-monospace), sans-serif;
 }
 
+/* TODO: Rename to .h-is-numeric */
+.is-numeric {
+    font-variant-numeric: tabular-nums;
+}
+
 /* TODO: Rename .h-is-low-contrast */
 .has-text-grey {
     color: var(--text-secondary) !important;
