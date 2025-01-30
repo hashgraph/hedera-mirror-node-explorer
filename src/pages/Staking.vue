@@ -36,16 +36,6 @@
                          :account-id="accountId"
                          v-on:staking-changed="stakingChanged"/>
 
-    <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
-                    :mode="Mode.Error"
-                    main-message="This operation cannot be done using Metamask"
-                    extra-message="Use another wallet (Blade or Hashpack)"
-    >
-      <template v-slot:dialogTitle>
-        <span class="h-is-primary-title">Unsupported Operation</span>
-      </template>
-    </ProgressDialog>
-
     <div class="page-container">
 
       <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
@@ -145,7 +135,6 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
 import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import StopStakingDialog from "@/dialogs/staking/StopStakingDialog.vue";
-import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
@@ -224,8 +213,6 @@ onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
 //
 // handleStopStaking / handleChangeStaking
 //
-
-const notWithMetamaskDialogVisible = ref(false)
 
 const stakingChanged = () => {
   accountLocParser.remount()
