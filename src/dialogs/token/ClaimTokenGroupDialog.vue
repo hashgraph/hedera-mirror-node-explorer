@@ -38,8 +38,8 @@
       <div>Do you want to claim {{ airdropCount }} token airdrops?</div>
       <div v-if="!props.drained">(You might have more but we have limited to the first 100)</div>
       <div v-if="nbRequiredTransactions >= 2">
-        This will require sending {{nbRequiredTransactions}} transactions
-        (maximum of {{ ClaimTokenController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
+        This will require sending {{ nbRequiredTransactions }} transactions
+        (maximum of {{ ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
       </div>
 
     </template>
@@ -56,7 +56,7 @@
 import {computed, PropType} from "vue";
 import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
 import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas.ts";
-import {ClaimTokenController} from "@/dialogs/token/ClaimTokenController.ts";
+import {ClaimTokenGroupController} from "@/dialogs/token/ClaimTokenGroupController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -78,7 +78,7 @@ const emit = defineEmits(["claimed"])
 
 
 const airdrops = computed(() => props.airdrops ?? [])
-const controller = new ClaimTokenController(showDialog, airdrops)
+const controller = new ClaimTokenGroupController(showDialog, airdrops)
 
 const airdropCount = controller.airdropCount
 const nbRequiredTransactions = controller.nbRequiredTransactions
