@@ -18,11 +18,11 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import HexaValue from "@/components/values/HexaValue.vue"
 
-describe("HexaValue.vue", () => {
+describe("HexaDumpValue.vue", () => {
 
     //
     // byteString unset

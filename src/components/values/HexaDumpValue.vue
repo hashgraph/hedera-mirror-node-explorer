@@ -49,7 +49,7 @@ import {initialLoadingKey} from "@/AppKeys";
 import Copyable from "@/components/Copyable.vue";
 
 export default defineComponent({
-  name: "HexaValue",
+  name: "HexaDumpValue",
   components: {Copyable},
   props: {
     byteString: {

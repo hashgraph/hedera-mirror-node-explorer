@@ -44,7 +44,7 @@
         <Property id="evm-hash">
           <template v-slot:name>EVM Transaction Hash</template>
           <template v-slot:value>
-            <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
+            <HexaDumpValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="from">
@@ -168,7 +168,7 @@ import {ContractResultAnalyzer} from "@/utils/analyzer/ContractResultAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import GasAmount from "@/components/values/GasAmount.vue";
 import {NetworkFeesCache} from "@/utils/cache/NetworkFeesCache.ts";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";

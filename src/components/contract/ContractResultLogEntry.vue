@@ -31,7 +31,7 @@
       <Property id="transactionHash" :vertical="isMediumScreen">
         <template v-slot:name>Transaction Hash</template>
         <template v-slot:value>
-          <HexaValue :byteString="txHashToShow" :show-none="true"/>
+          <HexaDumpValue :byteString="txHashToShow" :show-none="true"/>
         </template>
       </Property>
 
@@ -66,7 +66,7 @@
             <div class="topic-title-box">
               <span>{{ 'Topic ' + ti }}</span>
             </div>
-            <HexaValue :show-none="true" :byteString="t" :word-wrap-small="0" :word-wrap-medium="8"/>
+            <HexaDumpValue :show-none="true" :byteString="t" :word-wrap-small="0" :word-wrap-medium="8"/>
           </div>
         </div>
 
@@ -115,7 +115,7 @@
 
 import {computed, inject, onBeforeUnmount, onMounted, PropType} from "vue";
 import {ContractLog} from "@/schemas/MirrorNodeSchemas";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import {ContractLogAnalyzer} from "@/utils/analyzer/ContractLogAnalyzer";
 import FunctionValue from "@/components/values/FunctionValue.vue";

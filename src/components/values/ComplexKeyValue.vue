@@ -41,7 +41,7 @@
               <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
             </div>
             <div v-else>
-              <HexaValue :byte-string="line.innerKeyBytes()"/>
+              <HexaDumpValue :byte-string="line.innerKeyBytes()"/>
               <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
             </div>
           </template>
@@ -79,7 +79,7 @@ import {computed, defineComponent, inject, PropType, ref} from "vue";
 import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
 import * as hashgraph from "@hashgraph/proto";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import ContractLink from "@/components/values/link/ContractLink.vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {routeManager} from "@/router";
@@ -95,7 +95,7 @@ const lineClasses: Array<string> = [
 
 export default defineComponent({
   name: "ComplexKeyValue",
-  components: {ContractLink, HexaValue},
+  components: {ContractLink, HexaDumpValue},
   props: {
     keyBytes: {
       type: String as PropType<string | null>,

@@ -51,20 +51,20 @@
 
     <div></div>
     <div>
-      <HexaValue :byte-string="change?.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
+      <HexaDumpValue :byte-string="change?.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.slotDecimal ?? 'not available') }}
       </div>
     </div>
     <div>
-      <HexaValue :byte-string="change?.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
+      <HexaDumpValue :byte-string="change?.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change?.valueReadDecimal === 0"/>
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.valueReadDecimal ?? 'not available') }}
       </div>
     </div>
     <div>
-      <HexaValue :byte-string="change?.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
+      <HexaDumpValue :byte-string="change?.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
                  :show-none="true" :low-contrast="change?.valueWrittenDecimal === 0"/>
       <div class="h-is-extra-text">
         <span v-if="change?.changes.value_written">
@@ -90,7 +90,7 @@ import {PropType} from "vue";
 import {DisplayStateChange} from "@/components/contract/ContractResultStates.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 
 defineProps({
   change: Object as PropType<DisplayStateChange | undefined>,

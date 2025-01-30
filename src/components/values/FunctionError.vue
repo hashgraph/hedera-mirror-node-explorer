@@ -32,7 +32,7 @@
           <span style="padding-left: 16px;">Signature</span>
         </template>
         <template #value>
-          <HexaValue :byte-string="errorHash" :show-none="true"/>
+          <HexaDumpValue :byte-string="errorHash" :show-none="true"/>
           <div class="h-is-extra-text should-wrap">{{ errorSignature }}</div>
         </template>
       </Property>
@@ -53,7 +53,7 @@
       <Property :custom-nb-col-class="customNbColClass" id="functionInput">
         <template #name>Error Message</template>
         <template #value>
-          <HexaValue :show-none="true"/>
+          <HexaDumpValue :show-none="true"/>
         </template>
       </Property>
     </template>
@@ -65,7 +65,7 @@
       <template #value>
         <StringValue v-if="decodedError" :string-value="decodedError"/>
         <template v-else>
-          <HexaValue :byte-string="error" :show-none="true"/>
+          <HexaDumpValue :byte-string="error" :show-none="true"/>
           <div v-if="errorDecodingStatus" class="h-is-extra-text">
             <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
             <span>{{ errorDecodingStatus }}</span>
@@ -84,7 +84,7 @@
 <script setup lang="ts">
 
 import {computed, PropType} from 'vue';
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
 import {decodeSolidityErrorMessage} from "@/schemas/MirrorNodeUtils.ts";

@@ -24,7 +24,7 @@
 
 <template>
   <div v-if="functionHash">
-    <HexaValue :byte-string="functionHash" show-none/>
+    <HexaDumpValue :byte-string="functionHash" show-none/>
     <div class="signature">
       <div class="h-is-extra-text should-wrap">{{ signature }}</div>
       <Tooltip v-if="is4byteSignature"
@@ -45,7 +45,7 @@
 
 import {inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Tooltip from "@/components/Tooltip.vue";
 
