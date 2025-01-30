@@ -90,8 +90,14 @@ const initialLoading = inject(initialLoadingKey, ref(false))
 <style scoped>
 
 div.hexa-value {
+  background-color: var(--background-secondary);
+  border-width: 0;
+  border-radius: 4px;
   color: var(--text-secondary);
   font-family: var(--font-family-monospace), sans-serif;
+  max-height: 400px;
+  overflow-y: auto;
+  padding: 4px;
   word-break: break-all;
 }
 
