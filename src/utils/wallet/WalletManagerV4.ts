@@ -101,6 +101,14 @@ export class WalletManagerV4 {
     public readonly isEthereumWallet
         = computed(() => this.client.value instanceof WalletClient_Ethereum)
 
+    public readonly isMetamaskWallet = computed(() => {
+        const walletName = this.walletName.value
+        return walletName !== null && walletName.match(/Metamask/)
+    })
+
+    public readonly isImportSupported
+        = computed(() => this.isMetamaskWallet.value)
+
     public readonly walletCount = computed(() => {
         let result = EIP6963Agent.instance.providers.value.length
         if (this.routeManager.walletConnectID.value !== null) {
