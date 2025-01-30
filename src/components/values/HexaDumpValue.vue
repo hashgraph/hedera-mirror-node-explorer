@@ -123,7 +123,7 @@ div.hexa-dump-value {
   font-family: var(--font-family-monospace), sans-serif;
   max-height: 400px;
   overflow-y: auto;
-  word-break: break-all;
+  word-break: break-word;
 }
 
 </style>
