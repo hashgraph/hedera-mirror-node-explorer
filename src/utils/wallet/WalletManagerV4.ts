@@ -103,10 +103,11 @@ export class WalletManagerV4 {
 
     public readonly isMetamaskWallet = computed(() => {
         const walletName = this.walletName.value
-        return walletName !== null && walletName.match(/Metamask/)
+        const re = new RegExp("metamask", "i")
+        return walletName !== null && re.test(walletName)
     })
 
-    public readonly isImportSupported
+    public readonly isWatchSupported
         = computed(() => this.isMetamaskWallet.value)
 
     public readonly walletCount = computed(() => {

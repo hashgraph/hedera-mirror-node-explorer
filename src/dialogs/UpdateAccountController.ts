@@ -353,7 +353,16 @@ export class UpdateAccountController extends TransactionController {
     private readonly maxAutoAssociationFeedbackMessage = computed(() => {
         let result: string|null
         switch(this.autoAssociationMode.value) {
-            case AutoAssociationMode.NoAutoAssociation:
+            case AutoAssociationMode.NoAutoAssociation: {
+                const requestAutoAssociationCount = 0
+                const usedAutoAssociationCount = this.usedAutoAssociationCount.value
+                if (usedAutoAssociationCount !== null && requestAutoAssociationCount < usedAutoAssociationCount) {
+                    result = `Your account already uses ${usedAutoAssociationCount} automatic associations.`
+                } else {
+                    result = null
+                }
+                break
+            }
             case AutoAssociationMode.UnlimitedAutoAssociation:
                 result = null
                 break

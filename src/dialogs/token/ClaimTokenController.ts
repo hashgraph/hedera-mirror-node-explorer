@@ -18,16 +18,14 @@
  *
  */
 
-import {computed, ref, Ref} from "vue";
+import {computed, Ref} from "vue";
 import {walletManager} from "@/router.ts";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
-import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
+import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
 import {Transaction} from "@/schemas/MirrorNodeSchemas.ts";
 import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 
-export class AssociateTokenController extends TransactionController {
-
-    public readonly watchInWallet = ref(false)
+export class ClaimTokenController extends TransactionController {
 
     //
     // Public
@@ -41,23 +39,32 @@ export class AssociateTokenController extends TransactionController {
 
     public readonly tokenType = computed(() => this.tokenAnalyzer.value.isFungible.value ? "token" : "NFT")
 
+    public readonly pendingAirdrop = computed(() => {
+        const pendingAirdrops = this.tokenAnalyzer.value.pendingAirdrops.value ?? []
+        return pendingAirdrops.length >= 1 ? pendingAirdrops[0] : null
+    })
+
     //
     // TransactionController
     //
 
     public canBeExecuted(): boolean {
-        return this.tokenAnalyzer.value.associationStatus.value === TokenAssociationStatus.Dissociated &&
-                    (walletManager.isWatchSupported.value || !this.watchInWallet.value)
+        let result: boolean
+        if (this.tokenAnalyzer.value.isFungible.value !== null) {
+            result = this.tokenAnalyzer.value.isFungible.value && this.pendingAirdrop.value !== null
+        } else {
+            result = false
+        }
+        return result
     }
 
 
     protected async executeTransaction(): Promise<Transaction|string|null> {
-        const tid = await walletManager.associateToken(this.tokenId.value!)
+        const pendingAirdrop = this.pendingAirdrop.value!
+        const tid = await walletManager.claimTokenAirdrops([pendingAirdrop])
         const result = await waitForTransactionRefresh(tid)
+        this.tokenAnalyzer.value.pendingAirdropsDidChange()
         this.tokenAnalyzer.value.tokenAssociationDidChange()
-        if (this.watchInWallet.value) {
-            await walletManager.watchToken(this.tokenId.value!)
-        }
         return Promise.resolve(result)
     }
 }
