@@ -25,7 +25,7 @@
 <template>
 
   <div v-if="value">
-    <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isSmallScreen && !isMediumScreen"/>
+    <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isSmallScreen"/>
     <div v-else :class="{'has-text-grey': lowContrast}"
          class="should-wrap is-flex">
       <p class="mr-1">{{ value }}</p>
@@ -68,7 +68,6 @@ const props = defineProps({
 })
 
 const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
 const initialLoading = inject(initialLoadingKey, ref(false))
 
 const addressValue = computed(() => {
