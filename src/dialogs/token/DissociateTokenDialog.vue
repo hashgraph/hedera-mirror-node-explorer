@@ -26,7 +26,6 @@
 
   <TransactionDialog
       :controller="controller"
-      :native-wallet-only="true"
       @transaction-did-execute="transactionDidExecute"
       :width="500">
 
