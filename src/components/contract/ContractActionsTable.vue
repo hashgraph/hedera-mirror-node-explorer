@@ -65,8 +65,7 @@
         <EVMAddress :address="props.row.action.from"
                     :id="props.row.action.caller"
                     :entity-type="props.row.action.caller_type"
-                    compact
-                    class="h-is-monospace"/>
+                    compact/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="AMOUNT">
@@ -81,8 +80,7 @@
         <EVMAddress :address="props.row.action.to"
                     :id="props.row.action.recipient??''"
                     :entity-type="props.row.action.recipient_type"
-                    compact
-                    class="h-is-monospace"/>
+                    compact/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="GAS LIMIT">

@@ -50,15 +50,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined"
-                        :compact="!isXLargeScreen" class="h-is-monospace"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined" :compact="!isXLargeScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined"
-                        :compact="!isXLargeScreen" class="h-is-monospace"/>
+            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined" :compact="!isXLargeScreen"/>
           </template>
         </Property>
 

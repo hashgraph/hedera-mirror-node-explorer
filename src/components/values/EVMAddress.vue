@@ -34,10 +34,10 @@
       <span v-if="entityId && showId">
         <span style="word-wrap: break-word">(</span>
         <router-link v-if="verified && !showType" :to="routeManager.makeRouteToContract(entityId)">
-            <span>{{ contractName }}</span>
+          <span>{{ contractName }}</span>
         </router-link>
         <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)">
-            {{ displayId }}
+          {{ displayId }}
         </router-link>
         <ContractLink v-else-if="entityLinkType === CONTRACT" :contract-id="entityId"/>
         <AccountLink v-else-if="entityLinkType === ACCOUNT" :account-id="entityId"/>
@@ -50,9 +50,11 @@
       </span>
     </div>
     <div v-if="showType" class="address-type">
-      <div class="h-is-extra-text">{{ entityType }}</div>
+      <div class="has-text-grey">{{ entityType }}</div>
       <template v-if="verified">
-        {{ contractName }}
+        <div class="h-is-extra-text">
+          {{ contractName }}
+        </div>
         <div class="icon is-small has-text-success">
           <i class="fas fa-check-circle"></i>
         </div>
@@ -261,7 +263,6 @@ export default defineComponent({
 
 div.evm-address {
   display: inline-block;
-  font-variant-numeric: tabular-nums;
   line-height: 20px;
   word-wrap: break-word;
 }
