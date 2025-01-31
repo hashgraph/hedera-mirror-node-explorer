@@ -24,19 +24,17 @@
 
 <template>
   <div v-if="evmAddress">
-    <div :class="{'is-flex': isSmallScreen}"
-         class="is-inline-block" style="line-height: 20px">
+    <div class="evm-address">
       <Copyable :content-to-copy="evmAddress ?? ''" :enable-copy="enableCopy">
         <template v-slot:content>
-          <span class="has-text-grey">{{ nonSignificantPart }}</span>
-          <span>{{ significantPart }}</span>
+          <span class="has-text-grey h-is-monospace">{{ nonSignificantPart }}</span>
+          <span class="h-is-monospace" style="margin-right: 4px">{{ significantPart }}</span>
         </template>
       </Copyable>
       <span v-if="entityId && showId">
-        <span class="ml-1">(</span>
+        <span style="word-wrap: break-word">(</span>
         <router-link v-if="verified && !showType" :to="routeManager.makeRouteToContract(entityId)">
             <span>{{ contractName }}</span>
-            <span class="icon is-small has-text-success ml-1"><i class="fas fa-check-circle"></i></span>
         </router-link>
         <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)">
             {{ displayId }}
@@ -45,15 +43,20 @@
         <AccountLink v-else-if="entityLinkType === ACCOUNT" :account-id="entityId"/>
         <TokenLink v-else-if="entityLinkType === TOKEN" :token-id="entityId"/>
         <span v-else>{{ displayId }}</span>
-        <span>)</span>
+        <span style="margin-right: 4px">)</span>
+        <span v-if="verified && !showType" class="icon is-small has-text-success">
+          <i class="fas fa-check-circle"></i>
+        </span>
       </span>
     </div>
-    <div v-if="showType">
-      <span class="h-is-extra-text">{{ entityType }}</span>
-      <span v-if="verified" class="ml-1">{{ contractName }}</span>
-      <span v-if="verified" class="icon is-small has-text-success ml-1">
-        <i class="fas fa-check-circle"></i>
-      </span>
+    <div v-if="showType" class="address-type">
+      <div class="h-is-extra-text">{{ entityType }}</div>
+      <template v-if="verified">
+        {{ contractName }}
+        <div class="icon is-small has-text-success">
+          <i class="fas fa-check-circle"></i>
+        </div>
+      </template>
     </div>
   </div>
   <div v-else-if="initialLoading"/>
@@ -254,4 +257,18 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.evm-address {
+  display: inline-block;
+  font-variant-numeric: tabular-nums;
+  line-height: 20px;
+  word-wrap: break-word;
+}
+
+div.address-type {
+  display: flex;
+  gap: 4px;
+}
+
+</style>
