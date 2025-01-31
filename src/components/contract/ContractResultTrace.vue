@@ -29,7 +29,7 @@
       <span>Call Trace</span>
     </template>
 
-    <template #right-control>
+    <template v-if="isMediumScreen" #right-control>
       <ButtonView
           v-if="collapseAllVisible"
           id="collapseAllButton"
@@ -68,7 +68,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, PropType, Ref, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, PropType, Ref, ref} from 'vue';
 import {ContractActionsLoader, ContractActionWithPath} from "@/components/contract/ContractActionsLoader";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
@@ -83,6 +83,8 @@ const props = defineProps({
     required: true
   }
 })
+
+const isMediumScreen = inject('isMediumScreen', ref(false))
 
 const contractActionsLoader = new ContractActionsLoader(computed(() => props.transactionIdOrHash ?? null))
 onMounted(() => contractActionsLoader.mount())
@@ -99,15 +101,15 @@ const collapseAllDisabled = computed(() => {
   return expandedActions.value.length == 0
 })
 
-  const collapseAll = (): void => {
-    expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
-  }
+const collapseAll = (): void => {
+  expandedActions.value.splice(0) // expandedActions must be muted for Oruga table to work properly
+}
 
-  const expandAll = (): void => {
-    collapseAll()
-    for (const a of actions.value ?? []) {
-      expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
-    }
+const expandAll = (): void => {
+  collapseAll()
+  for (const a of actions.value ?? []) {
+    expandedActions.value.push(a) // expandedActions must be muted for Oruga table to work properly
+  }
 }
 
 const actions = contractActionsLoader.actionsWithPath

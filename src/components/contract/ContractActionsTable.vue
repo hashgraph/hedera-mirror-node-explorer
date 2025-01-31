@@ -34,7 +34,7 @@
         :range-after="1"
         :per-page="NB_ACTIONS_PER_PAGE"
 
-        detailed
+        :detailed="isMediumScreen"
         custom-detail-row
         v-model:detailed-rows="expandedActions"
 
@@ -65,7 +65,8 @@
         <EVMAddress :address="props.row.action.from"
                     :id="props.row.action.caller"
                     :entity-type="props.row.action.caller_type"
-                    :compact="!isXLargeScreen"/>
+                    compact
+                    class="h-is-monospace"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="AMOUNT">
@@ -80,7 +81,8 @@
         <EVMAddress :address="props.row.action.to"
                     :id="props.row.action.recipient??''"
                     :entity-type="props.row.action.recipient_type"
-                    :compact="!isXLargeScreen"/>
+                    compact
+                    class="h-is-monospace"/>
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="GAS LIMIT">
@@ -136,7 +138,7 @@ const expandedActions = defineModel('expandedActions', {
   default: () => []
 })
 
-const isXLargeScreen = inject('isXLargeScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
 
 const isPaginated = computed(() => (props.actions?.length ?? 0) > NB_ACTIONS_PER_PAGE)
 
