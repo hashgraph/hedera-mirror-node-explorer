@@ -39,7 +39,8 @@ import {
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenSymbol} from "@/schemas/MirrorNodeUtils";
 import {waitFor} from "@/utils/TimerUtils";
-import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
+import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache.ts";
+import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache.ts";
 
 
 export class WalletClient_Ethereum extends WalletClient {
@@ -150,8 +151,9 @@ export class WalletClient_Ethereum extends WalletClient {
                 console.log("failed to estimate gas = " + JSON.stringify(reason))
             }
             // 2) Sends transaction
+            let ethHash: string
             try {
-                result = await this.sendTransaction(accountAddress, "0x" + tokenAddress, callData)
+                ethHash = await this.sendTransaction(accountAddress, "0x" + tokenAddress, callData)
             } catch (reason) {
                 if (eth_isUserReject(reason)) {
                     throw new WalletClientRejectError()
@@ -161,9 +163,10 @@ export class WalletClient_Ethereum extends WalletClient {
             }
             // 3) Waits for transaction to appear in mirror node
             try {
-                await this.waitForTransactionSurfacing(result)
+                let transaction = await this.waitForTransactionSurfacing(ethHash)
+                result = typeof transaction === "object" ? transaction.transaction_id : ethHash
             } catch {
-                // Carefully ignored
+                result = ethHash
             }
 
         } else {
@@ -276,22 +279,29 @@ export class WalletClient_Ethereum extends WalletClient {
 
 
     private async waitForTransactionSurfacing(transactionHash: string): Promise<Transaction | string> {
-        let result: Promise<Transaction | string>
+        let result: Transaction | string
 
         try {
-            let counter = 10
-            let transaction: Transaction | null = null
-            while (counter > 0 && transaction === null) {
+
+            await waitFor(500) // Optimistic wait
+            let contractResult = await ContractResultByHashCache.instance.lookup(transactionHash, true)
+
+            let counter = 20
+            while (contractResult === null && counter > 0) {
                 await waitFor(3000)
-                transaction = await TransactionByHashCache.instance.lookup(transactionHash, true)
+                contractResult = await ContractResultByHashCache.instance.lookup(transactionHash, true)
                 counter -= 1
             }
-            result = Promise.resolve(transaction ?? transactionHash)
+            if (contractResult !== null) {
+                result = await TransactionByTsCache.instance.lookup(contractResult.timestamp, true) ?? transactionHash
+            } else {
+                result = transactionHash
+            }
         } catch {
-            result = Promise.resolve(transactionHash)
+            result = transactionHash
         }
 
-        return result
+        return Promise.resolve(result)
     }
 
 }
