@@ -44,21 +44,21 @@
         <Property id="evm-hash">
           <template v-slot:name>EVM Transaction Hash</template>
           <template v-slot:value>
-            <HexaDumpValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
+            <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
           </template>
         </Property>
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
             <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined"
-                        :compact="isSmallScreen && !isMediumScreen"/>
+                        :compact="!isXLargeScreen" class="h-is-monospace"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
             <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined"
-                        :compact="isSmallScreen && !isMediumScreen"/>
+                        :compact="!isXLargeScreen" class="h-is-monospace"/>
           </template>
         </Property>
 
@@ -168,12 +168,12 @@ import {ContractResultAnalyzer} from "@/utils/analyzer/ContractResultAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
-import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import GasAmount from "@/components/values/GasAmount.vue";
 import {NetworkFeesCache} from "@/utils/cache/NetworkFeesCache.ts";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
 import {lookupTransactionType} from "@/schemas/MirrorNodeUtils.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 const props = defineProps({
   timestamp: {
@@ -199,8 +199,7 @@ const props = defineProps({
   }
 })
 
-const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
+const isXLargeScreen = inject('isXLargeScreen', true)
 
 const timestamp = computed(() => props.timestamp ?? null)
 
