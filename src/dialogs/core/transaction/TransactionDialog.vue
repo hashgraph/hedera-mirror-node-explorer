@@ -61,7 +61,7 @@
     <!-- success -->
     <template #taskDialogSuccess>
       <p>Operation did complete !</p>
-      <p>Transaction ID: {{ controller.transactionId.value }}</p>
+      <p v-if="controller.transactionId.value">Transaction ID: {{ controller.transactionId.value }}</p>
       <p v-if="controller.isFailedResult.value">Result: {{ controller.transactionResult.value }}</p>
     </template>
 
