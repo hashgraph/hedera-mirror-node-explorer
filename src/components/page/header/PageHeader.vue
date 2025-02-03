@@ -49,8 +49,9 @@
       </div>
     </div>
   </template>
+
   <template v-else>
-    <div class="root">
+    <div class="root root-mobile">
       <div class="l1">
         <div class="left">
           <MobileMenuButton/>
@@ -62,10 +63,20 @@
           <WalletStatusButton v-else/>
         </div>
       </div>
-      <div class="l3">
-        <div class="title">{{ props.pageTitle }}</div>
-        <SearchBar/>
-      </div>
+
+      <template v-if="showSearchBar">
+        <!--
+          <SearchBar/>
+        -->
+      </template>
+      <template v-else>
+        <div class="l3">
+          <div class="title">{{ props.pageTitle }}</div>
+          <button class="search-button" @click="onClick">
+            <Search :size="18" class="search-icon"/>
+          </button>
+        </div>
+      </template>
     </div>
   </template>
 
@@ -84,11 +95,12 @@ import AxiosStatus from "@/components/AxiosStatus.vue";
 import TabBar from "@/components/page/header/TabBar.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import ConnectWalletButton from "@/components/page/header/wallet/ConnectWalletButton.vue";
-import {computed, inject} from "vue";
+import {computed, inject, ref} from "vue";
 import {walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import WalletStatusButton from "@/components/page/header/wallet/WalletStatusButton.vue";
 import MobileMenuButton from "@/components/page/header/MobileMenuButton.vue";
+import {Search} from "lucide-vue-next";
 
 const props = defineProps({
   pageTitle: {
@@ -99,6 +111,11 @@ const props = defineProps({
 
 const isLargeScreen = inject('isLargeScreen', true)
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
+const showSearchBar = ref(false)
+
+const onClick = () => {
+  // showSearchBar.value = true
+}
 
 </script>
 
@@ -152,6 +169,24 @@ div.title {
   font-weight: 400;
   height: 42px;
   margin: 0;
+}
+
+div.root-mobile {
+  background: var(--background-secondary);
+}
+
+button.search-button {
+  height: 48px;
+  width: 66px;
+  background-color: var(--network-theme-color);
+  border-radius: 24px;
+  border-style: solid;
+  border-width: 0;
+}
+
+.search-icon {
+  color: var(--network-button-text-color);
+  margin-top: 4px;
 }
 
 </style>
