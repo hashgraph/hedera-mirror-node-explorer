@@ -27,7 +27,9 @@
     <div v-if="slots.groupBoxTitle" class="group-box-title">
       <slot name="groupBoxTitle"/>
     </div>
-    <slot/>
+    <div class="group-box-content">
+      <slot/>
+    </div>
   </div>
 </template>
 
@@ -50,17 +52,17 @@ const slots = useSlots()
 <style scoped>
 
 div.group-box {
+  align-items: stretch;
+  background-color: var(--background-primary);
+  border-color: var(--table-border);
+  border-radius: 16px;
+  border-style: solid;
+  border-width: 1px;
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  align-items: stretch;
-  border-radius: 16px;
-  border-width: 1px;
-  border-color: var(--table-border);
-  border-style: solid;
   padding: 16px;
   row-gap: 8px;
-  background-color: var(--background-primary);
-  color: var(--text-primary);
 }
 
 div.group-box-title {
@@ -71,6 +73,13 @@ div.group-box-title {
   font-family: 'Inter', sans-serif;
   font-weight: 400;
   font-size: 12px;
+}
+
+div.group-box-content {
+  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  row-gap: 2px;
 }
 
 </style>
