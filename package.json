@@ -30,7 +30,7 @@
     "@fortawesome/vue-fontawesome": "^3.0.8",
     "@hashgraph/proto": "^2.15.0",
     "@hashgraph/sdk": "^2.54.2",
-    "@hedera-name-service/hns-resolution-sdk": "^2.0.11",
+    "@hedera-name-service/hns-resolution-sdk": "^2.0.12",
     "@kabuto-sh/ns": "^0.14.2",
     "@oruga-ui/oruga-next": "^0.7.0",
     "@vuepic/vue-datepicker": "^10.0.0",
