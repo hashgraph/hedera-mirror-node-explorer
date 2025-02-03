@@ -23,8 +23,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <router-link v-if="productLogoURL !== null" :to="routeManager.makeRouteToMainDashboard()">
+  <router-link v-if="isXLargeScreen && productLogoURL !== null" :to="routeManager.makeRouteToMainDashboard()">
     <img alt="Product Logo" :src="productLogoURL"/>
+  </router-link>
+  <router-link v-else-if="productMiniLogoURL !== null" :to="routeManager.makeRouteToMainDashboard()">
+    <img class="mini-logo" alt="Product Logo" :src="productMiniLogoURL"/>
   </router-link>
 </template>
 
@@ -36,8 +39,11 @@
 
 import {routeManager} from "@/router.ts"
 import {ThemeController} from "@/components/ThemeController.ts";
+import {inject} from "vue";
 
 const productLogoURL = ThemeController.inject().productLogoURL
+const productMiniLogoURL = ThemeController.inject().productMiniLogoURL
+const isXLargeScreen = inject('isXLargeScreen', true)
 
 </script>
 
@@ -49,7 +55,11 @@ const productLogoURL = ThemeController.inject().productLogoURL
 
 img {
   height: auto;
-  min-width: 130px;
+  max-width: 130px;
+}
+
+img.mini-logo {
+  max-width: 32px;
 }
 
 </style>
