@@ -23,31 +23,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DropdownPanel v-model:deployed="showWalletOptions" :right-aligned="true">
-    <template #button>
-      <ButtonView
-          id="walletInfoBanner"
-          :is-transparent="true"
-          :is-default="true"
-          :size="ButtonSize.medium"
-          @action="showWalletOptions = !showWalletOptions"
-      >
-        <div class="left">
-          <img :src="walletIconURL ?? undefined" alt="wallet logo">
-          {{ accountId !== null ? accountId : "No account" }}
-        </div>
-        <div class="right">
-          <i v-if="!showWalletOptions" class="fas fa-solid fa-angle-down"/>
-          <i v-else class="fas fa-solid fa-angle-up"/>
-        </div>
-      </ButtonView>
-    </template>
-    <template #panel>
-      <WalletOptions v-model:show-wallet-options="showWalletOptions"/>
-    </template>
-  </DropdownPanel>
-
+  <div class="label-view">
+    <img v-if="props.iconUrl" :src="props.iconUrl" class="label-view-icon" alt="label logo">
+    <slot/>
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -56,47 +35,28 @@
 
 <script setup lang="ts">
 
-import {ref} from "vue";
-import {walletManager} from "@/router.ts";
-import DropdownPanel from "@/components/DropdownPanel.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
-import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
-import WalletOptions from "@/components/wallet/WalletOptions.vue";
-
-const accountId = walletManager.accountId
-const walletIconURL = walletManager.walletIconURL
-const showWalletOptions = ref(false)
+const props = defineProps({
+  iconUrl: String
+})
 
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
-<!--                                                      STYLE                                                      -->
+<!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
 
-div.left {
+div.label-view {
   align-items: center;
-  column-gap: 10px;
-  display: flex;
-  font-family: "Styrene A Web", sans-serif;
-  justify-content: space-between;
-}
-
-div.right {
-  align-items: center;
+  column-gap: 8px;
   display: flex;
   justify-content: space-between;
-  padding-left: 4px;
+  height: 100%
 }
 
-img {
-  max-height: 24px;
-}
-
-figure {
-  display: flex;
-  align-items: center;
+img.label-view-icon {
+  flex-grow: 0;
 }
 
 </style>

@@ -163,7 +163,7 @@ export class WalletClient_Ethereum extends WalletClient {
             }
             // 3) Waits for transaction to appear in mirror node
             try {
-                let transaction = await this.waitForTransactionSurfacing(ethHash)
+                const transaction = await this.waitForTransactionSurfacing(ethHash)
                 result = typeof transaction === "object" ? transaction.transaction_id : ethHash
             } catch {
                 result = ethHash

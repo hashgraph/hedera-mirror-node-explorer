@@ -27,35 +27,53 @@
 
     <!-- header -->
     <div class="wallet-options-title">
-      Title
+      <div style="height: 40px">
+        <LabelView :icon-url="walletIconURL">
+          <div style="font-size: 20px; font-weight: 500">{{ accountId ?? "No account"}}</div>
+        </LabelView>
+      </div>
     </div>
 
     <!-- content -->
-    <div class="wallet-options-content">
 
-      <!-- EVM Address -->
-      <GroupBoxView>
-        <template #groupBoxTitle>EVM Address</template>
-        <template #default>
-          Nice EVM Address
-        </template>
-      </GroupBoxView>
+    <template v-if="accountId">
 
-      <!-- Balance -->
-      <GroupBoxView>
-        <template #groupBoxTitle>Balance</template>
-        <template #default>
-          HBAR 1458.15115
-          $ 50.00
-        </template>
-      </GroupBoxView>
+      <div class="wallet-options-content">
 
-    </div>
+        <!-- EVM Address -->
+        <GroupBoxView>
+          <template #groupBoxTitle>EVM Address</template>
+          <template #default>{{ accountEthereumAddress ?? "none" }}</template>
+        </GroupBoxView>
+
+        <!-- Balance -->
+        <GroupBoxView>
+          <template #groupBoxTitle>Balance</template>
+          <template #default>
+            {{ formattedAmount}} ℏ
+            <HbarExtra :hide-zero="false" :tbar-amount="tbarBalance ?? 0"/>
+          </template>
+        </GroupBoxView>
+
+      </div>
+
+    </template>
+
+    <template v-else>
+      Reconnect to your wallet and make sure to select {{ currentNetwork.toUpperCase() }} accounts
+    </template>
 
     <!-- footer -->
     <div class="wallet-options-footer">
-      <ButtonView>CHANGE ACCOUNT</ButtonView>
-      <ButtonView>DISCONNECT WALLET</ButtonView>
+      <template v-if="accountId">
+        <ButtonView @action="handleDisconnect">DISCONNECT WALLET</ButtonView>
+<!--        <template v-if="accountCount >= 2">-->
+<!--          <ButtonView @action="handleChangeAccount">CHANGE ACCOUNT</ButtonView>-->
+<!--        </template>-->
+      </template>
+      <template v-else>
+        <ButtonView @action="handleReconnect">RECONNECT WALLET</ButtonView>
+      </template>
     </div>
 
   </div>
@@ -67,8 +85,62 @@
 
 <script setup lang="ts">
 
+import {computed, onBeforeUnmount, onMounted} from "vue";
+import {routeManager, walletManager} from "@/router.ts";
 import GroupBoxView from "@/elements/GroupBoxView.vue";
 import ButtonView from "@/dialogs/core/ButtonView.vue";
+import LabelView from "@/elements/LabelView.vue";
+import {AccountLocParser} from "@/utils/parser/AccountLocParser.ts";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer.ts";
+import HbarExtra from "@/components/values/HbarExtra.vue";
+
+const showWalletOptions = defineModel("showWalletOptions", {
+  type: Boolean,
+  required: true
+})
+
+const networkConfig = NetworkConfig.inject()
+const accountLocParser = new AccountLocParser(walletManager.accountId, networkConfig)
+onMounted(() => accountLocParser.mount())
+onBeforeUnmount(() => accountLocParser.unmount())
+
+const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
+onMounted(() => balanceAnalyzer.mount())
+onBeforeUnmount(() => balanceAnalyzer.unmount())
+
+const formattedAmount = computed(() => {
+  const amountFormatter = new Intl.NumberFormat('en-US', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 8
+  })
+  return amountFormatter.format(hbarBalance.value)
+})
+
+const walletIconURL = computed(() => walletManager.walletIconURL.value ?? undefined)
+const accountId = computed(() => walletManager.accountId.value ?? "No account ID")
+const accountCount = computed(() => walletManager.accountIds.value.length)
+const accountEthereumAddress = accountLocParser.ethereumAddress
+const hbarBalance = computed(() => (balanceAnalyzer.hbarBalance.value ?? 0) / 100000000)
+const tbarBalance = balanceAnalyzer.hbarBalance
+const currentNetwork = routeManager.currentNetwork
+
+
+const handleDisconnect = async () => {
+  showWalletOptions.value = false
+  await walletManager.disconnect()
+}
+
+const handleReconnect = async () => {
+  showWalletOptions.value = false
+  const walletUUID = walletManager.walletUUID.value
+  await walletManager.disconnect()
+  await walletManager.connect(walletUUID)
+}
+
+const handleChangeAccount = () => {
+  showWalletOptions.value = false
+}
 
 </script>
 
@@ -79,33 +151,34 @@ import ButtonView from "@/dialogs/core/ButtonView.vue";
 <style scoped>
 
 div.wallet-options {
+  align-items: stretch;
   display: flex;
   flex-direction: column;
   row-gap: 24px;
-  align-items: stretch;
 }
 
 div.wallet-options-title {
-  display: flex;
   align-items: center;
-  color: var(--text-primary);
   border-bottom-color: var(--network-theme-color);
   border-bottom-style: solid;
   border-bottom-width: 1px;
+  color: var(--text-primary);
+  display: flex;
   padding-bottom: 16px;
 }
 
 div.wallet-options-content {
+  align-items: stretch;
   display: flex;
   flex-direction: column;
-  align-items: stretch;
   row-gap: 8px;
 }
 
 div.wallet-options-footer {
-  display: flex;
-  column-gap: 8px;
   align-items: center;
+  column-gap: 8px;
+  display: flex;
+  flex-direction: row-reverse;
 }
 
 
