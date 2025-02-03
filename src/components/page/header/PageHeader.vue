@@ -65,9 +65,7 @@
       </div>
 
       <template v-if="showSearchBar">
-        <!--
-          <SearchBar/>
-        -->
+        <SearchBar @search="onSearch"/>
       </template>
       <template v-else>
         <div class="l3">
@@ -113,9 +111,8 @@ const isLargeScreen = inject('isLargeScreen', true)
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 const showSearchBar = ref(false)
 
-const onClick = () => {
-  // showSearchBar.value = true
-}
+const onClick = () => showSearchBar.value = true
+const onSearch = () => showSearchBar.value = false
 
 </script>
 

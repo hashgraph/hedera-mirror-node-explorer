@@ -36,9 +36,10 @@
             placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
             v-model="searchedText"
             ref="inputElement"
-            size="70"
+            :size="isLargeScreen ? 70 : undefined"
+            style="width: 100%; text-overflow: ellipsis;"
         />
-        <button type="submit" value="searchBar" :disabled="submitDisabled">
+        <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none" >
           <Search :size="18" style="color: var(--network-button-text-color); margin-top: 4px;"/>
         </button>
       </form>
@@ -55,7 +56,7 @@
 
 <script setup lang="ts">
 
-import {computed, ref, watch} from "vue";
+import {computed, inject, ref, watch} from "vue";
 import {SearchController} from "@/components/search/SearchController";
 import router from "@/router";
 import {SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
@@ -63,8 +64,10 @@ import DropdownPanel from "@/components/DropdownPanel.vue";
 import SearchDropdown from "@/components/search/SearchDropdown.vue";
 import {Search} from "lucide-vue-next";
 
-// const isMediumScreen = inject('isMediumScreen', true)
-// const isTouchDevice = inject('isTouchDevice', false)
+const emit = defineEmits(["search"]);
+
+const isLargeScreen = inject('isLargeScreen', true)
+
 const searchedText = ref<string>("")
 
 const searchController = new SearchController(searchedText)
@@ -110,6 +113,7 @@ watch(selectedAgent, () => {
 })
 
 const handleSubmit = () => {
+  emit("search")
   if (selectedAgent.value !== null && defaultCandidate.value?.route) {
     searchedText.value = "" // Hides SearchDropdown
     selectedAgent.value.willNavigate(defaultCandidate.value)
@@ -146,6 +150,7 @@ form {
   border-style: solid;
   border-color: transparent;
   padding: 5px;
+  justify-content: flex-end;
 }
 
 input {
