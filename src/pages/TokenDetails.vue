@@ -37,13 +37,11 @@
           </div>
         </template>
 
-        <template #right-control>
-          <div v-if="ethereumAddress && isWalletConnected" class="is-relative">
-            <TokenActions
-                :analyzer="tokenAnalyzer"
-                @completed="onActionCompleted"
-            />
-          </div>
+        <template v-if="isWalletConnected" #right-control>
+          <TokenActions
+              :analyzer="tokenAnalyzer"
+              @completed="onActionCompleted"
+          />
         </template>
 
         <template #content>
