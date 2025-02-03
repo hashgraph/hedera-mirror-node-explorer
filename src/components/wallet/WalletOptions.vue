@@ -49,11 +49,7 @@
         <GroupBoxView>
           <template #groupBoxTitle>EVM Address</template>
           <template #default>
-            <Copyable @copy-made="showWalletOptions = false" :content-to-copy="accountEthereumAddress ?? ''">
-              <template v-slot:content>
-                {{ accountEthereumAddress ?? "none" }}
-              </template>
-            </Copyable>
+            <EVMAddress :address="accountEthereumAddress" :show-id="false"/>
           </template>
         </GroupBoxView>
 
@@ -108,7 +104,7 @@ import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer.ts";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import EntityLink from "@/components/values/link/EntityLink.vue";
-import Copyable from "@/elements/Copyable.vue";
+import EVMAddress from "@/components/values/EVMAddress.vue";
 
 const showWalletOptions = defineModel("showWalletOptions", {
   type: Boolean,
