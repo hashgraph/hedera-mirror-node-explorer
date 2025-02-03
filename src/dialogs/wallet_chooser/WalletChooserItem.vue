@@ -95,6 +95,7 @@ div.wallet-chooser-item {
 
 div.wallet-chooser-item.selected {
   border-color: var(--network-border-accent-color);
+  background-color: hsl(from var(--network-button-color) h s l / 9%)
 }
 
 </style>
