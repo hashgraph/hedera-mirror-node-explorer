@@ -31,7 +31,7 @@
       :enabled="!connecting"
       @action="chooseWallet"
   >
-    {{ connecting ? "Connecting…" : "CONNECT WALLET" }}
+    {{ connecting ? "Connecting…" : isLargeScreen ? "CONNECT WALLET" : "CONNECT" }}
   </ButtonView>
 
   <WalletChooserDialog v-model:show-dialog="showWalletChooser" @choose-wallet="handleChooseWallet"/>
@@ -51,7 +51,7 @@
 
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
+import {computed, inject, ref} from "vue";
 import router, {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
@@ -60,6 +60,8 @@ import AlertDialog from "@/dialogs/AlertDialog.vue";
 import ButtonView from "@/dialogs/core/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 import {gtagWalletConnect, gtagWalletConnectionFailure} from "@/gtag.ts";
+
+const isLargeScreen = inject('isLargeScreen', true)
 
 //
 // Connection state
@@ -71,7 +73,6 @@ const connecting = computed(() => {
       || walletManager.status.value == WalletManagerStatus.connecting
 
 })
-
 
 //
 // Wallet chooser
