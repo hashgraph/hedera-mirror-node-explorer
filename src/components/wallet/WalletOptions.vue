@@ -28,9 +28,14 @@
     <!-- header -->
     <div class="wallet-options-title">
       <div style="height: 40px">
-        <LabelView :icon-url="walletIconURL">
-          <div style="font-size: 20px; font-weight: 500">{{ accountId ?? "No account"}}</div>
-        </LabelView>
+        <EntityLink :route="accountRoute">
+          <LabelView :icon-url="walletIconURL">
+            <div style="display: flex; align-items: center; justify-content: center;">
+              {{ accountId }}
+              <span style="color: var(--text-secondary)">-{{ accountChecksum }}</span>
+            </div>
+          </LabelView>
+        </EntityLink>
       </div>
     </div>
 
@@ -94,6 +99,7 @@ import {AccountLocParser} from "@/utils/parser/AccountLocParser.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer.ts";
 import HbarExtra from "@/components/values/HbarExtra.vue";
+import EntityLink from "@/components/values/link/EntityLink.vue";
 
 const showWalletOptions = defineModel("showWalletOptions", {
   type: Boolean,
@@ -117,9 +123,16 @@ const formattedAmount = computed(() => {
   return amountFormatter.format(hbarBalance.value)
 })
 
+const accountRoute = computed(() => {
+  const accountId = walletManager.accountId.value
+  return accountId !== null ? routeManager.makeRouteToAccount(accountId) : null
+})
+
+
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? undefined)
 const accountId = computed(() => walletManager.accountId.value ?? "No account ID")
-const accountCount = computed(() => walletManager.accountIds.value.length)
+const accountChecksum = accountLocParser.accountChecksum ?? ""
+// const accountCount = computed(() => walletManager.accountIds.value.length)
 const accountEthereumAddress = accountLocParser.ethereumAddress
 const hbarBalance = computed(() => (balanceAnalyzer.hbarBalance.value ?? 0) / 100000000)
 const tbarBalance = balanceAnalyzer.hbarBalance
@@ -137,10 +150,10 @@ const handleReconnect = async () => {
   await walletManager.disconnect()
   await walletManager.connect(walletUUID)
 }
-
-const handleChangeAccount = () => {
-  showWalletOptions.value = false
-}
+//
+// const handleChangeAccount = () => {
+//   showWalletOptions.value = false
+// }
 
 </script>
 
