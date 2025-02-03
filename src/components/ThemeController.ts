@@ -47,6 +47,12 @@ export class ThemeController {
             : this.coreConfig.productLogoLightURL
     })
 
+    public productMiniLogoURL = computed(() => {
+        return this.darkSelected.value
+            ? this.coreConfig.productMiniLogoDarkURL
+            : this.coreConfig.productMiniLogoLightURL
+    })
+
     public static inject(): ThemeController {
         const defaultFactory = () => {
             const result = new ThemeController(CoreConfig.FALLBACK)
@@ -93,6 +99,7 @@ export class ThemeController {
             document.documentElement.style.setProperty('--status-success-color', 'var(--dark-status-success-color)')
             document.documentElement.style.setProperty('--status-error-color', 'var(--dark-status-error-color)')
             document.getElementById('product-logo')?.setAttribute('src', this.coreConfig.productLogoDarkURL ?? '')
+            document.getElementById('product-mini-logo')?.setAttribute('src', this.coreConfig.productMiniLogoDarkURL ?? '')
             document.getElementById('sponsor-logo')?.setAttribute('src', this.coreConfig.sponsorLogoDarkURL ?? '')
             document.getElementById('built-on-logo')?.setAttribute('src', this.coreConfig.builtOnLogoDarkURL ?? '')
         } else {
@@ -127,6 +134,7 @@ export class ThemeController {
             document.documentElement.style.setProperty('--status-success-color', 'var(--light-status-success-color)')
             document.documentElement.style.setProperty('--status-error-color', 'var(--light-status-error-color)')
             document.getElementById('product-logo')?.setAttribute('src', this.coreConfig.productLogoLightURL ?? '')
+            document.getElementById('product-mini-logo')?.setAttribute('src', this.coreConfig.productMiniLogoLightURL ?? '')
             document.getElementById('sponsor-logo')?.setAttribute('src', this.coreConfig.sponsorLogoLightURL ?? '')
             document.getElementById('built-on-logo')?.setAttribute('src', this.coreConfig.builtOnLogoLightURL ?? '')
         }

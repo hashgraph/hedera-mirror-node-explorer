@@ -65,6 +65,12 @@ export class CoreConfig {
         // The URL of the product logo (dark theme) located at the left of the top navigation bar
         public readonly productLogoDarkURL: string|null,
 
+        // The URL of the reduced product logo (light theme) located at the left of the top navigation bar
+        public readonly productMiniLogoLightURL: string|null,
+
+        // The URL of the reduced product logo (dark theme) located at the left of the top navigation bar
+        public readonly productMiniLogoDarkURL: string|null,
+
         // The prefix used in the document title
         public readonly documentTitlePrefix: string,
 
@@ -133,6 +139,8 @@ export class CoreConfig {
             fetchString(obj, "productName") ?? "Hiero Mirror Node Explorer",
             fetchURL(obj, "productLogoLightURL"),
             fetchURL(obj, "productLogoDarkURL"),
+            fetchURL(obj, "productMiniLogoLightURL"),
+            fetchURL(obj, "productMiniLogoDarkURL"),
             fetchString(obj, "documentTitlePrefix") ?? "Hiero",
             fetchString(obj, "productDescription") ?? "Hiero Mirror Node Explorer",
             fetchString(obj, "metaDescription"),
