@@ -107,7 +107,7 @@ import {TransactionDownloader} from "@/utils/downloader/TransactionDownloader.ts
 import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
 import {EntityID} from "@/utils/EntityID.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import Datepicker from "@vuepic/vue-datepicker";
 

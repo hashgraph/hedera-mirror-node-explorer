@@ -112,7 +112,7 @@ import {computed, PropType, ref, useSlots, watch} from "vue";
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
-import StackView from "@/components/StackView.vue";
+import StackView from "@/elements/StackView.vue";
 
 const props = defineProps({
   controller: {

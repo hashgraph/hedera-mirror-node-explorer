@@ -79,7 +79,7 @@ import {computed, onMounted, PropType, Ref, ref, watch} from "vue";
 import ContractResultLogEntry from "@/components/contract/ContractResultLogEntry.vue";
 import {ContractLog} from "@/schemas/MirrorNodeSchemas";
 import {AppStorage} from "@/AppStorage";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const DEFAULT_PAGE_SIZE = 3

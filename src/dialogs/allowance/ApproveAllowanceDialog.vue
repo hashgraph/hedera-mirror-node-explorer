@@ -136,9 +136,9 @@ import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue"
 import {ApproveAllowanceController} from "@/dialogs/allowance/ApproveAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
-import RabioBoxView from "@/components/RabioBoxView.vue";
-import StackView from "@/components/StackView.vue";
-import TextFieldView from "@/components/TextFieldView.vue";
+import RabioBoxView from "@/elements/RabioBoxView.vue";
+import StackView from "@/elements/StackView.vue";
+import TextFieldView from "@/elements/TextFieldView.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

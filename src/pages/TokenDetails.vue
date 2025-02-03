@@ -256,7 +256,7 @@ import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contract/ContractResultsSection.vue";
-import Copyable from "@/components/Copyable.vue";
+import Copyable from "@/elements/Copyable.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import MetadataSection from "@/components/token/MetadataSection.vue";

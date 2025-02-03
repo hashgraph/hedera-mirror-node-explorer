@@ -243,13 +243,13 @@ import {
 import {computed} from "vue";
 import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
-import TextFieldView from "@/components/TextFieldView.vue";
+import TextFieldView from "@/elements/TextFieldView.vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import SelectView from "@/components/SelectView.vue";
-import SwitchView from "@/components/SwitchView.vue";
-import RabioBoxView from "@/components/RabioBoxView.vue";
+import SelectView from "@/elements/SelectView.vue";
+import SwitchView from "@/elements/SwitchView.vue";
+import RabioBoxView from "@/elements/RabioBoxView.vue";
 import {routeManager} from "@/router.ts";
-import StackView from "@/components/StackView.vue";
+import StackView from "@/elements/StackView.vue";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {isCouncilNode} from "@/schemas/MirrorNodeUtils.ts";
 

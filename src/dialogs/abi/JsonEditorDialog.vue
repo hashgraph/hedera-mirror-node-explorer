@@ -54,7 +54,7 @@ import {AppStorage} from "@/AppStorage.ts";
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 import {ethers} from "ethers";
-import TextAreaView from "@/components/TextAreaView.vue";
+import TextAreaView from "@/elements/TextAreaView.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

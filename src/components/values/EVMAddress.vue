@@ -77,7 +77,7 @@ import {initialLoadingKey} from "@/AppKeys";
 import {SystemContractEntry, systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {EthereumAddress} from "@/utils/EthereumAddress";
-import Copyable from "@/components/Copyable.vue";
+import Copyable from "@/elements/Copyable.vue";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {ContractAnalyzer, GlobalState} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";

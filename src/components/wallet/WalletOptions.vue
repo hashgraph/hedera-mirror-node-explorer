@@ -108,7 +108,7 @@ import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer.ts";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import EntityLink from "@/components/values/link/EntityLink.vue";
-import Copyable from "@/components/Copyable.vue";
+import Copyable from "@/elements/Copyable.vue";
 
 const showWalletOptions = defineModel("showWalletOptions", {
   type: Boolean,

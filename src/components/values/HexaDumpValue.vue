@@ -46,7 +46,7 @@
 
 import {computed, inject, PropType, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
-import Copyable from "@/components/Copyable.vue";
+import Copyable from "@/elements/Copyable.vue";
 
 const props = defineProps({
   byteString: {

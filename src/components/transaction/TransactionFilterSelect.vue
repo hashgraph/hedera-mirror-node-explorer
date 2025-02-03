@@ -46,7 +46,7 @@
 import {computed, defineComponent} from "vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {makeTypeLabel} from "@/utils/TransactionTools";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 
 export default defineComponent({
   name: "TransactionFilterSelect",

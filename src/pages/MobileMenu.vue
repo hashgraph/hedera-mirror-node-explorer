@@ -88,7 +88,7 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {TabId} from "@/utils/RouteManager.ts";
 import NavMenuItem from "@/components/page/NavMenuItem.vue";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 
 defineProps(
     {

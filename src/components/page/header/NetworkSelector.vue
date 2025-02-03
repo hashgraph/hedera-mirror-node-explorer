@@ -39,7 +39,7 @@
 import {ref, watch} from "vue";
 import {routeManager} from "@/router.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 
 const networkEntries = NetworkConfig.inject().entries
 

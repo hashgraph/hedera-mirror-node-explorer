@@ -68,7 +68,7 @@ import {UpdateCryptoAllowanceController} from "@/dialogs/allowance/UpdateCryptoA
 import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
-import TextFieldView from "@/components/TextFieldView.vue";
+import TextFieldView from "@/elements/TextFieldView.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

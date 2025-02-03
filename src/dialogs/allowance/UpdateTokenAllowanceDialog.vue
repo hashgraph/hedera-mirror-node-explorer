@@ -67,7 +67,7 @@ import {TokenAllowance} from "@/schemas/MirrorNodeSchemas.ts";
 import {UpdateTokenAllowanceController} from "@/dialogs/allowance/UpdateTokenAllowanceController.ts";
 import ContentCell from "@/dialogs/core/ContentCell.vue";
 import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
-import TextFieldView from "@/components/TextFieldView.vue";
+import TextFieldView from "@/elements/TextFieldView.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

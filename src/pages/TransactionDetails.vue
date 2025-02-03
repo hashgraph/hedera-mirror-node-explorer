@@ -302,7 +302,7 @@ import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
 

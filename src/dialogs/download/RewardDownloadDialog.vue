@@ -72,7 +72,7 @@
 import {computed, ref} from "vue";
 import {RewardDownloader} from "@/utils/downloader/RewardDownloader.ts";
 import DownloadDialog from "@/dialogs/download/DownloadDialog.vue";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

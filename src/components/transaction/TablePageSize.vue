@@ -47,7 +47,7 @@
 
 import {defineComponent, onMounted, PropType, ref, watch} from "vue";
 import {AppStorage} from "@/AppStorage";
-import SelectView from "@/components/SelectView.vue";
+import SelectView from "@/elements/SelectView.vue";
 
 
 export default defineComponent({

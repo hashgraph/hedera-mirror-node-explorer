@@ -78,7 +78,7 @@ import {VerifiedContractsCache} from "@/utils/cache/VerifiedContractsCache";
 import {AppStorage} from "@/AppStorage";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import SwitchView from "@/components/SwitchView.vue";
+import SwitchView from "@/elements/SwitchView.vue";
 
 defineProps({
   network: String
