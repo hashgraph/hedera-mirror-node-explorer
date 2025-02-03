@@ -23,28 +23,52 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="root">
-    <div class="l1">
-      <div class="left">
-        <ProductLogo/>
-        <AxiosStatus/>
-        <TabBar/>
+  <template v-if="isLargeScreen">
+    <div class="root">
+      <div class="l1">
+        <div class="left">
+          <ProductLogo/>
+          <AxiosStatus/>
+          <TabBar/>
+        </div>
+        <div class="right">
+          <NetworkSelector/>
+          <ConnectWalletButton v-if="!connected"/>
+          <WalletStatusButton v-else/>
+          <ThemeSwitch/>
+        </div>
       </div>
-      <div class="right">
-        <NetworkSelector/>
-        <ConnectWalletButton v-if="!connected"/>
-        <WalletStatusButton v-else/>
-        <ThemeSwitch/>
+      <!--
+            <div class="l2">
+              Breadcrumb
+            </div>
+      -->
+      <div class="l3">
+        <div class="title">{{ props.pageTitle }}</div>
+        <SearchBar/>
       </div>
     </div>
-    <div class="l2">
-      Breadcrumb
+  </template>
+  <template v-else>
+    <div class="root">
+      <div class="l1">
+        <div class="left">
+          <MobileMenuButton/>
+          <ProductLogo/>
+          <AxiosStatus/>
+        </div>
+        <div class="right">
+          <ConnectWalletButton v-if="!connected"/>
+          <WalletStatusButton v-else/>
+        </div>
+      </div>
+      <div class="l3">
+        <div class="title">{{ props.pageTitle }}</div>
+        <SearchBar/>
+      </div>
     </div>
-    <div class="l3">
-      <div class="title">{{ props.pageTitle }}</div>
-      <SearchBar/>
-    </div>
-  </div>
+  </template>
+
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -60,10 +84,11 @@ import AxiosStatus from "@/components/AxiosStatus.vue";
 import TabBar from "@/components/page/header/TabBar.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import ConnectWalletButton from "@/components/page/header/wallet/ConnectWalletButton.vue";
-import {computed} from "vue";
+import {computed, inject} from "vue";
 import {walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import WalletStatusButton from "@/components/page/header/wallet/WalletStatusButton.vue";
+import MobileMenuButton from "@/components/page/header/MobileMenuButton.vue";
 
 const props = defineProps({
   pageTitle: {
@@ -72,6 +97,7 @@ const props = defineProps({
   }
 })
 
+const isLargeScreen = inject('isLargeScreen', true)
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 
 </script>
@@ -121,7 +147,7 @@ div.l3 {
 
 div.title {
   color: var(--text-primary);
-  font-family: 'Styrene A Web',serif;
+  font-family: 'Styrene A Web', serif;
   font-size: 32px;
   font-weight: 400;
   height: 42px;
