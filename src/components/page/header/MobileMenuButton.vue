@@ -23,10 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <router-link v-if="name !== 'MobileMenu' && name !== 'MobileSearch'" :to="routeManager.makeRouteToMobileMenu(name)">
+  <router-link :to="routeManager.makeRouteToMobileMenu(name)">
     <Menu :size="18" style="color: var(--text-primary)"/>
   </router-link>
-  route: {{ name }} network: {{ network }}
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -39,7 +38,6 @@ import {routeManager} from "@/router.ts"
 import {Menu} from 'lucide-vue-next';
 
 const name = routeManager.currentRoute
-const network = routeManager.currentNetwork
 
 </script>
 
