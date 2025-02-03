@@ -29,35 +29,35 @@
   <ButtonView
       v-if="associateEnabled"
       :enabled="true"
-      :size="ButtonSize.medium"
+      :size="buttonSize"
       @action="showAssociateDialog=true"
   >ASSOCIATE</ButtonView>
 
   <ButtonView
       v-if="dissociateEnabled"
       :enabled="true"
-      :size="ButtonSize.medium"
+      :size="buttonSize"
       @action="showDissociateDialog=true"
   >DISSOCIATE</ButtonView>
 
   <ButtonView
       v-if="rejectEnabled"
       :enabled="true"
-      :size="ButtonSize.medium"
+      :size="buttonSize"
       @action="showRejectDialog=true"
   >REJECT</ButtonView>
 
   <ButtonView
       v-if="claimEnabled"
       :enabled="true"
-      :size="ButtonSize.medium"
+      :size="buttonSize"
       @action="showClaimDialog=true"
   >CLAIM</ButtonView>
 
   <ButtonView
       v-if="watchEnabled"
       :enabled="true"
-      :size="ButtonSize.medium"
+      :size="buttonSize"
       @action="showWatchDialog=true"
   >IMPORT</ButtonView>
 
@@ -188,6 +188,9 @@ const showDissociateDialog = ref(false)
 const showRejectDialog = ref(false)
 const showClaimDialog = ref(false)
 const showWatchDialog = ref(false)
+
+
+const buttonSize = ButtonSize.small
 
 </script>
 
