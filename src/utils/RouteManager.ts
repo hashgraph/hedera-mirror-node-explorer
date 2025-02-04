@@ -58,7 +58,6 @@ import Blocks from "@/pages/Blocks.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import SearchHelp from "@/pages/SearchHelp.vue";
 import MobileMenu from "@/pages/MobileMenu.vue";
-import MobileSearch from "@/pages/MobileSearch.vue";
 import axios from "axios";
 import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
@@ -512,10 +511,6 @@ export class RouteManager {
 
     public makeRouteToBlocks(): RouteLocationRaw {
         return {name: 'Blocks', params: {network: this.currentNetwork.value}}
-    }
-
-    public makeRouteToMobileSearch(): RouteLocationRaw {
-        return {name: 'MobileSearch', params: {network: this.currentNetwork.value}}
     }
 
     public makeRouteToPageNotFound(): RouteLocationRaw {
@@ -1016,15 +1011,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/mobile-menu',
         name: 'MobileMenu',
         component: MobileMenu,
-        props: true,
-        meta: {
-            tabId: null
-        }
-    },
-    {
-        path: '/:network/mobile-search',
-        name: 'MobileSearch',
-        component: MobileSearch,
         props: true,
         meta: {
             tabId: null
