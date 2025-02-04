@@ -53,23 +53,41 @@
 
     <!-- busy -->
     <template #taskDialogBusy>
-      <p>Connecting to Hedera Network using your wallet…</p>
-      <p>Check {{ walletName }} for any approval request</p>
-      <img :src="walletIconURL" alt="Wallet Logo"/>
+      <TaskPanel :mode="TaskPanelMode.busy">
+        <template #taskPanelMessage>Processing</template>
+        <template #taskPanelExtra1>
+          <div>Check {{ walletName }} for any approval request</div>
+        </template>
+        <template #taskPanelExtra2>
+          <img :src="walletIconURL" height=32 alt="Wallet Logo"/>
+        </template>
+      </TaskPanel>
     </template>
 
     <!-- success -->
     <template #taskDialogSuccess>
-      <p>Operation did complete !</p>
-      <p v-if="controller.transactionId.value">Transaction ID: {{ controller.transactionId.value }}</p>
-      <p v-if="controller.isFailedResult.value">Result: {{ controller.transactionResult.value }}</p>
+      <TaskPanel :mode="TaskPanelMode.success">
+        <template #taskPanelMessage>Operation did complete</template>
+        <template v-if="controller.transactionId.value" #taskPanelExtra1>
+          <div>Transaction ID: <TransactionLink :transaction-loc="transactionId ?? undefined"/></div>
+        </template>
+        <template v-if="controller.isFailedResult.value" #taskPanelExtra2>
+          <div>Result: {{ controller.transactionResult.value }}</div>
+        </template>
+      </TaskPanel>
     </template>
 
     <!-- error -->
     <template #taskDialogError>
-      <p>Operation did fail !</p>
-      <p>{{ controller.mainErrorMessage.value }}</p>
-      <p>{{ controller.extraErrorMessage.value }}</p>
+      <TaskPanel :mode="TaskPanelMode.error">
+        <template #taskPanelMessage>Operation did fail</template>
+        <template #taskPanelExtra1>
+          <div>{{ controller.mainErrorMessage.value }}</div>
+        </template>
+        <template #taskPanelExtra2>
+          <div>{{ controller.extraErrorMessage.value }}</div>
+        </template>
+      </TaskPanel>
     </template>
 
     <!-- controls -->
@@ -90,6 +108,9 @@ import {computed, PropType} from "vue";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {walletManager} from "@/router.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const props = defineProps({
   controller: {
@@ -111,6 +132,7 @@ const emit = defineEmits(["transactionDidExecute"])
 const walletName = walletManager.walletName
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? "")
 const walletSupported = computed(() => !props.nativeWalletOnly || walletManager.isHieroWallet.value)
+const transactionId = props.controller.transactionId
 
 const taskDidSucceed = () => {
   emit("transactionDidExecute", props.controller.transactionId.value)

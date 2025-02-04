@@ -23,3 +23,9 @@ export enum ButtonSize {
     medium = 'medium',
     small = 'small'
 }
+
+export enum TaskPanelMode {
+    busy = "busy",
+    success = "success",
+    error = "error"
+}

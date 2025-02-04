@@ -220,18 +220,24 @@ div.dialog-layer-busy {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%
 }
 
 div.dialog-layer-success {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%
 }
 
 div.dialog-layer-error {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
+  height: 100%
 }
 
 </style>
