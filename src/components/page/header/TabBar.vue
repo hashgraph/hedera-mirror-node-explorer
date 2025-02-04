@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="div">
+  <div class="tab-bar" :class="{'vertical': props.vertical}">
 
     <TabItem :tabId="TabId.Dashboard"
                  :target-route="routeManager.makeRouteToMainDashboard()"/>
@@ -57,6 +57,13 @@ import {routeManager} from "@/router.ts"
 import {TabId} from "@/utils/RouteManager.ts"
 import TabItem from "@/components/page/header/TabItem.vue";
 
+const props = defineProps({
+  vertical: {
+    type: Boolean,
+    default: false
+  }
+})
+
 const enableStaking = routeManager.enableStaking
 
 </script>
@@ -67,7 +74,7 @@ const enableStaking = routeManager.enableStaking
 
 <style scoped>
 
-.div {
+div.tab-bar {
   align-items: baseline;
   column-gap: 16px;
   display: flex;
@@ -78,6 +85,14 @@ const enableStaking = routeManager.enableStaking
   justify-content: space-between;
   padding: 11px 20px;
   line-height: 19px;
+}
+
+div.vertical {
+  align-items: flex-start;
+  flex-direction: column;
+  height: fit-content;
+  row-gap: 8px;
+  padding: 0;
 }
 
 </style>
