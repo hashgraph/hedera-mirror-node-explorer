@@ -125,9 +125,14 @@ div.modal-dialog-box {
 }
 
 div.modal-dialog-header {
+  border-bottom-color: var(--network-theme-color);
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
   font-size: 20px;
   font-weight: 500;
   line-height: 26px;
+  padding-bottom: 24px;
+  text-align: center;
 }
 
 div.modal-dialog-body {
