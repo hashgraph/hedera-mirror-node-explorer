@@ -33,12 +33,12 @@
       <img v-else id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
 
       <div class="footer-text">
-        <div class="footer-text-item">
+        <div v-if="isSmallScreen" class="footer-text-item">
           {{ productDescription }}
         </div>
 
         <template v-if="termsOfUseURL">
-          <div class="line"></div>
+          <div v-if="isSmallScreen" class="line"></div>
 
           <a data-cy="termsOfUse" :href="termsOfUseURL" style="line-height: 1rem">
             <div class="footer-text-item">
@@ -47,20 +47,23 @@
           </a>
         </template>
 
-        <div class="line"></div>
-
-        <div class="footer-text-item">
-          <span>Release </span>
-          <a :href="buildReleaseUrl">{{ buildRelease }}</a>
-          <span> built {{ buildTime }}</span>
-        </div>
+        <template v-if="isMediumScreen">
+          <div class="line"></div>
+          <div class="footer-text-item">
+            <span>Release </span>
+            <a :href="buildReleaseUrl">{{ buildRelease }}</a>
+            <span> built {{ buildTime }}</span>
+          </div>
+        </template>
       </div>
     </div>
 
-    <a v-if="sponsorURL" :href="sponsorURL" class="footer-logo">
-      <img id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
-    </a>
-    <img v-else class="footer-logo" id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+    <template v-if="isSmallScreen">
+      <a v-if="sponsorURL" :href="sponsorURL" class="footer-logo">
+        <img id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+      </a>
+      <img v-else class="footer-logo" id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+    </template>
   </div>
 
 </template>
@@ -74,6 +77,9 @@
 import {computed, inject} from "vue";
 import {CoreConfig} from "@/config/CoreConfig";
 import {ThemeController} from "@/components/ThemeController.ts";
+
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
 
 let buildRelease = inject('buildRelease', "not available")
 let buildReleaseUrl = "https://github.com/hashgraph/hedera-mirror-node-explorer"
