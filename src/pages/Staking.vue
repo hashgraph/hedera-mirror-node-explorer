@@ -69,6 +69,10 @@
                          :account-id="accountId"/>
 
 
+      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
+        <div class="hero-body h-is-property-text p-3 has-text-centered" v-html="temporaryBanner"/>
+      </div>
+
       <DashboardCard v-if="enableWallet" collapsible-key="stakingDetails">
         <template v-slot:title>
           <div>
@@ -270,6 +274,8 @@ export default defineComponent({
   },
 
   setup(props) {
+    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
+
     const isSmallScreen = inject('isSmallScreen', true)
     const isMediumScreen = inject('isMediumScreen', true)
     const cryptoName = CoreConfig.inject().cryptoName
@@ -464,6 +470,7 @@ export default defineComponent({
         1000)
 
     return {
+      temporaryBanner,
       isSmallScreen,
       isMediumScreen,
       cryptoName,
