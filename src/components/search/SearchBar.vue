@@ -113,15 +113,16 @@ watch(selectedAgent, () => {
 })
 
 const handleSubmit = () => {
-  emit("search")
   if (selectedAgent.value !== null && defaultCandidate.value?.route) {
     searchedText.value = "" // Hides SearchDropdown
     selectedAgent.value.willNavigate(defaultCandidate.value)
     router.push(defaultCandidate.value.route)
+  } else if (searchedText.value === "") {
+    emit("search")
   }
 }
 
-const submitDisabled = computed(() => defaultCandidate.value === null)
+const submitDisabled = computed(() => defaultCandidate.value === null && searchedText.value !== "")
 
 const showSearchDropdown = ref(false)
 watch(searchController.actualInputText, (newValue) => {
