@@ -27,10 +27,6 @@
   <PageFrame>
     <template #pageContent>
 
-      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-        <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
-      </div>
-
       <DashboardCard>
         <template v-slot:title>
           <span class="h-is-primary-title">Recent Transactions</span>
@@ -84,8 +80,6 @@ export default defineComponent({
   },
 
   setup() {
-    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
-
     const router = useRouter()
 
     //
@@ -105,7 +99,6 @@ export default defineComponent({
     onBeforeUnmount(() => transactionTableController.unmount())
 
     return {
-      temporaryBanner,
       transactionTableController,
       transactionType: transactionTableController.transactionType
     }
