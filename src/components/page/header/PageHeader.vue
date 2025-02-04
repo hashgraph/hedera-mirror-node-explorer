@@ -64,17 +64,17 @@
         </div>
       </div>
 
-      <template v-if="showSearchBar">
-        <SearchBar @search="onSearch"/>
-      </template>
-      <template v-else>
-        <div class="l3">
+      <div class="l3">
+        <template v-if="showSearchBar">
+          <SearchBar @search="onSearch" style="flex-grow: 1"/>
+        </template>
+        <template v-else>
           <div class="title">{{ props.pageTitle }}</div>
           <button class="search-button" @click="onClick">
             <Search :size="18" class="search-icon"/>
           </button>
-        </div>
-      </template>
+        </template>
+      </div>
     </div>
   </template>
 
@@ -130,6 +130,10 @@ div.root {
   padding: 16px 32px;
 }
 
+div.root-mobile {
+  background: var(--background-secondary);
+}
+
 div.l1 {
   align-items: center;
   column-gap: 16px;
@@ -168,9 +172,6 @@ div.title {
   margin: 0;
 }
 
-div.root-mobile {
-  background: var(--background-secondary);
-}
 
 button.search-button {
   height: 48px;
@@ -179,6 +180,7 @@ button.search-button {
   border-radius: 24px;
   border-style: solid;
   border-width: 0;
+  margin: 6px;
 }
 
 .search-icon {
