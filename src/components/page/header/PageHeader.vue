@@ -23,9 +23,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-if="isLargeScreen">
-    <div class="root">
-      <div class="l1">
+
+  <div class="root" :class="{'root-mobile':!isLargeScreen}">
+
+    <!--  First line of page header-->
+    <div class="l1">
+      <template v-if="isLargeScreen">
         <div class="left">
           <ProductLogo/>
           <AxiosStatus/>
@@ -37,22 +40,8 @@
           <WalletStatusButton v-else/>
           <ThemeSwitch/>
         </div>
-      </div>
-      <!--
-            <div class="l2">
-              Breadcrumb
-            </div>
-      -->
-      <div class="l3">
-        <div class="title">{{ props.pageTitle }}</div>
-        <SearchBar/>
-      </div>
-    </div>
-  </template>
-
-  <template v-else>
-    <div class="root root-mobile">
-      <div class="l1">
+      </template>
+      <template v-else>
         <div class="left">
           <MobileMenuButton/>
           <ProductLogo/>
@@ -62,9 +51,16 @@
           <ConnectWalletButton v-if="!connected"/>
           <WalletStatusButton v-else/>
         </div>
-      </div>
+      </template>
+    </div>
 
-      <div class="l3">
+    <!--  Second line of page header-->
+    <div class="l2">
+      <template v-if="isMediumScreen">
+        <div class="title">{{ props.pageTitle }}</div>
+        <SearchBar/>
+      </template>
+      <template v-else>
         <template v-if="showSearchBar">
           <SearchBar @search="onSearch" style="flex-grow: 1"/>
         </template>
@@ -74,9 +70,10 @@
             <Search :size="18" class="search-icon"/>
           </button>
         </template>
-      </div>
+      </template>
     </div>
-  </template>
+
+  </div>
 
 </template>
 
@@ -108,6 +105,7 @@ const props = defineProps({
 })
 
 const isLargeScreen = inject('isLargeScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 const showSearchBar = ref(false)
 
@@ -156,7 +154,7 @@ div.right {
   justify-content: space-between;
 }
 
-div.l3 {
+div.l2 {
   align-items: center;
   display: flex;
   height: 72px;

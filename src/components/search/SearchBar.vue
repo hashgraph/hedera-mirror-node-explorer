@@ -36,7 +36,7 @@
             placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
             v-model="searchedText"
             ref="inputElement"
-            :size="isLargeScreen ? 70 : undefined"
+            :size="isMediumScreen ? 70 : undefined"
             style="width: 100%; text-overflow: ellipsis;"
         />
         <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none" >
@@ -66,7 +66,7 @@ import {Search} from "lucide-vue-next";
 
 const emit = defineEmits(["search"]);
 
-const isLargeScreen = inject('isLargeScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
 
 const searchedText = ref<string>("")
 
