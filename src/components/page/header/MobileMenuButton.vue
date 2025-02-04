@@ -23,9 +23,24 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <router-link :to="routeManager.makeRouteToMobileMenu(name)">
-    <Menu :size="18" style="color: var(--text-primary)"/>
-  </router-link>
+  <DropdownPanel v-model:deployed="showMobileMenu" :right-aligned="false">
+    <template #button>
+      <Menu :size="18" style="color: var(--text-primary)" @click="showMobileMenu = true"/>
+    </template>
+
+    <template #panel>
+      <div class="menu">
+        <div class="menu-l1">
+          <X :size="18" style="color: var(--text-primary)" @click="showMobileMenu = false"/>
+        </div>
+        <div class="switch">
+          <ThemeSwitch/>
+        </div>
+        <NetworkSelector/>
+        <TabBar vertical style="padding-left: 8px"/>
+      </div>
+    </template>
+  </DropdownPanel>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,10 +49,14 @@
 
 <script setup lang="ts">
 
-import {routeManager} from "@/router.ts"
-import {Menu} from 'lucide-vue-next';
+import {Menu, X} from 'lucide-vue-next';
+import DropdownPanel from "@/components/DropdownPanel.vue";
+import {ref} from "vue";
+import TabBar from "@/components/page/header/TabBar.vue";
+import NetworkSelector from "@/components/page/header/NetworkSelector.vue";
+import ThemeSwitch from "@/components/ThemeSwitch.vue";
 
-const name = routeManager.currentRoute
+const showMobileMenu = ref(false)
 
 </script>
 
@@ -46,5 +65,24 @@ const name = routeManager.currentRoute
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.menu {
+  align-items: flex-start;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: stretch;
+}
+
+div.menu-l1 {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+}
+
+div.switch {
+  padding-left: 8px;
+}
 
 </style>
