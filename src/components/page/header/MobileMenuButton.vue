@@ -31,13 +31,11 @@
     <template #panel>
       <div class="menu">
         <div class="menu-l1">
+          <ThemeSwitch/>
           <X :size="18" style="color: var(--text-primary)" @click="showMobileMenu = false"/>
         </div>
-        <div class="switch">
-          <ThemeSwitch/>
-        </div>
-        <NetworkSelector/>
         <TabBar vertical style="padding-left: 8px"/>
+        <NetworkSelector/>
       </div>
     </template>
   </DropdownPanel>
@@ -70,19 +68,16 @@ div.menu {
   align-items: flex-start;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 24px;
   justify-content: stretch;
 }
 
 div.menu-l1 {
   align-items: center;
   display: flex;
-  justify-content: flex-end;
-  width: 100%;
-}
-
-div.switch {
+  justify-content: space-between;
   padding-left: 8px;
+  width: 100%;
 }
 
 </style>
