@@ -32,7 +32,7 @@
       <TriangleAlert :size="48" style="color: var(--text-error)"/>
     </template>
     <template v-else>
-      <Loader :size="48"/>
+      <SpinnerView :size="48"/>
     </template>
 
     <div class="task-panel-message">
@@ -54,10 +54,10 @@
 <script setup lang="ts">
 
 import {PropType, useSlots} from "vue";
-import {Loader} from "lucide-vue-next";
 import {CircleCheck} from 'lucide-vue-next';
 import {TriangleAlert} from 'lucide-vue-next';
 import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import SpinnerView from "@/elements/SpinnerView.vue";
 
 const props = defineProps({
   mode: {
