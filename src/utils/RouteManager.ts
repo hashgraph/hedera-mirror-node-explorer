@@ -57,7 +57,6 @@ import Staking from "@/pages/Staking.vue";
 import Blocks from "@/pages/Blocks.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import SearchHelp from "@/pages/SearchHelp.vue";
-import MobileMenu from "@/pages/MobileMenu.vue";
 import axios from "axios";
 import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
@@ -184,18 +183,9 @@ export class RouteManager {
 
 
     //
-    // To be moved to MobileMenu.vue
-    //
-
-    public readonly previousRoute = computed(() => (this.router.currentRoute.value?.query.from as string))
-
-
-
-    //
     // Public (routeToXXX)
     //
 
-    
     //
     // Transaction
     //
@@ -516,15 +506,6 @@ export class RouteManager {
     public makeRouteToPageNotFound(): RouteLocationRaw {
         return {name: 'PageNotFound', params: {network: this.currentNetwork.value}}
     }
-
-    public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
-        return {
-            name: 'MobileMenu',
-            params: {network: this.currentNetwork.value},
-            query: {from: name as string}
-        }
-    }
-
 
 
     //
@@ -1002,15 +983,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/search-help',
         name: 'SearchHelp',
         component: SearchHelp,
-        props: true,
-        meta: {
-            tabId: null
-        }
-    },
-    {
-        path: '/:network/mobile-menu',
-        name: 'MobileMenu',
-        component: MobileMenu,
         props: true,
         meta: {
             tabId: null
