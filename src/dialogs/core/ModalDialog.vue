@@ -87,7 +87,7 @@ watch(showDialog, () => {
 })
 
 const dialogWidth = computed(() => {
-  return props.width === 0 ? "auto" : "width: " + props.width + "px"
+  return props.width === 0 ? "auto" : props.width + "px"
 })
 
 </script>
