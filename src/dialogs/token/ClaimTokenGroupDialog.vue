@@ -27,7 +27,7 @@
       :controller="controller"
       :native-wallet-only="true"
       @transaction-group-did-execute="transactionGroupDidExecute"
-      :width="500">
+  >
 
     <template #transactionGroupDialogTitle>Claim Token Airdrops</template>
 

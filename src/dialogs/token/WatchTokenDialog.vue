@@ -27,7 +27,7 @@
   <TransactionDialog
       :controller="controller"
       @transaction-did-execute="transactionDidExecute"
-      :width="500">
+  >
 
     <template #transactionDialogTitle>Import Token</template>
 

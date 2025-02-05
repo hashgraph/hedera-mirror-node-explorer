@@ -26,8 +26,7 @@
   <TransactionDialog
       :controller="controller"
       :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
-      :width="500">
+      @transaction-did-execute="transactionDidExecute">
 
     <template #transactionDialogTitle>Approve allowance</template>
 

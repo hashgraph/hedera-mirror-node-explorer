@@ -26,7 +26,6 @@
   <TransactionDialog
       :controller="controller"
       :native-wallet-only="true"
-      :width="624"
       @transaction-did-execute="emit('updated')">
 
     <!-- title -->

@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TaskDialog :controller="controller" @task-dialog-did-succeed="handleSuccess" :width="500">
+  <TaskDialog :controller="controller" @task-dialog-did-succeed="handleSuccess">
 
     <template #taskDialogTitle>
       <slot name="downloadDialogTitle"/>

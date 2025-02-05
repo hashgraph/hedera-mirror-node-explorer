@@ -28,7 +28,7 @@
       :controller="controller"
       :native-wallet-only="true"
       @transaction-did-execute="transactionDidExecute"
-      :width="500">
+  >
 
     <template #transactionDialogTitle>Reject Token</template>
 

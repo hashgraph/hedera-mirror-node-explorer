@@ -27,7 +27,7 @@
       :controller="controller"
       :native-wallet-only="true"
       @transaction-did-execute="transactionDidExecute"
-      :width="500">
+  >
 
     <template #transactionDialogTitle>My Staking for account {{ accountId }}</template>
 
