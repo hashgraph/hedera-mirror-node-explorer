@@ -24,7 +24,7 @@
 
 <template>
 
-  <div class="root" :class="{'root-mobile':!isLargeScreen}">
+  <div class="root">
 
     <!--  First line of page header-->
     <div class="l1">
@@ -121,15 +121,17 @@ const onSearch = () => showSearchBar.value = false
 <style scoped>
 
 div.root {
-  background: url('@/assets/header-background.svg') top left no-repeat, var(--background-tertiary);
+  background: var(--background-secondary);
   border-bottom-left-radius: 32px;
   border-bottom-right-radius: 32px;
   margin-bottom: 16px;
-  padding: 16px 32px;
+  padding: 8px 16px;
 }
-
-div.root-mobile {
-  background: var(--background-secondary);
+@media (min-width: 1080px) {
+  div.root {
+    background: url('@/assets/header-background.svg') top left no-repeat, var(--background-tertiary);
+    padding: 16px 32px;
+  }
 }
 
 div.l1 {
@@ -164,12 +166,18 @@ div.l2 {
 div.title {
   color: var(--text-primary);
   font-family: 'Styrene A Web', serif;
-  font-size: 32px;
-  font-weight: 400;
-  height: 42px;
+  font-size: 18px;
+  font-weight: 500;
+  height: 24px;
   margin: 0;
 }
-
+@media (min-width: 1080px) {
+  div.title {
+    font-size: 32px;
+    font-weight: 400;
+    height: 42px;
+  }
+}
 
 button.search-button {
   height: 48px;
