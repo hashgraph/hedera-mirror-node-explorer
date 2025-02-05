@@ -218,7 +218,7 @@ const testBody = (searchID: string,
     cy.get('[data-cy=searchCompleted]')
     cy.get('[data-cy=searchBar]').submit()
 
-    cy.url({timeout: 5000}).should('include', expectedPath)
+    cy.url().should('include', expectedPath)
     cy.contains(expectedTitle ? (expectedTitle + searchID) : 'No result')
     if (expectTable) {
         cy.get('table')

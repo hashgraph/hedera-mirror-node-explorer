@@ -323,7 +323,7 @@ describe('Account Navigation', () => {
         cy.get('[data-cy=searchCompleted]')
         cy.get('[data-cy=searchBar]').submit()
 
-        cy.url({timeout: 5000}).should('include', '/mainnet/account/' + searchId)
+        cy.url().should('include', '/mainnet/account/' + searchId)
         cy.contains('Account ID:' + searchId)
         cy.contains('a', "Show associated contract").should('not.exist')
     })
