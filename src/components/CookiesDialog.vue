@@ -23,16 +23,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog :icon-class="props.iconClass" :show-dialog="props.showDialog" :show-close-icon="false">
-    <template v-slot:dialogMessage>
+  <ModalDialog :icon-class="props.iconClass" v-model:show-dialog="props.showDialog" :show-close-icon="false">
+    <template #modalDialogTitle>
       <span>Accept Cookies</span>
     </template>
-    <template v-slot:dialogDetails>
+    <template #modalDialogContent>
       <div v-html="cookiesDialogContent"/>
-      <div class="is-flex is-justify-content-flex-end is-align-items-baseline mt-4">
-        <button class="button is-white is-small" @click="handleChooseReject">REJECT</button>
-        <button class="button is-info is-small ml-4" @click="handleChooseAccept">ACCEPT</button>
-      </div>
+    </template>
+    <template #modalDialogButtons>
+      <ModalDialogButton v-model:show-dialog="props.showDialog" @action="handleChooseReject">REJECT</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="props.showDialog" :is-default="true" @action="handleChooseAccept">ACCEPT</ModalDialogButton>
     </template>
   </ModalDialog>
 </template>
@@ -45,6 +45,7 @@
 
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 
 const props = defineProps({
   showDialog: {
