@@ -66,7 +66,7 @@ const props = defineProps({
   iconClass: String,
   width: {
     type: Number,
-    default: 768
+    default: 400
   },
 })
 
