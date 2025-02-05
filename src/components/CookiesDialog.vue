@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog :icon-class="props.iconClass" v-model:show-dialog="props.showDialog" :show-close-icon="false">
+  <ModalDialog v-model:show-dialog="showDialog" :show-close-icon="false">
     <template #modalDialogTitle>
       <span>Accept Cookies</span>
     </template>
@@ -31,8 +31,8 @@
       <div v-html="cookiesDialogContent"/>
     </template>
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="props.showDialog" @action="handleChooseReject">REJECT</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="props.showDialog" :is-default="true" @action="handleChooseAccept">ACCEPT</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog" @action="handleChooseReject">REJECT</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog" :is-default="true" @action="handleChooseAccept">ACCEPT</ModalDialogButton>
     </template>
   </ModalDialog>
 </template>
@@ -47,25 +47,20 @@ import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 
-const props = defineProps({
-  showDialog: {
-    type: Boolean,
-    default: false
-  },
-  iconClass: String
+const showDialog = defineModel("showDialog", {
+  type: Boolean,
+  required: true
 })
 
-const emit = defineEmits(["update:showDialog", "onChooseAccept", "onChooseReject"],)
+const emit = defineEmits(["onChooseAccept", "onChooseReject"],)
 
 const coreConfig = CoreConfig.inject()
 const cookiesDialogContent = coreConfig.cookiesDialogContent
 
 const handleChooseAccept = () => {
-  emit('update:showDialog', false)
   emit('onChooseAccept')
 }
 const handleChooseReject = () => {
-  emit('update:showDialog', false)
   emit('onChooseReject')
 }
 
