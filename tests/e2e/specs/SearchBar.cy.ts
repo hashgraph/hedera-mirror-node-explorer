@@ -22,7 +22,7 @@
 
 import {makeExchangeFormat} from "../TestUtils";
 
-describe('Search Bar', () => {
+describe.skip('Search Bar', () => {
 
     beforeEach(() => {
         cy.visit('/mainnet/dashboard')

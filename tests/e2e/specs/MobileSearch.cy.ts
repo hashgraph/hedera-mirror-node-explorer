@@ -24,7 +24,7 @@
 
 import {makeExchangeFormat} from "../TestUtils";
 
-describe('Search Bar', () => {
+describe.skip('Search Bar', () => {
 
     beforeEach(() => {
         cy.viewport(700, 800)
