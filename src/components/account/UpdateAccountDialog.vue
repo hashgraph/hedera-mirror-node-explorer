@@ -683,7 +683,7 @@ const onUpdate = async () => {
         || stakedNode.value !== initialStakedNode) {
       switch (stakeChoice.value) {
         case StakeChoice.StakeToNode:
-          transaction.setStakedNodeId(stakedNode.value)
+          transaction.setStakedNodeId(stakedNode.value!)
           break
         case StakeChoice.StakeToAccount:
           transaction.setStakedAccountId(stakedAccount.value!)
