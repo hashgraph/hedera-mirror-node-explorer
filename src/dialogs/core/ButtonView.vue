@@ -29,7 +29,8 @@
         'is-small': props.size === 'small',
         'is-medium': props.size === 'medium',
         'is-default': props.isDefault,
-        'is-transparent': props.isTransparent
+        'is-transparent': props.isTransparent,
+        'same-size': props.sameSize
       }"
       :disabled="!props.enabled"
       @click="handleClick"
@@ -65,6 +66,10 @@ const props = defineProps({
   size: {
     type: String as PropType<ButtonSize>,
     default: ButtonSize.normal
+  },
+  sameSize: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -124,6 +129,11 @@ button.button-view.is-transparent {
   border-style: solid;
   border-width: 2px;
   color: var(--text-primary);
+}
+
+button.button-view.same-size {
+  flex-basis: 0;
+  flex-grow: 1;
 }
 
 span.button-slot {
