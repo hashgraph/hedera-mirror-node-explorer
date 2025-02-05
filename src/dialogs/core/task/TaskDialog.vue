@@ -48,10 +48,8 @@
 
     </template>
 
-    <template #modalDialogControls>
-      <div class="dialog-layer-controls" :style="{'visibility': controlVisibility}">
-        <slot name="taskDialogControls"/>
-      </div>
+    <template v-if="state == TaskDialogState.Input" #modalDialogControls>
+      <slot name="taskDialogControls"/>
     </template>
 
     <template #modalDialogButtons>
@@ -188,9 +186,6 @@ const visibleIndex = computed((): number => {
   }
   return result
 })
-
-
-const controlVisibility = computed(() => state.value == TaskDialogState.Input ? "inherit" : "hidden")
 
 const changeState = (newValue: TaskDialogState) => {
   state.value = newValue

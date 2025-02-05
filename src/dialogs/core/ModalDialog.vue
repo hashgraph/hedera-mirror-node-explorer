@@ -35,17 +35,15 @@
         <slot name="modalDialogContent"/>
       </div>
 
-      <div class="modal-dialog-footer">
+      <div v-if="slots.modalDialogControls" class="modal-dialog-controls">
+        <slot name="modalDialogControls"/>
+      </div>
 
-        <div class="modal-dialog-footer-right">  <!-- right comes first because flex-direction: row-reverse -->
-          <slot name="modalDialogButtons">
-            <ModalDialogButton v-model:show-dialog="showDialog">CLOSE</ModalDialogButton>
-          </slot>
-        </div>
+      <div class="modal-dialog-buttons">
 
-        <div v-if="slots.modalDialogControls" class="modal-dialog-footer-left">
-          <slot name="modalDialogControls"/>
-        </div>
+        <slot name="modalDialogButtons">
+          <ModalDialogButton v-model:show-dialog="showDialog">CLOSE</ModalDialogButton>
+        </slot>
 
       </div>
 
@@ -141,10 +139,14 @@ div.modal-dialog-body {
   line-height: 20px;
 }
 
-div.modal-dialog-footer {
+div.modal-dialog-controls {
+  font-size: 14px;
+  font-weight: 400;
+}
+
+div.modal-dialog-buttons {
   column-gap: 1em;
   display: flex;
-  flex-direction: row-reverse;
   align-items: center;
   justify-content: space-between;
 }

@@ -27,6 +27,7 @@
       @action="handleAction"
       :is-default="props.isDefault"
       :disabled="!props.enabled"
+      :sameSize="true"
   >
     <slot/>
   </ButtonView>
