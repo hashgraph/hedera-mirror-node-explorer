@@ -28,14 +28,13 @@
     <template #modalDialogTitle>Disclaimer</template>
 
     <template #modalDialogContent>
-      <div v-html="disclaimer"/>
-    </template>
-
-    <template #modalDialogControls>
-      <label>
-        <input v-model="dontShowNextTime" type="checkbox" style="margin-right: 0.5em; vertical-align: text-top" />
-        <span>Please don't show me this next time</span>
-      </label>
+      <div class="opt-out-dialog-content">
+        <div v-html="disclaimer"/>
+        <label>
+          <input v-model="dontShowNextTime" type="checkbox" style="margin-right: 0.5em; vertical-align: text-top" />
+          <span>Please don't show me this next time</span>
+        </label>
+      </div>
     </template>
 
     <template #modalDialogButtons>
@@ -83,5 +82,12 @@ const handleAgree = () => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.opt-out-dialog-content {
+  display: flex;
+  flex-direction: column;
+  row-gap: 24px;
+}
+
 </style>
 
