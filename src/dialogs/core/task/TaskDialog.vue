@@ -33,7 +33,12 @@
 
       <StackView :visible-index="visibleIndex">
         <div class="dialog-layer-input">
-          <slot name="taskDialogInput"/>
+          <div class="task-dialog-input">
+            <slot name="taskDialogInput"/>
+          </div>
+          <div v-if="slots.taskDialogControls" class="task-dialog-controls">
+            <slot name="taskDialogControls"/>
+          </div>
         </div>
         <div class="dialog-layer-busy">
           <slot name="taskDialogBusy">Task is on-going…</slot>
@@ -46,10 +51,6 @@
         </div>
       </StackView>
 
-    </template>
-
-    <template v-if="state == TaskDialogState.Input" #modalDialogControls>
-      <slot name="taskDialogControls"/>
     </template>
 
     <template #modalDialogButtons>
@@ -139,6 +140,8 @@ watch(props.controller.showDialog, (show) => {
 
 const emit = defineEmits(["taskDialogDidSucceed"])
 
+const slots = useSlots()
+
 const handleExecute = async () => {
 
   if (confirmationRequired) {
@@ -209,6 +212,7 @@ div.dialog-layer-input {
   flex-direction: column;
   align-items: flex-start;
   row-gap: 16px;
+  height: 100%;
 }
 
 div.dialog-layer-busy {
@@ -233,6 +237,29 @@ div.dialog-layer-error {
   align-items: center;
   justify-content: center;
   height: 100%
+}
+
+div.task-dialog-input {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  row-gap: 16px;
+  width: 100%;
+  flex-grow: 1;
+}
+
+div.task-dialog-controls {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: var(--text-error);
+  align-items: center;
+  row-gap: 4px;
+  width: 100%;
+  text-align: center;
+  min-height: 40px;
+  flex-grow: 0;
+  justify-content: flex-end;
 }
 
 </style>

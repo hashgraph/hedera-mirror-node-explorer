@@ -32,16 +32,15 @@
 
     <template #transactionDialogTitle>Associate Token</template>
 
-    <template #transactionDialogInput>Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?</template>
-
-    <template #transactionExecutionLabel>ASSOCIATE</template>
-
-    <template v-if="isWatchSupported" #transactionDialogControls>
+    <template #transactionDialogInput>
+      Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?
       <label>
         <input type="checkbox" style="margin-right: 0.5em; vertical-align: middle" v-model="watchInWallet">
         <span>Import to {{ walletName }}</span>
       </label>
     </template>
+
+    <template #transactionExecutionLabel>ASSOCIATE</template>
 
   </TransactionDialog>
 </template>

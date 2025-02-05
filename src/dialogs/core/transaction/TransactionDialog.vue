@@ -91,7 +91,7 @@
     </template>
 
     <!-- controls -->
-    <template #taskDialogControls>
+    <template v-if="slots.transactionDialogControls" #taskDialogControls>
       <slot name="transactionDialogControls"/>
     </template>
 
@@ -104,7 +104,7 @@
 
 <script setup lang="ts">
 
-import {computed, PropType} from "vue";
+import {computed, PropType, useSlots} from "vue";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
 import {walletManager} from "@/router.ts";
@@ -128,6 +128,8 @@ const props = defineProps({
 })
 
 const emit = defineEmits(["transactionDidExecute"])
+
+const slots = useSlots()
 
 const walletName = walletManager.walletName
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? "")

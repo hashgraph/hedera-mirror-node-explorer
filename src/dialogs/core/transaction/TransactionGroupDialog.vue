@@ -68,7 +68,7 @@
     <template #taskDialogError></template>
 
     <!-- controls -->
-    <template #taskDialogControls>
+    <template v-if="$slots.transactionDialogControls" #taskDialogControls>
       <slot name="transactionGroupDialogControls"/>
     </template>
 

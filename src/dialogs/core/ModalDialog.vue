@@ -35,10 +35,6 @@
         <slot name="modalDialogContent"/>
       </div>
 
-      <div v-if="slots.modalDialogControls" class="modal-dialog-controls">
-        <slot name="modalDialogControls"/>
-      </div>
-
       <div class="modal-dialog-buttons">
 
         <slot name="modalDialogButtons">
@@ -137,11 +133,6 @@ div.modal-dialog-body {
   font-size: 16px;
   font-weight: 400;
   line-height: 20px;
-}
-
-div.modal-dialog-controls {
-  font-size: 14px;
-  font-weight: 400;
 }
 
 div.modal-dialog-buttons {

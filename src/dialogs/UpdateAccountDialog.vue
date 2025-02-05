@@ -221,7 +221,7 @@
 
     </template>
 
-    <template v-if="feedbackMessage" #transactionDialogControls>{{ feedbackMessage }}</template>
+    <template #transactionDialogControls>{{ feedbackMessage ?? ""}}</template>
 
   </TransactionDialog>
 
