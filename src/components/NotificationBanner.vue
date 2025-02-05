@@ -29,9 +29,10 @@
       class="notification-banner"
       :class="{'notification-error': props.isError, 'notification-success': !props.isError}"
   >
-    <div class="notification-text">
-      {{ props.message }}
-    </div>
+    <div
+        class="notification-text"
+        v-html="props.message"
+    />
   </div>
 
 </template>
