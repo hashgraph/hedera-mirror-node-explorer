@@ -75,7 +75,7 @@
     "resize-observer-polyfill": "~1.5.1",
     "sass": "^1.83.4",
     "start-server-and-test": "^2.0.10",
-    "typescript": "~5.6.2",
+    "typescript": "~5.7.3",
     "vite": "^5.4.14",
     "vite-plugin-node-polyfills": "^0.22.0",
     "vite-plugin-require-transform": "^1.0.21",
