@@ -26,10 +26,6 @@
 
   <PageFrame>
     <template #pageContent>
-      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-        <div class="hero-body h-is-property-text p-3" v-html="temporaryBanner"/>
-      </div>
-
       <DashboardCard collapsible-key="accountDetails">
         <template v-if="!isInactiveEvmAddress" v-slot:title>
           <figure
@@ -169,7 +165,7 @@
             </template>
           </EditableProperty>
 
-          <Property v-if="enableStaking" id="pendingReward">
+          <Property v-if="enableStaking" id="pendingReward" :tooltip="rewardIssueWarning">
             <template v-slot:name>Pending Reward</template>
             <template v-slot:value>
               <HbarAmount :amount="account?.pending_reward" :show-extra="true" timestamp="0"/>
@@ -409,7 +405,7 @@ const props = defineProps({
   network: String,
 })
 
-const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
+const rewardIssueWarning = 'Pending staking reward calculation may temporarily be inaccurate. See more details at: https://status.hedera.com'
 
 const isMediumScreen = inject('isMediumScreen', true)
 const networkConfig = NetworkConfig.inject()

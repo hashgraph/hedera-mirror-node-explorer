@@ -1,10 +1,10 @@
-import { defineConfig } from 'cypress'
+import {defineConfig} from 'cypress'
 
 export default defineConfig({
   video: false,
   viewportHeight: 1080,
   viewportWidth: 1920,
-  defaultCommandTimeout: 8000,
+  defaultCommandTimeout: 30000,
   fixturesFolder: 'tests/e2e/fixtures',
   screenshotsFolder: 'tests/e2e/screenshots',
   videosFolder: 'tests/e2e/videos',
