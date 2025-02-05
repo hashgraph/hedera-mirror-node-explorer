@@ -24,7 +24,7 @@
 
 <template>
   <div class="label-view">
-    <img v-if="props.iconUrl" :src="props.iconUrl" class="label-view-icon" alt="label logo">
+    <img v-if="props.iconUrl" :src="props.iconUrl" :height="props.iconSize" class="label-view-icon" alt="label logo">
     <slot/>
   </div>
 </template>
@@ -36,7 +36,11 @@
 <script setup lang="ts">
 
 const props = defineProps({
-  iconUrl: String
+  iconUrl: String,
+  iconSize: {
+    type: Number,
+    default: 40
+  }
 })
 
 </script>
