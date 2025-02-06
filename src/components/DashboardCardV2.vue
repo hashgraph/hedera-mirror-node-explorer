@@ -24,19 +24,22 @@
 
 <template>
   <div class="card-root">
-    <div class="card-header">
-      <div class="left-header">
-        <slot name="title"/>
-        <slot name="left-control" v-if="!isCollapsed"/>
+    <div style="display: flex; flex-direction: column; gap: 16px;  padding-bottom: 16px;  border-bottom: 1px solid var(--network-theme-color);">
+      <div class="card-header">
+        <div class="left-header">
+          <slot name="title"/>
+          <slot name="left-control" v-if="!isCollapsed"/>
+        </div>
+        <div v-if="isMediumScreen" class="right-header">
+          <slot name="right-control" v-if="!isCollapsed"/>
+          <img v-if="isCollapsed" alt="Expand" @click="toggleCollapsed" :src="arrowDownURL">
+          <img v-else alt="Collapse" @click="toggleCollapsed" :src="arrowUpURL">
+        </div>
       </div>
-      <div class="right-header">
-        <slot name="right-control" v-if="!isCollapsed"/>
-        <img v-if="isCollapsed" alt="Expand" @click="toggleCollapsed" :src="arrowDownURL">
-        <img v-else alt="Collapse" @click="toggleCollapsed" :src="arrowUpURL">
+      <div class="wrapped-controls">
+        <slot name="right-control" v-if="!isMediumScreen && !isCollapsed"/>
       </div>
     </div>
-
-    <slot name="subtitle"/>
 
     <div v-if="!isCollapsed">
 
@@ -144,29 +147,43 @@ div.card-root {
   border-radius: 16px;
   display: flex;
   flex-direction: column;
-  gap: 32px;
-  padding: 32px;
+  gap: 16px;
+  padding: 16px;
 }
 
-div.card-header {
-  align-items: center;
-  border-bottom: 1px solid var(--network-theme-color);
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  padding-bottom: 16px;
+@media (min-width: 1080px) {
+  div.card-root {
+    gap: 32px;
+    padding: 32px;
+  }
+}
+
+@media (min-width: 1080px) {
+  div.card-header {
+    align-items: center;
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+  }
 }
 
 div.left-header {
   align-items: center;
   display: flex;
   gap: 8px;
-  height: 26px;
   justify-content: flex-start;
   color: var(--text-primary);
   font-family: 'Styrene A Web', serif;
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 500;
+  flex-wrap: wrap;
+  word-wrap: anywhere;
+}
+
+@media (min-width: 1080px) {
+  div.left-header {
+    font-size: 20px;
+  }
 }
 
 div.right-header {
@@ -175,6 +192,14 @@ div.right-header {
   gap: 16px;
   height: 26px;
   justify-content: flex-end;
+}
+
+div.wrapped-controls {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: flex-start;
 }
 
 div.split-content {
