@@ -43,7 +43,7 @@ import {hexToByte} from "@/utils/B64Utils";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {ContractResultByTransactionIdCache} from "@/utils/cache/ContractResultByTransactionIdCache";
-import {eth_isUserReject} from "@/utils/wallet/eip1193";
+import {eth_getErrorCode, eth_getMessage, eth_isUserReject} from "@/utils/wallet/eip1193";
 
 
 export class WalletClient_Hiero extends WalletClient {
@@ -184,7 +184,7 @@ export class WalletClient_Hiero extends WalletClient {
     }
 
     //
-    // WalletSession
+    // WalletClient
     //
 
     public async associateToken(tokenId: string): Promise<string> {
@@ -257,7 +257,7 @@ export class WalletClient_Hiero extends WalletClient {
             const tr = TransactionResponse.fromJSON(response)
             result = tr.transactionId.toString()
         } catch(reason) {
-            if (eth_isUserReject(reason)) {
+            if (isUserReject(reason)) {
                 throw new WalletClientRejectError()
             } else {
                 throw reason
@@ -309,5 +309,23 @@ export class WalletClient_Hiero extends WalletClient {
     }
 
 
+}
+
+function isUserReject(error: unknown): boolean {
+    //
+    // "user reject" specification is pretty under specified :(
+    // Over time and wallets, we saw the following error object:
+    //  - { code: 9000, message: "USER REJECT"} // partially specified in HIP 820
+    //  - { code: 4001, message: "User Rejected Request"}  // as defined by EIP-1193
+    //  - { code: -32603, message: "Internal error"} // as defined by JSON-RPC spec
+    //
+    //  References
+    //      https://hips.hedera.com/hip/hip-820#hedera_signandexecutetransaction
+    //      https://www.jsonrpc.org/specification#error_object
+    //      https://eips.ethereum.org/EIPS/eip-1193
+    //
+    const code = eth_getErrorCode(error)
+    const message = eth_getMessage(error)
+    return (code === 9000 && message == "USER_REJECT") || code == -32603 || eth_isUserReject(error)
 }
 
