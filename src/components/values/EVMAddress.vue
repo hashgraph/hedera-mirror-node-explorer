@@ -27,8 +27,12 @@
     <div class="evm-address">
       <Copyable :content-to-copy="evmAddress ?? ''" :enable-copy="enableCopy">
         <template v-slot:content>
-          <span class="has-text-grey h-is-monospace">{{ nonSignificantPart }}</span>
-          <span class="h-is-monospace" style="margin-right: 4px">{{ significantPart }}</span>
+          <div class="has-text-grey h-is-monospace" style="display: inline">
+            {{ (props.compact || !isSmallScreen) ? nonSignificantCompact : nonSignificantFull }}
+          </div>
+          <div class="h-is-monospace" style="margin-right: 4px; display: inline">
+            {{ (props.compact || !isSmallScreen) ? significantCompact : significantFull }}
+          </div>
         </template>
       </Copyable>
       <span v-if="entityId && showId">
@@ -39,9 +43,9 @@
         <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)">
           {{ displayId }}
         </router-link>
-        <ContractLink v-else-if="entityLinkType === CONTRACT" :contract-id="entityId"/>
-        <AccountLink v-else-if="entityLinkType === ACCOUNT" :account-id="entityId"/>
-        <TokenLink v-else-if="entityLinkType === TOKEN" :token-id="entityId"/>
+        <ContractLink v-else-if="entityLinkType === ExtendedEntityType.CONTRACT" :contract-id="entityId"/>
+        <AccountLink v-else-if="entityLinkType === ExtendedEntityType.ACCOUNT" :account-id="entityId"/>
+        <TokenLink v-else-if="entityLinkType === ExtendedEntityType.TOKEN" :token-id="entityId"/>
         <span v-else>{{ displayId }}</span>
         <span style="margin-right: 4px">)</span>
         <span v-if="verified && !showType" class="icon is-small has-text-success">
@@ -70,9 +74,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
+import {computed, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 import {SystemContractEntry, systemContractRegistry} from "@/schemas/SystemContractRegistry";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
@@ -85,173 +89,139 @@ import ContractLink from "@/components/values/link/ContractLink.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 
-export enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
+enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 
-export default defineComponent({
-  name: "EVMAddress",
-  components: {TokenLink, AccountLink, ContractLink, Copyable},
-  props: {
-    address: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    id: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    entityType: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    showId: {
-      type: Boolean,
-      default: true
-    },
-    showType: {
-      type: Boolean,
-      default: false
-    },
-    compact: {
-      type: Boolean,
-      default: false
-    },
-    bytesKept: {
-      type: Number,
-      default: 6
-    },
-    enableCopy: {
-      type: Boolean,
-      default: true
-    },
-    showNone: {
-      type: Boolean,
-      default: true
-    },
+const props = defineProps({
+  address: {
+    type: String as PropType<string | null>,
+    default: null
   },
+  id: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  entityType: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  showId: {
+    type: Boolean,
+    default: true
+  },
+  showType: {
+    type: Boolean,
+    default: false
+  },
+  compact: {
+    type: Boolean,
+    default: false
+  },
+  bytesKept: {
+    type: Number,
+    default: 6
+  },
+  enableCopy: {
+    type: Boolean,
+    default: true
+  },
+  showNone: {
+    type: Boolean,
+    default: true
+  },
+})
 
-  setup(props) {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    const isSmallScreen = inject('isSmallScreen', ref(false))
+const initialLoading = inject(initialLoadingKey, ref(false))
+const isSmallScreen = inject('isSmallScreen', ref(true))
 
-    const entityLinkType = ref<ExtendedEntityType>(ExtendedEntityType.UNDEFINED)
-    const evmAddress = ref<string | null>(null)
-    const entityId = ref<string | null>(null)
-    const systemContract = ref<SystemContractEntry | null>(null)
-    const ethereumAddress = computed(() => EthereumAddress.parse(evmAddress.value ?? ''))
-    const derivedEntityId = computed(() => ethereumAddress.value?.toEntityID()?.toString() ?? null)
+const entityLinkType = ref<ExtendedEntityType>(ExtendedEntityType.UNDEFINED)
+const evmAddress = ref<string | null>(null)
+const entityId = ref<string | null>(null)
+const systemContract = ref<SystemContractEntry | null>(null)
+const ethereumAddress = computed(() => EthereumAddress.parse(evmAddress.value ?? ''))
+const derivedEntityId = computed(() => ethereumAddress.value?.toEntityID()?.toString() ?? null)
 
-    onMounted(() => updateIdAndAddress())
-    watch([() => props.address, () => props.id, () => props.entityType], () => updateIdAndAddress())
+onMounted(() => updateIdAndAddress())
+watch([() => props.address, () => props.id, () => props.entityType], () => updateIdAndAddress())
 
-    const updateIdAndAddress = async () => {
-      entityLinkType.value = ExtendedEntityType.UNDEFINED
-      evmAddress.value = props.address ?? null
-      entityId.value = props.id ?? derivedEntityId.value
+const updateIdAndAddress = async () => {
+  entityLinkType.value = ExtendedEntityType.UNDEFINED
+  evmAddress.value = props.address ?? null
+  entityId.value = props.id ?? derivedEntityId.value
 
-      if (props.entityType === "ACCOUNT") {
-        if (ethereumAddress.value?.isLongZeroForm() || entityId.value === null) {
-          await updateFromAccount()
-        }
-      } else if (props.entityType === "CONTRACT") {
-        if (!await updateFromSystemContract()) {
-          if (!await updateFromContract()) {
-            entityLinkType.value = ExtendedEntityType.TOKEN
-          }
-        }
-      } else { // props.entityType undefined
-        if (!await updateFromSystemContract()) {
-          if (!await updateFromContract()) {
-            if (!await updateFromAccount()) {
-              entityLinkType.value = ExtendedEntityType.TOKEN
-            }
-          }
-        }
+  if (props.entityType === "ACCOUNT") {
+    if (ethereumAddress.value?.isLongZeroForm() || entityId.value === null) {
+      await updateFromAccount()
+    }
+  } else if (props.entityType === "CONTRACT") {
+    if (!await updateFromSystemContract()) {
+      if (!await updateFromContract()) {
+        entityLinkType.value = ExtendedEntityType.TOKEN
       }
     }
-
-    const updateFromSystemContract = async (): Promise<boolean> => {
-      systemContract.value = systemContractRegistry.lookup(derivedEntityId.value ?? "")
-      return Promise.resolve(systemContract.value !== null)
-    }
-
-    const updateFromAccount = async (): Promise<boolean> => {
-      const account = await AccountByAddressCache.instance.lookup(props.address ?? "")
-      if (account !== null) {
-        entityLinkType.value = ExtendedEntityType.ACCOUNT
-        evmAddress.value = account.evm_address
-        entityId.value = account.account
-      }
-      return Promise.resolve(account !== null)
-    }
-
-    const updateFromContract = async (): Promise<boolean> => {
-      const contract = await ContractByAddressCache.instance.lookup(props.address ?? "")
-      if (contract !== null) {
-        entityLinkType.value = ExtendedEntityType.CONTRACT
-        evmAddress.value = contract.evm_address
-        entityId.value = contract.contract_id
-      }
-      return Promise.resolve(contract !== null)
-    }
-
-    const displayId = computed(
-        () => systemContract.value !== null ? systemContract.value.description : entityId.value)
-
-    const displayAddress = computed(
-        () => props.compact
-            ? ethereumAddress.value?.toCompactString(props.bytesKept) ?? ""
-            : ethereumAddress.value?.toString() ?? "")
-
-    const nonSignificantSize = computed(() => {
-      let i: number
-      for (i = 0; i < displayAddress.value.length; i++) {
-        const c = displayAddress.value[i]
-        if (c !== '0' && c !== 'x' && c !== '…') {
-          break
+  } else { // props.entityType undefined
+    if (!await updateFromSystemContract()) {
+      if (!await updateFromContract()) {
+        if (!await updateFromAccount()) {
+          entityLinkType.value = ExtendedEntityType.TOKEN
         }
       }
-      return i
-    })
-
-    const nonSignificantPart = computed(
-        () => displayAddress.value?.slice(0, nonSignificantSize.value))
-
-    const significantPart = computed(
-        () => displayAddress.value?.slice(nonSignificantSize.value))
-
-    const copyToClipboard = (): void => {
-      if (evmAddress.value) {
-        navigator.clipboard.writeText(evmAddress.value.toString())
-      }
-    }
-
-    const contractAnalyzer = new ContractAnalyzer(entityId)
-    onMounted(() => contractAnalyzer.mount())
-    onBeforeUnmount(() => contractAnalyzer.unmount())
-
-    const contractName = computed(() => contractAnalyzer.contractName.value)
-    const verified = computed(() => contractAnalyzer.globalState.value !== GlobalState.Unverified)
-
-    return {
-      isSmallScreen,
-      ACCOUNT: ExtendedEntityType.ACCOUNT,
-      CONTRACT: ExtendedEntityType.CONTRACT,
-      TOKEN: ExtendedEntityType.TOKEN,
-      entityLinkType,
-      initialLoading,
-      nonSignificantPart,
-      significantPart,
-      entityId,
-      displayId,
-      evmAddress,
-      copyToClipboard,
-      contractName,
-      verified,
-      systemContract,
-      routeManager
     }
   }
-})
+}
+
+const updateFromSystemContract = async (): Promise<boolean> => {
+  systemContract.value = systemContractRegistry.lookup(derivedEntityId.value ?? "")
+  return Promise.resolve(systemContract.value !== null)
+}
+
+const updateFromAccount = async (): Promise<boolean> => {
+  const account = await AccountByAddressCache.instance.lookup(props.address ?? "")
+  if (account !== null) {
+    entityLinkType.value = ExtendedEntityType.ACCOUNT
+    evmAddress.value = account.evm_address
+    entityId.value = account.account
+  }
+  return Promise.resolve(account !== null)
+}
+
+const updateFromContract = async (): Promise<boolean> => {
+  const contract = await ContractByAddressCache.instance.lookup(props.address ?? "")
+  if (contract !== null) {
+    entityLinkType.value = ExtendedEntityType.CONTRACT
+    evmAddress.value = contract.evm_address
+    entityId.value = contract.contract_id
+  }
+  return Promise.resolve(contract !== null)
+}
+
+const displayId = computed(
+    () => systemContract.value !== null ? systemContract.value.description : entityId.value)
+
+const compactForm = computed(() => ethereumAddress.value?.toCompactString(props.bytesKept) ?? "")
+const nonSignificantCompact = computed(() => compactForm.value.slice(0, nonSignificantSize(compactForm.value)))
+const significantCompact = computed(() => compactForm.value.slice(nonSignificantSize(compactForm.value)))
+
+const fullForm = computed(() => ethereumAddress.value?.toString() ?? "")
+const nonSignificantFull = computed(() => fullForm.value.slice(0, nonSignificantSize(fullForm.value)))
+const significantFull = computed(() => fullForm.value.slice(nonSignificantSize(fullForm.value)))
+
+const nonSignificantSize = (address: string) => {
+  let i: number
+  for (i = 0; i < address.length; i++) {
+    const c = address[i]
+    if (c !== '0' && c !== 'x' && c !== '…') {
+      break
+    }
+  }
+  return i
+}
+
+const contractAnalyzer = new ContractAnalyzer(entityId)
+onMounted(() => contractAnalyzer.mount())
+onBeforeUnmount(() => contractAnalyzer.unmount())
+
+const contractName = computed(() => contractAnalyzer.contractName.value)
+const verified = computed(() => contractAnalyzer.globalState.value !== GlobalState.Unverified)
 
 </script>
 
