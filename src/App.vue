@@ -43,7 +43,7 @@ import {
   themeControllerKey
 } from "@/AppKeys"
 import {AxiosMonitor} from "@/utils/AxiosMonitor"
-import CookiesDialog from "@/components/CookiesDialog.vue";
+import CookiesDialog from "@/dialogs/CookiesDialog.vue";
 import {AppStorage} from "@/AppStorage";
 import {LARGE_BREAKPOINT, MEDIUM_BREAKPOINT, SMALL_BREAKPOINT, XLARGE_BREAKPOINT} from "@/BreakPoints";
 import {CoreConfig} from "@/config/CoreConfig";
