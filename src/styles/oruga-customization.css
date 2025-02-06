@@ -113,16 +113,16 @@ div.o-table__pagination {
 }
 
 @media (max-width: 1079px) {
-    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child {
-        border-top: 1px solid var(--border-secondary);
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:first-child,
+    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:not(:first-child):not(:last-child) {
         border-bottom: 0;
+        border-top: 0;
         background-color: var(--background-tertiary);
     }
 
-    .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:not(:first-child):not(:last-child),
     .o-table__wrapper--mobile tr:not(.o-table--detailed):not(.o-table--empty):not(.o-table__footer) td:last-child {
         border-top: 0;
-        border-bottom: 0;
+        border-bottom: 1px solid var(--border-secondary);
         background-color: var(--background-tertiary);
     }
 
