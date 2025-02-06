@@ -32,9 +32,13 @@
 
     <template #transactionDialogTitle>Claim Token</template>
 
-    <template #transactionDialogInput>Claim token {{ tokenId }} airdropped to account {{ accountId }} ?</template>
-
     <template #transactionExecutionLabel>CLAIM</template>
+
+    <template #transactionDialogInput>
+      <TaskPanel :mode="TaskPanelMode.none">
+        <template #taskPanelMessage>Claim token {{ tokenId }} airdropped to account {{ accountId }} ?</template>
+      </TaskPanel>
+    </template>
 
   </TransactionDialog>
 </template>
@@ -50,6 +54,8 @@ import {walletManager} from "@/router.ts";
 import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
 import {ClaimTokenController} from "@/dialogs/token/ClaimTokenController.ts";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
