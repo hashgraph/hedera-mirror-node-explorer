@@ -191,6 +191,19 @@ a:hover {
     }
 }
 
+div.h-side-by-side-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+@media (min-width: 1280px) {
+    div.h-side-by-side-content {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
 .h-sub-section {
     background-color: var(--tab-background);
     border-radius: 8px;

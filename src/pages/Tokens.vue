@@ -26,7 +26,7 @@
 
   <PageFrameV2 page-title="Tokens">
 
-    <div class="side-by-side-container">
+    <div class="h-side-by-side-content">
 
       <DashboardCardV2>
         <template #title>
@@ -101,23 +101,5 @@ onBeforeUnmount(() => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.side-by-side-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
-
-@media (min-width: 1280px) {
-  div.side-by-side-container {
-    display: grid;
-    gap: 16px;
-    grid-template-columns: 1fr 1fr;
-    margin-left: 32px;
-    margin-right: 32px;
-  }
-}
 
 </style>
