@@ -26,22 +26,20 @@
 
   <PageFrameV2 page-title="Transactions">
 
-    <div class="page-container">
-      <DashboardCardV2>
-        <template #title>
-          <span>Recent Transactions</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton :controller="transactionTableController"/>
-        </template>
-        <template #right-control>
-          <TransactionFilterSelect v-model:selected-filter="transactionType"/>
-        </template>
-        <template #content>
-          <TransactionTable :controller="transactionTableController"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        <span>Recent Transactions</span>
+      </template>
+      <template #left-control>
+        <PlayPauseButton :controller="transactionTableController"/>
+      </template>
+      <template #right-control>
+        <TransactionFilterSelect v-model:selected-filter="transactionType"/>
+      </template>
+      <template #content>
+        <TransactionTable :controller="transactionTableController"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 
@@ -95,13 +93,5 @@ const transactionType = transactionTableController.transactionType
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>

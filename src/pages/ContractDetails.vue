@@ -26,219 +26,215 @@
 
   <PageFrameV2 page-title="Contract Details">
 
-    <div class="page-container">
+    <DashboardCardV2 collapsible-key="contractDetails">
+      <template #title>
+        {{ `Contract ${contractName ?? ''}` }}
+        <div v-if="isVerified" class="h-has-pill h-status-success" style="margin-top: 2px">
+          VERIFIED
+        </div>
+        <div v-if="isErc20" class="h-has-pill" style="margin-top: 2px">
+          ERC 20
+        </div>
+        <div v-if="isErc721" class="h-has-pill" style="margin-top: 2px">
+          ERC 721
+        </div>
+      </template>
 
-      <DashboardCardV2 collapsible-key="contractDetails">
-        <template #title>
-          {{ `Contract ${contractName ?? ''}` }}
-          <div v-if="isVerified" class="h-has-pill h-status-success" style="margin-top: 2px">
-            VERIFIED
-          </div>
-          <div v-if="isErc20" class="h-has-pill" style="margin-top: 2px">
-            ERC 20
-          </div>
-          <div v-if="isErc721" class="h-has-pill" style="margin-top: 2px">
-            ERC 721
-          </div>
+      <template #right-control>
+        <template v-if="contract && accountRoute">
+          <ArrowLink
+              :route="accountRoute" id="showAccountLink"
+              text="Associated account"
+          />
         </template>
+      </template>
 
-        <template #right-control>
-          <template v-if="contract && accountRoute">
-            <ArrowLink
-                :route="accountRoute" id="showAccountLink"
-                text="Associated account"
-            />
+      <template #content>
+        <NotificationBanner v-if="notification" :message="notification"/>
+
+        <Property id="entityId" full-width>
+          <template #name>
+            Contract ID
           </template>
-        </template>
+          <template #value>
+            <Copyable :content-to-copy="normalizedContractId ?? ''">
+              <template #content>
+                <span>{{ normalizedContractId ?? "" }}</span>
+              </template>
+            </Copyable>
+            <span v-if="accountChecksum">-{{ accountChecksum }}</span>
+          </template>
+        </Property>
+        <Property id="evmAddress" full-width>
+          <template #name>
+            EVM Address
+          </template>
+          <template #value>
+            <EVMAddress
+                :show-id="false"
+                :has-custom-font="true"
+                :address="ethereumAddress"/>
+          </template>
+        </Property>
+        <Property v-if="domainName" id="names" full-width>
+          <template #name>
+            Domain
+          </template>
+          <template #value>
+            <EntityIOL :label="domainName"/>
+            <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
+          </template>
+        </Property>
+      </template>
 
-        <template #content>
-          <NotificationBanner v-if="notification" :message="notification"/>
+      <template #left-content>
+        <Property id="balance">
+          <template #name>
+            Balance
+          </template>
+          <template #value>
+            <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
+          </template>
+        </Property>
+        <Property id="key">
+          <template #name>Admin Key</template>
+          <template #value>
+            <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="memo">
+          <template #name>Memo</template>
+          <template #value>
+            <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
+          </template>
+        </Property>
+        <Property id="createTransaction">
+          <template #name>Create Transaction</template>
+          <template #value>
+            <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
+          </template>
+        </Property>
+        <Property
+            id="maxAutoAssociation"
+            tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
+        >
+          <template #name>Max. Auto. Association</template>
+          <template #value>
+            <StringValue :string-value="maxAutoAssociationValue"/>
+          </template>
+        </Property>
 
-          <Property id="entityId" full-width>
+        <template v-if="enableExpiry">
+          <Property
+              id="expiresAt"
+              tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
+          >
             <template #name>
-              Contract ID
+              <span>Expires at</span>
             </template>
             <template #value>
-              <Copyable :content-to-copy="normalizedContractId ?? ''">
-                <template #content>
-                  <span>{{ normalizedContractId ?? "" }}</span>
-                </template>
-              </Copyable>
-              <span v-if="accountChecksum">-{{ accountChecksum }}</span>
-            </template>
-          </Property>
-          <Property id="evmAddress" full-width>
-            <template #name>
-              EVM Address
-            </template>
-            <template #value>
-              <EVMAddress
-                  :show-id="false"
-                  :has-custom-font="true"
-                  :address="ethereumAddress"/>
-            </template>
-          </Property>
-          <Property v-if="domainName" id="names" full-width>
-            <template #name>
-              Domain
-            </template>
-            <template #value>
-              <EntityIOL :label="domainName"/>
-              <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
-            </template>
-          </Property>
-        </template>
-
-        <template #left-content>
-          <Property id="balance">
-            <template #name>
-              Balance
-            </template>
-            <template #value>
-              <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
-            </template>
-          </Property>
-          <Property id="key">
-            <template #name>Admin Key</template>
-            <template #value>
-              <KeyValue :key-bytes="contract?.admin_key?.key" :key-type="contract?.admin_key?._type" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="memo">
-            <template #name>Memo</template>
-            <template #value>
-              <BlobValue :blob-value="contract?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
-            </template>
-          </Property>
-          <Property id="createTransaction">
-            <template #name>Create Transaction</template>
-            <template #value>
-              <TransactionLink :transactionLoc="contract?.created_timestamp ?? undefined"/>
+              <TimestampValue :timestamp="contract?.expiration_timestamp" :show-none="true"/>
             </template>
           </Property>
           <Property
-              id="maxAutoAssociation"
-              tooltip="Number of auto association slots for token airdrops. Unlimited (-1), Limited (>0), No auto association slots (0)."
+              id="autoRenewPeriod"
+              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
           >
-            <template #name>Max. Auto. Association</template>
+            <template #name>
+              <span>Auto Renew Period</span>
+            </template>
             <template #value>
-              <StringValue :string-value="maxAutoAssociationValue"/>
+              <DurationValue :number-value="contract?.auto_renew_period ?? undefined"/>
             </template>
           </Property>
-
-          <template v-if="enableExpiry">
-            <Property
-                id="expiresAt"
-                tooltip="Contract expiry is not turned on yet. Value in this field is not relevant."
-            >
-              <template #name>
-                <span>Expires at</span>
-              </template>
-              <template #value>
-                <TimestampValue :timestamp="contract?.expiration_timestamp" :show-none="true"/>
-              </template>
-            </Property>
-            <Property
-                id="autoRenewPeriod"
-                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-            >
-              <template #name>
-                <span>Auto Renew Period</span>
-              </template>
-              <template #value>
-                <DurationValue :number-value="contract?.auto_renew_period ?? undefined"/>
-              </template>
-            </Property>
-            <Property
-                id="autoRenewAccount"
-                tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
-            >
-              <template #name>
-                <span>Auto Renew Account</span>
-              </template>
-              <template #value>
-                <AccountLink :account-id="autoRenewAccount"/>
-              </template>
-            </Property>
-          </template>
-          <template v-else>
-            <Property id="obtainer">
-              <template #name>Obtainer</template>
-              <template #value>
-                <AccountLink :account-id="obtainerId"/>
-              </template>
-            </Property>
-            <Property id="proxyAccount">
-              <template #name>Proxy Account</template>
-              <template #value>
-                <AccountLink :account-id="proxyAccountId"/>
-              </template>
-            </Property>
-          </template>
-        </template>
-
-        <template #right-content>
-          <template v-if="enableExpiry">
-            <Property id="obtainer">
-              <template #name>Obtainer</template>
-              <template #value>
-                <AccountLink :account-id="obtainerId"/>
-              </template>
-            </Property>
-            <Property id="proxyAccount">
-              <template #name>Proxy Account</template>
-              <template #value>
-                <AccountLink :account-id="proxyAccountId"/>
-              </template>
-            </Property>
-          </template>
-          <template v-else>
-          </template>
-
-          <Property id="validFrom">
-            <template #name>Valid from</template>
-            <template #value>
-              <TimestampValue :timestamp="contract?.timestamp?.from" :show-none="true"/>
+          <Property
+              id="autoRenewAccount"
+              tooltip="Contract auto-renew is not turned on yet. Value in this field is not relevant."
+          >
+            <template #name>
+              <span>Auto Renew Account</span>
             </template>
-          </Property>
-          <Property id="validUntil">
-            <template #name>Valid until</template>
             <template #value>
-              <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="displayNonce" id="nonce">
-            <template #name>Contract Nonce</template>
-            <template #value>
-              {{ contract?.nonce }}
-            </template>
-          </Property>
-          <Property id="file">
-            <template #name>File</template>
-            <template #value>
-              <StringValue :string-value="contract?.file_id"/>
+              <AccountLink :account-id="autoRenewAccount"/>
             </template>
           </Property>
         </template>
-      </DashboardCardV2>
+        <template v-else>
+          <Property id="obtainer">
+            <template #name>Obtainer</template>
+            <template #value>
+              <AccountLink :account-id="obtainerId"/>
+            </template>
+          </Property>
+          <Property id="proxyAccount">
+            <template #name>Proxy Account</template>
+            <template #value>
+              <AccountLink :account-id="proxyAccountId"/>
+            </template>
+          </Property>
+        </template>
+      </template>
 
-      <TokensSection :account-id="normalizedContractId"/>
+      <template #right-content>
+        <template v-if="enableExpiry">
+          <Property id="obtainer">
+            <template #name>Obtainer</template>
+            <template #value>
+              <AccountLink :account-id="obtainerId"/>
+            </template>
+          </Property>
+          <Property id="proxyAccount">
+            <template #name>Proxy Account</template>
+            <template #value>
+              <AccountLink :account-id="proxyAccountId"/>
+            </template>
+          </Property>
+        </template>
+        <template v-else>
+        </template>
 
-      <ContractERCSection
-          :contract-id="normalizedContractId"
-          v-model:is-erc20="isErc20"
-          v-model:is-erc721="isErc721"
-      />
+        <Property id="validFrom">
+          <template #name>Valid from</template>
+          <template #value>
+            <TimestampValue :timestamp="contract?.timestamp?.from" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="validUntil">
+          <template #name>Valid until</template>
+          <template #value>
+            <TimestampValue :timestamp="contract?.timestamp?.to" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="displayNonce" id="nonce">
+          <template #name>Contract Nonce</template>
+          <template #value>
+            {{ contract?.nonce }}
+          </template>
+        </Property>
+        <Property id="file">
+          <template #name>File</template>
+          <template #value>
+            <StringValue :string-value="contract?.file_id"/>
+          </template>
+        </Property>
+      </template>
+    </DashboardCardV2>
 
-      <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
+    <TokensSection :account-id="normalizedContractId"/>
 
-      <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
+    <ContractERCSection
+        :contract-id="normalizedContractId"
+        v-model:is-erc20="isErc20"
+        v-model:is-erc721="isErc721"
+    />
 
-      <ContractResultLogs :logs="logs"/>
+    <ContractResultsSection :contract-id="normalizedContractId ?? undefined"/>
 
-      <MirrorLink :network="network" entityUrl="contracts" :loc="contractId"/>
+    <ContractByteCodeSection :contract-analyzer="contractAnalyzer"/>
 
-    </div>
+    <ContractResultLogs :logs="logs"/>
+
+    <MirrorLink :network="network" entityUrl="contracts" :loc="contractId"/>
 
   </PageFrameV2>
 
@@ -387,13 +383,5 @@ const domainProviderName = nameQuery.providerName
 </script>
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>

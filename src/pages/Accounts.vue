@@ -26,19 +26,17 @@
 
   <PageFrameV2 page-title="Accounts">
 
-    <div class="page-container">
-      <DashboardCardV2>
-        <template #title>
-          <span>Recent Accounts</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton :controller="accountTableController"/>
-        </template>
-        <template #content>
-          <AccountTable :controller="accountTableController"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        <span>Recent Accounts</span>
+      </template>
+      <template #left-control>
+        <PlayPauseButton :controller="accountTableController"/>
+      </template>
+      <template #content>
+        <AccountTable :controller="accountTableController"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 
@@ -79,13 +77,5 @@ onBeforeUnmount(() => accountTableController.unmount())
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>

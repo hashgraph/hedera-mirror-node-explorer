@@ -26,143 +26,141 @@
 
   <PageFrameV2 page-title="NFT Details">
 
-    <div class="page-container">
-      <DashboardCardV2 collapsible-key="nftDetails">
-        <template #title>
-          <div class="title-extra">
-            {{ `${displayName} (${displaySymbol})` }}
-          </div>
-          <div>
-            {{ `#${props.serialNumber}` }}
-          </div>
-        </template>
+    <DashboardCardV2 collapsible-key="nftDetails">
+      <template #title>
+        <div class="title-extra">
+          {{ `${displayName} (${displaySymbol})` }}
+        </div>
+        <div>
+          {{ `#${props.serialNumber}` }}
+        </div>
+      </template>
 
-        <template #content>
-          <NotificationBanner
-              v-if="notification"
-              :message="notification"
-          />
-        </template>
+      <template #content>
+        <NotificationBanner
+            v-if="notification"
+            :message="notification"
+        />
+      </template>
 
-        <template #media-content>
-          <NftPreview
-              :type="type"
-              :url="imageUrl"
-              :size="isSmallScreen ? 450 : 300"
-              :auto="false"
-          />
-        </template>
-        <template #media-description>
-          <Property v-if="description" id="description" custom-nb-col-class="is-one-quarter">
-            <template #name>Description</template>
-            <template #value>
-              <BlobValue :blob-value="description"/>
-            </template>
-          </Property>
-          <Property id="tokenId" custom-nb-col-class="is-one-quarter">
-            <template #name>NFT Collection</template>
-            <template #value>
-              <router-link :to="tokenRoute">
-                <span class="h-is-extra-text mr-2">{{ displayName }}</span>
-              </router-link>
-              <span>(</span>
-              <TokenLink :token-id="props.tokenId" :show-extra="false"/>
-              <span>)</span>
-            </template>
-          </Property>
-          <Property id="serialNumber" custom-nb-col-class="is-one-quarter">
-            <template #name>Serial #</template>
-            <template #value>
-              {{ serialNumber }}
-            </template>
-          </Property>
-          <Property id="accountId" custom-nb-col-class="is-one-quarter">
-            <template #name>Owner</template>
-            <template #value>
-              <AccountLink
-                  :account-id="nftInfo?.account_id"
-              />
-            </template>
-          </Property>
-          <Property v-if="creator" id="creator" custom-nb-col-class="is-one-quarter">
-            <template #name>Creator</template>
-            <template #value>
-              {{ creator }}
-            </template>
-          </Property>
-          <Property id="createdTimestamp" custom-nb-col-class="is-one-quarter">
-            <template #name>Created</template>
-            <template #value>
-              <TimestampValue
-                  :show-none="true"
-                  :timestamp="nftInfo?.created_timestamp"
-              />
-            </template>
-          </Property>
-          <Property id="modifiedTimeStamp" custom-nb-col-class="is-one-quarter">
-            <template #name>Modified</template>
-            <template #value>
-              <TimestampValue
-                  :timestamp="nftInfo?.modified_timestamp"
-                  :show-none="true"
-              />
-            </template>
-          </Property>
-          <Property id="spenderId" custom-nb-col-class="is-one-quarter">
-            <template #name>Spender</template>
-            <template #value>
-              <AccountLink
-                  :account-id="nftInfo?.spender"
-                  :show-none="true"
-              />
-            </template>
-          </Property>
-          <Property id="delegatingSpender" custom-nb-col-class="is-one-quarter">
-            <template #name>Delegating Spender</template>
-            <template #value>
-              <AccountLink
-                  :account-id="nftInfo?.delegating_spender"
-              />
-            </template>
-          </Property>
-          <Property id="createTransaction" custom-nb-col-class="is-one-quarter">>
-            <template #name>Mint Transaction</template>
-            <template #value>
-              <TransactionLink :transactionLoc="nftInfo?.created_timestamp ?? undefined"/>
-            </template>
-          </Property>
-        </template>
+      <template #media-content>
+        <NftPreview
+            :type="type"
+            :url="imageUrl"
+            :size="isSmallScreen ? 450 : 300"
+            :auto="false"
+        />
+      </template>
+      <template #media-description>
+        <Property v-if="description" id="description" custom-nb-col-class="is-one-quarter">
+          <template #name>Description</template>
+          <template #value>
+            <BlobValue :blob-value="description"/>
+          </template>
+        </Property>
+        <Property id="tokenId" custom-nb-col-class="is-one-quarter">
+          <template #name>NFT Collection</template>
+          <template #value>
+            <router-link :to="tokenRoute">
+              <span class="h-is-extra-text mr-2">{{ displayName }}</span>
+            </router-link>
+            <span>(</span>
+            <TokenLink :token-id="props.tokenId" :show-extra="false"/>
+            <span>)</span>
+          </template>
+        </Property>
+        <Property id="serialNumber" custom-nb-col-class="is-one-quarter">
+          <template #name>Serial #</template>
+          <template #value>
+            {{ serialNumber }}
+          </template>
+        </Property>
+        <Property id="accountId" custom-nb-col-class="is-one-quarter">
+          <template #name>Owner</template>
+          <template #value>
+            <AccountLink
+                :account-id="nftInfo?.account_id"
+            />
+          </template>
+        </Property>
+        <Property v-if="creator" id="creator" custom-nb-col-class="is-one-quarter">
+          <template #name>Creator</template>
+          <template #value>
+            {{ creator }}
+          </template>
+        </Property>
+        <Property id="createdTimestamp" custom-nb-col-class="is-one-quarter">
+          <template #name>Created</template>
+          <template #value>
+            <TimestampValue
+                :show-none="true"
+                :timestamp="nftInfo?.created_timestamp"
+            />
+          </template>
+        </Property>
+        <Property id="modifiedTimeStamp" custom-nb-col-class="is-one-quarter">
+          <template #name>Modified</template>
+          <template #value>
+            <TimestampValue
+                :timestamp="nftInfo?.modified_timestamp"
+                :show-none="true"
+            />
+          </template>
+        </Property>
+        <Property id="spenderId" custom-nb-col-class="is-one-quarter">
+          <template #name>Spender</template>
+          <template #value>
+            <AccountLink
+                :account-id="nftInfo?.spender"
+                :show-none="true"
+            />
+          </template>
+        </Property>
+        <Property id="delegatingSpender" custom-nb-col-class="is-one-quarter">
+          <template #name>Delegating Spender</template>
+          <template #value>
+            <AccountLink
+                :account-id="nftInfo?.delegating_spender"
+            />
+          </template>
+        </Property>
+        <Property id="createTransaction" custom-nb-col-class="is-one-quarter">>
+          <template #name>Mint Transaction</template>
+          <template #value>
+            <TransactionLink :transactionLoc="nftInfo?.created_timestamp ?? undefined"/>
+          </template>
+        </Property>
+      </template>
 
-      </DashboardCardV2>
+    </DashboardCardV2>
 
-      <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
+    <MetadataSection :metadata-analyzer="metadataAnalyzer"/>
 
-      <DashboardCardV2 v-if="nftInfo" id="recentTransactions" collapsible-key="recentNftTransactions">
-        <template #title>
-          Recent Transactions
-        </template>
+    <DashboardCardV2 v-if="nftInfo" id="recentTransactions" collapsible-key="recentNftTransactions">
+      <template #title>
+        Recent Transactions
+      </template>
 
-        <template #left-control>
-          <PlayPauseButton :controller="transactionTableController"/>
-        </template>
+      <template #left-control>
+        <PlayPauseButton :controller="transactionTableController"/>
+      </template>
 
-        <template #right-control>
-          <TransactionFilterSelect v-model:selected-filter="transactionType" nft-filter/>
-        </template>
+      <template #right-control>
+        <TransactionFilterSelect v-model:selected-filter="transactionType" nft-filter/>
+      </template>
 
-        <template #content>
-          <NftTransactionTable
-              :controller="transactionTableController"
-              :narrowed="true"
-              id="recentTransactionsTable"
-          />
-        </template>
-      </DashboardCardV2>
+      <template #content>
+        <NftTransactionTable
+            :controller="transactionTableController"
+            :narrowed="true"
+            id="recentTransactionsTable"
+        />
+      </template>
+    </DashboardCardV2>
 
-      <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
+    <ContractResultsSection :contract-id="normalizedTokenId ?? undefined"/>
 
-      <MirrorLink :network="props.network" entityUrl="tokens" :loc="normalizedTokenId + '/nfts/' + serialNumber"/>
-    </div>
+    <MirrorLink :network="props.network" entityUrl="tokens" :loc="normalizedTokenId + '/nfts/' + serialNumber"/>
 
   </PageFrameV2>
 
@@ -320,14 +318,6 @@ const imageUrl = metadataAnalyzer.imageUrl
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 div.title-extra {
   color: var(--network-text-accent-color);

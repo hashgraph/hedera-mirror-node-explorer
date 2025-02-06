@@ -26,73 +26,71 @@
 
   <PageFrameV2 page-title="Nodes">
 
-    <div class="page-container">
-      <DashboardCardV2 v-if="enableStaking" collapsible-key="networkDetails">
-        <template #title>
-          <span>Network</span>
-        </template>
+    <DashboardCardV2 v-if="enableStaking" collapsible-key="networkDetails">
+      <template #title>
+        <span>Network</span>
+      </template>
 
-        <template #content>
-          <div class="network-dashboard">
-            <NetworkDashboardItemV2
-                title="LAST STAKED"
-                :value="formatSeconds((elapsedMin??0)*60) + ' ago'"
-            />
-            <NetworkDashboardItemV2
-                title="NEXT STAKING PERIOD"
-                :value="'in ' + formatSeconds((remainingMin??0)*60)"
-            />
-            <NetworkDashboardItemV2
-                title="STAKING PERIOD"
-                :value="formatSeconds((durationMin??0)*60)"
-            />
-            <NetworkDashboardItemV2
-                :unit=cryptoName
-                title="TOTAL STAKED"
-                :value="makeFloorHbarAmount(stakeTotal)"
-                :tooltip-label="stakeTotalTooltip"
-            />
-            <NetworkDashboardItemV2
-                :unit=cryptoName
-                title="STAKED FOR REWARD"
-                :value="makeFloorHbarAmount(stakeRewardedTotal)"
-                :tooltip-label="stakeRewardedTotalTooltip"
-            />
-            <NetworkDashboardItemV2
-                :unit=cryptoName
-                title="MAXIMUM STAKED FOR REWARD"
-                :value="makeFloorHbarAmount(maxStakeRewarded)"
-                :tooltip-label="maxStakeRewardedTooltip"
-            />
-            <NetworkDashboardItemV2
-                :unit=cryptoName
-                title="REWARDED LAST PERIOD"
-                :value="makeFloorHbarAmount(totalRewarded)"
-                :tooltip-label="totalRewardedTooltip"
-            />
-            <NetworkDashboardItemV2
-                title="MAXIMUM REWARD RATE"
-                :value="makeAnnualizedRate(maxRewardRate)"
-                :tooltip-label="maxRewardRateTooltip"
-            />
-            <NetworkDashboardItemV2
-                title="CURRENT REWARD RATE"
-                :value="makeAnnualizedRate(rewardRate)"
-                :tooltip-label="rewardRateTooltip"
-            />
-          </div>
-        </template>
-      </DashboardCardV2>
+      <template #content>
+        <div class="network-dashboard">
+          <NetworkDashboardItemV2
+              title="LAST STAKED"
+              :value="formatSeconds((elapsedMin??0)*60) + ' ago'"
+          />
+          <NetworkDashboardItemV2
+              title="NEXT STAKING PERIOD"
+              :value="'in ' + formatSeconds((remainingMin??0)*60)"
+          />
+          <NetworkDashboardItemV2
+              title="STAKING PERIOD"
+              :value="formatSeconds((durationMin??0)*60)"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="TOTAL STAKED"
+              :value="makeFloorHbarAmount(stakeTotal)"
+              :tooltip-label="stakeTotalTooltip"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="STAKED FOR REWARD"
+              :value="makeFloorHbarAmount(stakeRewardedTotal)"
+              :tooltip-label="stakeRewardedTotalTooltip"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="MAXIMUM STAKED FOR REWARD"
+              :value="makeFloorHbarAmount(maxStakeRewarded)"
+              :tooltip-label="maxStakeRewardedTooltip"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="REWARDED LAST PERIOD"
+              :value="makeFloorHbarAmount(totalRewarded)"
+              :tooltip-label="totalRewardedTooltip"
+          />
+          <NetworkDashboardItemV2
+              title="MAXIMUM REWARD RATE"
+              :value="makeAnnualizedRate(maxRewardRate)"
+              :tooltip-label="maxRewardRateTooltip"
+          />
+          <NetworkDashboardItemV2
+              title="CURRENT REWARD RATE"
+              :value="makeAnnualizedRate(rewardRate)"
+              :tooltip-label="rewardRateTooltip"
+          />
+        </div>
+      </template>
+    </DashboardCardV2>
 
-      <DashboardCardV2 collapsible-key="nodes">
-        <template #title>
-          <span>{{ `${nodes.length}  Nodes` }}</span>
-        </template>
-        <template #content>
-          <NodeTable :nodes="nodes" :stake-total="stakeTotal"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2 collapsible-key="nodes">
+      <template #title>
+        <span>{{ `${nodes.length}  Nodes` }}</span>
+      </template>
+      <template #content>
+        <NodeTable :nodes="nodes" :stake-total="stakeTotal"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 
@@ -163,14 +161,6 @@ const remainingMin = networkNodeAnalyzer.remainingMin
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 div.network-dashboard {
   display: grid;

@@ -26,36 +26,34 @@
 
   <PageFrameV2 page-title="Contracts">
 
-    <div class="page-container">
-      <DashboardCardV2>
-        <template #title>
-          <span>Recent Contracts</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
-          <PlayPauseButton v-else :controller="verifiedContractsController"/>
-        </template>
-        <template #right-control>
-          <div class="verify-switch">
-            <div class="switch-text">All</div>
-            <SwitchView v-model="filterVerified"/>
-            <div class="switch-text">Verified</div>
-          </div>
-        </template>
-        <template #content>
-          <ContractTable
-              v-if="!filterVerified"
-              :controller="contractTableController"
-          />
-          <VerifiedContractsTable
-              v-else
-              :controller="verifiedContractsController"
-              :loaded="loaded"
-              :overflow="overflow"
-          />
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        <span>Recent Contracts</span>
+      </template>
+      <template #left-control>
+        <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
+        <PlayPauseButton v-else :controller="verifiedContractsController"/>
+      </template>
+      <template #right-control>
+        <div class="verify-switch">
+          <div class="switch-text">All</div>
+          <SwitchView v-model="filterVerified"/>
+          <div class="switch-text">Verified</div>
+        </div>
+      </template>
+      <template #content>
+        <ContractTable
+            v-if="!filterVerified"
+            :controller="contractTableController"
+        />
+        <VerifiedContractsTable
+            v-else
+            :controller="verifiedContractsController"
+            :loaded="loaded"
+            :overflow="overflow"
+        />
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 
@@ -108,14 +106,6 @@ const overflow = verifiedContractsController.overflow
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 div.verify-switch {
   align-items: center;

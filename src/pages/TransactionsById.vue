@@ -26,16 +26,14 @@
 
   <PageFrameV2 page-title="Transactions by ID">
 
-    <div class="h-page-content">
-      <DashboardCardV2>
-        <template #title>
-          {{ `Transactions with ID ${normalizedTransactionId}` }}
-        </template>
-        <template #content>
-          <TransactionByIdTable :transactions="transactions"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        {{ `Transactions with ID ${normalizedTransactionId}` }}
+      </template>
+      <template #content>
+        <TransactionByIdTable :transactions="transactions"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 

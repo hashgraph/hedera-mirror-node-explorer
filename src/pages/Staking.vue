@@ -33,92 +33,88 @@
     />
 
     <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
-                         :account-id="accountId"
-                         v-on:staking-changed="stakingChanged"/>
+                       :account-id="accountId"
+                       v-on:staking-changed="stakingChanged"/>
 
-    <div class="page-container">
+    <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
+      <template #title>
+        <span>My Staking </span>
+        <template v-if="accountId">
+          <span> for account </span>
+          <AccountLink :account-id="accountId"/>
+          <span class="checksum">-{{ accountChecksum }}</span>
+        </template>
+      </template>
 
-      <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
-        <template #title>
-          <span>My Staking </span>
+      <template #content>
+
+        <div class="my-staking-section">
+
           <template v-if="accountId">
-            <span> for account </span>
-            <AccountLink :account-id="accountId"/>
-            <span class="checksum">-{{ accountChecksum }}</span>
+
+            <div class="my-staking-dashboard">
+              <NetworkDashboardItemV2
+                  title="STAKED TO"
+                  :value="stakedTo"
+                  :extra="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+              />
+              <NetworkDashboardItemV2
+                  title="MY STAKE"
+                  :value="stakedAmount"
+                  :unit="stakedAmount ? cryptoName : ''"
+              />
+              <NetworkDashboardItemV2
+                  v-if="!ignoreReward && declineReward && !pendingReward"
+                  title="REWARDS"
+                  value="Declined"
+              />
+              <NetworkDashboardItemV2
+                  v-else
+                  title="PENDING REWARDS"
+                  :value="pendingReward"
+                  :unit="pendingReward ? cryptoName : ''"
+              />
+            </div>
+
+            <div v-if="isHieroWallet" class="my-staking-buttons">
+              <ButtonView
+                  id="stopStakingButton"
+                  :enabled="stakedTo !== null"
+                  @action="stopStakingDialogVisible = true"
+              >
+                STOP STAKING
+              </ButtonView>
+              <ButtonView
+                  id="showStakingDialog"
+                  :is-default="true"
+                  @action="changeStakingDialogVisible = true"
+              >
+                CHANGE STAKING
+              </ButtonView>
+            </div>
+            <p v-else class="connect-wallet-text">
+              To change your staking options use Blade or HashPack.
+            </p>
+
+            <p class="staking-notice">
+              <span>Please Note: Your full balance is automatically staked. </span>
+              <span>Your funds are fully available for use while staked. You can unstake or switch nodes freely.</span>
+            </p>
           </template>
-        </template>
 
-        <template #content>
+          <template v-else>
+            <p class="connect-wallet-text">
+              To view or change your staking options first connect your wallet.
+            </p>
+          </template>
+        </div>
 
-          <div class="my-staking-section">
+      </template>
+    </DashboardCardV2>
 
-            <template v-if="accountId">
+    <RecentRewardsSection/>
 
-              <div class="my-staking-dashboard">
-                <NetworkDashboardItemV2
-                    title="STAKED TO"
-                    :value="stakedTo"
-                    :extra="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
-                />
-                <NetworkDashboardItemV2
-                    title="MY STAKE"
-                    :value="stakedAmount"
-                    :unit="stakedAmount ? cryptoName : ''"
-                />
-                <NetworkDashboardItemV2
-                    v-if="!ignoreReward && declineReward && !pendingReward"
-                    title="REWARDS"
-                    value="Declined"
-                />
-                <NetworkDashboardItemV2
-                    v-else
-                    title="PENDING REWARDS"
-                    :value="pendingReward"
-                    :unit="pendingReward ? cryptoName : ''"
-                />
-              </div>
-
-              <div v-if="isHieroWallet" class="my-staking-buttons">
-                <ButtonView
-                    id="stopStakingButton"
-                    :enabled="stakedTo !== null"
-                    @action="stopStakingDialogVisible = true"
-                >
-                  STOP STAKING
-                </ButtonView>
-                <ButtonView
-                    id="showStakingDialog"
-                    :is-default="true"
-                    @action="changeStakingDialogVisible = true"
-                >
-                  CHANGE STAKING
-                </ButtonView>
-              </div>
-              <p v-else class="connect-wallet-text">
-                To change your staking options use Blade or HashPack.
-              </p>
-
-              <p class="staking-notice">
-                <span>Please Note: Your full balance is automatically staked. </span>
-                <span>Your funds are fully available for use while staked. You can unstake or switch nodes freely.</span>
-              </p>
-            </template>
-
-            <template v-else>
-              <p class="connect-wallet-text">
-                To view or change your staking options first connect your wallet.
-              </p>
-            </template>
-          </div>
-
-        </template>
-      </DashboardCardV2>
-
-      <RecentRewardsSection/>
-
-      <RewardsCalculator :amount-in-hbar="balanceInHbar" :node-id="stakedNode?.node_id"/>
-
-    </div>
+    <RewardsCalculator :amount-in-hbar="balanceInHbar" :node-id="stakedNode?.node_id"/>
 
   </PageFrameV2>
 
@@ -233,14 +229,6 @@ const stakedNode = stakedNodeAnalyzer.node
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 div.my-staking-dashboard {
   display: flex;

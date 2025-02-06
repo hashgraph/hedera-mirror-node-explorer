@@ -26,88 +26,84 @@
 
   <PageFrameV2 page-title="Block Details">
 
-    <div class="page-container">
+    <DashboardCardV2 collapsible-key="blockDetails">
+      <template #title>
+        Block {{ block?.number?.toString() ?? "" }}
+      </template>
 
-      <DashboardCardV2 collapsible-key="blockDetails">
-        <template #title>
-          Block {{ block?.number?.toString() ?? "" }}
-        </template>
+      <template #right-control>
+        <ButtonView
+            id="prev-block-button"
+            :enabled="!disablePreviousButton"
+            :size="ButtonSize.small"
+            @action="handlePreviousBlock"
+        >
+          <ArrowLeft :size="18" class="block-navigation-button"/>
+          <span class="block-navigation-button">{{ isSmallScreen ? 'PREV. BLOCK' : 'PREV.' }}</span>
+        </ButtonView>
+        <ButtonView
+            id="next-block-button"
+            :enabled="!disableNextButton"
+            :size="ButtonSize.small"
+            @action="handleNextBlock"
+        >
+          <span class="block-navigation-button">{{ isSmallScreen ? 'NEXT BLOCK' : 'NEXT' }}</span>
+          <ArrowRight :size="18" class="block-navigation-button"/>
+        </ButtonView>
+      </template>
 
-        <template #right-control>
-          <ButtonView
-              id="prev-block-button"
-              :enabled="!disablePreviousButton"
-              :size="ButtonSize.small"
-              @action="handlePreviousBlock"
-          >
-            <ArrowLeft :size="18" class="block-navigation-button"/>
-            <span class="block-navigation-button">{{ isSmallScreen ? 'PREV. BLOCK' : 'PREV.' }}</span>
-          </ButtonView>
-          <ButtonView
-              id="next-block-button"
-              :enabled="!disableNextButton"
-              :size="ButtonSize.small"
-              @action="handleNextBlock"
-          >
-            <span class="block-navigation-button">{{ isSmallScreen ? 'NEXT BLOCK' : 'NEXT' }}</span>
-            <ArrowRight :size="18" class="block-navigation-button"/>
-          </ButtonView>
-        </template>
+      <template #content>
+        <NotificationBanner v-if="notification" :message="notification"/>
 
-        <template #content>
-          <NotificationBanner v-if="notification" :message="notification"/>
+        <Property id="count" full-width>
+          <template #name>No. Transactions</template>
+          <template v-slot:value>
+            <PlainAmount :amount="block?.count"/>
+          </template>
+        </Property>
+        <Property id="blockHash" full-width>
+          <template v-slot:name>Hash</template>
+          <template v-slot:value>
+            <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
+          </template>
+        </Property>
+        <Property id="fromTimestamp" full-width>
+          <template v-slot:name>From Timestamp</template>
+          <template v-slot:value>
+            <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
+          </template>
+        </Property>
+        <Property id="toTimestamp" full-width>
+          <template v-slot:name>To Timestamp</template>
+          <template v-slot:value>
+            <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
+          </template>
+        </Property>
+        <Property id="gasUsed" full-width>
+          <template v-slot:name>Gas Used</template>
+          <template v-slot:value>
+            <PlainAmount :amount="block?.gas_used"/>
+          </template>
+        </Property>
+        <Property id="recordFileName" full-width>
+          <template v-slot:name>Record File Name</template>
+          <template v-slot:value>
+            <StringValue :string-value="block?.name"/>
+          </template>
+        </Property>
+      </template>
+    </DashboardCardV2>
 
-          <Property id="count" full-width>
-            <template #name>No. Transactions</template>
-            <template v-slot:value>
-              <PlainAmount :amount="block?.count"/>
-            </template>
-          </Property>
-          <Property id="blockHash" full-width>
-            <template v-slot:name>Hash</template>
-            <template v-slot:value>
-              <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
-            </template>
-          </Property>
-          <Property id="fromTimestamp" full-width>
-            <template v-slot:name>From Timestamp</template>
-            <template v-slot:value>
-              <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
-            </template>
-          </Property>
-          <Property id="toTimestamp" full-width>
-            <template v-slot:name>To Timestamp</template>
-            <template v-slot:value>
-              <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
-            </template>
-          </Property>
-          <Property id="gasUsed" full-width>
-            <template v-slot:name>Gas Used</template>
-            <template v-slot:value>
-              <PlainAmount :amount="block?.gas_used"/>
-            </template>
-          </Property>
-          <Property id="recordFileName" full-width>
-            <template v-slot:name>Record File Name</template>
-            <template v-slot:value>
-              <StringValue :string-value="block?.name"/>
-            </template>
-          </Property>
-        </template>
-      </DashboardCardV2>
+    <DashboardCardV2 id="blockTransactions" collapsible-key="blockTransactions">
+      <template #title>
+        Block Transactions
+      </template>
+      <template #content>
+        <BlockTransactionTable :transactions="transactions"/>
+      </template>
+    </DashboardCardV2>
 
-      <DashboardCardV2 id="blockTransactions" collapsible-key="blockTransactions">
-        <template #title>
-          Block Transactions
-        </template>
-        <template #content>
-          <BlockTransactionTable :transactions="transactions"/>
-        </template>
-      </DashboardCardV2>
-
-      <MirrorLink :network="props.network" entityUrl="blocks" :loc="props.blockHon"/>
-
-    </div>
+    <MirrorLink :network="props.network" entityUrl="blocks" :loc="props.blockHon"/>
 
   </PageFrameV2>
 
@@ -181,14 +177,6 @@ const notification = blockLocParser.errorNotification
 </script>
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 .block-navigation-button {
   color: var(--text-primary);

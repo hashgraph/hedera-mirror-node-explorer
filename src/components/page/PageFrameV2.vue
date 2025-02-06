@@ -24,11 +24,13 @@
 
 <template>
 
-    <PageHeader :page-title="props.pageTitle"/>
+  <PageHeader :page-title="props.pageTitle"/>
 
+  <div class="h-page-content">
     <slot/>
+  </div>
 
-    <Footer/>
+  <Footer/>
 
 </template>
 

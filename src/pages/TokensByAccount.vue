@@ -26,12 +26,10 @@
 
   <PageFrameV2 page-title="Tokens by Account">
 
-    <div class="page-container">
-      <TokensSection
-          :account-id="props.accountId"
-          :full-page="true"
-      />
-    </div>
+    <TokensSection
+        :account-id="props.accountId"
+        :full-page="true"
+    />
 
   </PageFrameV2>
 
@@ -62,14 +60,6 @@ const props = defineProps({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>
 

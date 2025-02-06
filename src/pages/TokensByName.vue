@@ -26,16 +26,14 @@
 
   <PageFrameV2 page-title="Tokens by Name">
 
-    <div class="h-page-content">
-      <DashboardCardV2>
-        <template #title>
-          {{ `Tokens matching "${props.name}"` }}
-        </template>
-        <template #content>
-          <TokensByNameTable :name="props.name"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        {{ `Tokens matching "${props.name}"` }}
+      </template>
+      <template #content>
+        <TokensByNameTable :name="props.name"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 

@@ -26,31 +26,29 @@
 
   <PageFrameV2 page-title="Admin Key Details">
 
-    <div class="h-page-content">
-      <DashboardCardV2>
-        <template #title>
-          <span>Admin Key for Account </span>
-          <div v-if="normalizedAccountId">
-            <AccountLink id="accountId" :account-id="normalizedAccountId">
-              {{ normalizedAccountId }}
-            </AccountLink>
-            <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
-          </div>
-        </template>
+    <DashboardCardV2>
+      <template #title>
+        <span>Admin Key for Account </span>
+        <div v-if="normalizedAccountId">
+          <AccountLink id="accountId" :account-id="normalizedAccountId">
+            {{ normalizedAccountId }}
+          </AccountLink>
+          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+        </div>
+      </template>
 
-        <template #content>
-          <NotificationBanner v-if="notification" :message="notification"/>
+      <template #content>
+        <NotificationBanner v-if="notification" :message="notification"/>
 
-          <KeyValue
-              v-if="normalizedAccountId"
-              :details="true"
-              :key-bytes="key?.key"
-              :key-type="key?._type"
-              :show-none="true"
-          />
-        </template>
-      </DashboardCardV2>
-    </div>
+        <KeyValue
+            v-if="normalizedAccountId"
+            :details="true"
+            :key-bytes="key?.key"
+            :key-type="key?._type"
+            :show-none="true"
+        />
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 

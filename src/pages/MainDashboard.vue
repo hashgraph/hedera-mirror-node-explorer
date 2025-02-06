@@ -26,58 +26,54 @@
 
   <PageFrameV2 page-title="Dashboard">
 
-    <div class="h-page-content">
-
-      <DashboardCardV2 data-cy="cryptoTransfers">
-        <template #title>
-          <span>Crypto Transfers</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton :controller="cryptoTableController"/>
-        </template>
-        <template #content>
-          <SimpleTransactionTable :controller="cryptoTableController"/>
-          <ArrowLink
-              :route="routeManager.makeRouteToTransactions(TransactionType.CRYPTOTRANSFER)"
-              text="All Crypto Transfers"
-          />
-        </template>
-      </DashboardCardV2>
+    <DashboardCardV2 data-cy="cryptoTransfers">
+      <template #title>
+        <span>Crypto Transfers</span>
+      </template>
+      <template #left-control>
+        <PlayPauseButton :controller="cryptoTableController"/>
+      </template>
+      <template #content>
+        <SimpleTransactionTable :controller="cryptoTableController"/>
+        <ArrowLink
+            :route="routeManager.makeRouteToTransactions(TransactionType.CRYPTOTRANSFER)"
+            text="All Crypto Transfers"
+        />
+      </template>
+    </DashboardCardV2>
 
       <div class="side-by-side-container">
 
-        <DashboardCardV2 data-cy="smartContractCalls">
-          <template #title>
-            <span>Smart Contract Calls</span>
-          </template>
-          <template #left-control>
-            <PlayPauseButton :controller="contractTableController"/>
-          </template>
-          <template #content>
-            <SimpleTransactionTable :controller="contractTableController"/>
-            <ArrowLink
-                :route="routeManager.makeRouteToTransactions(TransactionType.CONTRACTCALL)"
-                text="All Smart Contract Calls"
-            />
-          </template>
-        </DashboardCardV2>
-        <DashboardCardV2 data-cy="hcsMessages">
-          <template #title>
-            <span>HCS Messages</span>
-          </template>
-          <template #left-control>
-            <PlayPauseButton :controller="messageTableController"/>
-          </template>
-          <template #content>
-            <MessageTransactionTable v-bind:controller="messageTableController"/>
-            <ArrowLink
-                :route="routeManager.makeRouteToTransactions(TransactionType.CONSENSUSSUBMITMESSAGE)"
-                text="All HCS Messages"
-            />
-          </template>
-        </DashboardCardV2>
-
-      </div>
+      <DashboardCardV2 data-cy="smartContractCalls">
+        <template #title>
+          <span>Smart Contract Calls</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButton :controller="contractTableController"/>
+        </template>
+        <template #content>
+          <SimpleTransactionTable :controller="contractTableController"/>
+          <ArrowLink
+              :route="routeManager.makeRouteToTransactions(TransactionType.CONTRACTCALL)"
+              text="All Smart Contract Calls"
+          />
+        </template>
+      </DashboardCardV2>
+      <DashboardCardV2 data-cy="hcsMessages">
+        <template #title>
+          <span>HCS Messages</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButton :controller="messageTableController"/>
+        </template>
+        <template #content>
+          <MessageTransactionTable v-bind:controller="messageTableController"/>
+          <ArrowLink
+              :route="routeManager.makeRouteToTransactions(TransactionType.CONSENSUSSUBMITMESSAGE)"
+              text="All HCS Messages"
+          />
+        </template>
+      </DashboardCardV2>
 
     </div>
 

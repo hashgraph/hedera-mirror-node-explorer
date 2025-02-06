@@ -26,20 +26,18 @@
 
   <PageFrameV2 page-title="Accounts">
 
-    <div class="h-page-content">
-      <DashboardCardV2>
-        <template #title>
-          <span>Accounts with Key </span>
-          <span>{{ props.pubKey }}</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton :controller="accountTableController"/>
-        </template>
-        <template #content>
-          <AccountTable :controller="accountTableController"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        <span>Accounts with Key </span>
+        <span>{{ props.pubKey }}</span>
+      </template>
+      <template #left-control>
+        <PlayPauseButton :controller="accountTableController"/>
+      </template>
+      <template #content>
+        <AccountTable :controller="accountTableController"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 

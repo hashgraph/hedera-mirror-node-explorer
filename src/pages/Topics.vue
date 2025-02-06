@@ -26,16 +26,14 @@
 
   <PageFrameV2 page-title="Topics">
 
-    <div class="page-container">
-      <DashboardCardV2>
-        <template #title>
-          <span>Recent Topics</span>
-        </template>
-        <template #content>
-          <TopicTable v-bind:controller="transactionTableController"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        <span>Recent Topics</span>
+      </template>
+      <template #content>
+        <TopicTable v-bind:controller="transactionTableController"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 
@@ -85,13 +83,5 @@ watch(() => props.network, () => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>

@@ -26,243 +26,240 @@
 
   <PageFrameV2 page-title="Transaction Details">
 
-    <div class="page-container">
-
-      <DashboardCardV2 collapsible-key="transactionDetails">
-        <template #title>
-          <span>Transaction </span>
-          <TransactionIdValue :id="formattedTransactionId"/>
-          <template v-if="transaction">
-            <div v-if="transactionSucceeded" class="h-has-pill h-status-success" style="margin-top: 2px">
-              SUCCESS
-            </div>
-            <div v-else class="h-has-pill h-status-error" style="margin-top: 2px">
-              FAILURE
-            </div>
-          </template>
-        </template>
-        <template #right-control>
-          <SelectView
-              data-cy="select-format"
-              v-model="txIdForm"
-              small
-          >
-            <option value="atForm">DEFAULT FORMAT</option>
-            <option value="dashForm">EXCHANGE FORMAT</option>
-          </SelectView>
-        </template>
-        <!--
-              <template #subtitle>
-                <div v-if="routeToAllTransactions">
-                  <router-link :to="routeToAllTransactions" id="allTransactionsLink">
-                    <span>Show all transactions with the same ID</span>
-                  </router-link>
-                </div>
-              </template>
-        -->
-        <template v-if="notification" #content>
-          <NotificationBanner :message="notification"/>
-        </template>
-
-        <template #left-content>
-          <Property id="transactionType">
-            <template #name>Type</template>
-            <template #value>
-              <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
-              <div v-if="scheduledTransaction" id="scheduledLink">
-                <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
-                  <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
-                </router-link>
-              </div>
-            </template>
-          </Property>
-          <Property v-if="displayResult" id="result">
-            <template #name>Result</template>
-            <template #value>
-              <StringValue :string-value="transaction?.result"/>
-            </template>
-          </Property>
-          <Property id="consensusAt">
-            <template #name>Consensus at</template>
-            <template #value>
-              <TimestampValue :show-none="true" :timestamp="transaction?.consensus_timestamp"/>
-            </template>
-          </Property>
-          <Property id="transactionHash">
-            <template #name>Transaction Hash</template>
-            <template #value>
-              <HexaValue :byteString="formattedHash" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="blockNumber">
-            <template #name>Block</template>
-            <template #value>
-              <BlockLink :block-number="blockNumber !== null ? blockNumber : undefined"/>
-            </template>
-          </Property>
-          <Property id="nodeAccount">
-            <template #name>Node Submitted To</template>
-            <template #value>
-              <AccountLink :accountId="transaction?.node" :show-extra="true"/>
-            </template>
-          </Property>
-          <Property id="memo">
-            <template #name>Memo</template>
-            <template #value>
-              <BlobValue :base64="true" :blob-value="transaction?.memo_base64" :show-none="true"/>
-            </template>
-          </Property>
-        </template>
-
-        <template #right-content>
-          <Property v-if="isTokenAssociation && associatedTokens.length" id="associatedTokenId">
-            <template #name>
-              Associated Token<span v-if="associatedTokens.length > 1">s</span>
-            </template>
-            <template #value>
-              <TokenLink v-for="t of associatedTokens" :key="t" :token-id="t" :show-extra="true"/>
-            </template>
-          </Property>
-          <Property v-if="systemContract" id="entityId">
-            <template #name>Contract ID</template>
-            <template #value>{{ systemContract }}</template>
-          </Property>
-          <Property v-else-if="transaction?.entity_id" id="entityId">
-            <template #name>{{ entity?.label }}</template>
-            <template #value>
-              <SmartLink v-if="entity?.routeName"
-                         :entity-id="transaction?.entity_id"
-                         :route-name="routeName ?? undefined"
-                         :show-extra="true"
-              />
-              <span v-else>
-                  {{ transaction?.entity_id }}
-                </span>
-            </template>
-          </Property>
-          <Property v-if="transactionType === TransactionType.ETHEREUMTRANSACTION" id="senderAccount">
-            <template #name>Sender Account</template>
-            <template #value>
-              <AccountLink :accountId="senderAccount"
-                           :show-extra="true"/>
-            </template>
-          </Property>
-          <Property id="operatorAccount">
-            <template #name>
-              {{ transactionType === TransactionType.ETHEREUMTRANSACTION ? 'Relay Account' : 'Payer Account' }}
-            </template>
-            <template #value>
-              <AccountLink v-if="transaction" :accountId="operatorAccount"
-                           :show-extra="true"/>
-            </template>
-          </Property>
-          <Property id="chargedFee">
-            <template #name>Charged Fee</template>
-            <template #value>
-              <HbarAmount v-if="transaction" :amount="transaction.charged_tx_fee"
-                          :show-extra="true" :timestamp="transaction.consensus_timestamp"/>
-            </template>
-          </Property>
-          <Property id="maxFee"
-                    :tooltip="showMaxFeeTooltip
-                  ? `Max Fee limit does not include the ${cryptoName} cost of gas consumed by transactions executed on the EVM.`
-                  : undefined">
-            <template #name>
-              <span>Max Fee</span>
-            </template>
-            <template #value>
-              <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
-                          :timestamp="transaction.consensus_timestamp"/>
-            </template>
-          </Property>
-          <Property v-if="false" id="netAmount">
-            <template #name>Net Amount</template>
-            <template #value>
-              <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
-                          :timestamp="transaction?.consensus_timestamp"/>
-            </template>
-          </Property>
-          <Property id="duration">
-            <template #name>Valid Duration</template>
-            <template #value>
-              <DurationValue :string-value="transaction?.valid_duration_seconds" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="nonce">
-            <template #name>Transaction Nonce</template>
-            <template #value>
-              {{ transaction?.nonce }}
-            </template>
-          </Property>
-          <Property id="scheduled">
-            <template #name>Scheduled</template>
-            <template v-if="transaction?.scheduled===true" #value>
-              True
-              <div v-if="schedulingTransaction" id="schedulingLink">
-                <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
-                  <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
-                </router-link>
-              </div>
-            </template>
-            <template v-else-if="scheduledTransaction!==null" #value>
-              False
-            </template>
-            <template v-else #value>
-              <span class="has-text-grey">False</span>
-            </template>
-          </Property>
-          <Property v-if="parentTransaction" id="parentTransaction">
-            <template #name>Parent Transaction</template>
-            <template #value>
-              <router-link :to="routeManager.makeRouteToTransactionObj(parentTransaction)">
-                {{ makeTypeLabel(parentTransaction.name) }}
-              </router-link>
-            </template>
-          </Property>
-          <Property v-if="childTransactions.length" id="childTransactions">
-            <template #name>Child Transactions</template>
-            <template #value>
-              <div v-for="tx in childTransactions.slice(0, MAX_INLINE_CHILDREN)" :key="tx.nonce">
-                <router-link :to="routeManager.makeRouteToTransactionObj(tx)">
-                  <span class="is-numeric">{{ '#' + tx.nonce }}</span>
-                  <span class="ml-2">{{ makeTypeLabel(tx.name) }}</span>
-                </router-link>
-                <span v-for="id in getTargetedTokens(tx, 5)" :key="id" class="ml-2">
-                <TokenExtra :token-id="id" :use-anchor="true"/>
-              </span>
-              </div>
-              <router-link v-if="displayAllChildrenLinks" class="has-text-grey"
-                           :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
-                {{ 'Show all ' + childTransactions.length + ' child transactions' }}
-              </router-link>
-            </template>
-          </Property>
-        </template>
-      </DashboardCardV2>
-
-      <DashboardCardV2 v-if="displayTransfers" collapsible-key="transfers">
-        <template #title>
-          <span>Transfers</span>
-        </template>
-        <template #content>
-          <div>
-            <TransferGraphSection :transaction="transaction ?? undefined"/>
+    <DashboardCardV2 collapsible-key="transactionDetails">
+      <template #title>
+        <span>Transaction </span>
+        <TransactionIdValue :id="formattedTransactionId"/>
+        <template v-if="transaction">
+          <div v-if="transactionSucceeded" class="h-has-pill h-status-success" style="margin-top: 2px">
+            SUCCESS
+          </div>
+          <div v-else class="h-has-pill h-status-error" style="margin-top: 2px">
+            FAILURE
           </div>
         </template>
-      </DashboardCardV2>
+      </template>
+      <template #right-control>
+        <SelectView
+            data-cy="select-format"
+            v-model="txIdForm"
+            small
+        >
+          <option value="atForm">DEFAULT FORMAT</option>
+          <option value="dashForm">EXCHANGE FORMAT</option>
+        </SelectView>
+      </template>
+      <!--
+            <template #subtitle>
+              <div v-if="routeToAllTransactions">
+                <router-link :to="routeToAllTransactions" id="allTransactionsLink">
+                  <span>Show all transactions with the same ID</span>
+                </router-link>
+              </div>
+            </template>
+      -->
+      <template v-if="notification" #content>
+        <NotificationBanner :message="notification"/>
+      </template>
 
-      <TopicMessage :message="topicMessage"/>
+      <template #left-content>
+        <Property id="transactionType">
+          <template #name>Type</template>
+          <template #value>
+            <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
+            <div v-if="scheduledTransaction" id="scheduledLink">
+              <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
+                <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
+              </router-link>
+            </div>
+          </template>
+        </Property>
+        <Property v-if="displayResult" id="result">
+          <template #name>Result</template>
+          <template #value>
+            <StringValue :string-value="transaction?.result"/>
+          </template>
+        </Property>
+        <Property id="consensusAt">
+          <template #name>Consensus at</template>
+          <template #value>
+            <TimestampValue :show-none="true" :timestamp="transaction?.consensus_timestamp"/>
+          </template>
+        </Property>
+        <Property id="transactionHash">
+          <template #name>Transaction Hash</template>
+          <template #value>
+            <HexaValue :byteString="formattedHash" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="blockNumber">
+          <template #name>Block</template>
+          <template #value>
+            <BlockLink :block-number="blockNumber !== null ? blockNumber : undefined"/>
+          </template>
+        </Property>
+        <Property id="nodeAccount">
+          <template #name>Node Submitted To</template>
+          <template #value>
+            <AccountLink :accountId="transaction?.node" :show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="memo">
+          <template #name>Memo</template>
+          <template #value>
+            <BlobValue :base64="true" :blob-value="transaction?.memo_base64" :show-none="true"/>
+          </template>
+        </Property>
+      </template>
 
-      <ContractResult :timestamp="transaction?.consensus_timestamp"
-                      :is-parent="transaction?.parent_consensus_timestamp === null"
-                      :block-number="blockNumber ?? undefined"
-                      :transaction-hash="formattedHash ?? undefined"
-                      :transaction-type="transaction?.name ?? undefined"
-      />
+      <template #right-content>
+        <Property v-if="isTokenAssociation && associatedTokens.length" id="associatedTokenId">
+          <template #name>
+            Associated Token<span v-if="associatedTokens.length > 1">s</span>
+          </template>
+          <template #value>
+            <TokenLink v-for="t of associatedTokens" :key="t" :token-id="t" :show-extra="true"/>
+          </template>
+        </Property>
+        <Property v-if="systemContract" id="entityId">
+          <template #name>Contract ID</template>
+          <template #value>{{ systemContract }}</template>
+        </Property>
+        <Property v-else-if="transaction?.entity_id" id="entityId">
+          <template #name>{{ entity?.label }}</template>
+          <template #value>
+            <SmartLink v-if="entity?.routeName"
+                       :entity-id="transaction?.entity_id"
+                       :route-name="routeName ?? undefined"
+                       :show-extra="true"
+            />
+            <span v-else>
+                  {{ transaction?.entity_id }}
+                </span>
+          </template>
+        </Property>
+        <Property v-if="transactionType === TransactionType.ETHEREUMTRANSACTION" id="senderAccount">
+          <template #name>Sender Account</template>
+          <template #value>
+            <AccountLink :accountId="senderAccount"
+                         :show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="operatorAccount">
+          <template #name>
+            {{ transactionType === TransactionType.ETHEREUMTRANSACTION ? 'Relay Account' : 'Payer Account' }}
+          </template>
+          <template #value>
+            <AccountLink v-if="transaction" :accountId="operatorAccount"
+                         :show-extra="true"/>
+          </template>
+        </Property>
+        <Property id="chargedFee">
+          <template #name>Charged Fee</template>
+          <template #value>
+            <HbarAmount v-if="transaction" :amount="transaction.charged_tx_fee"
+                        :show-extra="true" :timestamp="transaction.consensus_timestamp"/>
+          </template>
+        </Property>
+        <Property id="maxFee"
+                  :tooltip="showMaxFeeTooltip
+                  ? `Max Fee limit does not include the ${cryptoName} cost of gas consumed by transactions executed on the EVM.`
+                  : undefined">
+          <template #name>
+            <span>Max Fee</span>
+          </template>
+          <template #value>
+            <HbarAmount v-if="transaction" :amount="maxFee" :show-extra="true"
+                        :timestamp="transaction.consensus_timestamp"/>
+          </template>
+        </Property>
+        <Property v-if="false" id="netAmount">
+          <template #name>Net Amount</template>
+          <template #value>
+            <HbarAmount v-if="transaction" :amount="netAmount" :show-extra="true"
+                        :timestamp="transaction?.consensus_timestamp"/>
+          </template>
+        </Property>
+        <Property id="duration">
+          <template #name>Valid Duration</template>
+          <template #value>
+            <DurationValue :string-value="transaction?.valid_duration_seconds" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="nonce">
+          <template #name>Transaction Nonce</template>
+          <template #value>
+            {{ transaction?.nonce }}
+          </template>
+        </Property>
+        <Property id="scheduled">
+          <template #name>Scheduled</template>
+          <template v-if="transaction?.scheduled===true" #value>
+            True
+            <div v-if="schedulingTransaction" id="schedulingLink">
+              <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
+                <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
+              </router-link>
+            </div>
+          </template>
+          <template v-else-if="scheduledTransaction!==null" #value>
+            False
+          </template>
+          <template v-else #value>
+            <span class="has-text-grey">False</span>
+          </template>
+        </Property>
+        <Property v-if="parentTransaction" id="parentTransaction">
+          <template #name>Parent Transaction</template>
+          <template #value>
+            <router-link :to="routeManager.makeRouteToTransactionObj(parentTransaction)">
+              {{ makeTypeLabel(parentTransaction.name) }}
+            </router-link>
+          </template>
+        </Property>
+        <Property v-if="childTransactions.length" id="childTransactions">
+          <template #name>Child Transactions</template>
+          <template #value>
+            <div v-for="tx in childTransactions.slice(0, MAX_INLINE_CHILDREN)" :key="tx.nonce">
+              <router-link :to="routeManager.makeRouteToTransactionObj(tx)">
+                <span class="is-numeric">{{ '#' + tx.nonce }}</span>
+                <span class="ml-2">{{ makeTypeLabel(tx.name) }}</span>
+              </router-link>
+              <span v-for="id in getTargetedTokens(tx, 5)" :key="id" class="ml-2">
+                <TokenExtra :token-id="id" :use-anchor="true"/>
+              </span>
+            </div>
+            <router-link v-if="displayAllChildrenLinks" class="has-text-grey"
+                         :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
+              {{ 'Show all ' + childTransactions.length + ' child transactions' }}
+            </router-link>
+          </template>
+        </Property>
+      </template>
+    </DashboardCardV2>
 
-      <MirrorLink :network="props.network" entityUrl="transactions" :loc="transactionId!"/>
+    <DashboardCardV2 v-if="displayTransfers" collapsible-key="transfers">
+      <template #title>
+        <span>Transfers</span>
+      </template>
+      <template #content>
+        <div>
+          <TransferGraphSection :transaction="transaction ?? undefined"/>
+        </div>
+      </template>
+    </DashboardCardV2>
 
-    </div>
+    <TopicMessage :message="topicMessage"/>
+
+    <ContractResult :timestamp="transaction?.consensus_timestamp"
+                    :is-parent="transaction?.parent_consensus_timestamp === null"
+                    :block-number="blockNumber ?? undefined"
+                    :transaction-hash="formattedHash ?? undefined"
+                    :transaction-type="transaction?.name ?? undefined"
+    />
+
+    <MirrorLink :network="props.network" entityUrl="transactions" :loc="transactionId!"/>
+
   </PageFrameV2>
 
 </template>
@@ -273,7 +270,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {getTargetedTokens, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -313,6 +310,7 @@ const props = defineProps({
   network: String
 })
 
+const isMediumScreen = inject('isMediumScreen', true)
 const cryptoName = CoreConfig.inject().cryptoName
 
 const txIdForm = ref(TransactionID.useAtForm.value ? 'atForm' : 'dashForm')
@@ -460,13 +458,5 @@ const associatedTokens = transactionAnalyzer.tokens
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>

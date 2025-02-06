@@ -26,16 +26,14 @@
 
   <PageFrameV2 page-title="Tokens by Popularity">
 
-    <div class="h-page-content">
-      <DashboardCardV2>
-        <template #title>
-          {{ `Popular tokens matching "${props.name}"` }}
-        </template>
-        <template #content>
-          <TokensByPopularityTable :name="props.name"/>
-        </template>
-      </DashboardCardV2>
-    </div>
+    <DashboardCardV2>
+      <template #title>
+        {{ `Popular tokens matching "${props.name}"` }}
+      </template>
+      <template #content>
+        <TokensByPopularityTable :name="props.name"/>
+      </template>
+    </DashboardCardV2>
 
   </PageFrameV2>
 

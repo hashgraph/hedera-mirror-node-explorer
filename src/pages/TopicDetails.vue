@@ -27,96 +27,94 @@
 
   <PageFrameV2 page-title="Topic Details">
 
-    <div class="page-container">
-      <DashboardCardV2 collapsible-key="topicDetails">
-        <template #title>
-          {{ `Topic ${normalizedTopicId}` }}
-          <div v-if="isHcs1Topic" class="h-has-pill" style="margin-top: 2px">
-            HCS-1
-          </div>
-        </template>
+    <DashboardCardV2 collapsible-key="topicDetails">
+      <template #title>
+        {{ `Topic ${normalizedTopicId}` }}
+        <div v-if="isHcs1Topic" class="h-has-pill" style="margin-top: 2px">
+          HCS-1
+        </div>
+      </template>
 
-        <template #content>
-          <NotificationBanner v-if="!initialLoading && notification" :message="notification"/>
+      <template #content>
+        <NotificationBanner v-if="!initialLoading && notification" :message="notification"/>
 
-          <Property id="memo" full-width>
-            <template #name>Memo</template>
-            <template #value>
-              <BlobValue :blob-value="topic?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
-            </template>
-          </Property>
-          <Property id="valid-from" full-width>
-            <template #name>Valid from</template>
-            <template #value>
-              <TimestampValue :timestamp="topic?.timestamp?.from" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="topic?.timestamp?.to" id="valid-until" full-width>
-            <template #name>Valid until</template>
-            <template #value>
-              <TimestampValue :timestamp="topic?.timestamp?.to" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="topic?.created_timestamp" id="creation-date" full-width>
-            <template #name>
-              <span>Created</span>
-            </template>
-            <template #value>
-              <TimestampValue :timestamp="topic?.created_timestamp" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="topic?.auto_renew_period" id="auto-renew-period" full-width>
-            <template #name>
-              <span>Auto Renew Period</span>
-            </template>
-            <template #value>
-              <DurationValue :number-value="topic?.auto_renew_period ?? undefined" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="topic?.auto_renew_account" id="auto-renew-account" full-width>
-            <template #name>
-              <span>Auto Renew Account</span>
-            </template>
-            <template #value>
-              <AccountLink :account-id="topic?.auto_renew_account"/>
-            </template>
-          </Property>
-          <Property v-if="topic?.admin_key" id="admin-key" full-width>
-            <template #name>Admin Key</template>
-            <template #value>
-              <KeyValue :key-bytes="topic?.admin_key?.key" :key-type="topic?.admin_key?._type" :show-none="true"/>
-            </template>
-          </Property>
-          <Property v-if="topic?.submit_key" id="submit-key" full-width>
-            <template #name>Submit Key</template>
-            <template #value>
-              <KeyValue :key-bytes="topic?.submit_key?.key" :key-type="topic?.submit_key?._type" :show-none="true"/>
-            </template>
-          </Property>
+        <Property id="memo" full-width>
+          <template #name>Memo</template>
+          <template #value>
+            <BlobValue :blob-value="topic?.memo" :show-none="true" :base64="true" :show-base64-as-extra="true"/>
+          </template>
+        </Property>
+        <Property id="valid-from" full-width>
+          <template #name>Valid from</template>
+          <template #value>
+            <TimestampValue :timestamp="topic?.timestamp?.from" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.timestamp?.to" id="valid-until" full-width>
+          <template #name>Valid until</template>
+          <template #value>
+            <TimestampValue :timestamp="topic?.timestamp?.to" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.created_timestamp" id="creation-date" full-width>
+          <template #name>
+            <span>Created</span>
+          </template>
+          <template #value>
+            <TimestampValue :timestamp="topic?.created_timestamp" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.auto_renew_period" id="auto-renew-period" full-width>
+          <template #name>
+            <span>Auto Renew Period</span>
+          </template>
+          <template #value>
+            <DurationValue :number-value="topic?.auto_renew_period ?? undefined" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.auto_renew_account" id="auto-renew-account" full-width>
+          <template #name>
+            <span>Auto Renew Account</span>
+          </template>
+          <template #value>
+            <AccountLink :account-id="topic?.auto_renew_account"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.admin_key" id="admin-key" full-width>
+          <template #name>Admin Key</template>
+          <template #value>
+            <KeyValue :key-bytes="topic?.admin_key?.key" :key-type="topic?.admin_key?._type" :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="topic?.submit_key" id="submit-key" full-width>
+          <template #name>Submit Key</template>
+          <template #value>
+            <KeyValue :key-bytes="topic?.submit_key?.key" :key-type="topic?.submit_key?._type" :show-none="true"/>
+          </template>
+        </Property>
 
-        </template>
-      </DashboardCardV2>
+      </template>
+    </DashboardCardV2>
 
-      <HCSContentSection v-if="isHcs1Topic" :topic-memo="hcs1Memo" :hcs1-asset="hcs1Asset"/>
+    <HCSContentSection v-if="isHcs1Topic" :topic-memo="hcs1Memo" :hcs1-asset="hcs1Asset"/>
 
-      <DashboardCardV2 collapsible-key="topicMessages">
+    <DashboardCardV2 collapsible-key="topicMessages">
 
-        <template #title>
-          Topic Messages
-        </template>
+      <template #title>
+        Topic Messages
+      </template>
 
-        <template #left-control>
-          <PlayPauseButton :controller="messageTableController"/>
-        </template>
+      <template #left-control>
+        <PlayPauseButton :controller="messageTableController"/>
+      </template>
 
-        <template #content>
-          <TopicMessageTable v-if="validEntityId" :controller="messageTableController"/>
-        </template>
+      <template #content>
+        <TopicMessageTable v-if="validEntityId" :controller="messageTableController"/>
+      </template>
 
-      </DashboardCardV2>
+    </DashboardCardV2>
 
-      <MirrorLink :network="network" entityUrl="topics" :loc="topicId"/>
-    </div>
+    <MirrorLink :network="network" entityUrl="topics" :loc="topicId"/>
 
   </PageFrameV2>
 
@@ -228,13 +226,5 @@ const hcs1Asset = assetLookup.entity
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 </style>
