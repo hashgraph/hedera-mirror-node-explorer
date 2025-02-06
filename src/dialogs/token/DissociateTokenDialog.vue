@@ -31,7 +31,11 @@
 
     <template #transactionDialogTitle>Dissociate Token</template>
 
-    <template #transactionDialogInput>Dissociate {{ tokenType }} {{ tokenId }} from account {{ accountId }} ?</template>
+    <template #transactionDialogInput>
+      <TaskPanel :mode="TaskPanelMode.none">
+        <template #taskPanelMessage>Dissociate {{ tokenType }} {{ tokenId }} from account {{ accountId }} ?</template>
+      </TaskPanel>
+    </template>
 
     <template #transactionExecutionLabel>DISSOCIATE</template>
 
@@ -49,6 +53,8 @@ import {computed, PropType} from "vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
 import {DissociateTokenController} from "@/dialogs/token/DissociateTokenController.ts";
 import {walletManager} from "@/router.ts";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

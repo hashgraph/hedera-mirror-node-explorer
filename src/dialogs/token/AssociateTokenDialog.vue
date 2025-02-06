@@ -26,18 +26,21 @@
 
   <TransactionDialog
       :controller="controller"
-      :native-wallet-only="true"
       @transaction-did-execute="transactionDidExecute"
   >
 
     <template #transactionDialogTitle>Associate Token</template>
 
     <template #transactionDialogInput>
-      Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?
-      <label>
-        <input type="checkbox" style="margin-right: 0.5em; vertical-align: middle" v-model="watchInWallet">
-        <span>Import to {{ walletName }}</span>
-      </label>
+      <TaskPanel :mode="TaskPanelMode.none">
+        <template #taskPanelMessage>Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?</template>
+        <template #taskPanelExtra1>
+          <label v-if="isWatchSupported">
+            <input type="checkbox" style="margin-right: 0.5em; vertical-align: middle" v-model="watchInWallet">
+            <span>Import to {{ walletName }}</span>
+          </label>
+        </template>
+      </TaskPanel>
     </template>
 
     <template #transactionExecutionLabel>ASSOCIATE</template>
@@ -56,6 +59,8 @@ import {computed, PropType} from "vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
 import {AssociateTokenController} from "@/dialogs/token/AssociateTokenController.ts";
 import {walletManager} from "@/router.ts";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
