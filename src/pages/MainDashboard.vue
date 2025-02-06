@@ -26,7 +26,7 @@
 
   <PageFrameV2 page-title="Dashboard">
 
-    <div class="page-container">
+    <div class="h-page-content">
 
       <DashboardCardV2 data-cy="cryptoTransfers">
         <template #title>
@@ -35,14 +35,12 @@
         <template #left-control>
           <PlayPauseButton :controller="cryptoTableController"/>
         </template>
-        <template #right-control>
+        <template #content>
+          <SimpleTransactionTable :controller="cryptoTableController"/>
           <ArrowLink
               :route="routeManager.makeRouteToTransactions(TransactionType.CRYPTOTRANSFER)"
               text="All Crypto Transfers"
           />
-        </template>
-        <template #content>
-          <SimpleTransactionTable :controller="cryptoTableController"/>
         </template>
       </DashboardCardV2>
 
@@ -55,14 +53,12 @@
           <template #left-control>
             <PlayPauseButton :controller="contractTableController"/>
           </template>
-          <template #right-control>
+          <template #content>
+            <SimpleTransactionTable :controller="contractTableController"/>
             <ArrowLink
                 :route="routeManager.makeRouteToTransactions(TransactionType.CONTRACTCALL)"
                 text="All Smart Contract Calls"
             />
-          </template>
-          <template #content>
-            <SimpleTransactionTable :controller="contractTableController"/>
           </template>
         </DashboardCardV2>
         <DashboardCardV2 data-cy="hcsMessages">
@@ -72,14 +68,12 @@
           <template #left-control>
             <PlayPauseButton :controller="messageTableController"/>
           </template>
-          <template #right-control>
+          <template #content>
+            <MessageTransactionTable v-bind:controller="messageTableController"/>
             <ArrowLink
                 :route="routeManager.makeRouteToTransactions(TransactionType.CONSENSUSSUBMITMESSAGE)"
                 text="All HCS Messages"
             />
-          </template>
-          <template #content>
-            <MessageTransactionTable v-bind:controller="messageTableController"/>
           </template>
         </DashboardCardV2>
 
@@ -154,14 +148,6 @@ watch(() => props.network, () => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.page-container {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  margin-left: 32px;
-  margin-right: 32px;
-}
 
 div.side-by-side-container {
   display: flex;
