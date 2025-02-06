@@ -37,10 +37,8 @@
   <WalletChooserDialog v-model:show-dialog="showWalletChooser" @choose-wallet="handleChooseWallet"/>
 
   <AlertDialog v-model:visible="showConnectErrorDialog">
-    <template #alertMessage>
-      <div>{{ mainMessage }}</div>
-      <div>{{ extraMessage }}</div>
-    </template>
+    <template #alertDialogMessage>{{ mainMessage }}</template>
+    <template #alertDialogExtra>{{ extraMessage }}</template>
   </AlertDialog>
 
 </template>

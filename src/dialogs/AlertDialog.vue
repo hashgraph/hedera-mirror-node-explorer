@@ -26,12 +26,14 @@
   <ModalDialog v-model:show-dialog="visible" :width="350">
 
     <template #modalDialogContent>
-      <div class="alert-dialog">
-        <div class="icon">
-            <i class="fas fa-exclamation-triangle"></i>
-        </div>
-        <slot name="alertMessage"/>
-      </div>
+      <TaskPanel :mode="TaskPanelMode.error">
+        <template #taskPanelMessage>
+          <slot name="alertDialogMessage"/>
+        </template>
+        <template #taskPanelExtra1>
+          <slot name="alertDialogExtra"/>
+        </template>
+      </TaskPanel>
     </template>
 
     <template #modalDialogButtons>
@@ -50,6 +52,8 @@
 
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const visible = defineModel("visible", {
   type: Boolean,
@@ -63,24 +67,4 @@ const visible = defineModel("visible", {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.alert-dialog {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  row-gap: 16px;
-  justify-content: center;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 18px;
-  line-height: 22px;
-}
-
-div.icon {
-  height: 1.5rem;
-  width: 1.5rem;
-  color: rgb(255, 183, 15);
-  margin-right: 0.75rem;
-}
-
 </style>
