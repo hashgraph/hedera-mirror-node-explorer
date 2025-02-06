@@ -24,7 +24,7 @@
 
 <template>
   <div class="card-root">
-    <div style="display: flex; flex-direction: column; gap: 16px;  padding-bottom: 16px;  border-bottom: 1px solid var(--network-theme-color);">
+    <div style="display: flex; flex-direction: column; gap: 8px;  padding-bottom: 16px;  border-bottom: 1px solid var(--network-theme-color);">
       <div class="card-header">
         <div class="left-header">
           <slot name="title"/>
@@ -36,12 +36,16 @@
           <img v-else alt="Collapse" @click="toggleCollapsed" :src="arrowUpURL">
         </div>
       </div>
-      <div class="wrapped-controls">
-        <slot name="right-control" v-if="!isMediumScreen && !isCollapsed"/>
+      <div v-if="!isMediumScreen && !isCollapsed" class="wrapped-controls">
+        <slot name="right-control"/>
       </div>
     </div>
 
     <div v-if="!isCollapsed">
+
+      <div v-if="slots['notification']" style="padding-bottom: 16px;">
+        <slot name="notification"/>
+      </div>
 
       <div v-if="slots['content']" class="left-content">
         <slot name="content"/>
