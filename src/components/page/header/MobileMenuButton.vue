@@ -25,7 +25,7 @@
 <template>
   <DropdownPanel v-model:deployed="showMobileMenu" :right-aligned="false">
     <template #button>
-      <Menu :size="18" style="color: var(--text-primary)" @click="showMobileMenu = true"/>
+      <Menu :size="18" style="color: var(--text-primary)" @click="showMobileMenu = !showMobileMenu"/>
     </template>
 
     <template #panel>
