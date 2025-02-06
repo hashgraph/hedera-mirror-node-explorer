@@ -23,7 +23,8 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a :href="`${networkUrl}${endpointURL}`" target="_blank">
+  <a v-if="isMediumScreen"
+     :href="`${networkUrl}${endpointURL}`" target="_blank">
     <div class="mirror-link">
       <span class="link-text">Raw data</span>
       <ArrowRight :size="16"/>
@@ -37,7 +38,7 @@
 
 <script setup lang="ts">
 import {ArrowRight} from "lucide-vue-next";
-import {computed, PropType} from "vue";
+import {computed, inject, PropType} from "vue";
 
 const props = defineProps({
   network: String,
@@ -51,6 +52,8 @@ const props = defineProps({
     default: null
   }
 })
+
+const isMediumScreen = inject("isMediumScreen")
 
 const networkUrl = computed(() => {
   let result: string
