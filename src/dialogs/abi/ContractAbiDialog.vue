@@ -39,17 +39,36 @@
       </template>
     </template>
     <template #taskDialogBusy>
-      <p>Running {{ dialogTitle }}…</p>
-      <p>Check {{ walletName }} for any approval request</p>
-      <img :src="walletIconURL" alt="Wallet Logo"/>
+      <TaskPanel :mode="TaskPanelMode.busy">
+        <template #taskPanelMessage>Running {{ dialogTitle }}</template>
+        <template #taskPanelExtra1>
+          <div>Check {{ walletName }} for any approval request</div>
+        </template>
+        <template #taskPanelExtra2>
+          <img :src="walletIconURL" height=32 alt="Wallet Logo"/>
+        </template>
+      </TaskPanel>
     </template>
+
     <template #taskDialogSuccess>
-      <p>Operation did succeed</p>
-      <p v-if="hasResult"> {{ callOutput }}</p>
+      <template v-if="hasResult">
+        <TaskPanel :mode="TaskPanelMode.success">
+          <template #taskPanelMessage>Call did complete and return result:</template>
+          <template #taskPanelExtra1>{{ callOutput }}</template>
+        </TaskPanel>
+      </template>
+      <template v-else>
+        <TaskPanel :mode="TaskPanelMode.success">
+          <template #taskPanelMessage>Call did complete</template>
+        </TaskPanel>
+      </template>
     </template>
+
     <template #taskDialogError>
-      <p>Operation did fail !</p>
-      <p v-if="hasResult"> {{ errorMessage }}</p>
+      <TaskPanel :mode="TaskPanelMode.success">
+        <template #taskPanelMessage>Call did fail</template>
+        <template #taskPanelExtra1>{{ errorMessage }}</template>
+      </TaskPanel>
     </template>
   </TaskDialog>
 </template>
@@ -66,6 +85,8 @@ import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
 import {ContractCallBuilder} from "@/dialogs/abi/ContractCallBuilder.ts";
 import {ContractAbiController} from "@/dialogs/abi/ContractAbiController.ts";
 import ParamTypeEditor from "@/dialogs/abi/ParamTypeEditor.vue";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
