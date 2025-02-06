@@ -60,8 +60,8 @@
                 </div>
               </template>
         -->
-        <template #content>
-          <NotificationBanner v-if="notification" :message="notification"/>
+        <template v-if="notification" #content>
+          <NotificationBanner :message="notification"/>
         </template>
 
         <template #left-content>
