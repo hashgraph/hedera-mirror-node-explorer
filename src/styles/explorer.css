@@ -181,8 +181,14 @@ a:hover {
     display: flex;
     flex-direction: column;
     gap: 16px;
-    margin-left: 32px;
-    margin-right: 32px;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+@media (min-width: 1080px) {
+    .h-page-content {
+        margin-left: 32px;
+        margin-right: 32px;
+    }
 }
 
 .h-sub-section {
