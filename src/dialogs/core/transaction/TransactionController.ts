@@ -20,7 +20,7 @@
 
 import {computed, ref} from "vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
-import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
+import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 import {isSuccessfulResult} from "@/utils/TransactionTools.ts";
 import {TransactionID} from "@/utils/TransactionID.ts";
 import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
@@ -34,28 +34,7 @@ export abstract class TransactionController extends TaskController {
     //
 
     public readonly transactionId = ref<string|null>(null)
-    public readonly transactionError = ref<unknown>(null)
     public readonly transactionResult = ref<string|null>(null)
-
-    public readonly mainErrorMessage = computed(() => {
-        let result: string
-        if (this.transactionError.value instanceof WalletClientError) {
-            result = this.transactionError.value.message
-        } else {
-            result = "Operation did not complete"
-        }
-        return result
-    })
-
-    public readonly extraErrorMessage = computed(() => {
-        let result: string
-        if (this.transactionError.value instanceof WalletClientError) {
-            result = this.transactionError.value.extra
-        } else {
-            result = JSON.stringify(this.transactionError.value)
-        }
-        return result
-    })
 
     public readonly isFailedResult = computed(() => {
         const r = this.transactionResult.value
@@ -79,11 +58,9 @@ export abstract class TransactionController extends TaskController {
             const r = await this.executeTransaction()
             if (r === null) {
                 this.transactionId.value = null
-                this.transactionError.value = null
                 this.transactionResult.value = null
             } else if (typeof r === "string") {
                 this.transactionId.value = TransactionID.normalize(r)
-                this.transactionError.value = null
                 try {
                     const t = await waitForTransactionRefresh(this.transactionId.value)
                     this.transactionResult.value = typeof t == "object" ? t.result : null
@@ -92,19 +69,15 @@ export abstract class TransactionController extends TaskController {
                 }
             } else { // r is a Transaction
                 this.transactionId.value = r.transaction_id
-                this.transactionError.value = null
                 this.transactionResult.value = r.result
             }
         } catch(error) {
+            this.transactionId.value = null
+            this.transactionResult.value = null
             if (error instanceof WalletClientRejectError) {
-                this.transactionId.value = null
-                this.transactionError.value = null
-                this.transactionResult.value = null
                 this.showDialog.value = false
             } else {
-                this.transactionId.value = null
-                this.transactionError.value = error
-                this.transactionError.value = null
+                throw error
             }
         }
     }

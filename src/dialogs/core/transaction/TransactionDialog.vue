@@ -77,19 +77,6 @@
       </TaskPanel>
     </template>
 
-    <!-- error -->
-    <template #taskDialogError>
-      <TaskPanel :mode="TaskPanelMode.error">
-        <template #taskPanelMessage>Operation did fail</template>
-        <template #taskPanelExtra1>
-          <div>{{ controller.mainErrorMessage.value }}</div>
-        </template>
-        <template #taskPanelExtra2>
-          <div>{{ controller.extraErrorMessage.value }}</div>
-        </template>
-      </TaskPanel>
-    </template>
-
     <!-- controls -->
     <template v-if="slots.transactionDialogControls" #taskDialogControls>
       <slot name="transactionDialogControls"/>

@@ -18,9 +18,11 @@
  *
  */
 
-import {Ref, watch} from "vue";
+import {ref, Ref, watch} from "vue";
 
 export abstract class TaskController {
+
+    public readonly executeError: Ref<unknown> = ref(null)
 
     //
     // To be subclassed

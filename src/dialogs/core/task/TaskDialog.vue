@@ -41,13 +41,28 @@
           </div>
         </div>
         <div class="dialog-layer-busy">
-          <slot name="taskDialogBusy">Task is on-going…</slot>
+          <slot name="taskDialogBusy">
+            <TaskPanel :mode="TaskPanelMode.busy">
+              <template #taskPanelMessage>Processing</template>
+            </TaskPanel>
+          </slot>
         </div>
         <div  class="dialog-layer-success">
-          <slot name="taskDialogSuccess">Task did succeed</slot>
+          <slot name="taskDialogSuccess">
+            <TaskPanel :mode="TaskPanelMode.success">
+              <template #taskPanelMessage>Operation did succeed</template>
+            </TaskPanel>
+          </slot>
         </div>
         <div  class="dialog-layer-error">
-          <slot name="taskDialogError">Task did fail</slot>
+          <slot name="taskDialogError">
+            <TaskPanel :mode="TaskPanelMode.error">
+              <template #taskPanelMessage>Operation did fail</template>
+              <template v-if="props.controller.executeError.value" #taskPanelExtra1>
+                {{ JSON.stringify(props.controller.executeError.value) }}
+              </template>
+            </TaskPanel>
+          </slot>
         </div>
       </StackView>
 
@@ -112,6 +127,8 @@ import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
 import ModalDialogButton from "@/dialogs/core/ModalDialogButton.vue";
 import StackView from "@/elements/StackView.vue";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
 
 const props = defineProps({
   controller: {
@@ -155,9 +172,11 @@ const handleConfirmExecute = async () => {
   changeState(TaskDialogState.Busy)
   try {
     await props.controller.execute()
+    props.controller.executeError.value = null
     changeState(TaskDialogState.Success)
     emit("taskDialogDidSucceed")
   } catch(error) {
+    props.controller.executeError.value = error
     changeState(TaskDialogState.Error)
   }
 }
