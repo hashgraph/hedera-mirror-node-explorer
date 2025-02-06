@@ -33,46 +33,42 @@
 
     <!-- input -->
     <template #taskDialogInput>
-      <div>
+      <div style="color: var(--text-secondary); font-size: 14px;">
         Please upload the Solidity source files and metadata associated with the Hedera contract.
         Once submitted the verification service will compile the source code and match it with
         the contract bytecode deployed on the Hedera network.
       </div>
-      <hr class="h-card-separator"/>
 
       <div style="width: 100%">
-        <div class="h-is-primary-subtitle mb-3">
+        <div class="h-is-primary-subtitle" style="margin-bottom: 0.75rem">
           Add files
         </div>
-        <div class="mb-4">
+        <div style="margin-bottom: 1.0rem">
           {{ controller.status.value }}
         </div>
-        <div class="mb-4 p-3 h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
+        <div style="margin-bottom: 1.0rem; padding: 0.75rem" class="h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
           <template v-if="items.length >= 1">
             <FileList :audit-items="items" @clear-all-files="controller.handleClearAllFiles()"/>
           </template>
-          <div v-else class="is-flex is-justify-content-center is-align-items-center my-5">
-            <img alt="Add file" class="image mr-1" style="width: 30px; height: 30px;"
-                 src="../../assets/file-add.svg"
-            >
-            <span class="has-text-grey">
-                                Drop .sol and .json files, or folder here... or
-                            </span>
-            <a @click="showFileChooser">
-                                <span class="has-text-info ml-2" style="cursor: pointer">
-                                    Choose files
-                                </span>
-            </a>
-            <input
-                type="file"
-                ref="fileChooser"
-                id="file-chooser"
-                accept=".json, .sol"
-                multiple
-                style="display: none"
-                @change="handleFileSelected"
-            />
-          </div>
+          <template v-else>
+            <div class="inline-help">
+              <FilePlus :size="24"/>
+              <span>Drop .sol and .json files, or folder here... or
+                <a @click="showFileChooser">
+                  <span style="margin-left: 0.5rem; color: var(--text-primary); cursor: pointer">Choose files</span>
+                </a>
+              </span>
+              <input
+                  type="file"
+                  ref="fileChooser"
+                  id="file-chooser"
+                  accept=".json, .sol"
+                  multiple
+                  style="display: none"
+                  @change="handleFileSelected"
+              />
+            </div>
+          </template>
         </div>
       </div>
     </template>
@@ -84,55 +80,43 @@
 
     <!-- busy -->
     <template #taskDialogBusy>
-      Verifying {{ controller.matchingContractName.value }} contract…
+      <TaskPanel :mode="TaskPanelMode.busy">
+        <template #taskPanelMessage>Verifying {{ controller.matchingContractName.value }} contract…</template>
+      </TaskPanel>
     </template>
 
     <!-- success -->
     <template #taskDialogSuccess>
-      <div class="is-flex is-align-items-baseline">
-        <div class="icon is-medium has-text-success ml-0">
-          <i class="fas fa-check"/>
-        </div>
-        <div class="h-is-tertiary-text mb-4">
-          {{ controller.mainSuccessMessage.value }}
-        </div>
-      </div>
-      <div v-if="controller.extraSuccessMessage.value" class="h-is-property-text">
-        {{ controller.extraSuccessMessage.value }}
-      </div>
+      <TaskPanel :mode="TaskPanelMode.success">
+        <template #taskPanelMessage>{{ controller.mainSuccessMessage.value }}</template>
+        <template v-if="controller.extraSuccessMessage.value" #taskPanelExtra1>{{ controller.extraSuccessMessage.value }}</template>
+      </TaskPanel>
     </template>
 
     <!-- error -->
     <template #taskDialogError>
-      <div class="is-flex is-align-items-baseline">
-        <div class="icon is-medium has-text-danger">
-          <span style="font-size: 18px; font-weight: 900">X</span>
-        </div>
-        <div class="h-is-tertiary-text mb-4">Verification failed</div>
-      </div>
-      <div v-if="controller.extraErrorMessage.value !== null" class="h-is-property-text">
-        {{ controller.extraErrorMessage.value }}
-      </div>
+      <TaskPanel :mode="TaskPanelMode.error">
+        <template #taskPanelMessage>Verification failed</template>
+        <template v-if="controller.extraErrorMessage.value !== null" #taskPanelExtra1>{{ controller.extraErrorMessage.value }}</template>
+      </TaskPanel>
     </template>
 
     <!-- feedback -->
     <template #taskDialogControls>
-      <div>
-        <button class="button is-white is-small"
-                :class="{'is-invisible': items.length === 0}"
-                @click="showFileChooser">
+      <ButtonView :size="ButtonSize.small"
+                  :class="{'is-invisible': items.length === 0}"
+                  @action="showFileChooser">
           ADD MORE FILES
-        </button>
-        <input
-            type="file"
-            ref="fileChooser"
-            id="file-chooser"
-            accept=".json, .sol"
-            multiple
-            style="display: none"
-            @change="handleFileSelected"
-        />
-      </div>
+      </ButtonView>
+      <input
+          type="file"
+          ref="fileChooser"
+          id="file-chooser"
+          accept=".json, .sol"
+          multiple
+          style="display: none"
+          @change="handleFileSelected"
+      />
     </template>
 
 
@@ -149,6 +133,10 @@ import {computed, PropType, ref} from "vue";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
 import FileList from "@/dialogs/verification/FileList.vue";
 import {ContractVerificationController} from "@/dialogs/verification/ContractVerificationController.ts";
+import {ButtonSize, TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
+import ButtonView from "@/dialogs/core/ButtonView.vue";
+import { FilePlus } from 'lucide-vue-next';
 
 //
 // ModalDialog
@@ -219,5 +207,22 @@ const items = controller.items
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.inline-help {
+  align-items: center;
+  display: flex;
+  color: var(--text-secondary);
+  flex-direction: column;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  margin-top: 1.5rem;
+  row-gap:14px;
+  text-align: center;
+  line-height: 30px;
+}
+
+.is-invisible {
+  visibility: hidden
+}
 
 </style>

@@ -65,7 +65,7 @@
     </template>
 
     <template #taskDialogError>
-      <TaskPanel :mode="TaskPanelMode.success">
+      <TaskPanel :mode="TaskPanelMode.error">
         <template #taskPanelMessage>Call did fail</template>
         <template #taskPanelExtra1>{{ errorMessage }}</template>
       </TaskPanel>
