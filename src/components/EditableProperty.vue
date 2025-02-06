@@ -29,7 +29,7 @@
       <slot name="name"/>
     </template>
     <template #value>
-      <div class="is-flex is-align-items-center">
+      <div class="property-value">
         <slot name="value"/>
         <img v-if="editable" alt="Edit" class="ml-2"
              style="height: 14px"
@@ -74,5 +74,17 @@ const onEdit = () => emit('edit')
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.property-value {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+@media (min-width: 768px) {
+  div.property-value {
+    justify-content: flex-start;
+  }
+}
+
 </style>
