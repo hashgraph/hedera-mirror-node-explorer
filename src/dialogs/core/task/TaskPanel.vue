@@ -31,7 +31,7 @@
     <template v-else-if="props.mode === TaskPanelMode.error">
       <TriangleAlert :size="48" style="color: var(--text-error)"/>
     </template>
-    <template v-else>
+    <template v-else-if="props.mode === TaskPanelMode.busy">
       <SpinnerView :size="48"/>
     </template>
 
@@ -84,14 +84,16 @@ div.task-panel {
 }
 
 div.task-panel-message {
+  align-items: center;
+  color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  row-gap: 8px;
+  font-family: "Styrene A Web", sans-serif;
   font-size: 20px;
   font-weight: 500;
-  font-family: "Styrene A Web", sans-serif;
-  color: var(--text-primary)
+  line-height: 28px;
+  row-gap: 8px;
+  text-align: center;
 }
 
 div.task-panel-extra {
