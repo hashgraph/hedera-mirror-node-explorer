@@ -37,7 +37,7 @@
       <span class="property-name" :class="{'uppercase': !props.keepCase}">
         <slot name="name"/>
       </span>
-      <InfoTooltip v-if="tooltip" :label="tooltip"  />
+      <InfoTooltip v-if="tooltip" :label="tooltip"/>
     </div>
     <div
         class="property-value"
@@ -70,7 +70,7 @@ const props = defineProps({
     default: false
   },
   vertical: {
-    type:Boolean,
+    type: Boolean,
     default: false
   },
   customNbColClass: String,
@@ -122,14 +122,14 @@ div.property-left-side {
   align-items: center;
   display: flex;
   flex: none;
-  gap: 4px;
+  flex-wrap: wrap;
 }
 
 span.property-name {
   color: var(--text-secondary);
   font-size: 12px;
   font-weight: 500;
-  height: 16px;
+  line-height: 16px;
   margin-right: 4px;
 }
 
