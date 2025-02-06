@@ -34,7 +34,9 @@
     <template #transactionExecutionLabel>STOP STAKING</template>
 
     <template #transactionDialogInput>
-      Do you want to stop staking to {{ stakedTo }} ?
+      <TaskPanel :mode="TaskPanelMode.none">
+        <template #taskPanelMessage>Do you want to stop staking to {{ stakedTo }} ?</template>
+      </TaskPanel>
     </template>
 
   </TransactionDialog>
@@ -49,6 +51,8 @@
 import TransactionDialog from "@/dialogs/core/transaction/TransactionDialog.vue";
 import {computed, PropType} from "vue";
 import {StopStackingController} from "@/dialogs/staking/StopStackingController.ts";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
