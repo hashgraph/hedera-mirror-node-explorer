@@ -302,7 +302,6 @@ const props = defineProps({
   network: String
 })
 
-const isMediumScreen = inject('isMediumScreen', true)
 const cryptoName = CoreConfig.inject().cryptoName
 
 const txIdForm = ref(TransactionID.useAtForm.value ? 'atForm' : 'dashForm')
