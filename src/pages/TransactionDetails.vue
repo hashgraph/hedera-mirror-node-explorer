@@ -262,7 +262,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {computed, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import {getTargetedTokens, makeTypeLabel} from "@/utils/TransactionTools";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
