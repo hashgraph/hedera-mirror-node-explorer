@@ -20,8 +20,9 @@
 
 import {computed, Ref} from "vue";
 import {TransactionGroupController} from "@/dialogs/core/transaction/TransactionGroupController.ts";
-import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas.ts";
+import {TokenAirdrop, Transaction} from "@/schemas/MirrorNodeSchemas.ts";
 import {walletManager} from "@/router.ts";
+import {PendingAirdropCache} from "@/utils/cache/PendingAirdropCache.ts";
 
 export class ClaimTokenGroupController extends TransactionGroupController {
 
@@ -37,35 +38,22 @@ export class ClaimTokenGroupController extends TransactionGroupController {
 
     public readonly airdropCount = computed(() => this.airdrops.value?.length ?? 0)
 
-    public readonly nbRequiredTransactions = computed(() =>
-        Math.ceil(this.airdropCount.value / ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM)
-    )
-
-    //
-    // TransactionController
-    //
-
-    public canBeExecuted(): boolean {
-        return this.airdropCount.value >= 1
-    }
-
     //
     // TransactionGroupController
     //
 
-    protected makeTransactions(): Promise<string | null>[] {
-        const result: Promise<string | null>[] = []
+    public getTransactionCount(): number {
+        return Math.ceil(this.airdropCount.value / ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM)
+    }
+
+    protected async executeTransaction(index: number): Promise<Transaction | string | null> {
 
         const airdrops = this.airdrops.value!
-        for (let i = 0; i < this.nbRequiredTransactions.value; i += 1) {
+        PendingAirdropCache.instance.forgetTokenAirdrops(airdrops)
 
-            const start = i * ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM
-            const end = Math.min(airdrops.length, start + ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM)
-
-            result.push(walletManager.claimTokenAirdrops(airdrops.slice(start, end)))
-        }
-
-        return result
+        const start = index * ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM
+        const end = Math.min(airdrops.length, start + ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM)
+        return walletManager.claimTokenAirdrops(airdrops.slice(start, end))
     }
 
 }

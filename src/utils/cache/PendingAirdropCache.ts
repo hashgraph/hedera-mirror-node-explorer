@@ -57,6 +57,14 @@ export class PendingAirdropCache extends EntityCache<string, TokenAirdrop[] | nu
         this.forget(PendingAirdropCache.makeAirdropKey(accountId, tokenId))
     }
 
+    public forgetTokenAirdrops(airdrops: TokenAirdrop[]): void {
+        for (const airdrop of airdrops) {
+            if (airdrop.receiver_id !== null && airdrop.token_id) {
+                this.forgetTokenAirdrop(airdrop.receiver_id, airdrop.token_id)
+            }
+        }
+    }
+
     //
     // Cache
     //

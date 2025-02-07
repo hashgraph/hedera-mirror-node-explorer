@@ -18,154 +18,160 @@
  *
  */
 
-import {computed, ref} from "vue";
+import {computed, Ref, ref} from "vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
-import {TransactionID} from "@/utils/TransactionID.ts";
-import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache.ts";
-import {TransactionDetail} from "@/schemas/MirrorNodeSchemas.ts";
-import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
+import {Transaction} from "@/schemas/MirrorNodeSchemas.ts";
+import {waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {isSuccessfulResult} from "@/utils/TransactionTools.ts";
+import {WalletClientRejectError} from "@/utils/wallet/client/WalletClient.ts";
 
 export abstract class TransactionGroupController extends TaskController {
 
-    public readonly transactionPromises  = ref<Promise<string|null>[]>([])
-    public readonly transactionResults = ref<(TransactionDetail|string|null)[]>([])
-    public readonly transactionErrors = ref<unknown[]>([])
+    private readonly transactionOutcomesRef: Ref<TransactionOutcome[]> = ref([])
 
-    //
-    // Public
-    //
 
-    public readonly transactionCount = computed(
-        () => this.transactionResults.value.length + this.transactionErrors.value.length)
+    public readonly transactionOutcomes = computed(() => this.transactionOutcomesRef.value)
 
-    public readonly errorCount = computed(() => this.transactionErrors.value.length)
+    public readonly errorOutcomes = computed(() => {
+        const result: TransactionOutcome[] = []
+        for (const o of this.transactionOutcomesRef.value) {
+            if (o.error !== null) {
+                result.push(o)
+            }
+        }
+        return result
+    })
 
-    public readonly successStatusCount = computed(() => {
-        let result = 0
-        for (const r of this.transactionResults.value) {
-            if (typeof r === "object") {
-                const td = r as TransactionDetail
+    public readonly successOutcomes = computed(() => {
+        const result: TransactionOutcome[] = []
+        for (const o of this.transactionOutcomesRef.value) {
+            if (typeof o.result === "object" && o.result !== null) {
+                const td = o.result as Transaction
                 if (isSuccessfulResult(td.result)) {
-                    result += 1
+                    result.push(o)
                 }
             }
         }
         return result
     })
 
-    public readonly failureStatusCount = computed(() => {
-        let result = 0
-        for (const r of this.transactionResults.value) {
-            if (typeof r === "object") {
-                const td = r as TransactionDetail
+    public readonly failureOutcomes = computed(() => {
+        const result: TransactionOutcome[] = []
+        for (const o of this.transactionOutcomesRef.value) {
+            if (typeof o.result === "object" && o.result !== null) {
+                const td = o.result as Transaction
                 if (!isSuccessfulResult(td.result)) {
-                    result += 1
+                    result.push(o)
                 }
             }
         }
         return result
     })
 
-    public readonly unknownStatusCount = computed(() => {
-        let result = 0
-        for (const r of this.transactionResults.value) {
-            if (typeof r != "object") { // r is a transaction id
-                result += 1
+    public readonly unknownOutcomes = computed(() => {
+        const result: TransactionOutcome[] = []
+        for (const o of this.transactionOutcomesRef.value) {
+            if (typeof o.result !== "object") {
+                result.push(o)
             }
         }
         return result
     })
 
-    public readonly mainFeedback = computed(() => {
-        let result: string
-        const transactionCount = this.transactionCount.value
-        if (this.errorCount.value === transactionCount) {
-            // All transactions have throw an error
-            result = "Operation failed"
-        } else if (this.successStatusCount.value === transactionCount) {
-            // All transactions have been executed and returned a successful status
-            result = "Operation completed successfully"
-        } else if (this.failureStatusCount.value === transactionCount) {
-            // All transactions have been executed and returned a failed status
-            result = "Operation completed with failures"
-        } else if (this.unknownStatusCount.value === transactionCount) {
-            // All transactions have been executed but are not yet available through mirror node
-            result = "Operation completed. Transaction statuses will be available soon."
-        } else {
-            result = "Operation has been executed partially"
-        }
-        return result
+    public readonly outcome0 = computed(() => {
+        return this.transactionOutcomesRef.value.length >= 1 ? this.transactionOutcomesRef.value[0] : null
     })
 
-    public readonly extraFeedback = computed(() => {
-        let result: string|null
-        if (this.successStatusCount.value == this.transactionCount.value) {
-            result = null
-        } else {
-            result = ""
-            if (this.successStatusCount.value >= 1) {
-                result = this.successStatusCount.value + " have completed successfully. "
-            }
-            if (this.failureStatusCount.value >= 1) {
-                result = this.failureStatusCount.value + " have completed but unsuccessfully. "
-            }
-            if (this.unknownStatusCount.value >= 1) {
-                result = this.unknownStatusCount.value + " have completed without a known status. "
-            }
-        }
-        return result
-    })
 
     //
     // To be subclassed
     //
 
-    protected abstract makeTransactions(): Promise<string|null>[]
+    public abstract getTransactionCount(): number
+
+    protected async executeTransaction(index: number): Promise<Transaction|string|null> {
+        throw "To be subclassed (i=" + index + ")"
+    }
 
 
     //
     // TaskController
     //
 
+    public canBeExecuted(): boolean {
+        return this.getTransactionCount() >= 1
+    }
+
     public async execute(): Promise<void> {
 
-        this.transactionPromises.value = this.makeTransactions()
+        this.transactionOutcomesRef.value = []
 
         let rejected = false
-        const transactionIds: (string|null)[] = []
-        for (const t of this.transactionPromises.value) {
+        for (let i = 0; i < this.getTransactionCount(); i += 1) {
+            let newOutcome: TransactionOutcome
             try {
-                const tid = await t
-                transactionIds.push(tid)
+                const r = await this.executeTransaction(i)
+                if (r === null) {
+                    // Transaction as completed but for some reason we did not get an transaction id
+                    newOutcome = new TransactionOutcome(null, null)
+                } else if (typeof r === "string") {
+                    // r is a transaction id
+                    try {
+                        const t = await waitForTransactionRefresh(r)
+                        newOutcome = new TransactionOutcome(t, null)
+                    } catch(error) {
+                        newOutcome = new TransactionOutcome(null, error)
+                    }
+                } else {
+                    // r is a Transaction object
+                    newOutcome = new TransactionOutcome(r, null)
+                }
             } catch(error) {
                 if (error instanceof WalletClientRejectError) {
                     rejected = true
                     break
                 } else {
-                    this.transactionErrors.value.push(error)
+                    newOutcome = new TransactionOutcome(null, error)
                 }
             }
+            this.transactionOutcomesRef.value.push(newOutcome)
         }
 
-        for (const t of transactionIds) {
-            if (t === null) {
-                this.transactionResults.value.push(t)
-            } else { // t is a transaction id
-                const tid = TransactionID.normalize(t)
-                const td = await TransactionByIdCache.instance.lookup(tid)
-                if (td == null) {
-                    this.transactionResults.value.push(td)
-                } else {
-                    this.transactionResults.value.push(tid)
-                }
-            }
-        }
-
-        if (rejected && this.transactionResults.value.length == 0 && this.transactionErrors.value.length == 0) {
-            // User has rejected the first transaction => task did not start at all => we close dialog silently
+        if (rejected && this.transactionOutcomesRef.value.length == 0) {
+            // User has rejected the first transaction
+            // => task did not start at all
+            // => we close dialog silently
             this.showDialog.value = false
         }
+
     }
 
+}
+
+export class TransactionOutcome {
+
+    public constructor(
+        public readonly result: Transaction | string | null,
+        public readonly error: unknown) {
+    }
+
+    public getTransactionId(): string|null {
+        let result: string|null
+        if (typeof this.result === "object" && this.result !== null) {
+            result = (this.result as Transaction).transaction_id
+        } else { // string | null
+            result = this.result
+        }
+        return result
+    }
+
+    public getResult(): string|null {
+        let result: string|null
+        if (typeof this.result === "object" && this.result !== null) {
+            result = (this.result as Transaction).result
+        } else { // string | null
+            result = this.result
+        }
+        return result
+    }
 }

@@ -57,20 +57,15 @@
           class=""
       >
         <span class="">{{ claimButtonHint }}</span>
-        <Tooltip
-            id="claim-button-tooltip"
-            text="Coming soon"
+        <ButtonView
+            id="claim-button"
+            :enabled="claimActionEnabled"
+            :is-default="true"
+            :size="ButtonSize.small"
+            @action="onClaim"
         >
-          <ButtonView
-              id="claim-button"
-              :enabled="claimActionEnabled"
-              :is-default="true"
-              :size="ButtonSize.small"
-              @action="onClaim"
-          >
-            {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
-          </ButtonView>
-        </Tooltip>
+          {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
+        </ButtonView>
       </div>
     </template>
 
@@ -144,7 +139,7 @@
   />
 
   <ClaimTokenGroupDialog
-      :showDialog="showClaimDialog"
+      v-model:showDialog="showClaimDialog"
       :airdrops="candidateAirdrops"
       :drained="checkedAirdrops.length < MAX_AIRDROPS"
       @claimed="onClaimCompleted"
@@ -176,7 +171,6 @@ import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ButtonView from "@/elements/ButtonView.vue";
-import Tooltip from "@/components/Tooltip.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
@@ -350,6 +344,10 @@ const onClaim = async () => {
 
 const onClaimCompleted = () => {
   checkedAirdrops.value.splice(0)
+  nftsTableController.refresh()
+  fungibleTableController.refresh()
+  nftsAirdropTableController.refresh()
+  fungibleAirdropTableController.refresh()
 }
 
 const claimButtonHint = computed(() => {

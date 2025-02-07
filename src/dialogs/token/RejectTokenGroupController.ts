@@ -20,12 +20,13 @@
 
 import {TransactionGroupController} from "@/dialogs/core/transaction/TransactionGroupController.ts";
 import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
-import {FreezeStatus, Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
+import {FreezeStatus, Nft, Token, Transaction} from "@/schemas/MirrorNodeSchemas.ts";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import {NftId, TokenId, TokenRejectTransaction} from "@hashgraph/sdk";
 import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";
 import {walletManager} from "@/router.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
 
 export class RejectTokenGroupController extends TransactionGroupController {
 
@@ -58,84 +59,72 @@ export class RejectTokenGroupController extends TransactionGroupController {
         return this.tokens.value.length >= 1 && nftCount === this.tokens.value.length
     })
 
-    public readonly inputMessage = computed(() => {
+    public readonly panelMode = computed(
+        () => this.rejectCandidates.value.length == 0 ? TaskPanelMode.error : TaskPanelMode.none)
+
+    public readonly taskPanelMessage = computed(() => {
         let result: string
-        if (this.rejectCandidates.value.length === 0) {
-            if (this.tokens.value.length > 1) {
-                result = `None of the selected ${this.isNft.value ? "NFT" : "token"} can be rejected.`
+        const tokenCount = this.tokens.value.length
+        const candidateCount = this.rejectCandidates.value.length
+        const prefix = this.isNft.value ? "NFT" : "token"
+        if (tokenCount == 1) {
+            const t0 = this.tokens.value[0]
+            const tokenId = tokenOrNftId(t0)
+            if (candidateCount == 1) {
+                result = `Do you want to reject ${prefix} ${tokenId} ?`
             } else {
-                result = `The selected ${this.isNft.value ? "NFT" : "token"} cannot be rejected.`
+                result = `This ${prefix} cannot be rejected.`
             }
-        } else if (this.rejectCandidates.value.length === 1) {
-            result = `Do you want to reject ${this.isNft.value ? "NFT" : "token"} ${tokenOrNftId(this.rejectCandidates.value[0])}`
+        } else if (tokenCount >= 2) {
+            if (candidateCount == 0) {
+                result = `Selected ${prefix}s can be rejected.`
+            } else if (candidateCount == 1) {
+                const t0 = this.rejectCandidates.value[0]
+                const tokenId = tokenOrNftId(t0)
+                result = `Do you want to reject ${prefix} ${tokenId}`
+            } else {
+                result = `Do you want to reject ${candidateCount} ${prefix}s`
+            }
         } else {
-            result = `Do you want to reject ${this.rejectCandidates.value.length} ${this.isNft.value ? "NFT" : "token"}s`
-        }
-        if (this.rejectCandidates.value.length < this.tokens.value.length) {
-            result += ` (out of the ${this.tokens.value.length} selected)?`
-        } else {
-            result += '?'
+            result = `Selected ${prefix} can be rejected.`
         }
         return result
     })
 
-    public readonly inputMessageDetails1 = computed(() => {
+    public readonly taskPanelExtra1 = computed(() => {
         let result: string | null
-        if (this.inputMessageDetails2.value
-            || this.inputMessageDetails3.value
-            || this.inputMessageDetails4.value
-            || this.inputMessageDetails5.value
-        ) {
-            result = (this.rejectCandidates.value.length >= 1)
-                ? `The remaining selected ${this.isNft.value ? 'NFTs' : 'tokens'} cannot be rejected because:`
-                : 'This is because:'
-        } else {
+        const tokenCount = this.tokens.value.length
+        const candidateCount = this.rejectCandidates.value.length
+        const prefix = this.isNft.value ? "NFT" : "token"
+        const longPrefix = this.isNft.value ? "collection" : "token"
+        if (tokenCount == candidateCount) {
             result = null
-        }
-        return result
-    })
-
-    public readonly inputMessageDetails2 = computed(() => {
-        let result: string|null
-        if (this.treasuryTokens.value.length >= 1) {
-            result = `Your account is treasury for: ${this.treasuryTokens.value.splice(0, 4).join(', ')}`
-            result += (this.treasuryTokens.value.length > 4 ? '…' : '')
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    public readonly inputMessageDetails3 = computed(() => {
-        let result: string|null
-        if (this.pausedTokens.value.length >= 1) {
-            result = this.pausedTokens.value.length === 1 ? `This ${this.isNft.value ? "collection" : "token"} is paused: ` : "These are paused: "
-            result += this.pausedTokens.value.splice(0, 4).join(', ')
-            result += (this.pausedTokens.value.length > 4 ? '…' : '')
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    public readonly inputMessageDetails4 = computed(() => {
-        let result: string|null
-        if (this.frozenTokens.value.length >= 1) {
-            result = this.frozenTokens.value.length === 1 ? `This ${this.isNft.value ? "collection" : "token"} is frozen: ` : "These are frozen: "
-            result += this.frozenTokens.value.splice(0, 4).join(', ')
-            result += (this.frozenTokens.value.length > 4 ? '…' : '')
-        } else {
-            result = null
-        }
-        return result
-    })
-
-    public readonly inputMessageDetails5 = computed(() => {
-        let result: string|null
-        if (this.zeroBalanceTokens.value.length >= 1) {
-            result = this.zeroBalanceTokens.value.length === 1 ? "This token has a 0 balance: " : "These have a 0 balance: "
-            result += this.zeroBalanceTokens.value.splice(0, 4).join(', ')
-            result += (this.zeroBalanceTokens.value.length > 4 ? '…' : '')
+        } else if (tokenCount == 1) {
+            if (this.treasuryTokens.value.length == 1) {
+                result = `Your account is treasury for this ${prefix}`
+            } else if (this.pausedTokens.value.length === 1) {
+                result = `This ${longPrefix} is paused`
+            } else if (this.frozenTokens.value.length === 1) {
+                result = `This ${longPrefix} is frozen`
+            } else if (this.zeroBalanceTokens.value.length === 1) {
+                result = "This token has a 0 balance"
+            } else {
+                result = null
+            }
+        } else if (tokenCount >= 2) {
+            if (this.treasuryTokens.value.length == tokenCount) {
+                result = `Your account is treasury for these  ${longPrefix}s`
+            } else if (this.pausedTokens.value.length === tokenCount) {
+                result = `This ${longPrefix} are paused`
+            } else if (this.frozenTokens.value.length === tokenCount) {
+                result = `This ${longPrefix} are frozen`
+            } else if (this.zeroBalanceTokens.value.length === tokenCount) {
+                result = "This token have a 0 balance"
+            } else if (candidateCount < tokenCount) {
+                result = `Other ${prefix} cannot be rejected`
+            } else {
+                result = null
+            }
         } else {
             result = null
         }
@@ -146,10 +135,6 @@ export class RejectTokenGroupController extends TransactionGroupController {
     //
     // TransactionController
     //
-
-    public canBeExecuted(): boolean {
-        return this.rejectCandidates.value.length >= 1
-    }
 
     protected dialogStartShowing(): void {
         this.watchStopHandle = watch(this.tokens, this.tokensDidChange, {immediate: true})
@@ -173,33 +158,27 @@ export class RejectTokenGroupController extends TransactionGroupController {
     // TransactionGroupController
     //
 
-    protected makeTransactions(): Promise<string | null>[] {
-        const result: Promise<string | null>[] = []
+    public getTransactionCount(): number {
+        return this.requiredTransactionCount.value
+    }
 
-        const MAX_TOKENS_PER_REJECT = 10
-        const nbRequiredTransactions = Math.ceil(this.rejectCandidates.value.length / MAX_TOKENS_PER_REJECT)
+    protected async executeTransaction(index: number): Promise<Transaction | string | null> {
+        const start = index * MAX_TOKENS_PER_REJECT
+        const end = Math.min(this.rejectCandidates.value.length, start + MAX_TOKENS_PER_REJECT)
+        console.log(`rejecting tokens from ${start} to ${end}`)
+        const rejected = this.rejectCandidates.value.slice(start, end)
+        const transaction = new TokenRejectTransaction()
 
-        for (let i = 0; i < nbRequiredTransactions; i += 1) {
-
-            const start = i * MAX_TOKENS_PER_REJECT
-            const end = Math.min(this.rejectCandidates.value.length, start + MAX_TOKENS_PER_REJECT)
-            console.log(`rejecting tokens from ${start} to ${end}`)
-            const rejected = this.rejectCandidates.value.slice(start, end)
-            const transaction = new TokenRejectTransaction()
-
-            for (const t of rejected) {
-                if ((t as Nft).serial_number) {
-                    transaction.addNftId(new NftId(TokenId.fromString(t.token_id!), (t as Nft).serial_number))
-                } else {
-                    transaction.addTokenId(TokenId.fromString(t.token_id!))
-                }
-                TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, t.token_id!)
+        for (const t of rejected) {
+            if ((t as Nft).serial_number) {
+                transaction.addNftId(new NftId(TokenId.fromString(t.token_id!), (t as Nft).serial_number))
+            } else {
+                transaction.addTokenId(TokenId.fromString(t.token_id!))
             }
-
-            result.push(walletManager.rejectTokens(transaction))
+            TokenAssociationCache.instance.forgetTokenAssociation(walletManager.accountId.value!, t.token_id!)
         }
 
-        return result
+        return await walletManager.rejectTokens(transaction)
     }
 
 
@@ -251,4 +230,9 @@ export class RejectTokenGroupController extends TransactionGroupController {
         }
     }
 
+    private readonly requiredTransactionCount = computed(() => {
+        return Math.ceil(this.rejectCandidates.value.length / MAX_TOKENS_PER_REJECT)
+    })
 }
+
+const MAX_TOKENS_PER_REJECT = 10

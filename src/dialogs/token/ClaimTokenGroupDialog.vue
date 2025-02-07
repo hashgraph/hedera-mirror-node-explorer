@@ -40,10 +40,6 @@
         <template v-if="!props.drained" #taskPanelExtra1>
           (You might have more but we have limited to the first 100)
         </template>
-        <template v-if="nbRequiredTransactions >= 2" #taskPanelExtra2>
-          This will require sending {{ nbRequiredTransactions }} transactions
-          (maximum of {{ ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
-        </template>
       </TaskPanel>
 
     </template>
@@ -87,7 +83,6 @@ const airdrops = computed(() => props.airdrops ?? [])
 const controller = new ClaimTokenGroupController(showDialog, airdrops)
 
 const airdropCount = controller.airdropCount
-const nbRequiredTransactions = controller.nbRequiredTransactions
 
 const transactionGroupDidExecute = async () => {
   emit('claimed')

@@ -38,24 +38,10 @@
       <template v-if="filtering">Filtering…</template>
 
       <template v-else>
-        <div>
-          {{ inputMessage }}
-        </div>
-        <div>
-          {{ inputMessageDetails1 }}
-        </div>
-        <div v-if="inputMessageDetails2">
-          {{ inputMessageDetails2 }}
-        </div>
-        <div v-if="inputMessageDetails3">
-          {{ inputMessageDetails3 }}
-        </div>
-        <div v-if="inputMessageDetails4">
-          {{ inputMessageDetails4 }}
-        </div>
-        <div v-if="inputMessageDetails5">
-          {{ inputMessageDetails5 }}
-        </div>
+        <TaskPanel :mode="panelMode">
+          <template #taskPanelMessage>{{ taskPanelMessage }}</template>
+          <template v-if="taskPanelExtra1" #taskPanelExtra1>{{ taskPanelExtra1 }}</template>
+        </TaskPanel>
       </template>
 
     </template>
@@ -73,6 +59,7 @@ import {computed, PropType} from "vue";
 import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
 import {RejectTokenGroupController} from "@/dialogs/token/RejectTokenGroupController.ts";
 import {Nft, Token} from "@/schemas/MirrorNodeSchemas.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -93,12 +80,9 @@ const tokens = computed(() => props.tokens ?? [])
 const controller = new RejectTokenGroupController(showDialog, tokens)
 
 const filtering = controller.filtering
-const inputMessage = controller.inputMessage
-const inputMessageDetails1 = controller.inputMessageDetails1
-const inputMessageDetails2 = controller.inputMessageDetails2
-const inputMessageDetails3 = controller.inputMessageDetails3
-const inputMessageDetails4 = controller.inputMessageDetails4
-const inputMessageDetails5 = controller.inputMessageDetails5
+const panelMode = controller.panelMode
+const taskPanelMessage = controller.taskPanelMessage
+const taskPanelExtra1 = controller.taskPanelExtra1
 
 const transactionTitle = computed(
     () =>  controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens' )
