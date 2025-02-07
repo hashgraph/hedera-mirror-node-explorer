@@ -71,10 +71,10 @@
       <TaskPanel :mode="TaskPanelMode.success">
         <template #taskPanelMessage>Operation did complete</template>
         <template v-if="controller.transactionId.value" #taskPanelExtra1>
-          <div>Transaction ID: <TransactionLink :transaction-loc="transactionId ?? undefined"/></div>
+          Transaction ID: {{ transactionId }}
         </template>
         <template v-if="controller.isFailedResult.value" #taskPanelExtra2>
-          <div>Result: {{ controller.transactionResult.value }}</div>
+          Result: {{ controller.transactionResult.value }}
         </template>
       </TaskPanel>
     </template>
@@ -99,7 +99,6 @@ import {TransactionController} from "@/dialogs/core/transaction/TransactionContr
 import {walletManager} from "@/router.ts";
 import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
-import TransactionLink from "@/components/values/TransactionLink.vue";
 
 const props = defineProps({
   controller: {

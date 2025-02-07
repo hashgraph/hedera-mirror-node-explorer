@@ -74,7 +74,7 @@
         <template #taskPanelMessage>{{ taskPanelMessage }}</template>
         <template #taskPanelExtra1>
           <template v-if="singleTransactionId">
-            Transaction ID: <TransactionLink :transaction-loc="singleTransactionId ?? undefined"/>
+            Transaction ID: {{ singleTransactionId }}
           </template>
           <template v-else-if="taskPanelExtra1">
             {{ taskPanelExtra1}}
@@ -104,7 +104,6 @@ import {TransactionGroupController} from "@/dialogs/core/transaction/Transaction
 import {walletManager} from "@/router.ts";
 import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
-import TransactionLink from "@/components/values/TransactionLink.vue";
 import {TransactionID} from "@/utils/TransactionID.ts";
 import {isSuccessfulResult} from "@/utils/TransactionTools.ts";
 
