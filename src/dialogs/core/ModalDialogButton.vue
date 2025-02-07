@@ -39,7 +39,7 @@
 
 <script setup lang="ts">
 
-import ButtonView from "@/dialogs/core/ButtonView.vue"
+import ButtonView from "@/elements/ButtonView.vue"
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,

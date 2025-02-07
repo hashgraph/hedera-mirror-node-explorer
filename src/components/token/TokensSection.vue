@@ -175,7 +175,7 @@ import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import Tooltip from "@/components/Tooltip.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";

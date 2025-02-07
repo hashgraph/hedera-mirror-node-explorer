@@ -141,7 +141,7 @@ import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 import RecentRewardsSection from "@/components/staking/RecentRewardsSection.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 
 defineProps({
   network: String

@@ -191,7 +191,7 @@ import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 import SelectView from "@/elements/SelectView.vue";
 import SwitchView from "@/elements/SwitchView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import ContractByteCodeValue from "@/components/values/ContractByteCodeValue.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 

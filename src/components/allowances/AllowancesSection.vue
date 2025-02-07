@@ -131,7 +131,7 @@ import {NftAllSerialsAllowanceTableController} from "@/components/allowances/Nft
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 import UpdateCryptoAllowanceDialog from "@/dialogs/allowance/UpdateCryptoAllowanceDialog.vue";
 import UpdateTokenAllowanceDialog from "@/dialogs/allowance/UpdateTokenAllowanceDialog.vue";

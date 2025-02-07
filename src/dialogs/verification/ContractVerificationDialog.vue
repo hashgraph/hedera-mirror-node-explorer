@@ -135,7 +135,7 @@ import FileList from "@/dialogs/verification/FileList.vue";
 import {ContractVerificationController} from "@/dialogs/verification/ContractVerificationController.ts";
 import {ButtonSize, TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
 import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import { FilePlus } from 'lucide-vue-next';
 
 //

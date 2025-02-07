@@ -391,7 +391,7 @@ import {NetworkConfig} from "@/config/NetworkConfig";
 import SwitchView from "@/elements/SwitchView.vue";
 import SelectView from "@/elements/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";

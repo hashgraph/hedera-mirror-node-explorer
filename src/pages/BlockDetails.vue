@@ -129,7 +129,7 @@ import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBloc
 import {routeManager} from "@/router";
 import MirrorLink from "@/components/MirrorLink.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import {ArrowLeft, ArrowRight} from 'lucide-vue-next';
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 

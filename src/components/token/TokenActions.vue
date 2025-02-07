@@ -97,7 +97,7 @@
 import {computed, PropType, ref} from "vue";
 import {walletManager} from "@/router.ts";
 import {TokenAssociationStatus, TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer.ts";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import AssociateTokenDialog from "@/dialogs/token/AssociateTokenDialog.vue";
 import DissociateTokenDialog from "@/dialogs/token/DissociateTokenDialog.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";

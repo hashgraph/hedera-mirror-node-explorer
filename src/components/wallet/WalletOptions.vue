@@ -97,7 +97,7 @@
 import {computed, onBeforeUnmount, onMounted} from "vue";
 import {routeManager, walletManager} from "@/router.ts";
 import GroupBoxView from "@/elements/GroupBoxView.vue";
-import ButtonView from "@/dialogs/core/ButtonView.vue";
+import ButtonView from "@/elements/ButtonView.vue";
 import LabelView from "@/elements/LabelView.vue";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
