@@ -407,10 +407,10 @@ export async function waitForTransactionRefresh(transactionId: string, attemptIn
 
 export async function drainTransactions(r: TransactionResponse, limit: number): Promise<Transaction[]> {
     let result = r.transactions ?? []
-    let i = 1
+    // let i = 1
     while (r.links?.next && result.length < limit) {
         // console.log("drain iteration: " + i);
-        i += 1
+        // i += 1
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions)
