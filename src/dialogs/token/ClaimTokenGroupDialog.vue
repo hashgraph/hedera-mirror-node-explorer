@@ -35,12 +35,16 @@
 
     <template #transactionGroupDialogInput>
 
-      <div>Do you want to claim {{ airdropCount }} token airdrops?</div>
-      <div v-if="!props.drained">(You might have more but we have limited to the first 100)</div>
-      <div v-if="nbRequiredTransactions >= 2">
-        This will require sending {{ nbRequiredTransactions }} transactions
-        (maximum of {{ ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
-      </div>
+      <TaskPanel :mode="TaskPanelMode.none">
+        <template #taskPanelMessage>Do you want to claim {{ airdropCount }} token airdrops?</template>
+        <template v-if="!props.drained" #taskPanelExtra1>
+          (You might have more but we have limited to the first 100)
+        </template>
+        <template v-if="nbRequiredTransactions >= 2" #taskPanelExtra2>
+          This will require sending {{ nbRequiredTransactions }} transactions
+          (maximum of {{ ClaimTokenGroupController.MAX_AIRDROPS_PER_CLAIM }} tokens claimed per transaction).
+        </template>
+      </TaskPanel>
 
     </template>
 
@@ -57,6 +61,8 @@ import {computed, PropType} from "vue";
 import TransactionGroupDialog from "@/dialogs/core/transaction/TransactionGroupDialog.vue";
 import {TokenAirdrop} from "@/schemas/MirrorNodeSchemas.ts";
 import {ClaimTokenGroupController} from "@/dialogs/token/ClaimTokenGroupController.ts";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
