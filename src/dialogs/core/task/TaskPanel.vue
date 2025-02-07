@@ -80,7 +80,8 @@ div.task-panel {
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 24px
+  row-gap: 24px;
+  width: 100%;
 }
 
 div.task-panel-message {
