@@ -36,8 +36,10 @@
         <slot name="transactionDialogInput"/>
       </template>
       <template v-else>
-        <div>This operation cannot be done using {{ walletName }}</div>
-        <div>Use another wallet (Blade or HashPack)</div>
+        <TaskPanel :mode="TaskPanelMode.error">
+          <template #taskPanelMessage>This operation cannot be done using {{ walletName }}</template>
+          <template #taskPanelExtra1>Use another wallet (Blade or HashPack)</template>
+        </TaskPanel>
       </template>
     </template>
 
