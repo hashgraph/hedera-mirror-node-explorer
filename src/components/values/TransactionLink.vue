@@ -42,9 +42,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onMounted, PropType, ref, watch} from "vue";
+import {computed, onMounted, PropType, ref, watch} from "vue";
 import {TransactionID} from "@/utils/TransactionID";
 import {routeManager} from "@/router";
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
@@ -55,61 +55,51 @@ import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import TransactionIdValue from "@/components/values/TransactionIdValue.vue";
 
-export default defineComponent({
-  name: "TransactionLink",
-  components: {TransactionIdValue},
-
-  props: {
-    transactionLoc: String as PropType<string | undefined>,
-    showNone: {
-      type: Boolean,
-      default: true
-    },
+const props = defineProps({
+  transactionLoc: String as PropType<string | undefined>,
+  showNone: {
+    type: Boolean,
+    default: true
   },
+})
 
-  setup(props) {
-
-    const normalizedId = ref<string | null>(null)
-    const updateNormalizedId = () => {
-      if (props.transactionLoc) {
-        const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
-        if (tloc instanceof Timestamp) {
-          TransactionByTsCache.instance.lookup(props.transactionLoc)
-              .then((t: Transaction | null) => {
-                normalizedId.value = t?.transaction_id ?? null
-              })
-              .catch(() => {
-                normalizedId.value = null
-              })
-        } else if (tloc instanceof TransactionHash) {
-          TransactionByHashCache.instance.lookup(props.transactionLoc)
-              .then((t: Transaction | null) => {
-                normalizedId.value = t?.transaction_id ?? null
-              })
-              .catch(() => {
-                normalizedId.value = null
-              })
-        } else {
-          normalizedId.value = null
-        }
-      } else {
-        normalizedId.value = null
-      }
+const normalizedId = ref<string | null>(null)
+const updateNormalizedId = () => {
+  if (props.transactionLoc) {
+    const tloc = PathParam.parseTransactionLoc(props.transactionLoc)
+    if (tloc instanceof Timestamp) {
+      TransactionByTsCache.instance.lookup(props.transactionLoc)
+          .then((t: Transaction | null) => {
+            normalizedId.value = t?.transaction_id ?? null
+          })
+          .catch(() => {
+            normalizedId.value = null
+          })
+    } else if (tloc instanceof TransactionHash) {
+      TransactionByHashCache.instance.lookup(props.transactionLoc)
+          .then((t: Transaction | null) => {
+            normalizedId.value = t?.transaction_id ?? null
+          })
+          .catch(() => {
+            normalizedId.value = null
+          })
+    } else {
+      normalizedId.value = null
     }
-    watch(computed(() => props.transactionLoc), () => updateNormalizedId())
-    onMounted(() => updateNormalizedId())
-
-    const formattedId = computed(() => {
-      return normalizedId.value !== null ? TransactionID.normalizeForDisplay(normalizedId.value) : null
-    })
-
-    const routeToTransaction = computed(() => {
-      return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
-    })
-
-    return {formattedId, routeToTransaction}
+  } else {
+    normalizedId.value = null
   }
-});
+}
+watch(computed(() => props.transactionLoc), () => updateNormalizedId())
+onMounted(() => updateNormalizedId())
+
+const formattedId = computed(() => {
+  return normalizedId.value !== null ? TransactionID.normalizeForDisplay(normalizedId.value) : null
+})
+
+const routeToTransaction = computed(() => {
+  return props.transactionLoc ? routeManager.makeRouteToTransaction(props.transactionLoc) : null
+})
 
 </script>
 
