@@ -25,33 +25,39 @@
 <!-- TODO: remove BULMA styling, use Lucide icons, redo chips,...-->
 
 <template>
-  <div class="entry-container m-0">
+  <div class="entry-container">
     <!-- Row 0 -->
     <button
         data-cy="execFunction"
-        style="background-color: transparent; border:0; border-radius: 0;"
+        class="exec-button"
         v-on:click="handleClick()">
       <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs"/>
     </button>
-    <div class="is-flex is-align-items-baseline ml-3">
-      <div class="h-is-text-size-3 has-text-grey has-text-weight-medium">{{ props.index }}.</div>
-      <SolidityCode class="source-code">{{ signature }}</SolidityCode>
-      <div class="h-has-pill h-is-text-size-1 has-background-black has-text-grey has-text-weight-normal">{{
-          mutability
-        }}
+    <div class="entry-content">
+      <div class="entry-index">
+        {{ props.index }}.
       </div>
-      <div style="color:#f08d49" class="h-has-pill h-is-text-size-1 has-background-black has-text-weight-normal ml-1">
+      <SolidityCode class="source-code">
+        {{ signature }}
+      </SolidityCode>
+      <div class="h-has-pill">
+        {{ mutability }}
+      </div>
+      <div class="h-has-pill h-chip-default ml-2">
         {{ selector }}
       </div>
     </div>
 
     <!-- Row 1 -->
     <div/>
-    <div v-if="hasResult" class="ml-2 h-is-property-text">
+    <div v-if="hasResult">
       <span class="icon has-text-grey"><i class="fas fa-long-arrow-alt-right"/></span>
-      <span class="h-is-extra-text ml-1">{{ callOutput }}</span>
+      <span class="ml-1">
+        {{ callOutput }}
+      </span>
     </div>
   </div>
+
   <ContractAbiDialog
       v-model:show-dialog="showAbiCallDialog"
       :contract-call-builder="props.contractCallBuilder"
@@ -141,11 +147,30 @@ const callOutput = props.contractCallBuilder.callOutput
   display: grid;
   grid-template-columns: min-content auto;
   align-items: center;
+  font-size: 11px;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+button.exec-button {
+  color: var(--text-primary);
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+}
+
+div.entry-content {
+  align-items: baseline;
+  display: flex;
+}
+
+div.entry-index {
+  color: var(--text-secondary);
 }
 
 .source-code {
-  font-size: 10.5px;
   background-color: var(--background-secondary);
+  padding: 0px 4px;
 }
 
 </style>
