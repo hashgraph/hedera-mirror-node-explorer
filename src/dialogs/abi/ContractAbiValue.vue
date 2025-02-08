@@ -53,7 +53,7 @@
         </template>
       </template>
 
-      <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
+      <hr v-if="showAll" class="horizontal-line"/>
 
       <template v-if="showReadWrite">
         <template v-if="rwContractCallBuilders.length >= 1">
@@ -75,7 +75,7 @@
       </template>
     </template>
 
-    <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
+    <hr v-if="showAll" class="horizontal-line"/>
 
     <template v-if="showEvents">
       <SolidityCode class="source-code">
@@ -83,7 +83,7 @@
       </SolidityCode>
     </template>
 
-    <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
+    <hr v-if="showAll" class="horizontal-line"/>
 
     <template v-if="showErrors">
       <SolidityCode class="source-code">
@@ -91,7 +91,7 @@
       </SolidityCode>
     </template>
 
-    <hr v-if="showAll" class="has-background-grey-dark m-0" style="height: 0.5px"/>
+    <hr v-if="showAll" class="horizontal-line"/>
 
     <template v-if="showOther">
       <SolidityCode class="source-code">
@@ -326,8 +326,12 @@ div.abi-container {
 }
 
 .source-code {
-  font-size: 10.5px;
+  font-size: 11px;
   background-color: var(--background-secondary);
+}
+
+hr.horizontal-line {
+  height: 2px;
 }
 
 </style>

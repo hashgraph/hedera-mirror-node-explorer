@@ -314,6 +314,14 @@ div.h-side-by-side-content {
     border: dashed 1px var(--network-theme-color);
 }
 
+hr.horizontal-line {
+    background-color: var(--border-secondary);
+    border: 0;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+}
+
 /*  ========= THOSE ABOVE SHOULD STAY - THOSE BELOW STILL NEED TRIAGE ==========
  */
 

@@ -250,8 +250,6 @@ div.split-separator {
 }
 
 hr.horizontal-line {
-  background-color: var(--border-secondary);
-  height: 1px;
   margin: 24px 0;
 }
 

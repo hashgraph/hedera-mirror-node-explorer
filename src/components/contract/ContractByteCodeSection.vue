@@ -367,9 +367,6 @@ div.contract-code-controls {
 }
 
 hr.horizontal-line {
-  background-color: var(--border-secondary);
-  border: 0;
-  height: 1px;
   margin: 8px 0;
 }
 

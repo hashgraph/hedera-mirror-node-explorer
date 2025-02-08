@@ -272,8 +272,6 @@ const routes = ref([
 }
 
 hr.horizontal-line {
-  background-color: var(--border-secondary);
-  height: 1px;
   margin: 16px 0;
 }
 

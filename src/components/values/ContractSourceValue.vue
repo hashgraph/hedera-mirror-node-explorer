@@ -98,16 +98,15 @@ div.source-container {
 }
 
 div.source-filename {
-  color: var(--text-accent);
+  color: var(--network-text-accent-color);
 }
 
 .source-code {
-  font-size: 10.5px;
+  font-size: 11px;
   background-color: var(--background-secondary);
 }
 
 hr.horizontal-line {
-  background-color: var(--border-secondary);
   height: 2px;
   margin: 16px 0;
 }
