@@ -18,7 +18,9 @@
  *
  */
 
+/*
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+*/
 @import "../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
 @import "oruga-customization.css";
 
@@ -164,20 +166,51 @@
     Explorer classes
 */
 
+
 html, body {
     background: var(--background-primary);
+    color: var(--text-primary);
     font-family: var(--font-family-proportional), sans-serif;
-    font-weight: 400;
+    font-size: 14px;
     font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    text-size-adjust: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+body, button, input, optgroup, select, textarea {
+    font-family: var(--font-family-proportional), sans-serif;
 }
 
 a {
     text-decoration: none;
     color: inherit;
+    cursor: pointer;
 }
 
 a:hover {
     color: grey;
+}
+
+button {
+    background-color: var(--background-tertiary);
+    border: none;
+    padding: 0;
+}
+
+blockquote, body, dd, dl, dt, fieldset, figure, h1, h2, h3, h4, h5, h6, hr, html, iframe, legend, li, ol, p, pre, textarea, ul {
+    margin: 0;
+    padding: 0
+}
+
+button, input, select, textarea {
+    margin: 0
+}
+
+ul {
+    list-style: none
 }
 
 .h-page-content {
@@ -187,6 +220,7 @@ a:hover {
     margin-left: 16px;
     margin-right: 16px;
 }
+
 @media (min-width: 1080px) {
     .h-page-content {
         margin-left: 32px;
@@ -199,6 +233,7 @@ div.h-side-by-side-content {
     flex-direction: column;
     gap: 16px;
 }
+
 @media (min-width: 1280px) {
     div.h-side-by-side-content {
         display: grid;
@@ -222,6 +257,7 @@ div.h-side-by-side-content {
     background: var(--network-chip-color);
     border-radius: 32px;
     color: var(--chip-text-primary);
+    display: inline-block;
     font-family: "Styrene A Web", sans-serif;
     font-size: 10px;
     font-weight: 400;
@@ -245,28 +281,41 @@ div.h-side-by-side-content {
 
 /* TODO: Rename .h-is-low-contrast */
 .has-text-grey {
-    color: var(--text-secondary) !important;
+    color: var(--text-secondary);
 }
 
 .h-text-error {
-    color: var(--text-error) !important;
+    color: var(--text-error);
 }
 
 .h-is-extra-text {
-    color: var(--network-text-accent-color) !important;
+    color: var(--network-text-accent-color);
 }
 
 .h-status-success {
-    background-color: var(--status-success-color) !important;
+    background-color: var(--status-success-color);
 }
 
 .h-status-error {
-    background-color: var(--status-error-color) !important;
+    background-color: var(--status-error-color);
+}
+
+.h-chip-default {
+    background-color: var(--chip-secondary-default);
+}
+
+/* TODO: Rename */
+.should-wrap {
+    word-break: break-word;
+}
+
+/* Dashed DnD area */
+.h-dotted-area {
+    border: dashed 1px var(--network-theme-color);
 }
 
 /*  ========= THOSE ABOVE SHOULD STAY - THOSE BELOW STILL NEED TRIAGE ==========
  */
-
 
 .h-is-table-compact table.o-table {
     margin: 0;
@@ -727,4 +776,89 @@ hr.dotted {
 
 .h-has-page-background {
     background-color: var(--background-primary);
+}
+
+/*  ============================================================================
+    Maintain code which is still using BULMA classes
+*/
+
+.has-text-left {
+    text-align: left!important
+}
+
+.has-text-right {
+    text-align: right!important
+}
+
+.is-inline-block {
+    display: inline-block !important
+}
+
+.m-0 {
+    margin: 0 !important
+}
+
+.mt-1 {
+    margin-top: .25rem !important
+}
+
+.mr-1 {
+    margin-right: .25rem !important
+}
+
+.mb-1 {
+    margin-bottom: .25rem !important
+}
+
+.ml-1 {
+    margin-left: .25rem !important
+}
+
+.mr-2 {
+    margin-right: .5rem !important
+}
+
+.mb-2 {
+    margin-bottom: .5rem !important
+}
+
+.ml-2 {
+    margin-left: .5rem !important
+}
+
+.mt-3 {
+    margin-top: .75rem !important
+}
+
+.mr-3 {
+    margin-right: .75rem !important
+}
+
+
+.ml-3 {
+    margin-left: .75rem !important
+}
+
+.mt-4 {
+    margin-top: 1rem !important
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important
+}
+
+.mt-5 {
+    margin-top: 1.5rem !important
+}
+
+.ml-5 {
+    margin-left: 1.5rem !important
+}
+
+.pt-1 {
+    padding-top: .25rem !important
+}
+
+.pb-2 {
+    padding-bottom: .5rem !important
 }
