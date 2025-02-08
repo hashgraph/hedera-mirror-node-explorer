@@ -24,19 +24,21 @@
 
 <template>
   <template v-if="contractId != null">
-    <div v-if="fullMatch || partialMatch">
-      <div class="icon is-small has-text-success mr-1">
-        <i v-if="fullMatch" class="fas fa-check-circle"></i>
-        <i v-else class="fas fa-check-circle"></i>
+
+    <template v-if="fullMatch || partialMatch">
+      <div class="h-has-pill h-status-success" >
+        <CheckCheck v-if="fullMatch" :size="12" style="margin-top: 2px"/>
+        <Check v-else :size="12" style="margin-top: 2px"/>
+        <span class="contract-name">{{ name }}</span>
       </div>
-      <span>
-                {{ name }}
-            </span>
-    </div>
-    <span v-else-if="true"
-          class="h-has-pill h-has-page-background has-text-grey has-text-weight-normal h-is-text-size-1">
-            NOT VERIFIED
-        </span>
+    </template>
+
+    <template v-else>
+      <div class="h-has-pill h-chip-default">
+        NOT VERIFIED
+      </div>
+    </template>
+
   </template>
 </template>
 
@@ -44,38 +46,26 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted} from "vue";
+import {computed, onBeforeUnmount, onMounted} from "vue";
 import {ContractAnalyzer, GlobalState} from "@/utils/analyzer/ContractAnalyzer";
+import {Check, CheckCheck} from 'lucide-vue-next';
 
-export default defineComponent({
-  name: "ContractName",
-
-  props: {
-    contractId: {
-      type: String,
-      required: true
-    }
-  },
-
-  setup(props) {
-
-    const contractAnalyzer = new ContractAnalyzer(computed(() => props.contractId ?? null))
-    onMounted(() => contractAnalyzer.mount())
-    onBeforeUnmount(() => contractAnalyzer.unmount())
-
-    const name = computed(() => contractAnalyzer.contractName.value)
-    const partialMatch = computed(() => contractAnalyzer.globalState.value === GlobalState.PartialMatch)
-    const fullMatch = computed(() => contractAnalyzer.globalState.value === GlobalState.FullMatch)
-
-    return {
-      name,
-      partialMatch,
-      fullMatch,
-    }
+const props = defineProps({
+  contractId: {
+    type: String,
+    required: true
   }
-});
+})
+
+const contractAnalyzer = new ContractAnalyzer(computed(() => props.contractId ?? null))
+onMounted(() => contractAnalyzer.mount())
+onBeforeUnmount(() => contractAnalyzer.unmount())
+
+const name = computed(() => contractAnalyzer.contractName.value)
+const partialMatch = computed(() => contractAnalyzer.globalState.value === GlobalState.PartialMatch)
+const fullMatch = computed(() => contractAnalyzer.globalState.value === GlobalState.FullMatch)
 
 </script>
 
@@ -83,5 +73,12 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+span.contract-name {
+  vertical-align: top;
+  margin-left: 4px;
+}
+
+</style>
 
