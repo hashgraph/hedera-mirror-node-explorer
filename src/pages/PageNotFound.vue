@@ -40,6 +40,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <script setup lang="ts">
+
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 </script>
 
@@ -50,14 +51,14 @@ import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 
 <style scoped>
 
-.page-not-found {
+div.page-not-found {
   color: var(--text-secondary);
   min-height: 450px;
   text-align: center;
   padding-top: 100px;
-  font-family: "Styrene A Web", sans-serif;
+  font-family: "Inter", sans-serif;
   font-weight: 300;
-  font-size: 24px;
+  ;
 }
 
 </style>

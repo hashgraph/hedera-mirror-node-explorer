@@ -161,6 +161,7 @@ input {
   background-color: transparent;
   border-color: transparent;
   color: var(--text-primary);
+  font-size: 14px;
   outline: none;
 }
 
