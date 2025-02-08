@@ -34,9 +34,9 @@
         <div class="calculator-input">
           <div class="node-selector">
             <p>Choose a node to stake to</p>
-            <SelectView v-model="selectedNodeId" width="100%">
+            <SelectView v-model="selectedNodeId" width="100%" style="border-radius: 8px; border-color: var(--border-secondary);">
               <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-box-background-color)"
+                      style="background-color: var(--h-theme-box-background-color);"
               >
                 {{ makeNodeSelectorDescription(n) }}
               </option>
@@ -44,13 +44,14 @@
           </div>
           <div class="amount-chooser">
             <p>{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
-            <input
-                class="input"
-                type="text"
-                placeholder="0"
-                :value="amountStaked"
-                @input="handleInput"
-            >
+            <TextFieldView v-model="amountStaked"
+                           id="selectedAutoRenewPeriod"
+                           placeholder="0"
+                           type="number"
+                           min="1"
+                           step="1"
+                           style="width: 100%; border-radius: 8px; border-color: var(--border-secondary)"
+            />
           </div>
         </div>
 
@@ -100,6 +101,7 @@ import {CoreConfig} from "@/config/CoreConfig";
 import SelectView from "@/elements/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
+import TextFieldView from "@/elements/TextFieldView.vue";
 
 const props = defineProps({
   network: String,
@@ -160,6 +162,9 @@ div.calculator-root {
   display: flex;
   flex-direction: column;
   gap: 16px;
+  color: var(--text-secondary);
+  font-weight: 400;
+  font-size: 14px;
 }
 
 div.calculator-input {
@@ -170,11 +175,11 @@ div.calculator-input {
   min-height: 128px;
 }
 
-div.node-selector{
+div.node-selector {
   flex-grow: 1.3;
 }
 
-div.amount-chooser{
+div.amount-chooser {
   flex-grow: 1;
 }
 
