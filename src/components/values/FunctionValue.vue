@@ -26,8 +26,7 @@
 
   <div v-if="value">
     <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isSmallScreen"/>
-    <div v-else :class="{'has-text-grey': lowContrast}"
-         class="should-wrap is-flex">
+    <div v-else :class="{'has-text-grey': lowContrast}" class="function-value">
       <p class="mr-1">{{ value }}</p>
 
       <p v-if="ntv?.comment"
@@ -83,4 +82,11 @@ const value = props.ntv?.value?.toString()
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.function-value {
+  display: flex;
+  word-break: break-word;
+}
+
+</style>

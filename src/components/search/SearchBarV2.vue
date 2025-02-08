@@ -25,7 +25,7 @@
 <template>
 
   <div v-if="!isMediumScreen" ref="root">
-    <div class="is-flex is-flex-direction-column">
+    <div class="search-bar">
       <form data-cy="searchBar" class="control" action="" v-on:submit.prevent="handleSubmit">
         <input
             class="input has-background-white has-text-black"
@@ -41,9 +41,9 @@
   </div>
 
   <div v-else ref="root">
-    <div class="is-flex is-flex-direction-column">
+    <div class="search-bar">
       <form data-cy="searchBar" id="searchBar"
-            class="control is-flex" action=""
+            class="control" style="display: flex" action=""
             v-on:submit.prevent="handleSubmit">
         <input
             class="input has-text-white h-is-navbar-item"
@@ -84,12 +84,12 @@ const searchedText = ref<string>("")
 
 const searchController = new SearchController(searchedText)
 
-const inputElement = ref<HTMLInputElement|null>(null)
+const inputElement = ref<HTMLInputElement | null>(null)
 
-const selectedAgentId = ref<string|null>(null)
+const selectedAgentId = ref<string | null>(null)
 
 const selectedAgent = computed(() => {
-  let result: SearchAgent<unknown, unknown>|null
+  let result: SearchAgent<unknown, unknown> | null
   if (selectedAgentId.value !== null) {
     result = searchController.findAgentById(selectedAgentId.value)
   } else {
@@ -109,7 +109,7 @@ const candidates = computed(() => {
 })
 
 const defaultCandidate = computed(() => {
-  let result: SearchCandidate<unknown>|null
+  let result: SearchCandidate<unknown> | null
   if (candidates.value.length >= 1) {
     result = candidates.value[0]
   } else {
@@ -134,7 +134,7 @@ const handleSubmit = () => {
 
 const submitDisabled = computed(() => defaultCandidate.value === null)
 
-const root = ref<HTMLElement|null>(null)
+const root = ref<HTMLElement | null>(null)
 const isInside = (target: Node) => root.value !== null && root.value.contains(target)
 
 const onMouseDown = (ev: MouseEvent) => {
@@ -156,6 +156,11 @@ onBeforeUnmount(() => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.search-bar {
+  display: flex;
+  flex-direction: column;
+}
 
 input::placeholder {
   color: grey;

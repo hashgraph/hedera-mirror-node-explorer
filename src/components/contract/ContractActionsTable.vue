@@ -69,7 +69,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="AMOUNT">
-        <div class="is-flex is-align-items-end is-align-content-end is-numeric">
+        <div class="hbar-amount is-numeric">
           <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
           <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
           <span style="font-size: 13px; margin-left: 2px; margin-right: 2px">&#8594;</span>
@@ -151,6 +151,12 @@ const makeOperationType = (action: ContractAction) => action.call_operation_type
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.hbar-amount {
+  align-content: end;
+  align-items: end;
+  display: flex;
+}
 
 div.call-type {
   display: flex;

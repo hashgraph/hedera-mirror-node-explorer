@@ -21,7 +21,7 @@
 <!--Documentation for vue-datepicker: https://vue3datepicker.com-->
 
 <template>
-  <div class="is-flex is-align-items-center">
+  <div class="date-picker">
     <Datepicker v-model="date" placeholder="SELECT A DATE" :is-24="false" time-picker-inline dark @closed="handleClosed"
                 @cleared="$emit('dateCleared')"/>
   </div>
@@ -79,6 +79,12 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
+
+div.date-picker {
+  align-items: center;
+  display: flex;
+}
+
 .dp__theme_dark {
   --dp-background-color: var(--h-theme-box-background-color);
   --dp-primary-color: #575757;
@@ -93,4 +99,5 @@ export default defineComponent({
   --dp-font-size: 11px;
   --dp-input-padding: 3.5px 30px 3.5px 12px
 }
+
 </style>
