@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ul v-if="props.tabIds.length >= 1">
+  <ul v-if="props.tabIds.length >= 1" style="padding: 0; margin: 0;">
     <li
         :class="{'is-active':selectedTab === tab,'sub-tab': props.subTabs}"
         v-for="(tab, i) in props.tabIds"
@@ -71,14 +71,6 @@ const selectedTab = defineModel("selectedTab", {
 })
 
 const interactiveSelection = ref<boolean>(true) // true because initial value must be preserved
-
-// const tabClass = computed<string>(() =>
-//     props.subTabs
-//         ? "is-small h-is-property-text mt-4 mb-2"
-//         : props.compact
-//             ? "is-toggle h-is-text-size-1 mb-1"
-//             : "is-toggle h-is-property-text mt-3 mb-1"
-// )
 
 const handleSelect = (tab: string | null, interactive: boolean) => {
   selectedTab.value = tab
