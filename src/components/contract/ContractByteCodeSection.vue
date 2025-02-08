@@ -27,7 +27,10 @@
   <DashboardCardV2 collapsible-key="contractBytecode">
     <template #title>
       Contract Bytecode
-      <div v-if="isVerificationAvailable" class="h-has-pill" :class="{'h-status-success':isVerified}"
+      <div
+          v-if="isVerificationAvailable"
+          class="h-has-pill"
+          :class="{'h-status-success':isVerified, 'h-chip-default':!isVerified}"
            style="margin-top: 2px">
         {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>
@@ -365,6 +368,7 @@ div.contract-code-controls {
 
 hr.horizontal-line {
   background-color: var(--border-secondary);
+  border: 0;
   height: 1px;
   margin: 8px 0;
 }
@@ -373,6 +377,13 @@ div.verification-status {
   align-items: center;
   display: flex;
   gap: 8px;
+  flex-wrap: wrap;
+  justify-content: right;
+}
+@media (min-width: 768px) {
+  div.verification-status {
+    justify-content: left;
+  }
 }
 
 </style>
