@@ -41,7 +41,7 @@
           <span>{{ contractName }}</span>
         </router-link>
         <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)">
-          {{ displayId }}
+          <span>{{ displayId }}</span>
         </router-link>
         <ContractLink v-else-if="entityLinkType === ExtendedEntityType.CONTRACT" :contract-id="entityId"/>
         <AccountLink v-else-if="entityLinkType === ExtendedEntityType.ACCOUNT" :account-id="entityId"/>
