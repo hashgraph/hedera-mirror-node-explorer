@@ -168,7 +168,7 @@ div.title {
   font-family: 'Styrene A Web', serif;
   font-size: 18px;
   font-weight: 500;
-  height: 24px;
+  line-height: 20px;
   margin: 0;
 }
 @media (min-width: 1080px) {
@@ -176,6 +176,7 @@ div.title {
     font-size: 32px;
     font-weight: 400;
     height: 42px;
+    line-height: 36px;
   }
 }
 
