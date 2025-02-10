@@ -24,60 +24,30 @@
 
 <template>
 
-  <PageFrameV2 page-title="Dashboard">
+  <PageHeader page-title="Dashboard"/>
 
-    <DashboardCardV2 data-cy="cryptoTransfers">
-      <template #title>
-        <span>Crypto Transfers</span>
-      </template>
-      <template #left-control>
-        <PlayPauseButton :controller="cryptoTableController"/>
-      </template>
-      <template #content>
-        <SimpleTransactionTable :controller="cryptoTableController"/>
-        <ArrowLink
-            :route="routeManager.makeRouteToTransactions(TransactionType.CRYPTOTRANSFER)"
-            text="All Crypto Transfers"
-        />
-      </template>
-    </DashboardCardV2>
-
-    <div class="h-side-by-side-content">
-
-      <DashboardCardV2 data-cy="smartContractCalls">
-        <template #title>
-          <span>Smart Contract Calls</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton :controller="contractTableController"/>
-        </template>
-        <template #content>
-          <SimpleTransactionTable :controller="contractTableController"/>
-          <ArrowLink
-              :route="routeManager.makeRouteToTransactions(TransactionType.CONTRACTCALL)"
-              text="All Smart Contract Calls"
-          />
-        </template>
-      </DashboardCardV2>
-      <DashboardCardV2 data-cy="hcsMessages">
-        <template #title>
-          <span>HCS Messages</span>
-        </template>
-        <template #left-control>
-          <PlayPauseButton :controller="messageTableController"/>
-        </template>
-        <template #content>
-          <MessageTransactionTable v-bind:controller="messageTableController"/>
-          <ArrowLink
-              :route="routeManager.makeRouteToTransactions(TransactionType.CONSENSUSSUBMITMESSAGE)"
-              text="All HCS Messages"
-          />
-        </template>
-      </DashboardCardV2>
-
+  <div class="h-page-content">
+    <div class="dashboard-title">
+      Network
+    </div>
+    <div class="dashboard-separator"/>
+    <div class="dashboard-content">
+      <div style="height:300px; width: 100%; background-color: #222222"/>
+    </div>
+    <div class="dashboard-content">
+      <div style="height:300px; width: 100%; background-color: #222222"/>
     </div>
 
-  </PageFrameV2>
+    <div class="dashboard-title">
+      Accounts
+    </div>
+    <div class="dashboard-separator"/>
+    <div class="dashboard-content">
+      <div style="height:300px; width: 100%; background-color: #222222"/>
+    </div>
+  </div>
+
+  <Footer/>
 
 </template>
 
@@ -88,16 +58,11 @@
 <script setup lang="ts">
 
 import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import SimpleTransactionTable from "@/components/dashboard/SimpleTransactionTable.vue";
-import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
-import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
-import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import ArrowLink from "@/components/ArrowLink.vue";
-import {routeManager} from "@/router.ts";
+import Footer from "@/components/page/Footer.vue";
+import PageHeader from "@/components/page/header/PageHeader.vue";
 
 const props = defineProps({
   network: String
@@ -144,5 +109,42 @@ watch(() => props.network, () => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.dashboard-title {
+  color: var(--text-primary);
+  font-family: 'Styrene A Web', serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  margin-top: 12px;
+}
+
+@media (min-width: 1080px) {
+  div.dashboard-title {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 42px;
+    margin-top: 8px;
+  }
+}
+
+div.dashboard-separator {
+  background-color: var(--network-button-color);
+  height: 2px;
+  width: 100%;
+}
+
+div.dashboard-content {
+  background-color: var(--background-tertiary);
+  border: 1px solid var(--table-border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+@media (min-width: 1080px) {
+  div.dashboard-content {
+    padding: 32px;
+  }
+}
 
 </style>
