@@ -180,11 +180,11 @@ const updateFromAccount = async (): Promise<boolean> => {
     entityLinkType.value = ExtendedEntityType.ACCOUNT
     evmAddress.value = account.evm_address
     entityId.value = account.account
-  } else {
+  }/* else {  // Causes side effect : ContractAnalyzer.contract passes from non null to null contractIdDidChange() ?????
     entityLinkType.value = ExtendedEntityType.UNDEFINED
     evmAddress.value = null
     entityId.value = null
-  }
+  }*/
   return Promise.resolve(account !== null)
 }
 
@@ -194,11 +194,11 @@ const updateFromContract = async (): Promise<boolean> => {
     entityLinkType.value = ExtendedEntityType.CONTRACT
     evmAddress.value = contract.evm_address
     entityId.value = contract.contract_id
-  } else {
+  }/* else {
     entityLinkType.value = ExtendedEntityType.UNDEFINED
     evmAddress.value = null
     entityId.value = null
-  }
+  }*/
   return Promise.resolve(contract !== null)
 }
 
