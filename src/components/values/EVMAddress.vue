@@ -170,26 +170,34 @@ const updateIdAndAddress = async () => {
 }
 
 const updateFromSystemContract = async (): Promise<boolean> => {
-  systemContract.value = systemContractRegistry.lookup(derivedEntityId.value ?? "")
+  systemContract.value = derivedEntityId.value !== null ? systemContractRegistry.lookup(derivedEntityId.value) : null
   return Promise.resolve(systemContract.value !== null)
 }
 
 const updateFromAccount = async (): Promise<boolean> => {
-  const account = await AccountByAddressCache.instance.lookup(props.address ?? "")
+  const account = props.address !== null ? await AccountByAddressCache.instance.lookup(props.address) : null
   if (account !== null) {
     entityLinkType.value = ExtendedEntityType.ACCOUNT
     evmAddress.value = account.evm_address
     entityId.value = account.account
+  } else {
+    entityLinkType.value = ExtendedEntityType.UNDEFINED
+    evmAddress.value = null
+    entityId.value = null
   }
   return Promise.resolve(account !== null)
 }
 
 const updateFromContract = async (): Promise<boolean> => {
-  const contract = await ContractByAddressCache.instance.lookup(props.address ?? "")
+  const contract = props.address !== null ? await ContractByAddressCache.instance.lookup(props.address) : null
   if (contract !== null) {
     entityLinkType.value = ExtendedEntityType.CONTRACT
     evmAddress.value = contract.evm_address
     entityId.value = contract.contract_id
+  } else {
+    entityLinkType.value = ExtendedEntityType.UNDEFINED
+    evmAddress.value = null
+    entityId.value = null
   }
   return Promise.resolve(contract !== null)
 }
