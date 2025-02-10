@@ -38,31 +38,29 @@
  -->
 
 <template>
-  <span>
-    <template v-if="late">
-      <span class="loader is-inline-block"/>
+  <template v-if="late">
+    <span class="loader is-inline-block"/>
+  </template>
+  <template v-else-if="error">
+    <TriangleAlert
+        :size="18"
+        class="h-text-error"
+        style="cursor: pointer;"
+        @click="showErrorDialog = true"
+    />
+  </template>
+  <ModalDialog v-model:show-dialog="showErrorDialog" iconClass="fa fa-2x fa-exclamation-triangle has-text-danger">
+    <template #modalDialogContent>
+      <TaskPanel :mode="TaskPanelMode.error">
+        <template #taskPanelMessage>{{ explanation }}</template>
+        <template v-if="explanation" #taskPanelExtra1>
+          Some of the data required by this page could not be downloaded.
+          Displayed information may not be accurate.
+        </template>
+        <template v-if="suggestion" #taskPanelExtra2>{{ suggestion }}</template>
+      </TaskPanel>
     </template>
-    <template v-else-if="error">
-      <TriangleAlert
-          :size="18"
-          class="h-text-error"
-          style="cursor: pointer;"
-          @click="showErrorDialog = true"
-      />
-    </template>
-    <span style="display: inline-block">
-        <ModalDialog v-model:show-dialog="showErrorDialog" iconClass="fa fa-2x fa-exclamation-triangle has-text-danger">
-          <template v-slot:dialogMessage><slot name="message"/>{{ explanation }}</template>
-          <template v-slot:dialogDetails>
-            <div v-if="explanation" class="block">
-              Some of the data required by this page could not be downloaded.
-              The information displayed may not be accurate.
-            </div>
-            <div v-if="suggestion" class="block">{{ suggestion }}</div>
-          </template>
-        </ModalDialog>
-      </span>
-  </span>
+  </ModalDialog>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -75,6 +73,8 @@ import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from "vue"
 import {errorKey, explanationKey, loadingKey, suggestionKey} from "@/AppKeys"
 import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 import {TriangleAlert} from "lucide-vue-next";
+import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
+import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
 
 const loading = inject(loadingKey, ref(false))
 const error = inject(errorKey, ref(false))

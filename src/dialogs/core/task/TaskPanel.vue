@@ -98,14 +98,15 @@ div.task-panel-message {
 }
 
 div.task-panel-extra {
+  align-items: center;
+  color: var(--text-secondary);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  row-gap: 4px;
+  font-family: "Inter", sans-serif;
   font-size: 14px;
   font-weight: 400;
-  font-family: "Inter", sans-serif;
-  color: var(--text-secondary)
+  row-gap: 4px;
+  text-align: center;
 }
 
 </style>
