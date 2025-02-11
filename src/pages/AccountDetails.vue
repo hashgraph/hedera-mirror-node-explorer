@@ -74,10 +74,10 @@
             <template v-else>
               <Copyable :content-to-copy="normalizedAccountId ?? ''">
                 <template #content>
-                  <span>{{ normalizedAccountId ?? "" }}</span>
+                  <span style="font-weight: bold">{{ normalizedAccountId ?? "" }}</span>
                 </template>
               </Copyable>
-              <span v-if="accountChecksum">-{{ accountChecksum }}</span>
+              <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
             </template>
           </template>
         </Property>
