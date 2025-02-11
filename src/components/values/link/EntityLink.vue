@@ -24,7 +24,7 @@
 
 <template>
 
-  <div class="entity-link">
+  <div class="entity-link is-numeric">
 
     <template v-if="route === null">
       <slot/>
@@ -72,6 +72,7 @@ export default defineComponent({
 
 div.entity-link {
   display: inline-block;
+
 }
 
 </style>

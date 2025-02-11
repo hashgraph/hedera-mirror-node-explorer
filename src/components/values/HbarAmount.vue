@@ -30,7 +30,11 @@
   </template>
 
   <template v-else-if="props.amount !== 0 || !props.hideZero">
-    <span id="hbar-amount" :class="{ 'has-text-grey': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }">
+    <span
+        id="hbar-amount"
+        class="is-numeric"
+        :class="{ 'has-text-grey': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
+    >
       {{ formattedAmount }}
     </span>
     <span v-if="cryptoSymbol" v-html="cryptoSymbol"/>

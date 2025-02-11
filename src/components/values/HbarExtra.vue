@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <span v-if="props.tbarAmount !== 0 || !props.hideZero">
+  <span v-if="props.tbarAmount !== 0 || !props.hideZero" class="is-numeric">
     {{ dollarAmount }}
   </span>
 </template>
