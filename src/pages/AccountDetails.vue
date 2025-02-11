@@ -438,7 +438,8 @@ const maxAutoAssociationsValue = computed(() =>
 //
 // BalanceAnalyzer
 //
-const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
+const BALANCE_REFRESH_PERIOD = 60000 // 60 seconds
+const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, BALANCE_REFRESH_PERIOD)
 onMounted(() => balanceAnalyzer.mount())
 onBeforeUnmount(() => balanceAnalyzer.unmount())
 
