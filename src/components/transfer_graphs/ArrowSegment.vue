@@ -83,7 +83,7 @@ export default defineComponent({
     const updateSvgContent = () => {
       if (parentElement.value != null) {
         const bb = parentElement.value.getBoundingClientRect();
-        const dy = props.compact ? 11.5 : 13
+        const dy = props.compact ? 9.5 : 11.5
         svgContent.value = makeTransferSVG(bb.width, bb.height, dy, props.sourceCount, props.destCount, props.rowIndex)
       }
     }
