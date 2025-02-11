@@ -57,9 +57,26 @@
         <GroupBoxView>
           <template #groupBoxTitle>Balance</template>
           <template #default>
-            {{ formattedAmount}} ℏ
+            <HbarAmount :amount="tbarBalance"/>
             <div style="color: var(--text-secondary)">
               <HbarExtra :hide-zero="false" :tbar-amount="tbarBalance ?? 0"/>
+            </div>
+          </template>
+        </GroupBoxView>
+
+        <!-- Account Operations -->
+        <GroupBoxView>
+          <template #groupBoxTitle>Account Operations</template>
+          <template #default>
+            <div class="account-operations">
+              <div class="operation" @click="onUpdateAccount">
+                <UserRoundPen :size="18"/>
+                Account Update
+              </div>
+              <div class="operation" @click="onApproveAllowance">
+                <CheckCheck :size="18"/>
+                Approve Allowance
+              </div>
             </div>
           </template>
         </GroupBoxView>
@@ -85,6 +102,15 @@
       </template>
     </div>
 
+    <UpdateAccountDialog
+        v-model:show-dialog="showUpdateAccountDialog"
+        @updated="onUpdateCompleted"
+    />
+
+    <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
+                            @allowance-approved="onAllowanceApproved"
+    />
+
   </div>
 </template>
 
@@ -94,7 +120,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted} from "vue";
+import {computed, onBeforeUnmount, onMounted, ref} from "vue";
 import {routeManager, walletManager} from "@/router.ts";
 import GroupBoxView from "@/elements/GroupBoxView.vue";
 import ButtonView from "@/elements/ButtonView.vue";
@@ -105,6 +131,10 @@ import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer.ts";
 import HbarExtra from "@/components/values/HbarExtra.vue";
 import EntityLink from "@/components/values/link/EntityLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
+import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
+import ApproveAllowanceDialog from "@/dialogs/allowance/ApproveAllowanceDialog.vue";
+import {CheckCheck, UserRoundPen} from 'lucide-vue-next';
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 const showWalletOptions = defineModel("showWalletOptions", {
   type: Boolean,
@@ -120,14 +150,6 @@ const balanceAnalyzer = new BalanceAnalyzer(accountLocParser.accountId, 10000)
 onMounted(() => balanceAnalyzer.mount())
 onBeforeUnmount(() => balanceAnalyzer.unmount())
 
-const formattedAmount = computed(() => {
-  const amountFormatter = new Intl.NumberFormat('en-US', {
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 8
-  })
-  return amountFormatter.format(hbarBalance.value)
-})
-
 const accountRoute = computed(() => {
   const accountId = walletManager.accountId.value
   return accountId !== null ? routeManager.makeRouteToAccount(accountId) : null
@@ -139,10 +161,16 @@ const accountId = computed(() => walletManager.accountId.value ?? "No account ID
 const accountChecksum = accountLocParser.accountChecksum ?? ""
 // const accountCount = computed(() => walletManager.accountIds.value.length)
 const accountEthereumAddress = accountLocParser.ethereumAddress
-const hbarBalance = computed(() => (balanceAnalyzer.hbarBalance.value ?? 0) / 100000000)
 const tbarBalance = balanceAnalyzer.hbarBalance
 const currentNetwork = routeManager.currentNetwork
 
+const showUpdateAccountDialog = ref(false)
+const onUpdateAccount = () => showUpdateAccountDialog.value = true
+const onUpdateCompleted = () => console.log('Account update completed')
+
+const showApproveAllowanceDialog = ref(false)
+const onApproveAllowance = () => showApproveAllowanceDialog.value = true
+const onAllowanceApproved = () => console.log('Approve Allowance completed')
 
 const handleDisconnect = async () => {
   showWalletOptions.value = false
@@ -190,6 +218,23 @@ div.wallet-options-content {
   display: flex;
   flex-direction: column;
   row-gap: 8px;
+}
+
+div.account-operations {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  cursor: pointer;
+}
+
+div.operation {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+div.operation:hover {
+  color: grey;
 }
 
 div.wallet-options-footer {

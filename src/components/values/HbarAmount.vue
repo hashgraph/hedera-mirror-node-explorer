@@ -24,12 +24,12 @@
 
 <template>
 
-  <template v-if="isNone">
+  <div v-if="isNone" style="display: inline-block">
     <span v-if="initialLoading"/>
     <span v-else class="has-text-grey">None</span>
-  </template>
+  </div>
 
-  <template v-else-if="props.amount !== 0 || !props.hideZero">
+  <div v-else-if="props.amount !== 0 || !props.hideZero" style="display: inline-block">
     <span
         id="hbar-amount"
         class="is-numeric"
@@ -42,9 +42,9 @@
     <span v-if="props.showExtra" class="dollar-amount">
       <HbarExtra :hide-zero="props.hideZero" :tbar-amount="amount ?? 0" :timestamp="timestamp"/>
     </span>
-  </template>
+  </div>
 
-  <span v-else/>
+  <template v-else/>
 
 </template>
 
