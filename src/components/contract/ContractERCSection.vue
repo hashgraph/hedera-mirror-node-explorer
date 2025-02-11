@@ -67,9 +67,6 @@
         </Property>
       </template>
 
-      <div>isMediumScreen: {{isMediumScreen}}</div>
-      <div>antiMediumScreen: {{antiMediumScreen}}</div>
-
     </template>
   </DashboardCardV2>
 
