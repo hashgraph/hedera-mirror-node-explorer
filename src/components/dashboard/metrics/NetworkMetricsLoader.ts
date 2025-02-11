@@ -21,9 +21,9 @@
 import axios from "axios";
 import {computed} from "vue";
 import {NetworkExchangeRateSetResponse, NetworkSupplyResponse} from "@/schemas/MirrorNodeSchemas";
-import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
+import {EntityLoader} from "@/utils/loader/EntityLoader.ts";
 
-export class NetworkMetricsLoader extends EntityLoaderV2<NetworksMetrics> {
+export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
 
     //
     // Public
@@ -31,7 +31,7 @@ export class NetworkMetricsLoader extends EntityLoaderV2<NetworksMetrics> {
 
     public constructor() {
         // Refresh every 10 min, forever
-        super(60*10*1000, EntityLoaderV2.HUGE_COUNT)
+        super(60*10*1000, EntityLoader.HUGE_COUNT)
     }
 
     public readonly hbarPriceText = computed(() => {

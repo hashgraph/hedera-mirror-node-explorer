@@ -22,9 +22,9 @@ import {computed, ComputedRef, Ref, ref, watch, WatchStopHandle} from "vue";
 import {BalancesResponse, TokenBalance} from "@/schemas/MirrorNodeSchemas";
 import {BalanceCache} from "@/utils/cache/BalanceCache";
 import {Duration} from "@/utils/Duration";
-import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
+import {EntityLoader} from "@/utils/loader/EntityLoader.ts";
 
-export class BalanceAnalyzer extends EntityLoaderV2<BalancesResponse> {
+export class BalanceAnalyzer extends EntityLoader<BalancesResponse> {
 
     public readonly accountId = ref<string | null>(null)
     private watchStopHandle: WatchStopHandle | null = null
@@ -34,7 +34,7 @@ export class BalanceAnalyzer extends EntityLoaderV2<BalancesResponse> {
     //
 
     public constructor(accountId = ref<string | null>(null), updatePeriod: number) {
-        super(updatePeriod, EntityLoaderV2.HUGE_COUNT /* refresh forever */)
+        super(updatePeriod, EntityLoader.HUGE_COUNT /* refresh forever */)
         this.accountId = accountId
     }
 

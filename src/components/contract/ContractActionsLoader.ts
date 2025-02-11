@@ -21,7 +21,7 @@
 import {ContractAction, ContractActionsResponse} from "@/schemas/MirrorNodeSchemas";
 import axios, {AxiosResponse} from "axios";
 import {computed, Ref, watch, WatchStopHandle} from "vue";
-import {EntityLoaderV2} from "@/utils/loader/EntityLoaderV2";
+import {EntityLoader} from "@/utils/loader/EntityLoader.ts";
 
 const MAX_DEPTH_LEVEL = 20
 
@@ -30,7 +30,7 @@ export interface ContractActionWithPath {
     depthPath: string
 }
 
-export class ContractActionsLoader extends EntityLoaderV2<ContractActionsResponse> {
+export class ContractActionsLoader extends EntityLoader<ContractActionsResponse> {
 
     public readonly transactionIdOrHash: Ref<string | null>
     private watchStopHandle: WatchStopHandle | null = null

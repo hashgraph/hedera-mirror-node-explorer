@@ -20,7 +20,7 @@
 
 import {computed, ref, Ref} from "vue";
 
-export abstract class EntityLoaderV2<E> {
+export abstract class EntityLoader<E> {
 
     public static readonly HUGE_COUNT = 9999999
 

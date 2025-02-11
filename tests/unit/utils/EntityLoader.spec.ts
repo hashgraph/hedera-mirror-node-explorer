@@ -21,7 +21,7 @@
  */
 
 import {describe, expect, test, vi} from 'vitest'
-import {EntityLoaderState, EntityLoaderV2} from "../../../src/utils/loader/EntityLoaderV2";
+import {EntityLoaderState, EntityLoader} from "../../../src/utils/loader/EntityLoader";
 import {flushPromises} from "@vue/test-utils";
 import {waitFor} from "../../../src/utils/TimerUtils";
 
@@ -268,7 +268,7 @@ describe("EntityLoader", () => {
 
 
 
-class TestLoader extends EntityLoaderV2<String> {
+class TestLoader extends EntityLoader<String> {
 
     public executionCount = 0
 
