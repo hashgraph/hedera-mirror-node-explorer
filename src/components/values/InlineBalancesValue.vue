@@ -28,9 +28,11 @@
     <div v-if="accountId">
       <HbarAmount timestamp="0" :amount="hbarBalance" :show-extra="true"/>
     </div>
+<!-- HIDE ELAPSED TIME FOR THE TIME BEING
     <div v-if="isSmallScreen && elapsed" class="has-text-right has-text-grey mt-1">
       {{ elapsed }}
     </div>
+-->
   </div>
 
 </template>
