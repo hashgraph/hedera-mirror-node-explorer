@@ -83,6 +83,7 @@ export abstract class ChartController {
     // Protected (to be subclassed)
     //
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async makeChart(canvas: HTMLCanvasElement): Promise<Chart> {
         throw "to be subclassed"
     }

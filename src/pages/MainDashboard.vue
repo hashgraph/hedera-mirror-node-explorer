@@ -32,7 +32,7 @@
     </div>
     <div class="dashboard-separator"/>
     <div class="dashboard-content">
-      <div style="height:300px; width: 100%; background-color: #222222"/>
+      <ChartView :controller="chartController"/>
     </div>
     <div class="dashboard-content">
       <div style="height:300px; width: 100%; background-color: #222222"/>
@@ -63,6 +63,8 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import {useRouter} from "vue-router";
 import Footer from "@/components/page/Footer.vue";
 import PageHeader from "@/components/page/header/PageHeader.vue";
+import {HgraphChartController} from "@/charts/HgraphChartController.ts";
+import ChartView from "@/charts/core/ChartView.vue";
 
 const props = defineProps({
   network: String
@@ -71,6 +73,10 @@ const props = defineProps({
 const router = useRouter()
 const topPageSize = ref(6)
 const bottomPageSize = ref(6)
+
+const chartController = new HgraphChartController()
+onMounted(() => chartController.mount())
+onBeforeUnmount(() => chartController.unmount())
 
 const cryptoTableController = new TransactionTableController(
     router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
