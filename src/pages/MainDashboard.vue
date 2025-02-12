@@ -24,24 +24,25 @@
 
 <template>
 
-  <PageHeader page-title="Dashboard"/>
+  <MainDashboardHeader/>
 
   <div class="h-page-content">
     <div class="dashboard-title">
       Network
     </div>
+
     <div class="dashboard-separator"/>
+
     <div class="dashboard-content">
       <ChartView :controller="chartController"/>
-    </div>
-    <div class="dashboard-content">
-      <div style="height:300px; width: 100%; background-color: #222222"/>
     </div>
 
     <div class="dashboard-title">
       Accounts
     </div>
+
     <div class="dashboard-separator"/>
+
     <div class="dashboard-content">
       <div style="height:300px; width: 100%; background-color: #222222"/>
     </div>
@@ -62,7 +63,7 @@ import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
 import {useRouter} from "vue-router";
 import Footer from "@/components/page/Footer.vue";
-import PageHeader from "@/components/page/header/PageHeader.vue";
+import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 

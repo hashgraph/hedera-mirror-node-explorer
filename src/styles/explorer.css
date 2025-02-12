@@ -61,11 +61,11 @@
     /* the following are defaults for network theme colors
        the actual values will be provided by configuration parameters in networks-config.json
     */
-    --light-network-button-text-color: #FFFFFF;      /* NetworkEntry.lightButtonTextColor */
-    --light-network-button-color: #7A1B80;           /* NetworkEntry.lightButtonColor */
-    --light-network-chip-color: #A7449D;             /* NetworkEntry.lightChipColor */
-    --light-network-text-accent-color: #E0007B;      /* NetworkEntry.lightTextAccentColor */
-    --light-network-border-accent-color: #B664AE;    /* NetworkEntry.lightBorderAccentColor */
+    --light-network-button-text-color: #FFFFFF; /* NetworkEntry.lightButtonTextColor */
+    --light-network-button-color: #7A1B80; /* NetworkEntry.lightButtonColor */
+    --light-network-chip-color: #A7449D; /* NetworkEntry.lightChipColor */
+    --light-network-text-accent-color: #E0007B; /* NetworkEntry.lightTextAccentColor */
+    --light-network-border-accent-color: #B664AE; /* NetworkEntry.lightBorderAccentColor */
 
     --light-text-primary: #050505;
     --light-text-secondary: #888888;
@@ -74,8 +74,10 @@
     --light-text-error: #EA1548;
     --light-text-disabled: #BDBDBD;
     --light-background-primary: #F6F6F6;
+    --light-background-primary-transparent: rgba(255, 255, 255, 0.5);
     --light-background-secondary: #EFEFEF;
     --light-background-tertiary: #FFFFFF;
+    --light-border-primary: #EFEFEF;
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
     --light-chip-text-primary: white;
@@ -95,11 +97,11 @@
     /* the following are defaults for network theme colors
        the actual values will be provided by configuration parameters in networks-config.json
     */
-    --dark-network-button-text-color: #FFFFFF;      /* NetworkEntry.darkButtonTextColor */
-    --dark-network-button-color: #7A1B80;           /* NetworkEntry.darkButtonColor */
-    --dark-network-chip-color: #A7449D;             /* NetworkEntry.darkChipColor */
-    --dark-network-text-accent-color: #F258AC;      /* NetworkEntry.darkTextAccentColor */
-    --dark-network-border-accent-color: #7A1B80;    /* NetworkEntry.darkBorderAccentColor */
+    --dark-network-button-text-color: #FFFFFF; /* NetworkEntry.darkButtonTextColor */
+    --dark-network-button-color: #7A1B80; /* NetworkEntry.darkButtonColor */
+    --dark-network-chip-color: #A7449D; /* NetworkEntry.darkChipColor */
+    --dark-network-text-accent-color: #F258AC; /* NetworkEntry.darkTextAccentColor */
+    --dark-network-border-accent-color: #7A1B80; /* NetworkEntry.darkBorderAccentColor */
 
     --dark-text-primary: #FFFFFF;
     --dark-text-secondary: #A2A2A2;
@@ -108,8 +110,10 @@
     --dark-text-error: #EA1548;
     --dark-text-disabled: #A2A2A2;
     --dark-background-primary: #131313;
+    --dark-background-primary-transparent: rgba(19, 19, 19, 0.7);
     --dark-background-secondary: #050505;
     --dark-background-tertiary: #171717;
+    --dark-border-primary: #171717;
     --dark-border-secondary: #2C2C2C;
     --dark-table-border: #1F1F1F;
     --dark-chip-text-primary: white;
@@ -132,8 +136,10 @@
     --text-error: var(--light-text-error);
     --text-disabled: var(--light-text-disabled);
     --background-primary: var(--light-background-primary);
+    --background-primary-transparent: var(--light-background-primary-transparent);
     --background-secondary: var(--light-background-secondary);
     --background-tertiary: var(--light-background-tertiary);
+    --border-primary: var(--light-border-primary);
     --border-secondary: var(--light-border-secondary);
     --table-border: var(--light-table-border);
     --chip-text-primary: var(--light-chip-text-primary);
@@ -425,11 +431,11 @@ hr.horizontal-line {
 */
 
 .has-text-left {
-    text-align: left!important
+    text-align: left !important
 }
 
 .has-text-right {
-    text-align: right!important
+    text-align: right !important
 }
 
 .is-inline-block {
