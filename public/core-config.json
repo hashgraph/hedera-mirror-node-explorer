@@ -21,5 +21,7 @@
   "arweaveServerURL": null,
   "cryptoName": null,
   "cryptoSymbol": null,
+  "cryptoLogoLightURL": "crypto-logo-light.svg",
+  "cryptoLogoDarkURL": "crypto-logo-dark.svg",
   "walletConnectID": null
 }

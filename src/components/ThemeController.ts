@@ -104,6 +104,7 @@ export class ThemeController {
             document.getElementById('product-mini-logo')?.setAttribute('src', this.coreConfig.productMiniLogoDarkURL ?? '')
             document.getElementById('sponsor-logo')?.setAttribute('src', this.coreConfig.sponsorLogoDarkURL ?? '')
             document.getElementById('built-on-logo')?.setAttribute('src', this.coreConfig.builtOnLogoDarkURL ?? '')
+            document.getElementById('crypto-logo')?.setAttribute('src', this.coreConfig.cryptoLogoDarkURL ?? '')
         } else {
             AppStorage.setTheme('light')
             document.documentElement.style.setProperty('--network-button-color', 'var(--light-network-button-color)')
@@ -141,6 +142,7 @@ export class ThemeController {
             document.getElementById('product-mini-logo')?.setAttribute('src', this.coreConfig.productMiniLogoLightURL ?? '')
             document.getElementById('sponsor-logo')?.setAttribute('src', this.coreConfig.sponsorLogoLightURL ?? '')
             document.getElementById('built-on-logo')?.setAttribute('src', this.coreConfig.builtOnLogoLightURL ?? '')
+            document.getElementById('crypto-logo')?.setAttribute('src', this.coreConfig.cryptoLogoLightURL ?? '')
         }
     }
 }

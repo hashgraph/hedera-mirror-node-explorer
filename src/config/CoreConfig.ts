@@ -128,9 +128,14 @@ export class CoreConfig {
         // The HTML content used as crypto unit symbol
         public readonly cryptoSymbol: string|null,
 
+        // The URL of the crypto logo (light theme)
+        public readonly cryptoLogoLightURL: string|null,
+
+        // The URL of the crypto logo (dark theme)
+        public readonly cryptoLogoDarkURL: string|null,
+
         // The Wallect Connect Identifier
         public readonly walletConnectID: string|null
-
     ) {}
 
 
@@ -160,6 +165,8 @@ export class CoreConfig {
             fetchURL(obj, "arweaveServerURL") ?? "https://arweave.net/",
             fetchString(obj, "cryptoName") ?? "HBAR",
             fetchString(obj, "cryptoSymbol"),
+            fetchURL(obj, "cryptoLogoLightURL"),
+            fetchURL(obj, "cryptoLogoDarkURL"),
             fetchString(obj, "walletConnectID")
         )
     }
