@@ -19,12 +19,7 @@
  */
 
 import {Chart} from 'chart.js/auto';
-import {
-    ChartPeriod,
-    computeGranularityForPeriod,
-    computeStartDateForPeriod,
-
-} from "@/charts/core/ChartController.ts";
+import {ChartPeriod, computeGranularityForPeriod, computeStartDateForPeriod,} from "@/charts/core/ChartController.ts";
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
 import {aggregateMetrics, EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
 
@@ -41,6 +36,10 @@ export class TPSController extends HgraphChartController {
     //
     // ChartController
     //
+
+    public isRangeSupported(range: ChartPeriod): boolean {
+        return range !== ChartPeriod.hour
+    }
 
     protected async makeChart(canvas: HTMLCanvasElement, period: ChartPeriod): Promise<Chart> {
         const query = this.makeQuery(period)

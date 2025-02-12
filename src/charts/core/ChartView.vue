@@ -24,7 +24,10 @@
 
 <template>
   <div class="chart-view">
-    <div class="chart-view-header">{{ controller.chartTitle }}</div>
+    <div class="chart-view-header">
+      <div>{{ controller.chartTitle }}</div>
+      <RangeSelectView :controller="props.controller"/>
+    </div>
     <div class="chart-view-container" :style="{height: props.height + 'px'}">
 
       <template v-if="state === ChartState.loading">
@@ -55,6 +58,7 @@ import {computed, PropType} from "vue";
 import {ChartController, ChartState} from "@/charts/core/ChartController.ts";
 import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
+import RangeSelectView from "@/charts/core/RangeSelectView.vue";
 
 const props = defineProps({
   controller: {
@@ -87,6 +91,8 @@ div.chart-view {
 }
 
 div.chart-view-header {
+  display: flex;
+  justify-content: space-between;
   font-size: 14px;
   font-weight: 400;
   color: var(--text-secondary)

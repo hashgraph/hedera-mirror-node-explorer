@@ -83,8 +83,13 @@ export abstract class ChartController {
 
 
     //
-    // Protected (to be subclassed)
+    // Public/protected (to be subclassed)
     //
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public isRangeSupported(range: ChartPeriod): boolean {
+        return true
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async makeChart(canvas: HTMLCanvasElement, period: ChartPeriod): Promise<Chart> {
@@ -120,7 +125,6 @@ export abstract class ChartController {
 export enum ChartPeriod {           // Matching granularity
     hour = "hour",                  // => minute
     day = "day",                    // => hour
-    month = "month",                // => day
     year = "year",                  // => month
     all = "all"                     // => year
 }
@@ -151,13 +155,6 @@ export function computeStartDateForPeriod(period: ChartPeriod): string {
             result = d.toISOString()
             break
         }
-        case ChartPeriod.month: {
-            const y = now.getFullYear()
-            const m = now.getMonth()
-            const d = new Date(y, m)
-            result = d.toISOString()
-            break
-        }
         case ChartPeriod.day: {
             const d = new Date(now.getTime() - 24 * 3600 * 1000)
             result = d.toISOString()
@@ -182,9 +179,6 @@ export function computeGranularityForPeriod(period: ChartPeriod): ChartGranulari
             break
         case ChartPeriod.year:
             result = ChartGranularity.month
-            break
-        case ChartPeriod.month:
-            result = ChartGranularity.day
             break
         case ChartPeriod.day:
             result = ChartGranularity.hour
