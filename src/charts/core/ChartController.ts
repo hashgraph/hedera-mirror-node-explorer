@@ -30,7 +30,7 @@ export enum ChartState {
 export abstract class ChartController {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
-    public readonly range: Ref<ChartRange> = ref(ChartRange.all)
+    public readonly range: Ref<ChartRange>
 
     private readonly chart: Ref<Chart|null> = ref(null)
     private readonly error: Ref<unknown> = ref(null)
@@ -41,7 +41,9 @@ export abstract class ChartController {
     // Public
     //
 
-    public constructor(public readonly chartTitle: string) {}
+    public constructor(public readonly chartTitle: string, public readonly supportedRanges: ChartRange[] = []) {
+        this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.hour)
+    }
 
     public mount(): void {
         this.watchHandle = watch([this.canvas, this.range], this.updateChart, { immediate: true })
@@ -81,15 +83,14 @@ export abstract class ChartController {
         return result
     })
 
+    public isRangeSupported(range: ChartRange): boolean {
+        return this.supportedRanges.length === 0 || this.supportedRanges.includes(range)
+    }
+
 
     //
     // Public/protected (to be subclassed)
     //
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public isRangeSupported(range: ChartRange): boolean {
-        return true
-    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async makeChart(canvas: HTMLCanvasElement, period: ChartRange): Promise<Chart> {

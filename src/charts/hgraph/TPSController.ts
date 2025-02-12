@@ -30,16 +30,12 @@ export class TPSController extends HgraphChartController {
     //
 
     public constructor() {
-        super("TPS")
+        super("TPS", [ChartRange.year, ChartRange.day, ChartRange.all])
     }
 
     //
     // ChartController
     //
-
-    public isRangeSupported(range: ChartRange): boolean {
-        return range !== ChartRange.hour
-    }
 
     protected async makeChart(canvas: HTMLCanvasElement, period: ChartRange): Promise<Chart> {
         const query = this.makeQuery(period)
