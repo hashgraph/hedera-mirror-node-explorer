@@ -27,7 +27,7 @@ export enum ChartState {
     ok,
 }
 
-export abstract class ChartController {
+export abstract class ChartController<M> {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
     public readonly range: Ref<ChartRange>
@@ -90,13 +90,15 @@ export abstract class ChartController {
 
 
     //
-    // Public/protected (to be subclassed)
+    // Protected (to be subclassed)
     //
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async makeChart(canvas: HTMLCanvasElement, period: ChartRange): Promise<Chart> {
+    protected async loadData(range: ChartRange, logarithmic: boolean): Promise<M[]> {
         throw "to be subclassed"
     }
+
+    protected abstract makeChart(canvas: HTMLCanvasElement, data: M[], range: ChartRange, logarithmic: boolean): Chart
 
 
     //
@@ -111,7 +113,9 @@ export abstract class ChartController {
         if (this.canvas.value !== null) {
             this.building.value = true
             try {
-                this.chart.value = await this.makeChart(this.canvas.value, this.range.value)
+                const data = await this.loadData(this.range.value, this.logarithmic.value)
+                this.chart.value = this.makeChart(this.canvas.value, data,
+                    this.range.value, this.logarithmic.value)
                 this.error.value = null
             } catch(error) {
                 console.error(error)

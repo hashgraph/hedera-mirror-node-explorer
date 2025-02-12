@@ -68,7 +68,7 @@ import RangeSelectView from "@/charts/core/RangeSelectView.vue";
 
 const props = defineProps({
   controller: {
-    type: Object as PropType<ChartController>,
+    type: Object as PropType<ChartController<unknown>>,
     required: true
   },
   height: {

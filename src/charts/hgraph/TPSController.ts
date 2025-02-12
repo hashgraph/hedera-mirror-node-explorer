@@ -34,17 +34,34 @@ export class TPSController extends HgraphChartController {
     }
 
     //
-    // ChartController
+    // HgraphChartController
     //
 
-    protected async makeChart(canvas: HTMLCanvasElement, period: ChartRange): Promise<Chart> {
-        const query = this.makeQuery(period)
-        const rawMetrics = await this.loadEcosystemMetrics(query)
-        const granularity = computeGranularityForRange(period)
-        const aggregatedMetrics = aggregateMetrics(rawMetrics, granularity)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected makeQuery(range: ChartRange): string {
+        const periodStartDate = computeStartDateForRange(range)
+        return "{" +
+            "  all_metrics: ecosystem_metric(" +
+            "    where: {" +
+            "      name: {_eq: \"transactions\"}, " +
+            "      period: {_eq: \"hour\"}," +
+            "      end_date: {_gte: \"" + periodStartDate + "\"}," +
+            "    }" +
+            "    order_by: {end_date: asc}" +
+            "  ) {" +
+            "    start_date" +
+            "    end_date" +
+            "    total" +
+            "  }" +
+            "}"
+    }
+
+    protected makeChart(canvas: HTMLCanvasElement, metrics: EcosystemMetric[], range: ChartRange, logarithmic: boolean): Chart {
+        const granularity = computeGranularityForRange(range)
+        const aggregatedMetrics = aggregateMetrics(metrics, granularity)
         const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
         const graphDataSet = makeGraphDataSet(aggregatedMetrics) as any
-        const scaleType = this.logarithmic.value ? "logarithmic" : "linear"
+        const scaleType = logarithmic ? "logarithmic" : "linear"
         return  new Chart(canvas, {
             type: 'bar',
             data: {
@@ -66,28 +83,6 @@ export class TPSController extends HgraphChartController {
                 maintainAspectRatio: false
             }
         });
-    }
-
-    //
-    // Private
-    //
-
-    private makeQuery(period: ChartRange): string {
-        const periodStartDate = computeStartDateForRange(period)
-        return "{" +
-            "  all_metrics: ecosystem_metric(" +
-            "    where: {" +
-            "      name: {_eq: \"transactions\"}, " +
-            "      period: {_eq: \"hour\"}," +
-            "      end_date: {_gte: \"" + periodStartDate + "\"}," +
-            "    }" +
-            "    order_by: {end_date: asc}" +
-            "  ) {" +
-            "    start_date" +
-            "    end_date" +
-            "    total" +
-            "  }" +
-            "}"
     }
 
 

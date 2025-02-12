@@ -47,7 +47,7 @@ import {ChartController, ChartRange, ChartState} from "@/charts/core/ChartContro
 
 const props = defineProps({
   controller: {
-    type: Object as PropType<ChartController>,
+    type: Object as PropType<ChartController<unknown>>,
     required: true
   }
 })

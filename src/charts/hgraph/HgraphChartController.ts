@@ -18,17 +18,25 @@
  *
  */
 
-import {ChartController, ChartGranularity} from "@/charts/core/ChartController.ts";
+import {ChartController, ChartGranularity, ChartRange} from "@/charts/core/ChartController.ts";
 import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios from "axios";
+import {Chart} from "chart.js";
 
-export class HgraphChartController extends ChartController {
+export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
 
     //
-    // Protected (tool for subclasses)
+    // Protected (to be subclassed)
     //
 
-    protected async loadEcosystemMetrics(query: string): Promise<EcosystemMetric[]> {
+    protected abstract makeQuery(range: ChartRange, logarithmic: boolean): string
+
+    //
+    // ChartController
+    //
+
+    protected async loadData(range: ChartRange, logarithmic: boolean): Promise<EcosystemMetric[]> {
+        const query = this.makeQuery(range, logarithmic)
         const url = "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
         const response = await axios.post<GraphQLResponse>(url, { query })
         return Promise.resolve(response.data.data.all_metrics)
