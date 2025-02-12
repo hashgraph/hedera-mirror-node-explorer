@@ -36,7 +36,7 @@
             placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
             v-model="searchedText"
             ref="inputElement"
-            :size="isMediumScreen ? 70 : undefined"
+            :size="isMediumScreen ? props.size : undefined"
             style="width: 100%; text-overflow: ellipsis;"
         />
         <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none" >
@@ -63,6 +63,13 @@ import {SearchAgent, SearchCandidate} from "@/components/search/SearchAgent";
 import DropdownPanel from "@/components/DropdownPanel.vue";
 import SearchDropdown from "@/components/search/SearchDropdown.vue";
 import {Search} from "lucide-vue-next";
+
+const props = defineProps({
+  size: {
+    type: Number,
+    default: 70
+  }
+})
 
 const emit = defineEmits(["search"]);
 
@@ -145,11 +152,11 @@ watch(showSearchDropdown, (show) => {
 form {
   display: flex;
   align-items: center;
-  background-color: var(--border-secondary);
+  background-color: var(--search-bar-default);
   border-radius: 40px;
   border-width: 1px;
   border-style: solid;
-  border-color: transparent;
+  border-color: var(--border-primary);
   padding: 5px;
   justify-content: flex-end;
 }

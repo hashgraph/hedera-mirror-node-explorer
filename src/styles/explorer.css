@@ -88,6 +88,7 @@
     --light-icon-default-color: #A2A2A2;
     --light-status-success-color: #00722D;
     --light-status-error-color: #C40E3A;
+    --light-search-bar-default: #FFFFFF;
 
     /* DARK MODE */
 
@@ -121,6 +122,7 @@
     --dark-icon-default-color: #A2A2A2;
     --dark-status-success-color: #00722D;
     --dark-status-error-color: #C40E3A;
+    --dark-search-bar-default: #2C2C2C;
 
     /* CURRENT MODE */
     --text-primary: var(--light-text-primary);
@@ -144,6 +146,7 @@
     --icon-default-color: var(--light-icon-default-color);
     --status-success-color: var(--light-status-success-color);
     --status-error-color: var(--light-status-error-color);
+    --search-bar-default: var(--light-search-bar-default);
 
     --network-button-text-color: var(--light-network-button-text-color);
     --network-button-color: var(--light-network-button-color);
