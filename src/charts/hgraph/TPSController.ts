@@ -23,9 +23,9 @@ import {
     ChartPeriod,
     computeGranularityForPeriod,
     computeStartDateForPeriod,
-    makeGraphLabels,
+
 } from "@/charts/core/ChartController.ts";
-import {HgraphChartController} from "@/charts/hgraph/HgraphChartController.ts";
+import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
 import {aggregateMetrics, EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
 
 export class TPSController extends HgraphChartController {

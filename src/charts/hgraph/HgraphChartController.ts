@@ -18,7 +18,7 @@
  *
  */
 
-import {ChartController} from "@/charts/core/ChartController.ts";
+import {ChartController, ChartGranularity} from "@/charts/core/ChartController.ts";
 import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios from "axios";
 
@@ -42,3 +42,55 @@ interface GraphQLResponse {
     }
 }
 
+export function makeGraphLabels(metrics: EcosystemMetric[], granularity: ChartGranularity): string[] {
+    const result: string[] = []
+    for (const m of metrics) {
+        const t = Date.parse(m.start_date)
+        if (isNaN(t)) {
+            result.push(m.start_date)
+        } else {
+            switch (granularity) {
+                case ChartGranularity.minute:
+                    result.push(minuteFormat.format(t))
+                    break
+                case ChartGranularity.hour:
+                    result.push(hourFormat.format(t))
+                    break
+                case ChartGranularity.day:
+                    result.push(dayFormat.format(t))
+                    break
+                case ChartGranularity.month:
+                    result.push(monthFormat.format(t))
+                    break
+                case ChartGranularity.year:
+                    result.push(yearFormat.format(t))
+                    break
+            }
+        }
+    }
+    return result
+}
+
+const minuteFormat = new Intl.DateTimeFormat("en-US", {
+    minute: "2-digit",
+    hour: "2-digit",
+})
+
+const hourFormat = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    weekday: "short"
+})
+
+const dayFormat = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "short",
+})
+
+const monthFormat = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+})
+
+const yearFormat = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+})
