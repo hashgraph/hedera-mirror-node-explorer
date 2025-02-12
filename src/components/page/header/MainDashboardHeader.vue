@@ -143,7 +143,7 @@ div.title {
   font-size: 32px;
   font-weight: 400;
   line-height: 42px;
-  margin-top: 32px;
+  margin-top: 34px;
   text-align: center;
 }
 
@@ -163,7 +163,7 @@ div.title {
 }
 
 .search-bar {
-  margin-top: 16px;
+  margin-top: 38px;
   max-width: 912px;
   width: 100%;
 }
@@ -175,16 +175,18 @@ div.title {
 }
 
 .market-dashboard {
-  margin-top: 56px;
+  margin-top: 36px;
 }
 
 @media (min-width: 768px) {
-  margin-top: 88px;
+  .market-dashboard {
+    margin-top: 94px;
+  }
 }
 
 @media (min-width: 1280px) {
   .market-dashboard {
-    margin-top: 52px;
+    margin-top: 120px;
   }
 }
 
