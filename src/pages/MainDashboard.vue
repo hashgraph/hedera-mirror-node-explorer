@@ -34,7 +34,7 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="chartController"/>
+      <ChartView :controller="tpsController"/>
     </div>
 
     <div class="dashboard-title">
@@ -44,7 +44,7 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <div style="height:300px; width: 100%; background-color: #222222"/>
+      <ChartView :controller="activeAccountsController"/>
     </div>
   </div>
 
@@ -66,6 +66,7 @@ import Footer from "@/components/page/Footer.vue";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
+import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 
 const props = defineProps({
   network: String
@@ -75,9 +76,13 @@ const router = useRouter()
 const topPageSize = ref(6)
 const bottomPageSize = ref(6)
 
-const chartController = new TPSController()
-onMounted(() => chartController.mount())
-onBeforeUnmount(() => chartController.unmount())
+const tpsController = new TPSController()
+onMounted(() => tpsController.mount())
+onBeforeUnmount(() => tpsController.unmount())
+
+const activeAccountsController = new GenericMetricController("Active Accounts", "active_accounts")
+onMounted(() => activeAccountsController.mount())
+onBeforeUnmount(() => activeAccountsController.unmount())
 
 const cryptoTableController = new TransactionTableController(
     router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
