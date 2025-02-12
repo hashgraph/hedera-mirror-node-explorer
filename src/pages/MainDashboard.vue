@@ -63,7 +63,7 @@ import {TransactionTableController} from "@/components/transaction/TransactionTa
 import {useRouter} from "vue-router";
 import Footer from "@/components/page/Footer.vue";
 import PageHeader from "@/components/page/header/PageHeader.vue";
-import {HgraphChartController} from "@/charts/HgraphChartController.ts";
+import {TPSController} from "@/charts/hgraph/TPSController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 
 const props = defineProps({
@@ -74,7 +74,7 @@ const router = useRouter()
 const topPageSize = ref(6)
 const bottomPageSize = ref(6)
 
-const chartController = new HgraphChartController()
+const chartController = new TPSController()
 onMounted(() => chartController.mount())
 onBeforeUnmount(() => chartController.unmount())
 

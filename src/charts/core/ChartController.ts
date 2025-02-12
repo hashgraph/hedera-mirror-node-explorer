@@ -20,6 +20,7 @@
 
 import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
 import {Chart} from 'chart.js';
+import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 
 export enum ChartState {
     loading,
@@ -30,6 +31,7 @@ export enum ChartState {
 export abstract class ChartController {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
+    public readonly period: Ref<ChartPeriod> = ref(ChartPeriod.all)
 
     private readonly chart: Ref<Chart|null> = ref(null)
     private readonly error: Ref<unknown> = ref(null)
@@ -41,7 +43,7 @@ export abstract class ChartController {
     //
 
     public mount(): void {
-        this.watchHandle = watch(this.canvas, this.canvasDidChange, { immediate: true });
+        this.watchHandle = watch([this.canvas, this.period], this.updateChart, { immediate: true })
     }
 
     public unmount(): void {
@@ -84,25 +86,27 @@ export abstract class ChartController {
     //
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async makeChart(canvas: HTMLCanvasElement): Promise<Chart> {
+    protected async makeChart(canvas: HTMLCanvasElement, period: ChartPeriod): Promise<Chart> {
         throw "to be subclassed"
     }
+
 
     //
     // Private
     //
 
-    private readonly canvasDidChange =  async (newValue: HTMLCanvasElement|null) => {
+    private readonly updateChart =  async () => {
         if (this.chart.value !== null) {
             this.chart.value.destroy()
             this.chart.value = null
         }
-        if (newValue !== null) {
+        if (this.canvas.value !== null) {
             this.building.value = true
             try {
-                this.chart.value = await this.makeChart(newValue)
+                this.chart.value = await this.makeChart(this.canvas.value, this.period.value)
                 this.error.value = null
             } catch(error) {
+                console.error(error)
                 this.chart.value = null
                 this.error.value = error
             } finally {
@@ -110,4 +114,136 @@ export abstract class ChartController {
             }
         }
     }
+}
+
+export enum ChartPeriod {           // Matching granularity
+    hour = "hour",                  // => minute
+    day = "day",                    // => hour
+    month = "month",                // => day
+    year = "year",                  // => month
+    all = "all"                     // => year
+}
+
+export enum ChartGranularity {
+    minute = "minute",
+    hour = "hour",
+    day = "day",
+    month = "month",
+    year = "year"
+}
+
+
+
+export function computeStartDateForPeriod(period: ChartPeriod): string {
+    let result: string
+    const now = new Date()
+    switch(period) {
+        case ChartPeriod.all: {
+            const d = new Date(0)
+            result = d.toISOString()
+            break
+        }
+        case ChartPeriod.year: {
+            const y = now.getFullYear()
+            const m = now.getMonth()
+            const d = new Date(y-1, m)
+            result = d.toISOString()
+            break
+        }
+        case ChartPeriod.month: {
+            const y = now.getFullYear()
+            const m = now.getMonth()
+            const d = new Date(y, m)
+            result = d.toISOString()
+            break
+        }
+        case ChartPeriod.day: {
+            const d = new Date(now.getTime() - 24 * 3600 * 1000)
+            result = d.toISOString()
+            break
+        }
+        case ChartPeriod.hour: {
+            const d = new Date(now.getTime() - 3600 * 1000)
+            result = d.toISOString()
+            break
+        }
+    }
+    return result
+}
+
+
+export function computeGranularityForPeriod(period: ChartPeriod): ChartGranularity {
+    let result: ChartGranularity
+    switch(period) {
+        default:
+        case ChartPeriod.all:
+            result = ChartGranularity.month
+            break
+        case ChartPeriod.year:
+            result = ChartGranularity.month
+            break
+        case ChartPeriod.month:
+            result = ChartGranularity.day
+            break
+        case ChartPeriod.day:
+            result = ChartGranularity.hour
+            break
+        case ChartPeriod.hour:
+            result = ChartGranularity.minute
+            break
+    }
+    return result
+}
+
+const minuteFormat = new Intl.DateTimeFormat("en-US", {
+    minute: "2-digit",
+    hour: "2-digit",
+})
+
+const hourFormat = new Intl.DateTimeFormat("en-US", {
+    hour: "2-digit",
+    weekday: "short"
+})
+
+const dayFormat = new Intl.DateTimeFormat("en-US", {
+    day: "2-digit",
+    month: "short",
+})
+
+const monthFormat = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+})
+
+const yearFormat = new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+})
+
+export function makeGraphLabels(metrics: EcosystemMetric[], granularity: ChartGranularity): string[] {
+    const result: string[] = []
+    for (const m of metrics) {
+        const t = Date.parse(m.start_date)
+        if (isNaN(t)) {
+            result.push(m.start_date)
+        } else {
+            switch(granularity) {
+                case ChartGranularity.minute:
+                    result.push(minuteFormat.format(t))
+                    break
+                case ChartGranularity.hour:
+                    result.push(hourFormat.format(t))
+                    break
+                case ChartGranularity.day:
+                    result.push(dayFormat.format(t))
+                    break
+                case ChartGranularity.month:
+                    result.push(monthFormat.format(t))
+                    break
+                case ChartGranularity.year:
+                    result.push(yearFormat.format(t))
+                    break
+            }
+        }
+    }
+    return result
 }
