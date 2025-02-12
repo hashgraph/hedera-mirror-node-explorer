@@ -43,7 +43,7 @@
 
 import {computed, PropType} from "vue";
 import SelectView from "@/elements/SelectView.vue";
-import {ChartController, ChartRange} from "@/charts/core/ChartController.ts";
+import {ChartController, ChartRange, ChartState} from "@/charts/core/ChartController.ts";
 
 const props = defineProps({
   controller: {
@@ -52,7 +52,7 @@ const props = defineProps({
   }
 })
 
-const loading = props.controller.building
+const loading = computed(() => props.controller.state.value === ChartState.loading)
 const selectedRange = props.controller.range
 const hourRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.hour))
 const dayRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.day))

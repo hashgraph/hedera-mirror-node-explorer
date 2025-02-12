@@ -81,7 +81,7 @@ const canvasRef = props.controller.canvas
 const canvasDisplay = computed(() => props.controller.state.value === ChartState.ok ? "block": "none")
 const state = props.controller.state
 const logarithmic = props.controller.logarithmic
-const loading = props.controller.building
+const loading = computed(() => props.controller.state.value === ChartState.loading)
 const errorExtra = props.controller.errorExtra.value
 
 </script>
