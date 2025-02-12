@@ -21,7 +21,6 @@
 import {ChartController, ChartGranularity, ChartRange} from "@/charts/core/ChartController.ts";
 import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios from "axios";
-import {Chart} from "chart.js";
 
 export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
 
