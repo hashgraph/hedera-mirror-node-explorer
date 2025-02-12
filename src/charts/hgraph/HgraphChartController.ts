@@ -36,6 +36,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
 
     protected async loadData(range: ChartRange, logarithmic: boolean): Promise<EcosystemMetric[]> {
         const query = this.makeQuery(range, logarithmic)
+        console.log("query=" + query)
         const url = "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
         const response = await axios.post<GraphQLResponse>(url, { query })
         return Promise.resolve(response.data.data.all_metrics)
