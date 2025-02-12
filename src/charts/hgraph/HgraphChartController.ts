@@ -57,9 +57,6 @@ export function makeGraphLabels(metrics: EcosystemMetric[], granularity: ChartGr
             result.push(m.start_date)
         } else {
             switch (granularity) {
-                case ChartGranularity.minute:
-                    result.push(minuteFormat.format(t))
-                    break
                 case ChartGranularity.hour:
                     result.push(hourFormat.format(t))
                     break
@@ -77,11 +74,6 @@ export function makeGraphLabels(metrics: EcosystemMetric[], granularity: ChartGr
     }
     return result
 }
-
-const minuteFormat = new Intl.DateTimeFormat("en-US", {
-    minute: "2-digit",
-    hour: "2-digit",
-})
 
 const hourFormat = new Intl.DateTimeFormat("en-US", {
     hour: "2-digit",

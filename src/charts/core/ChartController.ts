@@ -43,7 +43,7 @@ export abstract class ChartController<M> {
     //
 
     public constructor(public readonly chartTitle: string, public readonly supportedRanges: ChartRange[] = []) {
-        this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.hour)
+        this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.day)
     }
 
     public mount(): void {
@@ -129,14 +129,12 @@ export abstract class ChartController<M> {
 }
 
 export enum ChartRange {            // Matching granularity
-    hour = "hour",                  // => minute
     day = "day",                    // => hour
     year = "year",                  // => month
     all = "all"                     // => year
 }
 
 export enum ChartGranularity {
-    minute = "minute",
     hour = "hour",
     day = "day",
     month = "month",
@@ -166,11 +164,6 @@ export function computeStartDateForRange(period: ChartRange): string {
             result = d.toISOString()
             break
         }
-        case ChartRange.hour: {
-            const d = new Date(now.getTime() - 3600 * 1000)
-            result = d.toISOString()
-            break
-        }
     }
     return result
 }
@@ -188,9 +181,6 @@ export function computeGranularityForRange(period: ChartRange): ChartGranularity
             break
         case ChartRange.day:
             result = ChartGranularity.hour
-            break
-        case ChartRange.hour:
-            result = ChartGranularity.minute
             break
     }
     return result

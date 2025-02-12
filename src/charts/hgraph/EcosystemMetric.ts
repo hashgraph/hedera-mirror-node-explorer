@@ -30,9 +30,6 @@ export interface EcosystemMetric {
 export function aggregateMetrics(rawMetrics: EcosystemMetric[], granularity: ChartGranularity): EcosystemMetric[] {
     let result: EcosystemMetric[]
     switch (granularity) {
-        case ChartGranularity.minute: // Bug => "transactions" metric is hour granularity
-            result = []
-            break;
         case ChartGranularity.hour:
             result = rawMetrics
             break

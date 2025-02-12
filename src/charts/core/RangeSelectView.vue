@@ -28,7 +28,6 @@
       :small="true"
       :disabled="loading"
   >
-    <option v-if="hourRangeSupported" :value="ChartRange.hour">1h</option>
     <option v-if="dayRangeSupported" :value="ChartRange.day">24h</option>
     <option v-if="yearRangeSupported" :value="ChartRange.year">YTD</option>
     <option v-if="allRangeSupported" :value="ChartRange.all">All</option>
@@ -54,7 +53,6 @@ const props = defineProps({
 
 const loading = computed(() => props.controller.state.value === ChartState.loading)
 const selectedRange = props.controller.range
-const hourRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.hour))
 const dayRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.day))
 const yearRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.year))
 const allRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.all))
