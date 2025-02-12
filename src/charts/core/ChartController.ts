@@ -41,6 +41,8 @@ export abstract class ChartController {
     // Public
     //
 
+    public constructor(public readonly chartTitle: string) {}
+
     public mount(): void {
         this.watchHandle = watch([this.canvas, this.period], this.updateChart, { immediate: true })
     }

@@ -31,6 +31,14 @@ import {aggregateMetrics, EcosystemMetric, getTimeRange} from "@/charts/hgraph/E
 export class TPSController extends HgraphChartController {
 
     //
+    // Public
+    //
+
+    public constructor() {
+        super("TPS")
+    }
+
+    //
     // ChartController
     //
 
@@ -48,6 +56,11 @@ export class TPSController extends HgraphChartController {
                 datasets: [graphDataSet],
             },
             options: {
+                plugins: {
+                  legend: {
+                      display: false
+                  }
+                },
                 scales: {
                     y: {
                         beginAtZero: true

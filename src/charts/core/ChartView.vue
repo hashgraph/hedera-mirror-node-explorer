@@ -23,20 +23,24 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="chart-view-content" :style="{height: props.height + 'px'}">
+  <div class="chart-view">
+    <div class="chart-view-header">{{ controller.chartTitle }}</div>
+    <div class="chart-view-container" :style="{height: props.height + 'px'}">
 
-    <template v-if="state === ChartState.loading">
-      <div class="building">Loading data</div>
-    </template>
+      <template v-if="state === ChartState.loading">
+        <div class="building">Loading data</div>
+      </template>
 
-    <template v-else-if="state === ChartState.error">
-      <TaskPanel :mode="TaskPanelMode.error">
-        <template #taskPanelMessage>Chart data are not available</template>
-        <template v-if="errorExtra" #taskPanelExtra1>{{ errorExtra }}</template>
-      </TaskPanel>
-    </template>
+      <template v-else-if="state === ChartState.error">
+        <TaskPanel :mode="TaskPanelMode.error">
+          <template #taskPanelMessage>Chart data are not available</template>
+          <template v-if="errorExtra" #taskPanelExtra1>{{ errorExtra }}</template>
+        </TaskPanel>
+      </template>
 
-    <canvas ref="canvasRef" :style="{ display: canvasDisplay}"/>
+      <canvas ref="canvasRef" :style="{ display: canvasDisplay}"/>
+
+    </div>
 
   </div>
 </template>
@@ -47,7 +51,7 @@
 
 <script setup lang="ts">
 
-import {PropType, computed} from "vue";
+import {computed, PropType} from "vue";
 import {ChartController, ChartState} from "@/charts/core/ChartController.ts";
 import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
@@ -76,13 +80,24 @@ const errorExtra = props.controller.errorExtra.value
 
 <style scoped>
 
-div.chart-view-content {
+div.chart-view {
+  display: flex;
+  flex-direction: column;
+  row-gap: 32px;
+}
+
+div.chart-view-header {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--text-secondary)
+}
+
+div.chart-view-container {
   display: flex;
   position: relative; /* Required by chartjs */
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  padding: 10px;
   width: 100%;
 }
 
