@@ -30,7 +30,7 @@ export enum ChartState {
 export abstract class ChartController {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
-    public readonly period: Ref<ChartPeriod> = ref(ChartPeriod.all)
+    public readonly range: Ref<ChartRange> = ref(ChartRange.all)
 
     private readonly chart: Ref<Chart|null> = ref(null)
     private readonly error: Ref<unknown> = ref(null)
@@ -44,7 +44,7 @@ export abstract class ChartController {
     public constructor(public readonly chartTitle: string) {}
 
     public mount(): void {
-        this.watchHandle = watch([this.canvas, this.period], this.updateChart, { immediate: true })
+        this.watchHandle = watch([this.canvas, this.range], this.updateChart, { immediate: true })
     }
 
     public unmount(): void {
@@ -87,12 +87,12 @@ export abstract class ChartController {
     //
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public isRangeSupported(range: ChartPeriod): boolean {
+    public isRangeSupported(range: ChartRange): boolean {
         return true
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async makeChart(canvas: HTMLCanvasElement, period: ChartPeriod): Promise<Chart> {
+    protected async makeChart(canvas: HTMLCanvasElement, period: ChartRange): Promise<Chart> {
         throw "to be subclassed"
     }
 
@@ -109,7 +109,7 @@ export abstract class ChartController {
         if (this.canvas.value !== null) {
             this.building.value = true
             try {
-                this.chart.value = await this.makeChart(this.canvas.value, this.period.value)
+                this.chart.value = await this.makeChart(this.canvas.value, this.range.value)
                 this.error.value = null
             } catch(error) {
                 console.error(error)
@@ -122,7 +122,7 @@ export abstract class ChartController {
     }
 }
 
-export enum ChartPeriod {           // Matching granularity
+export enum ChartRange {            // Matching granularity
     hour = "hour",                  // => minute
     day = "day",                    // => hour
     year = "year",                  // => month
@@ -139,28 +139,28 @@ export enum ChartGranularity {
 
 
 
-export function computeStartDateForPeriod(period: ChartPeriod): string {
+export function computeStartDateForRange(period: ChartRange): string {
     let result: string
     const now = new Date()
     switch(period) {
-        case ChartPeriod.all: {
+        case ChartRange.all: {
             const d = new Date(0)
             result = d.toISOString()
             break
         }
-        case ChartPeriod.year: {
+        case ChartRange.year: {
             const y = now.getFullYear()
             const m = now.getMonth()
             const d = new Date(y-1, m)
             result = d.toISOString()
             break
         }
-        case ChartPeriod.day: {
+        case ChartRange.day: {
             const d = new Date(now.getTime() - 24 * 3600 * 1000)
             result = d.toISOString()
             break
         }
-        case ChartPeriod.hour: {
+        case ChartRange.hour: {
             const d = new Date(now.getTime() - 3600 * 1000)
             result = d.toISOString()
             break
@@ -170,20 +170,20 @@ export function computeStartDateForPeriod(period: ChartPeriod): string {
 }
 
 
-export function computeGranularityForPeriod(period: ChartPeriod): ChartGranularity {
+export function computeGranularityForRange(period: ChartRange): ChartGranularity {
     let result: ChartGranularity
     switch(period) {
         default:
-        case ChartPeriod.all:
+        case ChartRange.all:
             result = ChartGranularity.month
             break
-        case ChartPeriod.year:
+        case ChartRange.year:
             result = ChartGranularity.month
             break
-        case ChartPeriod.day:
+        case ChartRange.day:
             result = ChartGranularity.hour
             break
-        case ChartPeriod.hour:
+        case ChartRange.hour:
             result = ChartGranularity.minute
             break
     }

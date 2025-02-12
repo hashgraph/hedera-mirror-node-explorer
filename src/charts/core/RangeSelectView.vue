@@ -27,10 +27,10 @@
       v-model:model-value="selectedRange"
       :small="true"
   >
-    <option v-if="hourRangeSupported" :value="ChartPeriod.hour">1h</option>
-    <option v-if="dayRangeSupported" :value="ChartPeriod.day">24h</option>
-    <option v-if="yearRangeSupported" :value="ChartPeriod.year">YTD</option>
-    <option v-if="allRangeSupported" :value="ChartPeriod.all">All</option>
+    <option v-if="hourRangeSupported" :value="ChartRange.hour">1h</option>
+    <option v-if="dayRangeSupported" :value="ChartRange.day">24h</option>
+    <option v-if="yearRangeSupported" :value="ChartRange.year">YTD</option>
+    <option v-if="allRangeSupported" :value="ChartRange.all">All</option>
   </SelectView>
 </template>
 
@@ -42,7 +42,7 @@
 
 import {computed, PropType} from "vue";
 import SelectView from "@/elements/SelectView.vue";
-import {ChartController, ChartPeriod} from "@/charts/core/ChartController.ts";
+import {ChartController, ChartRange} from "@/charts/core/ChartController.ts";
 
 const props = defineProps({
   controller: {
@@ -51,11 +51,11 @@ const props = defineProps({
   }
 })
 
-const selectedRange = props.controller.period
-const hourRangeSupported = computed(() => props.controller.isRangeSupported(ChartPeriod.hour))
-const dayRangeSupported = computed(() => props.controller.isRangeSupported(ChartPeriod.day))
-const yearRangeSupported = computed(() => props.controller.isRangeSupported(ChartPeriod.year))
-const allRangeSupported = computed(() => props.controller.isRangeSupported(ChartPeriod.all))
+const selectedRange = props.controller.range
+const hourRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.hour))
+const dayRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.day))
+const yearRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.year))
+const allRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.all))
 
 </script>
 

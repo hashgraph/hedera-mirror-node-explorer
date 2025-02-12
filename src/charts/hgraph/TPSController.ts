@@ -19,7 +19,7 @@
  */
 
 import {Chart} from 'chart.js/auto';
-import {ChartPeriod, computeGranularityForPeriod, computeStartDateForPeriod,} from "@/charts/core/ChartController.ts";
+import {ChartRange, computeGranularityForRange, computeStartDateForRange,} from "@/charts/core/ChartController.ts";
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
 import {aggregateMetrics, EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
 
@@ -37,14 +37,14 @@ export class TPSController extends HgraphChartController {
     // ChartController
     //
 
-    public isRangeSupported(range: ChartPeriod): boolean {
-        return range !== ChartPeriod.hour
+    public isRangeSupported(range: ChartRange): boolean {
+        return range !== ChartRange.hour
     }
 
-    protected async makeChart(canvas: HTMLCanvasElement, period: ChartPeriod): Promise<Chart> {
+    protected async makeChart(canvas: HTMLCanvasElement, period: ChartRange): Promise<Chart> {
         const query = this.makeQuery(period)
         const rawMetrics = await this.loadEcosystemMetrics(query)
-        const granularity = computeGranularityForPeriod(period)
+        const granularity = computeGranularityForRange(period)
         const aggregatedMetrics = aggregateMetrics(rawMetrics, granularity)
         const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
         const graphDataSet = makeGraphDataSet(aggregatedMetrics) as any
@@ -74,8 +74,8 @@ export class TPSController extends HgraphChartController {
     // Private
     //
 
-    private makeQuery(period: ChartPeriod): string {
-        const periodStartDate = computeStartDateForPeriod(period)
+    private makeQuery(period: ChartRange): string {
+        const periodStartDate = computeStartDateForRange(period)
         return "{" +
             "  all_metrics: ecosystem_metric(" +
             "    where: {" +
