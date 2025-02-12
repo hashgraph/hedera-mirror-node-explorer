@@ -31,6 +31,7 @@ export abstract class ChartController {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
     public readonly range: Ref<ChartRange>
+    public readonly logarithmic: Ref<boolean> = ref(false)
 
     private readonly chart: Ref<Chart|null> = ref(null)
     private readonly error: Ref<unknown> = ref(null)
@@ -46,7 +47,7 @@ export abstract class ChartController {
     }
 
     public mount(): void {
-        this.watchHandle = watch([this.canvas, this.range], this.updateChart, { immediate: true })
+        this.watchHandle = watch([this.canvas, this.range, this.logarithmic], this.updateChart, { immediate: true })
     }
 
     public unmount(): void {

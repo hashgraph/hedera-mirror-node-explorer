@@ -44,6 +44,7 @@ export class TPSController extends HgraphChartController {
         const aggregatedMetrics = aggregateMetrics(rawMetrics, granularity)
         const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
         const graphDataSet = makeGraphDataSet(aggregatedMetrics) as any
+        const scaleType = this.logarithmic.value ? "logarithmic" : "linear"
         return  new Chart(canvas, {
             type: 'bar',
             data: {
@@ -58,6 +59,7 @@ export class TPSController extends HgraphChartController {
                 },
                 scales: {
                     y: {
+                        type: scaleType,
                         beginAtZero: true
                     }
                 },

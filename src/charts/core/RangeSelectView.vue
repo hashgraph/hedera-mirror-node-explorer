@@ -26,6 +26,7 @@
   <SelectView
       v-model:model-value="selectedRange"
       :small="true"
+      :disabled="loading"
   >
     <option v-if="hourRangeSupported" :value="ChartRange.hour">1h</option>
     <option v-if="dayRangeSupported" :value="ChartRange.day">24h</option>
@@ -51,6 +52,7 @@ const props = defineProps({
   }
 })
 
+const loading = props.controller.building
 const selectedRange = props.controller.range
 const hourRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.hour))
 const dayRangeSupported = computed(() => props.controller.isRangeSupported(ChartRange.day))
