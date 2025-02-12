@@ -25,41 +25,41 @@
 <template>
 
   <div class="dashboard-root">
-    <MarketMarketDashboardItem
+    <MarketDashboardItem
         :title="hbarPriceLabel"
         :value="hbarPrice"
         :variation="hbarPriceVariation"
     >
       <img id="crypto-logo" alt="Crypto Logo" :src="cryptoLogoURL ?? ''">
-    </MarketMarketDashboardItem>
+    </MarketDashboardItem>
 
     <div class="line"/>
 
-    <MarketMarketDashboardItem
+    <MarketDashboardItem
         :title="hbarMarketCapLabel"
         :value="hbarMarketCap"
         :variation="hbarMarketCapVariation"
     >
       <Globe :size="32"/>
-    </MarketMarketDashboardItem>
+    </MarketDashboardItem>
 
     <div v-if="isLargeScreen || !isSmallScreen" class="line"/>
 
-    <MarketMarketDashboardItem
+    <MarketDashboardItem
         :title="hbarReleasedLabel"
         :value="hbarReleased"
     >
       <ArrowBigUpDash :size="32"/>
-    </MarketMarketDashboardItem>
+    </MarketDashboardItem>
 
     <div class="line"/>
 
-    <MarketMarketDashboardItem
+    <MarketDashboardItem
         :title="hbarTotalLabel"
         :value="hbarTotal"
     >
       <Coins :size="32"/>
-    </MarketMarketDashboardItem>
+    </MarketDashboardItem>
   </div>
 
 </template>
@@ -71,7 +71,7 @@
 <script setup lang="ts">
 
 import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import MarketMarketDashboardItem from "@/components/dashboard/MarketDashboardItem.vue";
+import MarketDashboardItem from "@/components/dashboard/MarketDashboardItem.vue";
 import {NetworkMetricsLoader} from "@/components/dashboard/metrics/NetworkMetricsLoader";
 import {CoreConfig} from "@/config/CoreConfig.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
