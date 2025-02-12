@@ -28,9 +28,9 @@
 
     <div class="footer-left">
       <a v-if="builtOnURL" :href="builtOnURL">
-        <img id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
+        <img id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
       </a>
-      <img v-else id="built-on-logo-new" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
+      <img v-else id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
 
       <div class="footer-text">
         <div v-if="isSmallScreen" class="footer-text-item">
@@ -60,9 +60,9 @@
 
     <template v-if="isSmallScreen">
       <a v-if="sponsorURL" :href="sponsorURL" class="footer-logo">
-        <img id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+        <img id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
       </a>
-      <img v-else class="footer-logo" id="sponsor-logo-new" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+      <img v-else class="footer-logo" id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
     </template>
   </div>
 
