@@ -138,13 +138,14 @@ div.dashboard-content {
     display: grid;
     gap: 16px;
     grid-template-columns: 1fr auto 1fr;
-    justify-items: center;
+    justify-items: flex-start;
   }
 }
 
 @media (min-width: 1280px) {
   div.dashboard-content {
     grid-template-columns:  repeat(7, auto);
+    justify-items: center;
   }
 }
 
