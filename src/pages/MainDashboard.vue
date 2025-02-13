@@ -41,6 +41,10 @@
       <ChartView :controller="tpsControllerV2"/>
     </div>
 
+    <div class="dashboard-content">
+      <ChartView :controller="networkFeeController"/>
+    </div>
+
     <div class="dashboard-title">
       Accounts
     </div>
@@ -88,6 +92,10 @@ onBeforeUnmount(() => tpsController.unmount())
 const tpsControllerV2 = new TPSControllerV2()
 onMounted(() => tpsControllerV2.mount())
 onBeforeUnmount(() => tpsControllerV2.unmount())
+
+const networkFeeController = new GenericMetricController("Network Fees", "network_fee")
+onMounted(() => networkFeeController.mount())
+onBeforeUnmount(() => networkFeeController.unmount())
 
 const activeAccountsController = new GenericMetricController("Active Accounts", "active_accounts")
 onMounted(() => activeAccountsController.mount())

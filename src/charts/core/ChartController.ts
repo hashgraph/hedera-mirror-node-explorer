@@ -43,7 +43,7 @@ export abstract class ChartController<M> {
     //
 
     public constructor(public readonly chartTitle: string, public readonly supportedRanges: ChartRange[] = []) {
-        this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.day)
+        this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.year)
     }
 
     public mount(): void {
