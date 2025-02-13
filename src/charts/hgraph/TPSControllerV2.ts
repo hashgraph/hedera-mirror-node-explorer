@@ -21,16 +21,16 @@
 import {Chart} from 'chart.js/auto';
 import {ChartRange, computeGranularityForRange, computeStartDateForRange,} from "@/charts/core/ChartController.ts";
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
-import {aggregateMetrics, EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
+import {averageMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 
-export class TPSController extends HgraphChartController {
+export class TPSControllerV2 extends HgraphChartController {
 
     //
     // Public
     //
 
     public constructor() {
-        super("TPS (using 'transactions' metric)", [ChartRange.year, ChartRange.day, ChartRange.all])
+        super("TPS (using 'network_tps' metric)", [ChartRange.year, ChartRange.day, ChartRange.all])
     }
 
     //
@@ -43,7 +43,7 @@ export class TPSController extends HgraphChartController {
         return "{" +
             "  all_metrics: ecosystem_metric(" +
             "    where: {" +
-            "      name: {_eq: \"transactions\"}, " +
+            "      name: {_eq: \"network_tps\"}, " +
             "      period: {_eq: \"hour\"}," +
             "      end_date: {_gte: \"" + periodStartDate + "\"}," +
             "    }" +
@@ -58,9 +58,9 @@ export class TPSController extends HgraphChartController {
 
     protected makeChart(canvas: HTMLCanvasElement, metrics: EcosystemMetric[], range: ChartRange, logarithmic: boolean): Chart {
         const granularity = computeGranularityForRange(range)
-        const aggregatedMetrics = aggregateMetrics(metrics, granularity)
-        const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
-        const graphDataSet = makeGraphDataSet(aggregatedMetrics) as any
+        const averagedMetrics = averageMetrics(metrics, granularity)
+        const graphLabels = makeGraphLabels(averagedMetrics, granularity)
+        const graphDataSet = makeGraphDataSet(averagedMetrics) as any
         const scaleType = logarithmic ? "logarithmic" : "linear"
         return  new Chart(canvas, {
             type: 'bar',
@@ -91,15 +91,9 @@ export class TPSController extends HgraphChartController {
 
 
 function makeGraphDataSet(metrics: EcosystemMetric[]): object {
-    const totals: number[] = []
-    for (const m of metrics) {
-        const range = getTimeRange(m) // milliseconds
-        if (range !== null) {
-            totals.push(Math.round(m.total / (range / 1000)))
-        }
-    }
+    const totals = metrics.map(metric => metric.total)
     return {
-        label: "TPS",
+        label: "TPS (with network_tps)",
         data: totals,
         borderWidth: 1
     }

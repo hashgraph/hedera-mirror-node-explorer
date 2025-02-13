@@ -37,6 +37,10 @@
       <ChartView :controller="tpsController"/>
     </div>
 
+    <div class="dashboard-content">
+      <ChartView :controller="tpsControllerV2"/>
+    </div>
+
     <div class="dashboard-title">
       Accounts
     </div>
@@ -65,6 +69,7 @@ import {useRouter} from "vue-router";
 import Footer from "@/components/page/Footer.vue";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
+import {TPSControllerV2} from "@/charts/hgraph/TPSControllerV2.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 
@@ -79,6 +84,10 @@ const bottomPageSize = ref(6)
 const tpsController = new TPSController()
 onMounted(() => tpsController.mount())
 onBeforeUnmount(() => tpsController.unmount())
+
+const tpsControllerV2 = new TPSControllerV2()
+onMounted(() => tpsControllerV2.mount())
+onBeforeUnmount(() => tpsControllerV2.unmount())
 
 const activeAccountsController = new GenericMetricController("Active Accounts", "active_accounts")
 onMounted(() => activeAccountsController.mount())
