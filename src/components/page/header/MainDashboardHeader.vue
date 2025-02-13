@@ -176,6 +176,7 @@ div.title {
 
 .market-dashboard {
   margin-top: 36px;
+  width: 100%;
 }
 
 @media (min-width: 768px) {

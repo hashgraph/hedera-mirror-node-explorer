@@ -25,41 +25,43 @@
 <template>
 
   <div class="dashboard-root">
-    <MarketDashboardItem
-        :title="hbarPriceLabel"
-        :value="hbarPrice"
-        :variation="hbarPriceVariation"
-    >
-      <img id="crypto-logo" alt="Crypto Logo" :src="cryptoLogoURL ?? ''">
-    </MarketDashboardItem>
+    <div class="dashboard-content">
+      <MarketDashboardItem
+          :title="hbarPriceLabel"
+          :value="hbarPrice"
+          :variation="hbarPriceVariation"
+      >
+        <img id="crypto-logo" alt="Crypto Logo" :src="cryptoLogoURL ?? ''">
+      </MarketDashboardItem>
 
-    <div class="line"/>
+      <div class="line"/>
 
-    <MarketDashboardItem
-        :title="hbarMarketCapLabel"
-        :value="hbarMarketCap"
-        :variation="hbarMarketCapVariation"
-    >
-      <Globe :size="32"/>
-    </MarketDashboardItem>
+      <MarketDashboardItem
+          :title="hbarMarketCapLabel"
+          :value="hbarMarketCap"
+          :variation="hbarMarketCapVariation"
+      >
+        <Globe :size="32"/>
+      </MarketDashboardItem>
 
-    <div v-if="isLargeScreen || !isSmallScreen" class="line"/>
+      <div v-if="isLargeScreen || !isSmallScreen" class="line"/>
 
-    <MarketDashboardItem
-        :title="hbarReleasedLabel"
-        :value="hbarReleased"
-    >
-      <ArrowBigUpDash :size="32"/>
-    </MarketDashboardItem>
+      <MarketDashboardItem
+          :title="hbarReleasedLabel"
+          :value="hbarReleased"
+      >
+        <ArrowBigUpDash :size="32"/>
+      </MarketDashboardItem>
 
-    <div class="line"/>
+      <div class="line"/>
 
-    <MarketDashboardItem
-        :title="hbarTotalLabel"
-        :value="hbarTotal"
-    >
-      <Coins :size="32"/>
-    </MarketDashboardItem>
+      <MarketDashboardItem
+          :title="hbarTotalLabel"
+          :value="hbarTotal"
+      >
+        <Coins :size="32"/>
+      </MarketDashboardItem>
+    </div>
   </div>
 
 </template>
@@ -112,42 +114,43 @@ const hbarMarketCapVariation = networkMetricsLoader.hbarMarketCapVariationText
 <style scoped>
 
 div.dashboard-root {
-  align-items: flex-start;
   background-color: var(--background-primary-transparent);
   backdrop-filter: blur(12px);
   border: 1px solid var(--border-secondary);
   border-radius: 16px;
   display: flex;
+  justify-content: center;
+}
+
+div.dashboard-content {
+  align-items: flex-start;
+  display: flex;
   flex-direction: column;
   gap: 32px;
   height: fit-content;
-  max-width: 358px;
   padding: 26px 32px 26px 32px;
-  width: 100%;
+  width: fit-content;
 }
 
 @media (min-width: 768px) {
-  div.dashboard-root {
+  div.dashboard-content {
     align-items: center;
     display: grid;
     gap: 16px;
     grid-template-columns: 1fr auto 1fr;
     justify-items: center;
-    max-width: 730px;
   }
 }
 
 @media (min-width: 1280px) {
-  div.dashboard-root {
+  div.dashboard-content {
     grid-template-columns:  repeat(7, auto);
-    max-width: 100%;
   }
 }
 
 div.line {
   border: 1px solid var(--border-secondary);
   rotate: 0deg;
-  max-width: 294px;
   width: 100%;
 }
 
