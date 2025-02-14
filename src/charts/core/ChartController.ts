@@ -32,7 +32,7 @@ export abstract class ChartController<M> {
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
     public readonly range: Ref<ChartRange>
 
-    private readonly chart: Ref<Chart|null> = ref(null)
+    private chart: Chart|null = null
     private readonly error: Ref<unknown> = ref(null)
     private readonly building: Ref<boolean> = ref(false)
     private watchHandle: WatchStopHandle|null = null
@@ -50,9 +50,9 @@ export abstract class ChartController<M> {
     }
 
     public unmount(): void {
-        if (this.chart.value !== null) {
-            this.chart.value.destroy()
-            this.chart.value = null
+        if (this.chart !== null) {
+            this.chart.destroy()
+            this.chart = null
         }
         this.error.value = null
         if (this.watchHandle !== null) {
@@ -111,18 +111,18 @@ export abstract class ChartController<M> {
     //
 
     private readonly updateChart =  async () => {
-        if (this.chart.value !== null) {
-            this.chart.value.destroy()
-            this.chart.value = null
+        if (this.chart !== null) {
+            this.chart.destroy()
+            this.chart = null
         }
         if (this.canvas.value !== null) {
             this.building.value = true
             try {
                 const data = await this.loadData(this.range.value)
-                this.chart.value = this.makeChart(this.canvas.value, data, this.range.value)
+                this.chart = this.makeChart(this.canvas.value, data, this.range.value)
                 this.error.value = null
             } catch(error) {
-                this.chart.value = null
+                this.chart = null
                 this.error.value = error
             } finally {
                 this.building.value = false
