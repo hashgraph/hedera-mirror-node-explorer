@@ -89,8 +89,9 @@ const hbarMarketCapLabel = `${cryptoName} MARKET CAP`
 const hbarReleasedLabel = `${cryptoName} RELEASED`
 const hbarTotalLabel = `${cryptoName} TOTAL`
 
+const coreConfig = CoreConfig.inject()
 const cryptoLogoURL = computed(() =>
-    darkSelected.value ? CoreConfig.inject().cryptoLogoDarkURL : CoreConfig.inject().cryptoLogoLightURL
+    darkSelected.value ? coreConfig.cryptoLogoDarkURL : coreConfig.cryptoLogoLightURL
 )
 
 // Hedera Metrics
