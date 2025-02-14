@@ -66,10 +66,7 @@
 
 <script setup lang="ts">
 
-import {onBeforeUnmount, onMounted, ref, watch} from 'vue';
-import {TransactionType} from "@/schemas/MirrorNodeSchemas";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import {useRouter} from "vue-router";
+import {onBeforeUnmount, onMounted} from 'vue';
 import Footer from "@/components/page/Footer.vue";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
@@ -77,13 +74,9 @@ import {TPSControllerV2} from "@/charts/hgraph/TPSControllerV2.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 
-const props = defineProps({
+defineProps({
   network: String
 })
-
-const router = useRouter()
-const topPageSize = ref(6)
-const bottomPageSize = ref(6)
 
 const tpsController = new TPSController()
 onMounted(() => tpsController.mount())
@@ -100,36 +93,6 @@ onBeforeUnmount(() => networkFeeController.unmount())
 const activeAccountsController = new GenericMetricController("Active Accounts", "active_accounts")
 onMounted(() => activeAccountsController.mount())
 onBeforeUnmount(() => activeAccountsController.unmount())
-
-const cryptoTableController = new TransactionTableController(
-    router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
-
-const messageTableController = new TransactionTableController(
-    router, bottomPageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", null, "p2", "k2")
-
-const contractTableController = new TransactionTableController(
-    router, bottomPageSize, TransactionType.CONTRACTCALL, "", null, "p3", "k3")
-
-onMounted(() => {
-  cryptoTableController.mount()
-  messageTableController.mount()
-  contractTableController.mount()
-})
-
-onBeforeUnmount(() => {
-  cryptoTableController.unmount()
-  messageTableController.unmount()
-  contractTableController.unmount()
-})
-
-watch(() => props.network, () => {
-  cryptoTableController.reset()
-  messageTableController.reset()
-  contractTableController.reset()
-  cryptoTableController.startAutoRefresh()
-  messageTableController.startAutoRefresh()
-  contractTableController.startAutoRefresh()
-})
 
 </script>
 
