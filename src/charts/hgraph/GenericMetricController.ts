@@ -31,8 +31,8 @@ export class GenericMetricController extends HgraphChartController {
     // Public
     //
 
-    public constructor(chartTitle: string, metricName: string) {
-        super(chartTitle)
+    public constructor(chartTitle: string, metricName: string, supportedRanges: ChartRange[] = []) {
+        super(chartTitle, supportedRanges)
         this.metricName = metricName
     }
 
