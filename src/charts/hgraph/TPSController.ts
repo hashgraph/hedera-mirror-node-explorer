@@ -81,6 +81,10 @@ export class TPSController extends HgraphChartController {
                     },
                     y: {
                         type: "logarithmic",
+                        ticks: {
+                            autoSkip: true,
+                            autoSkipPadding: 20,
+                        },
                         grid: {
                             display: false
                         }
