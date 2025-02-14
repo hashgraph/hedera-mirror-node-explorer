@@ -29,8 +29,8 @@ export class TPSMetricLoader  extends EntityLoader<Block[]> {
     private readonly sampleCount = 100 // tps is computed over the last 'sampleCount' blocks
 
     private readonly formatter = new Intl.NumberFormat('en-US', {
-        minimumFractionDigits: 3,
-        maximumFractionDigits: 3
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 0
     })
 
     //
