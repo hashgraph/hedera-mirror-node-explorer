@@ -20,6 +20,7 @@
 
 import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
 import {Chart, ChartConfiguration} from 'chart.js/auto';
+import {ThemeController} from "@/components/ThemeController.ts";
 
 export enum ChartState {
     loading,
@@ -44,7 +45,7 @@ export abstract class ChartController<M> {
 
     public constructor(
         public readonly chartTitle: string,
-        public readonly darkSelected: Ref<boolean>,
+        public readonly themeController: ThemeController,
         public readonly supportedRanges: ChartRange[] = []) {
         this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.year)
     }
@@ -52,8 +53,7 @@ export abstract class ChartController<M> {
     public mount(): void {
         this.watchHandles = [
             watch(this.range, this.updateMetrics, {immediate: true}),
-            watch([this.canvas], this.updateChart, { immediate: true }),
-            watch(this.darkSelected, this.updateChart, { immediate: true }),
+            watch([this.canvas, this.themeController.darkSelected], this.updateChart, { immediate: true }),
         ]
     }
 

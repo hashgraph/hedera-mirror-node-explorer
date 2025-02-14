@@ -22,6 +22,7 @@ import {ChartConfiguration} from "chart.js";
 import {ChartRange, computeGranularityForRange, computeStartDateForRange,} from "@/charts/core/ChartController.ts";
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
 import {EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
+import {ThemeController} from "@/components/ThemeController.ts";
 
 export class TPSController extends HgraphChartController {
 
@@ -29,8 +30,8 @@ export class TPSController extends HgraphChartController {
     // Public
     //
 
-    public constructor() {
-        super("TPS", [ChartRange.year, ChartRange.day, ChartRange.all])
+    public constructor(themeController: ThemeController) {
+        super("TPS", themeController, [ChartRange.year, ChartRange.day, ChartRange.all])
     }
 
     //

@@ -73,12 +73,15 @@ import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
 import {ChartRange} from "@/charts/core/ChartController.ts";
+import {ThemeController} from "@/components/ThemeController.ts";
 
 defineProps({
   network: String
 })
 
-const tpsController = new TPSController()
+const themeController = ThemeController.inject()
+
+const tpsController = new TPSController(themeController)
 onMounted(() => tpsController.mount())
 onBeforeUnmount(() => tpsController.unmount())
 
@@ -87,13 +90,14 @@ const currentTPS = tpsMetricLoader.currentTPS
 onMounted(() => tpsMetricLoader.mount())
 onBeforeUnmount(() => tpsMetricLoader.unmount())
 
-const networkFeeController = new NetworkFeeController()
+const networkFeeController = new NetworkFeeController(themeController)
 onMounted(() => networkFeeController.mount())
 onBeforeUnmount(() => networkFeeController.unmount())
 
 const activeAccountsController = new GenericMetricController(
     "Active Accounts",
     "active_accounts",
+    themeController,
     [ChartRange.year, ChartRange.all]
 )
 onMounted(() => activeAccountsController.mount())
