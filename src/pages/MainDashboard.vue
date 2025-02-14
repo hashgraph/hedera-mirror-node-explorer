@@ -72,6 +72,7 @@ import ChartView from "@/charts/core/ChartView.vue";
 import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
+import {ChartRange} from "@/charts/core/ChartController.ts";
 
 defineProps({
   network: String
@@ -90,7 +91,11 @@ const networkFeeController = new NetworkFeeController()
 onMounted(() => networkFeeController.mount())
 onBeforeUnmount(() => networkFeeController.unmount())
 
-const activeAccountsController = new GenericMetricController("Active Accounts", "active_accounts")
+const activeAccountsController = new GenericMetricController(
+    "Active Accounts",
+    "active_accounts",
+    [ChartRange.year, ChartRange.all]
+)
 onMounted(() => activeAccountsController.mount())
 onBeforeUnmount(() => activeAccountsController.unmount())
 

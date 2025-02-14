@@ -29,7 +29,7 @@ export class NetworkFeeController extends GenericMetricController {
     //
 
     public constructor() {
-        super("Network Fees", "network_fee")
+        super("Network Fees", "network_fee", [ChartRange.year, ChartRange.all])
     }
 
     //
