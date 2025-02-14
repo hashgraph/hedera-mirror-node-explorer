@@ -32,33 +32,40 @@ export abstract class ChartController<M> {
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
     public readonly range: Ref<ChartRange>
 
+    private metrics: M[]|null = null
     private chart: Chart|null = null
     private readonly error: Ref<unknown> = ref(null)
     private readonly building: Ref<boolean> = ref(false)
-    private watchHandle: WatchStopHandle|null = null
+    private watchHandles: WatchStopHandle[] = []
 
     //
     // Public
     //
 
-    public constructor(public readonly chartTitle: string, public readonly supportedRanges: ChartRange[] = []) {
+    public constructor(
+        public readonly chartTitle: string,
+        public readonly darkSelected: Ref<boolean>,
+        public readonly supportedRanges: ChartRange[] = []) {
         this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.year)
     }
 
     public mount(): void {
-        this.watchHandle = watch([this.canvas, this.range], this.updateChart, { immediate: true })
+        this.watchHandles = [
+            watch(this.range, this.updateMetrics, {immediate: true}),
+            watch([this.canvas], this.updateChart, { immediate: true }),
+            watch(this.darkSelected, this.updateChart, { immediate: true }),
+        ]
     }
 
     public unmount(): void {
+        this.metrics = null
         if (this.chart !== null) {
             this.chart.destroy()
             this.chart = null
         }
         this.error.value = null
-        if (this.watchHandle !== null) {
-            this.watchHandle()
-            this.watchHandle = null
-        }
+        this.watchHandles.forEach(w => w())
+        this.watchHandles = []
     }
 
     public readonly state = computed<ChartState>(() => {
@@ -110,24 +117,32 @@ export abstract class ChartController<M> {
     // Private
     //
 
-    private readonly updateChart =  async () => {
+    private readonly updateMetrics = async () => {
+        this.building.value = true
+        try {
+            this.metrics = await this.loadData(this.range.value)
+            this.error.value = null
+        } catch(error) {
+            this.metrics = null
+            this.error.value = error
+        } finally {
+            this.building.value = false
+            this.updateChart()
+        }
+    }
+
+    private readonly updateChart =  () => {
         if (this.chart !== null) {
             this.chart.destroy()
             this.chart = null
         }
-        if (this.canvas.value !== null) {
-            this.building.value = true
+        if (this.canvas.value !== null && this.metrics !== null) {
             try {
-                const data = await this.loadData(this.range.value)
-                this.chart = this.makeChart(this.canvas.value, data, this.range.value)
-                this.error.value = null
+                this.chart = this.makeChart(this.canvas.value, this.metrics, this.range.value)
             } catch(error) {
                 this.chart = null
-                this.error.value = error
-            } finally {
-                this.building.value = false
             }
-        }
+        } // else leaves this.chart to null
     }
 
     private makeChart(canvas: HTMLCanvasElement, metrics: M[], range: ChartRange): Chart {
