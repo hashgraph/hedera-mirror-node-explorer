@@ -69,6 +69,7 @@ import Footer from "@/components/page/Footer.vue";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
+import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
 
@@ -85,7 +86,7 @@ const currentTPS = tpsMetricLoader.currentTPS
 onMounted(() => tpsMetricLoader.mount())
 onBeforeUnmount(() => tpsMetricLoader.unmount())
 
-const networkFeeController = new GenericMetricController("Network Fees", "network_fee")
+const networkFeeController = new NetworkFeeController()
 onMounted(() => networkFeeController.mount())
 onBeforeUnmount(() => networkFeeController.unmount())
 

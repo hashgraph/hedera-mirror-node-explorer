@@ -98,7 +98,7 @@ export class GenericMetricController extends HgraphChartController {
     // Private
     //
 
-    private makeGraphDataSet(metrics: EcosystemMetric[]): object {
+    protected makeGraphDataSet(metrics: EcosystemMetric[]): object {
         const totals = metrics.map((m: EcosystemMetric) => m.total)
         return {
             label: this.chartTitle,
