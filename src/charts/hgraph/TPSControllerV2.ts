@@ -30,7 +30,7 @@ export class TPSControllerV2 extends HgraphChartController {
     //
 
     public constructor() {
-        super("TPS (using 'network_tps' metric)", [ChartRange.year, ChartRange.day, ChartRange.all])
+        super("TPS (using 'network_tps' metric)", [ChartRange.year, ChartRange.all])
     }
 
     //
