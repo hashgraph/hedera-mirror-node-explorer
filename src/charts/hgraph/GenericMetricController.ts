@@ -20,8 +20,8 @@
 
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
 import {ChartRange, computeGranularityForRange, computeStartDateForRange} from "@/charts/core/ChartController.ts";
-import {aggregateMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
-import {Chart} from "chart.js/auto";
+import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
+import {ChartConfiguration} from "chart.js";
 
 export class GenericMetricController extends HgraphChartController {
 
@@ -59,12 +59,11 @@ export class GenericMetricController extends HgraphChartController {
             "}"
     }
 
-    protected makeChart(canvas: HTMLCanvasElement, metrics: EcosystemMetric[], range: ChartRange): Chart {
+    protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
-        const aggregatedMetrics = aggregateMetrics(metrics, granularity)
-        const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
-        const graphDataSet = this.makeGraphDataSet(aggregatedMetrics) as any
-        return  new Chart(canvas, {
+        const graphLabels = makeGraphLabels(metrics, granularity)
+        const graphDataSet = this.makeGraphDataSet(metrics) as any
+        return {
             type: 'bar',
             data: {
                 labels: graphLabels,
@@ -91,7 +90,7 @@ export class GenericMetricController extends HgraphChartController {
                 },
                 maintainAspectRatio: false
             }
-        });
+        }
     }
 
 

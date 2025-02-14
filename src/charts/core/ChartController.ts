@@ -19,7 +19,7 @@
  */
 
 import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
-import {Chart} from 'chart.js';
+import {Chart, ChartConfiguration} from 'chart.js/auto';
 
 export enum ChartState {
     loading,
@@ -97,7 +97,13 @@ export abstract class ChartController<M> {
         throw "to be subclassed"
     }
 
-    protected abstract makeChart(canvas: HTMLCanvasElement, data: M[], range: ChartRange): Chart
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected transformMetrics(metrics: M[], range: ChartRange): M[] {
+        // No transformation by default
+        return metrics
+    }
+
+    protected abstract makeChartConfig(metrics: M[], range: ChartRange): ChartConfiguration
 
 
     //
@@ -123,6 +129,13 @@ export abstract class ChartController<M> {
             }
         }
     }
+
+    private makeChart(canvas: HTMLCanvasElement, metrics: M[], range: ChartRange): Chart {
+        const aggregatedMetrics = this.transformMetrics(metrics, range)
+        const chartConfig = this.makeChartConfig(aggregatedMetrics, range)
+        return  new Chart(canvas,  chartConfig);
+    }
+
 }
 
 export enum ChartRange {            // Matching granularity

@@ -18,10 +18,10 @@
  *
  */
 
-import {Chart} from 'chart.js/auto';
+import {ChartConfiguration} from "chart.js";
 import {ChartRange, computeGranularityForRange, computeStartDateForRange,} from "@/charts/core/ChartController.ts";
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
-import {aggregateMetrics, EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
+import {EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
 
 export class TPSController extends HgraphChartController {
 
@@ -56,15 +56,14 @@ export class TPSController extends HgraphChartController {
             "}"
     }
 
-    protected makeChart(canvas: HTMLCanvasElement, metrics: EcosystemMetric[], range: ChartRange): Chart {
+    protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
-        const aggregatedMetrics = aggregateMetrics(metrics, granularity)
-        const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
-        const graphDataSet = makeGraphDataSet(aggregatedMetrics) as any
+        const graphLabels = makeGraphLabels(metrics, granularity)
+        const graphDataSet = makeGraphDataSet(metrics) as any
 
         console.log(`makeChart: ${range}`)
 
-        return  new Chart(canvas, {
+        return  {
             type: 'bar',
             data: {
                 labels: graphLabels,
@@ -72,9 +71,9 @@ export class TPSController extends HgraphChartController {
             },
             options: {
                 plugins: {
-                  legend: {
-                      display: false
-                  }
+                    legend: {
+                        display: false
+                    }
                 },
                 scales: {
                     x: {
@@ -95,7 +94,7 @@ export class TPSController extends HgraphChartController {
                 },
                 maintainAspectRatio: false
             }
-        });
+        }
     }
 
 

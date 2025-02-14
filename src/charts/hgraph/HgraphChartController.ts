@@ -18,8 +18,13 @@
  *
  */
 
-import {ChartController, ChartGranularity, ChartRange} from "@/charts/core/ChartController.ts";
-import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
+import {
+    ChartController,
+    ChartGranularity,
+    ChartRange,
+    computeGranularityForRange
+} from "@/charts/core/ChartController.ts";
+import {aggregateMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios from "axios";
 
 export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
@@ -33,6 +38,10 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
     // ChartController
     //
+
+    protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
+        return aggregateMetrics(metrics, computeGranularityForRange(range))
+    }
 
     protected async loadData(range: ChartRange): Promise<EcosystemMetric[]> {
         const query = this.makeQuery(range)
