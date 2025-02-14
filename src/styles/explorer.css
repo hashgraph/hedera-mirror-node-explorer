@@ -91,6 +91,8 @@
     --light-status-success-color: #00722D;
     --light-status-error-color: #C40E3A;
     --light-search-bar-default: #FFFFFF;
+    --light-graphbar-pink: #E183E7;
+    --light-graphbar-blue: #5A4DFF;
 
     /* DARK MODE */
 
@@ -127,6 +129,8 @@
     --dark-status-success-color: #00722D;
     --dark-status-error-color: #C40E3A;
     --dark-search-bar-default: #2C2C2C;
+    --dark-graphbar-pink: #D245DB;
+    --dark-graphbar-blue: #1300FF;
 
     /* CURRENT MODE */
     --text-primary: var(--light-text-primary);
@@ -153,6 +157,8 @@
     --status-success-color: var(--light-status-success-color);
     --status-error-color: var(--light-status-error-color);
     --search-bar-default: var(--light-search-bar-default);
+    --graphbar-pink: var(--light-graphbar-pink);
+    --graphbar-blue: var(--light-graphbar-blue);
 
     --network-button-text-color: var(--light-network-button-text-color);
     --network-button-color: var(--light-network-button-color);
