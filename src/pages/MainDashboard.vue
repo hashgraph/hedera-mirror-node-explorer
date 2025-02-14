@@ -34,7 +34,9 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="tpsController"/>
+      <ChartView :controller="tpsController">
+        <template #chartViewExtra>{{ currentTPS }}</template>
+      </ChartView>
     </div>
 
     <div class="dashboard-content">
@@ -73,6 +75,7 @@ import {TPSController} from "@/charts/hgraph/TPSController.ts";
 import {TPSControllerV2} from "@/charts/hgraph/TPSControllerV2.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
+import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
 
 defineProps({
   network: String
@@ -81,6 +84,11 @@ defineProps({
 const tpsController = new TPSController()
 onMounted(() => tpsController.mount())
 onBeforeUnmount(() => tpsController.unmount())
+
+const tpsMetricLoader = new TPSMetricLoader()
+const currentTPS = tpsMetricLoader.currentTPS
+onMounted(() => tpsMetricLoader.mount())
+onBeforeUnmount(() => tpsMetricLoader.unmount())
 
 const tpsControllerV2 = new TPSControllerV2()
 onMounted(() => tpsControllerV2.mount())

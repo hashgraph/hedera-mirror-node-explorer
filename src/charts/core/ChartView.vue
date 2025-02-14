@@ -24,16 +24,19 @@
 
 <template>
   <div class="chart-view">
+
     <div class="chart-view-header">
-      <div>{{ controller.chartTitle }}</div>
+      <div class="chart-view-header-left">
+        <div>{{ controller.chartTitle }}</div>
+        <div v-if="$slots.chartViewExtra" class="chart-view-extra">
+          <slot name="chartViewExtra"/>
+        </div>
+      </div>
       <div class="chart-view-header-right">
-        <label>
-          <span>Logarithmic</span>
-          <input v-model="logarithmic" type="checkbox" :disabled="loading" style="margin-left: 0.3em; vertical-align: middle" />
-        </label>
         <RangeSelectView :controller="props.controller"/>
       </div>
     </div>
+
     <div class="chart-view-container" :style="{height: props.height + 'px'}">
 
       <template v-if="state === ChartState.loading">
@@ -80,8 +83,6 @@ const props = defineProps({
 const canvasRef = props.controller.canvas
 const canvasDisplay = computed(() => props.controller.state.value === ChartState.ok ? "block": "none")
 const state = props.controller.state
-const logarithmic = props.controller.logarithmic
-const loading = computed(() => props.controller.state.value === ChartState.loading)
 const errorExtra = props.controller.errorExtra.value
 
 </script>
@@ -96,6 +97,7 @@ div.chart-view {
   display: flex;
   flex-direction: column;
   row-gap: 32px;
+  font-family: "Styrene A Web", sans-serif;
 }
 
 div.chart-view-header {
@@ -106,22 +108,37 @@ div.chart-view-header {
   color: var(--text-secondary)
 }
 
-div.chart-view-header-right {
+div.chart-view-header-left {
+  align-items: flex-start;
+  color: var(--text-secondary);
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   font-size: 14px;
   font-weight: 400;
+  row-gap: 8px;
+}
+
+div.chart-view-header-right {
+  align-items: flex-start;
   color: var(--text-secondary);
   column-gap: 16px;
+  display: flex;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+div.chart-view-extra {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text-primary);
 }
 
 div.chart-view-container {
-  display: flex;
-  position: relative; /* Required by chartjs */
-  flex-direction: column;
   align-items: stretch;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
+  position: relative; /* Required by chartjs */
   width: 100%;
 }
 
