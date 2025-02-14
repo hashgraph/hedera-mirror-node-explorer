@@ -23,15 +23,13 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <SelectView
-      v-model:model-value="selectedRange"
-      :small="true"
-      :disabled="loading"
-  >
-    <option v-if="dayRangeSupported" :value="ChartRange.day">24h</option>
-    <option v-if="yearRangeSupported" :value="ChartRange.year">YTD</option>
-    <option v-if="allRangeSupported" :value="ChartRange.all">All</option>
-  </SelectView>
+  <TabsView
+      v-model:selected-tab="selectedRange"
+      :tab-ids="ids"
+      :tab-labels="labels"
+      :active-tabs="active"
+      :is-enabled="!loading"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -41,8 +39,8 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import SelectView from "@/elements/SelectView.vue";
 import {ChartController, ChartRange, ChartState} from "@/charts/core/ChartController.ts";
+import TabsView from "@/components/TabsView.vue";
 
 const props = defineProps({
   controller: {
@@ -50,6 +48,10 @@ const props = defineProps({
     required: true
   }
 })
+
+const ids = [ChartRange.day, ChartRange.year, ChartRange.all]
+const labels = ['24h', 'YTD', 'All']
+const active = computed(() => [dayRangeSupported.value, yearRangeSupported.value, allRangeSupported.value])
 
 const loading = computed(() => props.controller.state.value === ChartState.loading)
 const selectedRange = props.controller.range
