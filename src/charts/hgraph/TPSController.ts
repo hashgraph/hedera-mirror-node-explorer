@@ -74,8 +74,16 @@ export class TPSController extends HgraphChartController {
                   }
                 },
                 scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
                     y: {
                         type: "logarithmic",
+                        grid: {
+                            display: false
+                        }
                     }
                 },
                 maintainAspectRatio: false

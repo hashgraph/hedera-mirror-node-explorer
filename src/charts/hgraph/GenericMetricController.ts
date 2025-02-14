@@ -77,7 +77,15 @@ export class GenericMetricController extends HgraphChartController {
                     }
                 },
                 scales: {
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    },
                     y: {
+                        grid: {
+                            display: false
+                        },
                         beginAtZero: true
                     }
                 },
