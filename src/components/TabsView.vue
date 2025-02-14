@@ -134,6 +134,7 @@ li {
   border: 0.5px solid transparent;
   border-radius: 8px;
   color: var(--text-secondary);
+  font-family: var(--font-family-proportional), sans-serif;
   font-size: 14px;
   font-weight: 600;
   line-height: 18px;
