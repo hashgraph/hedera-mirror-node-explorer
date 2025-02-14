@@ -40,10 +40,6 @@
     </div>
 
     <div class="dashboard-content">
-      <ChartView :controller="tpsControllerV2"/>
-    </div>
-
-    <div class="dashboard-content">
       <ChartView :controller="networkFeeController"/>
     </div>
 
@@ -72,7 +68,6 @@ import {onBeforeUnmount, onMounted} from 'vue';
 import Footer from "@/components/page/Footer.vue";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
-import {TPSControllerV2} from "@/charts/hgraph/TPSControllerV2.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
@@ -89,10 +84,6 @@ const tpsMetricLoader = new TPSMetricLoader()
 const currentTPS = tpsMetricLoader.currentTPS
 onMounted(() => tpsMetricLoader.mount())
 onBeforeUnmount(() => tpsMetricLoader.unmount())
-
-const tpsControllerV2 = new TPSControllerV2()
-onMounted(() => tpsControllerV2.mount())
-onBeforeUnmount(() => tpsControllerV2.unmount())
 
 const networkFeeController = new GenericMetricController("Network Fees", "network_fee")
 onMounted(() => networkFeeController.mount())

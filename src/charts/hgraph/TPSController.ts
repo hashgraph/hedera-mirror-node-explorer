@@ -30,7 +30,7 @@ export class TPSController extends HgraphChartController {
     //
 
     public constructor() {
-        super("TPS (using 'transactions' metric)", [ChartRange.year, ChartRange.day, ChartRange.all])
+        super("TPS", [ChartRange.year, ChartRange.day, ChartRange.all])
     }
 
     //
