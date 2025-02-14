@@ -21,6 +21,7 @@
 import {
     AccountInfo,
     AccountsResponse,
+    Block,
     ContractLog,
     ContractResult,
     ContractResultsLogResponse,
@@ -48,6 +49,7 @@ import * as hashgraph from "@hashgraph/proto";
 import axios from "axios";
 import {waitFor} from "@/utils/TimerUtils";
 import {TransactionID} from "@/utils/TransactionID.ts";
+import {Timestamp} from "@/utils/Timestamp.ts";
 
 export function makeEthAddressForAccount(account: AccountInfo): string | null {
     if (account.evm_address) return account.evm_address;
@@ -541,3 +543,37 @@ export function extractChecksum(address: string): string | null {
     const dash = address.indexOf('-')
     return dash != -1 ? address.substring(dash + 1) : null
 }
+
+export function computeTPS(blocks: Block[]): number|null { // blocks should be in ascending order
+    let result: number|null
+
+    if (blocks.length >= 1) {
+        const startBlock = blocks[0]
+        const endBlock = blocks[blocks.length - 1]
+        const startTime = startBlock.timestamp?.from ?? null
+        const endTime = endBlock.timestamp?.to ?? null
+        if (startTime !== null && endTime !== null) {
+            const rangeNanos = Timestamp.computeRange(startTime, endTime)
+            if (rangeNanos !== null) {
+                const txCount = countTransactions(blocks)
+                return txCount / (rangeNanos / 1_000_000_000)
+            } else {
+                result = null
+            }
+        } else {
+            result = null
+        }
+    } else {
+        result = null
+    }
+    return result
+}
+
+export function countTransactions(blocks: Block[]): number {
+    let result = 0
+    for (const b of blocks) {
+        result += b.count ?? 0
+    }
+    return result
+}
+

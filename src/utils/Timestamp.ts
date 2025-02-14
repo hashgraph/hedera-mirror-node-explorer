@@ -52,6 +52,25 @@ export class Timestamp {
         return this.seconds + "." + this.nanoseconds.toString().padStart(9, "0")
     }
 
+    public static computeRange(t1: string, t2: string): number|null {
+        let result: number|null
+
+        const tt1 = Timestamp.parse(t1)
+        const tt2 = Timestamp.parse(t2)
+        if (tt1 !== null && tt2 !== null) {
+            result = tt2.nanoSeconds(tt1)
+        } else {
+            result = null
+        }
+        return result
+    }
+
+    public nanoSeconds(from: Timestamp): number {
+        const secondDelta = this.seconds - from.seconds
+        const nanosecondDelta = this.nanoseconds - from.nanoseconds
+        return secondDelta * 1_000_000_000 + nanosecondDelta
+    }
+
     //
     // Private
     //
