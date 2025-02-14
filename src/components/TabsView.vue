@@ -88,6 +88,9 @@ const onSelect = (tabIndex: number) => {
 }
 
 const handleSelect = (tab: string | null, interactive: boolean) => {
+
+  console.log(`handleSelect - tab: ${tab}`)
+
   selectedTab.value = tab
   interactiveSelection.value = interactive
 }
@@ -107,6 +110,8 @@ const isActive = (tabIndex: number): boolean => {
 }
 
 watch(() => props.tabIds, adjustSelectedTab, {immediate: true})
+
+watch(()=>props.isEnabled, (value) => console.log(`isEnabled: ${value}`))
 
 </script>
 

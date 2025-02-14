@@ -61,6 +61,9 @@ export class TPSController extends HgraphChartController {
         const aggregatedMetrics = aggregateMetrics(metrics, granularity)
         const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
         const graphDataSet = makeGraphDataSet(aggregatedMetrics) as any
+
+        console.log(`makeChart: ${range}`)
+
         return  new Chart(canvas, {
             type: 'bar',
             data: {
