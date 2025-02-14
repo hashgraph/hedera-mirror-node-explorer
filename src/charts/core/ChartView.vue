@@ -101,11 +101,14 @@ div.chart-view {
 }
 
 div.chart-view-header {
+  align-items: center;
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   font-size: 14px;
   font-weight: 400;
-  color: var(--text-secondary)
+  color: var(--text-secondary);
 }
 
 div.chart-view-header-left {
