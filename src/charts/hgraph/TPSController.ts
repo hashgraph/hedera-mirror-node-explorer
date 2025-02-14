@@ -77,6 +77,9 @@ export class TPSController extends HgraphChartController {
                 },
                 scales: {
                     x: {
+                        ticks: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                        },
                         grid: {
                             display: false
                         }
@@ -86,6 +89,7 @@ export class TPSController extends HgraphChartController {
                         ticks: {
                             autoSkip: true,
                             autoSkipPadding: 20,
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
                         },
                         grid: {
                             display: false
@@ -113,6 +117,7 @@ function makeGraphDataSet(metrics: EcosystemMetric[]): object {
     return {
         label: "TPS",
         data: totals,
-        borderWidth: 1
+        borderWidth: 1,
+        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--graphbar-pink')
     }
 }

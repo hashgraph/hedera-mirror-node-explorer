@@ -77,11 +77,17 @@ export class GenericMetricController extends HgraphChartController {
                 },
                 scales: {
                     x: {
+                        ticks: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                        },
                         grid: {
                             display: false
                         }
                     },
                     y: {
+                        ticks: {
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                        },
                         grid: {
                             display: false
                         },
@@ -103,7 +109,8 @@ export class GenericMetricController extends HgraphChartController {
         return {
             label: this.chartTitle,
             data: totals,
-            borderWidth: 1
+            borderWidth: 1,
+            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--graphbar-pink')
         }
     }
 
