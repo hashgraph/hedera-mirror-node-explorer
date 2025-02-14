@@ -28,15 +28,14 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     // Protected (to be subclassed)
     //
 
-    protected abstract makeQuery(range: ChartRange, logarithmic: boolean): string
+    protected abstract makeQuery(range: ChartRange): string
 
     //
     // ChartController
     //
 
-    protected async loadData(range: ChartRange, logarithmic: boolean): Promise<EcosystemMetric[]> {
-        const query = this.makeQuery(range, logarithmic)
-        console.log("query=" + query)
+    protected async loadData(range: ChartRange): Promise<EcosystemMetric[]> {
+        const query = this.makeQuery(range)
         const url = "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
         const response = await axios.post<GraphQLResponse>(url, { query })
         return Promise.resolve(response.data.data.all_metrics)

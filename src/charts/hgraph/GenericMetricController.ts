@@ -59,12 +59,11 @@ export class GenericMetricController extends HgraphChartController {
             "}"
     }
 
-    protected makeChart(canvas: HTMLCanvasElement, metrics: EcosystemMetric[], range: ChartRange, logarithmic: boolean): Chart {
+    protected makeChart(canvas: HTMLCanvasElement, metrics: EcosystemMetric[], range: ChartRange): Chart {
         const granularity = computeGranularityForRange(range)
         const aggregatedMetrics = aggregateMetrics(metrics, granularity)
         const graphLabels = makeGraphLabels(aggregatedMetrics, granularity)
         const graphDataSet = this.makeGraphDataSet(aggregatedMetrics) as any
-        const scaleType = logarithmic ? "logarithmic" : "linear"
         return  new Chart(canvas, {
             type: 'bar',
             data: {
@@ -79,7 +78,6 @@ export class GenericMetricController extends HgraphChartController {
                 },
                 scales: {
                     y: {
-                        type: scaleType,
                         beginAtZero: true
                     }
                 },

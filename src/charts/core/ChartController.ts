@@ -31,7 +31,6 @@ export abstract class ChartController<M> {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
     public readonly range: Ref<ChartRange>
-    public readonly logarithmic: Ref<boolean> = ref(false)
 
     private readonly chart: Ref<Chart|null> = ref(null)
     private readonly error: Ref<unknown> = ref(null)
@@ -47,7 +46,7 @@ export abstract class ChartController<M> {
     }
 
     public mount(): void {
-        this.watchHandle = watch([this.canvas, this.range, this.logarithmic], this.updateChart, { immediate: true })
+        this.watchHandle = watch([this.canvas, this.range], this.updateChart, { immediate: true })
     }
 
     public unmount(): void {
@@ -94,11 +93,11 @@ export abstract class ChartController<M> {
     //
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async loadData(range: ChartRange, logarithmic: boolean): Promise<M[]> {
+    protected async loadData(range: ChartRange): Promise<M[]> {
         throw "to be subclassed"
     }
 
-    protected abstract makeChart(canvas: HTMLCanvasElement, data: M[], range: ChartRange, logarithmic: boolean): Chart
+    protected abstract makeChart(canvas: HTMLCanvasElement, data: M[], range: ChartRange): Chart
 
 
     //
@@ -113,12 +112,10 @@ export abstract class ChartController<M> {
         if (this.canvas.value !== null) {
             this.building.value = true
             try {
-                const data = await this.loadData(this.range.value, this.logarithmic.value)
-                this.chart.value = this.makeChart(this.canvas.value, data,
-                    this.range.value, this.logarithmic.value)
+                const data = await this.loadData(this.range.value)
+                this.chart.value = this.makeChart(this.canvas.value, data, this.range.value)
                 this.error.value = null
             } catch(error) {
-                console.error(error)
                 this.chart.value = null
                 this.error.value = error
             } finally {
