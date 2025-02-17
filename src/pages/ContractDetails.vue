@@ -72,7 +72,6 @@
           <template #value>
             <EVMAddress
                 :show-id="false"
-                :has-custom-font="true"
                 :address="ethereumAddress"/>
           </template>
         </Property>

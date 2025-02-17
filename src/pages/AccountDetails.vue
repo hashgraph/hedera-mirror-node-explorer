@@ -98,7 +98,6 @@
           <template #value>
             <EVMAddress
                 :show-id="false"
-                :has-custom-font="true"
                 :address="isInactiveEvmAddress ? accountIdRef : ethereumAddress"/>
           </template>
         </Property>
