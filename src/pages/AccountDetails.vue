@@ -72,12 +72,7 @@
                 Assigned upon activation
               </span>
             <template v-else>
-              <Copyable :content-to-copy="normalizedAccountId ?? ''">
-                <template #content>
-                  <span style="font-weight: bold">{{ normalizedAccountId ?? "" }}</span>
-                </template>
-              </Copyable>
-              <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+              <EntityIDView :id="normalizedAccountId" :checksum="accountChecksum"/>
             </template>
           </template>
         </Property>
@@ -364,7 +359,6 @@ import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import AllowancesSection from "@/components/allowances/AllowancesSection.vue";
-import Copyable from "@/elements/Copyable.vue";
 import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
@@ -394,6 +388,7 @@ import ButtonView from "@/elements/ButtonView.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
+import EntityIDView from "@/components/values/EntityIDView.vue";
 
 const props = defineProps({
   accountId: String,

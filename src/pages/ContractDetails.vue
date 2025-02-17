@@ -57,12 +57,7 @@
             Contract ID
           </template>
           <template #value>
-            <Copyable :content-to-copy="normalizedContractId ?? ''">
-              <template #content>
-                <span>{{ normalizedContractId ?? "" }}</span>
-              </template>
-            </Copyable>
-            <span v-if="accountChecksum">-{{ accountChecksum }}</span>
+            <EntityIDView :id="normalizedContractId" :checksum="accountChecksum"/>
           </template>
         </Property>
         <Property id="evmAddress" full-width>
@@ -263,7 +258,6 @@ import TransactionLink from "@/components/values/TransactionLink.vue";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import ContractByteCodeSection from "@/components/contract/ContractByteCodeSection.vue";
 import ContractResultsSection from "@/components/contract/ContractResultsSection.vue";
-import Copyable from "@/elements/Copyable.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
@@ -278,6 +272,7 @@ import TokensSection from "@/components/token/TokensSection.vue";
 import ContractERCSection from "@/components/contract/ContractERCSection.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
+import EntityIDView from "@/components/values/EntityIDView.vue";
 
 const props = defineProps({
   contractId: String,

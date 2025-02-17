@@ -49,12 +49,7 @@
         <Property id="entityId" full-width>
           <template #name>Token ID</template>
           <template #value>
-            <Copyable :content-to-copy="normalizedTokenId ?? ''">
-              <template #content>
-                <span>{{ normalizedTokenId ?? "" }}</span>
-              </template>
-            </Copyable>
-            <span v-if="tokenChecksum" class="has-text-grey">-{{ tokenChecksum }}</span>
+            <EntityIDView :id="normalizedTokenId" :checksum="tokenChecksum"/>
           </template>
         </Property>
         <Property v-if="ethereumAddress" id="evmAddress" full-width>
@@ -254,7 +249,6 @@ import {makeTokenName, makeTokenSymbol} from "@/schemas/MirrorNodeUtils.ts";
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import ContractResultsSection from "@/components/contract/ContractResultsSection.vue";
-import Copyable from "@/elements/Copyable.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import MetadataSection from "@/components/token/MetadataSection.vue";
@@ -265,6 +259,7 @@ import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4";
 import TokenKeysSection from "@/components/token/TokenKeysSection.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import EntityIDView from "@/components/values/EntityIDView.vue";
 
 const props = defineProps({
   tokenId: {
