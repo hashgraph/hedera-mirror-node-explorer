@@ -135,6 +135,8 @@ export abstract class ChartController<M> {
         if (this.chart !== null) {
             this.chart.destroy()
             this.chart = null
+            // destroy() resets display to "none" => we restore
+            this.canvas.value!.style.display = "block"
         }
         if (this.canvas.value !== null && this.metrics !== null) {
             try {
