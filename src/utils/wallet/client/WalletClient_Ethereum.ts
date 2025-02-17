@@ -306,24 +306,24 @@ export class WalletClient_Ethereum extends WalletClient {
 
 }
 
-function networkToChainId(network: string): string|null {
-    let result: string|null
+export function networkToChainId(network: string, hex: boolean = true): string|null {
+    let result: number|null
     // https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay
     switch(network) {
         case "mainnet":
-            result = "0x127"
+            result = 295
             break
         case "testnet":
-            result = "0x128"
+            result = 296
             break
         case "previewnet":
-            result = "0x129"
+            result = 297
             break
         default:
             result = null
             break
     }
-    return result
+    return result !== null ? result.toString(hex ? 16 : 10) : null
 }
 
 
