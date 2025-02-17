@@ -53,6 +53,18 @@ export class ThemeController {
             : this.coreConfig.productMiniLogoLightURL
     })
 
+    public getTextPrimaryColor(): string {
+        return this.getCssVariable("--text-primary")
+    }
+
+    public getGraphBarColor(): string {
+        return this.getCssVariable("--graphbar-pink")
+    }
+
+    public getCssVariable(name: string): string {
+        return window.getComputedStyle(document.body).getPropertyValue(name)
+    }
+
     public static inject(): ThemeController {
         const defaultFactory = () => {
             const result = new ThemeController(CoreConfig.FALLBACK)
