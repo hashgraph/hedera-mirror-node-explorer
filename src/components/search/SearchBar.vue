@@ -157,7 +157,7 @@ form {
   border-width: 1px;
   border-style: solid;
   border-color: var(--border-primary);
-  padding: 5px;
+  padding: 4px;
   justify-content: flex-end;
 }
 
