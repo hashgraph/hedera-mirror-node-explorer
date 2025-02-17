@@ -61,7 +61,7 @@ import {walletManager} from "@/router.ts";
 import DropdownPanel from "@/components/DropdownPanel.vue";
 import ButtonView from "@/elements/ButtonView.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
-import WalletOptions from "@/components/wallet/WalletOptions.vue";
+import WalletOptions from "@/components/page/header/wallet/WalletOptions.vue";
 
 const accountId = walletManager.accountId
 const walletIconURL = walletManager.walletIconURL
