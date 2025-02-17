@@ -121,7 +121,7 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, ref} from "vue";
-import {routeManager, walletManager} from "@/router.ts";
+import router, {routeManager, walletManager} from "@/router.ts";
 import GroupBoxView from "@/elements/GroupBoxView.vue";
 import ButtonView from "@/elements/ButtonView.vue";
 import LabelView from "@/elements/LabelView.vue";
@@ -187,6 +187,9 @@ const handleReconnect = async () => {
 
 const handleChangeAccount = (accountId: string) => {
   walletManager.selectAccountId(accountId)
+  if (walletManager.accountId.value) {
+    router.push(routeManager.makeRouteToAccount(walletManager.accountId.value))
+  }
 }
 
 </script>
