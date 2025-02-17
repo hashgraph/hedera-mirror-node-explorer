@@ -60,9 +60,8 @@ export class TPSController extends HgraphChartController {
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
-        const graphDataSet = makeGraphDataSet(metrics) as any
-
-        console.log(`makeChart: ${range}`)
+        const graphDataSet = this.makeGraphDataSet(metrics) as any
+        const textPrimaryColor = this.themeController.getTextPrimaryColor()
 
         return  {
             type: 'bar',
@@ -79,7 +78,7 @@ export class TPSController extends HgraphChartController {
                 scales: {
                     x: {
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            color: textPrimaryColor
                         },
                         grid: {
                             display: false
@@ -90,7 +89,7 @@ export class TPSController extends HgraphChartController {
                         ticks: {
                             autoSkip: true,
                             autoSkipPadding: 20,
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            color: textPrimaryColor
                         },
                         grid: {
                             display: false
@@ -102,23 +101,24 @@ export class TPSController extends HgraphChartController {
         }
     }
 
+    //
+    // Private
+    //
 
-}
-
-
-
-function makeGraphDataSet(metrics: EcosystemMetric[]): object {
-    const totals: number[] = []
-    for (const m of metrics) {
-        const range = getTimeRange(m) // milliseconds
-        if (range !== null) {
-            totals.push(Math.round(m.total / (range / 1000)))
+    private makeGraphDataSet(metrics: EcosystemMetric[]): object {
+        const totals: number[] = []
+        for (const m of metrics) {
+            const range = getTimeRange(m) // milliseconds
+            if (range !== null) {
+                totals.push(Math.round(m.total / (range / 1000)))
+            }
         }
-    }
-    return {
-        label: "TPS",
-        data: totals,
-        borderWidth: 1,
-        backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--graphbar-pink')
+        const graphBarColor = this.themeController.getGraphBarColor()
+        return {
+            label: "TPS",
+            data: totals,
+            borderWidth: 1,
+            backgroundColor: graphBarColor
+        }
     }
 }

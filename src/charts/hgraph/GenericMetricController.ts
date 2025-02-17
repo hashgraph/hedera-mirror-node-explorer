@@ -66,6 +66,8 @@ export class GenericMetricController extends HgraphChartController {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
+        const textPrimaryColor = this.themeController.getTextPrimaryColor()
+
         return {
             type: 'bar',
             data: {
@@ -81,7 +83,7 @@ export class GenericMetricController extends HgraphChartController {
                 scales: {
                     x: {
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            color: textPrimaryColor
                         },
                         grid: {
                             display: false
@@ -89,7 +91,7 @@ export class GenericMetricController extends HgraphChartController {
                     },
                     y: {
                         ticks: {
-                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            color: textPrimaryColor
                         },
                         grid: {
                             display: false
@@ -109,11 +111,12 @@ export class GenericMetricController extends HgraphChartController {
 
     protected makeGraphDataSet(metrics: EcosystemMetric[]): object {
         const totals = metrics.map((m: EcosystemMetric) => m.total)
+        const graphBarColor = this.themeController.getGraphBarColor()
         return {
             label: this.chartTitle,
             data: totals,
             borderWidth: 1,
-            backgroundColor: getComputedStyle(document.documentElement).getPropertyValue('--graphbar-pink')
+            backgroundColor: graphBarColor
         }
     }
 
