@@ -112,8 +112,6 @@ const isActive = (tabIndex: number): boolean => {
 
 watch(() => props.tabIds, adjustSelectedTab, {immediate: true})
 
-watch(() => props.isEnabled, (value) => console.log(`isEnabled: ${value}`))
-
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
