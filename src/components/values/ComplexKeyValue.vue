@@ -27,22 +27,22 @@
     <div v-if=" !details && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
       <span>{{ 'Complex Key (' + (maxLevel + 1) + ' levels)' }}</span>
       <router-link v-if="adminKeyRoute" :to="adminKeyRoute">
-        <span class="ml-2 has-text-grey h-is-text-size-3">
+        <span class="ml-2 has-text-grey">
           See details
         </span>
       </router-link>
     </div>
-    <div v-else :style="containerStyle(details ? 30 : 20)" class="h-is-property-text">
+    <div v-else :style="containerStyle(details ? 30 : 20)">
       <template v-for="line in lines" :key="line.seqNb">
         <div :style="lineStyle(line)">
           <template v-if="line.innerKeyBytes() !== null">
             <div v-if="details" :class="lineClass(line)">
               <span class="h-is-extra-text">{{ line.innerKeyType() }}</span>
-              <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
+              <span class="h-is-monospace has-text-grey">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
             </div>
             <div v-else>
               <HexaDumpValue :byte-string="line.innerKeyBytes()"/>
-              <div class="h-is-extra-text h-is-text-size-3">{{ line.innerKeyType() }}</div>
+              <div class="h-is-extra-text">{{ line.innerKeyType() }}</div>
             </div>
           </template>
           <template v-else-if="line.contractId() !== null">
@@ -73,9 +73,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {computed, inject, PropType, ref} from "vue";
 import {ComplexKeyLine} from "@/utils/ComplexKeyLine";
 import {hexToByte} from "@/utils/B64Utils";
 import * as hashgraph from "@hashgraph/proto";
@@ -93,114 +93,95 @@ const lineClasses: Array<string> = [
   "has-circle",
 ]
 
-export default defineComponent({
-  name: "ComplexKeyValue",
-  components: {ContractLink, HexaDumpValue},
-  props: {
-    keyBytes: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    accountId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    details: {
-      type: Boolean,
-      default: false
-    },
-    showNone: {
-      type: Boolean,
-      default: false
-    },
+const props = defineProps({
+  keyBytes: {
+    type: String as PropType<string | null>,
+    default: null
   },
-  setup(props) {
-
-    const key = computed(() => {
-      let result: hashgraph.proto.Key | null
-      if (props.keyBytes) {
-        const keyByteArray = hexToByte(props.keyBytes)
-        try {
-          result = keyByteArray !== null ? hashgraph.proto.Key.decode(keyByteArray) : null
-        } catch (reason) {
-          console.warn("Failed to decode key:" + reason)
-          result = null
-        }
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const lines = computed(() => {
-      return key.value !== null ? ComplexKeyLine.flattenComplexKey(key.value) : []
-    })
-
-    const maxLevel = computed(() => {
-      let result = 0
-      for (const line of lines.value) {
-        result = Math.max(result, line.level)
-      }
-      return result
-    })
-
-    const containerStyle = (offset: number): Record<string, string> => {
-      const n = maxLevel.value + 1
-      return {
-        display: "grid",
-        gridTemplateColumns: "repeat(" + n + ", " + offset + "px) auto repeat(" + n + ", " + offset + "px)",
-        rowGap: "0.50rem"
-      }
-    }
-
-    const lineClass = (line: ComplexKeyLine) => {
-      return lineClasses[line.level % lineClasses.length]
-    }
-
-    const lineStyle = (line: ComplexKeyLine): Record<string, string> => {
-      const n = maxLevel.value + 1
-      const start = line.level + 1
-      const end = start + n + 1
-      return {
-        'grid-column-start': start.toString(),
-        'grid-column-end': end.toString(),
-      }
-    }
-
-    const lineText = (line: ComplexKeyLine): string => {
-      let result: string
-      if (line.key.thresholdKey) {
-        const childCount = line.key.thresholdKey.keys?.keys?.length ?? 0
-        result = "THRESHOLD (" + line.key.thresholdKey.threshold + " of " + childCount + ")"
-      } else if (line.key.keyList) {
-        const childCount = line.key.keyList.keys?.length ?? 0
-        result = "LIST (all of " + childCount + ')'
-      } else {
-        result = line.key.key ?? "?"
-      }
-      return result
-    }
-
-    const adminKeyRoute = computed(() => {
-      return props.accountId ? routeManager.makeRouteToAdminKey(props.accountId) : null
-    })
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-
-    return {
-      key,
-      lines,
-      maxLevel,
-      MAX_INLINE_LEVEL,
-      containerStyle,
-      lineClass,
-      lineStyle,
-      lineText,
-      adminKeyRoute,
-      initialLoading
-    }
-  }
+  accountId: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  details: {
+    type: Boolean,
+    default: false
+  },
+  showNone: {
+    type: Boolean,
+    default: false
+  },
 })
+
+const key = computed(() => {
+  let result: hashgraph.proto.Key | null
+  if (props.keyBytes) {
+    const keyByteArray = hexToByte(props.keyBytes)
+    try {
+      result = keyByteArray !== null ? hashgraph.proto.Key.decode(keyByteArray) : null
+    } catch (reason) {
+      console.warn("Failed to decode key:" + reason)
+      result = null
+    }
+  } else {
+    result = null
+  }
+  return result
+})
+
+const lines = computed(() => {
+  return key.value !== null ? ComplexKeyLine.flattenComplexKey(key.value) : []
+})
+
+const maxLevel = computed(() => {
+  let result = 0
+  for (const line of lines.value) {
+    result = Math.max(result, line.level)
+  }
+  return result
+})
+
+const containerStyle = (offset: number): Record<string, string> => {
+  const n = maxLevel.value + 1
+  return {
+    display: "grid",
+    gridTemplateColumns: "repeat(" + n + ", " + offset + "px) auto repeat(" + n + ", " + offset + "px)",
+    rowGap: "0.50rem"
+  }
+}
+
+const lineClass = (line: ComplexKeyLine) => {
+  return lineClasses[line.level % lineClasses.length]
+}
+
+const lineStyle = (line: ComplexKeyLine): Record<string, string> => {
+  const n = maxLevel.value + 1
+  const start = line.level + 1
+  const end = start + n + 1
+  return {
+    'grid-column-start': start.toString(),
+    'grid-column-end': end.toString(),
+  }
+}
+
+const lineText = (line: ComplexKeyLine): string => {
+  let result: string
+  if (line.key.thresholdKey) {
+    const childCount = line.key.thresholdKey.keys?.keys?.length ?? 0
+    result = "THRESHOLD (" + line.key.thresholdKey.threshold + " of " + childCount + ")"
+  } else if (line.key.keyList) {
+    const childCount = line.key.keyList.keys?.length ?? 0
+    result = "LIST (all of " + childCount + ')'
+  } else {
+    result = line.key.key ?? "?"
+  }
+  return result
+}
+
+const adminKeyRoute = computed(() => {
+  return props.accountId ? routeManager.makeRouteToAdminKey(props.accountId) : null
+})
+
+const initialLoading = inject(initialLoadingKey, ref(false))
 
 </script>
 
@@ -209,6 +190,7 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
 .has-bullet:before {
   content: "\2022\202F";
   font-weight: lighter;
@@ -232,4 +214,5 @@ export default defineComponent({
   font-weight: lighter;
   color: grey;
 }
+
 </style>
