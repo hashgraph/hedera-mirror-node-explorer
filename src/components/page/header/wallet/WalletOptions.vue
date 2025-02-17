@@ -93,9 +93,9 @@
     <div class="wallet-options-footer">
       <template v-if="accountId">
         <ButtonView @action="handleDisconnect">DISCONNECT WALLET</ButtonView>
-<!--        <template v-if="accountCount >= 2">-->
-<!--          <ButtonView @action="handleChangeAccount">CHANGE ACCOUNT</ButtonView>-->
-<!--        </template>-->
+        <AccountSelector :account-ids="accountIds"
+                         :model-value="accountId"
+                         @update:model-value="handleChangeAccount"/>
       </template>
       <template v-else>
         <ButtonView @action="handleReconnect">RECONNECT WALLET</ButtonView>
@@ -135,6 +135,7 @@ import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
 import ApproveAllowanceDialog from "@/dialogs/allowance/ApproveAllowanceDialog.vue";
 import {CheckCheck, UserRoundPen} from 'lucide-vue-next';
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import AccountSelector from "@/components/page/header/wallet/AccountSelector.vue";
 
 const showWalletOptions = defineModel("showWalletOptions", {
   type: Boolean,
@@ -159,7 +160,7 @@ const accountRoute = computed(() => {
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? undefined)
 const accountId = computed(() => walletManager.accountId.value ?? "No account ID")
 const accountChecksum = accountLocParser.accountChecksum ?? ""
-// const accountCount = computed(() => walletManager.accountIds.value.length)
+const accountIds = walletManager.accountIds
 const accountEthereumAddress = accountLocParser.ethereumAddress
 const tbarBalance = balanceAnalyzer.hbarBalance
 const currentNetwork = routeManager.currentNetwork
@@ -183,10 +184,10 @@ const handleReconnect = async () => {
   await walletManager.disconnect()
   await walletManager.connect(walletUUID)
 }
-//
-// const handleChangeAccount = () => {
-//   showWalletOptions.value = false
-// }
+
+const handleChangeAccount = (accountId: string) => {
+  walletManager.selectAccountId(accountId)
+}
 
 </script>
 
@@ -239,6 +240,7 @@ div.operation:hover {
 
 div.wallet-options-footer {
   align-items: center;
+  justify-content: space-between;
   column-gap: 8px;
   display: flex;
   flex-direction: row-reverse;
