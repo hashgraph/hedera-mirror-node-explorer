@@ -54,13 +54,13 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="name" label="NAME">
-      <div class="w400">
+      <div class="w250">
         {{ props.row.name }}
       </div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="symbol" label="SYMBOL">
-      <div class="w400">
+      <div class="w250">
         {{ props.row.symbol }}
       </div>
     </o-table-column>
