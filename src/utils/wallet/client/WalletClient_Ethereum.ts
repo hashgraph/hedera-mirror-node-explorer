@@ -140,8 +140,12 @@ export class WalletClient_Ethereum extends WalletClient {
         const tokenAddress = EntityID.parse(targetId)?.toAddress() ?? null
         if (accountAddress !== null && tokenAddress !== null) {
             // 1) Checks current chain and tries to setup if needed
-            if (!await this.isChainOK()) {
-                await this.trySetupChain()
+            try {
+                if (!await this.isChainOK()) {
+                    await this.trySetupChain()
+                }
+            } catch(error) {
+                // Let's go forward and try the remaining steps… :/
             }
             // 1.1) Estimate gas
             try {
