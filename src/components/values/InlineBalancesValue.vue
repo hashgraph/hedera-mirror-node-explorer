@@ -43,7 +43,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, PropType, ref} from 'vue';
+import {PropType, ref} from 'vue';
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
 
@@ -54,30 +54,28 @@ const props = defineProps({
   }
 })
 
-const isSmallScreen = inject('isSmallScreen', true)
-
 const accountId = props.balanceAnalyzer.accountId ?? ref(null)
 
-const elapsed = computed(() => {
-  let result: string | null
-  const duration = props.balanceAnalyzer.balanceAge.value
-  if (duration !== null) {
-    if (duration.years > 0) {
-      result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
-    } else if (duration.days > 0) {
-      result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
-    } else if (duration.hours > 0) {
-      result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"
-    } else if (duration.minutes > 0) {
-      result = duration.minutes + " min ago"
-    } else {
-      result = null
-    }
-  } else {
-    result = null
-  }
-  return result
-})
+// const elapsed = computed(() => {
+//   let result: string | null
+//   const duration = props.balanceAnalyzer.balanceAge.value
+//   if (duration !== null) {
+//     if (duration.years > 0) {
+//       result = "> " + (duration.years > 1 ? duration.years + " years" : "1 year") + " ago"
+//     } else if (duration.days > 0) {
+//       result = "> " + (duration.days > 1 ? duration.days + " days" : "1 day") + " ago"
+//     } else if (duration.hours > 0) {
+//       result = "> " + (duration.hours > 1 ? duration.hours + " hours" : "1 hour") + " ago"
+//     } else if (duration.minutes > 0) {
+//       result = duration.minutes + " min ago"
+//     } else {
+//       result = null
+//     }
+//   } else {
+//     result = null
+//   }
+//   return result
+// })
 
 const hbarBalance = props.balanceAnalyzer.hbarBalance
 

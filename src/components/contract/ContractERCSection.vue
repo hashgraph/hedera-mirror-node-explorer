@@ -78,7 +78,7 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchHandle} from 'vue';
+import {computed, onBeforeUnmount, onMounted, PropType, watch, WatchHandle} from 'vue';
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
@@ -86,7 +86,6 @@ import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import {formatUnits} from "ethers";
 import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import {MEDIUM_BREAKPOINT} from "@/BreakPoints.ts";
 
 const props = defineProps({
   contractId: {
@@ -106,15 +105,6 @@ const isErc721 = defineModel(
       required: true
     }
 )
-
-const windowWidth = ref(window.screen.width)
-const isMediumScreen = computed(() => {
-  return windowWidth.value >= MEDIUM_BREAKPOINT
-})
-
-const antiMediumScreen = computed(() => {
-  return !isMediumScreen.value
-})
 
 const contractId = computed(() => props.contractId ?? null)
 const ercName = computed(() => erc20.value?.name ?? erc721.value?.name)

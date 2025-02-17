@@ -31,9 +31,9 @@
     </template>
   </Copyable>
 
-  <template v-else-if="showNone && !initialLoading" class="has-text-grey">
-    <div>None</div>
-    <div v-if="noneExtra">{{ noneExtra }}</div>
+  <template v-else-if="showNone && !initialLoading" >
+    <div class="has-text-grey">None</div>
+    <div v-if="noneExtra" class="has-text-grey">{{ noneExtra }}</div>
   </template>
 
   <template v-else/>

@@ -33,10 +33,10 @@
       <AccountLink v-else-if="account" :account-id="displayAddress"/>
       <p v-else>{{ displayAddress }}</p>
     </div>
-    <template v-if="contract || account" class="has-text-grey">
+    <template v-if="contract || account">
       <p>//</p>
-      <ContractLink v-if="contract" :contract-id="contract.contract_id"/>
-      <AccountLink v-else-if="account" :account-id="account.account"/>
+      <ContractLink v-if="contract" :contract-id="contract.contract_id" class="has-text-grey"/>
+      <AccountLink v-else-if="account" :account-id="account.account" class="has-text-grey"/>
       <p v-else/>
     </template>
   </div>

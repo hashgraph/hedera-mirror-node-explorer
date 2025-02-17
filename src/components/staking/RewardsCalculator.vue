@@ -135,18 +135,6 @@ const currentReward = computed(() => rewardRate.value && amountStaked.value ? Ma
 const monthlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 30 * 100) / 100 : 0)
 const yearlyReward = computed(() => currentReward.value ? Math.round(currentReward.value * 365 * 10) / 10 : 0)
 
-const handleInput = (event: Event) => {
-  const previousAmount = amountStaked.value
-  const value = (event.target as HTMLInputElement).value
-  const newAmount = Number(value)
-  if (!Number.isNaN(newAmount) && newAmount >= 0 && newAmount <= 50000000000) {
-    amountStaked.value = newAmount
-  } else {
-    amountStaked.value = -1
-    amountStaked.value = previousAmount
-  }
-}
-
 const annualizedRate = nodeAnalyzer.annualizedRate
 const nodes = nodeAnalyzer.networkAnalyzer.nodes
 
