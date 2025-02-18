@@ -81,7 +81,7 @@
             />
           </template>
         </Property>
-        <Property id="gasUsed">
+        <Property id="gasUsed" :tooltip="gasUsedTooltip">
           <template v-slot:name>Gas Used</template>
           <template v-slot:value>
             <GasAmount
@@ -90,7 +90,7 @@
             />
           </template>
         </Property>
-        <Property id="gasConsumed">
+        <Property id="gasConsumed" :tooltip="gasConsumedTooltip">
           <template v-slot:name>Gas Consumed</template>
           <template v-slot:value>
             <GasAmount
@@ -196,6 +196,9 @@ const props = defineProps({
     default: TransactionType.ETHEREUMTRANSACTION
   }
 })
+
+const gasUsedTooltip = "This represents the actual amount of gas (i.e. the real computational effort) required to execute the smart contract."
+const gasConsumedTooltip = "This represents the amount of gas that is actually deducted from the user's balance (i.e it may include additional factors like base fees or refunds, etc…)."
 
 const isXLargeScreen = inject('isXLargeScreen', true)
 
