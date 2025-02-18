@@ -20,10 +20,7 @@
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
-import {
-    AccountTextFieldController,
-    AccountTextFieldState
-} from "@/dialogs/common/AccountTextFieldController.ts";
+import {AccountTextFieldController, AccountTextFieldState} from "@/dialogs/common/AccountTextFieldController.ts";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts"
 import {walletManager} from "@/router.ts";
@@ -66,7 +63,6 @@ export class UpdateAccountController extends TransactionController {
 
     private readonly networkAnalyzer = new NetworkAnalyzer()
     public readonly nodes = this.networkAnalyzer.nodes
-    public readonly hasCommunityNodes = this.networkAnalyzer.hasCommunityNode
 
     private readonly accountId = computed(() => walletManager.accountId.value)
     private readonly accountLookup = AccountByIdCache.instance.makeLookup(this.accountId)

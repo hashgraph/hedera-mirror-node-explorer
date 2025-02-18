@@ -270,7 +270,6 @@ const stakedAccountIdInputText = controller.stakedAccountIdInputText
 const feedbackMessage = controller.feedbackMessage
 
 const nodes = controller.nodes
-const hasCommunityNodes = controller.hasCommunityNodes
 
 const enableStaking = routeManager.enableStaking
 
