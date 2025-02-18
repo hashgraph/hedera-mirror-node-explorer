@@ -35,13 +35,6 @@
         @cell-click="handleClick"
     >
 
-      <o-table-column v-slot="props" field="nature" label="">
-        <span class="icon has-text-info regular-node-column" style="font-size: 16px">
-          <i v-if="isCouncilNode(props.row)" class="fas fa-building"></i>
-          <i v-else class="fas fa-users"></i>
-        </span>
-      </o-table-column>
-
       <o-table-column v-slot="props" field="node_id" label="Node">
         <div class="is-numeric regular-node-column">
           {{ props.row.node_id }}
@@ -150,7 +143,6 @@ import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
 import {
-  isCouncilNode,
   makeAnnualizedRate,
   makeNodeDescriptionPrefix,
   makeNodeOwnerDescription,
@@ -207,7 +199,6 @@ export default defineComponent({
       isMediumScreen,
       enableStaking,
       networkAnalyzer,
-      isCouncilNode,
       makeNodeDescriptionPrefix,
       makeNodeOwnerDescription,
       makeWeightPercentage,

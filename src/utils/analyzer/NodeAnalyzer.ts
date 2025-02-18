@@ -22,7 +22,6 @@ import {computed, ComputedRef, Ref} from "vue";
 import {makeShortNodeDescription, NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {
-    isCouncilNode,
     makeAnnualizedRate,
     makeNodeDescription,
     makeRewardRate,
@@ -78,10 +77,6 @@ export class NodeAnalyzer {
     public certificateHash = computed(() => {
         const hash = this.node.value?.node_cert_hash ?? null
         return hash != undefined ? byteToHex(base64DecToArr(hash)) : ""
-    })
-
-    public isCouncilNode: ComputedRef<boolean> = computed(() => {
-        return this.node.value != null ? isCouncilNode(this.node.value) : true
     })
 
     public readonly nodeDescription: ComputedRef<string | null> = computed(

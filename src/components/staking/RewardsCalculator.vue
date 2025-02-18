@@ -36,21 +36,12 @@
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
-                <optgroup label="Hedera council nodes">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
-                          v-show="isCouncilNode(n)">
-                    {{ makeNodeSelectorDescription(n) }}
-                  </option>
-                </optgroup>
-                <optgroup v-if="hasCommunityNode" label="Community nodes">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
-                          v-show="!isCouncilNode(n)">
-                    {{ makeNodeSelectorDescription(n) }}
-                  </option>
-                </optgroup>
+              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
+                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                        style="background-color: var(--h-theme-box-background-color)"
+                >
+                  {{ makeNodeSelectorDescription(n) }}
+                </option>
               </o-select>
             </o-field>
           </div>
@@ -96,7 +87,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {isCouncilNode, makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
+import {makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
@@ -132,16 +123,6 @@ export default defineComponent({
     onMounted(() => nodeAnalyzer.mount())
     onBeforeUnmount(() => nodeAnalyzer.unmount())
 
-    const nodeIcon = computed(() => {
-      let result
-      if (selectedNodeId.value !== null) {
-        result = nodeAnalyzer.isCouncilNode.value ? "building" : "users"
-      } else {
-        result = ""
-      }
-      return result
-    })
-
     const amountStaked = ref<number>(100)
     const updateAmountStaked = () => {
       amountStaked.value = props.amountInHbar ?? 100
@@ -173,7 +154,6 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       selectedNodeId,
-      nodeIcon,
       amountStaked,
       rewardRate,
       currentReward,
@@ -181,10 +161,8 @@ export default defineComponent({
       yearlyReward,
       annualizedRate: nodeAnalyzer.annualizedRate,
       nodes: nodeAnalyzer.networkAnalyzer.nodes,
-      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeDescription,
       makeNodeSelectorDescription,
-      isCouncilNode,
       handleInput
     }
   }

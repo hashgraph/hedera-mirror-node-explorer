@@ -168,22 +168,11 @@
                     style=" height: 38px; border-radius: 2px; border-width: 1px; border-color: grey;
                     background-color: var(--h-theme-page-background-color);"
           >
-            <optgroup label="Hedera council nodes">
-              <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-page-background-color)"
-                      v-show="isCouncilNode(n)"
-              >
-                {{ makeNodeSelectorDescription(n) }}
-              </option>
-            </optgroup>
-            <optgroup v-if="networkAnalyzer.hasCommunityNode.value" label="Community nodes">
-              <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-page-background-color)"
-                      v-show="!isCouncilNode(n)"
-              >
-                {{ makeNodeSelectorDescription(n) }}
-              </option>
-            </optgroup>
+            <option v-for="n in networkAnalyzer.nodes.value" :key="n.node_id" :value="n.node_id"
+                    style="background-color: var(--h-theme-page-background-color)"
+            >
+              {{ makeNodeSelectorDescription(n) }}
+            </option>
           </o-select>
 
         </template>
@@ -295,7 +284,7 @@
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref, watch, WatchStopHandle} from "vue";
 import {DialogController, DialogMode} from "@/components/dialog/DialogController";
-import {extractChecksum, isCouncilNode, stripChecksum, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
+import {extractChecksum, stripChecksum, waitForTransactionRefresh} from "@/schemas/MirrorNodeUtils.ts";
 import {TransactionID} from "@/utils/TransactionID";
 import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
 import {AccountInfo, makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
