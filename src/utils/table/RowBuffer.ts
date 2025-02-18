@@ -256,106 +256,91 @@ export class RowBuffer<R, K> {
     // Private (xxxLoad)
     //
 
-    private headLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
-        let result: Promise<R[] | null>
+    private async headLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
+        let result: R[]|null
 
         if (rowCount >= 1) {
-
-            const cb = (r: R[] | null): Promise<R[] | null> => {
-                let result: Promise<R[] | null>
-                if (r !== null) {
-                    current = r.reverse().concat(current)
-                    if (r.length < limitedCount) {
-                        result = Promise.resolve(current)
-                    } else {
-                        const headKey = this.tableController.keyFor(r[0])
-                        result = this.headLoad(headKey, remainingCount, current)
-                    }
-                } else {
-                    result = Promise.resolve(current)
-                }
-                return result
-            }
 
             const limitedCount = Math.min(this.tableController.maxLimit, rowCount)
             const remainingCount = rowCount - limitedCount
-            result = this.tableController.load(key, KeyOperator.gt, SortOrder.ASC, limitedCount).then(cb)
+            const r = await this.tableController.load(key, KeyOperator.gt, SortOrder.ASC, limitedCount)
+            if (r !== null) {
+                current = r.reverse().concat(current)
+                if (r.length < limitedCount) {
+                    result = current
+                } else {
+                    const headKey = this.tableController.keyFor(r[0])
+                    result = await this.headLoad(headKey, remainingCount, current)
+                }
+            } else {
+                result = current
+            }
 
         } else {
 
-            result = Promise.resolve(current)
+            result = current
 
         }
 
-        return result
+        return Promise.resolve(result)
     }
 
-    private tailLoad(key: K | null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
-        let result: Promise<R[] | null>
+    private async tailLoad(key: K | null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
+        let result: R[]|null
 
         if (rowCount >= 1) {
-
-            const cb = (r: R[] | null): Promise<R[] | null> => {
-                let result: Promise<R[] | null>
-                if (r !== null) {
-                    current = current.concat(r)
-                    if (r.length < limitedCount) {
-                        result = Promise.resolve(current)
-                    } else {
-                        const tailRow = r[r.length - 1]
-                        const tailKey = this.tableController.keyFor(tailRow)
-                        result = this.tailLoad(tailKey, remainingCount, false, current)
-                    }
-                } else {
-                    result = Promise.resolve(null)
-                }
-                return result
-            }
 
             const limitedCount = Math.min(this.tableController.maxLimit, rowCount)
             const remainingCount = rowCount - limitedCount
             const operator = lte ? KeyOperator.lte : KeyOperator.lt
-            result = this.tableController.load(key, operator, SortOrder.DESC, limitedCount).then(cb)
+            const r = await this.tableController.load(key, operator, SortOrder.DESC, limitedCount)
+            if (r !== null) {
+                current = current.concat(r)
+                if (r.length < limitedCount) {
+                    result = current
+                } else {
+                    const tailRow = r[r.length - 1]
+                    const tailKey = this.tableController.keyFor(tailRow)
+                    result = await this.tailLoad(tailKey, remainingCount, false, current)
+                }
+            } else {
+                result = null
+            }
 
         } else {
-            result = Promise.resolve(current)
+            result = current
         }
 
-        return result
+        return Promise.resolve(result)
     }
 
-    private lastLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
-        let result: Promise<R[] | null>
+    private async lastLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
+        let result: R[]|null
 
         if (rowCount >= 1) {
 
-            const cb = (r: R[] | null): Promise<R[] | null> => {
-                let result: Promise<R[] | null>
-                if (r !== null) {
-                    current = this.concatOrReplace(r, current)
-                    if (r.length < limitedCount) {
-                        result = Promise.resolve(current)
-                    } else {
-                        const key = this.tableController.keyFor(r[0])
-                        result = this.headLoad(key, remainingCount, current)
-                    }
-                } else {
-                    result = Promise.resolve(current)
-                }
-                return result
-            }
-
             const limitedCount = Math.min(this.tableController.maxLimit, rowCount)
             const remainingCount = rowCount - limitedCount
-            result = this.tableController.load(key, KeyOperator.gte, SortOrder.DESC, limitedCount).then(cb)
+            const r = await this.tableController.load(key, KeyOperator.gte, SortOrder.DESC, limitedCount)
+            if (r !== null) {
+                current = this.concatOrReplace(r, current)
+                if (r.length < limitedCount) {
+                    result = current
+                } else {
+                    const key = this.tableController.keyFor(r[0])
+                    result = await this.headLoad(key, remainingCount, current)
+                }
+            } else {
+                result = current
+            }
 
         } else {
 
-            result = Promise.resolve(current)
+            result = current
 
         }
 
-        return result
+        return Promise.resolve(result)
     }
 
     private concatOrReplace(newRows: R[], currentRows: R[]): R[] {
