@@ -35,10 +35,6 @@
         @cell-click="handleClick"
     >
 
-      <o-table-column  field="nature" label="">
-        <img style="padding-top: 6px;" alt="Node icon" src="@/assets/ticket.svg">
-      </o-table-column>
-
       <o-table-column v-slot="props" field="node_id" label="NODE ID">
         <div class="regular-node-column node_id">
           {{ props.row.node_id }}
