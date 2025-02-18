@@ -36,7 +36,7 @@
             <p v-if="isMediumScreen" class="h-is-property-text mb-3">Choose a node to stake to</p>
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
-              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
+              <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px">
                 <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                         style="background-color: var(--h-theme-box-background-color)"
                 >
@@ -123,16 +123,6 @@ export default defineComponent({
     onMounted(() => nodeAnalyzer.mount())
     onBeforeUnmount(() => nodeAnalyzer.unmount())
 
-    const nodeIcon = computed(() => {
-      let result
-      if (selectedNodeId.value !== null) {
-        result = nodeAnalyzer.isCouncilNode.value ? "building" : "users"
-      } else {
-        result = ""
-      }
-      return result
-    })
-
     const amountStaked = ref<number>(100)
     const updateAmountStaked = () => {
       amountStaked.value = props.amountInHbar ?? 100
@@ -164,7 +154,6 @@ export default defineComponent({
       isMediumScreen,
       isTouchDevice,
       selectedNodeId,
-      nodeIcon,
       amountStaked,
       rewardRate,
       currentReward,

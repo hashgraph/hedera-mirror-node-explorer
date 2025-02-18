@@ -63,7 +63,6 @@
           <template v-slot:value>
             <span v-if="account?.staked_node_id !== null" class="icon is-small has-text-info mr-2"
                   style="font-size: 16px">
-              <i v-if="currentStakedNodeIcon" :class="currentStakedNodeIcon"></i>
             </span>
             <StringValue v-if="account" :string-value="currentlyStakedTo"/>
           </template>
@@ -87,7 +86,7 @@
                 <o-field>
                   <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
                             class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'"
-                            :icon="selectedNodeIcon">
+                  >
                     <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                             style="background-color: var(--h-theme-box-background-color)"
                     >
@@ -226,18 +225,6 @@ export default defineComponent({
     onMounted(() => nodeAnalyzer.mount())
     onBeforeUnmount(() => nodeAnalyzer.unmount())
 
-    const currentStakedNodeIcon = computed(() => {
-      let result: string | null
-      if (props.account?.staked_node_id !== null) {
-        result = nodeAnalyzer.isCouncilNode.value
-            ? "fas fa-building"
-            : "fas fa-users"
-      } else {
-        result = null
-      }
-      return result
-    })
-
     const stakeChoice = ref("node")
     const isNodeSelected = computed(() => stakeChoice.value === 'node')
     const isAccountSelected = computed(() => stakeChoice.value === 'account')
@@ -268,17 +255,6 @@ export default defineComponent({
     })
 
     const selectedNode = ref<number | null>(null)
-
-    const selectedNodeIcon = computed(() => {
-      let result
-      if (selectedNode.value !== null) {
-        const nodes = nodeAnalyzer.networkAnalyzer.nodes
-        result = isCouncilNode(nodes.value[selectedNode.value]) ? "building" : "users"
-      } else {
-        result = ""
-      }
-      return result
-    })
 
     const selectedNodeDescription = computed(() => {
       const nodes = nodeAnalyzer.networkAnalyzer.nodes
@@ -406,7 +382,6 @@ export default defineComponent({
       accountId,
       showConfirmDialog,
       confirmMessage,
-      currentStakedNodeIcon,
       stakeChoice,
       isNodeSelected,
       isAccountSelected,
@@ -414,7 +389,6 @@ export default defineComponent({
       inputFeedbackMessage,
       selectedAccount,
       selectedNode,
-      selectedNodeIcon,
       selectedNodeDescription,
       declineChoice,
       enableChangeButton,

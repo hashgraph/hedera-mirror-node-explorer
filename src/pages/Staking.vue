@@ -94,10 +94,6 @@
                                       title="Staked to">
                   <template v-slot:value>
                     <div class="is-inline-block">
-                    <span v-if="isStakedToNode" class="icon has-text-info mr-2" style="font-size: 20px">
-                      <i v-if="isCouncilNode" class="fas fa-building"></i>
-                      <i v-else class="fas fa-users"></i>
-                    </span>
                       <span v-if="stakedTo">{{ stakedTo }}</span>
                       <span v-else class="has-text-grey">None</span>
                     </div>

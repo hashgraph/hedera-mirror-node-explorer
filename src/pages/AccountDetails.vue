@@ -155,9 +155,6 @@
               </div>
               <div v-else-if="stakedNodeRoute">
                 <router-link :to="stakedNodeRoute">
-                <span class="icon is-small has-text-info mr-1">
-                  <i :class="stakedNodeIcon"></i>
-                </span>
                   Node {{ account?.staked_node_id }} - {{ stakedNodeDescription }}
                 </router-link>
               </div>
@@ -464,16 +461,6 @@ const showContractVisible = computed(() => {
 const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
 onMounted(() => stakedNodeAnalyzer.mount())
 onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
-
-const stakedNodeIcon = computed(() => {
-  let result
-  if (accountLocParser.stakedNodeId.value !== null) {
-    result = stakedNodeAnalyzer.isCouncilNode.value ? "fas fa-building" : "fas fa-users"
-  } else {
-    result = ""
-  }
-  return result
-})
 
 const contractRoute = computed(() => {
   const accountId = accountLocParser.accountId.value
