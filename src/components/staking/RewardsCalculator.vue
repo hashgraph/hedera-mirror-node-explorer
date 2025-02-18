@@ -87,7 +87,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import DashboardCard from "@/components/DashboardCard.vue";
 import {makeNodeSelectorDescription} from "@/schemas/MirrorNodeSchemas";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {isCouncilNode, makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
+import {makeNodeDescription} from "@/schemas/MirrorNodeUtils.ts";
 import {CoreConfig} from "@/config/CoreConfig";
 
 export default defineComponent({
@@ -163,7 +163,6 @@ export default defineComponent({
       nodes: nodeAnalyzer.networkAnalyzer.nodes,
       makeNodeDescription,
       makeNodeSelectorDescription,
-      isCouncilNode,
       handleInput
     }
   }

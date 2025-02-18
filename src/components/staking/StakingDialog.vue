@@ -179,7 +179,7 @@ import ConfirmDialog from "@/components/ConfirmDialog.vue";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {routeManager} from "@/router";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
-import {extractChecksum, isCouncilNode, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
+import {extractChecksum, makeDefaultNodeDescription, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
 const VALID_ACCOUNT_MESSAGE = "Rewards will now be paid to that account"
 const UNKNOWN_ACCOUNT_MESSAGE = "This account does not exist"
@@ -398,7 +398,6 @@ export default defineComponent({
       handleCancelChange,
       handleConfirmChange,
       makeNodeDescription,
-      isCouncilNode,
       makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }

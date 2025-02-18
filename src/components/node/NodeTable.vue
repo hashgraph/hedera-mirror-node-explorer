@@ -143,7 +143,6 @@ import StakeRange from "@/components/node/StakeRange.vue";
 import {routeManager} from "@/router";
 import StringValue from "@/components/values/StringValue.vue";
 import {
-  isCouncilNode,
   makeAnnualizedRate,
   makeNodeDescriptionPrefix,
   makeNodeOwnerDescription,
@@ -200,7 +199,6 @@ export default defineComponent({
       isMediumScreen,
       enableStaking,
       networkAnalyzer,
-      isCouncilNode,
       makeNodeDescriptionPrefix,
       makeNodeOwnerDescription,
       makeWeightPercentage,

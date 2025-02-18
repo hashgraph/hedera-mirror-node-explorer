@@ -488,7 +488,6 @@ export default defineComponent({
       isStakedToAccount,
       stakedTo,
       stakedNode: stakedNodeAnalyzer.node,
-      isCouncilNode: stakedNodeAnalyzer.isCouncilNode,
       balanceInHbar,
       stakedAmount,
       pendingReward,

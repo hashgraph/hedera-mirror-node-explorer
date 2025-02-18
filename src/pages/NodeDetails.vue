@@ -304,7 +304,6 @@ export default defineComponent({
       stakeUnrewarded: nodeAnalyzer.stakeUnrewarded,
       stakeUnrewardedPercentage,
       notification,
-      isCouncilNode: nodeAnalyzer.isCouncilNode,
       nodeDescription: nodeAnalyzer.nodeDescription,
       formattedHash: nodeAnalyzer.certificateHash,
       makeFloorHbarAmount
