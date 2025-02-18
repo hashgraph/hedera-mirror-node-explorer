@@ -34,7 +34,7 @@ describe('Node Navigation', () => {
             .should('have.length', 7)
             .eq(0)
             .find('td')
-            .eq(1)
+            .eq(0)
             .click()
             .then(($id) => {
                 // cy.log('Selected node Id: ' + $id.text())
