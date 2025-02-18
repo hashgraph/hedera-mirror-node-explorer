@@ -168,22 +168,11 @@
               <template #cellTitle>Staked Node ID</template>
               <template #cellContent>
                 <SelectView v-model="newStakedNodeId" style="width: 100%">
-                  <optgroup label="Hedera council nodes">
-                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                            style="background-color: var(--h-theme-page-background-color)"
-                            v-show="isCouncilNode(n)"
-                    >
-                      {{ makeNodeSelectorDescription(n) }}
-                    </option>
-                  </optgroup>
-                  <optgroup v-if="hasCommunityNodes" label="Community nodes">
-                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                            style="background-color: var(--h-theme-page-background-color)"
-                            v-show="!isCouncilNode(n)"
-                    >
-                      {{ makeNodeSelectorDescription(n) }}
-                    </option>
-                  </optgroup>
+                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                          style="background-color: var(--h-theme-page-background-color)"
+                  >
+                    {{ makeNodeSelectorDescription(n) }}
+                  </option>
                 </SelectView>
               </template>
             </ContentCell>
@@ -250,7 +239,6 @@ import RabioBoxView from "@/elements/RabioBoxView.vue";
 import {routeManager} from "@/router.ts";
 import StackView from "@/elements/StackView.vue";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
-import {isCouncilNode} from "@/schemas/MirrorNodeUtils.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
