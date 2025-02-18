@@ -107,15 +107,6 @@ export class NetworkAnalyzer {
         return result
     })
 
-    public readonly hasCommunityNode: ComputedRef<boolean> = computed(() => {
-        for (const n of this.nodes.value) {
-            if (!isCouncilNode(n)) {
-                return true
-            }
-        }
-        return false
-    })
-
     public readonly durationMin
         = computed(() => this.stakingPeriod.value?.durationMin ?? null)
     public readonly elapsedMin

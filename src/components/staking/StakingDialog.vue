@@ -399,7 +399,6 @@ export default defineComponent({
       handleConfirmChange,
       makeNodeDescription,
       isCouncilNode,
-      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeSelectorDescription: makeNodeSelectorDescription,
       handleInput
     }

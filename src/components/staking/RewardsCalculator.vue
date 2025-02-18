@@ -161,7 +161,6 @@ export default defineComponent({
       yearlyReward,
       annualizedRate: nodeAnalyzer.annualizedRate,
       nodes: nodeAnalyzer.networkAnalyzer.nodes,
-      hasCommunityNode: nodeAnalyzer.networkAnalyzer.hasCommunityNode,
       makeNodeDescription,
       makeNodeSelectorDescription,
       isCouncilNode,
