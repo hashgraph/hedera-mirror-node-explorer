@@ -31,11 +31,6 @@
         {{ `Node ${nodeIdNb}` }}
       </template>
 
-      <!--        <template #subtitle>-->
-      <!--          <div v-if="isCouncilNode">Hedera Council Node</div>-->
-      <!--          <div v-else>Community Node</div>-->
-      <!--        </template>-->
-
       <template v-if="notification" #content>
         <NotificationBanner :message="notification"/>
       </template>
