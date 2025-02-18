@@ -20,7 +20,6 @@
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {StakingPeriod} from "@/utils/StakingPeriod";
-import {isCouncilNode} from "@/schemas/MirrorNodeUtils.ts";
 import {NetworkCache} from "@/utils/cache/NetworkCache";
 
 
@@ -95,11 +94,9 @@ export class NetworkAnalyzer {
         let result = 0
         let nbNodes = 0
         for (const n of this.nodes.value) {
-            if (isCouncilNode(n)) {
-                const thisMax = Math.max(n.max_stake ?? 0, (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))
-                result += thisMax
-                nbNodes++
-            }
+            const thisMax = Math.max(n.max_stake ?? 0, (n.stake_rewarded ?? 0) + (n.stake_not_rewarded ?? 0))
+            result += thisMax
+            nbNodes++
         }
         if (nbNodes) {
             result = result / nbNodes * 1.3
