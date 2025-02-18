@@ -36,6 +36,8 @@
                        :account-id="accountId"
                        v-on:staking-changed="stakingChanged"/>
 
+    <NotificationBanner v-if="temporaryBanner" :message="temporaryBanner" :is-error="false"/>
+
     <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
       <template #title>
         <span>My Staking </span>
@@ -142,10 +144,13 @@ import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 import RecentRewardsSection from "@/components/staking/RecentRewardsSection.vue";
 import ButtonView from "@/elements/ButtonView.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
 defineProps({
   network: String
 })
+
+const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 
 const cryptoName = CoreConfig.inject().cryptoName
 const networkConfig = NetworkConfig.inject()

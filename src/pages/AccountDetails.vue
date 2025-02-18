@@ -139,7 +139,7 @@
             <span v-else>None</span>
           </template>
         </EditableProperty>
-        <Property v-if="enableStaking" id="pendingReward">
+        <Property v-if="enableStaking" id="pendingReward" :tooltip="rewardIssueWarning">
           <template #name>Pending Reward</template>
           <template #value>
             <HbarAmount :amount="account?.pending_reward" :show-extra="true" timestamp="0"/>
@@ -394,6 +394,8 @@ const props = defineProps({
   accountId: String,
   network: String,
 })
+
+const rewardIssueWarning = 'Pending staking reward calculation may temporarily be inaccurate. See more details at: https://status.hedera.com'
 
 const isMediumScreen = inject('isMediumScreen', true)
 const networkConfig = NetworkConfig.inject()
