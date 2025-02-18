@@ -332,8 +332,10 @@ export abstract class TableController<R, K> implements PlayPauseController {
         await this.bufferDidChange()
         if (this.refreshCountRef.value < this.maxAutoUpdateCount) {
             this.timeoutID = window.setTimeout(() => {
-                this.refreshCountRef.value += 1
-                this.refreshBuffer().catch(this.errorHandler)
+                if (this.autoRefresh.value) {
+                    this.refreshCountRef.value += 1
+                    this.refreshBuffer().catch(this.errorHandler)
+                }
             }, this.updatePeriod)
         } else {
             this.stopAutoRefresh()
