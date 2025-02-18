@@ -523,8 +523,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({p: "1", k: "49"})
-        expect(tc.getAbortedRefreshCounter()).toBe(1)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(1)
 
         // Unmount
         tc.unmount()
@@ -534,8 +533,7 @@ describe("TableController.ts", () => {
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({p: "1", k: "49"})
-        expect(tc.getAbortedRefreshCounter()).toBe(1)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(1)
     })
 
     test("mount + stop + immediate start auto refresh", async () => {
@@ -551,8 +549,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(0)
 
         // Stop + immediate start auto refresh
         tc.stopAutoRefresh() // Starts "move to page" operation : all rows are loaded => completes instantaneously
@@ -564,8 +561,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(2) // +1 "refresh"
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(0)
 
         // Unmount
         tc.unmount()
@@ -575,8 +571,7 @@ describe("TableController.ts", () => {
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(2)
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(0)
     })
 
     test("brutal", async () => {
@@ -593,8 +588,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(0)
 
         // Goto page 10, 20, 30 + play
         tc.onPageChange(10)
@@ -608,8 +602,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(51) // +10 +20 +30 (aborted) "move to page" + 1 refresh
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(3)
+        expect(tc.getExecutedAbortCounter()).toBe(3)
 
         // Unmount
         tc.unmount()
@@ -619,8 +612,7 @@ describe("TableController.ts", () => {
         expect(tc.refreshCount.value).toBe(0)
         expect(tc.loadCounter).toBe(51)
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(3)
+        expect(tc.getExecutedAbortCounter()).toBe(3)
     })
 
     test("updating sources between mount / unmount", async () => {
@@ -638,8 +630,7 @@ describe("TableController.ts", () => {
         expect(tc.currentPage.value).toBe(1)
         expect(tc.loadCounter).toBe(1) // +1 "refresh" operation
         expect(currentRoute.value.query).toStrictEqual({})
-        expect(tc.getAbortedRefreshCounter()).toBe(0)
-        expect(tc.getAbortedMoveToPageCounter()).toBe(0)
+        expect(tc.getExecutedAbortCounter()).toBe(0)
 
         // Refresh #1
         vi.runOnlyPendingTimers()

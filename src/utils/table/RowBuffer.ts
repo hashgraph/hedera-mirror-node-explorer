@@ -25,6 +25,7 @@ export class RowBuffer<R, K> {
 
     private readonly tableController: TableController<R, K>
     private readonly presumedRowCount: number
+    private abortCounter = 0
 
     //
     // Public
@@ -85,30 +86,34 @@ export class RowBuffer<R, K> {
         return firstRow !== null ? this.tableController.keyFor(firstRow) : null
     }
 
-    public getAbortedRefreshCounter(): number {
-        return this.abortedRefreshCounter
+    public abort(): void {
+        this.abortCounter += 1
     }
 
-    public getAbortedMoveToPageCounter(): number {
-        return this.abortedMoveToPageCounter
+
+    //
+    // Public (for testing purpose)
+    //
+
+    private executedAbortCounter = 0
+
+    public getExecutedAbortCounter(): number {
+        return this.executedAbortCounter
     }
 
     //
     // Public (refresh)
     //
 
-    private refreshCounter = 0
-    private abortedRefreshCounter = 0 // For testing purpose
-
     public async refresh(): Promise<void> {
 
-        this.refreshCounter += 1
-        const capturedRefreshCounter = this.refreshCounter
+        this.abort()
+        const capturedAbortCounter = this.abortCounter
 
         const pageSize = this.tableController.pageSize.value
         if (this.headKey.value !== null) {
             const newRows = await this.lastLoad(this.headKey.value, pageSize)
-            if (this.refreshCounter == capturedRefreshCounter) {
+            if (this.abortCounter == capturedAbortCounter) {
                 if (newRows !== null) {
                     this.rows.value = this.concatOrReplace(newRows, this.rows.value)
                     this.startIndex.value = 0
@@ -116,39 +121,32 @@ export class RowBuffer<R, K> {
                     this.shadowRowCount.value = 0
                 }
             } else {
-                this.abortedRefreshCounter += 1
+                this.executedAbortCounter += 1
             }
         } else {
             const newRows = await this.tailLoad(null, pageSize, false)
-            if (this.refreshCounter == capturedRefreshCounter) {
-                if (newRows !== null && this.refreshCounter == capturedRefreshCounter) {
+            if (this.abortCounter == capturedAbortCounter) {
+                if (newRows !== null) {
                     this.rows.value = newRows
                     this.startIndex.value = 0
                     this.drained.value = newRows.length < pageSize
                     this.shadowRowCount.value = 0
                 }
             } else {
-                this.abortedRefreshCounter += 1
+                this.executedAbortCounter += 1
             }
         }
 
         return Promise.resolve()
     }
 
-    public abortRefresh(): void {
-        this.refreshCounter += 1
-    }
-
     //
     // Public (moveToPage)
     //
 
-    private moveToPageCounter = 0
-    private abortedMoveToPageCounter = 0
-
     public async moveToPage(page: number, key: K | null): Promise<void> {
-        this.moveToPageCounter += 1
-        const captureMoveToPageCounter = this.moveToPageCounter
+        this.abort()
+        const captureAbortCounter = this.abortCounter
 
         const pageSize = this.tableController.pageSize.value
         const nextStartIndex = (page - 1) * pageSize
@@ -159,11 +157,11 @@ export class RowBuffer<R, K> {
         const headKey = this.headKey.value
         const tailKey = this.tailKey.value
 
-        if (this.moveToPageCounter == captureMoveToPageCounter) {
+        if (this.abortCounter == captureAbortCounter) {
 
             if (key !== null) {
                 const newRows = await this.tailLoad(key, pageSize, true)
-                if (this.moveToPageCounter == captureMoveToPageCounter) {
+                if (this.abortCounter == captureAbortCounter) {
                     if (newRows !== null) {
                         this.rows.value = newRows
                         this.drained.value = newRows.length < pageSize
@@ -171,14 +169,14 @@ export class RowBuffer<R, K> {
                         this.shadowRowCount.value = (page - 1) * pageSize
                     }
                 } else {
-                    this.abortedMoveToPageCounter += 1
+                    this.executedAbortCounter += 1
                 }
 
             } else if (headKey === null || tailKey === null) {
 
                 // Buffer is empty
                 const newRows = await this.tailLoad(null, pageSize, false)
-                if (this.moveToPageCounter == captureMoveToPageCounter) {
+                if (this.abortCounter == captureAbortCounter) {
                     if (newRows !== null) {
                         this.rows.value = this.rows.value.concat(newRows)
                         this.drained.value = newRows.length < pageSize
@@ -186,7 +184,7 @@ export class RowBuffer<R, K> {
                         // this.shadowRowCount.value unchanged
                     }
                 } else {
-                    this.abortedMoveToPageCounter += 1
+                    this.executedAbortCounter += 1
                 }
 
             } else if (nextStartIndex < shadowRowCount) {
@@ -194,7 +192,7 @@ export class RowBuffer<R, K> {
                 // We need to load rows at buffer head      :/
                 const rowCount = shadowRowCount - nextStartIndex
                 const newRows = await this.headLoad(headKey, rowCount)
-                if (this.moveToPageCounter == captureMoveToPageCounter) {
+                if (this.abortCounter == captureAbortCounter) {
                     if (newRows !== null) {
                         this.rows.value = newRows.concat(this.rows.value)
                         this.startIndex.value = 0
@@ -202,7 +200,7 @@ export class RowBuffer<R, K> {
                         // rowBuffer.drained.value unchanged
                     }
                 } else {
-                    this.abortedMoveToPageCounter += 1
+                    this.executedAbortCounter += 1
                 }
 
             } else if (nextEndIndex > bufferLength + shadowRowCount  && !this.drained.value) {
@@ -210,7 +208,7 @@ export class RowBuffer<R, K> {
                 // We need to load rows at buffer tail      :\
                 const rowCount = nextEndIndex - bufferLength - shadowRowCount
                 const newRows = await this.tailLoad(tailKey, rowCount, false)
-                if (this.moveToPageCounter == captureMoveToPageCounter) {
+                if (this.abortCounter == captureAbortCounter) {
                     if (newRows !== null) {
                         this.rows.value = this.rows.value.concat(newRows)
                         this.drained.value = newRows.length < rowCount
@@ -218,7 +216,7 @@ export class RowBuffer<R, K> {
                         // rowBuffer.shadowRowCount.value unchanged
                     }
                 } else {
-                    this.abortedMoveToPageCounter += 1
+                    this.executedAbortCounter += 1
                 }
 
             } else {
@@ -234,10 +232,6 @@ export class RowBuffer<R, K> {
         }
 
         return Promise.resolve()
-    }
-
-    public abortMoveBufferToPage(): void {
-        this.moveToPageCounter += 1
     }
 
     //

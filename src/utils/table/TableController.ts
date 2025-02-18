@@ -91,11 +91,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
     public unmount(): void {
         this.mountedRef.value = false
         this.stopWatchingSources()
-        if (this.autoRefreshRef.value) {
-            this.abortRefreshBuffer()
-        } else {
-            this.abortMoveBufferToPage()
-        }
+        this.abort()
         this.buffer.clear()
         // No call to this.bufferDidChange() to keep route query untouched
     }
@@ -132,14 +128,14 @@ export abstract class TableController<R, K> implements PlayPauseController {
             this.autoRefreshRef.value = true
             this.refreshCountRef.value = 0
             this.currentPage.value = 1 // This prevents o-table to invoke onPageChange() (and stops auto refresh !)
-            this.abortMoveBufferToPage()
+            this.abort()
             this.refreshBuffer().catch(this.errorHandler)
         }
     }
 
     public stopAutoRefresh(page = 1): void {
         if (this.mountedRef.value && this.autoRefreshRef.value) {
-            this.abortRefreshBuffer()
+            this.abort()
             this.moveBufferToPage(page, null).catch(this.errorHandler)
         }
     }
@@ -198,12 +194,8 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Public (for testing purpose)
     //
 
-    public getAbortedRefreshCounter(): number {
-        return this.buffer.getAbortedRefreshCounter()
-    }
-
-    public getAbortedMoveToPageCounter(): number {
-        return this.buffer.getAbortedMoveToPageCounter()
+    public getExecutedAbortCounter(): number {
+        return this.buffer.getExecutedAbortCounter()
     }
 
 
@@ -285,6 +277,15 @@ export abstract class TableController<R, K> implements PlayPauseController {
         return v !== null ? this.keyFromString(v) : null
     }
 
+    private abort(): void {
+        this.autoRefreshRef.value = false
+        if (this.timeoutID != -1) {
+            window.clearTimeout(this.timeoutID)
+            this.timeoutID = -1
+        }
+        this.buffer.abort()
+    }
+
 
     //
     // Private (xxxWatchingSources)
@@ -306,11 +307,7 @@ export abstract class TableController<R, K> implements PlayPauseController {
 
     private sourcesDidChange(): void {
         if (this.mountedRef.value) {
-            if (this.autoRefreshRef.value) {
-                this.abortRefreshBuffer()
-            } else {
-                this.abortMoveBufferToPage()
-            }
+            this.abort()
             this.buffer.clear()
             this.bufferDidChange().finally(() => {
                 if (this.autoRefreshRef.value) {
@@ -343,15 +340,6 @@ export abstract class TableController<R, K> implements PlayPauseController {
         }
     }
 
-    private abortRefreshBuffer(): void {
-        this.autoRefreshRef.value = false
-        if (this.timeoutID != -1) {
-            window.clearTimeout(this.timeoutID)
-            this.timeoutID = -1
-        }
-        this.buffer.abortRefresh()
-    }
-
     //
     // Private (moveBufferToPage)
     //
@@ -361,10 +349,6 @@ export abstract class TableController<R, K> implements PlayPauseController {
         await this.buffer.moveToPage(page, key)
         await this.bufferDidChange()
         return Promise.resolve()
-    }
-
-    private abortMoveBufferToPage(): void {
-        this.buffer.abortMoveBufferToPage()
     }
 
     //
