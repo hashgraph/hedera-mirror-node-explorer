@@ -88,20 +88,11 @@
                   <o-select v-model="selectedNode" :class="{'has-text-grey': !isNodeSelected}"
                             class="h-is-text-size-1" style="border-radius: 4px" @focus="stakeChoice='node'"
                             :icon="selectedNodeIcon">
-                    <optgroup label="Hedera council nodes">
-                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                              style="background-color: var(--h-theme-box-background-color)"
-                              v-show="isCouncilNode(n)">
-                        {{ makeNodeSelectorDescription(n) }}
-                      </option>
-                    </optgroup>
-                    <optgroup v-if="hasCommunityNode" label="Community nodes">
-                      <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                              style="background-color: var(--h-theme-box-background-color)"
-                              v-show="!isCouncilNode(n)">
-                        {{ makeNodeSelectorDescription(n) }}
-                      </option>
-                    </optgroup>
+                    <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                            style="background-color: var(--h-theme-box-background-color)"
+                    >
+                      {{ makeNodeSelectorDescription(n) }}
+                    </option>
                   </o-select>
                 </o-field>
               </div>
@@ -175,7 +166,8 @@
 import {computed, defineComponent, onBeforeUnmount, onMounted, PropType, ref, watch} from "vue";
 import {
   AccountBalanceTransactions,
-  AccountsResponse, makeNodeSelectorDescription,
+  AccountsResponse,
+  makeNodeSelectorDescription,
   makeShortNodeDescription,
   NetworkNode
 } from "@/schemas/MirrorNodeSchemas";

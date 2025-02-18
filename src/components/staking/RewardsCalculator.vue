@@ -37,20 +37,11 @@
             <p v-else class="h-is-text-size-3 mb-1">Choose a node to stake to</p>
             <o-field style="width: 100%">
               <o-select v-model="selectedNodeId" class="h-is-text-size-1" style="border-radius: 4px" :icon="nodeIcon">
-                <optgroup label="Hedera council nodes">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
-                          v-show="isCouncilNode(n)">
-                    {{ makeNodeSelectorDescription(n) }}
-                  </option>
-                </optgroup>
-                <optgroup v-if="hasCommunityNode" label="Community nodes">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-box-background-color)"
-                          v-show="!isCouncilNode(n)">
-                    {{ makeNodeSelectorDescription(n) }}
-                  </option>
-                </optgroup>
+                <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
+                        style="background-color: var(--h-theme-box-background-color)"
+                >
+                  {{ makeNodeSelectorDescription(n) }}
+                </option>
               </o-select>
             </o-field>
           </div>
