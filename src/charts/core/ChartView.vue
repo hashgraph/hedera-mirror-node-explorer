@@ -39,6 +39,10 @@
 
     <div class="chart-view-container" :style="{height: props.height + 'px'}">
 
+      <template v-if="state === ChartState.unsupported">
+        <div class="unsupported">This chart is not supported for this network</div>
+      </template>
+
       <template v-if="state === ChartState.loading">
         <div class="building">Loading data</div>
       </template>
@@ -146,6 +150,11 @@ div.chart-view-container {
 }
 
 div.building {
+  text-align: center;
+  color: var(--text-secondary)
+}
+
+div.unsupported {
   text-align: center;
   color: var(--text-secondary)
 }

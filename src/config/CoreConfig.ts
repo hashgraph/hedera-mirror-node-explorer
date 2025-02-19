@@ -135,7 +135,10 @@ export class CoreConfig {
         public readonly cryptoLogoDarkURL: string|null,
 
         // The Wallect Connect Identifier
-        public readonly walletConnectID: string|null
+        public readonly walletConnectID: string|null,
+
+        // The key for accessing Hgraph data
+        public readonly hgraphKey: string|null
     ) {}
 
 
@@ -167,7 +170,8 @@ export class CoreConfig {
             fetchString(obj, "cryptoSymbol"),
             fetchURL(obj, "cryptoLogoLightURL"),
             fetchURL(obj, "cryptoLogoDarkURL"),
-            fetchString(obj, "walletConnectID")
+            fetchString(obj, "walletConnectID"),
+            fetchString(obj, "hgraphKey")
         )
     }
 }

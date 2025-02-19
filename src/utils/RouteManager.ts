@@ -142,6 +142,10 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : this.networkConfig.value.entries[0]
     })
 
+    public readonly hgraphKey = computed(() => {
+        return this.coreConfig.value.hgraphKey
+    })
+
     public configure(coreConfig: CoreConfig, networkConfig: NetworkConfig) {
 
         this.coreConfig.value = coreConfig

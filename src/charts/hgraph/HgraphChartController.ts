@@ -35,19 +35,58 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
 
     protected abstract makeQuery(range: ChartRange): string
 
+
     //
     // ChartController
     //
+
+    public isSupported(): boolean {
+        return this.getHgraphURL() !== null
+    }
 
     protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
         return aggregateMetrics(metrics, computeGranularityForRange(range))
     }
 
     protected async loadData(range: ChartRange): Promise<EcosystemMetric[]> {
-        const query = this.makeQuery(range)
-        const url = "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
-        const response = await axios.post<GraphQLResponse>(url, { query })
-        return Promise.resolve(response.data.data.all_metrics)
+        let result: EcosystemMetric[]
+
+        const url = this.getHgraphURL()
+        if (url !== null) {
+            const query = this.makeQuery(range)
+            const response = await axios.post<GraphQLResponse>(url, { query })
+            result = response.data.data.all_metrics
+        } else {
+            result = []
+        }
+
+        return Promise.resolve(result)
+    }
+
+    //
+    // Protected (for subclasses)
+    //
+
+    private getHgraphURL(): string|null {
+        let result: string|null
+        const hgraphKey = this.routeManager.hgraphKey
+        switch(this.routeManager.currentNetworkEntry.value.mirrorNodeURL) {
+            case "https://mainnet-public.mirrornode.hedera.com/":
+            case "https://mainnet.mirrornode.hedera.com/":
+                result = hgraphKey !== null
+                    ? "https://mainnet.hedera.api.hgraph.io/v1/graphql"
+                    : "https://mainnet.hedera.api.hgraph.dev/v1/graphql"
+                break
+            case "https://testnet.mirrornode.hedera.com/":
+                result = hgraphKey !== null
+                    ? "https://testnet.hedera.api.hgraph.io/v1/graphql"
+                    : "https://testnet.hedera.api.hgraph.dev/v1/graphql"
+                break
+            default:
+                result = null
+                break
+        }
+        return result
     }
 
 }

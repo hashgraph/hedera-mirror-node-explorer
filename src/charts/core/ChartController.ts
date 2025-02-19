@@ -21,8 +21,10 @@
 import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
 import {Chart, ChartConfiguration} from 'chart.js/auto';
 import {ThemeController} from "@/components/ThemeController.ts";
+import {RouteManager} from "@/utils/RouteManager.ts";
 
 export enum ChartState {
+    unsupported,
     loading,
     error,
     ok,
@@ -43,16 +45,17 @@ export abstract class ChartController<M> {
     // Public
     //
 
-    public constructor(
+    protected constructor(
         public readonly chartTitle: string,
         public readonly themeController: ThemeController,
+        public readonly routeManager: RouteManager,
         public readonly supportedRanges: ChartRange[] = []) {
         this.range = ref(this.supportedRanges.length >= 1 ? this.supportedRanges[0] : ChartRange.year)
     }
 
     public mount(): void {
         this.watchHandles = [
-            watch(this.range, this.updateMetrics, {immediate: true}),
+            watch([this.range, this.routeManager.currentNetworkEntry], this.updateMetrics, {immediate: true}),
             watch([this.canvas, this.themeController.darkSelected], this.updateChart, { immediate: true }),
         ]
     }
@@ -70,7 +73,9 @@ export abstract class ChartController<M> {
 
     public readonly state = computed<ChartState>(() => {
         let result: ChartState
-        if (this.building.value) {
+        if (!this.isSupported()) {
+            result = ChartState.unsupported
+        } else if (this.building.value) {
             result = ChartState.loading
         } else if (this.error.value !== null) {
             result = ChartState.error
@@ -96,8 +101,13 @@ export abstract class ChartController<M> {
 
 
     //
-    // Protected (to be subclassed)
+    // To be subclassed
     //
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public isSupported(): boolean {
+        return true
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     protected async loadData(range: ChartRange): Promise<M[]> {
@@ -120,8 +130,13 @@ export abstract class ChartController<M> {
     private readonly updateMetrics = async () => {
         this.building.value = true
         try {
-            this.metrics = await this.loadData(this.range.value)
-            this.error.value = null
+            if (this.isSupported()) {
+                this.metrics = await this.loadData(this.range.value)
+                this.error.value = null
+            } else {
+                this.metrics = null
+                this.error.value = null
+            }
         } catch(error) {
             this.metrics = null
             this.error.value = error

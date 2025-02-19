@@ -23,6 +23,7 @@ import {ChartRange, computeGranularityForRange, computeStartDateForRange} from "
 import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import {ChartConfiguration} from "chart.js";
 import {ThemeController} from "@/components/ThemeController.ts";
+import {RouteManager} from "@/utils/RouteManager.ts";
 
 export class GenericMetricController extends HgraphChartController {
 
@@ -34,8 +35,9 @@ export class GenericMetricController extends HgraphChartController {
 
     public constructor(chartTitle: string, metricName: string,
                        themeController: ThemeController,
+                       routeManager: RouteManager,
                        supportedRanges: ChartRange[] = []) {
-        super(chartTitle, themeController, supportedRanges)
+        super(chartTitle, themeController, routeManager,supportedRanges)
         this.metricName = metricName
     }
 

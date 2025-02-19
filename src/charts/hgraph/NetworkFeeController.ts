@@ -22,6 +22,7 @@ import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.t
 import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import {ChartRange} from "@/charts/core/ChartController.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
+import {RouteManager} from "@/utils/RouteManager.ts";
 
 export class NetworkFeeController extends GenericMetricController {
 
@@ -29,9 +30,10 @@ export class NetworkFeeController extends GenericMetricController {
     // Public
     //
 
-    public constructor(themeController: ThemeController) {
+    public constructor(themeController: ThemeController, routeManager: RouteManager) {
         super("Network Fees", "network_fee",
-            themeController,[ChartRange.year, ChartRange.all])
+            themeController, routeManager,
+            [ChartRange.year, ChartRange.all])
     }
 
     //
