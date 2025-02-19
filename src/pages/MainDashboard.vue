@@ -98,6 +98,7 @@ onBeforeUnmount(() => networkFeeController.unmount())
 const activeAccountsController = new GenericMetricController(
     "Active Accounts",
     "active_accounts",
+    true,
     themeController,
     routeManager,
     []
