@@ -193,16 +193,9 @@ function averageMetricsByYear(rawMetrics: EcosystemMetric[]): EcosystemMetric[] 
 
 
 function averageMetricSegment(rawMetrics: EcosystemMetric[], startIndex: number, endIndex: number): EcosystemMetric {
-    let aggregatedTotal = 0
-    for (let i = startIndex; i < endIndex; i += 1) {
-        aggregatedTotal += rawMetrics[i].total
-    }
-    const average = Math.round(aggregatedTotal / (endIndex - startIndex))
-    return {
-        start_date: rawMetrics[startIndex].start_date,
-        end_date: rawMetrics[endIndex-1].end_date,
-        total: average
-    }
+    const result = aggregateMetricSegment(rawMetrics, startIndex, endIndex)
+    result.total /= (endIndex - startIndex)
+    return result
 }
 
 
