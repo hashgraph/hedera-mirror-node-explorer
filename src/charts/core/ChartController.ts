@@ -27,6 +27,7 @@ export enum ChartState {
     unsupported,
     loading,
     error,
+    empty,
     ok,
 }
 
@@ -79,6 +80,8 @@ export abstract class ChartController<M> {
             result = ChartState.loading
         } else if (this.error.value !== null) {
             result = ChartState.error
+        } else if (this.metricCount.value == 0) {
+            result = ChartState.empty
         } else {
             result = ChartState.ok
         }
@@ -94,6 +97,8 @@ export abstract class ChartController<M> {
         }
         return result
     })
+
+    public readonly metricCount = computed(() => this.metrics?.length ?? 0)
 
     public isRangeSupported(range: ChartRange): boolean {
         return this.supportedRanges.length === 0 || this.supportedRanges.includes(range)
@@ -131,7 +136,8 @@ export abstract class ChartController<M> {
         this.building.value = true
         try {
             if (this.isSupported()) {
-                this.metrics = await this.loadData(this.range.value)
+                const metrics = await this.loadData(this.range.value)
+                this.metrics = metrics.length >= 1 ? metrics : null
                 this.error.value = null
             } else {
                 this.metrics = null

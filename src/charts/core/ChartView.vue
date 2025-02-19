@@ -54,6 +54,10 @@
         </TaskPanel>
       </template>
 
+      <template v-else-if="state == ChartState.empty">
+        <div class="unsupported">No data for this time range</div>
+      </template>
+
       <canvas ref="canvasRef" :style="{ display: canvasDisplay}"/>
 
     </div>
