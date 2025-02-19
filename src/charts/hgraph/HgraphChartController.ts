@@ -25,7 +25,7 @@ import {
     computeGranularityForRange
 } from "@/charts/core/ChartController.ts";
 import {aggregateMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
-import axios from "axios";
+import axios, {AxiosRequestConfig} from "axios";
 
 export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
 
@@ -54,7 +54,8 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         const url = this.getHgraphURL()
         if (url !== null) {
             const query = this.makeQuery(range)
-            const response = await axios.post<GraphQLResponse>(url, { query })
+            const config = this.makeConfig()
+            const response = await axios.post<GraphQLResponse>(url, { query }, config)
             result = response.data.data.all_metrics
         } else {
             result = []
@@ -69,7 +70,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
 
     private getHgraphURL(): string|null {
         let result: string|null
-        const hgraphKey = this.routeManager.hgraphKey
+        const hgraphKey = this.routeManager.hgraphKey.value
         switch(this.routeManager.currentNetworkEntry.value.mirrorNodeURL) {
             case "https://mainnet-public.mirrornode.hedera.com/":
             case "https://mainnet.mirrornode.hedera.com/":
@@ -89,6 +90,20 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         return result
     }
 
+    private makeConfig(): AxiosRequestConfig {
+        let result: AxiosRequestConfig
+        const hgraphKey = this.routeManager.hgraphKey.value
+        if (hgraphKey !== null) {
+            result = {
+                headers: {
+                    "X-API-KEY": hgraphKey
+                }
+            }
+        } else {
+            result = {}
+        }
+        return result
+    }
 }
 
 interface GraphQLResponse {
