@@ -58,6 +58,23 @@ export class TPSController extends HgraphChartController {
             "}"
     }
 
+    protected makeLatestQuery(): string {
+        return "{" +
+            "  all_metrics: ecosystem_metric(" +
+            "    where: {" +
+            "      name: {_eq: \"network_tps\"}, " +
+            "      period: {_eq: \"hour\"}" +
+            "    }" +
+            "    order_by: {start_date: desc}" +
+            "    limit: 1" +
+            "  ) {" +
+            "    start_date" +
+            "    end_date" +
+            "    total" +
+            "  }" +
+            "}"
+    }
+
     protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
         const granularity = computeGranularityForRange(range)
         return averageMetrics(metrics, granularity)

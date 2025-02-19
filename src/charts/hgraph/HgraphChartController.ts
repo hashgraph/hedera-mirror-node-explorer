@@ -22,9 +22,10 @@ import {
     ChartController,
     ChartGranularity,
     ChartRange,
-    computeGranularityForRange
+    computeGranularityForRange,
+    LoadedData
 } from "@/charts/core/ChartController.ts";
-import {aggregateMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
+import {aggregateMetrics, getEndDate, getStartDate, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios, {AxiosRequestConfig} from "axios";
 
 export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
@@ -34,7 +35,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
 
     protected abstract makeQuery(range: ChartRange): string
-
+    protected abstract makeLatestQuery(): string
 
     //
     // ChartController
@@ -44,28 +45,39 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         return this.getHgraphURL() !== null
     }
 
+    public getMetricDate(metric: EcosystemMetric): Date | null {
+        return getEndDate(metric) ?? getStartDate(metric)
+    }
+
     protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
         return aggregateMetrics(metrics, computeGranularityForRange(range))
     }
 
-    protected async loadData(range: ChartRange): Promise<EcosystemMetric[]> {
-        let result: EcosystemMetric[]
+    protected async loadData(range: ChartRange): Promise<LoadedData<EcosystemMetric>> {
+        let result: LoadedData<EcosystemMetric>
 
         const url = this.getHgraphURL()
         if (url !== null) {
+
+            // Target metrics
             const query = this.makeQuery(range)
-            const config = this.makeConfig()
-            const response = await axios.post<GraphQLResponse>(url, { query }, config)
-            result = response.data.data.all_metrics
+            const metrics = await this.runQuery(url, query)
+
+            // Latest metric available
+            const latestQuery = this.makeLatestQuery()
+            const latestMetrics = await this.runQuery(url, latestQuery)
+            const latestMetric = latestMetrics && latestMetrics.length >= 1 ? latestMetrics[0] : null
+
+            result = new LoadedData(metrics, latestMetric)
         } else {
-            result = []
+            result = new LoadedData([], null)
         }
 
         return Promise.resolve(result)
     }
 
     //
-    // Protected (for subclasses)
+    // Private
     //
 
     private getHgraphURL(): string|null {
@@ -104,12 +116,34 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         }
         return result
     }
+
+
+    private async runQuery(url: string, query: string): Promise<EcosystemMetric[]> {
+        let result: EcosystemMetric[]
+
+        const config = this.makeConfig()
+        const response = await axios.post<GraphQLResponse>(url, { query }, config)
+        if (response.status === 200 && typeof response.data === "object" && response.data !== null) {
+            if (response.data.data) {
+                result = response.data.data.all_metrics ?? []
+            } else {
+                const errors = response.data.errors ?? []
+                const error = errors.length >= 1 ? errors[0] : null
+                throw error ?? "GraphQL query failed"
+            }
+        } else {
+            throw "HTTP Error " + response.status
+        }
+
+        return Promise.resolve(result)
+    }
 }
 
 interface GraphQLResponse {
-    data: {
-        all_metrics: EcosystemMetric[]
+    data?: {
+        all_metrics?: EcosystemMetric[]
     }
+    errors?: unknown[]
 }
 
 export function makeGraphLabels(metrics: EcosystemMetric[], granularity: ChartGranularity): string[] {

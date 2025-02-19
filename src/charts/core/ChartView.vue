@@ -56,6 +56,7 @@
 
       <template v-else-if="state == ChartState.empty">
         <div class="unsupported">No data for this time range</div>
+        <div v-if="latestMetricDate" class="unsupported">(latest measure on {{ latestMetricDate }})</div>
       </template>
 
       <canvas ref="canvasRef" :style="{ display: canvasDisplay}"/>
@@ -91,7 +92,8 @@ const props = defineProps({
 const canvasRef = props.controller.canvas
 const canvasDisplay = computed(() => props.controller.state.value === ChartState.ok ? "block": "none")
 const state = props.controller.state
-const errorExtra = props.controller.errorExtra.value
+const errorExtra = props.controller.errorExtra
+const latestMetricDate = props.controller.latestMetricDate
 
 </script>
 

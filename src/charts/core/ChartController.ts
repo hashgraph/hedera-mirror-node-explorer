@@ -35,6 +35,7 @@ export abstract class ChartController<M> {
 
     public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
     public readonly range: Ref<ChartRange>
+    public readonly latestMetric: Ref<M|null> = ref(null)
 
     private metrics: M[]|null = null
     private chart: Chart|null = null
@@ -63,6 +64,7 @@ export abstract class ChartController<M> {
 
     public unmount(): void {
         this.metrics = null
+        this.latestMetric.value = null
         if (this.chart !== null) {
             this.chart.destroy()
             this.chart = null
@@ -80,10 +82,9 @@ export abstract class ChartController<M> {
             result = ChartState.loading
         } else if (this.error.value !== null) {
             result = ChartState.error
-        } else if (this.metricCount.value == 0) {
-            result = ChartState.empty
         } else {
-            result = ChartState.ok
+            const metricCount = this.metrics?.length ?? 0
+            result = metricCount == 0 ? ChartState.empty : ChartState.ok
         }
         return result
     })
@@ -98,12 +99,16 @@ export abstract class ChartController<M> {
         return result
     })
 
-    public readonly metricCount = computed(() => this.metrics?.length ?? 0)
+    public readonly latestMetricDate = computed(() => {
+        const dateFormat = this.makeDateFormat()
+        const latestMetric = this.latestMetric.value
+        const result = latestMetric !== null ? this.getMetricDate(latestMetric) : null
+        return result !== null ? dateFormat.format(result) : null
+    })
 
     public isRangeSupported(range: ChartRange): boolean {
         return this.supportedRanges.length === 0 || this.supportedRanges.includes(range)
     }
-
 
     //
     // To be subclassed
@@ -114,8 +119,10 @@ export abstract class ChartController<M> {
         return true
     }
 
+    public abstract getMetricDate(metric: M): Date | null
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected async loadData(range: ChartRange): Promise<M[]> {
+    protected async loadData(range: ChartRange): Promise<LoadedData<M>> {
         throw "to be subclassed"
     }
 
@@ -127,7 +134,6 @@ export abstract class ChartController<M> {
 
     protected abstract makeChartConfig(metrics: M[], range: ChartRange): ChartConfiguration
 
-
     //
     // Private
     //
@@ -136,15 +142,18 @@ export abstract class ChartController<M> {
         this.building.value = true
         try {
             if (this.isSupported()) {
-                const metrics = await this.loadData(this.range.value)
-                this.metrics = metrics.length >= 1 ? metrics : null
+                const loadedData = await this.loadData(this.range.value)
+                this.metrics = loadedData.metrics.length >= 1 ? loadedData.metrics : null
+                this.latestMetric.value = loadedData.latestMetric
                 this.error.value = null
             } else {
                 this.metrics = null
+                this.latestMetric.value = null
                 this.error.value = null
             }
         } catch(error) {
             this.metrics = null
+            this.latestMetric.value = null
             this.error.value = error
         } finally {
             this.building.value = false
@@ -174,6 +183,15 @@ export abstract class ChartController<M> {
         return  new Chart(canvas,  chartConfig);
     }
 
+    private makeDateFormat(): Intl.DateTimeFormat {
+        const dateOptions: Intl.DateTimeFormatOptions = {
+            // weekDay: "short",
+            day: "numeric",
+            month: "numeric",
+            year: "numeric",
+        }
+        return new Intl.DateTimeFormat("en-US", dateOptions)
+    }
 }
 
 export enum ChartRange {            // Matching granularity
@@ -189,6 +207,9 @@ export enum ChartGranularity {
     year = "year"
 }
 
+export class LoadedData<M> {
+    constructor(public readonly metrics: M[], public readonly latestMetric: M|null) {}
+}
 
 
 export function computeStartDateForRange(period: ChartRange): string {

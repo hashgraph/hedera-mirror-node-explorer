@@ -65,21 +65,37 @@ export function averageMetrics(rawMetrics: EcosystemMetric[], granularity: Chart
     return result
 }
 
-export function getTimeRange(metric: EcosystemMetric): number|null {
-    let result: number|null
+export function getStartDate(metric: EcosystemMetric): Date|null {
+    const startTime = Date.parse(metric.start_date)
+    return isNaN(startTime) ? null : new Date(startTime)
+}
+
+export function getEndDate(metric: EcosystemMetric): Date|null {
+    let result: Date|null
     if (metric.end_date !== null) {
-        const startTime = Date.parse(metric.start_date)
         const endTime = Date.parse(metric.end_date)
-        if (isNaN(startTime) || isNaN(endTime)) {
-            result = null
-        } else {
-            result = endTime - startTime
-        }
+        result = isNaN(endTime) ? null : new Date(endTime)
     } else {
         result = null
     }
     return result
 }
+//
+// export function getTimeRange(metric: EcosystemMetric): number|null {
+//     let result: number|null
+//     if (metric.end_date !== null) {
+//         const startTime = Date.parse(metric.start_date)
+//         const endTime = Date.parse(metric.end_date)
+//         if (isNaN(startTime) || isNaN(endTime)) {
+//             result = null
+//         } else {
+//             result = endTime - startTime
+//         }
+//     } else {
+//         result = null
+//     }
+//     return result
+// }
 
 //
 // Private (aggregate)
