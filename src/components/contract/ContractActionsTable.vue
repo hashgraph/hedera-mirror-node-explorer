@@ -69,7 +69,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="amount" label="AMOUNT">
-        <div class="hbar-amount is-numeric">
+        <div class="hbar-amount h-is-numeric">
           <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
           <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
           <span style="font-size: 13px; margin-left: 2px; margin-right: 2px">&#8594;</span>
@@ -84,7 +84,7 @@
       </o-table-column>
 
       <o-table-column v-slot="props" field="gas_limit" label="GAS LIMIT">
-        <div class="is-numeric">
+        <div class="h-is-numeric">
           {{ props.row.action.gas }}
         </div>
       </o-table-column>

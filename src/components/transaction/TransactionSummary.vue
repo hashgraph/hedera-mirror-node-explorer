@@ -30,9 +30,9 @@
     <div v-else-if="isTokenAssociation">
       {{ transaction?.entity_id }}
       <span v-if="tokens.length">
-        <i class="fas fa-link mr-1 has-text-grey"></i>
+        <i class="fas fa-link mr-1 h-is-low-contrast"></i>
         <TokenExtra :token-id="tokens[0]"/>
-        <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text should-wrap">
+        <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text h-should-wrap">
           {{ ' ( + ' + additionalTokensNumber + ' more )' }}
         </span>
       </span>
@@ -40,7 +40,7 @@
     <div v-else-if="isEthereumTransaction">
       {{ ethereumSummary }}
     </div>
-    <div v-else class="should-wrap">
+    <div v-else class="h-should-wrap">
       {{ makeSummaryLabel(transaction) }}
     </div>
   </template>

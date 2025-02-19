@@ -57,7 +57,7 @@ describe("HbarAmount.vue ", () => {
         });
 
         expect(wrapper.text()).toBe(expectedHbarAmount)
-        expect(wrapper.get('#hbar-amount').classes('has-text-grey')).toBe(false)
+        expect(wrapper.get('#hbar-amount').classes('h-is-low-contrast')).toBe(false)
 
         wrapper.unmount()
     });

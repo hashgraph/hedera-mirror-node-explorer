@@ -26,7 +26,7 @@
 
   <div v-if="value">
     <EVMAddress v-if="addressValue" :address="addressValue" :compact="!isSmallScreen"/>
-    <div v-else :class="{'has-text-grey': lowContrast}" class="function-value">
+    <div v-else :class="{'h-is-low-contrast': lowContrast}" class="function-value">
       <p class="mr-1">{{ value }}</p>
 
       <p v-if="ntv?.comment"
@@ -37,7 +37,7 @@
     <div v-if="!hideType" class="h-is-extra-text">{{ type }}</div>
   </div>
   <div v-else-if="initialLoading"/>
-  <div v-else class="has-text-grey">None</div>
+  <div v-else class="h-is-low-contrast">None</div>
 
 </template>
 

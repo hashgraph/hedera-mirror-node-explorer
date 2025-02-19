@@ -51,7 +51,7 @@
     <!-- Row 1 -->
     <div/>
     <div v-if="hasResult">
-      <span class="icon has-text-grey"><i class="fas fa-long-arrow-alt-right"/></span>
+      <span class="icon h-is-low-contrast"><i class="fas fa-long-arrow-alt-right"/></span>
       <span class="ml-1">
         {{ callOutput }}
       </span>

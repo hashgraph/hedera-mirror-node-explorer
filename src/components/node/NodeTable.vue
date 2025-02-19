@@ -42,14 +42,14 @@
       </o-table-column>
 
       <o-table-column v-if="!enableStaking" v-slot="props" field="node_account_id" label="ACCOUNT">
-        <div class="is-numeric regular-node-column">
+        <div class="h-is-numeric regular-node-column">
           {{ props.row.node_account_id }}
         </div>
       </o-table-column>
 
       <o-table-column v-slot="props" field="description" label="DESCRIPTION">
-        <div class="should-wrap regular-node-column is-inline-block">
-          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" :show-none="false" class="has-text-grey"/>
+        <div class="h-should-wrap regular-node-column is-inline-block">
+          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" :show-none="false" class="h-is-low-contrast"/>
           <StringValue :string-value="makeNodeOwnerDescription(props.row)"/>
         </div>
       </o-table-column>

@@ -28,11 +28,11 @@
     <div v-else-if="isTokenAssociation">
       {{ transaction?.sender_account_id }}
       <span v-if="tokens.length">
-                <i class="fas fa-link mr-1 has-text-grey"></i>
+                <i class="fas fa-link mr-1 h-is-low-contrast"></i>
                 <TokenExtra :token-id="tokens[0]"/>
                 <span
                     v-if="additionalTokensNumber"
-                    class="h-is-smaller h-is-extra-text should-wrap"
+                    class="h-is-smaller h-is-extra-text h-should-wrap"
                 >
                     {{ " ( + " + additionalTokensNumber + " more )" }}
                 </span>

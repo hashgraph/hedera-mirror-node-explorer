@@ -61,7 +61,7 @@
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
-                <span class="has-text-grey">Show scheduled transaction</span>
+                <span class="h-is-low-contrast">Show scheduled transaction</span>
               </router-link>
             </div>
           </template>
@@ -190,7 +190,7 @@
             True
             <div v-if="schedulingTransaction" id="schedulingLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
-                <span class="has-text-grey">Show schedule create transaction</span>
+                <span class="h-is-low-contrast">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>
@@ -198,7 +198,7 @@
             False
           </template>
           <template v-else #value>
-            <span class="has-text-grey">False</span>
+            <span class="h-is-low-contrast">False</span>
           </template>
         </Property>
         <Property v-if="parentTransaction" id="parentTransaction">
@@ -214,14 +214,14 @@
           <template #value>
             <div v-for="tx in childTransactions.slice(0, MAX_INLINE_CHILDREN)" :key="tx.nonce">
               <router-link :to="routeManager.makeRouteToTransactionObj(tx)">
-                <span class="is-numeric">{{ '#' + tx.nonce }}</span>
+                <span class="h-is-numeric">{{ '#' + tx.nonce }}</span>
                 <span class="ml-2">{{ makeTypeLabel(tx.name) }}</span>
               </router-link>
               <span v-for="id in getTargetedTokens(tx, 5)" :key="id" class="ml-2">
                 <TokenExtra :token-id="id" :use-anchor="true"/>
               </span>
             </div>
-            <router-link v-if="displayAllChildrenLinks" class="has-text-grey"
+            <router-link v-if="displayAllChildrenLinks" class="h-is-low-contrast"
                          :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
               {{ 'Show all ' + childTransactions.length + ' child transactions' }}
             </router-link>

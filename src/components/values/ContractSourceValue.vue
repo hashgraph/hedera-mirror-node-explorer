@@ -46,7 +46,7 @@
 
   <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+  <span v-else class="h-is-low-contrast">None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

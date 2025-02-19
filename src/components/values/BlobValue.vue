@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="should-wrap">
+  <div class="h-should-wrap">
 
     <template v-if="decodedValue">
 
@@ -33,7 +33,7 @@
       </template>
 
       <template v-else-if="jsonValue && isNaN(jsonValue)">
-        <div class="json-formatting h-code-box is-inline-block should-wrap"
+        <div class="json-formatting h-code-box is-inline-block h-should-wrap"
         >
           {{ jsonValue }}
         </div>
@@ -47,7 +47,7 @@
 
       <template v-else>
         <div v-if="decodedValue.length > 1024"
-             class="json-formatting h-code-box is-inline-block should-wrap">
+             class="json-formatting h-code-box is-inline-block h-should-wrap">
           <span id="blob-main">
             {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
           </span>
@@ -57,7 +57,7 @@
             {{ (b64EncodingFound && showBase64AsExtra) ? blobValue : decodedValue }}
           </span>
           <div v-if="b64EncodingFound && showBase64AsExtra" class="h-is-extra-text">
-            <span class="has-text-grey">Base64:</span>
+            <span class="h-is-low-contrast">Base64:</span>
             <span id="blob-extra">{{ decodedValue }}</span>
           </div>
         </div>
@@ -65,7 +65,7 @@
 
     </template>
 
-    <span v-else-if="showNone && !initialLoading" class="has-text-grey">None</span>
+    <span v-else-if="showNone && !initialLoading" class="h-is-low-contrast">None</span>
 
     <span v-else/>
 

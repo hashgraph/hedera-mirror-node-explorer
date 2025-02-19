@@ -26,14 +26,14 @@
 
   <div v-if="isNone" style="display: inline-block">
     <span v-if="initialLoading"/>
-    <span v-else class="has-text-grey">None</span>
+    <span v-else class="h-is-low-contrast">None</span>
   </div>
 
   <div v-else-if="props.amount !== 0 || !props.hideZero" style="display: inline-block">
     <span
         id="hbar-amount"
-        class="is-numeric"
-        :class="{ 'has-text-grey': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
+        class="h-is-numeric"
+        :class="{ 'h-is-low-contrast': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
     >
       {{ formattedAmount }}
     </span>

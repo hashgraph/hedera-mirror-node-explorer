@@ -62,7 +62,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="memo" label="MEMO">
-      <div class="should-wrap">
+      <div class="h-should-wrap">
         <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
       </div>
     </o-table-column>

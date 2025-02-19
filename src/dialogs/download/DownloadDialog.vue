@@ -38,7 +38,7 @@
     <template #taskDialogBusy>
       <progress id="progress" :value="props.downloader.progress.value"/>
       <span>Downloading:</span>
-      <span class="has-text-grey is-numeric ml-2">{{ busyMessage }}</span>
+      <span class="h-is-low-contrast h-is-numeric ml-2">{{ busyMessage }}</span>
     </template>
 
     <template #taskDialogSuccess>

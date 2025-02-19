@@ -25,7 +25,7 @@
 <template>
   <span v-if="formattedAmount !== null">{{ formattedAmount }}</span>
   <span v-else-if="initialLoading"/>
-  <span v-else class="has-text-grey">{{ noneLabel }}</span>
+  <span v-else class="h-is-low-contrast">{{ noneLabel }}</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

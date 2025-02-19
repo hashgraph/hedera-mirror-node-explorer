@@ -27,7 +27,7 @@
     <span v-if="decimalOverflow" :class="{'mr-2': showExtra && tokenId}">
       ?
     </span>
-    <span v-else class="is-numeric" :class="{'mr-2': showExtra && tokenId}">
+    <span v-else class="h-is-numeric" :class="{'mr-2': showExtra && tokenId}">
       {{ formattedAmount }}
     </span>
 

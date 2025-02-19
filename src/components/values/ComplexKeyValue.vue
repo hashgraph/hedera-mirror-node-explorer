@@ -27,7 +27,7 @@
     <div v-if=" !details && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
       <span>{{ 'Complex Key (' + (maxLevel + 1) + ' levels)' }}</span>
       <router-link v-if="adminKeyRoute" :to="adminKeyRoute">
-        <span class="ml-2 has-text-grey">
+        <span class="ml-2 h-is-low-contrast">
           See details
         </span>
       </router-link>
@@ -38,7 +38,7 @@
           <template v-if="line.innerKeyBytes() !== null">
             <div v-if="details" :class="lineClass(line)">
               <span class="h-is-extra-text">{{ line.innerKeyType() }}</span>
-              <span class="h-is-monospace has-text-grey">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
+              <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
             </div>
             <div v-else>
               <HexaDumpValue :byte-string="line.innerKeyBytes()"/>
@@ -62,7 +62,7 @@
     </div>
   </div>
   <div v-else-if="showNone && !initialLoading">
-    <div class="has-text-grey">None</div>
+    <div class="h-is-low-contrast">None</div>
   </div>
   <div v-else/>
 

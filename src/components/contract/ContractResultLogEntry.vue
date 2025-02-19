@@ -72,7 +72,7 @@
 
         <!-- verified -->
         <div v-else class="log-content">
-          <span class="should-wrap">{{ fullLogSignature }}</span>
+          <span class="h-should-wrap">{{ fullLogSignature }}</span>
 
           <div
               v-for="(arg, i) in args"

@@ -24,7 +24,7 @@
 
 <template>
 
-  <div class="entity-link is-numeric">
+  <div class="entity-link h-is-numeric">
 
     <template v-if="route === null">
       <slot/>

@@ -29,7 +29,7 @@
   <template v-else>
     <div v-if="details">
       <span class="h-is-extra-text">{{ keyType }}</span>
-      <span class="h-is-monospace has-text-grey">{{ ':&#8239;' + keyBytes }}</span>
+      <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + keyBytes }}</span>
     </div>
     <div v-else>
       <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>

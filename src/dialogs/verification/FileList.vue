@@ -55,7 +55,7 @@
       <o-table-column v-slot="props" field="type_and_name">
         <div class="is-flex is-align-items-center">
                     <span v-if="isMetadata(props.row)" class="icon" style="font-size: 15px"
-                          :class="{'has-text-grey': isUnused(props.row)}"
+                          :class="{'h-is-low-contrast': isUnused(props.row)}"
                     >
                         <i class="far fa-file-alt"></i>
                     </span>
@@ -65,10 +65,10 @@
           <img v-else alt="Solidity file" class="image mr-1" style="width: 20px; height: 20px;"
                src="../../assets/solidity-icon.svg"
           >
-          <p :class="{'has-text-grey':isUnused(props.row)}" class="ml-1">
+          <p :class="{'h-is-low-contrast':isUnused(props.row)}" class="ml-1">
             {{ props.row.path }}
           </p>
-          <span v-if="!isMetadata(props.row) && props.row.target" class="icon ml-1 has-text-grey"
+          <span v-if="!isMetadata(props.row) && props.row.target" class="icon ml-1 h-is-low-contrast"
                 style="font-size: 14px">
                        <i class="fa fa-arrow-left"></i>
                     </span>

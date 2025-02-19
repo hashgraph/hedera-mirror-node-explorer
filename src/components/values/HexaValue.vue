@@ -32,8 +32,8 @@
   </Copyable>
 
   <template v-else-if="showNone && !initialLoading" >
-    <div class="has-text-grey">None</div>
-    <div v-if="noneExtra" class="has-text-grey">{{ noneExtra }}</div>
+    <div class="h-is-low-contrast">None</div>
+    <div v-if="noneExtra" class="h-is-low-contrast">{{ noneExtra }}</div>
   </template>
 
   <template v-else/>

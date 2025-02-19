@@ -44,7 +44,7 @@
           <FixedFeeTable :analyzer="analyzer"/>
         </template>
         <template v-else #value>
-          <span class="has-text-grey">None</span>
+          <span class="h-is-low-contrast">None</span>
         </template>
       </Property>
 
@@ -54,7 +54,7 @@
           <FractionalFeeTable :analyzer="analyzer"/>
         </template>
         <template v-else #value>
-          <span class="has-text-grey">None</span>
+          <span class="h-is-low-contrast">None</span>
         </template>
       </Property>
 
@@ -64,7 +64,7 @@
           <RoyaltyFeeTable :analyzer="analyzer"/>
         </template>
         <template v-else #value>
-          <span class="has-text-grey">None</span>
+          <span class="h-is-low-contrast">None</span>
         </template>
       </Property>
 

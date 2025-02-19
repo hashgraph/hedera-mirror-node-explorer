@@ -33,7 +33,7 @@
           <AccountLink id="accountId" :account-id="normalizedAccountId">
             {{ normalizedAccountId }}
           </AccountLink>
-          <span v-if="accountChecksum" class="has-text-grey">-{{ accountChecksum }}</span>
+          <span v-if="accountChecksum" class="h-is-low-contrast">-{{ accountChecksum }}</span>
         </div>
       </template>
 

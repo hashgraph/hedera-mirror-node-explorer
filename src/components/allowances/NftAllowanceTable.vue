@@ -54,7 +54,7 @@
     </o-table-column>
 
     <o-table-column v-slot="props" field="serial" label="SERIAL #">
-      <div class="is-numeric">
+      <div class="h-is-numeric">
         {{ props.row.serial_number }}
       </div>
     </o-table-column>

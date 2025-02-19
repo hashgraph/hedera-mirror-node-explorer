@@ -165,7 +165,7 @@
         <Property id="maxSupply">
           <template #name>Max Supply</template>
           <template v-if="validEntityId" #value>
-            <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="has-text-grey">Infinite</div>
+            <div v-if="tokenInfo?.supply_type === 'INFINITE'" class="h-is-low-contrast">Infinite</div>
             <TokenAmount v-else :amount="parseBigIntString(tokenInfo?.max_supply)" :show-extra="false"
                          :token-id="normalizedTokenId"/>
           </template>
@@ -180,7 +180,7 @@
           <template #name>Pause Status</template>
           <template #value>
             <StringValue v-if="tokenInfo?.pause_status === 'NOT_APPLICABLE'"
-                         class="has-text-grey" string-value="Not applicable"/>
+                         class="h-is-low-contrast" string-value="Not applicable"/>
             <StringValue v-else :string-value="tokenInfo?.pause_status"/>
           </template>
         </Property>

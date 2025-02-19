@@ -243,14 +243,14 @@ ul {
     }
 }
 
-div.h-side-by-side-content {
+.h-side-by-side-content {
     display: flex;
     flex-direction: column;
     gap: 16px;
 }
 
 @media (min-width: 1600px) {
-    div.h-side-by-side-content {
+    .h-side-by-side-content {
         display: grid;
         gap: 16px;
         grid-template-columns: 1fr 1fr;
@@ -289,13 +289,11 @@ div.h-side-by-side-content {
     font-family: var(--font-family-monospace), sans-serif;
 }
 
-/* TODO: Rename to .h-is-numeric */
-.is-numeric {
+.h-is-numeric {
     font-variant-numeric: tabular-nums;
 }
 
-/* TODO: Rename .h-is-low-contrast */
-.has-text-grey {
+.h-is-low-contrast {
     color: var(--text-secondary);
 }
 
@@ -319,14 +317,8 @@ div.h-side-by-side-content {
     background-color: var(--chip-secondary-default);
 }
 
-/* TODO: Rename */
-.should-wrap {
+.h-should-wrap {
     word-break: break-word;
-}
-
-/* Dashed DnD area */
-.h-dotted-area {
-    border: dashed 1px var(--network-theme-color);
 }
 
 hr.horizontal-line {
@@ -336,9 +328,6 @@ hr.horizontal-line {
     margin: 0;
     padding: 0;
 }
-
-/*  ========= THOSE ABOVE SHOULD STAY - THOSE BELOW STILL NEED TRIAGE ==========
- */
 
 .h-is-label {
     color: #DDD;
@@ -410,20 +399,12 @@ hr.horizontal-line {
     display: inline-block !important
 }
 
-.m-0 {
-    margin: 0 !important
-}
-
 .mt-1 {
     margin-top: .25rem !important
 }
 
 .mr-1 {
     margin-right: .25rem !important
-}
-
-.mb-1 {
-    margin-bottom: .25rem !important
 }
 
 .ml-1 {
@@ -450,11 +431,6 @@ hr.horizontal-line {
     margin-right: .75rem !important
 }
 
-
-.ml-3 {
-    margin-left: .75rem !important
-}
-
 .mt-4 {
     margin-top: 1rem !important
 }
@@ -463,18 +439,6 @@ hr.horizontal-line {
     margin-bottom: 1rem !important
 }
 
-.mt-5 {
-    margin-top: 1.5rem !important
-}
-
 .ml-5 {
     margin-left: 1.5rem !important
-}
-
-.pt-1 {
-    padding-top: .25rem !important
-}
-
-.pb-2 {
-    padding-bottom: .5rem !important
 }

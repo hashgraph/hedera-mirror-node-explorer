@@ -105,7 +105,7 @@
             <template v-slot:value>
               <HbarAmount :amount="maxFeePerGas"/>
               <span v-if="maxFeePerGas"
-                    class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxFeePerGas) }}</span>
+                    class="h-is-extra-text h-is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxFeePerGas) }}</span>
             </template>
           </Property>
           <Property id="maxPriorityFeePerGas">
@@ -113,7 +113,7 @@
             <template v-slot:value>
               <HbarAmount :amount="maxPriorityFeePerGas"/>
               <span v-if="maxPriorityFeePerGas"
-                    class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
+                    class="h-is-extra-text h-is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
             </template>
           </Property>
         </template>
@@ -122,7 +122,7 @@
           <template v-slot:value>
             <HbarAmount :amount="gasPrice"/>
             <span v-if="gasPrice"
-                  class="h-is-extra-text is-numeric ml-1">{{ gWeiExtra(gasPrice) }}</span>
+                  class="h-is-extra-text h-is-numeric ml-1">{{ gWeiExtra(gasPrice) }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">

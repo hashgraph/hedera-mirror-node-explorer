@@ -24,7 +24,7 @@
 
 <template>
 
-  <div v-if="formattedId && routeToTransaction" class="is-numeric should-wrap">
+  <div v-if="formattedId && routeToTransaction" class="h-is-numeric h-should-wrap">
     <router-link :to="routeToTransaction">
       <div>
         <TransactionIdValue :id="formattedId"/>
@@ -32,7 +32,7 @@
     </router-link>
   </div>
 
-  <span v-else-if="showNone" class="has-text-grey">None</span>
+  <span v-else-if="showNone" class="h-is-low-contrast">None</span>
 
   <span v-else/>
 

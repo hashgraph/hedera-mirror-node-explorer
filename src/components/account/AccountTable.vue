@@ -67,7 +67,7 @@
             v-bind:token-id="props.row.balance?.tokens[0].token_id"
             v-bind:show-extra="true"/>
       </div>
-      <div v-else class="has-text-grey">
+      <div v-else class="h-is-low-contrast">
         None
       </div>
 

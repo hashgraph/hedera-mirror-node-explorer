@@ -25,7 +25,7 @@
 <template>
   <div v-if="blockNumber !== undefined && blockRoute" class="is-inline-block">
     <router-link :to="blockRoute">
-      <span class="is-numeric">{{ blockNumber }}</span>
+      <span class="h-is-numeric">{{ blockNumber }}</span>
     </router-link>
   </div>
 </template>

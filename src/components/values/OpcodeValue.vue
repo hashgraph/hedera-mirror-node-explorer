@@ -24,10 +24,10 @@
 
 <template>
   <div class="opcode-value">
-    <p class="has-text-grey">{{ opcode.index16 }}:</p>
+    <p class="h-is-low-contrast">{{ opcode.index16 }}:</p>
     <p v-if="showHexaOpcode" class="h-is-extra-text">{{ opcode.hex }}</p>
-    <p v-if="showHexaOpcode" class="has-text-grey">-</p>
-    <p :class="{'has-text-grey':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
+    <p v-if="showHexaOpcode" class="h-is-low-contrast">-</p>
+    <p :class="{'h-is-low-contrast':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
     <div v-if="opcode.operand.length > 0">
       <ContractLink v-if="contract" :contract-id="displayAddress"/>
       <AccountLink v-else-if="account" :account-id="displayAddress"/>
@@ -35,8 +35,8 @@
     </div>
     <template v-if="contract || account">
       <p>//</p>
-      <ContractLink v-if="contract" :contract-id="contract.contract_id" class="has-text-grey"/>
-      <AccountLink v-else-if="account" :account-id="account.account" class="has-text-grey"/>
+      <ContractLink v-if="contract" :contract-id="contract.contract_id" class="h-is-low-contrast"/>
+      <AccountLink v-else-if="account" :account-id="account.account" class="h-is-low-contrast"/>
       <p v-else/>
     </template>
   </div>

@@ -27,7 +27,7 @@
     <div class="evm-address">
       <Copyable :content-to-copy="evmAddress ?? ''" :enable-copy="enableCopy">
         <template v-slot:content>
-          <div class="has-text-grey h-is-monospace" style="display: inline">
+          <div class="h-is-low-contrast h-is-monospace" style="display: inline">
             {{ (props.compact || !isSmallScreen) ? nonSignificantCompact : nonSignificantFull }}
           </div>
           <div class="h-is-monospace" style="margin-right: 4px; display: inline">
@@ -54,7 +54,7 @@
       </span>
     </div>
     <div v-if="showType" class="address-type">
-      <div class="has-text-grey">{{ entityType }}</div>
+      <div class="h-is-low-contrast">{{ entityType }}</div>
       <template v-if="verified">
         <div class="h-is-extra-text">
           {{ contractName }}
@@ -66,7 +66,7 @@
     </div>
   </div>
   <div v-else-if="initialLoading"/>
-  <div v-else-if="showNone" class="has-text-grey">None</div>
+  <div v-else-if="showNone" class="h-is-low-contrast">None</div>
   <div v-else></div>
 </template>
 

@@ -42,7 +42,7 @@
         <div v-if="selectedScope==='TOKEN TRANSFERS BY ID' || selectedScope==='NFT TRANSFERS BY ID'"
              class="column is-two-fifths">
           <input class="input is-small has-text-left has-text-white" type="text" placeholder="ENTER TOKEN ID"
-                 :class="{'has-text-grey': !tokenId}"
+                 :class="{'h-is-low-contrast': !tokenId}"
                  :value="tokenId"
                  @input="handleInput"
                  style="min-width: 13rem; max-width: 13rem; height:26px; margin-top: 1px; border-radius: 4px; border-width: 1px; background-color: var(--h-theme-box-background-color)">

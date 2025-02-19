@@ -56,7 +56,7 @@
         <template #value>
           <ByteCodeValue :byte-code="inputArgsOnly ?? undefined" :height-in-pixel="140"/>
           <div v-if="inputDecodingStatus" class="h-is-extra-text">
-            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
             <span>{{ inputDecodingStatus }}</span>
           </div>
         </template>
@@ -72,7 +72,7 @@
       <template #value>
         <ByteCodeValue :byte-code="input ?? undefined" :heightInPixel="140"/>
         <div v-if="functionDecodingStatus" class="h-is-extra-text">
-          <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+          <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
           <span>{{ functionDecodingStatus }}</span>
         </div>
       </template>

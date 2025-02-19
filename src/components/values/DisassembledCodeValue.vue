@@ -29,12 +29,12 @@
         <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
       </div>
     </template>
-    <p v-else class="has-text-grey">{{ disassembledError }}</p>
+    <p v-else class="h-is-low-contrast">{{ disassembledError }}</p>
   </div>
 
   <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+  <span v-else class="h-is-low-contrast">None</span>
 
 </template>
 

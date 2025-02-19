@@ -33,7 +33,7 @@
         <span style="font-weight: bold">{{ props.id ?? "" }}</span>
       </template>
     </Copyable>
-    <span v-if="props.checksum" class="has-text-grey">-{{ props.checksum }}</span>
+    <span v-if="props.checksum" class="h-is-low-contrast">-{{ props.checksum }}</span>
   </div>
 
 </template>

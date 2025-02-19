@@ -33,7 +33,7 @@
         </template>
         <template #value>
           <HexaDumpValue :byte-string="errorHash" :show-none="true"/>
-          <div class="h-is-extra-text should-wrap">{{ errorSignature }}</div>
+          <div class="h-is-extra-text h-should-wrap">{{ errorSignature }}</div>
         </template>
       </Property>
 
@@ -67,7 +67,7 @@
         <template v-else>
           <HexaDumpValue :byte-string="error" :show-none="true"/>
           <div v-if="errorDecodingStatus" class="h-is-extra-text">
-            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
             <span>{{ errorDecodingStatus }}</span>
           </div>
         </template>

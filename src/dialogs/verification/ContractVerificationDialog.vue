@@ -46,7 +46,7 @@
         <div style="margin-bottom: 1.0rem">
           {{ controller.status.value }}
         </div>
-        <div style="margin-bottom: 1.0rem; padding: 0.75rem" class="h-dotted-area" @drop="handleDrop" @dragover="handleDragOver">
+        <div style="margin-bottom: 1.0rem; padding: 0.75rem" class="dotted-area" @drop="handleDrop" @dragover="handleDragOver">
           <template v-if="items.length >= 1">
             <FileList :audit-items="items" @clear-all-files="controller.handleClearAllFiles()"/>
           </template>
@@ -223,6 +223,10 @@ div.inline-help {
 
 .is-invisible {
   visibility: hidden
+}
+
+.dotted-area {
+  border: dashed 1px var(--network-theme-color);
 }
 
 </style>
