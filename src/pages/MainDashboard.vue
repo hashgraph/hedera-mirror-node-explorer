@@ -34,9 +34,7 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="tpsController">
-        <template #chartViewExtra>{{ currentTPS }}</template>
-      </ChartView>
+      <ChartView :controller="tpsController"/>
     </div>
 
     <div class="dashboard-content">
@@ -72,7 +70,6 @@ import ChartView from "@/charts/core/ChartView.vue";
 import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
-import {ChartRange} from "@/charts/core/ChartController.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {routeManager} from "@/router.ts";
 
@@ -98,7 +95,7 @@ onBeforeUnmount(() => networkFeeController.unmount())
 const activeAccountsController = new GenericMetricController(
     "Active Accounts",
     "active_accounts",
-    true,
+    false,
     themeController,
     routeManager,
     []
