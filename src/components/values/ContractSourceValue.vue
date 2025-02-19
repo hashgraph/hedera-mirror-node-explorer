@@ -26,15 +26,15 @@
 <template>
   <div
       v-if="props.sourceFiles.length > 0"
-      id="source-code"
-      class="source-container"
+      id="h-code-source"
+      class="h-code-box"
   >
     <template v-for="(file, index) in props.sourceFiles" :key="file.path">
       <template v-if="isFiltered(file)">
         <div class="source-filename">
           {{ file.name }}
         </div>
-        <SolidityCode class="source-code">
+        <SolidityCode class="h-code-source">
           {{ file.content }}
         </SolidityCode>
       </template>
@@ -87,23 +87,8 @@ const isFiltered = (file: SourcifyResponseItem) => props.filter == '' || props.f
 
 <style scoped>
 
-div.source-container {
-  background-color: var(--background-secondary);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  max-height: 400px;
-  min-height: 5rem;
-  overflow-y: auto;
-  padding: 16px;
-}
-
 div.source-filename {
   color: var(--network-text-accent-color);
-}
-
-.source-code {
-  font-size: 11px;
-  background-color: var(--background-secondary);
 }
 
 hr.horizontal-line {

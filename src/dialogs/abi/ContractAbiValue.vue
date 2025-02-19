@@ -26,17 +26,17 @@
 
 <template>
 
-  <div id="abi" class="abi-container">
+  <div id="abi" class="h-code-box">
 
     <template v-if="showAll && roContractCallBuilders.length == 0 && rwContractCallBuilders.length == 0">
-      <SolidityCode class="source-code">
+      <SolidityCode class="h-code-source">
         {{ "//\n// No function\n//" }}
       </SolidityCode>
     </template>
     <template v-else>
       <template v-if="showReadOnly">
         <template v-if="roContractCallBuilders.length >= 1">
-          <SolidityCode class="source-code">
+          <SolidityCode class="h-code-source">
             {{ "//\n// Functions (read-only)\n//" }}
           </SolidityCode>
           <div v-for="(b,i) in roContractCallBuilders" :key="b.fragment.selector">
@@ -47,7 +47,7 @@
           </div>
         </template>
         <template v-else>
-          <SolidityCode class="source-code">
+          <SolidityCode class="h-code-source">
             {{ "//\n// No read-only function\n//" }}
           </SolidityCode>
         </template>
@@ -57,7 +57,7 @@
 
       <template v-if="showReadWrite">
         <template v-if="rwContractCallBuilders.length >= 1">
-          <SolidityCode class="source-code">
+          <SolidityCode class="h-code-source">
             {{ "//\n// Functions (read-write)\n//" }}
           </SolidityCode>
           <div v-for="(b,i) in rwContractCallBuilders" :key="b.fragment.selector">
@@ -68,7 +68,7 @@
           </div>
         </template>
         <template v-else>
-          <SolidityCode class="source-code">
+          <SolidityCode class="h-code-source">
             {{ "//\n// No read-write function\n//" }}
           </SolidityCode>
         </template>
@@ -78,7 +78,7 @@
     <hr v-if="showAll" class="horizontal-line"/>
 
     <template v-if="showEvents">
-      <SolidityCode class="source-code">
+      <SolidityCode class="h-code-source">
         {{ eventList }}
       </SolidityCode>
     </template>
@@ -86,7 +86,7 @@
     <hr v-if="showAll" class="horizontal-line"/>
 
     <template v-if="showErrors">
-      <SolidityCode class="source-code">
+      <SolidityCode class="h-code-source">
         {{ errorList }}
       </SolidityCode>
     </template>
@@ -94,7 +94,7 @@
     <hr v-if="showAll" class="horizontal-line"/>
 
     <template v-if="showOther">
-      <SolidityCode class="source-code">
+      <SolidityCode class="h-code-source">
         {{ otherList }}
       </SolidityCode>
     </template>
@@ -314,21 +314,6 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
-
-div.abi-container {
-  background-color: var(--background-secondary);
-  border: 1px solid transparent;
-  border-radius: 8px;
-  max-height: 400px;
-  min-height: 5rem;
-  overflow-y: auto;
-  padding: 16px;
-}
-
-.source-code {
-  font-size: 11px;
-  background-color: var(--background-secondary);
-}
 
 hr.horizontal-line {
   height: 2px;

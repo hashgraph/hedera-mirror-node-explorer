@@ -29,7 +29,7 @@
     <div id="bytecode" class="code-pane" :class="{'split-padding': isMediumScreen}">
       <div class="property-name">Runtime Bytecode</div>
       <ByteCodeValue
-          class="code-value"
+          class="h-code-box h-code-source"
           :byte-code="props.byteCode ?? undefined"
       />
     </div>
@@ -44,7 +44,7 @@
       </div>
 
       <DisassembledCodeValue
-          class="code-value"
+          class="h-code-box h-code-source"
           :byte-code="props.byteCode ?? undefined"
           :show-hexa-opcode="showHexaOpcode"
       />
@@ -89,7 +89,6 @@ const isMediumScreen = inject('isMediumScreen', true)
 
 <style scoped>
 
-
 div.split-bytecode-container {
   display: flex;
   align-items: flex-start;
@@ -124,18 +123,6 @@ div.property-name {
   font-weight: 500;
   height: 16px;
   text-transform: uppercase;
-}
-
-.code-value {
-  background-color: var(--background-secondary);
-  border-width: 0;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 400;
-  max-height: 400px;
-  min-height: 20px;
-  overflow-y: auto;
-  padding: 16px;
 }
 
 div.split-separator {

@@ -376,11 +376,15 @@ hr.horizontal-line {
     background-color: var(--background-secondary);
     border-radius: 8px;
     border-width: 0;
-    font-size: 11px;
     min-height: 20px;
     max-height: 400px;
     overflow-y: auto;
     padding: 16px;
+}
+
+.h-code-source {
+    background-color: var(--background-secondary) !important;
+    font-size: 12px !important;
 }
 
 /*  ============================================================================
