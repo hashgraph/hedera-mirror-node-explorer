@@ -21,7 +21,7 @@
 import {ChartConfiguration} from "chart.js";
 import {ChartRange, computeGranularityForRange, computeStartDateForRange,} from "@/charts/core/ChartController.ts";
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
-import {EcosystemMetric, getTimeRange} from "@/charts/hgraph/EcosystemMetric.ts";
+import {averageMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
 
@@ -45,17 +45,22 @@ export class TPSController extends HgraphChartController {
         return "{" +
             "  all_metrics: ecosystem_metric(" +
             "    where: {" +
-            "      name: {_eq: \"transactions\"}, " +
+            "      name: {_eq: \"network_tps\"}, " +
             "      period: {_eq: \"hour\"}," +
-            "      end_date: {_gte: \"" + periodStartDate + "\"}," +
+            "      start_date: {_gte: \"" + periodStartDate + "\"}," +
             "    }" +
-            "    order_by: {end_date: asc}" +
+            "    order_by: {start_date: asc}" +
             "  ) {" +
             "    start_date" +
             "    end_date" +
             "    total" +
             "  }" +
             "}"
+    }
+
+    protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
+        const granularity = computeGranularityForRange(range)
+        return averageMetrics(metrics, granularity)
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
@@ -107,13 +112,7 @@ export class TPSController extends HgraphChartController {
     //
 
     private makeGraphDataSet(metrics: EcosystemMetric[]): object {
-        const totals: number[] = []
-        for (const m of metrics) {
-            const range = getTimeRange(m) // milliseconds
-            if (range !== null) {
-                totals.push(Math.round(m.total / (range / 1000)))
-            }
-        }
+        const totals = metrics.map((metric) => metric.total)
         const graphBarColor = this.themeController.getGraphBarColor()
         return {
             label: "TPS",
