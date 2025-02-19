@@ -420,12 +420,15 @@ hr.horizontal-line {
     text-overflow: ellipsis;
 }
 
-/* Code box (source, bytecode, assembly code) */
 .h-code-box {
-    border: 0.5px solid dimgrey;
-    gap: 0.42rem;
+    background-color: var(--background-secondary);
+    border-radius: 8px;
+    border-width: 0;
+    font-size: 11px;
+    min-height: 20px;
+    max-height: 400px;
     overflow-y: auto;
-    min-height: 5rem;
+    padding: 16px;
 }
 
 .h-has-page-background {
