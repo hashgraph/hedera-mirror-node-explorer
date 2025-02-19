@@ -27,7 +27,7 @@
 <template>
   <div v-if="displayedAuditItems.length> 0" id="file-table">
     <div class="is-flex is-justify-content-space-between">
-            <span class="h-is-primary-subtitle">
+            <span class="h-is-bold">
                 {{ tableTitle }}
             </span>
       <div class="is-flex is-justify-content-flex-end">

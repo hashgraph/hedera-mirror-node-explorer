@@ -61,7 +61,7 @@
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
             <div v-if="scheduledTransaction" id="scheduledLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
-                <span class="h-is-text-size-3 has-text-grey">Show scheduled transaction</span>
+                <span class="has-text-grey">Show scheduled transaction</span>
               </router-link>
             </div>
           </template>
@@ -190,7 +190,7 @@
             True
             <div v-if="schedulingTransaction" id="schedulingLink">
               <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
-                <span class="has-text-grey h-is-text-size-3">Show schedule create transaction</span>
+                <span class="has-text-grey">Show schedule create transaction</span>
               </router-link>
             </div>
           </template>

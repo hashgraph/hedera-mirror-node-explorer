@@ -340,39 +340,6 @@ hr.horizontal-line {
 /*  ========= THOSE ABOVE SHOULD STAY - THOSE BELOW STILL NEED TRIAGE ==========
  */
 
-.h-is-table-compact table.o-table {
-    margin: 0;
-}
-
-.h-is-primary-subtitle {
-    font-style: normal;
-    font-weight: 900;
-    font-size: 16px;
-    line-height: 19px;
-}
-
-.h-is-text-size-2 {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 10px;
-    line-height: 12px;
-}
-
-.h-is-text-size-3 {
-    font-style: normal;
-    font-weight: normal;
-    font-size: 11px;
-    line-height: 13px;
-}
-
-
-.h-is-navbar-item {
-    font-style: normal;
-    font-weight: 300;
-    font-size: 14px;
-    line-height: 17px;
-}
-
 .h-is-label {
     color: #DDD;
     background: #383838;
@@ -402,10 +369,6 @@ hr.horizontal-line {
     align-content: center;
 }
 
-.h-is-json {
-    white-space: pre-wrap;
-}
-
 .w250 {
     max-width: 250px;
     overflow: hidden;
@@ -429,10 +392,6 @@ hr.horizontal-line {
     max-height: 400px;
     overflow-y: auto;
     padding: 16px;
-}
-
-.h-has-page-background {
-    background-color: var(--background-primary);
 }
 
 /*  ============================================================================

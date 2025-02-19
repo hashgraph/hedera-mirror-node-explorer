@@ -41,9 +41,7 @@
       <Property id="fixedFee" full-width>
         <template #name>Fixed Fees</template>
         <template v-if="hasFixedFees" #value>
-          <div class="h-is-table-compact">
-            <FixedFeeTable :analyzer="analyzer"/>
-          </div>
+          <FixedFeeTable :analyzer="analyzer"/>
         </template>
         <template v-else #value>
           <span class="has-text-grey">None</span>
@@ -53,9 +51,7 @@
       <Property v-if="isFungible" id="fractionalFee" full-width>
         <template #name>Fractional Fees</template>
         <template v-if="hasFractionalFees" #value>
-          <div class="h-is-table-compact">
-            <FractionalFeeTable :analyzer="analyzer"/>
-          </div>
+          <FractionalFeeTable :analyzer="analyzer"/>
         </template>
         <template v-else #value>
           <span class="has-text-grey">None</span>
@@ -65,9 +61,7 @@
       <Property v-else id="royalteeFee" full-width>
         <template #name>Percentage & Fallback Fees</template>
         <template v-if="hasRoyaltyFees" #value>
-          <div class="h-is-table-compact">
-            <RoyaltyFeeTable class="h-is-table-compact" :analyzer="analyzer"/>
-          </div>
+          <RoyaltyFeeTable :analyzer="analyzer"/>
         </template>
         <template v-else #value>
           <span class="has-text-grey">None</span>

@@ -35,7 +35,7 @@
       <div class="icon mt-4" style="font-size: 50px">
         <i class="fas fa-file"></i>
       </div>
-      <div class="h-is-text-size-2 mt-5">
+      <div class="place-holder-text">
         {{ type }}
       </div>
     </template>
@@ -82,4 +82,11 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.place-holder-text {
+  font-size: 10px;
+  margin-top: 1.5rem;
+}
+
+</style>

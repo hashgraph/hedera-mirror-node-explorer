@@ -40,7 +40,7 @@
       </div>
 
       <div style="width: 100%">
-        <div class="h-is-primary-subtitle" style="margin-bottom: 0.75rem">
+        <div class="h-is-bold" style="margin-bottom: 0.75rem">
           Add files
         </div>
         <div style="margin-bottom: 1.0rem">
@@ -136,7 +136,7 @@ import {ContractVerificationController} from "@/dialogs/verification/ContractVer
 import {ButtonSize, TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
 import TaskPanel from "@/dialogs/core/task/TaskPanel.vue";
 import ButtonView from "@/elements/ButtonView.vue";
-import { FilePlus } from 'lucide-vue-next';
+import {FilePlus} from 'lucide-vue-next';
 
 //
 // ModalDialog
