@@ -100,7 +100,7 @@ const activeAccountsController = new GenericMetricController(
     "active_accounts",
     themeController,
     routeManager,
-    [ChartRange.year, ChartRange.all]
+    []
 )
 onMounted(() => activeAccountsController.mount())
 onBeforeUnmount(() => activeAccountsController.unmount())
