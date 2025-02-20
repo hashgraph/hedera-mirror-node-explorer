@@ -19,7 +19,7 @@
  */
 
 
-import {ChartGranularity} from "@/charts/core/ChartRange.ts";
+import {ChartGranularity, ChartRange, computeStartDateForRange} from "@/charts/core/ChartRange.ts";
 
 export interface EcosystemMetric {
     start_date: string,
@@ -42,6 +42,22 @@ export function makeLatestQuery(metricName: string): string {
         "    total" +
         "  }" +
         "}"
+}
+
+export function filterMetrics(rawMetrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
+    const result: EcosystemMetric[] = []
+
+    const startTime = computeStartDateForRange(range).getTime()
+    for (const m of rawMetrics.reverse()) {
+        const metricDate = getEndDate(m)
+        if (metricDate !== null && metricDate.getTime() >= startTime) {
+            result.push(m)
+        } else {
+            break
+        }
+    }
+
+    return result.reverse()
 }
 
 export function aggregateMetrics(rawMetrics: EcosystemMetric[], granularity: ChartGranularity): EcosystemMetric[] {
@@ -77,6 +93,25 @@ export function averageMetrics(rawMetrics: EcosystemMetric[], granularity: Chart
             break
         case ChartGranularity.year:
             result = averageMetricsByYear(rawMetrics)
+            break
+    }
+    return result
+}
+
+export function selectMetrics(rawMetrics: EcosystemMetric[], granularity: ChartGranularity): EcosystemMetric[] {
+    let result: EcosystemMetric[]
+    switch (granularity) {
+        case ChartGranularity.hour:
+            result = rawMetrics
+            break
+        case ChartGranularity.day:
+            result = selectMetricsByDay(rawMetrics)
+            break
+        case ChartGranularity.month:
+            result = selectMetricsByMonth(rawMetrics)
+            break
+        case ChartGranularity.year:
+            result = selectMetricsByYear(rawMetrics)
             break
     }
     return result
@@ -228,6 +263,56 @@ function averageMetricsByYear(rawMetrics: EcosystemMetric[]): EcosystemMetric[] 
 function averageMetricSegment(rawMetrics: EcosystemMetric[], startIndex: number, endIndex: number): EcosystemMetric {
     const result = aggregateMetricSegment(rawMetrics, startIndex, endIndex)
     result.total /= (endIndex - startIndex)
+    return result
+}
+
+
+//
+// Private (selectMetrics)
+//
+
+function selectMetricsByDay(rawMetrics: EcosystemMetric[]): EcosystemMetric[] {
+    const result: EcosystemMetric[] = []
+    let i = 0
+    while (i < rawMetrics.length) {
+        const startIndex = i
+        const startDay = getDayFromDate(rawMetrics[startIndex].start_date)
+        i += 1
+        while (i < rawMetrics.length && getDayFromDate(rawMetrics[i].start_date) === startDay) {
+            i += 1
+        }
+        result.push(rawMetrics[i-1])
+    }
+    return result
+}
+
+function selectMetricsByMonth(rawMetrics: EcosystemMetric[]): EcosystemMetric[] {
+    const result: EcosystemMetric[] = []
+    let i = 0
+    while (i < rawMetrics.length) {
+        const startIndex = i
+        const startMonth = getMonthFromDate(rawMetrics[startIndex].start_date)
+        i += 1
+        while (i < rawMetrics.length && getMonthFromDate(rawMetrics[i].start_date) === startMonth) {
+            i += 1
+        }
+        result.push(rawMetrics[i-1])
+    }
+    return result
+}
+
+function selectMetricsByYear(rawMetrics: EcosystemMetric[]): EcosystemMetric[] {
+    const result: EcosystemMetric[] = []
+    let i = 0
+    while (i < rawMetrics.length) {
+        const startIndex = i
+        const startYear = getYearFromDate(rawMetrics[startIndex].start_date)
+        i += 1
+        while (i < rawMetrics.length && getYearFromDate(rawMetrics[i].start_date) === startYear) {
+            i += 1
+        }
+        result.push(rawMetrics[i-1])
+    }
     return result
 }
 

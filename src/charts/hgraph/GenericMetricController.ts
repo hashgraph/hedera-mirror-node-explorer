@@ -18,10 +18,9 @@
  *
  */
 
-import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
-import {ChartRange, computeGranularityForRange, computeStartDateForRange} from "@/charts/core/ChartRange.ts";
-import {EcosystemMetric, makeLatestQuery} from "@/charts/hgraph/EcosystemMetric.ts";
-import {ChartConfiguration} from "chart.js";
+import {HgraphChartController} from "@/charts/hgraph/HgraphChartController.ts";
+import {ChartRange, computeStartDateForRange} from "@/charts/core/ChartRange.ts";
+import {makeLatestQuery} from "@/charts/hgraph/EcosystemMetric.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
 
