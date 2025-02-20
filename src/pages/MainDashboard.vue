@@ -34,7 +34,7 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="tpsController"/>
+      <ChartView :controller="txOverTimeController"/>
     </div>
 
     <div class="dashboard-content">
@@ -65,7 +65,7 @@
 import {onBeforeUnmount, onMounted} from 'vue';
 import Footer from "@/components/page/Footer.vue";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
-import {TPSController} from "@/charts/hgraph/TPSController.ts";
+import {TxOverTimeController} from "@/charts/hgraph/TxOverTimeController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
 import {ActiveAccountController} from "@/charts/hgraph/ActiveAccountController.ts";
@@ -79,9 +79,13 @@ defineProps({
 
 const themeController = ThemeController.inject()
 
-const tpsController = new TPSController(themeController, routeManager)
-onMounted(() => tpsController.mount())
-onBeforeUnmount(() => tpsController.unmount())
+const txOverTimeController = new TxOverTimeController(themeController, routeManager)
+onMounted(() => txOverTimeController.mount())
+onBeforeUnmount(() => txOverTimeController.unmount())
+
+// const tpsController = new TPSController(themeController, routeManager)
+// onMounted(() => tpsController.mount())
+// onBeforeUnmount(() => tpsController.unmount())
 
 const tpsMetricLoader = new TPSMetricLoader()
 const currentTPS = tpsMetricLoader.currentTPS
