@@ -87,7 +87,7 @@
             Balance
           </template>
           <template #value>
-            <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
+            <HbarAmount v-if="hbarBalance !== null" :amount="hbarBalance" show-extra/>
           </template>
         </Property>
         <Property id="key">
@@ -262,7 +262,6 @@ import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import ContractResultLogs from "@/components/contract/ContractResultLogs.vue";
 import {ContractResultsLogsAnalyzer} from "@/utils/analyzer/ContractResultsLogsAnalyzer";
 import {BalanceAnalyzer} from "@/utils/analyzer/BalanceAnalyzer";
-import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
@@ -273,6 +272,7 @@ import ContractERCSection from "@/components/contract/ContractERCSection.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import EntityIDView from "@/components/values/EntityIDView.vue";
+import HbarAmount from "@/components/values/HbarAmount.vue";
 
 const props = defineProps({
   contractId: String,
@@ -368,6 +368,7 @@ const enableExpiry = routeManager.enableExpiry
 const contract = contractLocParser.entity
 const ethereumAddress = contractLocParser.ethereumAddress
 const notification = contractLocParser.errorNotification
+const hbarBalance = balanceAnalyzer.hbarBalance
 const isVerified = contractAnalyzer.isVerified
 const contractName = contractAnalyzer.contractName
 const logs = contractResultsLogsAnalyzer.logs

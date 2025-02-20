@@ -114,7 +114,7 @@
             Balance
           </template>
           <template #value>
-            <InlineBalancesValue :balance-analyzer="balanceAnalyzer"/>
+            <HbarAmount v-if="hbarBalance !== null" :amount="hbarBalance" show-extra/>
           </template>
         </Property>
         <EditableProperty
@@ -359,7 +359,6 @@ import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import AllowancesSection from "@/components/allowances/AllowancesSection.vue";
-import InlineBalancesValue from "@/components/values/InlineBalancesValue.vue";
 import MirrorLink from "@/components/MirrorLink.vue";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
@@ -547,6 +546,7 @@ const isHieroWallet = computed(() => walletManager.isHieroWallet.value)
 const isAccountEditable = computed(() => isMyAccount.value && isHieroWallet.value
 )
 
+const hbarBalance = balanceAnalyzer.hbarBalance
 const transactionType = transactionTableController.transactionType
 const loaded = verifiedContractsController.loaded
 const overflow = verifiedContractsController.overflow
