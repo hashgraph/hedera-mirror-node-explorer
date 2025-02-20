@@ -22,6 +22,7 @@ import {ChartController, LoadedData} from "@/charts/core/ChartController.ts";
 import {ChartGranularity, ChartRange, computeGranularityForRange} from "@/charts/core/ChartRange.ts";
 import {aggregateMetrics, EcosystemMetric, getEndDate, getStartDate} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios, {AxiosRequestConfig} from "axios";
+import {ChartConfiguration} from "chart.js";
 
 export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
 
@@ -31,6 +32,73 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
 
     protected abstract makeQuery(range: ChartRange): string
     protected abstract makeLatestQuery(): string
+
+
+    //
+    // Protected (tools for subclasses)
+    //
+
+    protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange,
+                                 logarithmic: boolean, yLabel: string|null): ChartConfiguration {
+        const granularity = computeGranularityForRange(range)
+        const graphLabels = makeGraphLabels(metrics, granularity)
+        const graphDataSet = this.makeGraphDataSet(metrics) as any
+        const textPrimaryColor = this.themeController.getTextPrimaryColor()
+        const textSecondaryColor = this.themeController.getTextSecondaryColor()
+        const yScaleType = logarithmic ? "logarithmic" : "linear"
+
+        return {
+            type: 'bar',
+            data: {
+                labels: graphLabels,
+                datasets: [graphDataSet],
+            },
+            options: {
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: {
+                            color: textPrimaryColor
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        type: yScaleType,
+                        ticks: {
+                            color: textPrimaryColor
+                        },
+                        grid: {
+                            display: false
+                        },
+                        beginAtZero: true,
+                        title: {
+                            display: yLabel !== null,
+                            text: yLabel ?? "",
+                            color: textSecondaryColor
+                        },
+                    }
+                },
+                maintainAspectRatio: false
+            }
+        }
+    }
+
+    protected makeGraphDataSet(metrics: EcosystemMetric[]): object {
+        const totals = metrics.map((m: EcosystemMetric) => m.total)
+        const graphBarColor = this.themeController.getGraphBarColor()
+        return {
+            label: this.chartTitle,
+            data: totals,
+            borderWidth: 1,
+            backgroundColor: graphBarColor
+        }
+    }
 
     //
     // ChartController
