@@ -47,14 +47,14 @@
             </TaskPanel>
           </slot>
         </div>
-        <div  class="dialog-layer-success">
+        <div class="dialog-layer-success">
           <slot name="taskDialogSuccess">
             <TaskPanel :mode="TaskPanelMode.success">
               <template #taskPanelMessage>Operation did succeed</template>
             </TaskPanel>
           </slot>
         </div>
-        <div  class="dialog-layer-error">
+        <div class="dialog-layer-error">
           <slot name="taskDialogError">
             <TaskPanel :mode="TaskPanelMode.error">
               <template #taskPanelMessage>Operation did fail</template>
@@ -75,7 +75,8 @@
         <ModalDialogButton
             v-model:show-dialog="props.controller.showDialog.value"
             :enabled="cancelButtonEnabled">
-          CANCEL</ModalDialogButton>
+          CANCEL
+        </ModalDialogButton>
 
         <ModalDialogButton
             v-model:show-dialog="props.controller.showDialog.value"
@@ -91,7 +92,8 @@
       <template v-else>
 
         <ModalDialogButton
-            v-model:show-dialog="props.controller.showDialog.value">CLOSE</ModalDialogButton>
+            v-model:show-dialog="props.controller.showDialog.value">CLOSE
+        </ModalDialogButton>
 
       </template>
 
@@ -109,8 +111,12 @@
       <slot name="taskDialogConfirm"/>
     </template>
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="showConfirmDialog">CANCEL</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showConfirmDialog" @action="handleConfirmExecute">CONFIRM</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showConfirmDialog">
+        CANCEL
+      </ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showConfirmDialog" @action="handleConfirmExecute" is-default>
+        CONFIRM
+      </ModalDialogButton>
     </template>
   </ModalDialog>
 
@@ -175,7 +181,7 @@ const handleConfirmExecute = async () => {
     props.controller.executeError.value = null
     changeState(TaskDialogState.Success)
     emit("taskDialogDidSucceed")
-  } catch(error) {
+  } catch (error) {
     props.controller.executeError.value = error
     changeState(TaskDialogState.Error)
   }
@@ -191,7 +197,7 @@ const executeButtonEnabled = computed(
 
 const visibleIndex = computed((): number => {
   let result: number
-  switch(state.value) {
+  switch (state.value) {
     case TaskDialogState.Input:
       result = 0
       break

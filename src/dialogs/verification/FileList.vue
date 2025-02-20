@@ -26,19 +26,25 @@
 
 <template>
   <div v-if="displayedAuditItems.length> 0" id="file-table">
-    <div class="is-flex is-justify-content-space-between">
-            <span class="h-is-bold">
-                {{ tableTitle }}
-            </span>
-      <div class="is-flex is-justify-content-flex-end">
-                <span v-if="nbUnusedAuditItems > 0" class="has-text-info" style="cursor: pointer"
-                      @click="handleToggleFiltering">
-                    {{ isListFiltered ? 'Show unused' : 'Hide unused' }}
-                    {{ ' (' + nbUnusedAuditItems + ')' }}
-                </span>
-        <span class="has-text-info ml-5" style="cursor: pointer" @click="handleClearAllFiles">
-                    Clear all
-                </span>
+    <div class="table-header">
+      <div class="h-is-bold">
+        {{ tableTitle }}
+      </div>
+      <div class="header-right">
+        <div v-if="nbUnusedAuditItems > 0"
+             style="cursor: pointer; color: var(--network-text-accent-color)"
+             @click="handleToggleFiltering"
+        >
+          {{ isListFiltered ? 'Show unused' : 'Hide unused' }}
+          {{ ' (' + nbUnusedAuditItems + ')' }}
+        </div>
+        <div
+            class=" ml-5"
+            style="cursor: pointer; color: var(--network-text-accent-color)"
+            @click="handleClearAllFiles"
+        >
+          Clear all
+        </div>
       </div>
     </div>
 
@@ -46,6 +52,9 @@
         :current-page="currentPage"
         :data="displayedAuditItems"
         :paginated="isPaginated"
+        pagination-order="centered"
+        :range-before="0"
+        :range-after="0"
         :per-page="perPage"
         aria-current-label="Current page"
         aria-next-label="Next page"
@@ -53,25 +62,34 @@
         aria-previous-label="Previous page">
 
       <o-table-column v-slot="props" field="type_and_name">
-        <div class="is-flex is-align-items-center">
-                    <span v-if="isMetadata(props.row)" class="icon" style="font-size: 15px"
-                          :class="{'h-is-low-contrast': isUnused(props.row)}"
-                    >
-                        <i class="far fa-file-alt"></i>
-                    </span>
-          <img v-else-if="isUnused(props.row)" alt="Solidity file" class="image mr-1" style="width: 20px; height: 20px;"
+        <div class="table-row ">
+
+          <div v-if="isMetadata(props.row)">
+            <FileJson :size="20"/>
+          </div>
+
+          <img v-else-if="isUnused(props.row)"
+               alt="Solidity file"
+               style="width: 20px; height: 20px;"
                src="../../assets/solidity-icon-grey.svg"
           >
-          <img v-else alt="Solidity file" class="image mr-1" style="width: 20px; height: 20px;"
+
+          <img v-else
+               alt="Solidity file"
+               style="width: 20px; height: 20px;"
                src="../../assets/solidity-icon.svg"
           >
-          <p :class="{'h-is-low-contrast':isUnused(props.row)}" class="ml-1">
+
+          <div :class="{'h-is-low-contrast':isUnused(props.row)}" class="ml-1 w300">
             {{ props.row.path }}
-          </p>
-          <span v-if="!isMetadata(props.row) && props.row.target" class="icon ml-1 h-is-low-contrast"
-                style="font-size: 14px">
-                       <i class="fa fa-arrow-left"></i>
-                    </span>
+          </div>
+
+          <div v-if="!isMetadata(props.row) && props.row.target"
+               class="icon ml-1 h-is-low-contrast"
+               style="font-size: 14px"
+          >
+            <i class="fa fa-arrow-left"></i>
+          </div>
         </div>
       </o-table-column>
 
@@ -83,97 +101,68 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, PropType, ref} from "vue";
+import {computed, PropType, ref} from "vue";
 import {ContractSourceAnalyzerItem} from "@/utils/analyzer/ContractSourceAnalyzer.ts";
+import {FileJson} from 'lucide-vue-next';
 
-export default defineComponent({
-  name: 'FileList',
+const props = defineProps({
+  auditItems: {
+    type: Array as PropType<ContractSourceAnalyzerItem[]>,
+    default: [] as Array<ContractSourceAnalyzerItem> /* to please eslint */
+  }
+})
 
-  components: {},
+const emit = defineEmits(['clearAllFiles'])
 
-  props: {
-    auditItems: {
-      type: Array as PropType<ContractSourceAnalyzerItem[]>,
-      default: [] as Array<ContractSourceAnalyzerItem> /* to please eslint */
-    }
-  },
+const currentPage = ref(1);
+const perPage = ref(10);
+const isListFiltered = ref(false)
+const isPaginated = computed(() => props.auditItems.length > perPage.value)
+const tableTitle = computed(() => `Added (${props.auditItems.length})`)
 
-  emits: ['clearAllFiles'],
-
-  setup: function (props, context) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const currentPage = ref(1);
-    const perPage = ref(10);
-    const isListFiltered = ref(false)
-    const isPaginated = computed(() => props.auditItems.length > perPage.value)
-    const tableTitle = computed(() => `Added Files (${props.auditItems.length})`)
-
-    const filteredAuditItems = computed(() => {
-      let result: Array<ContractSourceAnalyzerItem> = []
-      for (let i = 0; i < props.auditItems.length; i++) {
-        if (!props.auditItems[i].unused) {
-          result.push(props.auditItems[i])
-        }
-      }
-      return result
-    })
-
-    const displayedAuditItems = computed(() => {
-      return isListFiltered.value ? filteredAuditItems.value : props.auditItems
-    })
-
-    const nbUnusedAuditItems = computed(() => {
-      let result = 0
-      for (const i of props.auditItems) {
-        if (i.unused) {
-          result++
-        }
-      }
-      return result
-    })
-
-    const isMetadata = (item: ContractSourceAnalyzerItem) => {
-      const parts = item.path.split('.')
-      const suffix = parts[parts.length - 1].toLowerCase()
-      return suffix.toLowerCase() === 'json'
-    }
-
-    const isUnused = (item: ContractSourceAnalyzerItem) => {
-      return item.unused
-    }
-
-    const handleClearAllFiles = () => {
-      context.emit("clearAllFiles")
-    }
-
-    const handleToggleFiltering = () => {
-      isListFiltered.value = !isListFiltered.value
-    }
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      isPaginated,
-      currentPage,
-      perPage,
-      isListFiltered,
-      tableTitle,
-      filteredAuditItems,
-      displayedAuditItems,
-      nbUnusedAuditItems,
-      isMetadata,
-      isUnused,
-      handleClearAllFiles,
-      handleToggleFiltering
+const filteredAuditItems = computed(() => {
+  let result: Array<ContractSourceAnalyzerItem> = []
+  for (let i = 0; i < props.auditItems.length; i++) {
+    if (!props.auditItems[i].unused) {
+      result.push(props.auditItems[i])
     }
   }
-});
+  return result
+})
+
+const displayedAuditItems = computed(() => {
+  return isListFiltered.value ? filteredAuditItems.value : props.auditItems
+})
+
+const nbUnusedAuditItems = computed(() => {
+  let result = 0
+  for (const i of props.auditItems) {
+    if (i.unused) {
+      result++
+    }
+  }
+  return result
+})
+
+const isMetadata = (item: ContractSourceAnalyzerItem) => {
+  const parts = item.path.split('.')
+  const suffix = parts[parts.length - 1].toLowerCase()
+  return suffix.toLowerCase() === 'json'
+}
+
+const isUnused = (item: ContractSourceAnalyzerItem) => {
+  return item.unused
+}
+
+const handleClearAllFiles = () => {
+  emit("clearAllFiles")
+}
+
+const handleToggleFiltering = () => {
+  isListFiltered.value = !isListFiltered.value
+}
 
 </script>
 
@@ -182,6 +171,27 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style>
+
+div.table-header {
+  align-items: center;
+  display: flex;
+  font-size: 14px;
+  justify-content: space-between;
+}
+
+div.header-right {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+div.table-row {
+  align-items: center;
+  display: flex;
+  font-size: 12px;
+  gap: 4px;
+}
+
 #file-table table.o-table {
   margin: 0;
 }
@@ -201,7 +211,6 @@ export default defineComponent({
 
 #file-table td.o-table__td {
   border-width: 0;
-  padding-top: 0.25rem;
-  padding-bottom: 0.25rem;
+  padding: 0.25rem 0;
 }
 </style>

@@ -40,13 +40,13 @@
       </div>
 
       <div style="width: 100%">
-        <div class="h-is-bold" style="margin-bottom: 0.75rem">
-          Add files
+        <div class="has-text-centered h-is-bold mb-2">
+          Contract files
         </div>
-        <div style="margin-bottom: 1.0rem">
+        <div class="h-is-low-contrast mb-4 has-text-centered" style="font-size: 14px">
           {{ controller.status.value }}
         </div>
-        <div style="margin-bottom: 1.0rem; padding: 0.75rem" class="dotted-area" @drop="handleDrop" @dragover="handleDragOver">
+        <div class="dotted-area" @drop="handleDrop" @dragover="handleDragOver">
           <template v-if="items.length >= 1">
             <FileList :audit-items="items" @clear-all-files="controller.handleClearAllFiles()"/>
           </template>
@@ -55,7 +55,7 @@
               <FilePlus :size="24"/>
               <span>Drop .sol and .json files, or folder here... or
                 <a @click="showFileChooser">
-                  <span style="margin-left: 0.5rem; color: var(--text-primary); cursor: pointer">Choose files</span>
+                  <span style="margin-left: 0.5rem; color: var(--network-text-accent-color); cursor: pointer">Choose files</span>
                 </a>
               </span>
               <input
@@ -89,7 +89,10 @@
     <template #taskDialogSuccess>
       <TaskPanel :mode="TaskPanelMode.success">
         <template #taskPanelMessage>{{ controller.mainSuccessMessage.value }}</template>
-        <template v-if="controller.extraSuccessMessage.value" #taskPanelExtra1>{{ controller.extraSuccessMessage.value }}</template>
+        <template v-if="controller.extraSuccessMessage.value" #taskPanelExtra1>{{
+            controller.extraSuccessMessage.value
+          }}
+        </template>
       </TaskPanel>
     </template>
 
@@ -97,7 +100,9 @@
     <template #taskDialogError>
       <TaskPanel :mode="TaskPanelMode.error">
         <template #taskPanelMessage>Verification failed</template>
-        <template v-if="controller.extraErrorMessage.value !== null" #taskPanelExtra1>{{ controller.extraErrorMessage.value }}</template>
+        <template v-if="controller.extraErrorMessage.value !== null" #taskPanelExtra1>
+          {{ controller.extraErrorMessage.value }}
+        </template>
       </TaskPanel>
     </template>
 
@@ -106,7 +111,7 @@
       <ButtonView :size="ButtonSize.small"
                   :class="{'is-invisible': items.length === 0}"
                   @action="showFileChooser">
-          ADD MORE FILES
+        ADD MORE FILES
       </ButtonView>
       <input
           type="file"
@@ -149,7 +154,7 @@ const showDialog = defineModel("showDialog", {
 
 const props = defineProps({
   contractId: {
-    type: String as PropType<string|null>,
+    type: String as PropType<string | null>,
     default: null
   }
 })
@@ -216,7 +221,7 @@ div.inline-help {
   justify-content: center;
   margin-bottom: 1.5rem;
   margin-top: 1.5rem;
-  row-gap:14px;
+  row-gap: 14px;
   text-align: center;
   line-height: 30px;
 }
@@ -227,6 +232,8 @@ div.inline-help {
 
 .dotted-area {
   border: dashed 1px var(--network-theme-color);
+  margin-bottom: 1.0rem;
+  padding: 16px;
 }
 
 </style>

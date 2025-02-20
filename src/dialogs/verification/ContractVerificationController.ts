@@ -64,9 +64,9 @@ export class ContractVerificationController extends TaskController {
         } else if (this.contractSourceAnalyzer.matchingContract.value !== null) {
             const matchingContract = this.contractSourceAnalyzer.matchingContract.value
             const note = matchingContract.status == "perfect" ? "full match" : "partial match"
-            result = "Ready to verify contract \"" + this.contractSourceAnalyzer.matchingContractName.value + "\" (" + note + ")"
+            result = "Ready to verify \"" + this.contractSourceAnalyzer.matchingContractName.value + "\" (" + note + ")"
         } else if (this.contractSourceAnalyzer.contractCount.value == 0 && this.contractSourceAnalyzer.unusedCount.value >= 1) {
-            result = "Add contract metadata json"
+            result = "Add metadata json file"
         } else {
             result = "Drop files…"
         }

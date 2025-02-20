@@ -365,6 +365,13 @@ hr.horizontal-line {
     text-overflow: ellipsis;
 }
 
+.w300 {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .w400 {
     max-width: 400px;
     overflow: hidden;
@@ -397,6 +404,10 @@ hr.horizontal-line {
 
 .has-text-right {
     text-align: right !important
+}
+
+.has-text-centered {
+    text-align: center !important
 }
 
 .is-inline-block {
