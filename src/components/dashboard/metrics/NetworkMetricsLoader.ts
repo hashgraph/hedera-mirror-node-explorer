@@ -39,10 +39,9 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
         return v !== null ? "$" + v.toFixed(4) : ""
     })
 
-    public readonly hbarPriceVariationText = computed(() => {
-        const v = this.hbarPriceVariation.value
-        return v !== null ? v.toFixed(2) : ""
-    })
+    public readonly hbarPriceVariationText = computed(() =>
+        this.makeVariationText(this.hbarPriceVariation.value)
+    )
 
     public readonly hbarReleasedText = computed(() => {
         const v = this.hbarReleased.value
@@ -56,13 +55,12 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
 
     public readonly hbarMarketCapText = computed(() => {
         const v = this.hbarMarketCap.value
-        return  v !== null !== null ? "$" + Number(v).toLocaleString("en-US") : ""
+        return v !== null ? "$" + Number(v).toLocaleString("en-US") : ""
     })
 
-    public readonly hbarMarketCapVariationText = computed(() => {
-        const v = this.hbarMarketCapVariation.value
-        return v !== null !== null ? Number(v).toFixed(2) : ""
-    })
+    public readonly hbarMarketCapVariationText = computed(() =>
+        this.makeVariationText(this.hbarMarketCapVariation.value)
+    )
 
     //
     // EntityCache
@@ -133,21 +131,31 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
             : null
     })
 
-    public readonly hbarMarketCapVariation = computed(() => {
-        let result: string|null
+    private readonly hbarMarketCapVariation = computed(() => {
+        let result: number | null
         const released = this.hbarReleased.value
         const price = this.hbarPrice.value
         const released24h = this.hbarReleased24.value
         const price24h = this.hbarPrice24.value
         if (released && price && released24h && price24h) {
             const variation = (released * price - released24h * price24h) / (released24h * price24h)
-            result = (Math.round(variation * 10000) / 100).toFixed(2)
+            result = (Math.round(variation * 10000) / 100)
         } else {
             result = null
         }
         return result
     })
 
+    private makeVariationText(variation: number | null): string {
+        let result: string
+        if (variation !== null) {
+            result = variation > 0 ? "+" : ""
+            result += variation.toFixed(2)
+        } else {
+            result = ""
+        }
+        return result
+    }
 }
 
 export class NetworksMetrics {
