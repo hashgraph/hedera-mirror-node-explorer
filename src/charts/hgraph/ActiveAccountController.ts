@@ -21,29 +21,24 @@
 import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
-import {averageMetrics, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
-import {ChartRange, computeGranularityForRange} from "@/charts/core/ChartController.ts";
+import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
+import {ChartRange} from "@/charts/core/ChartController.ts";
 import {ChartConfiguration} from "chart.js/auto";
 
-export class TPSController extends GenericMetricController {
+export class ActiveAccountController extends GenericMetricController {
 
     //
     // Public
     //
 
     public constructor(themeController: ThemeController, routeManager: RouteManager) {
-        super("TPS", "network_tps", true,
+        super("Active Accounts", "active_accounts", false,
             themeController, routeManager)
     }
 
     //
     // ChartController
     //
-
-    protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
-        const granularity = computeGranularityForRange(range)
-        return averageMetrics(metrics, granularity)
-    }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
         return this.makeBarChartConfig(metrics, range)

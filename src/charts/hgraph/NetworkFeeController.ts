@@ -23,6 +23,7 @@ import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
 import {ChartRange} from "@/charts/core/ChartController.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
+import {ChartConfiguration} from "chart.js/auto";
 
 export class NetworkFeeController extends GenericMetricController {
 
@@ -47,4 +48,7 @@ export class NetworkFeeController extends GenericMetricController {
         return result
     }
 
+    protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
+        return this.makeBarChartConfig(metrics, range)
+    }
 }

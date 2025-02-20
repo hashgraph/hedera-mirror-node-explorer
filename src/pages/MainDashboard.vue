@@ -68,7 +68,7 @@ import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vu
 import {TPSController} from "@/charts/hgraph/TPSController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
-import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
+import {ActiveAccountController} from "@/charts/hgraph/ActiveAccountController.ts";
 import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {routeManager} from "@/router.ts";
@@ -92,14 +92,7 @@ const networkFeeController = new NetworkFeeController(themeController, routeMana
 onMounted(() => networkFeeController.mount())
 onBeforeUnmount(() => networkFeeController.unmount())
 
-const activeAccountsController = new GenericMetricController(
-    "Active Accounts",
-    "active_accounts",
-    false,
-    themeController,
-    routeManager,
-    []
-)
+const activeAccountsController = new ActiveAccountController(themeController, routeManager)
 onMounted(() => activeAccountsController.mount())
 onBeforeUnmount(() => activeAccountsController.unmount())
 

@@ -25,16 +25,16 @@ import {ChartConfiguration} from "chart.js";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
 
-export class GenericMetricController extends HgraphChartController {
+export abstract class GenericMetricController extends HgraphChartController {
 
     private readonly metricName: string
     private readonly logarithmic: boolean
 
     //
-    // Public
+    // Protected
     //
 
-    public constructor(chartTitle: string,
+    protected constructor(chartTitle: string,
                        metricName: string,
                        logarithmic: boolean,
                        themeController: ThemeController,
@@ -84,7 +84,12 @@ export class GenericMetricController extends HgraphChartController {
             "}"
     }
 
-    protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
+
+    //
+    // Protected (tools for subclasses)
+    //
+
+    protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
