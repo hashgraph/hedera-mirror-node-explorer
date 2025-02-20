@@ -48,6 +48,8 @@ export class NetworkFeeController extends GenericMetricController {
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
-        return this.makeBarChartConfig(metrics, range, false, "Hbar")
+        const coreConfig = this.routeManager.coreConfig.value
+        const cryptoSymbole = coreConfig.cryptoSymbol ?? coreConfig.cryptoName
+        return this.makeBarChartConfig(metrics, range, false, cryptoSymbole)
     }
 }

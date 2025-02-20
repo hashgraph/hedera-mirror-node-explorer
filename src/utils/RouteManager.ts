@@ -68,7 +68,7 @@ import ERC721ByName from "@/pages/ERC721ByName.vue";
 export class RouteManager {
 
     public readonly router: Router
-    private readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
+    public readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
     private readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
 
     //
