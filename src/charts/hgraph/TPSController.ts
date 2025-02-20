@@ -39,9 +39,10 @@ export class TPSController extends GenericMetricController {
     // ChartController
     //
 
-    protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
+    protected async transformMetrics(metrics: EcosystemMetric[], range: ChartRange): Promise<EcosystemMetric[]> {
         const granularity = computeGranularityForRange(range)
-        return averageMetrics(metrics, granularity)
+        const result = averageMetrics(metrics, granularity)
+        return Promise.resolve(result)
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {

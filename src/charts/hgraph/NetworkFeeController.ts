@@ -39,12 +39,12 @@ export class NetworkFeeController extends GenericMetricController {
     // ChartController
     //
 
-    protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
-        const result = super.transformMetrics(metrics, range);
+    protected async transformMetrics(metrics: EcosystemMetric[], range: ChartRange): Promise<EcosystemMetric[]> {
+        const result = await super.transformMetrics(metrics, range);
         for (const m of result) {
             m.total = Math.round(m.total / 10_000_000) // Convert to HBAR
         }
-        return result
+        return Promise.resolve(result)
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {

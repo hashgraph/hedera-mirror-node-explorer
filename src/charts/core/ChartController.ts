@@ -127,7 +127,7 @@ export abstract class ChartController<M> {
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected transformMetrics(metrics: M[], range: ChartRange): M[] {
+    protected async transformMetrics(metrics: M[], range: ChartRange): Promise<M[]> {
         // No transformation by default
         return metrics
     }
@@ -143,7 +143,10 @@ export abstract class ChartController<M> {
         try {
             if (this.isSupported()) {
                 const loadedData = await this.loadData(this.range.value)
-                this.metrics = loadedData.metrics.length >= 1 ? loadedData.metrics : null
+                const rawMetrics = loadedData.metrics.length >= 1 ? loadedData.metrics : null
+                this.metrics = rawMetrics !== null
+                    ? await this.transformMetrics(rawMetrics, this.range.value)
+                    : null
                 this.latestMetric.value = loadedData.latestMetric
                 this.error.value = null
             } else {
@@ -170,8 +173,7 @@ export abstract class ChartController<M> {
         }
         if (this.canvas.value !== null && this.metrics !== null) {
             try {
-                const transformedMetrics = this.transformMetrics(this.metrics, this.range.value)
-                const chartConfig = this.makeChartConfig(transformedMetrics, this.range.value)
+                const chartConfig = this.makeChartConfig(this.metrics, this.range.value)
                 this.chart = new Chart(this.canvas.value,  chartConfig)
             } catch(error) {
                 this.chart = null

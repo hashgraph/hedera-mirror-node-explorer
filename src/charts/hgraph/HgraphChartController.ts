@@ -49,8 +49,9 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         return getEndDate(metric) ?? getStartDate(metric)
     }
 
-    protected transformMetrics(metrics: EcosystemMetric[], range: ChartRange): EcosystemMetric[] {
-        return aggregateMetrics(metrics, computeGranularityForRange(range))
+    protected async transformMetrics(metrics: EcosystemMetric[], range: ChartRange): Promise<EcosystemMetric[]> {
+        const result = aggregateMetrics(metrics, computeGranularityForRange(range))
+        return Promise.resolve(result)
     }
 
     protected async loadData(range: ChartRange): Promise<LoadedData<EcosystemMetric>> {
