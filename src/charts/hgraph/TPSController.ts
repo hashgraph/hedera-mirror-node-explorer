@@ -45,6 +45,6 @@ export class TPSController extends GenericMetricController {
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
-        return this.makeBarChartConfig(metrics, range, true)
+        return this.makeBarChartConfig(metrics, range, true, "tx / second")
     }
 }

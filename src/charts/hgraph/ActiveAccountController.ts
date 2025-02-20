@@ -40,6 +40,6 @@ export class ActiveAccountController extends GenericMetricController {
     //
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
-        return this.makeBarChartConfig(metrics, range, false)
+        return this.makeBarChartConfig(metrics, range, false, "# of accounts")
     }
 }

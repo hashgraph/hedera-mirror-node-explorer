@@ -86,7 +86,8 @@ export abstract class GenericMetricController extends HgraphChartController {
     // Protected (tools for subclasses)
     //
 
-    protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange, logarithmic: boolean): ChartConfiguration {
+    protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange,
+                                 logarithmic: boolean, yLabel: string|null): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
@@ -122,7 +123,11 @@ export abstract class GenericMetricController extends HgraphChartController {
                         grid: {
                             display: false
                         },
-                        beginAtZero: true
+                        beginAtZero: true,
+                        title: {
+                            display: yLabel !== null,
+                            text: yLabel ?? ""
+                        },
                     }
                 },
                 maintainAspectRatio: false
