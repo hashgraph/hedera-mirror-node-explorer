@@ -57,6 +57,10 @@ export class ThemeController {
         return this.getCssVariable("--text-primary")
     }
 
+    public getTextSecondaryColor(): string {
+        return this.getCssVariable("--text-secondary")
+    }
+
     public getGraphBarColor(): string {
         return this.getCssVariable("--graphbar-pink")
     }

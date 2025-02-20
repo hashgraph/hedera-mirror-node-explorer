@@ -92,6 +92,7 @@ export abstract class GenericMetricController extends HgraphChartController {
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
         const textPrimaryColor = this.themeController.getTextPrimaryColor()
+        const textSecondaryColor = this.themeController.getTextSecondaryColor()
         const yScaleType = logarithmic ? "logarithmic" : "linear"
 
         return {
@@ -126,7 +127,8 @@ export abstract class GenericMetricController extends HgraphChartController {
                         beginAtZero: true,
                         title: {
                             display: yLabel !== null,
-                            text: yLabel ?? ""
+                            text: yLabel ?? "",
+                            color: textSecondaryColor
                         },
                     }
                 },
