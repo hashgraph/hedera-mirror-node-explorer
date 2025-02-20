@@ -170,17 +170,13 @@ export abstract class ChartController<M> {
         }
         if (this.canvas.value !== null && this.metrics !== null) {
             try {
-                this.chart = this.makeChart(this.canvas.value, this.metrics, this.range.value)
+                const transformedMetrics = this.transformMetrics(this.metrics, this.range.value)
+                const chartConfig = this.makeChartConfig(transformedMetrics, this.range.value)
+                this.chart = new Chart(this.canvas.value,  chartConfig)
             } catch(error) {
                 this.chart = null
             }
         } // else leaves this.chart to null
-    }
-
-    private makeChart(canvas: HTMLCanvasElement, metrics: M[], range: ChartRange): Chart {
-        const aggregatedMetrics = this.transformMetrics(metrics, range)
-        const chartConfig = this.makeChartConfig(aggregatedMetrics, range)
-        return  new Chart(canvas,  chartConfig);
     }
 
     private makeDateFormat(): Intl.DateTimeFormat {
