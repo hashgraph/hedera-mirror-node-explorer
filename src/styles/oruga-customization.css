@@ -88,6 +88,7 @@ table.o-table > tbody > tr > td {
 table.o-table > tbody > tr {
     cursor: pointer;
 }
+/*
 
 table.o-table > tbody > tr {
     animation: fadeIn linear 1s;
@@ -107,6 +108,7 @@ table.o-table > tbody > tr {
         opacity: 1;
     }
 }
+*/
 
 div.o-table__pagination {
     padding: 4px;
