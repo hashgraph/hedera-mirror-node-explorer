@@ -35,7 +35,7 @@
 
       <div v-if="props.value !== null" class="item-l2">
         <span class="item-value">{{ props.value }}</span>
-        <span v-if="props.variation" class="item-variation">({{ props.variation }}%)</span>
+        <span v-if="props.info" class="item-info">({{ props.info }}%)</span>
       </div>
       <div v-else class="none-value">None</div>
     </div>
@@ -53,7 +53,7 @@
 const props = defineProps({
   title: String,
   value: String,
-  variation: String,
+  info: String,
 })
 
 </script>
@@ -96,7 +96,7 @@ div.item-l2 {
   line-height: 26px;
 }
 
-.item-variation {
+.item-info {
   color: var(--text-primary);
   font-size: 14px;
   font-weight: 400;
