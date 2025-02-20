@@ -222,7 +222,8 @@ export function makeUnclampedStake(node: NetworkNode): number {
 export function makeStakePercentage(node: NetworkNode, stakeTotal: number): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
-        maximumFractionDigits: 1
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
     })
     return formatter.format(node.stake ? node.stake / stakeTotal : 0)
 }
