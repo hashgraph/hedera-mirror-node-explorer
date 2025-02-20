@@ -29,16 +29,18 @@
     <span v-else class="h-is-low-contrast">None</span>
   </div>
 
-  <div v-else-if="props.amount !== 0 || !props.hideZero" style="display: inline-block">
-    <span
-        id="hbar-amount"
-        class="h-is-numeric"
-        :class="{ 'h-is-low-contrast': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
-    >
-      {{ formattedAmount }}
-    </span>
-    <span v-if="cryptoSymbol" v-html="cryptoSymbol"/>
-    <span v-else style="color: var(--text-secondary)">ℏ</span>
+  <div v-else-if="props.amount !== 0 || !props.hideZero" class="hbar-amount">
+    <div>
+      <span
+          id="hbar-amount"
+          class="h-is-numeric"
+          :class="{ 'h-is-low-contrast': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
+      >
+        {{ formattedAmount }}
+      </span>
+      <span v-if="cryptoSymbol" v-html="cryptoSymbol"/>
+      <span v-else style="color: var(--text-secondary)">ℏ</span>
+    </div>
     <span v-if="props.showExtra" class="dollar-amount">
       <HbarExtra :hide-zero="props.hideZero" :tbar-amount="amount ?? 0" :timestamp="timestamp"/>
     </span>
@@ -128,6 +130,18 @@ const isGreen = computed(() => {
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.hbar-amount {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  div.hbar-amount {
+    justify-content: flex-start;
+  }
+}
 
 span.credit-amount {
   color: var(--text-success);
