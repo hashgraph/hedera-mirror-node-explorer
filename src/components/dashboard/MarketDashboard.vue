@@ -101,6 +101,7 @@ onMounted(() => networkMetricsLoader.mount())
 onBeforeUnmount(() => networkMetricsLoader.unmount())
 
 const hbarReleased = networkMetricsLoader.hbarReleasedText
+const hbarReleasedPercentage = networkMetricsLoader.hbarReleasedPercentageText
 const hbarTotal = networkMetricsLoader.hbarTotalText
 const hbarPrice = networkMetricsLoader.hbarPriceText
 const hbarPriceVariation = networkMetricsLoader.hbarPriceVariationText

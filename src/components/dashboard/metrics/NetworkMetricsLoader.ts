@@ -48,6 +48,11 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
         return v !== null ? Number(v).toLocaleString('en-US') : ""
     })
 
+    public readonly hbarReleasedPercentageText = computed(() => {
+        const p = this.hbarReleasedPercentage.value
+        return p !== null ? p.toFixed(2) : ""
+    })
+
     public readonly hbarTotalText = computed(() => {
         const v = this.hbarTotal.value
         return v !== null ? Number(v).toLocaleString('en-US') : ""
@@ -116,6 +121,14 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
     private readonly hbarReleased24 = computed(() => {
         const released = Number(this.entity.value?.lastSupply24.released_supply)
         return released ? released / 100000000 : null
+    })
+
+    private readonly hbarReleasedPercentage = computed(() => {
+        const released = this.hbarReleased.value
+        const total = this.hbarTotal.value
+        return (released && total)
+            ? (Math.round((released) / total * 10000) / 100)
+            : null
     })
 
     private readonly hbarTotal = computed(() => {
