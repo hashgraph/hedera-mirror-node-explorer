@@ -26,6 +26,22 @@ export interface EcosystemMetric {
     total: number
 }
 
+export function makeLatestQuery(metricName: string): string {
+    return "{" +
+        "  all_metrics: ecosystem_metric(" +
+        "    where: {" +
+        "      name: {_eq: \"" + metricName + "\"}, " +
+        "      period: {_eq: \"hour\"}," +
+        "    }" +
+        "    order_by: {start_date: desc}" +
+        "    limit: 1" +
+        "  ) {" +
+        "    start_date" +
+        "    end_date" +
+        "    total" +
+        "  }" +
+        "}"
+}
 
 export function aggregateMetrics(rawMetrics: EcosystemMetric[], granularity: ChartGranularity): EcosystemMetric[] {
     let result: EcosystemMetric[]

@@ -20,7 +20,7 @@
 
 import {HgraphChartController, makeGraphLabels} from "@/charts/hgraph/HgraphChartController.ts";
 import {ChartRange, computeGranularityForRange, computeStartDateForRange} from "@/charts/core/ChartController.ts";
-import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
+import {EcosystemMetric, makeLatestQuery} from "@/charts/hgraph/EcosystemMetric.ts";
 import {ChartConfiguration} from "chart.js";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
@@ -65,20 +65,7 @@ export abstract class GenericMetricController extends HgraphChartController {
     }
 
     protected makeLatestQuery(): string {
-        return "{" +
-            "  all_metrics: ecosystem_metric(" +
-            "    where: {" +
-            "      name: {_eq: \"" + this.metricName + "\"}, " +
-            "      period: {_eq: \"hour\"}," +
-            "    }" +
-            "    order_by: {start_date: desc}" +
-            "    limit: 1" +
-            "  ) {" +
-            "    start_date" +
-            "    end_date" +
-            "    total" +
-            "  }" +
-            "}"
+        return makeLatestQuery(this.metricName)
     }
 
 
