@@ -32,8 +32,7 @@ export class NetworkFeeController extends GenericMetricController {
     //
 
     public constructor(themeController: ThemeController, routeManager: RouteManager) {
-        super("Network Fees", "network_fee", false,
-            themeController, routeManager)
+        super("Network Fees", "network_fee", themeController, routeManager)
     }
 
     //
@@ -49,6 +48,6 @@ export class NetworkFeeController extends GenericMetricController {
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
-        return this.makeBarChartConfig(metrics, range)
+        return this.makeBarChartConfig(metrics, range, false)
     }
 }

@@ -32,8 +32,7 @@ export class ActiveAccountController extends GenericMetricController {
     //
 
     public constructor(themeController: ThemeController, routeManager: RouteManager) {
-        super("Active Accounts", "active_accounts", false,
-            themeController, routeManager)
+        super("Active Accounts", "active_accounts", themeController, routeManager)
     }
 
     //
@@ -41,6 +40,6 @@ export class ActiveAccountController extends GenericMetricController {
     //
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
-        return this.makeBarChartConfig(metrics, range)
+        return this.makeBarChartConfig(metrics, range, false)
     }
 }

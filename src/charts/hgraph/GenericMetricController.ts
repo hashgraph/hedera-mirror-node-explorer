@@ -28,7 +28,6 @@ import {RouteManager} from "@/utils/RouteManager.ts";
 export abstract class GenericMetricController extends HgraphChartController {
 
     private readonly metricName: string
-    private readonly logarithmic: boolean
 
     //
     // Protected
@@ -36,13 +35,11 @@ export abstract class GenericMetricController extends HgraphChartController {
 
     protected constructor(chartTitle: string,
                        metricName: string,
-                       logarithmic: boolean,
                        themeController: ThemeController,
                        routeManager: RouteManager,
                        supportedRanges: ChartRange[] = []) {
         super(chartTitle, themeController, routeManager,supportedRanges)
         this.metricName = metricName
-        this.logarithmic = logarithmic
     }
 
     //
@@ -89,12 +86,12 @@ export abstract class GenericMetricController extends HgraphChartController {
     // Protected (tools for subclasses)
     //
 
-    protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
+    protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange, logarithmic: boolean): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
         const textPrimaryColor = this.themeController.getTextPrimaryColor()
-        const yScaleType = this.logarithmic ? "logarithmic" : "linear"
+        const yScaleType = logarithmic ? "logarithmic" : "linear"
 
         return {
             type: 'bar',

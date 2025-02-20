@@ -32,8 +32,7 @@ export class TPSController extends GenericMetricController {
     //
 
     public constructor(themeController: ThemeController, routeManager: RouteManager) {
-        super("TPS", "network_tps", true,
-            themeController, routeManager)
+        super("TPS", "network_tps", themeController, routeManager)
     }
 
     //
@@ -46,6 +45,6 @@ export class TPSController extends GenericMetricController {
     }
 
     protected makeChartConfig(metrics: EcosystemMetric[], range: ChartRange): ChartConfiguration {
-        return this.makeBarChartConfig(metrics, range)
+        return this.makeBarChartConfig(metrics, range, true)
     }
 }
