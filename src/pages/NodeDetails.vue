@@ -109,14 +109,14 @@
               title="Staked for Reward"
               :value="makeFloorHbarAmount(stakeRewarded)"
               :unit=cryptoName
-              :extra="`${stakeRewardedPercentage} of total`"
+              :extra="`${stakeRewardedPercentage}% of total`"
           />
           <NetworkDashboardItemV2
               id="notRewarded"
               title="Staked For No Reward"
               :value="makeFloorHbarAmount(stakeUnrewarded)"
               :unit=cryptoName
-              :extra="`${stakeUnrewardedPercentage} of total`"
+              :extra="`${stakeUnrewardedPercentage}% of total`"
           />
           <NetworkDashboardItemV2
               id="minStake"
@@ -211,10 +211,9 @@ const stakeLookup = StakeCache.instance.makeLookup()
 onMounted(() => stakeLookup.mount())
 onBeforeUnmount(() => stakeLookup.unmount())
 
-const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
 const stakePercentage = computed(() =>
-    nodeAnalyzer.node.value && stakeTotal.value
-        ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
+    nodeAnalyzer.node.value && totalStakeForConsensus.value
+        ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, totalStakeForConsensus.value)
         : "0"
 )
 const stakeLabel = computed(() =>
@@ -247,6 +246,7 @@ const makeFloorHbarAmount = (tinyBarAmount: number) => {
 
 const enableStaking = routeManager.enableStaking
 const node = nodeAnalyzer.node
+const totalStakeForConsensus = networkAnalyzer.totalStakeForConsensus
 const annualizedRate = nodeAnalyzer.annualizedRate
 const stake = nodeAnalyzer.stake
 const minStake = nodeAnalyzer.minStake

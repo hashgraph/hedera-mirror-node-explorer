@@ -88,7 +88,7 @@
         <span>{{ `${nodes.length}  Nodes` }}</span>
       </template>
       <template #content>
-        <NodeTable :nodes="nodes" :stake-total="stakeTotal"/>
+        <NodeTable :nodes="nodes" :stake-total="totalStakeForConsensus"/>
       </template>
     </DashboardCardV2>
 
@@ -148,6 +148,7 @@ const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount
 
 const enableStaking = routeManager.enableStaking
 const nodes = networkNodeAnalyzer.nodes
+const totalStakeForConsensus = networkNodeAnalyzer.totalStakeForConsensus
 const stakeRewardedTotal = networkNodeAnalyzer.stakeRewardedTotal
 const totalRewarded = networkNodeAnalyzer.totalRewarded
 const durationMin = networkNodeAnalyzer.durationMin
