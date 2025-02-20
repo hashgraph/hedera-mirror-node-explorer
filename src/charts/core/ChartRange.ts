@@ -32,25 +32,22 @@ export enum ChartGranularity {
     year = "year"
 }
 
-export function computeStartDateForRange(period: ChartRange): string {
-    let result: string
+export function computeStartDateForRange(period: ChartRange): Date {
+    let result: Date
     const now = new Date()
     switch(period) {
         case ChartRange.all: {
-            const d = new Date(0)
-            result = d.toISOString()
+            result = new Date(0)
             break
         }
         case ChartRange.year: {
             const y = now.getFullYear()
             const m = now.getMonth()
-            const d = new Date(y-1, m)
-            result = d.toISOString()
+            result = new Date(y-1, m)
             break
         }
         case ChartRange.day: {
-            const d = new Date(now.getTime() - 24 * 3600 * 1000)
-            result = d.toISOString()
+            result = new Date(now.getTime() - 24 * 3600 * 1000)
             break
         }
     }

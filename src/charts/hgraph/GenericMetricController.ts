@@ -47,7 +47,7 @@ export abstract class GenericMetricController extends HgraphChartController {
     //
 
     protected makeQuery(range: ChartRange): string {
-        const periodStartDate = computeStartDateForRange(range)
+        const periodStartDate = computeStartDateForRange(range).toISOString()
         return "{" +
             "  all_metrics: ecosystem_metric(" +
             "    where: {" +
