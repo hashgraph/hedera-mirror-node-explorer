@@ -83,24 +83,24 @@
           />
           <template #content>
             <div class="reward-range-tooltip">
-              <div class="caption has-background-success has-text-right"></div>
+              <div class="caption" style="background-color: var(--text-success);"/>
               <p class="has-text-left">Rewarded:</p>
-              <div class="has-text-weight-normal has-text-right">
+              <div class="has-text-right">
                 <HbarAmount :amount="props.row.stake_rewarded ?? 0" :decimals="0"/>
               </div>
-              <div class="caption has-background-info"></div>
+              <div class="caption" style="background-color: var(--text-accent2);"/>
               <p class="has-text-left">Not Rewarded:</p>
-              <div class="has-text-weight-normal has-text-right">
+              <div class="has-text-right">
                 <HbarAmount :amount="props.row.stake_not_rewarded ?? 0" :decimals="0"/>
               </div>
               <div/>
               <p class="has-text-left">Min:</p>
-              <div class="has-text-weight-normal has-text-right">
+              <div class="has-text-right">
                 <HbarAmount :amount="props.row.min_stake ?? 0" :decimals="0"/>
               </div>
               <div/>
               <p class="has-text-left">Max:</p>
-              <div class="has-text-weight-normal has-text-right">
+              <div class="has-text-right">
                 <HbarAmount :amount="props.row.max_stake ?? 0" :decimals="0"/>
               </div>
             </div>
@@ -195,9 +195,10 @@ const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event
 }
 
 .caption {
-  height: 0.8rem;
-  width: 0.8rem;
-  border: 1px solid white;
+  align-self: center;
+  height: 14px;
+  width: 14px;
+  border: 0.5px solid var(--border-secondary);
 }
 
 .reward-range-tooltip {
@@ -205,6 +206,7 @@ const handleClick = (node: NetworkNode, c: unknown, i: number, ci: number, event
   grid-template-columns: 1fr 4fr 3fr;
   column-gap: 0.5rem;
   row-gap: 0.25rem;
+  padding: 8px 4px;
 }
 
 </style>
