@@ -29,7 +29,6 @@
       <MarketDashboardItem
           :title="hbarPriceLabel"
           :value="hbarPrice"
-          :info="hbarPriceVariation"
       >
         <img id="crypto-logo" alt="Crypto Logo" :src="cryptoLogoURL ?? ''">
       </MarketDashboardItem>
@@ -39,7 +38,6 @@
       <MarketDashboardItem
           :title="hbarMarketCapLabel"
           :value="hbarMarketCap"
-          :info="hbarMarketCapVariation"
       >
         <Globe :size="32"/>
       </MarketDashboardItem>
@@ -49,7 +47,6 @@
       <MarketDashboardItem
           :title="hbarReleasedLabel"
           :value="hbarReleased"
-          :info="hbarReleasedPercentage"
       >
         <ArrowBigUpDash :size="32"/>
       </MarketDashboardItem>
