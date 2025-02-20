@@ -22,7 +22,7 @@ import {ThemeController} from "@/components/ThemeController.ts";
 import {RouteManager} from "@/utils/RouteManager.ts";
 import {GenericMetricController} from "@/charts/hgraph/GenericMetricController.ts";
 import {EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
-import {ChartRange} from "@/charts/core/ChartController.ts";
+import {ChartRange} from "@/charts/core/ChartRange.ts";
 import {ChartConfiguration} from "chart.js/auto";
 
 export class ActiveAccountController extends GenericMetricController {

@@ -39,7 +39,8 @@
 <script setup lang="ts">
 
 import {computed, PropType} from "vue";
-import {ChartController, ChartRange, ChartState} from "@/charts/core/ChartController.ts";
+import {ChartController, ChartState} from "@/charts/core/ChartController.ts";
+import {ChartRange} from "@/charts/core/ChartRange.ts";
 import TabsView from "@/components/TabsView.vue";
 
 const props = defineProps({

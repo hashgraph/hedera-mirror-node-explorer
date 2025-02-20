@@ -18,7 +18,8 @@
  *
  */
 
-import {ChartGranularity} from "@/charts/core/ChartController.ts";
+
+import {ChartGranularity} from "@/charts/core/ChartRange.ts";
 
 export interface EcosystemMetric {
     start_date: string,

@@ -18,14 +18,9 @@
  *
  */
 
-import {
-    ChartController,
-    ChartGranularity,
-    ChartRange,
-    computeGranularityForRange,
-    LoadedData
-} from "@/charts/core/ChartController.ts";
-import {aggregateMetrics, getEndDate, getStartDate, EcosystemMetric} from "@/charts/hgraph/EcosystemMetric.ts";
+import {ChartController, LoadedData} from "@/charts/core/ChartController.ts";
+import {ChartGranularity, ChartRange, computeGranularityForRange} from "@/charts/core/ChartRange.ts";
+import {aggregateMetrics, EcosystemMetric, getEndDate, getStartDate} from "@/charts/hgraph/EcosystemMetric.ts";
 import axios, {AxiosRequestConfig} from "axios";
 
 export abstract class HgraphChartController extends ChartController<EcosystemMetric> {
