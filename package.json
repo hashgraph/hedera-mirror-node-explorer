@@ -19,7 +19,10 @@
     "install:branding": ". ./src/assets/branding/install-branding.sh",
     "docker:build": "npm run build && docker build . --tag gcr.io/hedera-registry/hedera-mirror-node-explorer",
     "docker:start": "docker-compose up -d",
-    "docker:stop": "docker-compose down"
+    "docker:stop": "docker-compose down",
+    "sourcify:check-setup": "bash ./scripts/check-hosts-setup.sh",
+    "sourcify:start": "npm run sourcify:check-setup && docker compose -f ./sourcify-setup/docker-compose.yaml up -d",
+    "sourcify:stop": "docker compose -f ./sourcify-setup/docker-compose.yaml down"
   },
   "dependencies": {
     "@bokuweb/zstd-wasm": "^0.0.21-alpha.5",

@@ -13,56 +13,61 @@ services:
 
   repository:
     <<: *project-base
-    image: ghcr.io/hashgraph/hedera-sourcify:repository-${TAG}
+    image: ghcr.io/hashgraph/hedera-sourcify/repository:${TAG}
     container_name: repository-${TAG}
+    environment:
+      - SOURCIFY_SERVER=http://host.docker.internal:5555
+      - SERVER_URL=http://localhost:5555
     volumes:
       - type: bind
-        source: $REPOSITORY_PATH_HOST
-        target: $REPOSITORY_PATH
+        source: ./data
+        target: /data
         read_only: true
-      - type: bind
-        source: ./config.json
-        target: /redirects/config.json
     ports:
-      - "${REPOSITORY_SERVER_EXTERNAL_PORT}:80"
+      - "${REPOSITORY_PORT}:80"
 
   server:
     <<: *project-base
-    image: ghcr.io/hashgraph/hedera-sourcify:server-${TAG}
+    image: ghcr.io/hashgraph/hedera-sourcify/server:${TAG}
     container_name: server-${TAG}
+    environment:
+      - NODE_ENV=development
     ports:
-      - "${SERVER_EXTERNAL_PORT}:${SERVER_PORT}"
+      - "${SERVER_PORT}:5555"
     volumes:
       - type: bind
-        source: $REPOSITORY_PATH_HOST
-        target: $REPOSITORY_PATH
+        source: ./servers.yaml
+        target: /home/app/services/server/dist/servers.yaml
       - type: bind
-        source: $SOLC_REPO_HOST
-        target: $SOLC_REPO
+        source: ./sourcify-chains.json
+        target: /home/app/services/server/dist/sourcify-chains.json
       - type: bind
-        source: $SOLJSON_REPO_HOST
-        target: $SOLJSON_REPO
+        source: ./local.js
+        target: /home/app/services/server/dist/config/local.js
+      - type: bind
+        source: ./data
+        target: /tmp/sourcify/repository
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:${SERVER_PORT}/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5555/health"]
       interval: 30s
       timeout: 10s
       retries: 10
 
   ui:
     <<: *project-base
-    image: ghcr.io/hashgraph/hedera-sourcify:ui-${TAG}
+    image: ghcr.io/hashgraph/hedera-sourcify/ui:${TAG}
     container_name: ui-${TAG}
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      test: ["CMD", "curl", "-f", "http://localhost:3001/"]
       interval: 30s
       timeout: 10s
       retries: 10
     volumes:
       - type: bind
-        source: ./config.json
+        source: ./ui-config.json
         target: /usr/share/nginx/html/config.json
     ports:
-      - "${UI_EXTERNAL_PORT}:80"
+      - "${UI_PORT}:80"
 
   nginx-service:
     container_name: nginx-container
