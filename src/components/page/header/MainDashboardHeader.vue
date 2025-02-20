@@ -59,7 +59,7 @@
     <SearchBar :size="90" class="search-bar"/>
 
     <!--  Market dashboard part of header-->
-    <div class="market-dashboard">
+    <div v-if="enableMarketData" class="market-dashboard">
       <MarketDashboard/>
     </div>
   </div>
@@ -80,12 +80,13 @@ import TabBar from "@/components/page/header/TabBar.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import ConnectWalletButton from "@/components/page/header/wallet/ConnectWalletButton.vue";
 import {computed, inject} from "vue";
-import {walletManager} from "@/router.ts";
+import {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import WalletStatusButton from "@/components/page/header/wallet/WalletStatusButton.vue";
 import MobileMenuButton from "@/components/page/header/MobileMenuButton.vue";
 import MarketDashboard from "@/components/dashboard/MarketDashboard.vue";
 
+const enableMarketData = routeManager.enableMarket
 const isLargeScreen = inject('isLargeScreen', true)
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 
@@ -164,8 +165,15 @@ div.title {
 
 .search-bar {
   margin-top: 38px;
+  margin-bottom: 6px;
   max-width: 912px;
   width: 100%;
+}
+
+@media (min-width: 768px) {
+  .search-bar {
+    margin-bottom: 64px;
+  }
 }
 
 @media (min-width: 1080px) {
@@ -174,21 +182,15 @@ div.title {
   }
 }
 
-.market-dashboard {
-  margin-top: 36px;
-  width: 100%;
-}
-
-@media (min-width: 768px) {
-  .market-dashboard {
-    margin-top: 94px;
-  }
-}
-
 @media (min-width: 1280px) {
-  .market-dashboard {
-    margin-top: 120px;
+  .search-bar {
+    margin-bottom: 90px;
   }
+}
+
+.market-dashboard {
+  margin-top: 30px;
+  width: 100%;
 }
 
 </style>
