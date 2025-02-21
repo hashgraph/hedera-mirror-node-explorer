@@ -26,9 +26,6 @@ import router, {walletManager} from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Staking from "@/pages/Staking.vue";
-import TopNavBar from "@/components/page/TopNavBar.vue";
-import WalletInfo from "@/components/wallet/WalletInfo.vue"
-import WalletChooser from "@/components/staking/WalletChooser.vue";
 import {WalletDriver_Mock} from "./WalletDriver_Mock";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
@@ -39,11 +36,7 @@ import {
     SAMPLE_TRANSACTION,
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import ProgressDialog from "@/components/staking/ProgressDialog.vue";
 import {waitFor} from "@/utils/TimerUtils";
-import StakingDialog from "@/components/staking/StakingDialog.vue";
 import {nextTick} from "vue";
 
 /*

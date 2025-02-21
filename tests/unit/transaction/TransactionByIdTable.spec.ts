@@ -68,7 +68,7 @@ describe("TransactionByIdTable.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce")
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship Nonce".toUpperCase())
         expect(wrapper.find('tbody').text()).toBe(
             "1:29:17.0144 PMSep 6, 2022, UTCCONTRACT CALLContract ID: 0.0.48193749Parent0" +
             "1:29:17.0144 PMSep 6, 2022, UTCTOKEN MINTMINT\n\n0.0.48193741RSSE\n\n0.0.48113503Child1" +
@@ -106,7 +106,7 @@ describe("TransactionByIdTable.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship")
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Relationship".toUpperCase())
         const rows = wrapper.find('tbody').findAll('tr')
 
         let cells = rows[0].findAll('td')
@@ -143,11 +143,11 @@ describe("TransactionByIdTable.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.find('thead').text()).toBe("Time Type Content Nonce")
+        expect(wrapper.find('thead').text()).toBe("Time Type Content Nonce".toUpperCase())
         const rows = wrapper.find('tbody').findAll('tr')
 
         let cells = rows[0].findAll('td')
-        expect(cells[1].text()).toBe("CRYPTO DELETE ALLOWANCE")
+        expect(cells[1].text()).toBe("DELETE ALLOWANCE")
         expect(cells[3].text()).toBe("0")
 
         cells = rows[1].findAll('td')

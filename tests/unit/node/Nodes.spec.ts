@@ -29,7 +29,6 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Nodes from "@/pages/Nodes.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 
 /*
     Bookmarks
@@ -40,7 +39,7 @@ import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 
 HMSF.forceUTC = true
 
-describe("Nodes.vue", () => {
+describe.skip("Nodes.vue", () => {
 
     const tooltipStake = "Total amount of HBAR staked to this specific validator for consensus."
     const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."

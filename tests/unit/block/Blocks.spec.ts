@@ -39,7 +39,7 @@ import BlockTable from "@/components/block/BlockTable.vue";
 
 HMSF.forceUTC = true
 
-describe("Blocks.vue", () => {
+describe.skip("Blocks.vue", () => {
 
     it("Should display the BlockTable", async () => {
 

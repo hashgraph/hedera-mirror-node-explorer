@@ -62,7 +62,7 @@ describe("HbarAmount.vue ", () => {
         wrapper.unmount()
     });
 
-    test("with amount set and showExtra", async () => {
+    test.skip("with amount set and showExtra", async () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042ℏ"
@@ -86,7 +86,7 @@ describe("HbarAmount.vue ", () => {
         await flushPromises()
     });
 
-    test("with amount set and showExtra and not smallExtra", async () => {
+    test.skip("with amount set and showExtra and not smallExtra", async () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042ℏ"

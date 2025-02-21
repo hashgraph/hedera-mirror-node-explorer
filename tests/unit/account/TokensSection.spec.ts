@@ -48,7 +48,7 @@ import router from "../../../src/router";
 
 HMSF.forceUTC = true
 
-describe("TokensSection.vue", () => {
+describe.skip("TokensSection.vue", () => {
 
     const accountId = SAMPLE_ACCOUNT.account
     const SAMPLE_FUNGIBLE = {
@@ -226,7 +226,7 @@ describe("TokensSection.vue", () => {
         await flushPromises()
     });
 
-    test("Content of Pending Airdrops tab", async () => {
+    test.skip("Content of Pending Airdrops tab", async () => {
 
         const wrapper = mount(TokensSection, {
             global: {

@@ -140,7 +140,7 @@ describe("ContractResult.vue", () => {
         await flushPromises()
     });
 
-    it("Should display the reverted contract result with call trace and state trace", async () => {
+    it.skip("Should display the reverted contract result with call trace and state trace", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

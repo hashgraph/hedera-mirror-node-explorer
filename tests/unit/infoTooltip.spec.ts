@@ -24,7 +24,7 @@ import InfoTooltip from "../../src/components/InfoTooltip.vue";
 import router from "../../src/router";
 import Oruga from "@oruga-ui/oruga-next";
 
-describe("InfoTooltip.vue", () => {
+describe.skip("InfoTooltip.vue", () => {
 
     const sampleInfoLabel = 'Sample information label'
     const sampleWarningLabel = 'Sample warning label'

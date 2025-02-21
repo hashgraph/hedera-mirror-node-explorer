@@ -70,7 +70,7 @@
           />
           <NetworkDashboardItemV2
               id="yearlyReward"
-              title="Approx. Yearly Reward"
+              title="Approx Yearly Reward"
               :value="yearlyReward.toString()"
               :unit=cryptoName
           />

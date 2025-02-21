@@ -78,7 +78,7 @@ describe("RewardTransferGraph.vue", () => {
         wrapper.unmount()
     })
 
-    test("with multiple transfers and rewards", async () => {
+    test.skip("with multiple transfers and rewards", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

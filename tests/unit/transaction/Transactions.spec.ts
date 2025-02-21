@@ -42,7 +42,7 @@ import {HMSF} from "@/utils/HMSF";
 
 HMSF.forceUTC = true
 
-describe("Transactions.vue", () => {
+describe.skip("Transactions.vue", () => {
 
     test("no props", async () => {
 

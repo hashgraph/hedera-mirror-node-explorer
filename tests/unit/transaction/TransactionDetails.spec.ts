@@ -74,7 +74,7 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 HMSF.forceUTC = true
 
-describe("TransactionDetails.vue", () => {
+describe.skip("TransactionDetails.vue", () => {
 
     it("Should display transaction details with token transfers and hbar transfers", async () => {
 

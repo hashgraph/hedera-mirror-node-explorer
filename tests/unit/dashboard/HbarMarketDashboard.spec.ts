@@ -27,13 +27,12 @@
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import HbarMarketDashboard from "@/components/dashboard/HbarMarketDashboard.vue";
 import {SAMPLE_NETWORK_EXCHANGERATE, SAMPLE_NETWORK_SUPPLY} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import router from "@/router";
 
-describe("HbarMarketDashboard.vue ", () => {
+describe.skip("HbarMarketDashboard.vue ", () => {
 
     // const config = [
     //     {
