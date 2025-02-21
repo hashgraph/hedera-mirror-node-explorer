@@ -33,19 +33,17 @@
       @on-load-error="onLoadError"
   >
     <template #placeHolder>
-      <img
-          v-if="size >= 100"
-          src="../../assets/nft-image-placeholder.svg" alt=""
-          style="height: 40px"
-      />
-      <span>
+      <div class="placeholder">
+        <FileX :size="40"/>
+        <span>
         {{ size > 200 ? 'Non Fungible Token' : 'NFT' }}
       </span>
-      <InfoTooltip
-          v-if="size >= 100 && (warningTooltip || infoTooltip)"
-          :warning-label="warningTooltip"
-          :label="infoTooltip"
-      />
+        <InfoTooltip
+            v-if="size >= 100 && (warningTooltip || infoTooltip)"
+            :warning-label="warningTooltip"
+            :label="infoTooltip"
+        />
+      </div>
     </template>
   </MediaContent>
 
@@ -60,6 +58,7 @@
 import {computed, PropType, ref} from "vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import MediaContent from "@/components/MediaContent.vue";
+import {FileX} from 'lucide-vue-next';
 
 const props = defineProps({
   url: {
@@ -111,4 +110,12 @@ const warningTooltip = computed(() => {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.placeholder {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+</style>
