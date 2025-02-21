@@ -143,7 +143,7 @@
               <div id="file-container-area" class="file-container">
                 <NftFile
                     v-for="(file) in files" :key="file.uri"
-                    class="file-container-item mt-3"
+                    class="file-container-item mt-1"
                     :type="file.type"
                     :url="file.url"
                     :size="200"

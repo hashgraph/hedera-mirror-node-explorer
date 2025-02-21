@@ -104,10 +104,10 @@ const propertyValue = computed(() => {
   switch (props.property) {
     case NftCellItem.name:
     case NftCellItem.creator:
-      result = truncate(metadataAnalyzer[props.property].value ?? '', 40)
+      result = truncate(metadataAnalyzer[props.property].value ?? '', 20)
       break
     case NftCellItem.description:
-      result = truncate(metadataAnalyzer.description.value ?? '', 150)
+      result = truncate(metadataAnalyzer.description.value ?? '', 50)
       break
     default:
       result = null
