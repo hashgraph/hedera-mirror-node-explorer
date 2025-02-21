@@ -57,6 +57,10 @@
       <span>{{ errorMessage }}</span>
     </template>
 
+    <template #taskDialogControls>
+      <slot name="downloadDialogControls"/>
+    </template>
+
   </TaskDialog>
 </template>
 
