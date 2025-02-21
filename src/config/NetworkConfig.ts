@@ -107,7 +107,6 @@ export class NetworkEntry {
         const enableStaking = fetchBoolean(obj, "enableStaking") ?? false
         const enableExpiry = fetchBoolean(obj, "enableExpiry") ?? false
         const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
-        const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
         const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
         const erc20IndexURL = fetchURL(obj, "erc20IndexURL")
         const erc721IndexURL = fetchURL(obj, "erc721IndexURL")
@@ -123,6 +122,8 @@ export class NetworkEntry {
         const darkChipColor = fetchString(obj, "darkChipColor") ?? "grey"
         const darkTextAccentColor = fetchString(obj, "darkTextAccentColor") ?? "grey"
         const darkBorderAccentColor = fetchString(obj, "darkBorderAccentColor") ?? "grey"
+
+        const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
         if (name === null) {
             throw this.missingPropertyError("name")
