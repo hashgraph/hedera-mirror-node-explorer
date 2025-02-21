@@ -63,7 +63,8 @@
               v-model="selectedStartDate"
               placeholder="SELECT A DATE"
               :is-24="false"
-              :enable-time-picker="false" dark
+              :enable-time-picker="false"
+              :dark="darkSelected"
               :teleport="true"/>
         </div>
         <div v-if="!isStartDateValid" class="column icon is-small has-text-danger">
@@ -79,7 +80,8 @@
               v-model="selectedEndDate"
               placeholder="SELECT A DATE"
               :is-24="false"
-              :enable-time-picker="false" dark
+              :enable-time-picker="false"
+              :dark="darkSelected"
               :teleport="true"/>
         </div>
         <div v-if="!isEndDateValid" class="column icon is-small has-text-danger">
@@ -110,6 +112,7 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 import SelectView from "@/elements/SelectView.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import Datepicker from "@vuepic/vue-datepicker";
+import {ThemeController} from "@/components/ThemeController.ts";
 
 
 const showDialog = defineModel("showDialog", {
@@ -124,6 +127,7 @@ const props = defineProps({
   }
 })
 
+const darkSelected = ThemeController.inject().darkSelected
 
 const dialogTitle = computed(() => "Download transactions from " + props.accountId)
 

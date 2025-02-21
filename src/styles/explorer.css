@@ -457,3 +457,25 @@ hr.horizontal-line {
 .ml-5 {
     margin-left: 1.5rem !important
 }
+
+/*  ============================================================================
+    DatePicker
+*/
+
+:root {
+    --dp-font-family: "Inter", sans-serif;
+    --dp-border-radius: 0;
+    --dp-font-size: 11px;
+}
+
+.dp__theme_dark, .dp__theme_light {
+    --dp-background-color: var(--background-tertiary);
+    --dp-primary-color: var(--network-button-color);
+    --dp-border-color: var(--text-secondary);
+    --dp-border-color-hover: var(--text-secondary);
+    --dp-icon-color: var(--text-primary);
+}
+
+.dp__input {
+    height: 28px;
+}
