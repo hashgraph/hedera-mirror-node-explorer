@@ -37,11 +37,10 @@
     </template>
 
     <template #right-control>
-      <div
-          v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled"
-          class=""
-      >
-        <span class="">{{ rejectButtonHint }}</span>
+      <template v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled">
+        <div v-if="rejectButtonHint" class="h-is-low-contrast">
+          {{ rejectButtonHint }}
+        </div>
         <ButtonView
             id="reject-button"
             :enabled="rejectButtonEnabled"
@@ -51,12 +50,11 @@
         >
           REJECT
         </ButtonView>
-      </div>
-      <div
-          v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
-          class=""
-      >
-        <span class="">{{ claimButtonHint }}</span>
+      </template>
+      <template v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled">
+        <div v-if="claimButtonHint" class="h-is-low-contrast">
+          {{ claimButtonHint }}
+        </div>
         <ButtonView
             id="claim-button"
             :enabled="claimActionEnabled"
@@ -66,7 +64,8 @@
         >
           {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
         </ButtonView>
-      </div>
+      </template>
+      <template v-else/>
     </template>
 
     <template #content>
