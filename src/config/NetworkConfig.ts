@@ -116,12 +116,16 @@ export class NetworkEntry {
         const lightChipColor = fetchString(obj, "lightChipColor") ?? "grey"
         const lightTextAccentColor = fetchString(obj, "lightTextAccentColor") ?? "grey"
         const lightBorderAccentColor = fetchString(obj, "lightBorderAccentColor") ?? "grey"
+        const lightGraphBarColor = fetchString(obj, "lightGraphBarColor") ?? "grey"
+        const lightChipTextColor = fetchString(obj, "lightChipTextColor") ?? "grey"
 
         const darkButtonTextColor = fetchString(obj, "darkButtonTextColor") ?? "white"
         const darkButtonColor = fetchString(obj, "darkButtonColor") ?? "grey"
         const darkChipColor = fetchString(obj, "darkChipColor") ?? "grey"
         const darkTextAccentColor = fetchString(obj, "darkTextAccentColor") ?? "grey"
         const darkBorderAccentColor = fetchString(obj, "darkBorderAccentColor") ?? "grey"
+        const darkGraphBarColor = fetchString(obj, "darkGraphBarColor") ?? "grey"
+        const darkChipTextColor = fetchString(obj, "darkChipTextColor") ?? "grey"
 
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
@@ -159,11 +163,15 @@ export class NetworkEntry {
             lightChipColor,
             lightTextAccentColor,
             lightBorderAccentColor,
+            lightGraphBarColor,
+            lightChipTextColor,
             darkButtonTextColor,
             darkButtonColor,
             darkChipColor,
             darkTextAccentColor,
             darkBorderAccentColor,
+            darkGraphBarColor,
+darkChipTextColor,
             sourcifySetup
         )
     }
@@ -203,6 +211,8 @@ export class NetworkEntry {
         public readonly lightChipColor: string|null,
         public readonly lightTextAccentColor: string|null,
         public readonly lightBorderAccentColor: string|null,
+        public readonly lightGraphBarColor: string|null,
+        public readonly lightChipTextColor: string|null,
 
         // The dark variants of the network theme color
         public readonly darkButtonTextColor: string|null,
@@ -210,6 +220,8 @@ export class NetworkEntry {
         public readonly darkChipColor: string|null,
         public readonly darkTextAccentColor: string|null,
         public readonly darkBorderAccentColor: string|null,
+        public readonly darkGraphBarColor: string|null,
+        public readonly darkChipTextColor: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}

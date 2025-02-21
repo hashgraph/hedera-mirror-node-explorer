@@ -656,6 +656,8 @@ export class RouteManager {
         document.documentElement.style.setProperty('--light-network-chip-color', this.currentNetworkEntry.value.lightChipColor)
         document.documentElement.style.setProperty('--light-network-text-accent-color', this.currentNetworkEntry.value.lightTextAccentColor)
         document.documentElement.style.setProperty('--light-network-border-accent-color', this.currentNetworkEntry.value.lightBorderAccentColor)
+        document.documentElement.style.setProperty('--light-network-graph-bar-color', this.currentNetworkEntry.value.lightGraphBarColor)
+        document.documentElement.style.setProperty('--light-network-chip-text-color', this.currentNetworkEntry.value.lightChipTextColor)
 
         // Apply network theme to Dark mode
         document.documentElement.style.setProperty('--dark-network-button-text-color', this.currentNetworkEntry.value.darkButtonTextColor)
@@ -663,6 +665,8 @@ export class RouteManager {
         document.documentElement.style.setProperty('--dark-network-chip-color', this.currentNetworkEntry.value.darkChipColor)
         document.documentElement.style.setProperty('--dark-network-text-accent-color', this.currentNetworkEntry.value.darkTextAccentColor)
         document.documentElement.style.setProperty('--dark-network-border-accent-color', this.currentNetworkEntry.value.darkBorderAccentColor)
+        document.documentElement.style.setProperty('--dark-network-graph-bar-color', this.currentNetworkEntry.value.darkGraphBarColor)
+        document.documentElement.style.setProperty('--dark-network-chip-text-color', this.currentNetworkEntry.value.darkChipTextColor)
     }
 }
 

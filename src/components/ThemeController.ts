@@ -62,7 +62,7 @@ export class ThemeController {
     }
 
     public getGraphBarColor(): string {
-        return this.getCssVariable("--graphbar-pink")
+        return this.getCssVariable("--network-graph-bar-color")
     }
 
     public getCssVariable(name: string): string {
@@ -89,6 +89,8 @@ export class ThemeController {
             document.documentElement.style.setProperty('--network-chip-color', 'var(--dark-network-chip-color)')
             document.documentElement.style.setProperty('--network-text-accent-color', 'var(--dark-network-text-accent-color)')
             document.documentElement.style.setProperty('--network-border-accent-color', 'var(--dark-network-border-accent-color)')
+            document.documentElement.style.setProperty('--network-graph-bar-color', 'var(--dark-network-graph-bar-color)')
+            document.documentElement.style.setProperty('--network-chip-text-color', 'var(--dark-network-chip-text-color)')
 
             document.documentElement.style.setProperty('--text-primary', 'var(--dark-text-primary)')
             document.documentElement.style.setProperty('--text-secondary', 'var(--dark-text-secondary)')
@@ -118,8 +120,6 @@ export class ThemeController {
             document.documentElement.style.setProperty('--status-success-color', 'var(--dark-status-success-color)')
             document.documentElement.style.setProperty('--status-error-color', 'var(--dark-status-error-color)')
             document.documentElement.style.setProperty('--search-bar-default', 'var(--dark-search-bar-default)')
-            document.documentElement.style.setProperty('--graphbar-pink', 'hsl(from var(--network-button-color) h s l / 90%)')
-            document.documentElement.style.setProperty('--graphbar-blue', 'var(--dark-graphbar-blue)')
             document.getElementById('product-logo')?.setAttribute('src', this.coreConfig.productLogoDarkURL ?? '')
             document.getElementById('product-mini-logo')?.setAttribute('src', this.coreConfig.productMiniLogoDarkURL ?? '')
             document.getElementById('sponsor-logo')?.setAttribute('src', this.coreConfig.sponsorLogoDarkURL ?? '')
@@ -131,6 +131,8 @@ export class ThemeController {
             document.documentElement.style.setProperty('--network-chip-color', 'var(--light-network-chip-color)')
             document.documentElement.style.setProperty('--network-text-accent-color', 'var(--light-network-text-accent-color)')
             document.documentElement.style.setProperty('--network-border-accent-color', 'var(--light-network-border-accent-color)')
+            document.documentElement.style.setProperty('--network-graph-bar-color', 'var(--light-network-graph-bar-color)')
+            document.documentElement.style.setProperty('--network-chip-text-color', 'var(--light-network-chip-text-color)')
 
             document.documentElement.style.setProperty('--text-primary', 'var(--light-text-primary)')
             document.documentElement.style.setProperty('--text-secondary', 'var(--light-text-secondary)')
@@ -160,8 +162,6 @@ export class ThemeController {
             document.documentElement.style.setProperty('--status-success-color', 'var(--light-status-success-color)')
             document.documentElement.style.setProperty('--status-error-color', 'var(--light-status-error-color)')
             document.documentElement.style.setProperty('--search-bar-default', 'var(--light-search-bar-default)')
-            document.documentElement.style.setProperty('--graphbar-pink', 'hsl(from var(--network-button-color) h s l / 60%)')
-            document.documentElement.style.setProperty('--graphbar-blue', 'var(--light-graphbar-blue)')
             document.getElementById('product-logo')?.setAttribute('src', this.coreConfig.productLogoLightURL ?? '')
             document.getElementById('product-mini-logo')?.setAttribute('src', this.coreConfig.productMiniLogoLightURL ?? '')
             document.getElementById('sponsor-logo')?.setAttribute('src', this.coreConfig.sponsorLogoLightURL ?? '')
