@@ -2,6 +2,8 @@
   "productName": null,
   "productLogoLightURL": "product-logo-light.png",
   "productLogoDarkURL": "product-logo-dark.png",
+  "productMiniLogoLightURL": null,
+  "productMiniLogoDarkURL": null,
   "documentTitlePrefix": null,
   "productDescription": "Hiero Explorer is a ledger explorer for the Hiero network.",
   "metaDescription": null,
@@ -23,5 +25,6 @@
   "cryptoSymbol": null,
   "cryptoLogoLightURL": "crypto-logo-light.svg",
   "cryptoLogoDarkURL": "crypto-logo-dark.svg",
-  "walletConnectID": null
+  "walletConnectID": null,
+  "hgraphKey": null
 }
