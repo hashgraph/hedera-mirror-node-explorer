@@ -36,8 +36,10 @@
         </div>
         <div class="top-side">
           <NetworkSelector/>
-          <ConnectWalletButton v-if="!connected"/>
-          <WalletStatusButton v-else/>
+          <template v-if="enableWallet">
+            <ConnectWalletButton v-if="!connected"/>
+            <WalletStatusButton v-else/>
+          </template>
           <ThemeSwitch/>
         </div>
       </template>
@@ -47,7 +49,7 @@
           <ProductLogo/>
           <AxiosStatus/>
         </div>
-        <div class="top-side">
+        <div v-if="enableWallet" class="top-side">
           <ConnectWalletButton v-if="!connected"/>
           <WalletStatusButton v-else/>
         </div>
@@ -88,6 +90,8 @@ import MarketDashboard from "@/components/dashboard/MarketDashboard.vue";
 
 const enableMarketData = routeManager.enableMarket
 const isLargeScreen = inject('isLargeScreen', true)
+const enableWallet = routeManager.enableWallet
+
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 
 </script>

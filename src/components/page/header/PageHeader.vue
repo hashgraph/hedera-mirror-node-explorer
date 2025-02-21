@@ -36,8 +36,10 @@
         </div>
         <div class="right">
           <NetworkSelector/>
-          <ConnectWalletButton v-if="!connected"/>
-          <WalletStatusButton v-else/>
+          <template v-if="enableWallet">
+            <ConnectWalletButton v-if="!connected"/>
+            <WalletStatusButton v-else/>
+          </template>
           <ThemeSwitch/>
         </div>
       </template>
@@ -47,7 +49,7 @@
           <ProductLogo/>
           <AxiosStatus/>
         </div>
-        <div class="right">
+        <div v-if="enableWallet" class="right">
           <ConnectWalletButton v-if="!connected"/>
           <WalletStatusButton v-else/>
         </div>
@@ -91,7 +93,7 @@ import TabBar from "@/components/page/header/TabBar.vue";
 import SearchBar from "@/components/search/SearchBar.vue";
 import ConnectWalletButton from "@/components/page/header/wallet/ConnectWalletButton.vue";
 import {computed, inject, ref} from "vue";
-import {walletManager} from "@/router.ts";
+import {routeManager, walletManager} from "@/router.ts";
 import {WalletManagerStatus} from "@/utils/wallet/WalletManagerV4.ts";
 import WalletStatusButton from "@/components/page/header/wallet/WalletStatusButton.vue";
 import MobileMenuButton from "@/components/page/header/MobileMenuButton.vue";
@@ -106,6 +108,8 @@ const props = defineProps({
 
 const isLargeScreen = inject('isLargeScreen', true)
 const isMediumScreen = inject('isMediumScreen', true)
+const enableWallet = routeManager.enableWallet
+
 const connected = computed(() => walletManager.status.value == WalletManagerStatus.connected)
 const showSearchBar = ref(false)
 
