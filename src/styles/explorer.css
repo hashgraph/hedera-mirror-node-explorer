@@ -394,6 +394,14 @@ hr.horizontal-line {
     font-size: 12px !important;
 }
 
+.h-banner-link {
+    text-decoration: underline;
+}
+
+a.h-banner-link:hover {
+    color: #D7D7D7;
+}
+
 /*  ============================================================================
     Maintain code which is still using BULMA classes
 */

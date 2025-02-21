@@ -394,7 +394,7 @@ const props = defineProps({
   network: String,
 })
 
-const rewardIssueWarning = 'Pending staking reward calculation may temporarily be inaccurate. See more details at: https://status.hedera.com'
+const rewardIssueWarning = import.meta.env.VITE_APP_TEMPORARY_TOOLTIP ?? null
 
 const isMediumScreen = inject('isMediumScreen', true)
 const networkConfig = NetworkConfig.inject()
