@@ -23,7 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <input type="text" :placeholder="props.placeholder" v-model="text"/>
+  <input type="text" v-model="text"
+         :placeholder="props.placeholder"
+         :class="{ 'small': props.small }"/>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -38,6 +40,10 @@ const props = defineProps({
   placeholder: {
     type: String,
     default: ""
+  },
+  small: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -64,6 +70,13 @@ input {
 
 input::placeholder {
   opacity: 0.5;
+}
+
+input.small {
+  font-size: 10px;
+  font-weight: 400;
+  height: 28px;
+  line-height: 11px;
 }
 
 </style>
