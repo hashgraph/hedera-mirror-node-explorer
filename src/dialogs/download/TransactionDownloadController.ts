@@ -116,6 +116,8 @@ export class TransactionDownloadController extends DownloadController<Transactio
     }
 
     protected dialogStartShowing() {
+        this.selectedScope.value = "HBAR TRANSFERS"
+        this.selectedFilter.value = "CRYPTOTRANSFER"
         this.selectedStartDate.value = new Date()
         this.selectedEndDate.value = new Date()
     }
