@@ -157,7 +157,7 @@
     --status-success-color: var(--light-status-success-color);
     --status-error-color: var(--light-status-error-color);
     --search-bar-default: var(--light-search-bar-default);
-    --graphbar-pink: var(--light-graphbar-pink);
+    --graphbar-pink: hsl(from var(--network-button-color) h s l / 60%);
     --graphbar-blue: var(--light-graphbar-blue);
 
     --network-button-text-color: var(--light-network-button-text-color);
