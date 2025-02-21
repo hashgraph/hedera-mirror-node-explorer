@@ -26,15 +26,15 @@
 
   <template v-if="contractResult">
 
-    <DashboardCard class="h-card" collapsible-key="contractResult">
-      <template v-slot:title>
-        <span v-if="props.topLevel" class="h-is-primary-title">
+    <DashboardCardV2 collapsible-key="contractResult">
+      <template #title>
+        <span v-if="props.topLevel">
           Contract Result for {{ contractResult?.contract_id }} at {{ contractResult?.timestamp }}
         </span>
-        <span v-else class="h-is-secondary-title">Contract Result</span>
+        <span v-else>Contract Result</span>
       </template>
 
-      <template v-slot:leftContent>
+      <template #left-content>
         <Property id="result">
           <template v-slot:name>Result</template>
           <template v-slot:value>
@@ -50,15 +50,13 @@
         <Property id="from">
           <template v-slot:name>From</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined"
-                        :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined" :compact="!isXLargeScreen"/>
           </template>
         </Property>
         <Property id="to">
           <template v-slot:name>To</template>
           <template v-slot:value>
-            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined"
-                        :compact="isSmallScreen && !isMediumScreen"/>
+            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined" :compact="!isXLargeScreen"/>
           </template>
         </Property>
 
@@ -67,7 +65,7 @@
         <FunctionError :analyzer="analyzer"/>
       </template>
 
-      <template v-slot:rightContent>
+      <template #right-content>
         <Property v-if="contractType" id="type">
           <template v-slot:name>Type</template>
           <template v-slot:value>
@@ -107,7 +105,7 @@
             <template v-slot:value>
               <HbarAmount :amount="maxFeePerGas"/>
               <span v-if="maxFeePerGas"
-                    class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxFeePerGas) }}</span>
+                    class="h-is-extra-text h-is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxFeePerGas) }}</span>
             </template>
           </Property>
           <Property id="maxPriorityFeePerGas">
@@ -115,7 +113,7 @@
             <template v-slot:value>
               <HbarAmount :amount="maxPriorityFeePerGas"/>
               <span v-if="maxPriorityFeePerGas"
-                    class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
+                    class="h-is-extra-text h-is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
             </template>
           </Property>
         </template>
@@ -124,7 +122,7 @@
           <template v-slot:value>
             <HbarAmount :amount="gasPrice"/>
             <span v-if="gasPrice"
-                  class="h-is-extra-text is-numeric h-is-smaller ml-1">{{ gWeiExtra(gasPrice) }}</span>
+                  class="h-is-extra-text h-is-numeric ml-1">{{ gWeiExtra(gasPrice) }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">
@@ -135,14 +133,15 @@
         </Property>
       </template>
 
-    </DashboardCard>
+    </DashboardCardV2>
 
     <ContractResultTrace v-if="props.isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined"
                          :analyzer="analyzer"/>
 
     <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
 
-    <ContractResultLogs :logs="contractResult?.logs" :block-number="props.blockNumber" :transaction-hash="props.transactionHash"/>
+    <ContractResultLogs :logs="contractResult?.logs" :block-number="props.blockNumber"
+                        :transaction-hash="props.transactionHash"/>
 
   </template>
 
@@ -155,7 +154,6 @@
 <script setup lang="ts">
 
 import {computed, inject, onBeforeUnmount, onMounted, PropType} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
@@ -168,11 +166,12 @@ import {ContractResultAnalyzer} from "@/utils/analyzer/ContractResultAnalyzer";
 import FunctionInput from "@/components/values/FunctionInput.vue";
 import FunctionResult from "@/components/values/FunctionResult.vue";
 import FunctionError from "@/components/values/FunctionError.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
 import GasAmount from "@/components/values/GasAmount.vue";
 import {NetworkFeesCache} from "@/utils/cache/NetworkFeesCache.ts";
 import {TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
 import {lookupTransactionType} from "@/schemas/MirrorNodeUtils.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
 const props = defineProps({
   timestamp: {
@@ -201,8 +200,7 @@ const props = defineProps({
 const gasUsedTooltip = "This represents the actual amount of gas (i.e. the real computational effort) required to execute the smart contract."
 const gasConsumedTooltip = "This represents the amount of gas that is actually deducted from the user's balance (i.e it may include additional factors like base fees or refunds, etc…)."
 
-const isSmallScreen = inject('isSmallScreen', true)
-const isMediumScreen = inject('isMediumScreen', true)
+const isXLargeScreen = inject('isXLargeScreen', true)
 
 const timestamp = computed(() => props.timestamp ?? null)
 

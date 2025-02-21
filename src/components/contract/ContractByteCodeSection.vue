@@ -24,41 +24,45 @@
 
 <template>
 
-  <DashboardCard collapsible-key="contractBytecode">
-    <template v-slot:title>
-      <div class="is-flex is-align-items-center is-flex-wrap-wrap">
-        <span class="h-is-secondary-title mr-3">Contract Bytecode</span>
-        <div v-if="isVerificationAvailable" class="h-is-text-size-2 mt-1">
-          <div v-if="isVerified" class="h-has-pill has-background-success">VERIFIED</div>
-          <div v-else class="h-has-pill has-background-warning">NOT VERIFIED</div>
-        </div>
+  <DashboardCardV2 collapsible-key="contractBytecode">
+    <template #title>
+      Contract Bytecode
+      <div
+          v-if="isVerificationAvailable"
+          class="h-has-pill"
+          :class="{'h-status-success':isVerified, 'h-chip-default':!isVerified}"
+           style="margin-top: 2px">
+        {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>
     </template>
 
-    <template v-slot:control>
-      <template v-if="isVerificationAvailable">
-        <template v-if="!isVerified">
-          <button id="verify-button"
-                  class="button is-white is-small has-text-right"
-                  @click="showVerifyDialog = true">
-            VERIFY CONTRACT
-          </button>
-        </template>
-      </template>
+    <template #right-control>
+      <ButtonView
+          v-if="isVerificationAvailable && !isVerified"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="showVerifyDialog = true"
+      >
+        VERIFY
+      </ButtonView>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <Property v-if="isVerified" id="verificationStatus" :full-width="true">
         <template v-slot:name>Verification Status</template>
         <template v-slot:value>
-          <div class="is-flex is-align-items-center">
-            <p class="mr-2">{{ isFullMatch ? "Full Match" : "Partial Match" }}</p>
+          <div class="verification-status">
+            {{ isFullMatch ? "Full Match" : "Partial Match" }}
             <InfoTooltip :label="tooltipText"/>
-            <button v-if="!isFullMatch" id="verify-button"
-                    class="button is-white h-is-smaller ml-3"
-                    @click="showVerifyDialog = true">
-              RE-VERIFY CONTRACT
-            </button>
+            <ButtonView
+                v-if="!isFullMatch"
+                id="verify-button"
+                :is-default="true"
+                :size="ButtonSize.small"
+                @action="showVerifyDialog = true"
+            >
+              RE-VERIFY
+            </ButtonView>
           </div>
         </template>
       </Property>
@@ -80,7 +84,7 @@
           <StringValue :string-value="evmVersion"/>
         </template>
       </Property>
-      <template  v-if="logicContractId">
+      <template v-if="logicContractId">
         <Property id="logicContract" :full-width="true">
           <template v-slot:name>Proxying to Logic Contract</template>
           <template v-slot:value>
@@ -96,15 +100,18 @@
           </template>
         </Property>
       </template>
-      <div v-if="isVerified" class="is-flex is-justify-content-space-between is-align-items-center mb-0">
-        <Tabs :tab-ids=tabIds :tab-labels=tabLabels
-              :selected-tab="selectedOption"
-              @update:selected-tab="handleTabUpdate($event)"
-        />
-        <div v-if="selectedOption==='source'" class="is-flex is-justify-content-end">
-          <DownloadButton @click="handleDownload"/>
-          <o-field class="ml-2">
-            <o-select v-model="selectedSource" class="h-is-text-size-3">
+
+      <hr class="horizontal-line">
+
+      <template v-if="isVerified">
+        <div class="contract-code-header">
+          <Tabs :tab-ids=tabIds :tab-labels=tabLabels
+                :selected-tab="selectedOption"
+                @update:selected-tab="handleTabUpdate($event)"
+          />
+          <div v-if="selectedOption==='source'" class="contract-code-controls">
+            <DownloadButton @click="handleDownload"/>
+            <SelectView v-model="selectedSource" :small="true">
               <option value="">All source files</option>
               <optgroup label="Main contract file">
                 <option :value="contractFileName">{{ sourceFileName }}</option>
@@ -116,66 +123,46 @@
                   {{ relevantPath(file.path) }}
                 </option>
               </optgroup>
-            </o-select>
-          </o-field>
-        </div>
-        <div v-else-if="selectedOption==='bytecode'" class="is-flex is-align-items-center is-justify-content-end">
-          <p class="has-text-weight-light">Show hexa opcode</p>
-          <label class="checkbox pt-1 ml-3">
-            <input type="checkbox" v-model="showHexaOpcode">
-          </label>
-        </div>
-        <div v-else-if="selectedOption==='abi'" class="is-flex is-justify-content-end is-align-items-center">
-          <template v-if="logicModeAvailable">
-            <p class="mr-2 h-is-text-size-3">Show Logic Contract ABI</p>
-            <o-switch v-model="showLogicABI"/>
-          </template>
-          <DownloadButton @click="handleDownloadABI"/>
-          <o-field class="ml-2">
-            <o-select v-model="selectedType" class="h-is-text-size-3">
+            </SelectView>
+          </div>
+          <div v-else-if="selectedOption==='abi'" class="contract-code-controls">
+            <template v-if="logicModeAvailable">
+              <p>Show Logic Contract ABI</p>
+              <SwitchView v-model="showLogicABI"/>
+            </template>
+            <DownloadButton @click="handleDownloadABI"/>
+            <SelectView v-model="selectedType" :small="true">
               <option :value="FragmentType.ALL">All definitions</option>
               <option :value="FragmentType.READONLY">Read-only functions</option>
               <option :value="FragmentType.READWRITE">Read-write functions</option>
               <option :value="FragmentType.EVENTS">Events</option>
               <option :value="FragmentType.ERRORS">Errors</option>
               <option :value="FragmentType.OTHER">Other definitions</option>
-            </o-select>
-          </o-field>
-        </div>
-      </div>
-      <SourceCodeValue v-if="isVerified && selectedOption==='source'"
-                       :source-files="solidityFiles ?? undefined"
-                       :filter="selectedSource"/>
-      <div v-if="!isVerified || selectedOption==='bytecode'" class="columns is-multiline h-is-property-text"
-           :class="{'mt-3':!isVerified,'mt-0':isVerified}">
-        <div id="bytecode" class="column is-6 pt-0 mb-0" :class="{'is-full': !isSmallScreen}">
-          <span v-if="!isVerified" class="has-text-weight-light">Runtime Bytecode</span>
-          <div>
-            <ByteCodeValue :byte-code="byteCode ?? undefined" class="mb-0" :class="{'mt-3':!isVerified}"/>
+            </SelectView>
           </div>
         </div>
-        <div id="assembly-code" class="column is-6 pt-0 mb-0" :class="{'h-has-column-separator':isSmallScreen}">
-          <div v-if="!isVerified" class="is-flex is-align-items-center is-justify-content-space-between">
-            <p class="has-text-weight-light">Assembly Bytecode</p>
-            <div class="is-flex is-align-items-center is-justify-content-end">
-              <p class="has-text-weight-light">Show hexa opcode</p>
-              <label class="checkbox pt-1 ml-3">
-                <input type="checkbox" v-model="showHexaOpcode">
-              </label>
-            </div>
-          </div>
-          <DisassembledCodeValue :byte-code="byteCode ?? undefined" :show-hexa-opcode="showHexaOpcode" class="mb-0"/>
-        </div>
-      </div>
-      <ContractAbiValue v-if="isVerified && selectedOption==='abi'"
-                        :abiController="abiController"
-                        :fragment-type="selectedType as FragmentType"/>
+
+        <template v-if="selectedOption==='source'">
+          <ContractSourceValue :source-files="solidityFiles" :filter="selectedSource"/>
+        </template>
+
+        <template v-else-if="selectedOption==='bytecode'">
+          <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
+        </template>
+
+        <template v-else>
+          <ContractAbiValue :abiController="abiController" :fragment-type="selectedType as FragmentType"/>
+        </template>
+      </template>
+      <template v-else>
+        <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
+      </template>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
   <ContractVerificationDialog
       v-model:show-dialog="showVerifyDialog"
-      :contract-id="contractId ?? undefined"
+      :contract-id="contractId"
       v-on:verify-did-complete="verifyDidComplete"/>
 
 </template>
@@ -186,19 +173,16 @@
 
 <script setup lang="ts">
 
-import {computed, ComputedRef, inject, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
-import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
+import {computed, ComputedRef, onBeforeUnmount, onMounted, PropType, ref, watch} from 'vue';
 import StringValue from "@/components/values/StringValue.vue";
 import Property from "@/components/Property.vue";
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {routeManager} from "@/router";
 import InfoTooltip from "@/components/InfoTooltip.vue";
-import ContractVerificationDialog from "@/components/verification/ContractVerificationDialog.vue";
-import DisassembledCodeValue from "@/components/values/DisassembledCodeValue.vue";
+import ContractVerificationDialog from "@/dialogs/verification/ContractVerificationDialog.vue";
 import {AppStorage} from "@/AppStorage";
-import SourceCodeValue from "@/components/values/SourceCodeValue.vue";
-import ContractAbiValue, {FragmentType} from "@/components/values/abi/ContractAbiValue.vue";
+import ContractSourceValue from "@/components/values/ContractSourceValue.vue";
+import ContractAbiValue, {FragmentType} from "@/dialogs/abi/ContractAbiValue.vue";
 import {SourcifyResponseItem} from "@/utils/cache/SourcifyCache";
 import DownloadButton from "@/components/DownloadButton.vue";
 import JSZip from "jszip";
@@ -207,10 +191,15 @@ import Tabs from "@/components/Tabs.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import {ABIController, ABIMode} from "@/components/contract/ABIController";
 import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
+import SelectView from "@/elements/SelectView.vue";
+import SwitchView from "@/elements/SwitchView.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView from "@/elements/ButtonView.vue";
+import ContractByteCodeValue from "@/components/values/ContractByteCodeValue.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 const FULL_MATCH_TOOLTIP = `A Full Match indicates that the bytecode of the deployed contract is byte-by-byte the same as the compilation output of the given source code files with the settings defined in the metadata file. This means the contents of the source code files and the compilation settings are exactly the same as when the contract author compiled and deployed the contract.`
 const PARTIAL_MATCH_TOOLTIP = `A Partial Match indicates that the bytecode of the deployed contract is the same as the compilation output of the given source code files except for the metadata hash. This means the deployed contract and the given source code + metadata function in the same way but there are differences in source code comments, variable names, or other metadata fields such as source paths.`
-
 
 const props = defineProps({
   contractAnalyzer: {
@@ -218,8 +207,6 @@ const props = defineProps({
     required: true
   }
 })
-
-const isSmallScreen = inject('isSmallScreen', true)
 
 const isVerified = props.contractAnalyzer.isVerified
 const isFullMatch = props.contractAnalyzer.fullMatch
@@ -247,8 +234,8 @@ watch(showHexaOpcode, () => AppStorage.setShowHexaOpcode(showHexaOpcode.value ? 
 
 const tabIds = ['abi', 'source', 'bytecode']
 const tabLabels = ['ABI', 'Source', 'Bytecode']
-const selectedOption = ref<string|null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
-const handleTabUpdate = (tab: string|null) => {
+const selectedOption = ref<string | null>(AppStorage.getContractByteCodeTab() ?? tabIds[0])
+const handleTabUpdate = (tab: string | null) => {
   selectedOption.value = tab
   AppStorage.setContractByteCodeTab(tab)
 }
@@ -328,7 +315,7 @@ const handleDownloadABI = () => {
   }
 }
 
-const abiAnalyzer  = new ABIAnalyzer(props.contractAnalyzer)
+const abiAnalyzer = new ABIAnalyzer(props.contractAnalyzer)
 onMounted(() => abiAnalyzer.mount())
 onBeforeUnmount(() => abiAnalyzer.unmount())
 
@@ -364,4 +351,36 @@ const logicModeAvailable = abiController.logicModeAvailable
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.contract-code-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+}
+
+div.contract-code-controls {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+hr.horizontal-line {
+  margin: 8px 0;
+}
+
+div.verification-status {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: right;
+}
+@media (min-width: 768px) {
+  div.verification-status {
+    justify-content: left;
+  }
+}
+
+</style>

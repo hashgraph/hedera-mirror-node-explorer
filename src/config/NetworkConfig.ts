@@ -107,10 +107,27 @@ export class NetworkEntry {
         const enableStaking = fetchBoolean(obj, "enableStaking") ?? false
         const enableExpiry = fetchBoolean(obj, "enableExpiry") ?? false
         const enableMarket = fetchBoolean(obj, "enableMarket") ?? false
-        const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
         const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
         const erc20IndexURL = fetchURL(obj, "erc20IndexURL")
         const erc721IndexURL = fetchURL(obj, "erc721IndexURL")
+
+        const lightButtonTextColor = fetchString(obj, "lightButtonTextColor") ?? "white"
+        const lightButtonColor = fetchString(obj, "lightButtonColor") ?? "grey"
+        const lightChipTextColor = fetchString(obj, "lightChipTextColor") ?? "grey"
+        const lightChipColor = fetchString(obj, "lightChipColor") ?? "grey"
+        const lightTextAccentColor = fetchString(obj, "lightTextAccentColor") ?? "grey"
+        const lightBorderAccentColor = fetchString(obj, "lightBorderAccentColor") ?? "grey"
+        const lightGraphBarColor = fetchString(obj, "lightGraphBarColor") ?? "grey"
+
+        const darkButtonTextColor = fetchString(obj, "darkButtonTextColor") ?? "white"
+        const darkButtonColor = fetchString(obj, "darkButtonColor") ?? "grey"
+        const darkChipTextColor = fetchString(obj, "darkChipTextColor") ?? "grey"
+        const darkChipColor = fetchString(obj, "darkChipColor") ?? "grey"
+        const darkTextAccentColor = fetchString(obj, "darkTextAccentColor") ?? "grey"
+        const darkBorderAccentColor = fetchString(obj, "darkBorderAccentColor") ?? "grey"
+        const darkGraphBarColor = fetchString(obj, "darkGraphBarColor") ?? "grey"
+
+        const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
         if (name === null) {
             throw this.missingPropertyError("name")
@@ -141,7 +158,21 @@ export class NetworkEntry {
             popularTokenIndexURL,
             erc20IndexURL,
             erc721IndexURL,
-            sourcifySetup,
+            lightButtonTextColor,
+            lightButtonColor,
+            lightChipTextColor,
+            lightChipColor,
+            lightTextAccentColor,
+            lightBorderAccentColor,
+            lightGraphBarColor,
+            darkButtonTextColor,
+            darkButtonColor,
+            darkChipTextColor,
+            darkChipColor,
+            darkTextAccentColor,
+            darkBorderAccentColor,
+            darkGraphBarColor,
+            sourcifySetup
         )
     }
 
@@ -173,6 +204,24 @@ export class NetworkEntry {
 
         // The URL of the ERC721 contract index
         public readonly erc721IndexURL: string|null,
+
+        // The light variants of the network theme color
+        public readonly lightButtonTextColor: string|null,
+        public readonly lightButtonColor: string|null,
+        public readonly lightChipTextColor: string|null,
+        public readonly lightChipColor: string|null,
+        public readonly lightTextAccentColor: string|null,
+        public readonly lightBorderAccentColor: string|null,
+        public readonly lightGraphBarColor: string|null,
+
+        // The dark variants of the network theme color
+        public readonly darkButtonTextColor: string|null,
+        public readonly darkButtonColor: string|null,
+        public readonly darkChipTextColor: string|null,
+        public readonly darkChipColor: string|null,
+        public readonly darkTextAccentColor: string|null,
+        public readonly darkBorderAccentColor: string|null,
+        public readonly darkGraphBarColor: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}

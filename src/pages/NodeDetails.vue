@@ -24,169 +24,141 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Node Details">
 
-      <DashboardCard>
-        <template v-slot:title>
-          <div class="is-flex is-align-items-center">
-            <span class="h-is-primary-title mr-2">Node </span>
-            <span class="h-is-secondary-text is-numeric mr-3">{{ nodeIdNb }}</span>
-          </div>
-        </template>
+    <DashboardCardV2>
+      <template #title>
+        {{ `Node ${nodeIdNb}` }}
+      </template>
 
-        <template v-slot:content>
-          <NotificationBanner v-if="notification" :message="notification"/>
-        </template>
+      <template v-if="notification" #content>
+        <NotificationBanner :message="notification"/>
+      </template>
 
-        <template v-slot:leftContent>
-          <Property id="nodeAccount">
-            <template v-slot:name>Node Account</template>
-            <template v-slot:value>
-              <AccountLink :accountId="node?.node_account_id"/>
-            </template>
-          </Property>
-          <Property id="description">
-            <template v-slot:name>Description</template>
-            <template v-slot:value>
-              <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true"/>
-            </template>
-          </Property>
-          <Property id="file">
-            <template v-slot:name>Address Book File</template>
-            <template v-slot:value>
-              <StringValue :string-value="node?.file_id"/>
-            </template>
-          </Property>
-          <Property id="rangeFrom">
-            <template v-slot:name>Node existed since</template>
-            <template v-slot:value>
-              <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
-            </template>
-          </Property>
-          <Property id="rangeTo">
-            <template v-slot:name>Node expiry date</template>
-            <template v-slot:value>
-              <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
-            </template>
-          </Property>
-          <Property id="serviceEndpoints">
-            <template v-slot:name>Service Endpoints</template>
-            <template v-slot:value>
-              <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
-            </template>
-          </Property>
-          <Property v-if="enableStaking" id="publicKey">
-            <template v-slot:name>Public Key</template>
-            <template v-slot:value>
-              <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
-            </template>
-          </Property>
-          <Property v-if="enableStaking" id="nodeCertHash">
-            <template v-slot:name>Certificate Hash</template>
-            <template v-slot:value>
-              <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
-            </template>
-          </Property>
-        </template>
-
-        <template v-if="enableStaking" v-slot:rightContent>
-          <div>
-            <NetworkDashboardItem
-                id="yearlyRate"
-                :value="annualizedRate.toString()"
-                name="APPROX ANNUAL EQUIVALENT"
-                title="Last Period Reward Rate"
-            />
-          </div>
-
-          <div class="mt-5">
-            <NetworkDashboardItem
-                id="consensusStake"
-                :value="makeFloorHbarAmount(stake)"
-                :name=cryptoName
-                title="Stake for Consensus"
-                :info-label="stakeLabel"
-            />
-            <p v-if="stake > 0" id="consensusStakePercent" class="h-is-property-text h-is-extra-text mt-1">
-              {{ stakePercentage }} of total
-            </p>
-          </div>
-
-          <div class="mt-5">
-            <NetworkDashboardItem
-                id="rewarded"
-                :value="makeFloorHbarAmount(stakeRewarded)"
-                :name=cryptoName
-                title="Staked for Reward"
-            />
-            <p id="rewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
-              {{ stakeRewardedPercentage }}% of total
-            </p>
-          </div>
-
-          <div class="mt-5">
-            <NetworkDashboardItem
-                id="notRewarded"
-                :value="makeFloorHbarAmount(stakeUnrewarded)"
-                :name=cryptoName
-                title="Staked For No Reward"
-            />
-            <p id="notRewardedPercent" class="h-is-property-text h-is-extra-text mt-1">
-              {{ stakeUnrewardedPercentage }}% of total
-            </p>
-          </div>
-
-          <div class="mt-5">
-            <NetworkDashboardItem
-                id="minStake"
-                :value="makeFloorHbarAmount(minStake)"
-                :name=cryptoName
-                title="Min Stake"
-            />
-          </div>
-
-          <div class="mt-5">
-            <NetworkDashboardItem
-                id="maxStake"
-                :value="makeFloorHbarAmount(maxStake)"
-                :name=cryptoName
-                title="Max Stake"
-            />
-          </div>
-
-          <div class="mt-5">
-            <NetworkDashboardItem
-                id="stakingPeriod"
-                name="HOURS"
-                title="Current Staking Period"
-                value="24"
-            />
-            <p class="h-is-property-text h-is-extra-text mt-1">
-              from 00:00 am today to 11:59 pm today UTC
-            </p>
-          </div>
-        </template>
-
-        <template v-else v-slot:rightContent>
+      <template #left-content>
+        <Property id="nodeAccount">
+          <template #name>Node Account</template>
+          <template #value>
+            <AccountLink :accountId="node?.node_account_id"/>
+          </template>
+        </Property>
+        <Property id="description">
+          <template #name>Description</template>
+          <template #value>
+            <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true"/>
+          </template>
+        </Property>
+        <Property id="file">
+          <template #name>Address Book File</template>
+          <template #value>
+            <StringValue :string-value="node?.file_id"/>
+          </template>
+        </Property>
+        <Property id="rangeFrom">
+          <template #name>Node existed since</template>
+          <template #value>
+            <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
+          </template>
+        </Property>
+        <Property id="rangeTo">
+          <template #name>Node expiry date</template>
+          <template #value>
+            <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
+          </template>
+        </Property>
+        <Property id="serviceEndpoints">
+          <template #name>Service Endpoints</template>
+          <template #value>
+            <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
+          </template>
+        </Property>
+        <template v-if="enableStaking">
           <Property id="publicKey">
-            <template v-slot:name>Public Key</template>
-            <template v-slot:value>
+            <template #name>Public Key</template>
+            <template #value>
               <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
             </template>
           </Property>
           <Property id="nodeCertHash">
-            <template v-slot:name>Certificate Hash</template>
-            <template v-slot:value>
-              <HexaValue v-bind:byteString="formattedHash" v-bind:show-none="true"/>
+            <template #name>Certificate Hash</template>
+            <template #value>
+              <HexaValue :byteString="formattedHash" :show-none="true"/>
             </template>
           </Property>
         </template>
+      </template>
 
-      </DashboardCard>
+      <template v-if="enableStaking" #right-content>
+        <div class="dashboard-items">
+          <NetworkDashboardItemV2
+              id="yearlyRate"
+              title="Last Period Reward Rate"
+              :value="annualizedRate.toString()"
+              unit="APPROX ANNUAL EQUIVALENT"
+          />
+          <NetworkDashboardItemV2
+              id="consensusStake"
+              title="Stake for Consensus"
+              :value="makeFloorHbarAmount(stake)"
+              :unit=cryptoName
+              :info-label="stakeLabel"
+              :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
+          />
+          <NetworkDashboardItemV2
+              id="rewarded"
+              title="Staked for Reward"
+              :value="makeFloorHbarAmount(stakeRewarded)"
+              :unit=cryptoName
+              :extra="`${stakeRewardedPercentage}% of total`"
+          />
+          <NetworkDashboardItemV2
+              id="notRewarded"
+              title="Staked For No Reward"
+              :value="makeFloorHbarAmount(stakeUnrewarded)"
+              :unit=cryptoName
+              :extra="`${stakeUnrewardedPercentage}% of total`"
+          />
+          <NetworkDashboardItemV2
+              id="minStake"
+              title="Min Stake"
+              :value="makeFloorHbarAmount(minStake)"
+              :unit=cryptoName
+          />
+          <NetworkDashboardItemV2
+              id="maxStake"
+              title="Max Stake"
+              :value="makeFloorHbarAmount(maxStake)"
+              :unit=cryptoName
+          />
+          <NetworkDashboardItemV2
+              title="Current Staking Period"
+              id="stakingPeriod"
+              value="24"
+              unit="HOURS"
+              extra="from 00:00 am today to 11:59 pm today UTC"
+          />
+        </div>
+      </template>
 
-    </template>
-  </PageFrame>
+      <template v-else #right-content>
+        <Property id="publicKey">
+          <template #name>Public Key</template>
+          <template #value>
+            <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
+          </template>
+        </Property>
+        <Property id="nodeCertHash">
+          <template #name>Certificate Hash</template>
+          <template #value>
+            <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
+          </template>
+        </Property>
+      </template>
+    </DashboardCardV2>
+
+    <MirrorLink :network="props.network" entityUrl="network/nodes" :query="`node.id=${props.nodeId}`"/>
+
+  </PageFrameV2>
 
 </template>
 
@@ -194,21 +166,19 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
 import KeyValue from "@/components/values/KeyValue.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TimestampValue from "@/components/values/TimestampValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import BlobValue from "@/components/values/BlobValue.vue";
 import StringValue from "@/components/values/StringValue.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import Property from "@/components/Property.vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 import Endpoints from "@/components/values/Endpoints.vue";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {PathParam} from "@/utils/PathParam";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
@@ -216,101 +186,84 @@ import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {makeStakePercentage} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
+import MirrorLink from "@/components/MirrorLink.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
-export default defineComponent({
-
-  name: 'NodeDetails',
-
-  components: {
-    NetworkDashboardItem,
-    Endpoints,
-    HexaValue,
-    Property,
-    NotificationBanner,
-    PageFrame,
-    BlobValue,
-    DashboardCard,
-    AccountLink,
-    TimestampValue,
-    KeyValue,
-    StringValue,
+const props = defineProps({
+  nodeId: {
+    type: String,
+    required: true
   },
+  network: String
+})
 
-  props: {
-    nodeId: {
-      type: String,
-      required: true
-    },
-    network: String
-  },
+const cryptoName = CoreConfig.inject().cryptoName
 
-  setup(props) {
-    const cryptoName = CoreConfig.inject().cryptoName
+const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
+const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
+onMounted(() => nodeAnalyzer.mount())
+onBeforeUnmount(() => nodeAnalyzer.unmount())
+const networkAnalyzer = nodeAnalyzer.networkAnalyzer // Mounted / unmounted by nodeAnalyzer
 
-    const nodeIdNb = computed(() => PathParam.parseNodeId(props.nodeId))
-    const nodeAnalyzer = new NodeAnalyzer(nodeIdNb)
-    onMounted(() => nodeAnalyzer.mount())
-    onBeforeUnmount(() => nodeAnalyzer.unmount())
-    const networkAnalyzer = nodeAnalyzer.networkAnalyzer // Mounted / unmounted by nodeAnalyzer
+const stakeLookup = StakeCache.instance.makeLookup()
+onMounted(() => stakeLookup.mount())
+onBeforeUnmount(() => stakeLookup.unmount())
 
-    const stakeLookup = StakeCache.instance.makeLookup()
-    onMounted(() => stakeLookup.mount())
-    onBeforeUnmount(() => stakeLookup.unmount())
+const stakePercentage = computed(() =>
+    nodeAnalyzer.node.value && totalStakeForConsensus.value
+        ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, totalStakeForConsensus.value)
+        : "0"
+)
+const stakeLabel = computed(() =>
+    nodeAnalyzer.stake.value === 0
+        ? 'Stake for consensus is 0 because (Staked for Reward + Staked For No Reward) was less than Min Stake at the beginning of the current staking period.'
+        : null
+)
+const stakeRewardedPercentage = computed(() =>
+    networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0
+)
+const stakeUnrewardedPercentage = computed(() =>
+    networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0
+)
 
-    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
-    const stakePercentage = computed(() =>
-        nodeAnalyzer.node.value && stakeTotal.value
-            ? makeStakePercentage(nodeAnalyzer.node.value as NetworkNode, stakeTotal.value)
-            : "0")
+const unknownNodeId = ref(false)
 
-    const stakeLabel = computed(() =>
-        nodeAnalyzer.stake.value === 0
-            ? 'Stake for consensus is 0 because (Staked for Reward + Staked For No Reward) was less than Min Stake at the beginning of the current staking period.'
-            : null)
+const notification = computed(() => {
+  let result
+  if (unknownNodeId.value) {
+    result = "Node with ID " + props.nodeId + " was not found"
+  } else {
+    result = null
+  }
+  return result
+})
 
-    const stakeRewardedPercentage = computed(() =>
-        networkAnalyzer.stakeRewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeRewarded.value / networkAnalyzer.stakeRewardedTotal.value * 10000) / 100 : 0)
+const makeFloorHbarAmount = (tinyBarAmount: number) => {
+  return Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
+}
 
-    const stakeUnrewardedPercentage = computed(() =>
-        networkAnalyzer.stakeUnrewardedTotal.value != 0 ? Math.round(nodeAnalyzer.stakeUnrewarded.value / networkAnalyzer.stakeUnrewardedTotal.value * 10000) / 100 : 0)
-
-    const unknownNodeId = ref(false)
-    const notification = computed(() => {
-      let result
-      if (unknownNodeId.value) {
-        result = "Node with ID " + props.nodeId + " was not found"
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
-
-    return {
-      cryptoName,
-      enableStaking: routeManager.enableStaking,
-      nodeIdNb,
-      node: nodeAnalyzer.node,
-      annualizedRate: nodeAnalyzer.annualizedRate,
-      stake: nodeAnalyzer.stake,
-      stakeLabel,
-      minStake: nodeAnalyzer.minStake,
-      maxStake: nodeAnalyzer.maxStake,
-      stakePercentage,
-      unclampedStake: nodeAnalyzer.unclampedStake,
-      stakeRewarded: nodeAnalyzer.stakeRewarded,
-      stakeRewardedPercentage,
-      stakeUnrewarded: nodeAnalyzer.stakeUnrewarded,
-      stakeUnrewardedPercentage,
-      notification,
-      nodeDescription: nodeAnalyzer.nodeDescription,
-      formattedHash: nodeAnalyzer.certificateHash,
-      makeFloorHbarAmount
-    }
-  },
-});
+const enableStaking = routeManager.enableStaking
+const node = nodeAnalyzer.node
+const totalStakeForConsensus = networkAnalyzer.totalStakeForConsensus
+const annualizedRate = nodeAnalyzer.annualizedRate
+const stake = nodeAnalyzer.stake
+const minStake = nodeAnalyzer.minStake
+const maxStake = nodeAnalyzer.maxStake
+const stakeRewarded = nodeAnalyzer.stakeRewarded
+const stakeUnrewarded = nodeAnalyzer.stakeUnrewarded
+const nodeDescription = nodeAnalyzer.nodeDescription
+const formattedHash = nodeAnalyzer.certificateHash
 
 </script>
 
-<style/>
+<style scoped>
+
+div.dashboard-items {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+
+</style>

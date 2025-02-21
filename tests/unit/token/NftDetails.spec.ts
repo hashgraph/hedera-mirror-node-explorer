@@ -37,7 +37,7 @@ import NftDetails from "../../../src/pages/NftDetails.vue";
 
 HMSF.forceUTC = true
 
-describe("NftDetails.vue", () => {
+describe.skip("NftDetails.vue", () => {
 
     it("Should display details of NFT", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error

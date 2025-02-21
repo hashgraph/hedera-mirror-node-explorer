@@ -33,13 +33,13 @@
     </template>
 
     <template v-else-if="entityId !== null">
-      <span class="is-numeric">
+      <span class="h-is-numeric">
         {{ entityId ?? "" }}
       </span>
     </template>
 
     <template v-else-if="!initialLoading">
-      <span class="has-text-grey">
+      <span class="h-is-low-contrast">
         {{ nullLabel ?? "None" }}
       </span>
     </template>

@@ -1,0 +1,495 @@
+/*-
+ *
+ * Hedera Mirror Node Explorer
+ *
+ * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+/*
+@import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
+*/
+@import "../../node_modules/@oruga-ui/theme-oruga/dist/oruga.css";
+@import "oruga-customization.css";
+
+/*  ============================================================================
+    Fonts
+*/
+@import "@/fonts/styreneA/1802-UFGULA.css";
+
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('@/fonts/Inter/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Geist Mono';
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    src: url('@/fonts/Geist_Mono/GeistMono-VariableFont_wght.ttf') format('truetype');
+}
+
+:root {
+    --font-family-heading: 'Styrene A Web';
+    --font-family-proportional: 'Inter';
+    --font-family-monospace: 'Geist Mono';
+}
+
+/*  ============================================================================
+    Color Themes / Modes
+*/
+:root {
+
+    /* LIGHT MODE */
+
+    /* the following are defaults for network theme colors
+       the actual values will be provided by configuration parameters in networks-config.json
+    */
+    --light-network-button-text-color: #FFFFFF; /* NetworkEntry.lightButtonTextColor */
+    --light-network-button-color: #7A1B80; /* NetworkEntry.lightButtonColor */
+    --light-network-chip-text-color: #FFFFFF; /* NetworkEntry.lightChipTextColor */
+    --light-network-chip-color: #A7449D; /* NetworkEntry.lightChipColor */
+    --light-network-text-accent-color: #E0007B; /* NetworkEntry.lightTextAccentColor */
+    --light-network-border-accent-color: #B664AE; /* NetworkEntry.lightBorderAccentColor */
+    --light-network-graph-bar-color: #E183E7; /* NetworkEntry.lightGraphBarColor */
+
+    --light-text-primary: #050505;
+    --light-text-secondary: #888888;
+    --light-text-accent2: #255CF4;
+    --light-text-success: #00722D;
+    --light-text-error: #EA1548;
+    --light-text-disabled: #BDBDBD;
+    --light-background-primary: #F6F6F6;
+    --light-background-primary-transparent: rgba(255, 255, 255, 0.5);
+    --light-background-secondary: #EFEFEF;
+    --light-background-tertiary: #FFFFFF;
+    --light-border-primary: #EFEFEF;
+    --light-border-secondary: #D7D7D7;
+    --light-table-border: #EFEFEF;
+    --light-chip-text-primary: white;
+    --light-chip-secondary-default: #545454;
+    --light-button-text-secondary: var(--text-primary);
+    --light-button-background-secondary: #EFEFEF;
+    --light-copy-button-text: #FFFFFF;
+    --light-copy-button-background: #2C2C2C;
+    --light-tab-background: rgba(5, 5, 5, 0.05);
+    --light-icon-default-color: #A2A2A2;
+    --light-status-success-color: #00722D;
+    --light-status-error-color: #C40E3A;
+    --light-search-bar-default: #FFFFFF;
+    /*
+    --light-graphbar-blue: #5A4DFF;
+    */
+
+    /* DARK MODE */
+
+    /* the following are defaults for network theme colors
+       the actual values will be provided by configuration parameters in networks-config.json
+    */
+    --dark-network-button-text-color: #FFFFFF; /* NetworkEntry.darkButtonTextColor */
+    --dark-network-button-color: #7A1B80; /* NetworkEntry.darkButtonColor */
+    --dark-network-chip-text-color: #FFFFFF; /* NetworkEntry.darkChipTextColor */
+    --dark-network-chip-color: #A7449D; /* NetworkEntry.darkChipColor */
+    --dark-network-text-accent-color: #F258AC; /* NetworkEntry.darkTextAccentColor */
+    --dark-network-border-accent-color: #7A1B80; /* NetworkEntry.darkBorderAccentColor */
+    --dark-network-graph-bar-color: #D245DB; /* NetworkEntry.darkGraphBarColor */
+
+    --dark-text-primary: #FFFFFF;
+    --dark-text-secondary: #A2A2A2;
+    --dark-text-accent2: #255CF4;
+    --dark-text-success: #29BC63;
+    --dark-text-error: #EA1548;
+    --dark-text-disabled: #A2A2A2;
+    --dark-background-primary: #131313;
+    --dark-background-primary-transparent: rgba(19, 19, 19, 0.7);
+    --dark-background-secondary: #050505;
+    --dark-background-tertiary: #171717;
+    --dark-border-primary: #171717;
+    --dark-border-secondary: #2C2C2C;
+    --dark-table-border: #1F1F1F;
+    --dark-chip-text-primary: white;
+    --dark-chip-secondary-default: #545454;
+    --dark-button-text-secondary: var(--text-primary);
+    --dark-button-background-secondary: #2C2C2C;
+    --dark-copy-button-text: #050505;
+    --dark-copy-button-background: #EFEFEF;
+    --dark-tab-background: rgba(255, 255, 255, 0.05);
+    --dark-icon-default-color: #A2A2A2;
+    --dark-status-success-color: #00722D;
+    --dark-status-error-color: #C40E3A;
+    --dark-search-bar-default: #2C2C2C;
+    /*
+    --dark-graphbar-blue: #1300FF;
+    */
+
+    /* CURRENT MODE */
+    --text-primary: var(--light-text-primary);
+    --text-secondary: var(--light-text-secondary);
+    --text-accent2: var(--light-text-accent2);
+    --text-success: var(--light-text-success);
+    --text-error: var(--light-text-error);
+    --text-disabled: var(--light-text-disabled);
+    --background-primary: var(--light-background-primary);
+    --background-primary-transparent: var(--light-background-primary-transparent);
+    --background-secondary: var(--light-background-secondary);
+    --background-tertiary: var(--light-background-tertiary);
+    --border-primary: var(--light-border-primary);
+    --border-secondary: var(--light-border-secondary);
+    --table-border: var(--light-table-border);
+    --chip-text-primary: var(--light-chip-text-primary);
+    --chip-secondary-default: var(--light-chip-secondary-default);
+    --button-text-secondary: var(--light-button-text-secondary);
+    --button-background-secondary: var(--light-button-background-secondary);
+    --copy-button-text: var(--light-copy-button-text);
+    --copy-button-background: var(--light-copy-button-background);
+    --tab-background: var(--light-tab-background);
+    --icon-default-color: var(--light-icon-default-color);
+    --status-success-color: var(--light-status-success-color);
+    --status-error-color: var(--light-status-error-color);
+    --search-bar-default: var(--light-search-bar-default);
+
+    --network-button-text-color: var(--light-network-button-text-color);
+    --network-button-color: var(--light-network-button-color);
+    --network-chip-text-color: var(--light-network-chip-text-color);
+    --network-chip-color: var(--light-network-chip-color);
+    --network-text-accent-color: var(--light-network-text-accent-color);
+    --network-border-accent-color: var(--light-network-border-accent-color);
+    --network-graph-bar-color: var(--light-network-graph-bar-color);
+}
+
+/*
+    Compatibility with existing variables
+ */
+:root {
+    --network-theme-color: var(--network-button-color);
+    --h-theme-highlight-color: var(--light-network-text-accent-color);
+    --h-theme-page-background-color: var(--background-primary);
+    --h-theme-box-background-color: var(--background-tertiary);
+}
+
+/*  ============================================================================
+    Explorer classes
+*/
+
+
+html, body {
+    background: var(--background-primary);
+    color: var(--text-primary);
+    font-family: var(--font-family-proportional), sans-serif;
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    text-rendering: optimizeLegibility;
+    text-size-adjust: 100%;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+}
+
+body, button, input, optgroup, select, textarea {
+    font-family: var(--font-family-proportional), sans-serif;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+}
+
+a:hover {
+    color: grey;
+}
+
+button {
+    background-color: var(--background-tertiary);
+    border: none;
+    padding: 0;
+}
+
+blockquote, body, dd, dl, dt, fieldset, figure, h1, h2, h3, h4, h5, h6, hr, html, iframe, legend, li, ol, p, pre, textarea, ul {
+    margin: 0;
+    padding: 0
+}
+
+button, input, select, textarea {
+    margin: 0
+}
+
+ul {
+    list-style: none
+}
+
+.h-page-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+@media (min-width: 1080px) {
+    .h-page-content {
+        margin-left: 32px;
+        margin-right: 32px;
+    }
+}
+
+.h-side-by-side-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+@media (min-width: 1600px) {
+    .h-side-by-side-content {
+        display: grid;
+        gap: 16px;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.h-sub-section {
+    background-color: var(--tab-background);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-family: "Styrene A Web", sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    max-width: fit-content;
+    padding: 8px 8px;
+}
+
+.h-has-pill {
+    background: var(--network-chip-color);
+    border-radius: 32px;
+    color: var(--network-chip-text-color);
+    display: inline-block;
+    font-family: "Styrene A Web", sans-serif;
+    font-size: 10px;
+    font-weight: 500;
+    height: 20px;
+    padding: 2px 8px;
+    text-wrap: nowrap;
+}
+
+.h-is-bold {
+    font-weight: 600;
+}
+
+.h-is-monospace {
+    font-family: var(--font-family-monospace), sans-serif;
+}
+
+.h-is-numeric {
+    font-variant-numeric: tabular-nums;
+}
+
+.h-is-low-contrast {
+    color: var(--text-secondary);
+}
+
+.h-text-error {
+    color: var(--text-error);
+}
+
+.h-is-extra-text {
+    color: var(--network-text-accent-color);
+}
+
+.h-status-success {
+    background-color: var(--status-success-color);
+}
+
+.h-status-error {
+    background-color: var(--status-error-color);
+}
+
+.h-chip-default {
+    background-color: var(--chip-secondary-default);
+}
+
+.h-should-wrap {
+    word-break: break-word;
+}
+
+hr.horizontal-line {
+    background-color: var(--border-secondary);
+    border: 0;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+}
+
+.h-is-label {
+    color: #DDD;
+    background: #383838;
+    border: solid 0.5px var(--network-theme-color);
+    border-radius: 4px;
+    font-family: "Styrene A Web", sans-serif;
+    font-weight: normal;
+    font-size: 13px;
+    line-height: 19px;
+    padding: 3px 6px 3px;
+    letter-spacing: normal;
+    align-content: center;
+}
+
+.h-is-compact-label {
+    color: #DDD;
+    background: #383838;
+    border: solid 0.5px var(--network-theme-color);
+    border-radius: 4px;
+    font-family: "Styrene A Web", sans-serif;
+    font-weight: normal;
+    font-size: 11px;
+    line-height: 16px;
+    padding: 1px 4px 2px;
+    width: fit-content;
+    letter-spacing: normal;
+    align-content: center;
+}
+
+.w250 {
+    max-width: 250px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w300 {
+    max-width: 300px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.w400 {
+    max-width: 400px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.h-code-box {
+    background-color: var(--background-secondary);
+    border-radius: 8px;
+    border-width: 0;
+    min-height: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.h-code-source {
+    background-color: var(--background-secondary) !important;
+    font-size: 12px !important;
+}
+
+.h-banner-link {
+    text-decoration: underline;
+}
+
+a.h-banner-link:hover {
+    color: #D7D7D7;
+}
+
+/*  ============================================================================
+    Maintain code which is still using BULMA classes
+*/
+
+.has-text-left {
+    text-align: left !important
+}
+
+.has-text-right {
+    text-align: right !important
+}
+
+.has-text-centered {
+    text-align: center !important
+}
+
+.is-inline-block {
+    display: inline-block !important
+}
+
+.mt-1 {
+    margin-top: .25rem !important
+}
+
+.mr-1 {
+    margin-right: .25rem !important
+}
+
+.ml-1 {
+    margin-left: .25rem !important
+}
+
+.mr-2 {
+    margin-right: .5rem !important
+}
+
+.mb-2 {
+    margin-bottom: .5rem !important
+}
+
+.ml-2 {
+    margin-left: .5rem !important
+}
+
+.mt-3 {
+    margin-top: .75rem !important
+}
+
+.mr-3 {
+    margin-right: .75rem !important
+}
+
+.mt-4 {
+    margin-top: 1rem !important
+}
+
+.mb-4 {
+    margin-bottom: 1rem !important
+}
+
+.ml-5 {
+    margin-left: 1.5rem !important
+}
+
+/*  ============================================================================
+    DatePicker
+*/
+
+:root {
+    --dp-font-family: "Inter", sans-serif;
+    --dp-border-radius: 0;
+    --dp-font-size: 11px;
+}
+
+.dp__theme_dark, .dp__theme_light {
+    --dp-background-color: var(--background-tertiary);
+    --dp-primary-color: var(--network-button-color);
+    --dp-border-color: var(--text-secondary);
+    --dp-border-color-hover: var(--text-secondary);
+    --dp-icon-color: var(--text-primary);
+}
+
+.dp__input {
+    height: 28px;
+}

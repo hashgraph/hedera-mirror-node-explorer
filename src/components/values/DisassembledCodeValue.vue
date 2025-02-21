@@ -23,20 +23,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="disassembly" id="disassembly"
-       class="h-code-box h-has-page-background is-family-monospace mt-2 px-3 py-1"
-       style="max-height: 400px;">
+  <div v-if="disassembly" id="disassembly">
     <template v-if="disassembly.length > 0">
       <div v-for="opcode in disassembly" :key="opcode.index16">
         <OpcodeValue :opcode="opcode" :show-hexa-opcode="showHexaOpcode"/>
       </div>
     </template>
-    <p v-else class="has-text-grey is-italic has-text-weight-medium">{{ disassembledError }}</p>
+    <p v-else class="h-is-low-contrast">{{ disassembledError }}</p>
   </div>
 
   <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+  <span v-else class="h-is-low-contrast">None</span>
 
 </template>
 

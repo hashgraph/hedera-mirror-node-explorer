@@ -32,9 +32,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="paginated"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       :striped="true"
 
@@ -52,16 +52,16 @@
   >
 
     <o-table-column v-slot="props" field="contract_id" label="ID">
-      <div class="is-numeric">
+      <div class="entity-id">
         {{ props.row.entity_id }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="contract_name" label="Contract Name">
+    <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
       <ContractName :contract-id="props.row.entity_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="Created">
+    <o-table-column v-slot="props" field="created" label="CREATE">
       <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
 
@@ -88,9 +88,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, onBeforeUnmount, onMounted, PropType, Ref} from 'vue';
+import {onBeforeUnmount, onMounted, PropType} from 'vue';
 import {Transaction} from "@/schemas/MirrorNodeSchemas";
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import {routeManager} from "@/router";
@@ -101,43 +101,28 @@ import ContractName from "@/components/values/ContractName.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'AccountCreatedContractsTable',
-
-  components: {TablePageSize, ContractName, EmptyTable, TimestampValue},
-
-  props: {
-    controller: {
-      type: Object as PropType<TransactionTableController>,
-      required: true
-    }
-  },
-
-  setup(props) {
-
-    onMounted(() => props.controller.mount())
-    onBeforeUnmount(() => props.controller.unmount())
-
-    const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      routeManager.routeToContract(t.entity_id!, event)
-    }
-
-    return {
-      transactions: props.controller.rows as ComputedRef<Transaction[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      handleClick,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TransactionTableController>,
+    required: true
   }
-});
+})
+
+onMounted(() => props.controller.mount())
+onBeforeUnmount(() => props.controller.unmount())
+
+const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  routeManager.routeToContract(t.entity_id!, event)
+}
+
+const transactions = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -146,5 +131,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.entity-id {
+  font-weight: 600;
+}
 
 </style>

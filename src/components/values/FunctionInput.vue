@@ -24,23 +24,25 @@
 
 <template>
 
-  <div v-if="signature">
+  <template v-if="signature">
 
     <Property :custom-nb-col-class="customNbColClass" id="function">
-      <template v-slot:name>Signature</template>
-      <template v-slot:value>
+      <template #name>Signature</template>
+      <template #value>
         <SignatureValue :analyzer="analyzer"/>
       </template>
     </Property>
 
     <template v-if="inputs && inputs.length >= 1">
 
-      <div class="h-is-tertiary-text my-2">Input</div>
+      <div class="h-sub-section">Input</div>
 
       <template v-for="arg in inputs" :key="arg.name">
         <Property :custom-nb-col-class="customNbColClass">
-          <template v-slot:name>{{ arg.name }}</template>
-          <template v-slot:value>
+          <template #name>
+            <span style="padding-left: 16px;">{{ arg.name }}</span>
+          </template>
+          <template #value>
             <FunctionValue :ntv="arg"/>
           </template>
         </Property>
@@ -50,11 +52,11 @@
     <template v-else>
 
       <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-        <template v-slot:name>Input Args</template>
-        <template v-slot:value>
+        <template #name>Input Args</template>
+        <template #value>
           <ByteCodeValue :byte-code="inputArgsOnly ?? undefined" :height-in-pixel="140"/>
-          <div v-if="inputDecodingStatus" class="h-is-extra-text h-is-text-size-3">
-            <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+          <div v-if="inputDecodingStatus" class="h-is-extra-text">
+            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
             <span>{{ inputDecodingStatus }}</span>
           </div>
         </template>
@@ -62,14 +64,15 @@
 
     </template>
 
-  </div>
+  </template>
+
   <template v-else>
     <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-      <template v-slot:name>Input - Function & Args</template>
-      <template v-slot:value>
+      <template #name>Input - Function & Args</template>
+      <template #value>
         <ByteCodeValue :byte-code="input ?? undefined" :heightInPixel="140"/>
-        <div v-if="functionDecodingStatus" class="h-is-extra-text h-is-text-size-3">
-          <span class="icon fas fa-exclamation-circle has-text-grey is-small mt-1 mr-1"/>
+        <div v-if="functionDecodingStatus" class="h-is-extra-text">
+          <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
           <span>{{ functionDecodingStatus }}</span>
         </div>
       </template>
@@ -82,42 +85,29 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, PropType, ref} from 'vue';
-import {initialLoadingKey} from "@/AppKeys";
+import {PropType} from 'vue';
 import {FunctionCallAnalyzer} from "@/utils/analyzer/FunctionCallAnalyzer";
 import Property from "@/components/Property.vue";
 import FunctionValue from "@/components/values/FunctionValue.vue";
 import SignatureValue from "@/components/values/SignatureValue.vue";
 import ByteCodeValue from "@/components/values/ByteCodeValue.vue";
 
-export default defineComponent({
-  name: 'FunctionInput',
-  components: {ByteCodeValue, SignatureValue, FunctionValue, Property},
-  props: {
-    analyzer: {
-      type: Object as PropType<FunctionCallAnalyzer>,
-      required: true
-    },
-    customNbColClass: String
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<FunctionCallAnalyzer>,
+    required: true
   },
+  customNbColClass: String
+})
 
-  setup(props) {
-
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {
-      input: props.analyzer.normalizedInput,
-      signature: props.analyzer.signature,
-      functionHash: props.analyzer.functionHash,
-      inputs: props.analyzer.inputs,
-      functionDecodingStatus: props.analyzer.functionDecodingStatus,
-      inputDecodingStatus: props.analyzer.inputDecodingStatus,
-      inputArgsOnly: props.analyzer.inputArgsOnly,
-      initialLoading
-    }
-  }
-});
+const input = props.analyzer.normalizedInput
+const signature = props.analyzer.signature
+const inputs = props.analyzer.inputs
+const functionDecodingStatus = props.analyzer.functionDecodingStatus
+const inputDecodingStatus = props.analyzer.inputDecodingStatus
+const inputArgsOnly = props.analyzer.inputArgsOnly
 
 </script>
 

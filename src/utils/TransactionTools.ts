@@ -157,16 +157,16 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
     switch (type) {
 
         case TransactionType.CONSENSUSCREATETOPIC:
-            result = "HCS Create Topic";
+            result = "Create Topic";
             break;
         case TransactionType.CONSENSUSUPDATETOPIC:
-            result = "HCS Update Topic";
+            result = "Update Topic";
             break;
         case TransactionType.CONSENSUSDELETETOPIC:
-            result = "HCS Delete Topic";
+            result = "Delete Topic";
             break;
         case TransactionType.CONSENSUSSUBMITMESSAGE:
-            result = "HCS Submit Message"
+            result = "Submit Message"
             break;
 
         case TransactionType.CONTRACTCALL:
@@ -183,28 +183,28 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             break;
 
         case TransactionType.CRYPTOADDLIVEHASH:
-            result = "Crypto Add Live Hash"
+            result = "Add Live Hash"
             break;
         case TransactionType.CRYPTOCREATEACCOUNT:
-            result = "Crypto Create Account"
+            result = "Create Account"
             break;
         case TransactionType.CRYPTODELETE:
-            result = "Crypto Delete Account"
+            result = "Delete Account"
             break;
         case TransactionType.CRYPTOUPDATEACCOUNT:
-            result = "Crypto Update Account"
+            result = "Update Account"
             break;
         case TransactionType.CRYPTODELETELIVEHASH:
-            result = "Crypto Delete Live Hash"
+            result = "Delete Live Hash"
             break
         case TransactionType.CRYPTOTRANSFER:
             result = "Crypto Transfer"
             break
         case TransactionType.CRYPTOAPPROVEALLOWANCE:
-            result = "Crypto Approve Allowance"
+            result = "Approve Allowance"
             break
         case TransactionType.CRYPTODELETEALLOWANCE:
-            result = "Crypto Delete Allowance"
+            result = "Delete Allowance"
             break
 
         case TransactionType.ETHEREUMTRANSACTION:
@@ -271,7 +271,7 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             result = "Token Update";
             break;
         case TransactionType.TOKENUPDATENFTS:
-            result = "Token Update NFTs";
+            result = "Update NFTs";
             break;
         case TransactionType.TOKENASSOCIATE:
             result = "Token Associate";
@@ -301,10 +301,10 @@ export function makeTypeLabel(type: TransactionType | undefined): string {
             result = "Token Airdrop";
             break;
         case TransactionType.TOKENCANCELAIRDROP:
-            result = "Token Cancel Airdrop";
+            result = "Cancel Airdrop";
             break;
         case TransactionType.TOKENCLAIMAIRDROP:
-            result = "Token Claim Airdrop";
+            result = "Claim Airdrop";
             break;
         case TransactionType.TOKENREVOKEKYC:
             result = "Token KYC Revoke";

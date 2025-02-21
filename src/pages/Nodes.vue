@@ -24,65 +24,75 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Nodes">
 
-      <DashboardCard v-if="enableStaking" collapsible-key="networkDetails">
-        <template v-slot:title>
-          <span class="h-is-primary-title">Network</span>
-        </template>
-        <template v-slot:content>
+    <DashboardCardV2 v-if="enableStaking" collapsible-key="networkDetails">
+      <template #title>
+        <span>Network</span>
+      </template>
 
-          <div class="has-text-grey "
-               :class="{'is-flex':isSmallScreen,'is-justify-content-space-between':isSmallScreen}">
-            <div :class="{'is-flex-direction-column':isSmallScreen}">
-              <NetworkDashboardItem title="Last Staked" :value="formatSeconds((elapsedMin??0)*60) + ' ago'"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Next Staking Period" :value="'in ' + formatSeconds((remainingMin??0)*60)"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Staking Period" :value="formatSeconds((durationMin??0)*60)"/>
-            </div>
-            <div v-if="!isSmallScreen" class="mt-4"/>
-            <div :class="{'is-flex-direction-column':isSmallScreen}">
-              <NetworkDashboardItem :name=cryptoName title="Total Staked" :value="makeFloorHbarAmount(stakeTotal)"
-                                    :tooltip-label="stakeTotalTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem :name=cryptoName title="Staked for Reward" :value="makeFloorHbarAmount(stakeRewardedTotal)"
-                                    :tooltip-label="stakeRewardedTotalTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem :name=cryptoName title="Maximum Staked for Reward"
-                                    :value="makeFloorHbarAmount(maxStakeRewarded)"
-                                    :tooltip-label="maxStakeRewardedTooltip"/>
-            </div>
-            <div v-if="!isSmallScreen" class="mt-4"/>
-            <div :class="{'is-flex-direction-column':isSmallScreen}">
-              <NetworkDashboardItem :name=cryptoName title="Rewarded Last Period" :value="makeFloorHbarAmount(totalRewarded)"
-                                    :tooltip-label="totalRewardedTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Maximum Reward Rate" :value="makeAnnualizedRate(maxRewardRate)"
-                                    :tooltip-label="maxRewardRateTooltip"/>
-              <div class="mt-4"/>
-              <NetworkDashboardItem title="Current Reward Rate" :value="makeAnnualizedRate(rewardRate)"
-                                    :tooltip-label="rewardRateTooltip"/>
-            </div>
-          </div>
-          <div v-if="!isSmallScreen" class="mt-4"/>
+      <template #content>
+        <div class="network-dashboard">
+          <NetworkDashboardItemV2
+              title="LAST STAKED"
+              :value="formatSeconds((elapsedMin??0)*60) + ' ago'"
+          />
+          <NetworkDashboardItemV2
+              title="NEXT STAKING PERIOD"
+              :value="'in ' + formatSeconds((remainingMin??0)*60)"
+          />
+          <NetworkDashboardItemV2
+              title="STAKING PERIOD"
+              :value="formatSeconds((durationMin??0)*60)"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="TOTAL STAKED"
+              :value="makeFloorHbarAmount(stakeTotal)"
+              :tooltip-label="stakeTotalTooltip"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="STAKED FOR REWARD"
+              :value="makeFloorHbarAmount(stakeRewardedTotal)"
+              :tooltip-label="stakeRewardedTotalTooltip"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="MAXIMUM STAKED FOR REWARD"
+              :value="makeFloorHbarAmount(maxStakeRewarded)"
+              :tooltip-label="maxStakeRewardedTooltip"
+          />
+          <NetworkDashboardItemV2
+              :unit=cryptoName
+              title="REWARDED LAST PERIOD"
+              :value="makeFloorHbarAmount(totalRewarded)"
+              :tooltip-label="totalRewardedTooltip"
+          />
+          <NetworkDashboardItemV2
+              title="MAXIMUM REWARD RATE"
+              :value="makeAnnualizedRate(maxRewardRate)"
+              :tooltip-label="maxRewardRateTooltip"
+          />
+          <NetworkDashboardItemV2
+              title="CURRENT REWARD RATE"
+              :value="makeAnnualizedRate(rewardRate)"
+              :tooltip-label="rewardRateTooltip"
+          />
+        </div>
+      </template>
+    </DashboardCardV2>
 
-        </template>
-      </DashboardCard>
+    <DashboardCardV2 collapsible-key="nodes">
+      <template #title>
+        <span>{{ `${nodes.length}  Nodes` }}</span>
+      </template>
+      <template #content>
+        <NodeTable :nodes="nodes" :stake-total="totalStakeForConsensus"/>
+      </template>
+    </DashboardCardV2>
 
-      <DashboardCard collapsible-key="nodes">
-        <template v-slot:title>
-          <span class="h-is-primary-title">{{ `${nodes.length}  Nodes` }}</span>
-        </template>
-        <template v-slot:content>
-          <NodeTable :nodes="nodes"
-                     :stake-total="stakeTotal"/>
-        </template>
-      </DashboardCard>
-
-    </template>
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -90,91 +100,60 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import {computed, onBeforeUnmount, onMounted} from 'vue';
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
 import {formatSeconds} from "@/utils/Duration";
 import {StakeCache} from "@/utils/cache/StakeCache";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {makeAnnualizedRate} from "@/schemas/MirrorNodeUtils.ts";
 import {routeManager} from "@/router";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
 
-export default defineComponent({
-  name: 'Nodes',
-  methods: {makeAnnualizedRate},
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const cryptoName = CoreConfig.inject().cryptoName
 
-  components: {
-    NetworkDashboardItem,
-    NodeTable,
-    PageFrame,
-    DashboardCard
-  },
+const stakeTotalTooltip = `Total amount of ${cryptoName} staked to all validators for consensus.`
+const stakeRewardedTotalTooltip = `Total amount of ${cryptoName} staked for reward.`
+const maxStakeRewardedTooltip = `Maximum amount of ${cryptoName} that can be staked for reward while still achieving the maximum reward rate.`
+const totalRewardedTooltip = `Total amount of ${cryptoName} paid in reward for the last period.`
+const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
+const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
-  setup() {
-    const isSmallScreen = inject('isSmallScreen', true)
-    const cryptoName = CoreConfig.inject().cryptoName
+const networkNodeAnalyzer = new NetworkAnalyzer()
+onMounted(() => networkNodeAnalyzer.mount())
+onBeforeUnmount(() => networkNodeAnalyzer.unmount())
 
-    const stakeTotalTooltip = `Total amount of ${cryptoName} staked to all validators for consensus.`
-    const stakeRewardedTotalTooltip = `Total amount of ${cryptoName} staked for reward.`
-    const maxStakeRewardedTooltip = `Maximum amount of ${cryptoName} that can be staked for reward while still achieving the maximum reward rate.`
-    const totalRewardedTooltip = `Total amount of ${cryptoName} paid in reward for the last period.`
-    const maxRewardRateTooltip = "Approximate annual reward rate based on the maximum reward rate that any account can receive in a day."
-    const rewardRateTooltip = "Approximate annual reward rate based on the reward earned during the last 24h period."
+const stakeLookup = StakeCache.instance.makeLookup()
+onMounted(() => stakeLookup.mount())
+onBeforeUnmount(() => stakeLookup.unmount())
 
-    const networkNodeAnalyzer = new NetworkAnalyzer()
-    onMounted(() => networkNodeAnalyzer.mount())
-    onBeforeUnmount(() => networkNodeAnalyzer.unmount())
+const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
+const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
+const rewardRate = computed(() => {
+  return networkNodeAnalyzer.stakeRewardedTotal.value != 0
+      ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
+      : 0
+})
+const maxRewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
 
-    const stakeLookup = StakeCache.instance.makeLookup()
-    onMounted(() => stakeLookup.mount())
-    onBeforeUnmount(() => stakeLookup.unmount())
+const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
 
-    const stakeTotal = computed(() => stakeLookup.entity.value?.stake_total ?? 0)
-    const maxStakeRewarded = computed(() => stakeLookup.entity.value?.max_stake_rewarded ?? 0)
-    const rewardRate = computed(() => {
-      return networkNodeAnalyzer.stakeRewardedTotal.value != 0
-          ? (stakeLookup.entity.value?.staking_reward_rate ?? 0) / networkNodeAnalyzer.stakeRewardedTotal.value * 100000000
-          : 0
-    })
-    const maxRewardRate = computed(() => stakeLookup.entity.value?.max_staking_reward_rate_per_hbar ?? 0)
-
-    const makeFloorHbarAmount = (tinyBarAmount: number) => Math.floor((tinyBarAmount ?? 0) / 100000000).toLocaleString('en-US')
-
-    return {
-      isSmallScreen,
-      cryptoName,
-      enableStaking: routeManager.enableStaking,
-      stakeTotalTooltip,
-      stakeRewardedTotalTooltip,
-      maxStakeRewardedTooltip,
-      totalRewardedTooltip,
-      maxRewardRateTooltip,
-      rewardRateTooltip,
-      nodes: networkNodeAnalyzer.nodes,
-      totalNodes: networkNodeAnalyzer.nodeCount,
-      stakeTotal,
-      maxStakeRewarded,
-      maxRewardRate,
-      rewardRate,
-      stakeRewardedTotal: networkNodeAnalyzer.stakeRewardedTotal,
-      totalRewarded: networkNodeAnalyzer.totalRewarded,
-      durationMin: networkNodeAnalyzer.durationMin,
-      elapsedMin: networkNodeAnalyzer.elapsedMin,
-      remainingMin: networkNodeAnalyzer.remainingMin,
-      makeFloorHbarAmount,
-      formatSeconds
-    }
-  }
-});
+const enableStaking = routeManager.enableStaking
+const nodes = networkNodeAnalyzer.nodes
+const totalStakeForConsensus = networkNodeAnalyzer.totalStakeForConsensus
+const stakeRewardedTotal = networkNodeAnalyzer.stakeRewardedTotal
+const totalRewarded = networkNodeAnalyzer.totalRewarded
+const durationMin = networkNodeAnalyzer.durationMin
+const elapsedMin = networkNodeAnalyzer.elapsedMin
+const remainingMin = networkNodeAnalyzer.remainingMin
 
 </script>
 
@@ -183,5 +162,26 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.network-dashboard {
+  display: grid;
+  gap: 24px;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(9, auto);
+}
+
+@media (min-width: 768px) {
+  div.network-dashboard {
+    grid-template-rows: repeat(5, auto);
+    justify-content: space-between;
+  }
+}
+
+@media (min-width: 1080px) {
+  div.network-dashboard {
+    grid-template-rows: repeat(3, auto);
+    justify-content: space-between;
+  }
+}
 
 </style>

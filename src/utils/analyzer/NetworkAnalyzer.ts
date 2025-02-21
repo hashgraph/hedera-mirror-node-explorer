@@ -58,6 +58,14 @@ export class NetworkAnalyzer {
 
     public readonly node0 = computed(() => this.nodes.value.length >= 1 ? this.nodes.value[0] : null)
 
+    public readonly totalStakeForConsensus : ComputedRef<number> = computed(() => {
+        let result = 0
+        for (const n of this.nodes.value) {
+            result += (n.stake ?? 0)
+        }
+        return result
+    })
+
     public readonly totalRewarded: ComputedRef<number> = computed(() => {
         let result = 0
         for (const n of this.nodes.value) {

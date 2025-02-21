@@ -24,19 +24,25 @@
 
 <template>
 
-  <DashboardCard v-if="accountId" collapsible-key="allowances">
+  <DashboardCardV2 v-if="accountId" collapsible-key="allowances">
 
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Allowances</span>
+    <template #title>
+      Allowances
     </template>
 
-    <template v-slot:control>
-      <button v-if="isWalletConnected && isHieroWallet" id="approve-button" class="button is-white is-small"
-              @click="onClick">APPROVE ALLOWANCE…
-      </button>
+    <template #right-control>
+      <ButtonView
+          v-if="isWalletConnected && isHieroWallet"
+          id="approve-button"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="onClick"
+      >
+        APPROVE ALLOWANCE
+      </ButtonView>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <Tabs
           :selected-tab="selectedTab"
           :tab-ids="tabIds"
@@ -44,15 +50,9 @@
           @update:selected-tab="onUpdate($event)"
       />
 
-      <div v-if="selectedTab === 'nft'" id="approvedForAll"
-           class="is-flex is-align-items-center is-justify-content-end">
-        <p class="has-text-weight-light">Approved for all</p>
-        <label class="checkbox pt-1 ml-3">
-          <input
-              type="checkbox"
-              v-model="selectApprovedForAll"
-          >
-        </label>
+      <div v-if="selectedTab === 'nft'" id="approvedForAll" class="approved-for-all-checkbox">
+        <input type="checkbox" v-model="selectApprovedForAll" id="approvedForAll" name="approvedForAll"/>
+        <label for="approvedForAll">Approved for all</label>
       </div>
 
       <div v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
@@ -83,31 +83,28 @@
       </div>
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
   <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
-                          :owner-account-id="ownerAccountId"
-                          :current-hbar-allowance="currentHbarAllowance"
-                          :current-token-allowance="currentTokenAllowance"
-                          :token-decimals="tokenDecimals"
                           @allowance-approved="onAllowanceApproved"
   />
 
-  <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
-                  :mode="Mode.Error"
-                  main-message="This operation cannot be done using Metamask"
-                  extra-message="Use another wallet (Blade or Hashpack)"
-  >
-    <template v-slot:dialogTitle>
-      <span class="h-is-primary-title">Unsupported Operation</span>
-    </template>
-  </ProgressDialog>
+  <UpdateCryptoAllowanceDialog v-model:show-dialog="showUpdateHbarAllowanceDialog"
+                               :hbar-allowance="currentHbarAllowance"
+                               @allowance-approved="onAllowanceApproved"
+  />
+
+  <UpdateTokenAllowanceDialog v-model:show-dialog="showUpdateTokenAllowanceDialog"
+                               :token-allowance="currentTokenAllowance"
+                               @allowance-approved="onAllowanceApproved"
+  />
 
   <DeleteNftAllowanceDialog
-      :controller="deleteDialogController"
-      :nft-allowance="currentNftAllowance"
-      :nft-all-serials-allowance="currentNftAllSerialsAllowance"
-      @deleted="onNftDeleted"
+      v-model:show-dialog="showDeleteNftAllowanceDialog"
+      :token-id="currentNftId"
+      :spender-id="currentSpenderId"
+      :serial-number="currentNftSerialNumber"
+      @allowance-deleted="onNftDeleted"
   />
 
 </template>
@@ -122,22 +119,23 @@ import {computed, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
 import router, {walletManager} from "@/router";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import {TokenAllowanceTableController} from "@/components/allowances/TokenAllowanceTableController";
-import DashboardCard from "@/components/DashboardCard.vue";
 import HbarAllowanceTable from "@/components/allowances/HbarAllowanceTable.vue";
 import TokenAllowanceTable from "@/components/allowances/TokenAllowanceTable.vue";
-import ApproveAllowanceDialog from "@/components/allowances/ApproveAllowanceDialog.vue";
+import ApproveAllowanceDialog from "@/dialogs/allowance/ApproveAllowanceDialog.vue";
 import {CryptoAllowance, Nft, NftAllowance, TokenAllowance} from "@/schemas/MirrorNodeSchemas";
-import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import NftAllowanceTable from "@/components/allowances/NftAllowanceTable.vue";
 import {NftAllowanceTableController} from "@/components/allowances/NftAllowanceTableController";
 import {NftAllSerialsAllowanceTableController} from "@/components/allowances/NftAllSerialsAllowanceTableController";
 import NftAllSerialsAllowanceTable from "@/components/allowances/NftAllSerialsAllowanceTable.vue";
-import {DialogController} from "@/components/dialog/DialogController";
-import DeleteNftAllowanceDialog from "@/components/allowances/DeleteNftAllowanceDialog.vue";
-import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView from "@/elements/ButtonView.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
+import UpdateCryptoAllowanceDialog from "@/dialogs/allowance/UpdateCryptoAllowanceDialog.vue";
+import UpdateTokenAllowanceDialog from "@/dialogs/allowance/UpdateTokenAllowanceDialog.vue";
+import DeleteNftAllowanceDialog from "@/dialogs/allowance/DeleteNftAllowanceDialog.vue";
 
 const props = defineProps({
   accountId: String,
@@ -147,10 +145,14 @@ const isMediumScreen = inject('isMediumScreen', true)
 const cryptoName = CoreConfig.inject().cryptoName
 
 const computedAccountId = computed(() => props.accountId || null)
-const isWalletConnected = computed(
-        () => walletManager.accountId.value === props.accountId)
+const isWalletConnected = computed(() =>
+    walletManager.accountId.value === props.accountId
+)
 
 const showApproveAllowanceDialog = ref(false)
+const showUpdateHbarAllowanceDialog = ref(false)
+const showUpdateTokenAllowanceDialog = ref(false)
+const showDeleteNftAllowanceDialog = ref(false)
 
 watch(showApproveAllowanceDialog, (newValue) => {
   if (!newValue) {
@@ -194,9 +196,38 @@ const perPage = ref(isMediumScreen ? 10 : 5)
 
 const currentHbarAllowance = ref<CryptoAllowance | null>(null)
 const currentTokenAllowance = ref<TokenAllowance | null>(null)
-const tokenDecimals = ref<string | null>(null)
 const currentNftAllowance = ref<Nft | null>(null)
 const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
+
+const currentNftId = computed(() => {
+  let result: string|null
+  if (selectApprovedForAll.value) {
+    result = currentNftAllSerialsAllowance.value?.token_id ?? null
+  } else {
+    result = currentNftAllowance.value?.token_id ?? null
+  }
+  return result
+})
+
+const currentSpenderId = computed(() => {
+  let result: string|null
+  if (selectApprovedForAll.value) {
+    result = currentNftAllSerialsAllowance.value?.spender ?? null
+  } else {
+    result = currentNftAllowance.value?.spender ?? null
+  }
+  return result
+})
+
+const currentNftSerialNumber = computed(() => {
+  let result: number|null
+  if (selectApprovedForAll.value) {
+    result = null
+  } else {
+    result = currentNftAllowance.value?.serial_number ?? null
+  }
+  return result
+})
 
 //
 // HBAR Allowances Table Controller
@@ -246,18 +277,10 @@ onBeforeUnmount(() => {
   nftAllSerialsAllowanceTableController.unmount()
 })
 
-const deleteDialogController = new DialogController()
-
-const notWithMetamaskDialogVisible = ref(false)
-
 const onClick = () => {
-  if (walletManager.isHieroWallet.value) {
-    showApproveAllowanceDialog.value = true
-    currentHbarAllowance.value = null
-    currentTokenAllowance.value = null
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  showApproveAllowanceDialog.value = true
+  currentHbarAllowance.value = null
+  currentTokenAllowance.value = null
 }
 
 const onAllowanceApproved = () => {
@@ -269,48 +292,28 @@ const onAllowanceApproved = () => {
 
 const onEditHbar = (allowance: CryptoAllowance) => {
   // console.log("Edit Hbar Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHieroWallet.value) {
-    currentHbarAllowance.value = allowance
-    currentTokenAllowance.value = null
-    showApproveAllowanceDialog.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentHbarAllowance.value = allowance
+  showUpdateHbarAllowanceDialog.value = true
 }
 
-const onEditToken = async (allowance: TokenAllowance) => {
+const onEditToken = (allowance: TokenAllowance) => {
   // console.log("Edit Token Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHieroWallet.value) {
-    const info = await TokenInfoCache.instance.lookup(allowance.token_id ?? '')
-    tokenDecimals.value = info?.decimals ?? null
-    currentHbarAllowance.value = null
-    currentTokenAllowance.value = allowance
-    showApproveAllowanceDialog.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentTokenAllowance.value = allowance
+  showUpdateTokenAllowanceDialog.value = true
 }
 
 const onDeleteNft = async (nft: Nft) => {
   // console.log("Delete NFT Allowance: " + JSON.stringify(nft))
-  if (walletManager.isHieroWallet.value) {
-    currentNftAllowance.value = nft
-    currentNftAllSerialsAllowance.value = null
-    deleteDialogController.visible.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentNftAllowance.value = nft
+  currentNftAllSerialsAllowance.value = null
+  showDeleteNftAllowanceDialog.value = true
 }
 
 const onDeleteAllSerialsNft = async (allowance: NftAllowance) => {
   // console.log("Delete NFT Allowance: " + JSON.stringify(allowance))
-  if (walletManager.isHieroWallet.value) {
-    currentNftAllowance.value = null
-    currentNftAllSerialsAllowance.value = allowance
-    deleteDialogController.visible.value = true
-  } else {
-    notWithMetamaskDialogVisible.value = true
-  }
+  currentNftAllowance.value = null
+  currentNftAllSerialsAllowance.value = allowance
+  showDeleteNftAllowanceDialog.value = true
 }
 
 const onNftDeleted = () => {
@@ -331,7 +334,6 @@ const cleanUpRouteQuery = async () => {
 }
 
 const isHieroWallet = walletManager.isHieroWallet
-const ownerAccountId = walletManager.accountId
 
 </script>
 
@@ -340,5 +342,12 @@ const ownerAccountId = walletManager.accountId
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.approved-for-all-checkbox {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
 
 </style>

@@ -29,9 +29,9 @@
       :loading="props.controller.loading.value"
       :paginated="props.controller.paginated.value && props.fullPage"
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="props.controller.totalRowCount.value"
       :current-page="props.controller.currentPage.value"
       :per-page="props.controller.pageSize.value"
@@ -52,7 +52,7 @@
       aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="{ row }" field="image" label="Image">
+    <o-table-column v-slot="{ row }" field="image" label="IMAGE">
       <NftCell
           :token-id="row.token_id"
           :serial-number="row.serial_number"
@@ -61,27 +61,27 @@
       />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token_id" label="Token ID">
-      <TokenIOL :token-id="row.token_id"/>
+    <o-table-column v-slot="{ row }" field="token_id" label="TOKEN ID">
+      <TokenIOL class="token-id-label" :token-id="row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="serial" label="Serial #">
+    <o-table-column v-slot="{ row }" field="serial" label="SERIAL #">
       {{ row.serial_number }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="Collection Name">
+    <o-table-column v-slot="{ row }" field="name" label="COLLECTION NAME">
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="Symbol">
+    <o-table-column v-slot="{ row }" field="name" label="SYMBOL">
       <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="sender" label="Sender">
+    <o-table-column v-slot="{ row }" field="sender" label="SENDER">
       <div>{{ row.sender_id }}</div>
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="timestamp" label="Airdrop Time">
+    <o-table-column v-slot="{ row }" field="timestamp" label="AIRDROP TIME">
       <TimestampValue v-bind:timestamp="row.timestamp.from"/>
     </o-table-column>
 
@@ -163,5 +163,9 @@ const handleClick = (airdrop: TokenAirdrop, c: unknown, i: number, ci: number, e
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.token-id-label {
+  font-weight: 600;
+}
 
 </style>

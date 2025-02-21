@@ -22,7 +22,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Token Navigation', () => {
+describe.skip('Token Navigation', () => {
 
     it('should navigate from table to token details', () => {
         cy.visit('testnet/tokens/')

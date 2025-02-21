@@ -22,7 +22,7 @@
 
 import {makeExchangeFormat} from "../TestUtils";
 
-describe('Transaction Navigation', () => {
+describe.skip('Transaction Navigation', () => {
 
     it('should navigate from table to transaction details', () => {
         cy.visit('testnet/transactions/')

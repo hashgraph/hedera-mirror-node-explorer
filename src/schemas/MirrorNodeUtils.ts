@@ -21,6 +21,7 @@
 import {
     AccountInfo,
     AccountsResponse,
+    Block,
     ContractLog,
     ContractResult,
     ContractResultsLogResponse,
@@ -30,12 +31,10 @@ import {
     NetworkFeesResponse,
     NetworkNode,
     Nft,
-    Nfts,
     NftTransfer,
     REDIRECT_FOR_TOKEN_FUNCTION_SIGHASH,
     Token,
     TokenInfo,
-    TokenRelationship,
     TokenRelationshipResponse,
     TokenTransfer,
     Transaction,
@@ -49,6 +48,8 @@ import {EntityID} from "@/utils/EntityID";
 import * as hashgraph from "@hashgraph/proto";
 import axios from "axios";
 import {waitFor} from "@/utils/TimerUtils";
+import {TransactionID} from "@/utils/TransactionID.ts";
+import {Timestamp} from "@/utils/Timestamp.ts";
 
 export function makeEthAddressForAccount(account: AccountInfo): string | null {
     if (account.evm_address) return account.evm_address;
@@ -221,7 +222,8 @@ export function makeUnclampedStake(node: NetworkNode): number {
 export function makeStakePercentage(node: NetworkNode, stakeTotal: number): string {
     const formatter = new Intl.NumberFormat("en-US", {
         style: 'percent',
-        maximumFractionDigits: 1
+        maximumFractionDigits: 2,
+        minimumFractionDigits: 2
     })
     return formatter.format(node.stake ? node.stake / stakeTotal : 0)
 }
@@ -270,17 +272,6 @@ export function lookupNodeByAccountId(accountId: string, nodes: NetworkNode[]): 
     for (const n of nodes) {
         if (n.node_account_id == accountId) {
             result = n
-            break
-        }
-    }
-    return result
-}
-
-export function lookupTokenRelationship(relations: TokenRelationship[], targetTokenId: string): TokenRelationship | null {
-    let result: TokenRelationship | null = null
-    for (const r of relations) {
-        if (r.token_id == targetTokenId) {
-            result = r
             break
         }
     }
@@ -382,39 +373,6 @@ export async function isValidAssociation(accountId: string | null, tokenId: stri
     return Promise.resolve(result)
 }
 
-export async function isOwnedSerials(accountId: string | null, tokenId: string | null, serials: number[]): Promise<boolean> {
-    let result: boolean
-
-    if (accountId && tokenId && serials.length) {
-        const uRL = "api/v1/accounts/" + accountId + "/nfts"
-        const params = {
-            'token.id': tokenId,
-        }
-        const response = await axios.get<Nfts>(uRL, {params: params})
-        const nfts = response.data.nfts ?? []
-        if (nfts.length > 0) {
-            const serialsInAccount = Array<number>()
-            for (const nft of nfts) {
-                if (nft.serial_number) {
-                    serialsInAccount.push(nft.serial_number)
-                }
-            }
-            result = true
-            for (const s of serials) {
-                if (!serialsInAccount.includes(s)) {
-                    result = false
-                    break
-                }
-            }
-        } else {
-            result = false
-        }
-    } else {
-        result = false
-    }
-    return Promise.resolve(result)
-}
-
 export function labelForAutomaticTokenAssociation(rawProperty: number): string {
     let result: string
     switch (rawProperty) {
@@ -430,17 +388,18 @@ export function labelForAutomaticTokenAssociation(rawProperty: number): string {
     return result
 }
 
-export async function waitForTransactionRefresh(transactionId: string, attemptIndex: number, polling = 3000) {
+export async function waitForTransactionRefresh(transactionId: string, attemptIndex: number = 10, polling = 3000) {
     let result: Promise<Transaction | string>
 
     if (attemptIndex >= 0) {
-        await waitFor(polling)
+        const tid = TransactionID.normalize(transactionId)
+        await waitFor(500) // Let's be optimistic
         try {
             const response = await axios.get<TransactionByIdResponse>("api/v1/transactions/" + transactionId)
             const transactions = response.data.transactions ?? []
             result = Promise.resolve(transactions.length >= 1 ? transactions[0] : transactionId)
         } catch {
-            result = waitForTransactionRefresh(transactionId, attemptIndex - 1, polling)
+            result = waitForTransactionRefresh(tid, attemptIndex - 1, polling)
         }
     } else {
         result = Promise.resolve(transactionId)
@@ -451,10 +410,10 @@ export async function waitForTransactionRefresh(transactionId: string, attemptIn
 
 export async function drainTransactions(r: TransactionResponse, limit: number): Promise<Transaction[]> {
     let result = r.transactions ?? []
-    let i = 1
+    // let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
-        i += 1
+        // console.log("drain iteration: " + i);
+        // i += 1
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions)
@@ -466,10 +425,10 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
 
 export async function drainAccounts(r: AccountsResponse, limit: number): Promise<AccountInfo[]> {
     let result = r.accounts ?? []
-    let i = 1
+    // let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
-        i += 1
+        // console.log("drain iteration: " + i);
+        // i += 1
         const ar = await axios.get<AccountsResponse>(r.links.next)
         if (ar.data.accounts) {
             result = result.concat(ar.data.accounts)
@@ -481,10 +440,10 @@ export async function drainAccounts(r: AccountsResponse, limit: number): Promise
 
 export async function drainContractResults(r: ContractResultsResponse, limit: number): Promise<ContractResult[]> {
     let result = r.results ?? []
-    let i = 1
+    // let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
-        i += 1
+        // console.log("drain iteration: " + i);
+        // i += 1
         const ar = await axios.get<ContractResultsResponse>(r.links.next)
         if (ar.data.results) {
             result = result.concat(ar.data.results)
@@ -496,10 +455,10 @@ export async function drainContractResults(r: ContractResultsResponse, limit: nu
 
 export async function drainContractResultsLogs(r: ContractResultsLogResponse, limit: number): Promise<ContractLog[]> {
     let result = r.logs ?? []
-    let i = 1
+    // let i = 1
     while (r.links?.next && result.length < limit) {
-        console.log("drain iteration: " + i);
-        i += 1
+        // console.log("drain iteration: " + i);
+        // i += 1
         const ar = await axios.get<ContractResultsLogResponse>(r.links.next)
         if (ar.data.logs) {
             result = result.concat(ar.data.logs)
@@ -585,3 +544,37 @@ export function extractChecksum(address: string): string | null {
     const dash = address.indexOf('-')
     return dash != -1 ? address.substring(dash + 1) : null
 }
+
+export function computeTPS(blocks: Block[]): number|null { // blocks should be in ascending order
+    let result: number|null
+
+    if (blocks.length >= 1) {
+        const startBlock = blocks[0]
+        const endBlock = blocks[blocks.length - 1]
+        const startTime = startBlock.timestamp?.from ?? null
+        const endTime = endBlock.timestamp?.to ?? null
+        if (startTime !== null && endTime !== null) {
+            const rangeNanos = Timestamp.computeRange(startTime, endTime)
+            if (rangeNanos !== null) {
+                const txCount = countTransactions(blocks)
+                return txCount / (rangeNanos / 1_000_000_000)
+            } else {
+                result = null
+            }
+        } else {
+            result = null
+        }
+    } else {
+        result = null
+    }
+    return result
+}
+
+export function countTransactions(blocks: Block[]): number {
+    let result = 0
+    for (const b of blocks) {
+        result += b.count ?? 0
+    }
+    return result
+}
+

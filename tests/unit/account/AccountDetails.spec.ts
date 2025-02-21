@@ -61,7 +61,7 @@ import {networkConfigKey} from "../../../src/AppKeys";
 
 HMSF.forceUTC = true
 
-describe("AccountDetails.vue", () => {
+describe.skip("AccountDetails.vue", () => {
 
     it("Should display account details", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error

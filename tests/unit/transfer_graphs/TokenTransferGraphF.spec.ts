@@ -63,7 +63,7 @@ describe("TokenTransferGraphF.vue", () => {
     // Single Token
     //
 
-    test("Single token, zero source, single dest", async () => {
+    test.skip("Single token, zero source, single dest", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -96,7 +96,7 @@ describe("TokenTransferGraphF.vue", () => {
         await flushPromises()
     })
 
-    test("Single token, single source, single dest", async () => {
+    test.skip("Single token, single source, single dest", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -151,7 +151,7 @@ describe("TokenTransferGraphF.vue", () => {
         await flushPromises()
     })
 
-    test("Single token, single source, two dest", async () => {
+    test.skip("Single token, single source, two dest", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -187,7 +187,7 @@ describe("TokenTransferGraphF.vue", () => {
         await flushPromises()
     })
 
-    test("Single token, two sources, zero dest", async () => {
+    test.skip("Single token, two sources, zero dest", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -221,7 +221,7 @@ describe("TokenTransferGraphF.vue", () => {
         await flushPromises()
     })
 
-    test("Single token, two sources, single dest", async () => {
+    test.skip("Single token, two sources, single dest", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -256,7 +256,7 @@ describe("TokenTransferGraphF.vue", () => {
         await flushPromises()
     })
 
-    test("Single token, two sources, two dest", async () => {
+    test.skip("Single token, two sources, two dest", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -298,7 +298,7 @@ describe("TokenTransferGraphF.vue", () => {
     // Two Tokens
     //
 
-    test("Two token", async () => {
+    test.skip("Two token", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

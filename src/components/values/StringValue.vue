@@ -24,11 +24,11 @@
 
 <template>
 
-  <span v-if="stringValue" class="should-wrap">{{ stringValue }}</span>
+  <span v-if="stringValue" class="h-should-wrap">{{ stringValue }}</span>
 
   <span v-else-if="initialLoading"/>
 
-  <span v-else-if="showNone" class="has-text-grey">None</span>
+  <span v-else-if="showNone" class="h-is-low-contrast">None</span>
 
   <span v-else/>
 

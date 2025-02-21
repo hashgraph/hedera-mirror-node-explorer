@@ -18,38 +18,14 @@
   -
   -->
 
-<!--
-
-  USAGE NOTES
-
-  <template>
-    ...
-    <PlayPauseButton v-bind:controller="TableControllerV3"/>
-    ...
-  </template>
-
-  <script>
-    ...
-    const xxxTableController = new XXXTableController()
-    ...
-
-    return {
-      TableControllerV3: xxxTableController
-    }
-  </script>
-
-  -->
-
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE   v-on:click="clicked"                                                  -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="is-flex is-align-items-center">
-    <span v-if="!isPlaying" class="h-is-text-size-1 h-is-dense mr-2">REFRESH PAUSED</span>
-
-    <img v-if="!isPlaying" alt="Play" src="@/assets/play.svg" @click="handleClick" data-cy="playButton">
-    <img v-else alt="Pause" src="@/assets/pause.svg" @click="handleClick" data-cy="pauseButton">
+  <div class="root">
+    <img v-if="!isPlaying" alt="Play" :src="playURL" @click="handleClick" data-cy="playButton">
+    <img v-else alt="Pause" :src="pauseURL" @click="handleClick" data-cy="pauseButton">
   </div>
 </template>
 
@@ -57,9 +33,14 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, onMounted, PropType, ref} from "vue";
+import {computed, ComputedRef, onMounted, PropType, ref} from "vue";
+import playLightURL from "@/assets/play-light.svg"
+import playDarkURL from "@/assets/play-dark.svg"
+import pauseLightURL from "@/assets/pause-light.svg"
+import pauseDarkURL from "@/assets/pause-dark.svg"
+import {ThemeController} from "@/components/ThemeController.ts";
 
 export interface PlayPauseController {
   startAutoRefresh(): void
@@ -69,47 +50,34 @@ export interface PlayPauseController {
   autoRefresh: ComputedRef<boolean>
 }
 
-export default defineComponent({
-  name: "PlayPauseButton",
+const props = defineProps({
+  controller: Object as PropType<PlayPauseController>
+})
 
-  props: {
-    controller: Object as PropType<PlayPauseController>
-  },
+const isPlaying = computed(() => {
+  return props.controller && props.controller.autoRefresh.value
+})
 
-  setup(props) {
+const darkSelected = ThemeController.inject().darkSelected
+const playURL = computed(() =>  darkSelected.value ? playDarkURL : playLightURL)
+const pauseURL = computed(() => darkSelected.value ? pauseDarkURL : pauseLightURL)
 
-    const isPlaying = computed(() => {
-      return props.controller && props.controller.autoRefresh.value
-    })
-    const isAutoStopped = computed(() => {
-      return !isPlaying.value && !userRequestedStop.value
-    })
-
-    const userRequestedStop = ref(false)
-    onMounted(() => userRequestedStop.value = false)
-    const handleClick = () => {
-      if (props.controller) {
-        const controller = props.controller
-        if (controller.autoRefresh.value) {
-          controller.stopAutoRefresh()
-          userRequestedStop.value = true
-        } else {
-          controller.startAutoRefresh()
-          userRequestedStop.value = false
-        }
-      } else {
-        console.log("Ignoring click because props.controller is undefined")
-      }
+const userRequestedStop = ref(false)
+onMounted(() => userRequestedStop.value = false)
+const handleClick = () => {
+  if (props.controller) {
+    const controller = props.controller
+    if (controller.autoRefresh.value) {
+      controller.stopAutoRefresh()
+      userRequestedStop.value = true
+    } else {
+      controller.startAutoRefresh()
+      userRequestedStop.value = false
     }
-
-
-    return {
-      isPlaying,
-      isAutoStopped,
-      handleClick
-    }
+  } else {
+    console.log("Ignoring click because props.controller is undefined")
   }
-});
+}
 
 </script>
 
@@ -117,4 +85,12 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.root {
+  height: 26px;
+  width: 26px;
+  padding-top: 2px;
+}
+
+</style>

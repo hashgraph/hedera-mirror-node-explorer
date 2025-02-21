@@ -29,9 +29,9 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -49,18 +49,18 @@
       aria-previous-label="Previous page"
       customRowKey="token_id"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
-      <TokenIOL :token-id="props.row.token_id"/>
+    <o-table-column v-slot="props" field="token_id" label="TOKEN">
+      <TokenIOL class="token_id" :token-id="props.row.token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
-      <div class="w400">
+    <o-table-column v-slot="props" field="name" label="NAME">
+      <div class="w250">
         {{ props.row.name }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
-      <div class="w400">
+    <o-table-column v-slot="props" field="symbol" label="SYMBOL">
+      <div class="w250">
         {{ props.row.symbol }}
       </div>
     </o-table-column>
@@ -81,9 +81,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
+import {PropType} from 'vue';
 import {routeManager} from "@/router";
 import {Token} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
@@ -93,51 +93,29 @@ import TokenIOL from "@/components/values/link/TokenIOL.vue";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'TokenTable',
-  computed: {
-    AppStorage() {
-      return AppStorage
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<TokenTableController>,
+    required: true
   },
-
-  components: {TablePageSize, TokenIOL, EmptyTable},
-
-  props: {
-    controller: {
-      type: Object as PropType<TokenTableController>,
-      required: true
-    },
-    narrowed: {
-      type: Boolean,
-      default: false
-    }
-  },
-
-  setup(props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const handleClick = (t: Token, c: unknown, i: number, ci: number, event: MouseEvent) => {
-      if (t.token_id) {
-        routeManager.routeToToken(t.token_id, event)
-      }
-    }
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      tokens: props.controller.rows as ComputedRef<Token[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      handleClick,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+  narrowed: {
+    type: Boolean,
+    default: false
   }
-});
+})
+
+const handleClick = (t: Token, c: unknown, i: number, ci: number, event: MouseEvent) => {
+  if (t.token_id) {
+    routeManager.routeToToken(t.token_id, event)
+  }
+}
+
+const tokens = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
 
 </script>
 
@@ -146,5 +124,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.token_id {
+  font-weight: 600;
+}
 
 </style>

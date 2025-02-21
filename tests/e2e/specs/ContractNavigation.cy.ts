@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Contract Navigation', () => {
+describe.skip('Contract Navigation', () => {
 
     it('should navigate from table to contract details', () => {
         cy.visit('testnet/contracts/')

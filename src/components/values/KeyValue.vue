@@ -27,13 +27,13 @@
     <ComplexKeyValue :account-id="accountId" :details="details" :key-bytes="keyBytes" :show-none="showNone"/>
   </template>
   <template v-else>
-    <div v-if="details" class="h-is-property-text">
+    <div v-if="details">
       <span class="h-is-extra-text">{{ keyType }}</span>
-      <span class="is-family-monospace has-text-grey">{{ ':&#8239;' + keyBytes }}</span>
+      <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + keyBytes }}</span>
     </div>
     <div v-else>
       <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
-      <div v-if="keyBytes" class="h-is-extra-text h-is-text-size-3">{{ keyType }}</div>
+      <div v-if="keyBytes" class="h-is-extra-text">{{ keyType }}</div>
     </div>
   </template>
 </template>
@@ -42,46 +42,37 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, PropType} from "vue";
-import HexaValue from "@/components/values/HexaValue.vue";
+import {computed, PropType} from "vue";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
+import HexaValue from "@/components/values/HexaValue.vue";
 
-export default defineComponent({
-  name: "KeyValue",
-  components: {ComplexKeyValue, HexaValue},
-  props: {
-    keyBytes: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    keyType: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    accountId: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    details: {
-      type: Boolean,
-      default: false
-    },
-    showNone: {
-      type: Boolean,
-      default: false
-    },
-    noneExtra: String
+const props = defineProps({
+  keyBytes: {
+    type: String as PropType<string | null>,
+    default: null
   },
-  setup(props) {
-
-    const isComplexKey = computed(() => props.keyType == "ProtobufEncoded")
-    return {
-      isComplexKey,
-    }
-  }
+  keyType: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  accountId: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  details: {
+    type: Boolean,
+    default: false
+  },
+  showNone: {
+    type: Boolean,
+    default: false
+  },
+  noneExtra: String
 })
+
+const isComplexKey = computed(() => props.keyType == "ProtobufEncoded")
 
 </script>
 
@@ -89,7 +80,4 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped>
-
-
-</style>
+<style/>

@@ -25,13 +25,13 @@
 <template>
 
   <template v-if="isInfinite">
-    <span class="has-text-grey">Infinite</span>
+    <span class="h-is-low-contrast">Infinite</span>
   </template>
   <template v-else-if="formattedValue">
     <span>{{ formattedValue }}</span>
   </template>
   <template v-else-if="showNone && !initialLoading">
-    <span class="has-text-grey">None</span>
+    <span class="h-is-low-contrast">None</span>
   </template>
   <template v-else>
     <span/>

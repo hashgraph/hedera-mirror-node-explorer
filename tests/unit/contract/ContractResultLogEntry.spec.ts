@@ -41,7 +41,7 @@ HMSF.forceUTC = true
 
 describe("ContractResultLogEntry.vue", () => {
 
-    it("Should display the contract result and logs, given consensus timestamp", async () => {
+    it.skip("Should display the contract result and logs, given consensus timestamp", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

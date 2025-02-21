@@ -18,7 +18,7 @@
  *
  */
 
-import {Ref, ref, watch, WatchStopHandle} from "vue";
+import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
 import {Lookup} from "@/utils/cache/base/Lookup";
 
 export abstract class EntityCache<K, E> {
@@ -125,9 +125,7 @@ export class EntityLookup<K, E> implements Lookup<E> {
         this.loadCounter.value = 0
     }
 
-    public isLoaded(): boolean {
-        return this.loadCounter.value >= 1
-    }
+    public readonly isLoaded = computed(() => this.loadCounter.value >= 1)
 
     private readonly keyDidChange = async () => {
         const key = this.key.value

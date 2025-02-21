@@ -110,6 +110,16 @@ export function eth_getErrorCode(reason: unknown): number|null {
     return result
 }
 
+export function eth_getMessage(reason: unknown): string|null {
+    let result: string|null
+    if (typeof reason == "object" && reason !== null && "message" in reason && typeof reason["message"] == "string") {
+        result = reason["message"]
+    } else {
+        result = null
+    }
+    return result
+}
+
 export function eth_isUserReject(reason: unknown): boolean {
     // https://eips.ethereum.org/EIPS/eip-1193#provider-errors
     return eth_getErrorCode(reason) == 4001

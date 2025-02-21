@@ -24,14 +24,14 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <TokensSection
-          :account-id="accountId"
-          :full-page="true"
-      />
-    </template>
-  </PageFrame>
+  <PageFrameV2 page-title="Tokens by Account">
+
+    <TokensSection
+        :account-id="props.accountId"
+        :full-page="true"
+    />
+
+  </PageFrameV2>
 
 </template>
 
@@ -39,28 +39,19 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
-import PageFrame from "@/components/page/PageFrame.vue";
+import {PropType} from 'vue';
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import TokensSection from "@/components/token/TokensSection.vue";
 
-export default defineComponent({
-  name: 'TokensByAccount',
-
-  props: {
-    network: String,
-    accountId: {
-      type: String as PropType<string | null>,
-      default: null
-    }
-  },
-
-  components: {
-    TokensSection,
-    PageFrame,
-  },
-});
+const props = defineProps({
+  network: String,
+  accountId: {
+    type: String as PropType<string | null>,
+    default: null
+  }
+})
 
 </script>
 
@@ -68,4 +59,7 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+</style>
+

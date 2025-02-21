@@ -24,45 +24,37 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
-      <div class="columns is-multiline">
+  <PageFrameV2 page-title="Tokens">
 
-        <div :class="{'is-full': !displaySideBySide}" class="column has-text-left">
+    <div class="h-side-by-side-content">
 
-          <DashboardCard>
-            <template v-slot:title>
-              <span class="h-is-primary-title">Recent Non Fungible Tokens</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="nftTableController"/>
-            </template>
-            <template v-slot:content>
-              <TokenTable :controller="nftTableController"/>
-            </template>
-          </DashboardCard>
+      <DashboardCardV2>
+        <template #title>
+          <span>Recent NFTs</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButton :controller="nftTableController"/>
+        </template>
+        <template #content>
+          <TokenTable :controller="nftTableController"/>
+        </template>
+      </DashboardCardV2>
 
-        </div>
+      <DashboardCardV2>
+        <template #title>
+          <span>Recent Fungible Tokens</span>
+        </template>
+        <template #left-control>
+          <PlayPauseButton :controller="tokenTableController"/>
+        </template>
+        <template #content>
+          <TokenTable :controller="tokenTableController"/>
+        </template>
+      </DashboardCardV2>
 
-        <div class="column has-text-left">
+    </div>
 
-          <DashboardCard>
-            <template v-slot:title>
-              <span class="h-is-primary-title">Recent Fungible Tokens</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="tokenTableController"/>
-            </template>
-            <template v-slot:content>
-              <TokenTable :controller="tokenTableController"/>
-            </template>
-          </DashboardCard>
-
-        </div>
-
-      </div>
-    </template>
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -70,58 +62,37 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {inject, onBeforeUnmount, onMounted, ref} from 'vue';
 import TokenTable from "@/components/token/TokenTable.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TokenTableController} from "@/components/token/TokenTableController";
 import {useRouter} from "vue-router";
 import {TokenType} from "@/schemas/MirrorNodeSchemas";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
-export default defineComponent({
-  name: 'Tokens',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const isMediumScreen = inject('isMediumScreen', true)
 
-  components: {
-    PlayPauseButton,
-    PageFrame,
-    DashboardCard,
-    TokenTable
-  },
-
-  setup() {
-    const isMediumScreen = inject('isMediumScreen', true)
-    const displaySideBySide = inject('isLargeScreen', true)
-
-    //
-    // NFT and TOKEN TableController
-    //
-    const perPage = ref(isMediumScreen ? 15 : 10)
-    const nftTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.NON_FUNGIBLE_UNIQUE), "p1", "k1")
-    const tokenTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.FUNGIBLE_COMMON), "p2", "k2")
-    onMounted(() => {
-      nftTableController.mount()
-      tokenTableController.mount()
-    })
-    onBeforeUnmount(() => {
-      nftTableController.unmount()
-      tokenTableController.unmount()
-    })
-
-    return {
-      displaySideBySide,
-      nftTableController,
-      tokenTableController
-    }
-
-  }
-});
+//
+// NFT and TOKEN TableController
+//
+const perPage = ref(isMediumScreen ? 15 : 10)
+const nftTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.NON_FUNGIBLE_UNIQUE), "p1", "k1")
+const tokenTableController = new TokenTableController(useRouter(), perPage, ref(TokenType.FUNGIBLE_COMMON), "p2", "k2")
+onMounted(() => {
+  nftTableController.mount()
+  tokenTableController.mount()
+})
+onBeforeUnmount(() => {
+  nftTableController.unmount()
+  tokenTableController.unmount()
+})
 
 </script>
 

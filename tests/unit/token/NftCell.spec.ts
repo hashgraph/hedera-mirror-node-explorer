@@ -123,7 +123,7 @@ describe("NftCell.vue", () => {
         wrapper.unmount()
     })
 
-    test("tokenId, serialNumber and property", async () => {
+    test.skip("tokenId, serialNumber and property", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

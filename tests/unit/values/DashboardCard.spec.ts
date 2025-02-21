@@ -20,17 +20,17 @@
 
 import {describe, expect, it} from 'vitest'
 import {mount} from "@vue/test-utils"
-import DashboardCard from "@/components/DashboardCard.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 /*
     https://test-utils.vuejs.org/guide/advanced/slots.html
  */
 
-describe("DashboardCard.vue", () => {
+describe("DashboardCardV2.vue", () => {
 
     it("should have all slots empty", async () => {
 
-        const wrapper = mount(DashboardCard, {});
+        const wrapper = mount(DashboardCardV2, {});
 
         expect(wrapper.text()).toBe("")
 
@@ -40,30 +40,30 @@ describe("DashboardCard.vue", () => {
     it("should have all slots setup", async () => {
 
         const sampleTitle = "ZeTitle"
-        const sampleSubtitle = "ZeSubTitle"
-        const sampleControl = "ZeControl"
+        const sampleLeftControl = "ZeLeftControl"
+        const sampleRightControl = "ZeRightControl"
         const sampleMediaContent = "ZeMediaContent"
         const sampleMediaDescription = "ZeMediaDescription"
         const sampleContent = "ZeContent"
         const sampleLeftContent = "ZeLeftContent"
         const sampleRightContent = "ZeRightContent"
 
-        const wrapper = mount(DashboardCard, {
+        const wrapper = mount(DashboardCardV2, {
             slots: {
                 title: sampleTitle,
-                subtitle: sampleSubtitle,
-                control: sampleControl,
-                mediaContent: sampleMediaContent,
-                mediaDescription: sampleMediaDescription,
+                'left-control': sampleLeftControl,
+                'right-control': sampleRightControl,
+                'media-content': sampleMediaContent,
+                'media-description': sampleMediaDescription,
                 content: sampleContent,
-                leftContent: sampleLeftContent,
-                rightContent: sampleRightContent,
+                'left-content': sampleLeftContent,
+                'right-content': sampleRightContent,
             }
         });
 
         expect(wrapper.text()).toContain(sampleTitle)
-        expect(wrapper.text()).toContain(sampleSubtitle)
-        expect(wrapper.text()).toContain(sampleControl)
+        expect(wrapper.text()).toContain(sampleLeftControl)
+        expect(wrapper.text()).toContain(sampleRightControl)
         expect(wrapper.text()).toContain(sampleMediaContent)
         expect(wrapper.text()).toContain(sampleMediaDescription)
         expect(wrapper.text()).toContain(sampleContent)

@@ -23,7 +23,7 @@
 import {WalletSession} from "@/utils/wallet/WalletSession";
 import {WalletClient} from "@/utils/wallet/client/WalletClient";
 import {WalletClient_Hiero} from "@/utils/wallet/client/WalletClient_Hiero";
-import {WalletClient_Ethereum} from "@/utils/wallet/client/WalletClient_Ethereum";
+import {networkToChainId, WalletClient_Ethereum} from "@/utils/wallet/client/WalletClient_Ethereum";
 import {EIP1193Provider} from "@/utils/wallet/eip1193";
 import {CAAccountId, CAChainId} from "@/utils/wallet/caip";
 import {AccountByIdCache} from "@/utils/cache/AccountByIdCache";
@@ -347,7 +347,7 @@ class WalletSession_WC extends WalletSession {
             const accountAddress = await AccountByIdCache.instance.findAccountAddress(accountId)
             if (accountAddress !== null) {
                 const eip155CaAccountId = this.makeCAAccountIdForEIP155(accountAddress)
-                if (this.sessionContains(eip155CaAccountId)) {
+                if (eip155CaAccountId !== null && this.sessionContains(eip155CaAccountId)) {
                     result = eip155CaAccountId
                 } else {
                     result = null
@@ -377,10 +377,10 @@ class WalletSession_WC extends WalletSession {
         return new CAAccountId(caChainId, accountId)
     }
 
-    private makeCAAccountIdForEIP155(accountAddress: string): CAAccountId {
-        const network = routeManager.currentNetwork.value
-        const caChainId = new CAChainId(CAChainId.NAMESPACE_EIP155, network)
-        return new CAAccountId(caChainId, accountAddress)
+    private makeCAAccountIdForEIP155(accountAddress: string): CAAccountId|null {
+        const chainId = networkToChainId(routeManager.currentNetwork.value, false)
+        const caChainId = chainId !== null ? new CAChainId(CAChainId.NAMESPACE_EIP155, chainId) : null
+        return caChainId !== null ? new CAAccountId(caChainId, accountAddress) : null
     }
 }
 

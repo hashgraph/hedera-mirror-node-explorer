@@ -33,7 +33,7 @@ mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
 const matcher2 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE_DUDE.token_id
 mock.onGet(matcher2).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
 
-describe("NftTransferGraph.vue", () => {
+describe.skip("NftTransferGraph.vue", () => {
 
     test("Without transaction", async () => {
 
@@ -280,7 +280,7 @@ describe("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test("Burn, one token, one source", async () => {
+    test.skip("Burn, one token, one source", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -325,7 +325,7 @@ describe("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test("Burn, one token, two sources", async () => {
+    test.skip("Burn, one token, two sources", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

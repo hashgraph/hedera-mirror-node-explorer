@@ -29,13 +29,14 @@
       <slot name="name"/>
     </template>
     <template #value>
-      <div class="is-flex is-align-items-center">
+      <div class="property-value">
         <slot name="value"/>
-        <img v-if="editable" alt="Edit" class="ml-2"
-             style="height: 14px"
-             @click="onEdit"
-             src="@/assets/pencil.svg"
-        >
+        <Pencil
+            v-if="editable"
+            :size="16"
+            @click="onEdit"
+            style="margin-left: 8px; color: var(--network-text-accent-color);"
+        />
       </div>
     </template>
   </Property>
@@ -49,6 +50,7 @@
 <script setup lang="ts">
 
 import Property from "@/components/Property.vue";
+import {Pencil} from 'lucide-vue-next';
 
 defineProps({
   id: String,
@@ -74,5 +76,18 @@ const onEdit = () => emit('edit')
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.property-value {
+  align-items: center;
+  display: flex;
+  justify-content: flex-end;
+}
+
+@media (min-width: 768px) {
+  div.property-value {
+    justify-content: flex-start;
+  }
+}
+
 </style>

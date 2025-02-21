@@ -18,7 +18,7 @@
  *
  */
 
-import {describe, it, expect} from 'vitest'
+import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import HexaValue from "@/components/values/HexaValue.vue"
 
@@ -87,7 +87,7 @@ describe("HexaValue.vue", () => {
 
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy")
+        expect(wrapper.text()).toBe("0x0102030405060708090A0B0C0D0E0FCopy")
 
         // Lines below ...
         //
@@ -118,7 +118,7 @@ describe("HexaValue.vue", () => {
 
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toBe("0102 0304 0506 0708 090A 0B0C 0D0E 0FCopy")
+        expect(wrapper.text()).toBe("0x0102030405060708090A0B0C0D0E0FCopy")
 
         wrapper.unmount()
         await flushPromises()

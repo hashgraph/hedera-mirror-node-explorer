@@ -23,46 +23,36 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <o-tooltip
-      v-if="warningLabel || label"
+  <Tooltip
       id="info-tooltip"
-      :label="warningLabel ?? label"
-      :delay="delay"
-      multiline="multiline"
-      :position="position ?? 'auto'"
-      class="h-tooltip">
-    <span class="icon is-small h-is-property-text h-is-extra-text">
-      <i v-if="warningLabel" class="fa fa-exclamation-triangle has-text-danger"/>
-      <i v-else class="fas fa-info-circle"></i>
-    </span>
-  </o-tooltip>
+      :text="props.warningLabel ?? props.label"
+      :position="props.position"
+      style="height: 16px;"
+  >
+    <Info :size="16" style="color: var(--network-text-accent-color);"/>
+  </Tooltip>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from "vue";
+import {PropType} from "vue";
+import Tooltip from "@/components/Tooltip.vue";
+import {Info} from "lucide-vue-next"
 
-export default defineComponent({
-  name: "InfoTooltip",
-  props: {
-    warningLabel: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    label: {
-      type: String as PropType<string | null>,
-      default: null
-    },
-    delay: {
-      type: Number,
-      default: 200
-    },
-    position: String
+const props = defineProps({
+  warningLabel: {
+    type: String as PropType<string | null>,
+    default: null
   },
+  label: {
+    type: String as PropType<string | null>,
+    default: null
+  },
+  position: String
 })
 
 </script>

@@ -24,16 +24,13 @@
 
 <template>
 
-  <div v-if="nonNullValue" id="bytecode"
-       class="h-code-box h-has-page-background pt-1 pl-3 pr-2 pb-2 mt-2 mr-1"
-       style="min-height:20px"
-       :style="{'max-height':heightInPixel+'px'}">
-    <HexaValue :byte-string="textValue" :copyable="false"/>
+  <div v-if="nonNullValue" id="bytecode">
+    <HexaDumpValue :byte-string="textValue" :copyable="false"/>
   </div>
 
   <span v-else-if="initialLoading"/>
 
-  <span v-else class="has-text-grey">None</span>
+  <span v-else class="h-is-low-contrast">None</span>
 
 </template>
 
@@ -45,18 +42,14 @@
 
 import {computed, defineComponent, inject, ref, watch} from 'vue';
 import {initialLoadingKey} from "@/AppKeys";
-import HexaValue from "@/components/values/HexaValue.vue";
+import HexaDumpValue from "@/components/values/HexaDumpValue.vue";
 
 export default defineComponent({
   name: 'ByteCodeValue',
-  components: {HexaValue},
+  components: {HexaDumpValue},
 
   props: {
     byteCode: String,
-    heightInPixel: {
-      type: Number,
-      default: 400
-    }
   },
 
   setup(props) {

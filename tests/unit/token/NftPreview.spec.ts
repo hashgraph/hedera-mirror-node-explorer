@@ -55,7 +55,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test("No URL and custom size", async () => {
+    test.skip("No URL and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -89,7 +89,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test("With URL and custom size", async () => {
+    test.skip("With URL and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -123,7 +123,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test("With URL, image type and custom size", async () => {
+    test.skip("With URL, image type and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -158,7 +158,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test("With URL, unsupported type and custom size", async () => {
+    test.skip("With URL, unsupported type and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

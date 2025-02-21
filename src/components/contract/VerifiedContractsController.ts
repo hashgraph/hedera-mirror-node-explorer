@@ -96,7 +96,7 @@ export class VerifiedContractsController implements PlayPauseController {
 
     private updatePeriod = 10000
     private timeoutID = -1
-    private maxRefreshCount = 10
+    private maxRefreshCount = 0
     private refreshCount = 0
     private autoRefreshRef: Ref<boolean> = ref(true)
 

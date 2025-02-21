@@ -30,34 +30,29 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :striped="false"
-
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
   >
 
-    <o-table-column v-slot="props" field="amount" label="Fractional Fee">
+    <o-table-column v-slot="props" field="amount" label="FRACTIONAL_FEE">
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="Fee Currency">
+    <o-table-column v-slot="props" field="token" label="FEE CURRENCY">
       <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="collector" label="Collector Account">
+    <o-table-column v-slot="props" field="collector" label="COLLECTOR ACCOUNT">
       <AccountLink :account-id="props.row.collector_account_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="min" label="Min">
+    <o-table-column v-slot="props" field="min" label="MIN">
       <PlainAmount :amount="props.row.minimum" none-label="None"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="max" label="Max">
+    <o-table-column v-slot="props" field="max" label="MAX">
       <PlainAmount :amount="props.row.maximum" none-label="None"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="net" label="Net">
+    <o-table-column v-slot="props" field="net" label="NET">
       {{ props.row.net_of_transfers ? "&check;" : "" }}
     </o-table-column>
 
@@ -69,9 +64,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, PropType} from 'vue';
+import {PropType} from 'vue';
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
@@ -80,46 +75,28 @@ import {FractionAmount} from "@/schemas/MirrorNodeSchemas";
 import StringValue from "@/components/values/StringValue.vue";
 import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 
-export default defineComponent({
+const props = defineProps({
+  analyzer: {
+    type: Object as PropType<TokenInfoAnalyzer>,
+    required: true
+  }
+})
 
-  name: 'FractionalFeeTable',
+const makeAmount = (fraction: FractionAmount): string => {
+  let result: string
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: 'percent',
+    maximumFractionDigits: 2
+  })
+  if (fraction.numerator && fraction.denominator) {
+    result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
+  } else {
+    result = ""
+  }
+  return result
+}
 
-  components: {
-    StringValue,
-    TokenLink,
-    PlainAmount,
-    AccountLink,
-  },
-
-  props: {
-    analyzer: {
-      type: Object as PropType<TokenInfoAnalyzer>,
-      required: true
-    }
-  },
-
-  setup(props) {
-    const makeAmount = (fraction: FractionAmount): string => {
-      let result: string
-      const formatter = new Intl.NumberFormat("en-US", {
-        style: 'percent',
-        maximumFractionDigits: 2
-      })
-      if (fraction.numerator && fraction.denominator) {
-        result = formatter.format(fraction.denominator ? fraction.numerator / fraction.denominator : 0)
-      } else {
-        result = ""
-      }
-      return result
-    }
-
-    return {
-      fees: props.analyzer.fractionalFees,
-      makeAmount,
-      ORUGA_MOBILE_BREAKPOINT
-    }
-  },
-});
+const fees = props.analyzer.fractionalFees
 
 </script>
 

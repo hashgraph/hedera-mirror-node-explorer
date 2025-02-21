@@ -28,9 +28,9 @@
       :loading="loading"
       paginated
       backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :total="total"
       v-model:current-page="currentPage"
       :per-page="perPage"
@@ -48,34 +48,27 @@
   >
     <o-table-column v-slot="props" field="timestamp" label="ID">
       <TransactionLabel
-          v-bind:transaction-id="props.row.transaction_id"
-          v-bind:result="props.row.result"
+          :transaction-id="props.row.transaction_id"
+          :result="props.row.result"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="type" label="Type">
+    <o-table-column v-slot="props" field="type" label="TYPE">
       <div class="h-has-pill" style="display: inline-block">
-        <div class="h-is-text-size-2">
-          {{ makeTypeLabel(props.row.type) }}
-        </div>
+        {{ makeTypeLabel(props.row.type) }}
       </div>
     </o-table-column>
 
-    <o-table-column
-        v-if="showingEthereumTransactions"
-        v-slot="props"
-        field="sender"
-        label="Sender"
-    >
+    <o-table-column v-if="showingEthereumTransactions" v-slot="props" field="sender" label="SENDER">
       <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" label="Content">
-      <NftTransactionSummary v-bind:transaction="props.row"/>
+    <o-table-column v-slot="props" field="content" label="CONTENT">
+      <NftTransactionSummary :transaction="props.row"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
+      <TimestampValue :timestamp="props.row.consensus_timestamp"/>
     </o-table-column>
   </o-table>
 
@@ -86,8 +79,8 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref,} from "vue"
+<script setup lang="ts">
+import {computed, PropType,} from "vue"
 import {Transaction, TransactionType,} from "@/schemas/MirrorNodeSchemas"
 import NftTransactionSummary from "@/components/transaction/NftTransactionSummary.vue"
 import TimestampValue from "@/components/values/TimestampValue.vue"
@@ -99,66 +92,35 @@ import EmptyTable from "@/components/EmptyTable.vue"
 import InnerSenderEVMAddress from "@/components/values/InnerSenderEVMAddress.vue"
 import {NftTransactionTableController} from "./NftTransactionTableController"
 
-export default defineComponent({
-  name: "NftTransactionTable",
-
-  components: {
-    InnerSenderEVMAddress,
-    NftTransactionSummary,
-    TimestampValue,
-    TransactionLabel,
-    EmptyTable,
-  },
-
-  props: {
-    narrowed: Boolean,
-    controller: {
-      type: Object as PropType<NftTransactionTableController>,
-      required: true,
-    },
-  },
-
-  setup(props) {
-    const isTouchDevice = inject("isTouchDevice", false)
-    const isMediumScreen = inject("isMediumScreen", true)
-
-    const showingEthereumTransactions = computed(() => {
-      return (
-          props.controller.transactionType.value ===
-          TransactionType.ETHEREUMTRANSACTION
-      )
-    })
-
-    const handleClick = (
-        t: Transaction,
-        c: unknown,
-        i: number,
-        ci: number,
-        event: MouseEvent,
-    ) => {
-      routeManager.routeToTransaction(t, event)
-    }
-
-    const transactions = computed(() => {
-      return props.controller.rows.value.filter(el =>
-          !props.controller.transactionType.value || el.type === props.controller.transactionType.value
-      )
-    })
-
-    return {
-      isTouchDevice,
-      isMediumScreen,
-      transactions: transactions,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      showingEthereumTransactions,
-      handleClick,
-      makeTypeLabel,
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  narrowed: Boolean,
+  controller: {
+    type: Object as PropType<NftTransactionTableController>,
+    required: true,
   },
 })
+
+const showingEthereumTransactions = computed(() => {
+  return (
+      props.controller.transactionType.value ===
+      TransactionType.ETHEREUMTRANSACTION
+  )
+})
+
+const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: MouseEvent,) => {
+  routeManager.routeToTransaction(t, event)
+}
+
+const transactions = computed(() => {
+  return props.controller.rows.value.filter(el =>
+      !props.controller.transactionType.value || el.type === props.controller.transactionType.value
+  )
+})
+
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+
 </script>

@@ -24,26 +24,26 @@
 
 <template>
 
-  <div v-if="!isSmallScreen" class="columns" :id="id">
-    <div class="column is-flex is-justify-content-space-between">
-      <div class="has-text-weight-light" :id="nameId">
+  <div
+      :class="{'property-root': !vertical, 'property-root-vertical' : vertical}"
+      :style="{'justify-content': (isSmallScreen || vertical) ? 'flex-start' : 'space-between'}"
+      :id="id"
+  >
+    <div
+        class="property-left-side"
+        :style="{'width': vertical ? '100%' : (props.fullWidth && isMediumScreen) ? '16.66666674%' : leftSideWidth}"
+        :id="nameId"
+    >
+      <span class="property-name" :class="{'uppercase': !props.keepCase}">
         <slot name="name"/>
-        <span v-if="tooltip" class="ml-2"/>
-        <InfoTooltip v-if="tooltip" :label="tooltip"/>
-      </div>
-      <div :id="valueId" class="ml-4 has-text-right">
-        <slot name="value"/>
-      </div>
-    </div>
-  </div>
-
-  <div v-else class="columns" :id="id" style="margin-bottom: -0.75rem;">
-    <div :class="nbColClass" class="column has-text-weight-light" :id="nameId">
-      <slot name="name"/>
-      <span v-if="tooltip" class="ml-2"/>
+      </span>
       <InfoTooltip v-if="tooltip" :label="tooltip"/>
     </div>
-    <div class="column has-text-left" :id="valueId">
+    <div
+        class="property-value"
+        :style="{'text-align': isSmallScreen ? 'left' : 'right'}"
+        :id="valueId"
+    >
       <slot name="value"/>
     </div>
   </div>
@@ -54,43 +54,48 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject} from "vue";
+import {computed, inject} from "vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 
-export default defineComponent({
-  name: "Property",
-  components: {InfoTooltip},
-  props: {
-    id: String,
-    fullWidth: {
-      type: Boolean,
-      default: false
-    },
-    wideName: {
-      type: Boolean,
-      default: false
-    },
-    customNbColClass: String,
-    tooltip: String
+const props = defineProps({
+  id: String,
+  fullWidth: {
+    type: Boolean,
+    default: false
   },
-  setup(props) {
-    const nameId = props.id + 'Name'
-    const valueId = props.id + 'Value'
+  keepCase: {
+    type: Boolean,
+    default: false
+  },
+  vertical: {
+    type: Boolean,
+    default: false
+  },
+  customNbColClass: String,
+  tooltip: String
+})
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isTouchDevice = inject('isTouchDevice', false)
-    const nbColClass = computed(() => props.customNbColClass ?? (props.wideName ? '' : props.fullWidth ? 'is-2' : 'is-one-third'))
+const nameId = props.id + 'Name'
+const valueId = props.id + 'Value'
+const isSmallScreen = inject('isSmallScreen', true)
+const isMediumScreen = inject('isMediumScreen', true)
 
-    return {
-      nameId,
-      valueId,
-      isSmallScreen,
-      isTouchDevice,
-      nbColClass
+const leftSideWidth = computed(() => {
+  let result
+  if (props.customNbColClass) {
+    if (props.customNbColClass === 'is-one-quarter') {
+      result = '25%'
+    } else if (props.customNbColClass === 'is-one-fifth') {
+      result = '20%'
+    } else {
+      result = props.customNbColClass
     }
+  } else {
+    result = '33.3333%'
   }
+  return result
 })
 
 </script>
@@ -99,5 +104,45 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.property-root {
+  align-items: flex-start;
+  display: flex;
+  gap: 16px
+}
+
+div.property-root-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+div.property-left-side {
+  align-items: center;
+  display: flex;
+  flex: none;
+  flex-wrap: wrap;
+}
+
+span.property-name {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16px;
+  margin-right: 4px;
+}
+
+span.uppercase {
+  text-transform: uppercase;
+}
+
+div.property-value {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 18px;
+  width: 100%;
+}
+
 </style>

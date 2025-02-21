@@ -23,22 +23,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div style="position: relative" data-cy="searchDropdown">
-    <div v-if="searchController.visible.value"
-         class="box" style="position: absolute; display: flex; flex-direction: column; gap: 4px; width: 100%; top: 5px; left: 0; z-index: 10; border: 0.5px solid white; padding: 10px">
-      <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+  <div class="searchDropdown">
+    <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+    <div>
       <SearchSection v-if="selectedAgent !== null" :search-controller="searchController" :search-agent="selectedAgent"/>
       <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">
-        <hr v-if="searchController.visibleAgents.value.length >= 1" class="h-card-separator m-0" style="height:1px"/>
+        <hr v-if="searchController.visibleAgents.value.length >= 1"/>
         <template v-for="a in searchController.domainNameSearchAgents" :key="a.id">
-          <div v-if="a.loading.value" class="has-text-grey h-is-property-text">
+          <div v-if="a.loading.value" class="connecting-to-provider">
             Connecting to {{ a.provider.providerAlias }}…
           </div>
         </template>
       </template>
-      <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value" class="has-text-grey h-is-property-text">
+      <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value"
+           @click="navigateToHelp"
+           class="no-match">
         No match
-        <span class="icon fas fa-question-circle has-text-grey h-is-hoverable is-small mt-1 ml-1" style="cursor:pointer" @click="navigateToHelp"/>
+        <img src="@/assets/question-circle.svg" alt="info button"/>
       </div>
       <div v-if="!searchController.loading.value" data-cy="searchCompleted" style="display: none"/>
     </div>
@@ -92,4 +93,40 @@ const navigateToHelp = () => {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped>
+
+hr {
+  height: 1px;
+  color: var(--border-secondary)
+}
+
+div.searchDropdown > div {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: stretch;
+  padding-left: 8px;
+  padding-top: 16px;
+  row-gap: 16px;
+  line-height: 19px;
+}
+
+div.connecting-to-provider {
+  color: var(--text-secondary);
+  font-weight: 400;
+  font-size: 14px;
+}
+
+div.no-match {
+  color: var(--text-secondary);
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  column-gap: 8px;
+  cursor: pointer;
+  padding: 8px 0 8px 0;
+}
+
+</style>

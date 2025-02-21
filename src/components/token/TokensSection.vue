@@ -24,58 +24,51 @@
 
 <template>
 
-  <DashboardCard v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
+  <DashboardCardV2 v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
 
-    <template v-slot:title>
+    <template #title>
       <div v-if="fullPage">
-        <span class="h-is-primary-title">HTS Tokens of Account </span>
+        <span>HTS Tokens of Account </span>
         <router-link :to="routeManager.makeRouteToAccount(accountId)">
-          <span class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+          <span>{{ accountId }}</span>
         </router-link>
       </div>
-      <span v-else class="h-is-secondary-title">HTS Tokens</span>
+      <span v-else>HTS Tokens</span>
     </template>
 
-    <template v-slot:control>
-      <div
-          v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled"
-          class="is-flex is-align-items-baseline"
-      >
-        <span class="mr-2 h-is-property-text has-text-grey">{{ rejectButtonHint }}</span>
-        <button
+    <template #right-control>
+      <template v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled">
+        <div v-if="rejectButtonHint" class="h-is-low-contrast">
+          {{ rejectButtonHint }}
+        </div>
+        <ButtonView
             id="reject-button"
-            class="button is-white is-small"
-            :disabled=!rejectButtonEnabled
-            @click="onReject"
+            :enabled="rejectButtonEnabled"
+            :is-default="true"
+            :size="ButtonSize.small"
+            @action="onReject"
         >
           REJECT
-        </button>
-      </div>
-      <div
-          v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled"
-          class="is-flex is-align-items-baseline"
-      >
-        <span class="mr-2 h-is-property-text has-text-grey">{{ claimButtonHint }}</span>
-        <o-tooltip
-            id="claim-button-tooltip"
-            :active="!claimActionEnabled"
-            label="Coming soon"
-            delay="200"
-            position="top"
-            class="h-tooltip">
-          <button
-              id="claim-button"
-              class="button is-white is-small"
-              :disabled="!claimActionEnabled"
-              @click="onClaim"
-          >
-            {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
-          </button>
-        </o-tooltip>
-      </div>
+        </ButtonView>
+      </template>
+      <template v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled">
+        <div v-if="claimButtonHint" class="h-is-low-contrast">
+          {{ claimButtonHint }}
+        </div>
+        <ButtonView
+            id="claim-button"
+            :enabled="claimActionEnabled"
+            :is-default="true"
+            :size="ButtonSize.small"
+            @action="onClaim"
+        >
+          {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
+        </ButtonView>
+      </template>
+      <template v-else/>
     </template>
 
-    <template v-slot:content>
+    <template #content>
       <Tabs
           :selected-tab="selectedTab"
           :tab-ids="tabIds"
@@ -101,7 +94,10 @@
         />
       </div>
 
-      <div v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable">
+      <div
+          v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable"
+          class="pending-airdrops-container"
+      >
         <Tabs
             :selected-tab="airdropSelectedTab"
             :tab-ids="airdropTabIds"
@@ -126,24 +122,24 @@
           />
         </div>
       </div>
-
-      <router-link v-if="showAllTokensLink" :to="routeManager.makeRouteToTokensByAccount(accountId)">
-        <div class="h-is-property-text h-is-extra-text has-text-centered">Show all tokens</div>
-      </router-link>
-
+      <ArrowLink
+          v-if="showAllTokensLink"
+          :route="routeManager.makeRouteToTokensByAccount(accountId)"
+          text="All tokens"
+      />
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
-  <RejectTokenDialog
+  <RejectTokenGroupDialog
+      v-model:show-dialog="showRejectTokenDialog"
       :tokens="checkedTokens"
-      :controller="rejectDialogController"
       @rejected="onRejectCompleted"
   />
 
-  <ClaimTokenDialog
+  <ClaimTokenGroupDialog
+      v-model:showDialog="showClaimDialog"
       :airdrops="candidateAirdrops"
-      :controller="claimDialogController"
       :drained="checkedAirdrops.length < MAX_AIRDROPS"
       @claimed="onClaimCompleted"
   />
@@ -157,7 +153,6 @@
 <script setup lang="ts">
 
 import {computed, onBeforeUnmount, onMounted, PropType, ref} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import Tabs from "@/components/Tabs.vue";
 import {AppStorage} from "@/AppStorage";
 import {useRouter} from "vue-router";
@@ -165,15 +160,18 @@ import {NftsTableController} from "@/components/account/NftsTableController";
 import NftsTable from "@/components/account/NftsTable.vue";
 import FungibleTable from "@/components/account/FungibleTable.vue";
 import {FungibleTableController} from "@/components/account/FungibleTableController";
-import {DialogController} from "@/components/dialog/DialogController";
 import {routeManager, walletManager} from "@/router";
 import {Nft, Token, TokenAirdrop, TokenType} from "@/schemas/MirrorNodeSchemas";
-import RejectTokenDialog from "@/components/account/RejectTokenDialog.vue";
+import RejectTokenGroupDialog from "@/dialogs/token/RejectTokenGroupDialog.vue";
+import ClaimTokenGroupDialog from "@/dialogs/token/ClaimTokenGroupDialog.vue";
 import {PendingAirdropTableController} from "@/components/account/PendingAirdropTableController";
 import PendingNftAirdropTable from "@/components/account/PendingNftAirdropTable.vue";
-import ClaimTokenDialog from "@/components/account/ClaimTokenDialog.vue";
 import {tokenOrNftId} from "@/schemas/MirrorNodeUtils.ts";
 import PendingFungibleAirdropTable from "@/components/account/PendingFungibleAirdropTable.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import ButtonView from "@/elements/ButtonView.vue";
+import ArrowLink from "@/components/ArrowLink.vue";
+import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 
 const props = defineProps({
   accountId: {
@@ -206,7 +204,7 @@ const perPage = ref(props.fullPage ? 15 : 6)
 
 const accountId = computed(() => props.accountId)
 
-const claimActionEnabled = import.meta.env.VITE_APP_ENABLE_CLAIM_ACTION === 'true'
+const claimActionEnabled = true
 
 const tabIds = ['fungible', 'nfts', 'pendingAirdrop']
 
@@ -275,10 +273,10 @@ onBeforeUnmount(() => {
 // Reject
 //
 
-const rejectDialogController = new DialogController()
+const showRejectTokenDialog = ref(false)
 
 const onReject = () => {
-  rejectDialogController.visible.value = true
+  showRejectTokenDialog.value = true
 }
 
 const onRejectCompleted = () => {
@@ -303,7 +301,7 @@ const rejectButtonHint = computed(() => {
   } else if (checkedCount == 1) {
     result = `${tokenOrNftId(checkedTokens.value[0])} selected`
   } else {
-    result = "Select tokens"
+    result = ""
   }
   return result
 })
@@ -329,7 +327,7 @@ const checkedTokens = ref<(Token | Nft)[]>([])
 
 const MAX_AIRDROPS = 100 // for CLAIM ALL
 
-const claimDialogController = new DialogController()
+const showClaimDialog = ref(false)
 
 const onClaim = async () => {
   if (checkedAirdrops.value.length === 0) { // CLAIM ALL was chosen
@@ -340,11 +338,15 @@ const onClaim = async () => {
   } else {
     candidateAirdrops.value = checkedAirdrops.value
   }
-  claimDialogController.visible.value = true
+  showClaimDialog.value = true
 }
 
 const onClaimCompleted = () => {
   checkedAirdrops.value.splice(0)
+  nftsTableController.refresh()
+  fungibleTableController.refresh()
+  nftsAirdropTableController.refresh()
+  fungibleAirdropTableController.refresh()
 }
 
 const claimButtonHint = computed(() => {
@@ -380,4 +382,12 @@ const candidateAirdrops = ref<TokenAirdrop[]>([])
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.pending-airdrops-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+</style>

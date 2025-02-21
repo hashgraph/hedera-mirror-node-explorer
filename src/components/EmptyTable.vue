@@ -23,9 +23,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="has-text-centered h-is-tertiary-text-text has-text-grey mb-4">
-    <span v-if="initialLoading || loading">Loading…</span>
-    <span v-else>{{ noDataMessage }}</span>
+  <div class="empty-table mb-4">
+    <span v-if="initialLoading || props.loading">Loading…</span>
+    <span v-else>{{ props.noDataMessage }}</span>
   </div>
 </template>
 
@@ -33,30 +33,23 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, ref} from "vue";
+import {inject, ref} from "vue";
 import {initialLoadingKey} from "@/AppKeys";
 
-export default defineComponent({
-  name: "EmptyTable",
-
-  props: {
-    loading: {
-      type: Boolean,
-      default: false
-    },
-    noDataMessage: {
-      type: String,
-      default: 'No data'
-    }
+const props = defineProps({
+  loading: {
+    type: Boolean,
+    default: false
   },
-
-  setup() {
-    const initialLoading = inject(initialLoadingKey, ref(false))
-    return {initialLoading}
+  noDataMessage: {
+    type: String,
+    default: 'No data'
   }
 })
+
+const initialLoading = inject(initialLoadingKey, ref(false))
 
 </script>
 
@@ -64,5 +57,11 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
+<style scoped>
+
+div.empty-table {
+  color: var(--text-secondary);
+  text-align: center;
+}
+
 </style>

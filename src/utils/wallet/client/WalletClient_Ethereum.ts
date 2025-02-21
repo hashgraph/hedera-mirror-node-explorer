@@ -39,7 +39,8 @@ import {
 import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 import {makeTokenSymbol} from "@/schemas/MirrorNodeUtils";
 import {waitFor} from "@/utils/TimerUtils";
-import {TransactionByHashCache} from "@/utils/cache/TransactionByHashCache";
+import {ContractResultByHashCache} from "@/utils/cache/ContractResultByHashCache.ts";
+import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache.ts";
 
 
 export class WalletClient_Ethereum extends WalletClient {
@@ -139,8 +140,12 @@ export class WalletClient_Ethereum extends WalletClient {
         const tokenAddress = EntityID.parse(targetId)?.toAddress() ?? null
         if (accountAddress !== null && tokenAddress !== null) {
             // 1) Checks current chain and tries to setup if needed
-            if (!await this.isChainOK()) {
-                await this.trySetupChain()
+            try {
+                if (!await this.isChainOK()) {
+                    await this.trySetupChain()
+                }
+            } catch(error) {
+                // Let's go forward and try the remaining steps… :/
             }
             // 1.1) Estimate gas
             try {
@@ -150,8 +155,9 @@ export class WalletClient_Ethereum extends WalletClient {
                 console.log("failed to estimate gas = " + JSON.stringify(reason))
             }
             // 2) Sends transaction
+            let ethHash: string
             try {
-                result = await this.sendTransaction(accountAddress, "0x" + tokenAddress, callData)
+                ethHash = await this.sendTransaction(accountAddress, "0x" + tokenAddress, callData)
             } catch (reason) {
                 if (eth_isUserReject(reason)) {
                     throw new WalletClientRejectError()
@@ -161,9 +167,10 @@ export class WalletClient_Ethereum extends WalletClient {
             }
             // 3) Waits for transaction to appear in mirror node
             try {
-                await this.waitForTransactionSurfacing(result)
+                const transaction = await this.waitForTransactionSurfacing(ethHash)
+                result = typeof transaction === "object" ? transaction.transaction_id : ethHash
             } catch {
-                // Carefully ignored
+                result = ethHash
             }
 
         } else {
@@ -276,44 +283,51 @@ export class WalletClient_Ethereum extends WalletClient {
 
 
     private async waitForTransactionSurfacing(transactionHash: string): Promise<Transaction | string> {
-        let result: Promise<Transaction | string>
+        let result: Transaction | string
 
         try {
-            let counter = 10
-            let transaction: Transaction | null = null
-            while (counter > 0 && transaction === null) {
+
+            await waitFor(500) // Optimistic wait
+            let contractResult = await ContractResultByHashCache.instance.lookup(transactionHash, true)
+
+            let counter = 20
+            while (contractResult === null && counter > 0) {
                 await waitFor(3000)
-                transaction = await TransactionByHashCache.instance.lookup(transactionHash, true)
+                contractResult = await ContractResultByHashCache.instance.lookup(transactionHash, true)
                 counter -= 1
             }
-            result = Promise.resolve(transaction ?? transactionHash)
+            if (contractResult !== null) {
+                result = await TransactionByTsCache.instance.lookup(contractResult.timestamp, true) ?? transactionHash
+            } else {
+                result = transactionHash
+            }
         } catch {
-            result = Promise.resolve(transactionHash)
+            result = transactionHash
         }
 
-        return result
+        return Promise.resolve(result)
     }
 
 }
 
-function networkToChainId(network: string): string|null {
-    let result: string|null
+export function networkToChainId(network: string, hex: boolean = true): string|null {
+    let result: number|null
     // https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay
     switch(network) {
         case "mainnet":
-            result = "0x127"
+            result = 295
             break
         case "testnet":
-            result = "0x128"
+            result = 296
             break
         case "previewnet":
-            result = "0x129"
+            result = 297
             break
         default:
             result = null
             break
     }
-    return result
+    return result !== null ? result.toString(hex ? 16 : 10) : null
 }
 
 

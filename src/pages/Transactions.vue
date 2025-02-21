@@ -24,26 +24,24 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Transactions">
 
-      <DashboardCard>
-        <template v-slot:title>
-          <span class="h-is-primary-title">Recent Transactions</span>
-        </template>
-        <template v-slot:control>
-          <div class="is-flex is-align-items-flex-end">
-            <PlayPauseButton v-bind:controller="transactionTableController"/>
-            <TransactionFilterSelect v-model:selected-filter="transactionType" class="ml-2"/>
-          </div>
-        </template>
-        <template v-slot:content>
-          <TransactionTable v-bind:controller="transactionTableController"/>
-        </template>
-      </DashboardCard>
+    <DashboardCardV2>
+      <template #title>
+        <span>Recent Transactions</span>
+      </template>
+      <template #left-control>
+        <PlayPauseButton :controller="transactionTableController"/>
+      </template>
+      <template #right-control>
+        <TransactionFilterSelect v-model:selected-filter="transactionType"/>
+      </template>
+      <template #content>
+        <TransactionTable :controller="transactionTableController"/>
+      </template>
+    </DashboardCardV2>
 
-    </template>
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -51,59 +49,42 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, onBeforeUnmount, onMounted, Ref, ref} from 'vue';
+import {onBeforeUnmount, onMounted, Ref, ref} from 'vue';
 
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {useRouter} from "vue-router";
-import DashboardCard from "@/components/DashboardCard.vue";
-import PageFrame from "@/components/page/PageFrame.vue";
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {AppStorage} from "@/AppStorage";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import PlayPauseButton from "@/components/PlayPauseButton.vue";
 
-export default defineComponent({
-  name: 'Transactions',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String
-  },
+const router = useRouter()
 
-  components: {
-    PageFrame,
-    DashboardCard,
-    TransactionFilterSelect,
-    PlayPauseButton,
-    TransactionTable,
-  },
+//
+// transactionTableController
+//
 
-  setup() {
-    const router = useRouter()
+const accountId: Ref<string | null> = ref(null)
+const pageSize = ref(15)
+const transactionTableController = new TransactionTableControllerXL(
+    router,
+    accountId,
+    pageSize,
+    false,
+    AppStorage.TRANSACTION_TABLE_PAGE_SIZE_KEY
+)
+onMounted(() => transactionTableController.mount())
+onBeforeUnmount(() => transactionTableController.unmount())
 
-    //
-    // transactionTableController
-    //
-
-    const accountId: Ref<string | null> = ref(null)
-    const pageSize = ref(15)
-    const transactionTableController = new TransactionTableControllerXL(
-        router,
-        accountId,
-        pageSize,
-        false,
-        AppStorage.TRANSACTION_TABLE_PAGE_SIZE_KEY
-    )
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
-
-    return {
-      transactionTableController,
-      transactionType: transactionTableController.transactionType
-    }
-  }
-});
+const transactionType = transactionTableController.transactionType
 
 </script>
 
@@ -111,4 +92,6 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+</style>

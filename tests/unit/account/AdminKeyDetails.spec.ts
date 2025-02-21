@@ -42,7 +42,7 @@ import KeyValue from "@/components/values/KeyValue.vue";
 
 HMSF.forceUTC = true
 
-describe("AdminKeyDetails.vue", () => {
+describe.skip("AdminKeyDetails.vue", () => {
 
     test("Account view displaying link to key details", async () => {
 

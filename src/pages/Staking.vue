@@ -24,189 +24,101 @@
 
 <template>
 
-  <PageFrame>
-    <template #pageContent>
+  <PageFrameV2 page-title="Staking">
 
-      <StakingDialog v-model:show-dialog="stakingDialogVisible"
-                     :account="account ?? undefined"
-                     :currently-staked-to="stakedTo ?? undefined"
-                     v-on:change-staking="handleChangeStaking"/>
+    <UpdateAccountDialog
+        v-model:show-dialog="changeStakingDialogVisible"
+        :staking-only="true"
+        @updated="stakingChanged"
+    />
 
-      <ConfirmDialog v-model:show-dialog="stopConfirmDialogVisible" @onConfirm="handleStopStaking"
-                     :main-message="'Do you want to stop staking to ' + stakedTo +'?'">
-        <template v-slot:dialogTitle>
-          <span class="h-is-primary-title">My Staking </span>
-          <span v-if="accountId" class="h-is-tertiary-text"> for account </span>
-          <span v-if="accountId" class="h-is-secondary-text has-text-weight-light mr-3">{{ accountId }}</span>
+    <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
+                       :account-id="accountId"
+                       v-on:staking-changed="stakingChanged"/>
+
+    <NotificationBanner v-if="temporaryBanner" :message="temporaryBanner" :is-error="false"/>
+
+    <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
+      <template #title>
+        <span>My Staking </span>
+        <template v-if="accountId">
+          <span> for account </span>
+          <AccountLink :account-id="accountId"/>
+          <span class="checksum">-{{ accountChecksum }}</span>
         </template>
-      </ConfirmDialog>
+      </template>
 
-      <ProgressDialog v-model:show-dialog="showProgressDialog"
-                      :mode="progressDialogMode"
-                      :main-message="progressMainMessage"
-                      :extra-message="progressExtraMessage"
-                      :extra-transaction-id="progressExtraTransactionId"
-                      :show-spinner="showProgressSpinner"
-      >
-        <template v-slot:dialogTitle>
-          <span class="h-is-primary-title">{{ progressDialogTitle }}</span>
-        </template>
-      </ProgressDialog>
+      <template #content>
 
-      <ProgressDialog v-model:show-dialog="notWithMetamaskDialogVisible"
-                      :mode="Mode.Error"
-                      main-message="This operation cannot be done using Metamask"
-                      extra-message="Use another wallet (Blade or Hashpack)"
-      >
-        <template v-slot:dialogTitle>
-          <span class="h-is-primary-title">Unsupported Operation</span>
-        </template>
-      </ProgressDialog>
-
-      <CSVDownloadDialog v-if="accountId"
-                         v-model:show-dialog="showDownloadDialog"
-                         :downloader="downloader"
-                         :account-id="accountId"/>
-
-
-      <div v-if="temporaryBanner" class="hero is-small mb-5" style="background-color: var(--h-theme-highlight-color);">
-        <div class="hero-body h-is-property-text p-3 has-text-centered" v-html="temporaryBanner"/>
-      </div>
-
-      <DashboardCard v-if="enableWallet" collapsible-key="stakingDetails">
-        <template v-slot:title>
-          <div>
-            <span class="h-is-primary-title">My Staking </span>
-            <span v-if="accountId" class="h-is-primary-title"> for account </span>
-            <div v-if="accountId" class="h-is-secondary-text has-text-weight-light is-inline-block">
-              <AccountLink :account-id="accountId"/>
-            </div>
-            <span v-if="accountChecksum" class="has-text-grey mr-3" style="font-size: 14px">-{{ accountChecksum }}</span>
-          </div>
-        </template>
-
-        <template v-slot:content>
+        <div class="my-staking-section">
 
           <template v-if="accountId">
-            <div v-if="isSmallScreen">
-              <div class="is-flex is-justify-content-space-between">
-                <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
-                                      title="Staked to">
-                  <template v-slot:value>
-                    <div class="is-inline-block">
-                      <span v-if="stakedTo">{{ stakedTo }}</span>
-                      <span v-else class="has-text-grey">None</span>
-                    </div>
-                  </template>
-                </NetworkDashboardItem>
 
-                <NetworkDashboardItem class="ml-4"
-                                      :name="stakedAmount ? cryptoName : ''"
-                                      title="My Stake"
-                                      :value="stakedAmount"/>
-
-                <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
-                                      class="ml-4"
-                                      title="Rewards"
-                                      value="Declined"/>
-                <NetworkDashboardItem v-else
-                                      class="ml-4"
-                                      title="Pending Reward"
-                                      :name="pendingReward ? cryptoName : ''"
-                                      :value="pendingReward"
-                                      :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
-              </div>
-              <div class="is-flex is-justify-content-space-between mt-5">
-                <div v-if="isHieroWallet" class="is-flex is-justify-content-flex-start">
-                  <button id="stopStakingButton" class="button is-white is-small"
-                          :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
-                  </button>
-                  <button id="showStakingDialog" class="button is-white is-small ml-4" @click="showStakingDialog">CHANGE
-                    STAKING
-                  </button>
-                </div>
-                <div v-else>
-                  <p class="h-is-tertiary-text has-text-grey h-is-text-size-5">
-                    To change your staking options use Blade or HashPack.
-                  </p>
-                </div>
-              </div>
-              <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
-                <span class="has-text-grey-light">Please Note: </span>
-                Your full balance is automatically staked.<br/>
-                Your funds are fully available for use while staked.<br/>
-                You can unstake or switch nodes freely.
-              </div>
+            <div class="my-staking-dashboard">
+              <NetworkDashboardItemV2
+                  title="STAKED TO"
+                  :value="stakedTo"
+                  :extra="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+              />
+              <NetworkDashboardItemV2
+                  title="MY STAKE"
+                  :value="stakedAmount"
+                  :unit="stakedAmount ? cryptoName : ''"
+              />
+              <NetworkDashboardItemV2
+                  v-if="!ignoreReward && declineReward && !pendingReward"
+                  title="REWARDS"
+                  value="Declined"
+              />
+              <NetworkDashboardItemV2
+                  v-else
+                  title="PENDING REWARDS"
+                  :value="pendingReward"
+                  :unit="pendingReward ? cryptoName : ''"
+              />
             </div>
-            <div v-else>
-              <div class="is-flex-direction-column">
-                <NetworkDashboardItem :name="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
-                                      title="Staked to" :value="stakedTo ?? undefined"/>
-                <div class="mt-4"/>
-                <NetworkDashboardItem :name="stakedAmount ? cryptoName : ''" title="My Stake" :value="stakedAmount"/>
-                <div class="mt-4"/>
 
-                <NetworkDashboardItem v-if="!ignoreReward && declineReward && !pendingReward"
-                                      title="Rewards"
-                                      value="Declined"/>
-                <NetworkDashboardItem v-else
-                                      title="Pending Reward"
-                                      :name=cryptoName
-                                      :value="undefined"
-                                      :class="{'h-has-opacity-40': ignoreReward && !pendingReward}"/>
-
-                <div class="mt-4"/>
-              </div>
-              <div v-if="isHieroWallet" class="is-flex is-justify-content-center">
-                <button id="stopStakingButtonSmall" class="button is-white is-small"
-                        :disabled="!stakedTo" @click="showStopConfirmDialog">STOP STAKING
-                </button>
-                <button id="showStakingDialogSmall" class="button is-white is-small ml-4" @click="showStakingDialog">
-                  CHANGE STAKED TO
-                </button>
-              </div>
-              <div v-if="isHieroWallet" class="mt-5 h-is-text-size-2 is-italic has-text-grey has-text-centered">
-                <span class="has-text-grey-light">Please Note: </span>
-                Your full balance is automatically staked.<br/>
-                Your funds are fully available for use while staked.<br/>
-                You can unstake or switch nodes freely.
-              </div>
-              <div class="mt-4"/>
+            <div v-if="isHieroWallet" class="my-staking-buttons">
+              <ButtonView
+                  id="stopStakingButton"
+                  :enabled="stakedTo !== null"
+                  @action="stopStakingDialogVisible = true"
+              >
+                STOP STAKING
+              </ButtonView>
+              <ButtonView
+                  id="showStakingDialog"
+                  :is-default="true"
+                  @action="changeStakingDialogVisible = true"
+              >
+                CHANGE STAKING
+              </ButtonView>
             </div>
+            <p v-else class="connect-wallet-text">
+              To change your staking options use Blade or HashPack.
+            </p>
+
+            <p class="staking-notice">
+              <span>Please Note: Your full balance is automatically staked. </span>
+              <span>Your funds are fully available for use while staked. You can unstake or switch nodes freely.</span>
+            </p>
           </template>
 
           <template v-else>
-            <section class="section has-text-centered pt-0" :class="{'pb-0': isSmallScreen}">
-              <p class="h-is-tertiary-text" style="font-weight: 300">
-                To view or change your staking options first connect your wallet.
-              </p>
-              <br/>
-            </section>
+            <p class="connect-wallet-text">
+              To view or change your staking options first connect your wallet.
+            </p>
           </template>
+        </div>
 
-        </template>
-      </DashboardCard>
+      </template>
+    </DashboardCardV2>
 
-      <DashboardCard v-if="accountId" :class="{'h-has-opacity-40': !isStakedToNode}" collapsible-key="myRecentRewards">
-        <template v-slot:title>
-          <span class="h-is-secondary-title">Recent Staking Rewards</span>
-        </template>
-        <template v-slot:control>
-          <DownloadButton @click="showDownloadDialog = true"/>
-        </template>
-        <template v-slot:content>
-          <StakingRewardsTable
-              :narrowed="true"
-              :controller="transactionTableController"
-          />
-        </template>
-      </DashboardCard>
+    <RecentRewardsSection/>
 
-      <RewardsCalculator :amount-in-hbar="balanceInHbar"
-                         :node-id="stakedNode?.node_id"/>
+    <RewardsCalculator :amount-in-hbar="balanceInHbar" :node-id="stakedNode?.node_id"/>
 
-    </template>
-  </PageFrame>
+  </PageFrameV2>
 
 </template>
 
@@ -214,301 +126,106 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, inject, onBeforeUnmount, onMounted, ref} from 'vue';
-import {useRouter} from "vue-router";
-import PageFrame from "@/components/page/PageFrame.vue";
+import {computed, onBeforeUnmount, onMounted, ref} from 'vue';
+import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {routeManager, walletManager} from "@/router";
-import NetworkDashboardItem from "@/components/node/NetworkDashboardItem.vue";
-import {Transaction} from "@/schemas/MirrorNodeSchemas";
-import {waitFor} from "@/utils/TimerUtils";
-import StakingRewardsTable from "@/components/staking/StakingRewardsTable.vue";
-import StakingDialog from "@/components/staking/StakingDialog.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import ConfirmDialog from "@/components/ConfirmDialog.vue";
-import ProgressDialog, {Mode} from "@/components/staking/ProgressDialog.vue";
+import UpdateAccountDialog from "@/dialogs/UpdateAccountDialog.vue";
+import StopStakingDialog from "@/dialogs/staking/StopStakingDialog.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
-import {WalletClientError, WalletClientRejectError} from "@/utils/wallet/client/WalletClient";
-import {TransactionID} from "@/utils/TransactionID";
-import {StakingRewardsTableController} from "@/components/staking/StakingRewardsTableController";
-import DownloadButton from "@/components/DownloadButton.vue";
-import CSVDownloadDialog from "@/components/CSVDownloadDialog.vue";
-import {RewardDownloader} from "@/utils/downloader/RewardDownloader";
 import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer";
 import {AccountLocParser} from "@/utils/parser/AccountLocParser";
-import {TransactionByIdCache} from "@/utils/cache/TransactionByIdCache";
 import {gtagTransaction} from "@/gtag";
-import {AppStorage} from "@/AppStorage";
 import {NetworkConfig} from "@/config/NetworkConfig";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
+import RecentRewardsSection from "@/components/staking/RecentRewardsSection.vue";
+import ButtonView from "@/elements/ButtonView.vue";
+import NotificationBanner from "@/components/NotificationBanner.vue";
 
-export default defineComponent({
-  name: 'Staking',
+defineProps({
+  network: String
+})
 
-  props: {
-    network: String,
-    polling: { // For testing purpose
-      type: Number,
-      default: 3000 // Because a transaction emerges 3 or 4 seconds in mirror node after its completion in network
-    }
-  },
+const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
 
-  components: {
-    CSVDownloadDialog,
-    DownloadButton,
-    RewardsCalculator,
-    AccountLink,
-    ConfirmDialog,
-    ProgressDialog,
-    DashboardCard,
-    StakingDialog,
-    StakingRewardsTable,
-    NetworkDashboardItem,
-    PageFrame,
-  },
+const cryptoName = CoreConfig.inject().cryptoName
+const networkConfig = NetworkConfig.inject()
 
-  setup(props) {
-    const temporaryBanner = import.meta.env.VITE_APP_TEMPORARY_BANNER ?? null
+const changeStakingDialogVisible = ref(false)
+const stopStakingDialogVisible = ref(false)
 
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-    const cryptoName = CoreConfig.inject().cryptoName
-    const networkConfig = NetworkConfig.inject()
+//
+// Account
+//
+const accountLocParser = new AccountLocParser(walletManager.accountId, networkConfig)
+onMounted(() => accountLocParser.mount())
+onBeforeUnmount(() => accountLocParser.unmount())
 
-    const router = useRouter()
+const isStakedToNode = computed(() => accountLocParser.stakedNodeId.value !== null)
+const isStakedToAccount = computed(() => accountLocParser.stakedAccountId.value)
+const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
 
-    const stakingDialogVisible = ref(false)
-    const stopConfirmDialogVisible = ref(false)
-    const showErrorDialog = ref(false)
-    const showProgressDialog = ref(false)
-    const progressDialogMode = ref(Mode.Busy)
-    const progressDialogTitle = ref<string | null>(null)
-    const progressMainMessage = ref<string | null>(null)
-    const progressExtraMessage = ref<string | null>(null)
-    const progressExtraTransactionId = ref<string | null>(null)
-    const showProgressSpinner = ref(false)
-    const showDownloadDialog = ref(false)
-
-    const connecting = ref(false)
-
-    //
-    // Account
-    //
-    const accountLocParser = new AccountLocParser(walletManager.accountId,networkConfig)
-    onMounted(() => accountLocParser.mount())
-    onBeforeUnmount(() => accountLocParser.unmount())
-
-    const isStakedToNode = computed(() => accountLocParser.stakedNodeId.value !== null)
-    const isStakedToAccount = computed(() => accountLocParser.stakedAccountId.value)
-    const isStaked = computed(() => isStakedToNode.value || isStakedToAccount.value)
-
-    const stakedTo = computed(() => {
-      let result: string | null
-      if (isStakedToAccount.value) {
-        result = "Account " + accountLocParser.stakedAccountId.value
-      } else if (isStakedToNode.value) {
-        result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeAnalyzer.shortNodeDescription.value
-      } else {
-        result = null
-      }
-      return result
-    })
-
-    const accountRoute = computed(() => {
-      return walletManager.accountId.value !== null
-          ? routeManager.makeRouteToAccount(walletManager.accountId.value)
-          : null
-    })
-
-    const balanceInHbar = computed(() => {
-      const balance = accountLocParser.balance.value ?? 10000000000
-      return balance / 100000000
-    })
-
-    const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
-
-    const formatHbarAmount = (amount: number | null) => {
-      let result: string | null
-      if (amount) {
-        const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
-        result = amountFormatter.format(amount / 100000000)
-      } else {
-        result = null
-      }
-      return result
-    }
-
-    const pendingReward = computed(() => formatHbarAmount(accountLocParser.pendingReward.value ?? null))
-    const declineReward = computed(() => accountLocParser.accountInfo.value?.decline_reward ?? false)
-    const ignoreReward = computed(() => accountLocParser.stakedNodeId.value === null)
-
-    //
-    // stakedNode
-    //
-
-    const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
-    onMounted(() => stakedNodeAnalyzer.mount())
-    onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
-
-    //
-    // handleStopStaking / handleChangeStaking
-    //
-
-    const notWithMetamaskDialogVisible = ref(false)
-
-    const showStopConfirmDialog = () => {
-      if (walletManager.isHieroWallet.value) {
-        stopConfirmDialogVisible.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
-
-    const handleStopStaking = () => {
-      changeStaking(null, null, accountLocParser.accountInfo.value?.decline_reward ? false : null)
-    }
-
-    const showStakingDialog = () => {
-      if (walletManager.isHieroWallet.value) {
-        stakingDialogVisible.value = true
-      } else {
-        notWithMetamaskDialogVisible.value = true
-      }
-    }
-
-    const handleChangeStaking = (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
-      changeStaking(nodeId, accountId, declineReward)
-    }
-
-    const changeStaking = async (nodeId: number | null, accountId: string | null, declineReward: boolean | null) => {
-
-      try {
-
-        showProgressDialog.value = true
-        progressDialogMode.value = Mode.Busy
-        progressDialogTitle.value = (nodeId == null && accountId == null && !declineReward) ? "Stopping staking" : "Updating staking"
-        progressMainMessage.value = "Connecting to Hedera Network using your wallet…"
-        progressExtraMessage.value = "Check your wallet for any approval request"
-        progressExtraTransactionId.value = null
-        showProgressSpinner.value = false
-        const transactionId = TransactionID.normalize(await walletManager.changeStaking(nodeId, accountId, declineReward))
-        progressMainMessage.value = "Completing operation…"
-        progressExtraMessage.value = "This may take a few seconds"
-        showProgressSpinner.value = true
-        await waitForTransactionRefresh(transactionId)
-
-        progressDialogMode.value = Mode.Success
-        progressMainMessage.value = "Operation completed"
-        showProgressSpinner.value = false
-        progressExtraMessage.value = "with transaction ID:"
-        progressExtraTransactionId.value = transactionId
-
-      } catch (error) {
-
-        if (error instanceof WalletClientRejectError) {
-          showProgressDialog.value = false
-        } else {
-          progressDialogMode.value = Mode.Error
-          if (error instanceof WalletClientError) {
-            progressMainMessage.value = error.message
-            progressExtraMessage.value = error.extra
-          } else {
-            progressMainMessage.value = "Operation did not complete"
-            progressExtraMessage.value = JSON.stringify(error)
-          }
-          progressExtraTransactionId.value = null
-          showProgressSpinner.value = false
-        }
-
-      } finally {
-        accountLocParser.remount()
-        gtagTransaction("change_staking")
-      }
-
-    }
-
-    const waitForTransactionRefresh = async (transactionId: string) => {
-      let result: Promise<Transaction | string>
-
-      try {
-        let counter = 10
-        let transaction: Transaction | null = null
-        while (counter > 0 && transaction === null) {
-          await waitFor(props.polling)
-          transaction = await TransactionByIdCache.instance.lookup(transactionId, true)
-          counter -= 1
-        }
-        result = Promise.resolve(transaction ?? transactionId)
-      } catch {
-        result = Promise.resolve(transactionId)
-      }
-
-      return result
-    }
-
-    //
-    // Rewards Transactions Table Controller
-    //
-    const pageSize = ref(isMediumScreen ? 10 : 5)
-    const transactionTableController = new StakingRewardsTableController(router, walletManager.accountId, pageSize, AppStorage.STAKING_TABLE_PAGE_SIZE_KEY)
-    onMounted(() => transactionTableController.mount())
-    onBeforeUnmount(() => transactionTableController.unmount())
-
-    //
-    // Rewards transaction downloader
-    //
-    const downloader = new RewardDownloader(
-        walletManager.accountId,
-        ref(null),
-        ref(null),
-        1000)
-
-    return {
-      temporaryBanner,
-      isSmallScreen,
-      isMediumScreen,
-      cryptoName,
-      enableWallet: routeManager.enableWallet,
-      connecting,
-      accountId: walletManager.accountId,
-      isHieroWallet: walletManager.isHieroWallet,
-      accountChecksum: accountLocParser.accountChecksum,
-      account: accountLocParser.accountInfo,
-      accountRoute,
-      stakePeriodStart: accountLocParser.stakePeriodStart,
-      showStakingDialog,
-      stakingDialogVisible,
-      showStopConfirmDialog,
-      stopConfirmDialogVisible,
-      showErrorDialog,
-      showDownloadDialog,
-      isStakedToNode,
-      isStakedToAccount,
-      stakedTo,
-      stakedNode: stakedNodeAnalyzer.node,
-      balanceInHbar,
-      stakedAmount,
-      pendingReward,
-      declineReward,
-      ignoreReward,
-      handleStopStaking,
-      handleChangeStaking,
-      showProgressDialog,
-      progressDialogMode,
-      progressDialogTitle,
-      progressMainMessage,
-      progressExtraMessage,
-      progressExtraTransactionId,
-      showProgressSpinner,
-      transactionTableController,
-      downloader,
-      notWithMetamaskDialogVisible,
-      Mode
-    }
+const stakedTo = computed(() => {
+  let result: string | null
+  if (isStakedToAccount.value) {
+    result = "Account " + accountLocParser.stakedAccountId.value
+  } else if (isStakedToNode.value) {
+    result = "Node " + accountLocParser.stakedNodeId.value + " - " + stakedNodeAnalyzer.shortNodeDescription.value
+  } else {
+    result = null
   }
-});
+  return result
+})
+
+const balanceInHbar = computed(() => {
+  const balance = accountLocParser.balance.value ?? 10000000000
+  return balance / 100000000
+})
+
+const stakedAmount = computed(() => isStaked.value ? formatHbarAmount(accountLocParser.balance.value) : null)
+
+const formatHbarAmount = (amount: number | null) => {
+  let result: string | null
+  if (amount) {
+    const amountFormatter = new Intl.NumberFormat("en-US", {maximumFractionDigits: 8})
+    result = amountFormatter.format(amount / 100000000)
+  } else {
+    result = null
+  }
+  return result
+}
+
+const pendingReward = computed(() => formatHbarAmount(accountLocParser.pendingReward.value ?? null))
+const declineReward = computed(() => accountLocParser.accountInfo.value?.decline_reward ?? false)
+const ignoreReward = computed(() => accountLocParser.stakedNodeId.value === null)
+
+//
+// stakedNode
+//
+
+const stakedNodeAnalyzer = new NodeAnalyzer(accountLocParser.stakedNodeId)
+onMounted(() => stakedNodeAnalyzer.mount())
+onBeforeUnmount(() => stakedNodeAnalyzer.unmount())
+
+//
+// handleStopStaking / handleChangeStaking
+//
+
+const stakingChanged = () => {
+  accountLocParser.remount()
+  gtagTransaction("change_staking")
+}
+
+const enableWallet = routeManager.enableWallet
+const accountId = walletManager.accountId
+const isHieroWallet = walletManager.isHieroWallet
+const accountChecksum = accountLocParser.accountChecksum
+const stakePeriodStart = accountLocParser.stakePeriodStart
+const stakedNode = stakedNodeAnalyzer.node
 
 </script>
 
@@ -517,5 +234,42 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.my-staking-dashboard {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 24px;
+  justify-content: space-between;
+  min-height: 128px;
+}
+
+div.my-staking-buttons {
+  display: flex;
+  flex-direction: row;
+  margin-top: 24px;
+  margin-bottom: 24px;
+  gap: 8px;
+}
+
+p.staking-notice {
+  color: var(--text-secondary);
+  font-size: 10px;
+  font-weight: 400;
+  height: 13px;
+}
+
+span.checksum {
+  color: var(--text-secondary);
+}
+
+p.connect-wallet-text {
+  color: var(--text-disabled);
+  font-family: "Styrene A Web", sans-serif;
+  font-size: 20px;
+  font-weight: 500;
+  height: 26px;
+  text-align: center;
+}
 
 </style>

@@ -32,9 +32,9 @@
       :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
       :narrowed="true"
       :paginated="paginated"
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
       :per-page="perPage"
       :striped="true"
 
@@ -49,20 +49,20 @@
       default-sort="spender"
       @page-change="onPageChange">
 
-    <o-table-column v-slot="props" field="spender" label="Spender">
-      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
+    <o-table-column v-slot="props" field="spender" label="SPENDER">
+      <AccountLink class="entity-id" :account-id="props.row.spender" :show-extra="true"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="Time">
+    <o-table-column v-slot="props" field="timestamp" label="TIME">
       <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="Amount" position="right">
+    <o-table-column v-slot="props" field="amount" label="AMOUNT" position="right">
       <HbarAmount :amount="props.row.amount_granted"/>
     </o-table-column>
 
     <o-table-column v-if="isWalletConnected" v-slot="props" position="right">
-      <i class="fa fa-pen" @click="$emit('editAllowance', props.row)"></i>
+      <i class="fa fa-pen" @click="emit('editAllowance', props.row)"/>
     </o-table-column>
 
     <template v-slot:bottom-left>
@@ -88,10 +88,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, ComputedRef, defineComponent, inject, PropType, Ref} from 'vue';
-import {CryptoAllowance} from "@/schemas/MirrorNodeSchemas";
+import {computed, PropType} from 'vue';
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {HbarAllowanceTableController} from "@/components/allowances/HbarAllowanceTableController";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -102,48 +101,27 @@ import {walletManager} from "@/router";
 import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import {AppStorage} from "@/AppStorage";
 
-export default defineComponent({
-  name: 'HbarAllowanceTable',
+const emit = defineEmits(["editAllowance"])
 
-  components: {TablePageSize, HbarAmount, AccountLink, EmptyTable, TimestampValue},
-
-  emits: ["editAllowance"],
-
-  props: {
-    controller: {
-      type: Object as PropType<HbarAllowanceTableController>,
-      required: true
-    }
-  },
-
-  setup: function (props) {
-    const isTouchDevice = inject('isTouchDevice', false)
-    const isSmallScreen = inject('isSmallScreen', true)
-    const isMediumScreen = inject('isMediumScreen', true)
-
-    const isWalletConnected = computed(
-        () => walletManager.accountId.value === props.controller.accountId.value)
-    // const isWalletConnected = computed(() => false)
-
-    return {
-      isTouchDevice,
-      isSmallScreen,
-      isMediumScreen,
-      isWalletConnected,
-      allowances: props.controller.rows as ComputedRef<CryptoAllowance[]>,
-      loading: props.controller.loading as ComputedRef<boolean>,
-      total: props.controller.totalRowCount as ComputedRef<number>,
-      currentPage: props.controller.currentPage as Ref<number>,
-      onPageChange: props.controller.onPageChange,
-      perPage: props.controller.pageSize as Ref<number>,
-      paginated: props.controller.paginated as ComputedRef<boolean>,
-      showPageSizeSelector: props.controller.showPageSizeSelector as ComputedRef<boolean>,
-      AppStorage,
-      // From App
-      ORUGA_MOBILE_BREAKPOINT,
-    }
+const props = defineProps({
+  controller: {
+    type: Object as PropType<HbarAllowanceTableController>,
+    required: true
   }
-});
+})
+
+const isWalletConnected = computed(
+    () => walletManager.accountId.value === props.controller.accountId.value
+)
+
+const allowances = props.controller.rows
+const loading = props.controller.loading
+const total = props.controller.totalRowCount
+const currentPage = props.controller.currentPage
+const onPageChange = props.controller.onPageChange
+const perPage = props.controller.pageSize
+const paginated = props.controller.paginated
+const showPageSizeSelector = props.controller.showPageSizeSelector
 
 </script>
 
@@ -152,5 +130,9 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.entity-id {
+  font-weight: 600;
+}
 
 </style>

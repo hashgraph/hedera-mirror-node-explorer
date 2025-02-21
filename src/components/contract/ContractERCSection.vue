@@ -24,29 +24,29 @@
 
 <template>
 
-  <DashboardCard v-if="erc20 || erc721" collapsible-key="contractERCProperties">
+  <DashboardCardV2 v-if="erc20 || erc721" collapsible-key="contractERCProperties">
     <template #title>
-      <span class="h-is-secondary-title">ERC Token</span>
+      ERC Token
     </template>
 
     <template #content>
 
       <!-- Properties common to ERC 20 and ERC 721 -->
       <Property id="erc-type" :full-width="true">
-        <template v-slot:name>Type</template>
-        <template v-slot:value>
+        <template #name>Type</template>
+        <template #value>
           <StringValue :string-value="erc20 ? 'ERC 20' : 'ERC 721'"/>
         </template>
       </Property>
       <Property id="erc-name" :full-width="true">
-        <template v-slot:name>Name</template>
-        <template v-slot:value>
+        <template #name>Name</template>
+        <template #value>
           <StringValue :string-value="ercName"/>
         </template>
       </Property>
       <Property v-if="ercSymbol" id="erc-symbol" :full-width="true">
-        <template v-slot:name>Symbol</template>
-        <template v-slot:value>
+        <template #name>Symbol</template>
+        <template #value>
           <StringValue :string-value="ercSymbol"/>
         </template>
       </Property>
@@ -54,21 +54,21 @@
       <!-- Properties specific to ERC 20 -->
       <template v-if="erc20">
         <Property v-if="erc20.decimals" id="erc-decimals" :full-width="true">
-          <template v-slot:name>Decimals</template>
-          <template v-slot:value>
+          <template #name>Decimals</template>
+          <template #value>
             <PlainAmount :amount="erc20.decimals"/>
           </template>
         </Property>
         <Property v-if="erc20TotalSupply" id="erc-total-supply" :full-width="true">
-          <template v-slot:name>Total Supply</template>
-          <template v-slot:value>
+          <template #name>Total Supply</template>
+          <template #value>
             <StringValue :string-value="erc20TotalSupply"/>
           </template>
         </Property>
       </template>
 
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -80,12 +80,12 @@
 
 import {computed, onBeforeUnmount, onMounted, PropType, watch, WatchHandle} from 'vue';
 import StringValue from "@/components/values/StringValue.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
 import Property from "@/components/Property.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {ERC20InfoCache} from "@/utils/cache/ERC20InfoCache.ts";
 import {formatUnits} from "ethers";
 import {ERC721InfoCache} from "@/utils/cache/ERC721InfoCache.ts";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 const props = defineProps({
   contractId: {

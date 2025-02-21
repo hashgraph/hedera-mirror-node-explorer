@@ -57,3 +57,6 @@ networks-config.json
 /src/assets/branding
 /src/assets/styles
 /public
+
+# Sourcify data
+/sourcify-setup/data

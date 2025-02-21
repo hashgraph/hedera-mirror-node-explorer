@@ -24,66 +24,35 @@
 
 <template>
 
-  <PageFrame>
+  <MainDashboardHeader/>
 
-    <template #pageBanner>
-      <HbarMarketDashboard/>
-    </template>
+  <div class="h-page-content">
+    <div class="dashboard-title">
+      Network
+    </div>
 
-    <template #pageContent>
+    <div class="dashboard-separator"/>
 
-      <div class="columns">
+    <div class="dashboard-content">
+      <ChartView :controller="txOverTimeController"/>
+    </div>
 
-        <div class="column">
-          <DashboardCard data-cy="cryptoTransfers">
-            <template v-slot:title>
-              <span class="h-is-secondary-title">Crypto Transfers</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="cryptoTableController"/>
-            </template>
-            <template v-slot:content>
-              <CryptoTransactionTable v-bind:controller="cryptoTableController"/>
-            </template>
-          </DashboardCard>
-        </div>
+    <div class="dashboard-content">
+      <ChartView :controller="networkFeeController"/>
+    </div>
 
-      </div>
+    <div class="dashboard-title">
+      Accounts
+    </div>
 
-      <div class="columns is-multiline">
+    <div class="dashboard-separator"/>
 
-        <div class="column" :class="{'is-full':!isXLargeScreen}">
-          <DashboardCard data-cy="smartContractCalls">
-            <template v-slot:title>
-              <span class="h-is-secondary-title">Smart Contract Calls</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="contractTableController"/>
-            </template>
-            <template v-slot:content>
-              <ContractCallTransactionTable v-bind:controller="contractTableController"/>
-            </template>
-          </DashboardCard>
-        </div>
+    <div class="dashboard-content">
+      <ChartView :controller="activeAccountsController"/>
+    </div>
+  </div>
 
-        <div class="column">
-          <DashboardCard data-cy="hcsMessages">
-            <template v-slot:title>
-              <span class="h-is-secondary-title">HCS Messages</span>
-            </template>
-            <template v-slot:control>
-              <PlayPauseButton v-bind:controller="messageTableController"/>
-            </template>
-            <template v-slot:content>
-              <MessageTransactionTable v-bind:controller="messageTableController"/>
-            </template>
-          </DashboardCard>
-        </div>
-
-      </div>
-
-    </template>
-  </PageFrame>
+  <Footer/>
 
 </template>
 
@@ -91,85 +60,45 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {defineComponent, inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {onBeforeUnmount, onMounted} from 'vue';
+import Footer from "@/components/page/Footer.vue";
+import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
+import {TxOverTimeController} from "@/charts/hgraph/TxOverTimeController.ts";
+import ChartView from "@/charts/core/ChartView.vue";
+import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
+import {ActiveAccountController} from "@/charts/hgraph/ActiveAccountController.ts";
+import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
+import {ThemeController} from "@/components/ThemeController.ts";
+import {routeManager} from "@/router.ts";
 
-import HbarMarketDashboard from "../components/dashboard/HbarMarketDashboard.vue";
-import DashboardCard from "@/components/DashboardCard.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
-import CryptoTransactionTable from "@/components/dashboard/CryptoTransactionTable.vue";
-import MessageTransactionTable from "@/components/dashboard/MessageTransactionTable.vue";
-import ContractCallTransactionTable from "@/components/dashboard/ContractCallTransactionTable.vue";
-import {TransactionType} from "@/schemas/MirrorNodeSchemas";
-import PageFrame from "@/components/page/PageFrame.vue";
-import {TransactionTableController} from "@/components/transaction/TransactionTableController";
-import {useRouter} from "vue-router";
+defineProps({
+  network: String
+})
 
-export default defineComponent({
-  name: 'MainDashboard',
+const themeController = ThemeController.inject()
 
-  components: {
-    PageFrame,
-    PlayPauseButton,
-    DashboardCard,
-    CryptoTransactionTable,
-    MessageTransactionTable,
-    ContractCallTransactionTable,
-    HbarMarketDashboard,
-  },
+const txOverTimeController = new TxOverTimeController(themeController, routeManager)
+onMounted(() => txOverTimeController.mount())
+onBeforeUnmount(() => txOverTimeController.unmount())
 
-  props: {
-    network: String
-  },
+// const tpsController = new TPSController(themeController, routeManager)
+// onMounted(() => tpsController.mount())
+// onBeforeUnmount(() => tpsController.unmount())
 
-  setup(props) {
-    const isXLargeScreen = inject('isXLargeScreen', true)
+const tpsMetricLoader = new TPSMetricLoader()
+const currentTPS = tpsMetricLoader.currentTPS
+onMounted(() => tpsMetricLoader.mount())
+onBeforeUnmount(() => tpsMetricLoader.unmount())
 
-    const router = useRouter()
-    const topPageSize = ref(5)
-    const bottomPageSize = ref(5)
+const networkFeeController = new NetworkFeeController(themeController, routeManager)
+onMounted(() => networkFeeController.mount())
+onBeforeUnmount(() => networkFeeController.unmount())
 
-    const cryptoTableController = new TransactionTableController(
-        router, topPageSize, TransactionType.CRYPTOTRANSFER, "", null, "p1", "k1")
-
-    const messageTableController = new TransactionTableController(
-        router, bottomPageSize, TransactionType.CONSENSUSSUBMITMESSAGE, "", null, "p2", "k2")
-
-    const contractTableController = new TransactionTableController(
-        router, bottomPageSize, TransactionType.CONTRACTCALL, "", null, "p3", "k3")
-
-    onMounted(() => {
-      cryptoTableController.mount()
-      messageTableController.mount()
-      contractTableController.mount()
-    })
-
-    onBeforeUnmount(() => {
-      cryptoTableController.unmount()
-      messageTableController.unmount()
-      contractTableController.unmount()
-    })
-
-    watch(() => props.network, () => {
-      cryptoTableController.reset()
-      messageTableController.reset()
-      contractTableController.reset()
-      cryptoTableController.startAutoRefresh()
-      messageTableController.startAutoRefresh()
-      contractTableController.startAutoRefresh()
-    })
-
-    return {
-      isXLargeScreen,
-      cryptoTableController,
-      messageTableController,
-      contractTableController,
-      TransactionType
-    }
-  }
-
-});
+const activeAccountsController = new ActiveAccountController(themeController, routeManager)
+onMounted(() => activeAccountsController.mount())
+onBeforeUnmount(() => activeAccountsController.unmount())
 
 </script>
 
@@ -177,4 +106,43 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style scoped>
+
+div.dashboard-title {
+  color: var(--text-primary);
+  font-family: 'Styrene A Web', serif;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 26px;
+  margin-top: 12px;
+}
+
+@media (min-width: 1080px) {
+  div.dashboard-title {
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 42px;
+    margin-top: 8px;
+  }
+}
+
+div.dashboard-separator {
+  background-color: var(--network-button-color);
+  height: 2px;
+  width: 100%;
+}
+
+div.dashboard-content {
+  background-color: var(--background-tertiary);
+  border: 1px solid var(--table-border);
+  border-radius: 16px;
+  padding: 16px;
+}
+
+@media (min-width: 1080px) {
+  div.dashboard-content {
+    padding: 32px;
+  }
+}
+
+</style>

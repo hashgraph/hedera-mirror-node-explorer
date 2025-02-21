@@ -24,40 +24,45 @@
 
 <template>
 
-  <DashboardCard v-if="stateChanges?.length && isSmallScreen" class="h-card" collapsible-key="stateChanges">
-    <template v-slot:title>
-      <span class="h-is-secondary-title">Contract States Accessed & Changed</span>
+  <DashboardCardV2 v-if="stateChanges?.length && isSmallScreen" collapsible-key="stateChanges">
+    <template #title>
+      Contract States Accessed & Changed
     </template>
 
-    <template v-slot:control v-if="displayStateChanges.length > 5">
-      <o-field>
-        <o-select v-model="pageSize" class="h-is-text-size-1">
-          <option v-for="n of actualSizeOptions" :key="n" :value="n">
-            {{ (n >= displayStateChanges?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
-          </option>
-        </o-select>
-      </o-field>
+    <template #right-control v-if="displayStateChanges.length > 5">
+      <SelectView v-model="pageSize" :small="true">
+        <option v-for="n of actualSizeOptions" :key="n" :value="n">
+          {{ (n >= displayStateChanges?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
+        </option>
+      </SelectView>
     </template>
 
-    <template v-slot:content>
+    <template #content>
 
-      <div class="columns" style="margin-bottom:0; font-size: 11px; font-weight: 700;">
-        <div class="column is-1">Contract</div>
-        <div class="column">Address</div>
-        <div class="column">Value Read</div>
-        <div class="column">Value Written</div>
-      </div>
-      <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 20px; height: 1px"/>
-
-      <div v-for="s in nbChangeDisplayed" :key="s">
-        <ContractResultStateChangeEntry :change="displayStateChanges[changeCursor + s - 1]" :timestamp="timeStamp"/>
-        <hr class="h-card-separator" style="margin-top: 0; margin-bottom: 12px; height: 0.5px"/>
+      <div class="state-heading">
+        <div>CONTRACT</div>
+        <div>ADDRESS</div>
+        <div>VALUE READ</div>
+        <div>VALUE WRITTEN</div>
       </div>
 
-      <div v-if="isPaginated" class="is-flex is-justify-content-flex-end">
+      <hr class="heading-separator"/>
+
+      <div class="state-changes">
+        <template v-for="s in nbChangeDisplayed" :key="s">
+          <ContractResultStateChangeEntry
+              :change="displayStateChanges[changeCursor + s - 1]"
+              :timestamp="timeStamp"
+          />
+          <hr class="table-separator"/>
+        </template>
+      </div>
+
+      <div v-if="isPaginated" class="pagination">
         <o-pagination
             :total="stateChanges.length"
             v-model:current="currentPage"
+            order="centered"
             :range-before="1"
             :range-after="1"
             :per-page="pageSize"
@@ -71,19 +76,17 @@
 
     </template>
 
-  </DashboardCard>
+  </DashboardCardV2>
 
-  <DashboardCard v-else-if="stateChanges?.length" class="h-card" collapsible-key="stateChanges">
-    <template v-slot:title>
-      <div class="h-is-secondary-title">Contract States Accessed & Changed</div>
+  <DashboardCardV2 v-else-if="stateChanges?.length" collapsible-key="stateChanges">
+    <template #title>
+      Contract States Accessed & Changed
     </template>
 
-    <template v-slot:content>
-      <div class="h-is-tertiary-text-text has-text-grey">
-        <span>Not available on this screen size</span>
-      </div>
+    <template #content>
+      <p class="not-supported">Not available on this screen size</p>
     </template>
-  </DashboardCard>
+  </DashboardCardV2>
 
 </template>
 
@@ -94,12 +97,13 @@
 <script lang="ts">
 
 import {computed, defineComponent, inject, onBeforeUnmount, onMounted, PropType, ref, Ref, watch} from 'vue';
-import DashboardCard from "@/components/DashboardCard.vue";
 import {ContractResultStateChange} from "@/schemas/MirrorNodeSchemas";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import {TransactionByTsCache} from "@/utils/cache/TransactionByTsCache";
 import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";
 import {AppStorage} from "@/AppStorage";
+import SelectView from "@/elements/SelectView.vue";
+import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 
 export interface DisplayStateChange {
   changes: ContractResultStateChange,
@@ -124,8 +128,9 @@ export default defineComponent({
   name: 'ContractResultStates',
 
   components: {
+    DashboardCardV2,
+    SelectView,
     ContractResultStateChangeEntry,
-    DashboardCard
   },
 
   props: {
@@ -267,4 +272,43 @@ export default defineComponent({
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.state-heading {
+  color: var(--text-secondary);
+  display: grid;
+  font-weight: 500;
+  font-size: 12px;
+  grid-template-columns: 1.5fr 3fr 3fr 3fr;
+}
+
+div.state-changes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+hr.heading-separator {
+  background-color: var(--border-secondary);
+  height: 1px;
+  margin: 0;
+}
+
+hr.table-separator {
+  background-color: var(--table-border);
+  height: 1px;
+  margin: 0;
+}
+
+div.pagination {
+  display: flex;
+  justify-content: flex-end;
+}
+
+p.not-supported {
+  color: var(--text-secondary);
+  font-family: "Styrene A Web", sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+}
+
 </style>

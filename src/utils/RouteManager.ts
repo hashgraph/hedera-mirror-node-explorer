@@ -57,10 +57,8 @@ import Staking from "@/pages/Staking.vue";
 import Blocks from "@/pages/Blocks.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import SearchHelp from "@/pages/SearchHelp.vue";
-import MobileMenu from "@/pages/MobileMenu.vue";
-import MobileSearch from "@/pages/MobileSearch.vue";
 import axios from "axios";
-import {Transaction} from "@/schemas/MirrorNodeSchemas";
+import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
@@ -70,7 +68,7 @@ import ERC721ByName from "@/pages/ERC721ByName.vue";
 export class RouteManager {
 
     public readonly router: Router
-    private readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
+    public readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
     private readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
 
     //
@@ -144,6 +142,10 @@ export class RouteManager {
         return networkEntry != null ? networkEntry : this.networkConfig.value.entries[0]
     })
 
+    public readonly hgraphKey = computed(() => {
+        return this.coreConfig.value.hgraphKey
+    })
+
     public configure(coreConfig: CoreConfig, networkConfig: NetworkConfig) {
 
         this.coreConfig.value = coreConfig
@@ -167,7 +169,7 @@ export class RouteManager {
         for (const r of routes) {
             this.router.addRoute(r)
         }
-
+        this.switchThemes()
     }
 
     public findChainID(network: string): number|null {
@@ -185,18 +187,9 @@ export class RouteManager {
 
 
     //
-    // To be moved to MobileMenu.vue
-    //
-
-    public readonly previousRoute = computed(() => (this.router.currentRoute.value?.query.from as string))
-
-
-
-    //
     // Public (routeToXXX)
     //
 
-    
     //
     // Transaction
     //
@@ -478,8 +471,12 @@ export class RouteManager {
         return this.router.push(this.makeRouteToMainDashboard(network))
     }
 
-    public makeRouteToTransactions(): RouteLocationRaw {
-        return {name: 'Transactions', params: {network: this.currentNetwork.value}}
+    public makeRouteToTransactions(type: TransactionType | null = null): RouteLocationRaw {
+        return {
+            name: 'Transactions',
+            params: {network: this.currentNetwork.value},
+            query: type !== null ? {type: type} : undefined
+        }
     }
 
     public makeRouteToTokens(): RouteLocationRaw {
@@ -510,22 +507,9 @@ export class RouteManager {
         return {name: 'Blocks', params: {network: this.currentNetwork.value}}
     }
 
-    public makeRouteToMobileSearch(): RouteLocationRaw {
-        return {name: 'MobileSearch', params: {network: this.currentNetwork.value}}
-    }
-
     public makeRouteToPageNotFound(): RouteLocationRaw {
         return {name: 'PageNotFound', params: {network: this.currentNetwork.value}}
     }
-
-    public makeRouteToMobileMenu(name: unknown): RouteLocationRaw {
-        return {
-            name: 'MobileMenu',
-            params: {network: this.currentNetwork.value},
-            query: {from: name as string}
-        }
-    }
-
 
 
     //
@@ -666,27 +650,24 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        if (this.currentNetworkEntry.value.name == NetworkConfig.TEST_NETWORK) {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-testnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-testnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-testnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-testnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-testnet-dropdown-arrow)')
-        } else if (this.currentNetworkEntry.value.name == NetworkConfig.PREVIEW_NETWORK) {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-previewnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-previewnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-previewnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-previewnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-previewnet-dropdown-arrow)')
-        } else {
-            document.documentElement.style.setProperty('--h-theme-background-color', 'var(--h-mainnet-background-color)')
-            document.documentElement.style.setProperty('--h-theme-highlight-color', 'var(--h-mainnet-highlight-color)')
-            document.documentElement.style.setProperty('--h-theme-pagination-background-color', 'var(--h-mainnet-pagination-background-color)')
-            document.documentElement.style.setProperty('--h-theme-box-shadow-color', 'var(--h-mainnet-box-shadow-color)')
-            document.documentElement.style.setProperty('--h-theme-dropdown-arrow', 'var(--h-mainnet-dropdown-arrow)')
-        }
-    }
+        // Apply network theme colors to Light mode
+        document.documentElement.style.setProperty('--light-network-button-text-color', this.currentNetworkEntry.value.lightButtonTextColor)
+        document.documentElement.style.setProperty('--light-network-button-color', this.currentNetworkEntry.value.lightButtonColor)
+        document.documentElement.style.setProperty('--light-network-chip-color', this.currentNetworkEntry.value.lightChipColor)
+        document.documentElement.style.setProperty('--light-network-text-accent-color', this.currentNetworkEntry.value.lightTextAccentColor)
+        document.documentElement.style.setProperty('--light-network-border-accent-color', this.currentNetworkEntry.value.lightBorderAccentColor)
+        document.documentElement.style.setProperty('--light-network-graph-bar-color', this.currentNetworkEntry.value.lightGraphBarColor)
+        document.documentElement.style.setProperty('--light-network-chip-text-color', this.currentNetworkEntry.value.lightChipTextColor)
 
+        // Apply network theme to Dark mode
+        document.documentElement.style.setProperty('--dark-network-button-text-color', this.currentNetworkEntry.value.darkButtonTextColor)
+        document.documentElement.style.setProperty('--dark-network-button-color', this.currentNetworkEntry.value.darkButtonColor)
+        document.documentElement.style.setProperty('--dark-network-chip-color', this.currentNetworkEntry.value.darkChipColor)
+        document.documentElement.style.setProperty('--dark-network-text-accent-color', this.currentNetworkEntry.value.darkTextAccentColor)
+        document.documentElement.style.setProperty('--dark-network-border-accent-color', this.currentNetworkEntry.value.darkBorderAccentColor)
+        document.documentElement.style.setProperty('--dark-network-graph-bar-color', this.currentNetworkEntry.value.darkGraphBarColor)
+        document.documentElement.style.setProperty('--dark-network-chip-text-color', this.currentNetworkEntry.value.darkChipTextColor)
+    }
 }
 
 export function fetchStringQueryParam(paramName: string, route: RouteLocationNormalizedLoaded): string | null {
@@ -1010,24 +991,6 @@ const routes: Array<RouteRecordRaw> = [
         path: '/:network/search-help',
         name: 'SearchHelp',
         component: SearchHelp,
-        props: true,
-        meta: {
-            tabId: null
-        }
-    },
-    {
-        path: '/:network/mobile-menu',
-        name: 'MobileMenu',
-        component: MobileMenu,
-        props: true,
-        meta: {
-            tabId: null
-        }
-    },
-    {
-        path: '/:network/mobile-search',
-        name: 'MobileSearch',
-        component: MobileSearch,
         props: true,
         meta: {
             tabId: null

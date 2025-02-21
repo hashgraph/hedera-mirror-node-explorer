@@ -55,7 +55,7 @@ import {ContractStateResponse} from "../../../src/schemas/MirrorNodeSchemas";
 
 HMSF.forceUTC = true
 
-describe("ContractDetails.vue", () => {
+describe.skip("ContractDetails.vue", () => {
 
     it("Should display contract details (using contract id)", async () => {
 

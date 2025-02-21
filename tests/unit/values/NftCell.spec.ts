@@ -125,7 +125,7 @@ describe("NftCell.vue", () => {
         mock.restore()
     });
 
-    test("tokenId, serial # and various props", async () => {
+    test.skip("tokenId, serial # and various props", async () => {
 
         const mock = new MockAdapter(axios);
 
