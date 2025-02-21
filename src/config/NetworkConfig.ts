@@ -113,19 +113,19 @@ export class NetworkEntry {
 
         const lightButtonTextColor = fetchString(obj, "lightButtonTextColor") ?? "white"
         const lightButtonColor = fetchString(obj, "lightButtonColor") ?? "grey"
+        const lightChipTextColor = fetchString(obj, "lightChipTextColor") ?? "grey"
         const lightChipColor = fetchString(obj, "lightChipColor") ?? "grey"
         const lightTextAccentColor = fetchString(obj, "lightTextAccentColor") ?? "grey"
         const lightBorderAccentColor = fetchString(obj, "lightBorderAccentColor") ?? "grey"
         const lightGraphBarColor = fetchString(obj, "lightGraphBarColor") ?? "grey"
-        const lightChipTextColor = fetchString(obj, "lightChipTextColor") ?? "grey"
 
         const darkButtonTextColor = fetchString(obj, "darkButtonTextColor") ?? "white"
         const darkButtonColor = fetchString(obj, "darkButtonColor") ?? "grey"
+        const darkChipTextColor = fetchString(obj, "darkChipTextColor") ?? "grey"
         const darkChipColor = fetchString(obj, "darkChipColor") ?? "grey"
         const darkTextAccentColor = fetchString(obj, "darkTextAccentColor") ?? "grey"
         const darkBorderAccentColor = fetchString(obj, "darkBorderAccentColor") ?? "grey"
         const darkGraphBarColor = fetchString(obj, "darkGraphBarColor") ?? "grey"
-        const darkChipTextColor = fetchString(obj, "darkChipTextColor") ?? "grey"
 
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
@@ -160,18 +160,18 @@ export class NetworkEntry {
             erc721IndexURL,
             lightButtonTextColor,
             lightButtonColor,
+            lightChipTextColor,
             lightChipColor,
             lightTextAccentColor,
             lightBorderAccentColor,
             lightGraphBarColor,
-            lightChipTextColor,
             darkButtonTextColor,
             darkButtonColor,
+            darkChipTextColor,
             darkChipColor,
             darkTextAccentColor,
             darkBorderAccentColor,
             darkGraphBarColor,
-darkChipTextColor,
             sourcifySetup
         )
     }
@@ -208,20 +208,20 @@ darkChipTextColor,
         // The light variants of the network theme color
         public readonly lightButtonTextColor: string|null,
         public readonly lightButtonColor: string|null,
+        public readonly lightChipTextColor: string|null,
         public readonly lightChipColor: string|null,
         public readonly lightTextAccentColor: string|null,
         public readonly lightBorderAccentColor: string|null,
         public readonly lightGraphBarColor: string|null,
-        public readonly lightChipTextColor: string|null,
 
         // The dark variants of the network theme color
         public readonly darkButtonTextColor: string|null,
         public readonly darkButtonColor: string|null,
+        public readonly darkChipTextColor: string|null,
         public readonly darkChipColor: string|null,
         public readonly darkTextAccentColor: string|null,
         public readonly darkBorderAccentColor: string|null,
         public readonly darkGraphBarColor: string|null,
-        public readonly darkChipTextColor: string|null,
 
         public readonly sourcifySetup: SourcifySetup | null
     ) {}
