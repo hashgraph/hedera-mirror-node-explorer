@@ -34,7 +34,7 @@
   >
     <template #placeHolder>
       <div class="placeholder">
-        <FileX :size="40"/>
+        <FileX v-if="size >= 100" :size="40"/>
         <span>
         {{ size > 200 ? 'Non Fungible Token' : 'NFT' }}
       </span>
