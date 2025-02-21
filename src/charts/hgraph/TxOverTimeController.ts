@@ -32,7 +32,8 @@ export class TxOverTimeController extends HgraphChartController {
     //
 
     public constructor(themeController: ThemeController, routeManager: RouteManager) {
-        super("Transactions Over Time", themeController, routeManager)
+        super("Transactions Over Time", themeController, routeManager,
+            [ChartRange.all, ChartRange.year, ChartRange.day])
     }
 
     //
