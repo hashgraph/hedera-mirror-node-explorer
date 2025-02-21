@@ -74,7 +74,6 @@ import {computed, PropType} from "vue";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
 import {DownloadController} from "@/dialogs/download/DownloadController.ts";
 import {CoreConfig} from "@/config/CoreConfig.ts";
-import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 
 const props = defineProps({
   controller: {
