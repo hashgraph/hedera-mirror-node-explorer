@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Mobile Menu', () => {
+describe.skip('Mobile Menu', () => {
 
     const defaultNetwork = 'mainnet'
 

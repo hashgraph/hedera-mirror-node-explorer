@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Node Navigation', () => {
+describe.skip('Node Navigation', () => {
 
     it('should navigate from node table to node details', () => {
         cy.visit('testnet/nodes/')

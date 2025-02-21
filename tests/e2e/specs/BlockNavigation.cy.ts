@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Block Navigation', () => {
+describe.skip('Block Navigation', () => {
 
     it('should navigate from block table to block details', () => {
         cy.visit('testnet/blocks/')

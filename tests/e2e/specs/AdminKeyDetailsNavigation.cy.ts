@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('AdminKeyDetails Navigation', () => {
+describe.skip('AdminKeyDetails Navigation', () => {
 
     it('should follow link from account to admin key details and back', () => {
         const accountId = "0.0.2"

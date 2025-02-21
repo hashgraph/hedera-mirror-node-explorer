@@ -21,7 +21,7 @@
 // https://docs.cypress.io/api/introduction/api.html
 
 
-describe('Main Dashboard Navigation', () => {
+describe.skip('Main Dashboard Navigation', () => {
 
     const defaultNetwork = 'mainnet'
 

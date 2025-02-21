@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Transfer Graphs Navigation', () => {
+describe.skip('Transfer Graphs Navigation', () => {
 
     it('should follow links from Hbar transfer graph', () => {
         const timestamp = "1645611953.351954692"

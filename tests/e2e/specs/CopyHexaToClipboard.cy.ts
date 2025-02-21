@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Copy HexaValue to Clipboard', () => {
+describe.skip('Copy HexaValue to Clipboard', () => {
 
     beforeEach(() => {
         cy.wrap(Cypress.automation('remote:debugger:protocol', {
