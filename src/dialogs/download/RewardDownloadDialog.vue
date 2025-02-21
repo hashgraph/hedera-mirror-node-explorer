@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DownloadDialog v-model:show-dialog="showDialog" :downloader="downloader" :download-enabled="true">
+  <DownloadDialog :controller="controller">
 
     <template #downloadDialogTitle>
       <span>
@@ -69,10 +69,10 @@
 
 <script setup lang="ts">
 
-import {computed, ref} from "vue";
-import {RewardDownloader} from "@/utils/downloader/RewardDownloader.ts";
+import {computed} from "vue";
 import DownloadDialog from "@/dialogs/download/DownloadDialog.vue";
 import SelectView from "@/elements/SelectView.vue";
+import {Period, RewardDownloadController} from "@/dialogs/download/RewardDownloadController.ts";
 
 const showDialog = defineModel("showDialog", {
   type: Boolean,
@@ -86,22 +86,9 @@ const props = defineProps({
   }
 })
 
-
-//
-// Rewards transaction downloader
-//
-
-enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
-const periodOption = ref(1)
 const accountId = computed(() => props.accountId)
-const startDate = computed(() => {
-  const now = new Date()
-  const result = new Date(now.getTime());
-  result.setDate(now.getDate() - periodOption.value);
-  return result
-})
-const endDate = ref(null)
-const downloader = new RewardDownloader(accountId, startDate, endDate, 1000)
+const controller = new RewardDownloadController(showDialog, accountId)
+const periodOption = controller.periodOption
 
 </script>
 

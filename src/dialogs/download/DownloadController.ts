@@ -22,29 +22,28 @@ import {Ref} from "vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
 import {EntityDownloader} from "@/utils/downloader/EntityDownloader.ts";
 
-export class DownloadController extends TaskController {
-
-    public readonly downloader: EntityDownloader<unknown, unknown>
+export abstract class DownloadController<E, R> extends TaskController {
 
     //
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, downloader: EntityDownloader<unknown, unknown>) {
+    protected constructor(showDialog: Ref<boolean>) {
         super(showDialog)
-        this.downloader = downloader
     }
+
+    //
+    // To be subclassed
+    //
+
+    public abstract getDownloader(): EntityDownloader<E, R>
 
     //
     // TaskController
     //
 
-    public canBeExecuted(): boolean {
-        return true
-    }
-
     public async execute(): Promise<void> {
-        await this.downloader.run()
+        await this.getDownloader().run()
     }
 
 }

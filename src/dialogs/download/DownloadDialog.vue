@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TaskDialog :controller="controller" @task-dialog-did-succeed="handleSuccess">
+  <TaskDialog :controller="controller" @task-dialog-did-succeed="handleSuccess" :width="props.width">
 
     <template #taskDialogTitle>
       <slot name="downloadDialogTitle"/>
@@ -36,7 +36,7 @@
     </template>
 
     <template #taskDialogBusy>
-      <progress id="progress" :value="props.downloader.progress.value"/>
+      <progress id="progress" :value="props.controller.getDownloader().progress.value"/>
       <span>Downloading:</span>
       <span class="h-is-low-contrast h-is-numeric ml-2">{{ busyMessage }}</span>
     </template>
@@ -73,35 +73,27 @@
 import {computed, PropType} from "vue";
 import TaskDialog from "@/dialogs/core/task/TaskDialog.vue";
 import {DownloadController} from "@/dialogs/download/DownloadController.ts";
-import {EntityDownloader} from "@/utils/downloader/EntityDownloader.ts";
 import {CoreConfig} from "@/config/CoreConfig.ts";
-
-const showDialog = defineModel("showDialog", {
-  type: Boolean,
-  required: true
-})
+import ModalDialog from "@/dialogs/core/ModalDialog.vue";
 
 const props = defineProps({
-  downloader: {
-    type: Object as PropType<EntityDownloader<unknown, unknown>>,
+  controller: {
+    type: Object as PropType<DownloadController<unknown, unknown>>,
     required: true
   },
-  downloadEnabled: {
-    type: Boolean,
-    required: true
+  width: {
+    type: Number,
   }
 })
 
-const controller = new DownloadController(showDialog, props.downloader)
-
 const busyMessage = computed(() => {
-  const items = props.downloader.downloadedCount.value
+  const items = props.controller.getDownloader().downloadedCount.value
   return items + " " + (items > 1 ? "items" : "item")
 })
 
 const successMessage = computed(() => {
   let result: string
-  const entityCount = props.downloader.entities.value.length
+  const entityCount = props.controller.getDownloader().entities.value.length
   if (entityCount === 0) {
     result = "No item matches this range"
   } else {
@@ -111,13 +103,13 @@ const successMessage = computed(() => {
 })
 
 const successMessage2 = computed(() => {
-  return props.downloader.drained.value ? null : "The maximum of " + props.downloader.maxEntityCount + " downloads was hit"
+  return props.controller.getDownloader().drained.value ? null : "The maximum of " + props.controller.getDownloader().maxEntityCount + " downloads was hit"
 })
 
 const successMessage3 = computed(() => {
   let result: string | null
-  const drained = props.downloader.drained.value
-  const lastDownloadedEntityDate = props.downloader.lastDownloadedEntityDate.value
+  const drained = props.controller.getDownloader().drained.value
+  const lastDownloadedEntityDate = props.controller.getDownloader().lastDownloadedEntityDate.value
   if (!drained && lastDownloadedEntityDate !== null) {
     const locale = "en-US"
     const dateOptions: Intl.DateTimeFormatOptions = {
@@ -138,18 +130,18 @@ const successMessage3 = computed(() => {
 })
 
 const errorMessage = computed(() => {
-  return props.downloader.failureReason.value
+  return props.controller.getDownloader().failureReason.value
 })
 
 const cryptoName = CoreConfig.inject().cryptoName
 
 const handleSuccess = () => {
-  const blob = props.downloader.csvBlob.value
+  const blob = props.controller.getDownloader().csvBlob.value
   if (blob !== null) {
     const url = window.URL.createObjectURL(blob)
     const a = document.createElement('a')
     a.setAttribute('href', url)
-    a.setAttribute('download', props.downloader.getOutputName(cryptoName));
+    a.setAttribute('download', props.controller.getDownloader().getOutputName(cryptoName));
     a.click()
   }
 }
