@@ -48,7 +48,7 @@ import router from "../../../src/router";
 
 HMSF.forceUTC = true
 
-describe.skip("TokensSection.vue", () => {
+describe("TokensSection.vue", () => {
 
     const accountId = SAMPLE_ACCOUNT.account
     const SAMPLE_FUNGIBLE = {
@@ -185,7 +185,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
 
         const nftsTable = tokensSection.get("#nftsTable")
-        expect(nftsTable.find('thead').text()).toBe("Image Token ID Serial # Collection Name Symbol NFT Name Creator")
+        expect(nftsTable.find('thead').text()).toBe("IMAGE TOKEN ID SERIAL # COLLECTION NAME SYMBOL NFT NAME CREATOR")
         expect(nftsTable.find('tbody').text()).toBe(
             "NFT0.0.7483832Ħ Frens KingdomĦFRENSKINGD…" +
             "NFT0.0.7483831Ħ Frens KingdomĦFRENSKINGD…" +
@@ -216,7 +216,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
 
         const associationsTable = tokensSection.get("#fungibleTable")
-        expect(associationsTable.find('thead').text()).toBe("Token ID Name Symbol Balance")
+        expect(associationsTable.find('thead').text()).toBe("TOKEN ID NAME SYMBOL BALANCE")
         expect(associationsTable.find('tbody').text()).toBe(
             "0.0.34332104" + "HSUITE" + "HSuite" + "234,264.7909" +
             "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "0.31669471"
