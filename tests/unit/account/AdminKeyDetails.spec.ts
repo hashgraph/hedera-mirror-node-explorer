@@ -42,7 +42,7 @@ import KeyValue from "@/components/values/KeyValue.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("AdminKeyDetails.vue", () => {
+describe("AdminKeyDetails.vue", () => {
 
     test("Account view displaying link to key details", async () => {
 
@@ -81,7 +81,7 @@ describe.skip("AdminKeyDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch("AccountAccount ID:" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
+        expect(wrapper.text()).toMatch("Account  Account ID " + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
         expect(wrapper.get("#keyValue").text()).toBe("Complex Key (6 levels) See details")
 
         mock.restore()
