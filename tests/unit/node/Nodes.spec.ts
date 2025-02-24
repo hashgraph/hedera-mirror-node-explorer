@@ -29,6 +29,8 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Nodes from "@/pages/Nodes.vue";
 import NodeTable from "@/components/node/NodeTable.vue";
+import NetworkDashboardItemV2 from "@/components/node/NetworkDashboardItemV2.vue";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -39,7 +41,7 @@ import NodeTable from "@/components/node/NodeTable.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("Nodes.vue", () => {
+describe("Nodes.vue", () => {
 
     const tooltipStake = "Total amount of HBAR staked to this specific validator for consensus."
     const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
@@ -79,6 +81,11 @@ describe.skip("Nodes.vue", () => {
             }
         });
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/network/stake",
+        ])
+
         await flushPromises()
         // console.log(wrapper.text())
 
@@ -86,41 +93,48 @@ describe.skip("Nodes.vue", () => {
         expect(cards.length).toBe(2)
 
         expect(cards[0].text()).toMatch(RegExp("^Network"))
-        const items = cards[0].findAllComponents(NetworkDashboardItem)
+        const items = cards[0].findAllComponents(NetworkDashboardItemV2)
         expect(items.length).toBe(9)
-        expect(items[0].text()).toMatch("Last Staked")
-        expect(items[1].text()).toMatch("Next Staking Period")
-        expect(items[2].text()).toMatch("Staking Period24h")
-        expect(items[3].text()).toMatch("Total Staked24,000,000HBAR")
-        expect(items[4].text()).toMatch("Staked for Reward19,000,000HBAR")
-        expect(items[5].text()).toMatch("Maximum Staked for Reward0HBAR")
-        expect(items[6].text()).toMatch("Rewarded Last Period1,095HBAR")
-        expect(items[7].text()).toMatch("Maximum Reward Rate0%")
-        expect(items[8].text()).toMatch("Current Reward Rate0%")
+        expect(items[0].text()).toMatch("LAST STAKED")
+        expect(items[1].text()).toMatch("NEXT STAKING PERIOD")
+        expect(items[2].text()).toMatch("STAKING PERIOD 24h")
+        expect(items[3].text()).toMatch("TOTAL STAKED 24,000,000HBAR")
+        expect(items[4].text()).toMatch("STAKED FOR REWARD 19,000,000HBAR")
+        expect(items[5].text()).toMatch("MAXIMUM STAKED FOR REWARD 0HBAR")
+        expect(items[6].text()).toMatch("REWARDED LAST PERIOD 1,095HBAR")
+        expect(items[7].text()).toMatch("MAXIMUM REWARD RATE 0%")
+        expect(items[8].text()).toMatch("CURRENT REWARD RATE 0%")
 
         expect(cards[1].text()).toMatch("3  Nodes")
         const table = cards[1].findComponent(NodeTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Node Description Stake for Consensus % Stake Range Reward Rate")
+        expect(table.get('thead').text()).toBe("NODE ID DESCRIPTION STAKE FOR CONSENSUS % STAKE RANGE REWARD RATE")
         expect(wrapper.get('tbody').text()).toBe(
             "0" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "6,000,000ℏ" +
-            tooltipPercentage + "25%" +
+            "6,000,000ℏ" + tooltipStake +
+            "25.00%" + tooltipPercentage +
+            " min  max " +
             "Rewarded:5,000,000ℏNot Rewarded:1,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
-            tooltipRewardRate + "1%" +
+            "1%" + tooltipRewardRate +
             "1" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "9,000,000ℏ" +
-            tooltipPercentage + "37.5%" +
+            "9,000,000ℏ" + tooltipStake +
+            "37.50%" +
+            tooltipPercentage +
+            " min  max " +
             "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
-            tooltipRewardRate + "2%" +
+            "2%" + tooltipRewardRate +
             "2" +
             "Hosted by Hedera | Central, USA" +
-            tooltipStake + "9,000,000ℏ" +
-            tooltipPercentage + "37.5%" +
-            "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
-            tooltipRewardRate + "3%"
+            "9,000,000ℏ" + tooltipStake +
+            "37.50%" +
+            tooltipPercentage +
+            " min  max " +
+            "Rewarded:7,000,000ℏ" +
+            "Not Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
+            "3%" +
+            tooltipRewardRate
         )
 
         mock.restore()
