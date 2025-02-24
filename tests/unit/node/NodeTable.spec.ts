@@ -28,6 +28,7 @@ import NodeTable from "@/components/node/NodeTable.vue";
 import {NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -44,7 +45,7 @@ describe("NodeTable.vue", () => {
     const tooltipPercentage = "Total amount of HBAR staked to this validator for consensus / total amount of HBAR staked to all validators for consensus."
     const tooltipRewardRate = "Approximate annual reward rate based on the reward earned during the last 24h period."
 
-    it.skip("should list the 3 nodes in the table", async () => {
+    it("should list the 3 nodes in the table", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -70,27 +71,36 @@ describe("NodeTable.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
-        expect(wrapper.get('thead').text()).toBe("Node Description Stake for Consensus % Stake Range Reward Rate")
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+        ])
+
+        expect(wrapper.get('thead').text()).toBe("NODE ID DESCRIPTION STAKE FOR CONSENSUS % STAKE RANGE REWARD RATE")
         expect(wrapper.get('tbody').findAll('tr').length).toBe(3)
         expect(wrapper.get('tbody').text()).toBe(
             "0" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "6,000,000ℏ" +
-            tooltipPercentage + "25%" +
+            "6,000,000ℏ" + tooltipStake +
+            "25.00%" + tooltipPercentage +
+            " min  max " +
             "Rewarded:5,000,000ℏNot Rewarded:1,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
-            tooltipRewardRate + "1%" +
+            "1%" + tooltipRewardRate +
+
             "1" +
             "Hosted by Hedera | East Coast, USA" +
-            tooltipStake + "9,000,000ℏ" +
-            tooltipPercentage + "37.5%" +
+            "9,000,000ℏ" + tooltipStake +
+            "37.50%" + tooltipPercentage +
+            " min  max " +
             "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
-            tooltipRewardRate + "2%" +
+            "2%" + tooltipRewardRate +
+
             "2" +
             "Hosted by Hedera | Central, USA" +
-            tooltipStake + "9,000,000ℏ" +
-            tooltipPercentage + "37.5%" +
+            "9,000,000ℏ" + tooltipStake +
+            "37.50%" + tooltipPercentage +
+            " min  max " +
             "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
-            tooltipRewardRate + "3%"
+            "3%" + tooltipRewardRate
         )
 
         mock.restore()
