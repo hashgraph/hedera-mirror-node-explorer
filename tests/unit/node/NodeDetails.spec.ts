@@ -29,6 +29,7 @@ import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import NodeDetails from "@/pages/NodeDetails.vue";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -39,7 +40,7 @@ import NodeDetails from "@/pages/NodeDetails.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("NodeDetails.vue", () => {
+describe("NodeDetails.vue", () => {
 
     it("should display node details", async () => {
 
@@ -73,7 +74,8 @@ describe.skip("NodeDetails.vue", () => {
 
         const wrapper = mount(NodeDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 nodeId: node.toString()
@@ -87,23 +89,20 @@ describe.skip("NodeDetails.vue", () => {
         expect(wrapper.text()).toMatch(RegExp("Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#publicKeyValue").text()).toBe("3082 01a2 300d 0609CopyRSA")
+        expect(wrapper.get("#publicKeyValue").text()).toBe("0x308201a2300d0609CopyRSA")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.102")
         expect(wrapper.get("#rangeFromValue").text()).toBe("4:10:06.0411 PMJun 6, 2022, UTC")
         expect(wrapper.get("#rangeToValue").text()).toBe("None")
-        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d316 b5ef 57b7 6daf 37e3 bebb e3b6 9e6f 67b6 69ce 1dd1 ed75 e5c6 9a69 bf75 f36d 376f 475f 7b57 1d79 a6f8 e37e 37f1 f736 f3d6 9b73 c6da f1ae 9a7d ff37 75be 5fd5 bdf7 e34e 3a75 af3c 73Copy")
+        expect(wrapper.get("#nodeCertHashValue").text()).toBe("0xd316b5ef57b76daf37e3bebbe3b69e6f67b669ce1dd1ed75e5c69a69bf75f36d376f475f7b571d79a6f8e37e37f1f736f3d69b73c6daf1ae9a7dff3775be5fd5bdf7e34e3a75af3c73Copy")
         expect(wrapper.get("#serviceEndpointsValue").text()).toBe("3.211.248.172:502113.211.248.172:5021235.231.208.148:035.231.208.148:5021135.231.208.148:50212")
 
-        expect(wrapper.get("#yearlyRate").text()).toBe("Last Period Reward Rate1%APPROX ANNUAL EQUIVALENT")
-        expect(wrapper.get("#consensusStake").text()).toBe("Stake for Consensus6,000,000HBAR")
-        expect(wrapper.get("#consensusStakePercent").text()).toBe("25% of total")
-        expect(wrapper.get("#minStake").text()).toBe("Min Stake1,000,000HBAR")
-        expect(wrapper.get("#maxStake").text()).toBe("Max Stake30,000,000HBAR")
-        expect(wrapper.get("#rewarded").text()).toBe("Staked for Reward5,000,000HBAR")
-        expect(wrapper.get("#rewardedPercent").text()).toBe("26.32% of total")
-        expect(wrapper.get("#notRewarded").text()).toBe("Staked For No Reward1,000,000HBAR")
-        expect(wrapper.get("#notRewardedPercent").text()).toBe("20% of total")
-        expect(wrapper.get("#stakingPeriod").text()).toBe("Current Staking Period24HOURS")
+        expect(wrapper.get("#yearlyRate").text()).toBe("LAST PERIOD REWARD RATE 1%APPROX ANNUAL EQUIVALENT")
+        expect(wrapper.get("#consensusStake").text()).toBe("STAKE FOR CONSENSUS 6,000,000HBAR25.00% of total")
+        expect(wrapper.get("#minStake").text()).toBe("MIN STAKE 1,000,000HBAR")
+        expect(wrapper.get("#maxStake").text()).toBe("MAX STAKE 30,000,000HBAR")
+        expect(wrapper.get("#rewarded").text()).toBe("STAKED FOR REWARD 5,000,000HBAR26.32% of total")
+        expect(wrapper.get("#notRewarded").text()).toBe("STAKED FOR NO REWARD 1,000,000HBAR20% of total")
+        expect(wrapper.get("#stakingPeriod").text()).toMatch("CURRENT STAKING PERIOD 24HOURS")
 
         mock.restore()
         wrapper.unmount()
@@ -124,7 +123,8 @@ describe.skip("NodeDetails.vue", () => {
 
         const wrapper = mount(NodeDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 nodeId: node.toString()
@@ -135,11 +135,18 @@ describe.skip("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/network/stake",
+            "api/v1/contracts/0.0.3",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d316 b5ef 57b7 6daf 37e3 bebb e3b6 9e6f 67b6 69ce 1dd1 ed75 e5c6 9a69 bf75 f36d 376f 475f 7b57 1d79 a6f8 e37e 37f1 f736 f3d6 9b73 c6da f1ae 9a7d ff37 75be 5fd5 bdf7 e34e 3a75 af3c 73Copy")
+        expect(wrapper.get("#nodeCertHashValue").text()).toBe("0xd316b5ef57b76daf37e3bebbe3b69e6f67b669ce1dd1ed75e5c69a69bf75f36d376f475f7b571d79a6f8e37e37f1f736f3d69b73c6daf1ae9a7dff3775be5fd5bdf7e34e3a75af3c73Copy")
 
+        mock.resetHistory()
         node = 1
         await wrapper.setProps({
             nodeId: node.toString()
@@ -148,10 +155,14 @@ describe.skip("NodeDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/0.0.4",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Node " + node))
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.4")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
-        expect(wrapper.get("#nodeCertHashValue").text()).toBe("d31e f8d3 d75e 7367 b8f7 86fa dbb7 9ee3 d73a f5bd bde1 b7b5 71e6 9e6d c6b7 7dd7 1a7f 7ebb f3d7 bcf1 f73b 7796 f479 e7f9 e7ad 5fe7 66fc d9dd f9d7 dd5a dfd7 367d b79d eb4d bbdb aef5 ebCopy")
+        expect(wrapper.get("#nodeCertHashValue").text()).toBe("0xd31ef8d3d75e7367b8f786fadbb79ee3d73af5bdbde1b7b571e69e6dc6b77dd71a7f7ebbf3d7bcf1f73b7796f479e7f9e7ad5fe766fcd9ddf9d7dd5adfd7367db79deb4dbbdbaef5ebCopy")
 
         mock.restore()
         wrapper.unmount()
