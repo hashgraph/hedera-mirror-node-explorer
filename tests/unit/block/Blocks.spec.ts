@@ -29,6 +29,7 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import Blocks from "@/pages/Blocks.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -39,7 +40,7 @@ import BlockTable from "@/components/block/BlockTable.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("Blocks.vue", () => {
+describe("Blocks.vue", () => {
 
     it("Should display the BlockTable", async () => {
 
@@ -61,6 +62,10 @@ describe.skip("Blocks.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks",
+        ])
+
         expect(wrapper.vm.blockTableController.mounted.value).toBe(true)
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
@@ -68,7 +73,7 @@ describe.skip("Blocks.vue", () => {
 
         const table = card.findComponent(BlockTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Number Start Time No. Transactions Gas Used")
+        expect(table.get('thead').text()).toBe("NUMBER START TIME NO. TRANSACTIONS GAS USED")
         expect(table.get('tbody').text()).toBe(
             "25175998" + "6:58:31.3281 AMSep 23, 2022, UTC" + "3" + "0" +
             "25175997" + "6:58:28.2114 AMSep 23, 2022, UTC" + "5" + "0"
