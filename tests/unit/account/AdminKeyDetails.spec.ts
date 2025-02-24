@@ -32,6 +32,7 @@ import {HMSF} from "@/utils/HMSF";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
 import ComplexKeyValue from "@/components/values/ComplexKeyValue.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -68,15 +69,23 @@ describe("AdminKeyDetails.vue", () => {
         mock.onGet(matcher5).reply(200, { tokens: [] });
         const matcher6 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/nfts"
         mock.onGet(matcher6).reply(200, { nfts: [] });
+        const matcher7 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/airdrops/pending"
+        mock.onGet(matcher7).reply(200, { airdrops: [] });
 
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_PROTOBUF_KEY.account
             },
         });
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account,
+            "api/v1/network/nodes",
+        ])
 
         await flushPromises()
         // console.log(wrapper.html())
@@ -110,6 +119,12 @@ describe("AdminKeyDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account,
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account,
+        ])
 
         expect(wrapper.text()).toMatch("Admin Key for Account " + SAMPLE_ACCOUNT_PROTOBUF_KEY.account)
         const key = wrapper.findComponent(ComplexKeyValue)
@@ -160,6 +175,12 @@ describe("AdminKeyDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account,
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT.account,
+        ])
 
         expect(wrapper.text()).toMatch("Admin Key for Account " + SAMPLE_ACCOUNT.account)
         const key = wrapper.findComponent(KeyValue)
