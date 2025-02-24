@@ -42,7 +42,7 @@ export class NetworkFeeController extends GenericMetricController {
     protected async transformMetrics(metrics: EcosystemMetric[], range: ChartRange): Promise<EcosystemMetric[]> {
         const result = await super.transformMetrics(metrics, range);
         for (const m of result) {
-            m.total = Math.round(m.total / 10_000_000) // Convert to HBAR
+            m.total = Math.round(m.total / 100_000_000) // Convert to HBAR
         }
         return Promise.resolve(result)
     }
