@@ -32,6 +32,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import BlockDetails from "@/pages/BlockDetails.vue";
 import BlockTransactionTable from "@/components/block/BlockTransactionTable.vue";
 import {PathParam} from "@/utils/PathParam";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -42,7 +43,7 @@ import {PathParam} from "@/utils/PathParam";
 
 HMSF.forceUTC = true
 
-describe.skip("BlockDetails.vue", () => {
+describe("BlockDetails.vue", () => {
 
     const BLOCK = SAMPLE_BLOCKSRESPONSE.blocks[0]
     const BLOCK_NUMBER = BLOCK.number.toString()
@@ -67,7 +68,8 @@ describe.skip("BlockDetails.vue", () => {
 
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: BLOCK_NUMBER
@@ -78,13 +80,20 @@ describe.skip("BlockDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks/" + BLOCK_NUMBER,
+            "api/v1/transactions",
+            "api/v1/network/nodes",
+            "api/v1/tokens/" + token.token_id,
+            "api/v1/blocks",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
-            "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
-            "c6b4 0461 0129 4896 ff88 a86bCopySHA384")
+            "0xe9630d7d8cc86d0e0d3de5316995bbdf9f2a584524cf18da233abdcff82df97da0a0ec38c6b4046101294896ff88a86bCopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -92,7 +101,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
@@ -120,7 +129,8 @@ describe.skip("BlockDetails.vue", () => {
 
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -131,13 +141,20 @@ describe.skip("BlockDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks/" + NORMALIZED_BLOCK_HASH,
+            "api/v1/transactions",
+            "api/v1/network/nodes",
+            "api/v1/tokens/" + token.token_id,
+            "api/v1/blocks",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
-            "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
-            "c6b4 0461 0129 4896 ff88 a86bCopySHA384")
+            "0xe9630d7d8cc86d0e0d3de5316995bbdf9f2a584524cf18da233abdcff82df97da0a0ec38c6b4046101294896ff88a86bCopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -145,7 +162,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
@@ -174,7 +191,8 @@ describe.skip("BlockDetails.vue", () => {
 
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -185,13 +203,20 @@ describe.skip("BlockDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks/" + normalizedBlockHash,
+            "api/v1/transactions",
+            "api/v1/network/nodes",
+            "api/v1/tokens/" + token.token_id,
+            "api/v1/blocks",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Block " + BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("3")
         expect(wrapper.get("#blockHashValue").text()).toBe(
-            "e963 0d7d 8cc8 6d0e 0d3d e531 6995 bbdf 9f2a 5845 24cf 18da 233a bdcf f82d f97d a0a0 ec38 " +
-            "c6b4 0461 0129 4896 ff88 a86bCopySHA384")
+            "0xe9630d7d8cc86d0e0d3de5316995bbdf9f2a584524cf18da233abdcff82df97da0a0ec38c6b4046101294896ff88a86bCopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:31.3281 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -199,10 +224,12 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         let table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n" + "\n" +
             "123423\n" + "\n" +
             "0.0.296939115:12:31.6676 AMFeb 28, 2022, UTC")
+
+        mock.resetHistory()
 
         // Change Block Number
         const NEW_BLOCK = SAMPLE_BLOCKSRESPONSE.blocks[1]
@@ -221,13 +248,24 @@ describe.skip("BlockDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks/" + normalizedBlockHash,
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[1].entity_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id,
+            "api/v1/contracts/results/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[1].transaction_id,
+            "api/v1/contracts/results/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id,
+            "api/v1/accounts/",
+            "api/v1/blocks",
+            "api/v1/blocks",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Block " + NEW_BLOCK_NUMBER))
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
         expect(wrapper.get("#countValue").text()).toBe("5")
         expect(wrapper.get("#blockHashValue").text()).toBe(
-            "7ece 042f a936 9ac7 d6a4 07ff d4d4 b76b 284b 5407 7abf 2f52 12e9 69a9 fcbe 3467 6f9e aae9 " +
-            "dc71 8e8c a998 7a48 f92a a7c6CopySHA384")
+            "0x7ece042fa9369ac7d6a407ffd4d4b76b284b54077abf2f5212e969a9fcbe34676f9eaae9dc718e8ca9987a48f92aa7c6CopySHA384")
         expect(wrapper.get("#fromTimestampValue").text()).toBe("6:58:28.2114 AMSep 23, 2022, UTC")
         expect(wrapper.get("#toTimestampValue").text()).toBe("6:58:29.2397 AMSep 23, 2022, UTC")
         expect(wrapper.get("#gasUsedValue").text()).toBe("0")
@@ -235,7 +273,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe(
             "0.0.950@1646665756.235554077" +
             "CONTRACT CALL" +
@@ -254,10 +292,12 @@ describe.skip("BlockDetails.vue", () => {
     it("Should detect invalid block number", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
         const INVALID_BLOCK_NUMBER = "-42"
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: INVALID_BLOCK_NUMBER
@@ -267,6 +307,8 @@ describe.skip("BlockDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([])
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Invalid block number or hash: " + INVALID_BLOCK_NUMBER)
@@ -280,7 +322,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("")
 
         wrapper.unmount()
@@ -290,10 +332,12 @@ describe.skip("BlockDetails.vue", () => {
     it("Should detect invalid block hash", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios)
         const INVALID_BLOCK_HASH = "0xABCDEF"
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: INVALID_BLOCK_HASH
@@ -303,6 +347,8 @@ describe.skip("BlockDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([])
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Invalid block number or hash: " + INVALID_BLOCK_HASH)
@@ -316,7 +362,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("")
 
         wrapper.unmount()
@@ -332,7 +378,8 @@ describe.skip("BlockDetails.vue", () => {
 
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: BLOCK_NUMBER
@@ -342,6 +389,10 @@ describe.skip("BlockDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks/" + BLOCK_NUMBER,
+        ])
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Block with number " + BLOCK_NUMBER + " was not found")
@@ -355,7 +406,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("")
 
         mock.restore()
@@ -372,7 +423,8 @@ describe.skip("BlockDetails.vue", () => {
 
         const wrapper = mount(BlockDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -382,6 +434,10 @@ describe.skip("BlockDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/blocks/" + NORMALIZED_BLOCK_HASH,
+        ])
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.text()).toBe("Block with hash " + NORMALIZED_BLOCK_HASH + " was not found")
@@ -395,7 +451,7 @@ describe.skip("BlockDetails.vue", () => {
         expect(wrapper.get("#blockTransactions").text()).toMatch(RegExp("^Block Transactions"))
         const table = wrapper.findComponent(BlockTransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time & Date")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe("")
 
         mock.restore()
