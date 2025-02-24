@@ -1,5 +1,6 @@
 import {beforeEach, vi} from 'vitest'
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import * as ResizeObserverModule from 'resize-observer-polyfill';
 
 beforeEach(() => {
     CacheUtils.clearAll()
@@ -19,3 +20,5 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 });
 
+
+global["ResizeObserver"] = ResizeObserverModule.default
