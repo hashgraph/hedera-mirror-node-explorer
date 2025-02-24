@@ -27,7 +27,6 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "../../../src/utils/HMSF";
 import router from "../../../src/router";
 import NftDetails from "../../../src/pages/NftDetails.vue";
-import {networkConfigKey} from "../../../src/AppKeys";
 
 /*
     Bookmarks
