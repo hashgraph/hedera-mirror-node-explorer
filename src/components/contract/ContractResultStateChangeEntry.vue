@@ -51,7 +51,7 @@
 
     <div></div>
     <div>
-      <HexaDumpValue :byte-string="change?.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
+      <HexaDumpValue :byte-string="change?.changes.slot" :word-wrap-small="4" :word-wrap-medium="8"/>
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.slotDecimal ?? 'not available') }}
       </div>
