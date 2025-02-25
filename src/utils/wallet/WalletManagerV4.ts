@@ -330,7 +330,7 @@ export class WalletManagerV4 {
             try {
                 this.walletConnectAgent = await WalletConnectAgent.makeInstance(walletConnectID)
             } catch(error) {
-                this.traceError(error, "WalletManagerV4.initWalletConnect()")
+                // this.traceError(error, "WalletManagerV4.initWalletConnect()")
                 this.walletConnectAgent = null
             }
         } else {
