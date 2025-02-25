@@ -64,6 +64,7 @@ import {TransactionID} from "@/utils/TransactionID";
 import Oruga from "@oruga-ui/oruga-next";
 import ContractResult from "@/components/contract/ContractResult.vue";
 import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -74,7 +75,7 @@ import {base64DecToArr, byteToHex} from "@/utils/B64Utils";
 
 HMSF.forceUTC = true
 
-describe.skip("TransactionDetails.vue", () => {
+describe("TransactionDetails.vue", () => {
 
     it("Should display transaction details with token transfers and hbar transfers", async () => {
 
@@ -104,7 +105,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
@@ -115,11 +117,30 @@ describe.skip("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/blocks",
+            "api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[2].account,
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[0].account,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[1].account,
+            "api/v1/tokens/" + SAMPLE_TRANSACTION.token_transfers[0].token_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.token_transfers[1].account,
+        ])
+
+
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC
-        expect(wrapper.get("#transactionHashValue").text()).toBe("a012 9612 32ed 7d28 4283 6e95 f7e9 c435 6fdf e2de 0819 9091 701a 969c 1d1f d936 71d3 078e e83b 28fb 460a 88b4 cbd8 ecd2Copy")
+        expect(wrapper.get("#transactionHashValue").text()).toBe("0xa012961232ed7d2842836e95f7e9c4356fdfe2de08199091701a969c1d1fd93671d3078ee83b28fb460a88b4cbd8ecd2Copy")
         expect(wrapper.get("#blockNumberValue").text()).toBe("25175998")
         expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065ℏ$0.00116")
         expect(wrapper.get("#maxFeeName").text()).toBe("Max Fee")
@@ -137,12 +158,12 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
 
         expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe(
-            "Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.29624024-0.00470065ℏ-$0.00116\n\n" +
+            "Hbar Transfers ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.29624024-0.00470065ℏ-$0.00116\n\n" +
             "0.0.40.00022028ℏ$0.00005Node fee (Hedera)\n\n" +
             "0.0.980.00448037ℏ$0.00110Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
-            "Token TransfersAccountToken AmountAccountToken Amount0.0.29624024-123423\n\n" +
+            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.29624024-123423\n\n" +
             "0.0.29693911123423Transfer")
 
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
@@ -209,7 +230,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: timestamp,
@@ -219,6 +241,37 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id,
+            "api/v1/transactions/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id,
+            "api/v1/contracts/results/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transaction_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transfers[0].account,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transfers[2].account,
+            "api/v1/contracts/" + SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].transfers[1].account,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/1646665766.574738471",
+            "api/v1/accounts/",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x18cbafe5",
+            "api/v1/contracts/0.0.846260", // SAMPLE_CONTRACT_RESULT_DETAILS.from as entity id
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/contracts/results/" + SAMPLE_CONTRACT_RESULT_DETAILS.hash + "/actions?limit=100",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/contracts/0x0000000000000000000000000000000000108a83",
+            "api/v1/blocks",
+            "api/v1/tokens/0.0.846260", // SAMPLE_CONTRACT_RESULT_DETAILS.from as entity id
+            "api/v1/accounts/0x0000000000000000000000000000000000108a83",
+            "api/v1/tokens/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/tokens/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].contract_id,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
@@ -233,7 +286,7 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#evm-hashValue").text()).toBe("c43d b9ea cf72 c916 29ac 0308 8535 dd9a e410 59a2 c1ee fce3 a528 e04e 7e90 8d2dCopy")
+        expect(wrapper.get("#evm-hashValue").text()).toBe("0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2dCopy")
         expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
         expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
         expect(wrapper.find("#typeValue").exists()).toBe(false)
@@ -301,7 +354,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: transactionHash
@@ -312,6 +366,38 @@ describe.skip("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions/ad6fb2ddb8c33ead48ddded679ec8d6d13ae7ab87da06f3172d8620a8748e50d713075c89e7dea39447b4cb8fa2cd428",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.entity_id,
+            "api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id,
+            "api/v1/contracts/results/" + SAMPLE_TRANSACTION.transaction_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[0].account,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[2].account,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[1].account,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/1646665766.574738471",
+            "api/v1/accounts/",
+            "api/v1/contracts/0.0.846260", // SAMPLE_CONTRACT_RESULT_DETAILS.from as entity id
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/contracts/results/0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d/actions?limit=100",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/contracts/0x0000000000000000000000000000000000108a83",
+            "api/v1/blocks",
+            "api/v1/tokens/0.0.846260", // SAMPLE_CONTRACT_RESULT_DETAILS.from as entity id
+            "api/v1/accounts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/accounts/0x0000000000000000000000000000000000108a83",
+            "api/v1/tokens/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/tokens/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].contract_id,
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
         expect(wrapper.get("#entityId").text()).toBe("Contract ID" + contractId)
@@ -319,7 +405,7 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#evm-hashValue").text()).toBe("c43d b9ea cf72 c916 29ac 0308 8535 dd9a e410 59a2 c1ee fce3 a528 e04e 7e90 8d2dCopy")
+        expect(wrapper.get("#evm-hashValue").text()).toBe("0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2dCopy")
         expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
         expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
         expect(wrapper.find("#typeValue").exists()).toBe(false)
@@ -359,7 +445,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp
@@ -367,6 +454,23 @@ describe.skip("TransactionDetails.vue", () => {
         });
 
         await flushPromises()
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/blocks",
+            "api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[2].account,
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[0].account,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[1].account,
+            "api/v1/tokens/" + SAMPLE_TRANSACTION.token_transfers[0].token_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.token_transfers[1].account,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
@@ -392,11 +496,27 @@ describe.skip("TransactionDetails.vue", () => {
         const matcher3 = "/api/v1/contracts/" + entityId
         mock.onGet(matcher3).reply(200, SAMPLE_CONTRACT)
 
+        mock.resetHistory()
+
         await wrapper.setProps({
             transactionLoc: transaction.consensus_timestamp
         })
         await flushPromises()
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/transactions",
+            "api/v1/contracts/" + transaction.entity_id,
+            "api/v1/transactions/" + transaction.transaction_id,
+            "api/v1/contracts/results/" + transaction.transaction_id,
+            "api/v1/contracts/" + transaction.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + transaction.transfers[2].account,
+            "api/v1/accounts/",
+            "api/v1/blocks",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
@@ -433,7 +553,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: SAMPLE_FAILED_TRANSACTION.consensus_timestamp
@@ -442,6 +563,24 @@ describe.skip("TransactionDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + SAMPLE_FAILED_TRANSACTION.entity_id,
+            "api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id,
+            "api/v1/contracts/" + SAMPLE_FAILED_TRANSACTION.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_FAILED_TRANSACTION.transfers[2].account,
+            "api/v1/contracts/" + SAMPLE_FAILED_TRANSACTION.transfers[1].account,
+            "api/v1/contracts/results/" + SAMPLE_FAILED_TRANSACTION.transaction_id,
+            "api/v1/accounts/",
+            "api/v1/blocks",
+            "api/v1/tokens/" + SAMPLE_FAILED_TRANSACTION.entity_id,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_FAILED_TRANSACTION.transaction_id)))
 
@@ -465,7 +604,8 @@ describe.skip("TransactionDetails.vue", () => {
         const invalidTimestamp = "1600000000.000000000"
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: invalidTimestamp
@@ -474,6 +614,12 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+        ])
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Transaction with timestamp " + invalidTimestamp + " was not found")
 
@@ -502,7 +648,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp
@@ -511,6 +658,21 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/0.0.359",
+            "api/v1/transactions/" + transaction.transaction_id,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/0.0.29511696",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/results/" + transaction.transaction_id,
+            "api/v1/accounts/",
+            "api/v1/blocks",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
@@ -545,7 +707,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: SCHEDULING.consensus_timestamp
@@ -555,6 +718,20 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/transactions/" + SCHEDULING.transaction_id,
+            "api/v1/blocks",
+            "api/v1/contracts/" + SCHEDULING.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SCHEDULING.transfers[2].account,
+            "api/v1/contracts/" + SCHEDULING.transfers[1].account,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SCHEDULING.transaction_id)))
 
@@ -593,7 +770,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: SCHEDULED.consensus_timestamp
@@ -603,6 +781,22 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/transactions/" + SCHEDULING.transaction_id,
+            "api/v1/blocks",
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SCHEDULING.transfers[2].account,
+            "api/v1/tokens/" + SCHEDULED.entity_id,
+            "api/v1/contracts/" + SCHEDULED.transfers[1].account,
+            "api/v1/contracts/" + SCHEDULING.transfers[1].account,
+            "api/v1/contracts/" + SCHEDULED.token_transfers[0].account,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SCHEDULED.transaction_id)))
 
@@ -642,7 +836,8 @@ describe.skip("TransactionDetails.vue", () => {
 
             const wrapper = mount(TransactionDetails, {
                 global: {
-                    plugins: [router, Oruga]
+                    plugins: [router, Oruga],
+                    provide: { "isMediumScreen": false }
                 },
                 props: {
                     transactionLoc: CHILD.consensus_timestamp,
@@ -652,6 +847,19 @@ describe.skip("TransactionDetails.vue", () => {
             await flushPromises()
             // console.log(wrapper.html())
             // console.log(wrapper.text())
+
+            expect(fetchGetURLs(mock)).toStrictEqual([
+                "api/v1/network/nodes",
+                "api/v1/transactions",
+                "api/v1/topics/messages/",
+                "api/v1/transactions/" + PARENT.transaction_id,
+                "api/v1/blocks",
+                "api/v1/contracts/results",
+                "api/v1/network/fees",
+                "api/v1/contracts/" + SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0].transfers[1].account,
+                "api/v1/network/exchangerate",
+                "api/v1/tokens/" + CHILD.entity_id,
+            ])
 
             expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(CHILD.transaction_id)))
 
@@ -691,7 +899,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: PARENT.consensus_timestamp
@@ -701,6 +910,25 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + PARENT.entity_id,
+            "api/v1/transactions/" + PARENT.transaction_id,
+            "api/v1/contracts/" + PARENT.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + PARENT.transfers[1].account,
+            "api/v1/network/exchangerate",
+            "api/v1/tokens/" + CHILD1.entity_id,
+            "api/v1/contracts/" + PARENT.transfers[0].account,
+            "api/v1/contracts/results/" + SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0].transaction_id,
+            "api/v1/accounts/",
+            "api/v1/blocks",
+            "api/v1/tokens/" + PARENT.entity_id,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(PARENT.transaction_id)))
 
@@ -747,7 +975,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: NONCE_1.consensus_timestamp,
@@ -757,6 +986,18 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/transactions/" + SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[0].transaction_id,
+            "api/v1/blocks",
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[0].transfers[2].account,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(NONCE_1.transaction_id)))
         expect(wrapper.find("#parentTransaction").exists()).toBe(false)
@@ -801,7 +1042,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp,
@@ -812,11 +1054,28 @@ describe.skip("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/transactions/" + SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.transaction_id,
+            "api/v1/blocks",
+            "api/v1/contracts/" + SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.transfers[2].account,
+            "api/v1/contracts/" + SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.transfers[1].account,
+            "api/v1/accounts/" + SAMPLE_TOKEN_ASSOCIATE_TRANSACTION.transfers[2].account + "/tokens?limit=100",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN.token_id,
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id,
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("TOKEN ASSOCIATE")
         expect(wrapper.get("#consensusAtValue").text()).toBe("6:51:52.1505 PMDec 21, 2022, UTC") // UTC because of HMSF.forceUTC
-        expect(wrapper.get("#transactionHashValue").text()).toBe("4786 0799 99df 169a 3834 9249 d3c9 a548 9a83 f1c7 c51b 6b1e deb8 1347 a496 d931 83e2 4a43 ad03 372e bc50 1528 a603 2debCopy")
+        expect(wrapper.get("#transactionHashValue").text()).toBe("0x4786079999df169a38349249d3c9a5489a83f1c7c51b6b1edeb81347a496d93183e24a43ad03372ebc501528a6032debCopy")
 
         expect(wrapper.get("#associatedTokenIdValue").text()).toBe("0.0.34332104HSuite0.0.49292859TokenA7")
         expect(wrapper.get("#entityIdValue").text()).toBe("0.0.642949")
@@ -825,7 +1084,7 @@ describe.skip("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(TokenTransferGraph).exists()).toBe(true)
         expect(wrapper.findComponent(NftTransferGraph).exists()).toBe(true)
 
-        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Hbar TransfersAccountHbar AmountAccountHbar Amount0.0.642949-1.15905210ℏ-$0.28517\n\n" +
+        expect(wrapper.findComponent(HbarTransferGraphF).text()).toBe("Hbar Transfers ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.642949-1.15905210ℏ-$0.28517\n\n" +
             "0.0.30.05805847ℏ$0.01428Node fee (Hedera)\n\n" +
             "0.0.981.10099363ℏ$0.27088Hedera fee collection account")
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe("")
@@ -864,12 +1123,19 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: timestamp
             },
         });
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+        ])
 
         await flushPromises()
         // console.log(wrapper.html())
@@ -912,7 +1178,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: timestamp
@@ -922,6 +1189,25 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].entity_id,
+            "api/v1/transactions/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].transaction_id,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].transfers[2].account,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].transfers[4].account,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].transfers[1].account,
+            "api/v1/contracts/results/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].transaction_id,
+            "api/v1/accounts/",
+            "api/v1/accounts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].entity_id,
+            "api/v1/blocks",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
@@ -958,7 +1244,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: timestamp
@@ -968,6 +1255,24 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].entity_id,
+            "api/v1/transactions/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].transaction_id,
+            "api/v1/contracts/results/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].transaction_id,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].transfers[2].account,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].transfers[3].account,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].transfers[1].account,
+            "api/v1/accounts/",
+            "api/v1/blocks",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
@@ -1079,7 +1384,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: timestamp
@@ -1089,6 +1395,27 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].entity_id,
+            "api/v1/transactions/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].transaction_id,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].transfers[2].account,
+            "api/v1/network/exchangerate",
+            "api/v1/tokens/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].transfers[3].account,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].transfers[3].account,
+            "api/v1/contracts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].transfers[1].account,
+            "api/v1/contracts/results/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].transaction_id,
+            "api/v1/accounts/",
+            "api/v1/accounts/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].entity_id,
+            "api/v1/blocks",
+            "api/v1/tokens/" + SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN.transactions[0].entity_id,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transactionId)))
         expect(wrapper.text()).toMatch(RegExp("ETHEREUM TRANSACTION"))
@@ -1138,7 +1465,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp,
@@ -1148,6 +1476,19 @@ describe.skip("TransactionDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/transactions/" + SAMPLE_FILE_UPDATE_TRANSACTION.transaction_id,
+            "api/v1/blocks",
+            "api/v1/contracts/" + SAMPLE_FILE_UPDATE_TRANSACTION.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/0.0.56",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
 
@@ -1187,7 +1528,8 @@ describe.skip("TransactionDetails.vue", () => {
 
         const wrapper = mount(TransactionDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
@@ -1198,7 +1540,24 @@ describe.skip("TransactionDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/transactions",
+            "api/v1/topics/messages/",
+            "api/v1/blocks",
+            "api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.node,
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.token_transfers[0].account,
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[0].account,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.transfers[1].account,
+            "api/v1/tokens/" + SAMPLE_TRANSACTION.token_transfers[0].token_id,
+            "api/v1/contracts/" + SAMPLE_TRANSACTION.token_transfers[1].account,
+        ])
+
+            expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC

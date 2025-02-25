@@ -123,7 +123,7 @@ describe("NftCell.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("tokenId, serialNumber and property", async () => {
+    test("tokenId, serialNumber and property", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -134,8 +134,8 @@ describe("NftCell.vue", () => {
         const nftId = nft.token_id
         const serial = nft.serial_number
         const name = IPFS_METADATA_CONTENT.name
-        const description = IPFS_METADATA_CONTENT.description
-        const creator = "@Buckyoto + @JuicyUnlimited for @KarateC…"
+        const description = "This is a collection about $KARATE. $KARATE is not…"
+        const creator = "@Buckyoto + @JuicyUn…"
 
         const matcher1 = "/api/v1/tokens/" + nftId + "/nfts/" + serial
         mock.onGet(matcher1).reply(200, nft);
@@ -188,7 +188,7 @@ describe("NftCell.vue", () => {
         const image = wrapper.find('img')
         expect(image.exists()).toBe(true)
         expect(image.attributes('src')).toBe(IPFS_IMAGE_URL)
-        expect(image.attributes('class')).toContain('is-invisible')
+        expect(image.attributes('class')).toContain('invisible-element')
         expect(wrapper.find('video').exists()).toBe(false)
 
         wrapper.unmount()

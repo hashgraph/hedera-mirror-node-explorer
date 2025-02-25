@@ -38,6 +38,7 @@ import TokensSection from "../../../src/components/token/TokensSection.vue";
 import Tabs from "../../../src/components/Tabs.vue";
 import {HMSF} from "../../../src/utils/HMSF";
 import router from "../../../src/router";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -48,7 +49,7 @@ import router from "../../../src/router";
 
 HMSF.forceUTC = true
 
-describe.skip("TokensSection.vue", () => {
+describe("TokensSection.vue", () => {
 
     const accountId = SAMPLE_ACCOUNT.account
     const SAMPLE_FUNGIBLE = {
@@ -101,6 +102,72 @@ describe.skip("TokensSection.vue", () => {
     })
 
     afterAll(() => {
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN.token_id + "&limit=1",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN_2.token_id + "&limit=1",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id,
+
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN.token_id + "&limit=1",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN_2.token_id + "&limit=1",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id,
+
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[1].token_id + "/nfts/2",
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[2].token_id,
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[2].token_id + "/nfts/1",
+
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[1].token_id + "/nfts/2",
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[2].token_id,
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[2].token_id + "/nfts/1",
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id + "/nfts/2",
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id,
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id + "/nfts/1",
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id + "/nfts/342",
+
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id + "/nfts/2",
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id,
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id + "/nfts/1",
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id + "/nfts/342",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN.token_id + "&limit=1",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN_2.token_id + "&limit=1",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id,
+
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=0.0.34332104&limit=1",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/tokens?token.id=0.0.49292859&limit=1",
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id,
+
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[1].token_id + "/nfts/2",
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[1].token_id,
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[2].token_id + "/nfts/1",
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[0].token_id,
+            "api/v1/tokens/" + SAMPLE_PENDING_AIRDROPS.airdrops[3].token_id,
+
+        ])
+
         mock.restore()
     })
 
@@ -185,7 +252,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
 
         const nftsTable = tokensSection.get("#nftsTable")
-        expect(nftsTable.find('thead').text()).toBe("Image Token ID Serial # Collection Name Symbol NFT Name Creator")
+        expect(nftsTable.find('thead').text()).toBe("IMAGE TOKEN ID SERIAL # COLLECTION NAME SYMBOL NFT NAME CREATOR")
         expect(nftsTable.find('tbody').text()).toBe(
             "NFT0.0.7483832Ħ Frens KingdomĦFRENSKINGD…" +
             "NFT0.0.7483831Ħ Frens KingdomĦFRENSKINGD…" +
@@ -216,7 +283,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
 
         const associationsTable = tokensSection.get("#fungibleTable")
-        expect(associationsTable.find('thead').text()).toBe("Token ID Name Symbol Balance")
+        expect(associationsTable.find('thead').text()).toBe("TOKEN ID NAME SYMBOL BALANCE")
         expect(associationsTable.find('tbody').text()).toBe(
             "0.0.34332104" + "HSUITE" + "HSuite" + "234,264.7909" +
             "0.0.49292859" + "Token SymbolA7" + "TokenA7" + "0.31669471"
@@ -226,7 +293,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
     });
 
-    test.skip("Content of Pending Airdrops tab", async () => {
+    test("Content of Pending Airdrops tab", async () => {
 
         const wrapper = mount(TokensSection, {
             global: {
@@ -252,7 +319,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
 
         const pendingNfts = table.get("#pendingNftsTable")
-        expect(pendingNfts.find('thead').text()).toBe("Image Token ID Serial # Collection Name Symbol Sender Airdrop Time")
+        expect(pendingNfts.find('thead').text()).toBe("IMAGE TOKEN ID SERIAL # COLLECTION NAME SYMBOL SENDER AIRDROP TIME")
         expect(pendingNfts.find('tbody').text()).toBe(
             "NFT" + "0.0.4901646" + "2" + "Token SymbolA7" + "TokenA7" + "0.0.1437" + "9:29:10.6225 AMOct 3, 2024, UTC" +
             "NFT" + "0.0.4901646" + "1" + "Token SymbolA7" + "TokenA7" + "0.0.1437" + "9:28:57.7817 AMOct 3, 2024, UTC"
@@ -263,7 +330,7 @@ describe.skip("TokensSection.vue", () => {
         await flushPromises()
 
         const pendingFungible = table.get("#pendingFungibleTable")
-        expect(pendingFungible.find('thead').text()).toBe("Token ID Name Symbol Amount Sender  Airdrop Time")
+        expect(pendingFungible.find('thead').text()).toBe("TOKEN ID NAME SYMBOL AMOUNT SENDER  AIRDROP TIME")
         expect(pendingFungible.find('tbody').text()).toBe(
             "0.0.4943664" + "Ħ Frens Kingdom" + "ĦFRENSKINGD…" + "84" + "0.0.1437" + "2:21:33.5553 PMOct 10, 2024, UTC" +
             "0.0.2255333" + "Ħ Frens Kingdom Dude" + "ĦFRENSKINGD…4,200" + "0.0.1437" + "2:27:26.2113 PMOct 10, 2024, UTC"

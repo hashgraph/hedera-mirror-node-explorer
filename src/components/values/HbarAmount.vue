@@ -78,10 +78,6 @@ const props = defineProps({
     type: Boolean,
     default: false
   },
-  smallExtra: {
-    type: Boolean,
-    default: true
-  },
   hideZero: {
     type: Boolean,
     default: false

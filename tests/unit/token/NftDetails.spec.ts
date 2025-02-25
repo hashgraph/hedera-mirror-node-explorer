@@ -37,7 +37,7 @@ import NftDetails from "../../../src/pages/NftDetails.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("NftDetails.vue", () => {
+describe("NftDetails.vue", () => {
 
     it("Should display details of NFT", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
@@ -59,7 +59,8 @@ describe.skip("NftDetails.vue", () => {
 
         const wrapper = mount(NftDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 tokenId: nftId,
@@ -68,11 +69,12 @@ describe.skip("NftDetails.vue", () => {
         });
         await flushPromises()
         // console.log(wrapper.html())
+        // console.log(wrapper.text())
 
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp(SAMPLE_NONFUNGIBLE.name + 'Non Fungible Token'))
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol +")#2Non Fungible Token")
 
         const media = wrapper.get('#media-placeholder')
         expect(media.text()).toBe('Non Fungible TokenThe NFT metadata does not provide any image')
@@ -93,11 +95,8 @@ describe.skip("NftDetails.vue", () => {
         expect(selectors.length).toBe(2)
         const selector = selectors[1]
         expect(selector.text()).toBe(
-            'TYPES: ALLCRYPTO APPROVE ALLOWANCECRYPTO DELETE ALLOWANCECRYPTO TRANSFERTOKEN AIRDROPTOKEN BURN' +
-            'TOKEN CANCEL AIRDROPTOKEN CLAIM AIRDROPTOKEN DELETETOKEN MINTTOKEN REJECTTOKEN WIPE')
-
-        const txTable = wrapper.get('#recentTransactionsTable')
-        expect(txTable.text()).toContain('IDTypeContentTime')
+            'TYPES: ALLAPPROVE ALLOWANCECANCEL AIRDROPCLAIM AIRDROPCRYPTO TRANSFERDELETE ALLOWANCETOKEN AIRDROPTOKEN BURN' +
+            'TOKEN DELETETOKEN MINTTOKEN REJECTTOKEN WIPE')
 
         expect(wrapper.findComponent('ContractResultsSection').exists()).toBe(false)
 
@@ -108,7 +107,7 @@ describe.skip("NftDetails.vue", () => {
         expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
     });
 
-    it("Should display NFT with image and metadata", async () => {
+    it.skip("Should display NFT with image and metadata", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 

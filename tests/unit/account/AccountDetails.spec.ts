@@ -33,6 +33,7 @@ import {
     SAMPLE_ACCOUNT_HBAR_BALANCE,
     SAMPLE_ACCOUNT_STAKING_ACCOUNT,
     SAMPLE_ACCOUNT_STAKING_NODE,
+    SAMPLE_FAILED_TRANSACTION,
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
@@ -51,6 +52,7 @@ import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
 import {NetworkConfig} from "../../../src/config/NetworkConfig";
 import {networkConfigKey} from "../../../src/AppKeys";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -61,7 +63,7 @@ import {networkConfigKey} from "../../../src/AppKeys";
 
 HMSF.forceUTC = true
 
-describe.skip("AccountDetails.vue", () => {
+describe("AccountDetails.vue", () => {
 
     it("Should display account details", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
@@ -109,9 +111,13 @@ describe.skip("AccountDetails.vue", () => {
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
         mock.onGet(matcher13).reply(200, { nfts: [] });
 
+        const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, { airdrops: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT.account ?? undefined
@@ -121,12 +127,41 @@ describe.skip("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch("AccountAccount ID:" + SAMPLE_ACCOUNT.account)
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account,
+            "api/v1/network/nodes",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT.account,
+            "api/v1/transactions",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT.evm_address,
+            "api/v1/tokens/" + SAMPLE_ACCOUNT.account,
+            "api/v1/network/exchangerate",
+            "api/v1/blocks",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
+        ])
+
+        expect(wrapper.text()).toMatch("Account  Account ID " + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
         expect(wrapper.get("#keyValue").text()).toBe(
-            "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
-            "Copy" +
-            "ED25519")
+            "0xaa2f7b3e759f4531ec2e7941afa449e6a6e610efb52adae89e9cd8e9d40ddcbfCopyED25519")
 
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
@@ -137,7 +172,7 @@ describe.skip("AccountDetails.vue", () => {
         expect(wrapper.get("#receiverSigRequiredValue").text()).toBe("false")
 
         expect(wrapper.get("#evmAddress").text()).toBe(
-            "EVM Address:0x00000000000000000000000000000000000b2607Copy")
+            "EVM Address 0x00000000000000000000000000000000000b2607Copy")
         expect(wrapper.get("#ethereumNonceValue").text()).toBe("0")
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
@@ -146,15 +181,14 @@ describe.skip("AccountDetails.vue", () => {
         const select = wrapper.findComponent(TransactionFilterSelect)
         expect(select.exists()).toBe(true)
         expect(select.text()).toBe(
-            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE HASHCRYPTO " +
-            "APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCE" +
-            "CRYPTO DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE APPEND" +
-            "FILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGE" +
-            "HCS UPDATE TOPICNODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATE" +
-            "SCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN AIRDROPTOKEN ASSOCIATE" +
-            "TOKEN BURNTOKEN CANCEL AIRDROPTOKEN CLAIM AIRDROPTOKEN CREATETOKEN DELETETOKEN DISSOCIATE" +
-            "TOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSE" +
-            "TOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN UPDATETOKEN UPDATE NFTSTOKEN WIPEUNCHECKED SUBMIT")
+            "TYPES: ALLADD LIVE HASHAPPROVE ALLOWANCECANCEL AIRDROPCLAIM AIRDROPCONTRACT CALLCONTRACT " +
+            "CREATECONTRACT DELETECONTRACT UPDATECREATE ACCOUNTCREATE TOPICCRYPTO TRANSFERDELETE ACCOUNT" +
+            "DELETE ALLOWANCEDELETE LIVE HASHDELETE TOPICETHEREUM TRANSACTIONFILE APPENDFILE CREATEFILE DELETEFILE " +
+            "UPDATEFREEZENODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE " +
+            "CREATESCHEDULE DELETESCHEDULE SIGNSUBMIT MESSAGESYSTEM DELETESYSTEM UNDELETETOKEN AIRDROP" +
+            "TOKEN ASSOCIATETOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATE" +
+            "TOKEN FREEZETOKEN KYC GRANTTOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN REJECTTOKEN UNFREEZE" +
+            "TOKEN UNPAUSETOKEN UPDATETOKEN WIPEUNCHECKED SUBMITUPDATE ACCOUNTUPDATE NFTSUPDATE TOPIC")
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
@@ -206,9 +240,13 @@ describe.skip("AccountDetails.vue", () => {
         let matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
         mock.onGet(matcher13).reply(200, { nfts: [] });
 
+        let matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, { airdrops: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT.account ?? undefined
@@ -218,11 +256,40 @@ describe.skip("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch("AccountAccount ID:" + SAMPLE_ACCOUNT.account)
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account,
+            "api/v1/network/nodes",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT.account,
+            "api/v1/transactions",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT.evm_address,
+            "api/v1/tokens/" + SAMPLE_ACCOUNT.account,
+            "api/v1/network/exchangerate",
+            "api/v1/blocks",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
+        ])
+
+        expect(wrapper.text()).toMatch("Account  Account ID " + SAMPLE_ACCOUNT.account)
         expect(wrapper.get("#keyValue").text()).toBe(
-            "aa2f 7b3e 759f 4531 ec2e 7941 afa4 49e6 a6e6 10ef b52a dae8 9e9c d8e9 d40d dcbf" +
-            "Copy" +
-            "ED25519")
+            "0xaa2f7b3e759f4531ec2e7941afa449e6a6e610efb52adae89e9cd8e9d40ddcbfCopyED25519")
 
         const account2 = SAMPLE_ACCOUNT_DUDE
         matcher1 = "/api/v1/accounts/" + account2.account
@@ -247,6 +314,11 @@ describe.skip("AccountDetails.vue", () => {
         matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts"
         mock.onGet(matcher13).reply(200, { nfts: [] });
 
+        matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, { airdrops: [] });
+
+        mock.resetHistory()
+
         await wrapper.setProps({
             accountId: SAMPLE_ACCOUNT_DUDE.account ?? undefined
         })
@@ -254,11 +326,35 @@ describe.skip("AccountDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch("AccountAccount ID:" + SAMPLE_ACCOUNT_DUDE.account)
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT_DUDE.account,
+            "api/v1/contracts/0x00000000000000000000000000000000000b2608",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/nfts",
+            "api/v1/tokens/" + SAMPLE_ACCOUNT_DUDE.account,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts",
+            "api/v1/transactions",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/allowances/nfts",
+        ])
+
+        expect(wrapper.text()).toMatch("Account  Account ID " + SAMPLE_ACCOUNT_DUDE.account)
         expect(wrapper.get("#keyValue").text()).toBe(
-            "38f1 ea46 0e95 d97e ea13 aefa c760 eaf9 9015 4b80 a360 8ab0 1d4a 2649 44d6 8746" +
-            "Copy" +
-            "ED25519")
+            "0x38f1ea460e95d97eea13aefac760eaf990154b80a3608ab01d4a264944d68746CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Account Dude Memo in clear")
         expect(wrapper.find("#aliasValue").exists()).toBe(false)
         expect(wrapper.get("#expiresAtValue").text()).toBe("3:33:21.4109 AMApr 11, 2022, UTC")
@@ -277,10 +373,13 @@ describe.skip("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+
         const invalidAccountId = "0.0.0.1000"
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 accountId: invalidAccountId
@@ -289,6 +388,10 @@ describe.skip("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+        ])
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid account ID, address or alias: " + invalidAccountId)
 
@@ -338,9 +441,13 @@ describe.skip("AccountDetails.vue", () => {
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts"
         mock.onGet(matcher13).reply(200, { nfts: [] });
 
+        const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, { airdrops: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 accountId: deletedAccount.account ?? undefined
@@ -350,7 +457,37 @@ describe.skip("AccountDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("AccountAccount ID:" + deletedAccount.account))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account,
+            "api/v1/network/nodes",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT_DELETED.account,
+            "api/v1/transactions",
+            "api/v1/contracts/0x00000000000000000000000000000000000b2608",
+            "api/v1/tokens/" + SAMPLE_ACCOUNT_DELETED.account,
+            "api/v1/network/exchangerate",
+            "api/v1/blocks",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
+            "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Account is deleted Account ID " + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -400,9 +537,13 @@ describe.skip("AccountDetails.vue", () => {
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts"
         mock.onGet(matcher13).reply(200, { nfts: [] });
 
+        const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, { airdrops: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
@@ -411,6 +552,38 @@ describe.skip("AccountDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account,
+            "api/v1/network/nodes",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT_STAKING_NODE.account,
+            "api/v1/network/exchangerate",
+            "api/v1/transactions",
+            "api/v1/contracts/0x00000000000000000000000000000000000b2608",
+            "api/v1/tokens/" + SAMPLE_ACCOUNT_STAKING_NODE.account,
+            "api/v1/contracts/" + SAMPLE_FAILED_TRANSACTION.entity_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
+            "api/v1/contracts/results/" + SAMPLE_FAILED_TRANSACTION.transaction_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/nfts",
+            "api/v1/accounts/",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
+            "api/v1/blocks",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/nfts",
+        ])
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Node 1 - Hosted by Hedera | East Coast, USA")
@@ -476,10 +649,13 @@ describe.skip("AccountDetails.vue", () => {
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts"
         mock.onGet(matcher13).reply(200, { nfts: [] });
 
+        const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, { airdrops: [] });
+
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { [networkConfigKey]: networkConfig }
+                provide: { [networkConfigKey]: networkConfig, "isMediumScreen": false }
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
@@ -488,6 +664,39 @@ describe.skip("AccountDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account,
+            "api/v1/network/nodes",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account,
+            "api/v1/contracts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.staked_account_id,
+            "api/v1/network/exchangerate",
+            "api/v1/transactions",
+            "api/v1/contracts/0x00000000000000000000000000000000000b2608",
+            "api/v1/tokens/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account,
+            "api/v1/contracts/" + SAMPLE_FAILED_TRANSACTION.entity_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
+            "api/v1/contracts/results/" + SAMPLE_FAILED_TRANSACTION.transaction_id,
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/nfts",
+            "api/v1/accounts/",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/crypto",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
+            "api/v1/blocks",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/nfts",
+        ])
 
         expect(wrapper.get("#stakedToName").text()).toBe("Staked to")
         expect(wrapper.get("#stakedToValue").text()).toBe("Account 0.0.5Hosted by Hedera | Central, USA")

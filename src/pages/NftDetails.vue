@@ -153,7 +153,6 @@
         <NftTransactionTable
             :controller="transactionTableController"
             :narrowed="true"
-            id="recentTransactionsTable"
         />
       </template>
     </DashboardCardV2>

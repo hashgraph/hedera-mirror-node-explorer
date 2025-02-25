@@ -29,7 +29,9 @@ import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
 import {NetworkConfig} from "../../src/config/NetworkConfig";
 import {routeManager} from "../../src/router";
-import DashboardCardV2 from "../../src/components/DashboardCardV2.vue";
+import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
+import Footer from "@/components/page/Footer.vue";
+import ChartView from "@/charts/core/ChartView.vue";
 
 /*
     Bookmarks
@@ -40,7 +42,7 @@ import DashboardCardV2 from "../../src/components/DashboardCardV2.vue";
 
 HMSF.forceUTC = true
 
-describe.skip("App.vue", () => {
+describe("App.vue", () => {
 
     test("normal screen", async () => {
 
@@ -112,35 +114,14 @@ describe.skip("App.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        const sections = wrapper.findAll('section')
-        expect(sections.length).toBe(3)
+        const charts = wrapper.findAllComponents(ChartView)
+        expect(charts.length).toBe(3)
+        expect(charts[0].text()).toMatch(RegExp("^Transactions Over Time"))
+        expect(charts[1].text()).toMatch(RegExp("^Network Fees"))
+        expect(charts[2].text()).toMatch(RegExp("^Active Accounts"))
 
-        const navBar = wrapper.findComponent(TopNavBar)
-        expect(navBar.exists()).toBe(true)
-        expect(navBar.text()).toBe(
-            "DashboardTransactionsTokensTopicsContractsAccountsNodesBlocksCONNECT WALLET…Connect WalletWallet ConnectCANCELCONNECT DisclaimerPlease don't show me this next timeCANCELAGREEDisclaimerPlease don't show me this next timeCANCELAGREE")
-
-        expect(wrapper.findComponent(HbarMarketDashboard).exists()).toBe(true)
-
-        const cards = wrapper.findAllComponents(DashboardCardV2)
-        expect(cards.length).toBe(3)
-        expect(cards[0].text()).toMatch(RegExp("^Crypto Transfers"))
-        expect(cards[1].text()).toMatch(RegExp("^Smart Contract Calls"))
-        expect(cards[2].text()).toMatch(RegExp("^HCS Messages"))
-
-        const logos = wrapper.findAll("img")
-        expect(logos.length).toBe(11)
-        expect(logos[0].attributes('alt')).toBe("Product Logo")
-        expect(logos[1].attributes('alt')).toBe("Modal close icon")
-        expect(logos[2].attributes('alt')).toBe("")
-        expect(logos[3].attributes('alt')).toBe("wallet logo")
-        expect(logos[4].attributes('alt')).toBe("Modal close icon")
-        expect(logos[5].attributes('alt')).toBe("Modal close icon")
-        expect(logos[6].attributes('alt')).toBe("Pause")
-        expect(logos[7].attributes('alt')).toBe("Pause")
-        expect(logos[8].attributes('alt')).toBe("Pause")
-        expect(logos[9].attributes('alt')).toBe("Built On Logo")
-        expect(logos[10].attributes('alt')).toBe("Sponsor Logo")
+        expect(wrapper.findComponent(MainDashboardHeader).exists()).toBe(true)
+        expect(wrapper.findComponent(Footer).exists()).toBe(true)
 
         mock.restore()
         wrapper.unmount()

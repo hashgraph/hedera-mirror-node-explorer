@@ -26,12 +26,15 @@ import Oruga from "@oruga-ui/oruga-next";
 import {SAMPLE_ASSOCIATED_TOKEN, SAMPLE_NONFUNGIBLE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
+import {fetchGetURLs} from "../MockUtils";
 
 describe("TokenCell.vue", () => {
 
     test("default props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios);
 
         const wrapper = mount(TokenCell, {
             global: {
@@ -43,6 +46,8 @@ describe("TokenCell.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([])
 
         expect(wrapper.text()).toBe('?')
 
@@ -75,6 +80,10 @@ describe("TokenCell.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id,
+        ])
+
         expect(wrapper.text()).toBe(name)
 
         wrapper.unmount()
@@ -106,6 +115,10 @@ describe("TokenCell.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id,
+        ])
 
         expect(wrapper.text()).toBe(token.name)
 
@@ -164,6 +177,10 @@ describe("TokenCell.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN.token_id,
+        ])
 
         expect(wrapper.text()).toBe(token.name)
 

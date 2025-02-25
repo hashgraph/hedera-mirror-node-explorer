@@ -32,6 +32,7 @@ import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -42,7 +43,7 @@ import {HMSF} from "@/utils/HMSF";
 
 HMSF.forceUTC = true
 
-describe.skip("Transactions.vue", () => {
+describe("Transactions.vue", () => {
 
     test("no props", async () => {
 
@@ -66,6 +67,14 @@ describe.skip("Transactions.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/transactions",
+            "api/v1/transactions",
+            "api/v1/network/nodes",
+            "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
+            "api/v1/blocks",
+        ])
+
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Transactions"))
@@ -76,20 +85,18 @@ describe.skip("Transactions.vue", () => {
         const select = card.findComponent(TransactionFilterSelect)
         expect(select.exists()).toBe(true)
         expect(select.text()).toBe(
-            "TYPES: ALLCONTRACT CALLCONTRACT CREATECONTRACT DELETECONTRACT UPDATECRYPTO ADD LIVE HASH" +
-            "CRYPTO APPROVE ALLOWANCECRYPTO CREATE ACCOUNTCRYPTO DELETE ACCOUNTCRYPTO DELETE ALLOWANCE" +
-            "CRYPTO DELETE LIVE HASHCRYPTO TRANSFERCRYPTO UPDATE ACCOUNTETHEREUM TRANSACTIONFILE APPEND" +
-            "FILE CREATEFILE DELETEFILE UPDATEFREEZEHCS CREATE TOPICHCS DELETE TOPICHCS SUBMIT MESSAGE" +
-            "HCS UPDATE TOPICNODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATE" +
-            "SCHEDULE CREATESCHEDULE DELETESCHEDULE SIGNSYSTEM DELETESYSTEM UNDELETETOKEN AIRDROP" +
-            "TOKEN ASSOCIATETOKEN BURNTOKEN CANCEL AIRDROPTOKEN CLAIM AIRDROPTOKEN CREATETOKEN DELETE" +
-            "TOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN KYC GRANTTOKEN KYC REVOKE" +
-            "TOKEN MINTTOKEN PAUSETOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN UPDATETOKEN UPDATE NFTS" +
-            "TOKEN WIPEUNCHECKED SUBMIT")
+            "TYPES: ALLADD LIVE HASHAPPROVE ALLOWANCECANCEL AIRDROPCLAIM AIRDROPCONTRACT CALLCONTRACT CREATE" +
+            "CONTRACT DELETECONTRACT UPDATECREATE ACCOUNTCREATE TOPICCRYPTO TRANSFERDELETE ACCOUNTDELETE ALLOWANCE" +
+            "DELETE LIVE HASHDELETE TOPICETHEREUM TRANSACTIONFILE APPENDFILE CREATEFILE DELETEFILE UPDATE" +
+            "FREEZENODE CREATENODE DELETENODE STAKE UPDATENODE UPDATEPSEUDORANDOM NUMBER GENERATESCHEDULE CREATE" +
+            "SCHEDULE DELETESCHEDULE SIGNSUBMIT MESSAGESYSTEM DELETESYSTEM UNDELETETOKEN AIRDROPTOKEN ASSOCIATE" +
+            "TOKEN BURNTOKEN CREATETOKEN DELETETOKEN DISSOCIATETOKEN FEE SCHEDULE UPDATETOKEN FREEZETOKEN KYC GRANT" +
+            "TOKEN KYC REVOKETOKEN MINTTOKEN PAUSETOKEN REJECTTOKEN UNFREEZETOKEN UNPAUSETOKEN UPDATE" +
+            "TOKEN WIPEUNCHECKED SUBMITUPDATE ACCOUNTUPDATE NFTSUPDATE TOPIC")
 
         const table = card.findComponent(TransactionTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Type Content Time")
+        expect(table.get('thead').text()).toBe("ID TYPE CONTENT TIME")
         expect(table.get('tbody').text()).toBe(
             "0.0.29624024@1646025139.152901498CRYPTO TRANSFER0.0.29624024\n\n" +
             "123423\n\n" +
@@ -130,6 +137,14 @@ describe.skip("Transactions.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/transactions",
+            "api/v1/transactions",
+            "api/v1/network/nodes",
+            "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
+            "api/v1/blocks",
+        ])
 
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
@@ -173,6 +188,14 @@ describe.skip("Transactions.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/transactions",
+            "api/v1/transactions",
+            "api/v1/network/nodes",
+            "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
+            "api/v1/blocks",
+        ])
 
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)

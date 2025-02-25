@@ -51,21 +51,21 @@
 
     <div></div>
     <div>
-      <HexaDumpValue :byte-string="change?.changes.slot" :low-contrast="false" :word-wrap-small="4" :word-wrap-medium="8"/>
+      <HexaDumpValue :byte-string="change?.changes.slot" :word-wrap-small="4" :word-wrap-medium="8"/>
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.slotDecimal ?? 'not available') }}
       </div>
     </div>
     <div>
       <HexaDumpValue :byte-string="change?.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
-                 :show-none="true" :low-contrast="change?.valueReadDecimal === 0"/>
+                 :show-none="true"/>
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.valueReadDecimal ?? 'not available') }}
       </div>
     </div>
     <div>
       <HexaDumpValue :byte-string="change?.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
-                 :show-none="true" :low-contrast="change?.valueWrittenDecimal === 0"/>
+                 :show-none="true"/>
       <div class="h-is-extra-text">
         <span v-if="change?.changes.value_written">
           {{ 'Decimal: ' + (change?.valueWrittenDecimal ?? 'not available') }}

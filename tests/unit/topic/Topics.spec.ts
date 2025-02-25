@@ -41,7 +41,7 @@ HMSF.forceUTC = true
 
 describe("Topics.vue", () => {
 
-    test.skip("no props", async () => {
+    test("no props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -66,7 +66,7 @@ describe("Topics.vue", () => {
 
         const table = card.findComponent(TopicTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("Topic Created Memo")
+        expect(table.get('thead').text()).toBe("TOPIC CREATED MEMO")
         expect(table.get('tbody').text()).toBe(
             "0.0.750040" +
             "6:14:56.3105 PMMar 7, 2022, UTC" +

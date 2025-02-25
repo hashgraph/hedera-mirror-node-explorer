@@ -78,7 +78,7 @@ describe("RewardTransferGraph.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("with multiple transfers and rewards", async () => {
+    test("with multiple transfers and rewards", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -108,7 +108,7 @@ describe("RewardTransferGraph.vue", () => {
 
         expect(wrapper.text()).toBe(
             "Staking Rewards" +
-            "Reward AccountAccountAmount Rewarded" +
+            "  REWARD ACC.  ACCOUNT  AMOUNT " +
             "0.0.800\n\n" +
             "0.0.788887" +
             "2.10704256ℏ" + "$0.51840\n\n" +

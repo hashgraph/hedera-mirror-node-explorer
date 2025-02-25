@@ -36,6 +36,7 @@ import ContractResultTrace from "@/components/contract/ContractResultTrace.vue";
 import ContractResultStates from "@/components/contract/ContractResultStates.vue";
 import ContractActionsTable from "@/components/contract/ContractActionsTable.vue";
 import ContractResultStateChangeEntry from "@/components/contract/ContractResultStateChangeEntry.vue";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -77,6 +78,26 @@ describe("ContractResult.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id + "/results/1646025151.667604000",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x18cbafe5",
+            "api/v1/contracts/0.0.846260",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].address,
+            "api/v1/tokens/0.0.846260",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[2].address,
+            "api/v1/tokens/" + SAMPLE_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/tokens/" + SAMPLE_CONTRACT_RESULT_DETAILS.logs[1].contract_id,
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
@@ -129,6 +150,22 @@ describe("ContractResult.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id + "/results/1677085141.263832358",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x49257b42",
+            "api/v1/contracts/0.0.1466",
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id,
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/tokens/0.0.1466",
+            "api/v1/accounts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.from,
+            "api/v1/accounts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.to,
+            "api/v1/tokens/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS.contract_id,
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("^Contract Result for " + contractId + " at " + timestamp))
         expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
         expect(wrapper.get("#errorMessageValue").text()).toBe("Insufficient token balance for wiped")
@@ -140,10 +177,9 @@ describe("ContractResult.vue", () => {
         await flushPromises()
     });
 
-    it.skip("Should display the reverted contract result with call trace and state trace", async () => {
+    it("Should display the reverted contract result with call trace and state trace", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
-
 
         const mock = new MockAdapter(axios);
 
@@ -176,6 +212,38 @@ describe("ContractResult.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/results",
+            "api/v1/network/fees",
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id + "/results/1677504382.107973330",
+            "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=0x7d1ee005",
+            "api/v1/contracts/0.0.8942",
+            "api/v1/contracts/results/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.hash + "/actions?limit=100",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[0].contract_id,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[3].contract_id,
+            // "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[9].contract_id,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.from,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[0].address,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[3].address,
+            // "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[9].address,
+            "api/v1/accounts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.from,
+            "api/v1/network/exchangerate",
+            "api/v1/contracts/0.0.33483",
+            "api/v1/tokens/0.0.8942",
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS.actions[0].to,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS.actions[1].to,
+            "api/v1/contracts/" + SAMPLE_REVERT_CONTRACT_RESULT_ACTIONS.actions[2].to,
+            "api/v1/accounts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[0].address,
+            "api/v1/accounts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[3].address,
+            // "api/v1/accounts/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.state_changes[9].address,
+            "api/v1/tokens/0.0.10410",
+            "api/v1/tokens/0.0.33481",
+            "api/v1/tokens/" + SAMPLE_REVERT_CONTRACT_RESULT_DETAILS_WITH_TRACES.contract_id,
+            "api/v1/tokens/0.0.33483",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("CONTRACT_REVERT_EXECUTED")
         expect(wrapper.get("#errorMessageValue").text()).toBe("payWithCardNFT - failed to call accept contract method")
@@ -186,34 +254,16 @@ describe("ContractResult.vue", () => {
 
         const actionsTable = stackTrace.findComponent(ContractActionsTable)
         expect(actionsTable.exists()).toBe(true)
-        expect(actionsTable.find('thead').text()).toBe("Call Type From Amount To Gas Limit")
+        expect(actionsTable.find('thead').text()).toBe("CALL TYPE FROM AMOUNT TO GAS LIMIT")
 
         const actions = actionsTable.find('tbody').findAll('tr')
         expect(actions.length).toBe(3)
         expect(actions[0].text()).toBe(
-            "1! CALL" +
-            "0x00000000000000000000000000000000000022eeCopy(0.0.8942)" +
-            "→" +
-            "0.00000000ℏ" +
-            "→" +
-            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
-            "7979000")
+            "1 ! CALL0x00…0022eeCopy(0.0.8942)→0.00000000ℏ→0x00…0028aaCopy(0.0.10410)7979000")
         expect(actions[1].text()).toBe(
-            "1_1! CALL" +
-            "0x00000000000000000000000000000000000028aaCopy(0.0.10410)" +
-            "→" +
-            "0.00000000ℏ" +
-            "→" +
-            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
-            "7840814")
+            "1_1 ! CALL0x00…0028aaCopy(0.0.10410)→0.00000000ℏ→0x00…0082c9Copy(0.0.33481)7840814")
         expect(actions[2].text()).toBe(
-            "1_1_1CALL" +
-            "0x00000000000000000000000000000000000082c9Copy(0.0.33481)" +
-            "→" +
-            "0.00000000ℏ" +
-            "→" +
-            "0x00000000000000000000000000000000000082cbCopy(0.0.33483)" +
-            "7700872")
+            "1_1_1 CALL0x00…0082c9Copy(0.0.33481)→0.00000000ℏ→0x00…0082cbCopy(0.0.33483)7700872")
 
         const stateTrace = wrapper.findComponent(ContractResultStates)
         expect(stateTrace.exists()).toBe(true)
@@ -234,10 +284,9 @@ describe("ContractResult.vue", () => {
         const entries = stateTrace.findAllComponents(ContractResultStateChangeEntry)
         expect(entries.length).toBe(5)
         expect(entries[0].text()).toBe(
-            "0.0.10410" +
-            "0x20a269221c216afce16a83d0401af060a0d39b19Copy" +
-            "Contract HBar Balance Difference:" +
-            "None" +
+            "0x20…d39b19Copy" +
+            "(0.0.10410) " +
+            "HBar Balance Difference: None" +
             "10a8 1eed 9d63 d16f ace5 e763 5790 5348 e625 3d33 9408 6026 bb2b f214 5d7c c249Copy" +
             "Decimal: not available" +
             "0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0001Copy" +

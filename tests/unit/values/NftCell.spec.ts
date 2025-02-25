@@ -125,7 +125,7 @@ describe("NftCell.vue", () => {
         mock.restore()
     });
 
-    test.skip("tokenId, serial # and various props", async () => {
+    test("tokenId, serial # and various props", async () => {
 
         const mock = new MockAdapter(axios);
 
@@ -154,13 +154,13 @@ describe("NftCell.vue", () => {
             },
         });
         await flushPromises()
-        expect(wrapper.text()).toBe(IPFS_METADATA_CONTENT.description)
+        expect(wrapper.text()).toBe("This is a collection about $KARATE. $KARATE is not…")
 
         await wrapper.setProps({
             property: NftCellItem.creator
         })
         await flushPromises()
-        expect(wrapper.text()).toBe('@Buckyoto + @JuicyUnlimited for @KarateC…')
+        expect(wrapper.text()).toBe('@Buckyoto + @JuicyUn…')
 
         await wrapper.setProps({
             property: NftCellItem.image

@@ -27,6 +27,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {SAMPLE_ACCOUNT_STAKING_ACCOUNT, SAMPLE_NETWORK_NODES} from "../Mocks";
 import RewardsCalculator from "@/components/staking/RewardsCalculator.vue";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -43,12 +44,8 @@ describe("RewardsCalculator.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT
-
         // Mocks axios
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
-        mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
@@ -67,6 +64,10 @@ describe("RewardsCalculator.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
 
@@ -94,12 +95,8 @@ describe("RewardsCalculator.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT
-
         // Mocks axios
         const mock = new MockAdapter(axios);
-        const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
-        mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
@@ -121,6 +118,10 @@ describe("RewardsCalculator.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
         // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
 
@@ -144,7 +145,7 @@ describe("RewardsCalculator.vue", () => {
         await flushPromises()
     })
 
-    it.skip("should input different values for Hbar amount and selected Node", async () => {
+    it("should input different values for Hbar amount and selected Node", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -173,6 +174,10 @@ describe("RewardsCalculator.vue", () => {
         // console.log(wrapper.text())
         // console.log(wrapper.html())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+        ])
+
         expect(wrapper.text()).toMatch(RegExp("^Rewards Estimator"))
 
         const options = wrapper.find('select').findAll('option')
@@ -196,12 +201,12 @@ describe("RewardsCalculator.vue", () => {
         await options.at(1)?.setValue(false)
 
         // Change Hbar Amount
-        await wrapper.find('input[type="text"]').setValue('10000')
+        await wrapper.find('input[type="number"]').setValue('10000')
 
-        expect(wrapper.find('#currentReward').text()).toBe("Current 24h Period Reward0.5479HBAR".toUpperCase())
-        expect(wrapper.find('#monthlyReward').text()).toBe("Approx Monthly Reward16.44HBAR".toUpperCase())
-        expect(wrapper.find('#yearlyReward').text()).toBe("Approx Yearly Reward200HBAR".toUpperCase())
-        expect(wrapper.find('#yearlyRate').text()).toBe("Approx Yearly Reward Rate2%".toUpperCase())
+        expect(wrapper.find('#currentReward').text()).toBe("CURRENT 24H PERIOD REWARD 0.5479HBAR".toUpperCase())
+        expect(wrapper.find('#monthlyReward').text()).toBe("APPROX MONTHLY REWARD 16.44HBAR".toUpperCase())
+        expect(wrapper.find('#yearlyReward').text()).toBe("APPROX YEARLY REWARD 200HBAR".toUpperCase())
+        expect(wrapper.find('#yearlyRate').text()).toBe("APPROX YEARLY REWARD RATE 2%".toUpperCase())
 
         wrapper.unmount()
         await flushPromises()

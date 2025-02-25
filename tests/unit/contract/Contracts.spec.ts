@@ -29,6 +29,7 @@ import ContractTable from "@/components/contract/ContractTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -39,7 +40,7 @@ import {HMSF} from "@/utils/HMSF";
 
 HMSF.forceUTC = true
 
-describe.skip("Contracts.vue", () => {
+describe("Contracts.vue", () => {
 
     test("no props", async () => {
 
@@ -61,6 +62,12 @@ describe.skip("Contracts.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts",
+            "api/v1/contracts/" + SAMPLE_CONTRACTS.contracts[0].contract_id,
+            "api/v1/tokens/" + SAMPLE_CONTRACTS.contracts[0].contract_id,
+        ])
+
         expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
 
         const card = wrapper.findComponent(DashboardCardV2)
@@ -69,7 +76,7 @@ describe.skip("Contracts.vue", () => {
 
         const table = card.findComponent(ContractTable)
         expect(table.exists()).toBe(true)
-        expect(table.get('thead').text()).toBe("ID Contract Name Created Memo")
+        expect(table.get('thead').text()).toBe("ID CONTRACT NAME CREATED MEMO")
         expect(table.get('tbody').text()).toBe(
             "0.0.749775" +
             " NOT VERIFIED " +

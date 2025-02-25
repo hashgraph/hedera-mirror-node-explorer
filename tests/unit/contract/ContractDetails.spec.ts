@@ -45,6 +45,7 @@ import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
 import {ContractStateResponse} from "../../../src/schemas/MirrorNodeSchemas";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -55,7 +56,7 @@ import {ContractStateResponse} from "../../../src/schemas/MirrorNodeSchemas";
 
 HMSF.forceUTC = true
 
-describe.skip("ContractDetails.vue", () => {
+describe("ContractDetails.vue", () => {
 
     it("Should display contract details (using contract id)", async () => {
 
@@ -99,7 +100,8 @@ describe.skip("ContractDetails.vue", () => {
 
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
@@ -109,9 +111,38 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.auto_renew_account,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "api/v1/contracts/0xffffffffffffffffffffffffffffffffffffffff",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000b70cf",
+            "api/v1/network/exchangerate",
+            "api/v1/accounts/0xffffffffffffffffffffffffffffffffffffffff",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
-        expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
+        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -124,7 +155,7 @@ describe.skip("ContractDetails.vue", () => {
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#nonceValue").text()).toBe("1")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#bytecode").text()).toContain(
             "6080 6040 5236 606d 5730 73ff ffff ffff ffff ffff ffff ffff ffff ffff ffff ff16 3373 ffff ffff ffff ffff " +
             "ffff ffff ffff ffff ffff ffff 167f ddf2 52ad 1be2 c89b 69c2 b068 fc37 8daa 952b a7f1 63c4 a116 28f5 5a4d " +
@@ -147,7 +178,7 @@ describe.skip("ContractDetails.vue", () => {
         expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
 
         // None of the elements related to contract verification should be present in this context
-        expect(wrapper.find('#verify-button').exists()).toBe(true)
+        expect(wrapper.find('#verify-button').exists()).toBe(false)
         expect(wrapper.find('#showSource').exists()).toBe(false)
         expect(wrapper.find('#verificationStatus').exists()).toBe(false)
         expect(wrapper.find('#contractName').exists()).toBe(false)
@@ -200,7 +231,8 @@ describe.skip("ContractDetails.vue", () => {
 
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: SAMPLE_CONTRACT.evm_address
@@ -210,9 +242,38 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.evm_address,
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.auto_renew_account,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "api/v1/contracts/0xffffffffffffffffffffffffffffffffffffffff",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000b70cf",
+            "api/v1/network/exchangerate",
+            "api/v1/accounts/0xffffffffffffffffffffffffffffffffffffffff",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
-        expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
+        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -225,7 +286,7 @@ describe.skip("ContractDetails.vue", () => {
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#nonceValue").text()).toBe("1")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cfCopy")
         expect(wrapper.get("#bytecode").text()).toContain(
             "6080 6040 5236 606d 5730 73ff ffff ffff ffff ffff ffff ffff ffff ffff ffff ff16 3373 ffff ffff ffff ffff " +
             "ffff ffff ffff ffff ffff ffff 167f ddf2 52ad 1be2 c89b 69c2 b068 fc37 8daa 952b a7f1 63c4 a116 28f5 5a4d " +
@@ -248,7 +309,7 @@ describe.skip("ContractDetails.vue", () => {
         expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
 
         // None of the elements related to contract verification should be present in this context
-        expect(wrapper.find('#verify-button').exists()).toBe(true)
+        expect(wrapper.find('#verify-button').exists()).toBe(false)
         expect(wrapper.find('#showSource').exists()).toBe(false)
         expect(wrapper.find('#verificationStatus').exists()).toBe(false)
         expect(wrapper.find('#contractName').exists()).toBe(false)
@@ -298,7 +359,8 @@ describe.skip("ContractDetails.vue", () => {
 
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
@@ -308,12 +370,40 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.auto_renew_account,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "api/v1/contracts/0xffffffffffffffffffffffffffffffffffffffff",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000b70cf",
+            "api/v1/accounts/0xffffffffffffffffffffffffffffffffffffffff",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT.contract_id))
 
         const resultTable = wrapper.findComponent(ContractResultTable)
         expect(resultTable.exists()).toBe(true)
 
-        expect(resultTable.find('thead').text()).toBe("Time From Error Message Transfer Amount")
+        expect(resultTable.find('thead').text()).toBe("TIME FROM MESSAGE TRANSFER AMOUNT")
         const rows = resultTable.find('tbody').findAll('tr')
 
         let cells = rows[0].findAll('td')
@@ -369,7 +459,8 @@ describe.skip("ContractDetails.vue", () => {
 
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
@@ -379,15 +470,43 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.auto_renew_account,
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "api/v1/contracts/0xffffffffffffffffffffffffffffffffffffffff",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000b70cf",
+            "api/v1/accounts/0xffffffffffffffffffffffffffffffffffffffff",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT.contract_id))
 
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
-        expect(wrapper.get("#keyValue").text()).toBe("4210 5082 0e14 85ac dd59 7260 88e0 e4a2 130e bbbb 7000 9f64 0ad9 5c78 dd5a 7b38CopyED25519")
+        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38CopyED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cfCopy")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcherAirdrop = "api/v1/accounts/" + contract2.contract_id + "/airdrops/pending"
@@ -411,19 +530,40 @@ describe.skip("ContractDetails.vue", () => {
         const matcher12 = "api/v1/accounts/" + contract2.contract_id + "/nfts"
         mock.onGet(matcher12).reply(200, { nfts: [] });
 
+        mock.resetHistory()
         await wrapper.setProps({
             contractId: SAMPLE_CONTRACT_DUDE.contract_id ?? undefined
         })
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000C41Df",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DUDE.contract_id + "/results",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT_DUDE.contract_id))
         expect(wrapper.get("#keyValue").text()).toBe("None")
         expect(wrapper.get("#maxAutoAssociationValue").text()).toBe("No Auto Association")
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.find("#nonce").exists()).toBe(false)
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address:0x00000000000000000000000000000000000c41dfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000c41dfCopy")
 
         mock.restore()
         wrapper.unmount()
@@ -470,6 +610,31 @@ describe.skip("ContractDetails.vue", () => {
 
         await flushPromises()
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000C41Df",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
 
         expect(wrapper.text()).toMatch(RegExp("^Contract " + SAMPLE_CONTRACT_DUDE.contract_id))
 
@@ -519,7 +684,8 @@ describe.skip("ContractDetails.vue", () => {
 
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: contract.contract_id
@@ -529,7 +695,32 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + SAMPLE_CONTRACT_DUDE.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000C41Df",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT_DUDE.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(false)
@@ -575,7 +766,8 @@ describe.skip("ContractDetails.vue", () => {
 
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: contract.contract_id
@@ -585,7 +777,32 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + "Show associated account" + "Contract ID:" + contract.contract_id))
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id,
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id,
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/results/logs",
+            "api/v1/balances",
+            "api/v1/transactions",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc",
+            "http://localhost:3000/files/any/295/0x00000000000000000000000000000000000C41Df",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/accounts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/airdrops/pending",
+            "api/v1/contracts/" + SAMPLE_CONTRACT_DELETED.contract_id + "/results",
+            "api/v1/contracts/0.0.1260",
+            "api/v1/contracts/0x00000000000000000000000000000000000004ec",
+            "api/v1/tokens/0.0.1260",
+            "api/v1/accounts/0x00000000000000000000000000000000000004ec",
+        ])
+
+        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account" + "Contract is deleted " + "Contract ID " + contract.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -600,10 +817,13 @@ describe.skip("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
+        const mock = new MockAdapter(axios);
+
         const invalidContractId = "0.0.0.1000"
         const wrapper = mount(ContractDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 contractId: invalidContractId
@@ -612,6 +832,10 @@ describe.skip("ContractDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/network/nodes",
+        ])
 
         expect(wrapper.get("#notificationBanner").text()).toBe("Invalid contract ID or address: " + invalidContractId)
 
