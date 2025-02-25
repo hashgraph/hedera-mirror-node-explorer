@@ -23,23 +23,14 @@ import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
 import axios from "axios";
 import {
-    SAMPLE_CONTRACTCALL_TRANSACTIONS,
-    SAMPLE_MESSAGE_TRANSACTIONS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_SUPPLY,
-    SAMPLE_TOKEN,
-    SAMPLE_TOPIC_MESSAGES,
-    SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import MainDashboard from "@/pages/MainDashboard.vue";
-import DashboardCardV2 from "@/components/DashboardCardV2.vue";
-import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
-import {TransactionType} from "@/schemas/MirrorNodeSchemas";
 import MarketDashboard from "@/components/dashboard/MarketDashboard.vue";
-import ChartView from "@/charts/core/ChartView.vue";
 import {fetchGetURLs} from "../MockUtils";
 
 /*
