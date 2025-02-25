@@ -33,7 +33,7 @@ mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
 const matcher2 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE_DUDE.token_id
 mock.onGet(matcher2).reply(200, SAMPLE_NONFUNGIBLE_DUDE);
 
-describe.skip("NftTransferGraph.vue", () => {
+describe("NftTransferGraph.vue", () => {
 
     test("Without transaction", async () => {
 
@@ -132,7 +132,7 @@ describe.skip("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
+            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601 #602\n\n" +
             "0.0.101Transfer0.0.100\n\n" +
             "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #501\n\n" +
@@ -163,7 +163,7 @@ describe.skip("NftTransferGraph.vue", () => {
         await flushPromises()
 
         expect(wrapper2.text()).toBe(
-            "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
+            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601 #602\n\n" +
             "0.0.1010.0.100\n\n" +
             "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #501\n\n" +
@@ -216,7 +216,7 @@ describe.skip("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT TransfersAccountNon Fungible TokensAccountMINT\n\n" +
+            "NFT Transfers ACCOUNTNFTACCOUNTMINT\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "0.0.100")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
@@ -269,7 +269,7 @@ describe.skip("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT TransfersAccountNon Fungible TokensAccountMINT\n\n" +
+            "NFT Transfers ACCOUNTNFTACCOUNTMINT\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "0.0.100MINT\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601\n\n" +
@@ -280,7 +280,7 @@ describe.skip("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test.skip("Burn, one token, one source", async () => {
+    test("Burn, one token, one source", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -316,7 +316,7 @@ describe.skip("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
+            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "BURN")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
@@ -325,7 +325,7 @@ describe.skip("NftTransferGraph.vue", () => {
         await flushPromises()
     })
 
-    test.skip("Burn, one token, two sources", async () => {
+    test("Burn, one token, two sources", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -369,7 +369,7 @@ describe.skip("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT TransfersAccountNon Fungible TokensAccount0.0.100\n\n" +
+            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "BURN0.0.101\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601\n\n" +
