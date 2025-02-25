@@ -55,7 +55,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("No URL and custom size", async () => {
+    test("No URL and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -74,14 +74,14 @@ describe("NftPreview.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe('Non Fungible Token' + tooltipText)
-        const hbarLogo = wrapper.find('img')
+        const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
+        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
 
         const tooltip = wrapper.find('#info-tooltip')
         expect(tooltip.exists()).toBe(true)
         expect(tooltip.text()).toBe(tooltipText)
-        expect(tooltip.get('i').attributes('class')).toContain('fa-info-circle')
+        expect(tooltip.get('svg').attributes('class')).toContain('lucide-info-icon')
 
         expect(wrapper.find('figure').exists()).toBe(false)
         expect(wrapper.find('video').exists()).toBe(false)
@@ -89,7 +89,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("With URL and custom size", async () => {
+    test("With URL and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -108,9 +108,9 @@ describe("NftPreview.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe('Non Fungible Token')
-        const hbarLogo = wrapper.find('img')
+        const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
+        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
@@ -123,7 +123,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("With URL, image type and custom size", async () => {
+    test("With URL, image type and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -143,9 +143,9 @@ describe("NftPreview.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe('Non Fungible Token')
-        const hbarLogo = wrapper.find('img')
+        const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
+        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
@@ -158,7 +158,7 @@ describe("NftPreview.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("With URL, unsupported type and custom size", async () => {
+    test("With URL, unsupported type and custom size", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -178,9 +178,9 @@ describe("NftPreview.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe('Non Fungible Token')
-        const hbarLogo = wrapper.find('img')
+        const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('src')).toBe('/src/assets/nft-image-placeholder.svg')
+        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
