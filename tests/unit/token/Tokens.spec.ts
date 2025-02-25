@@ -29,6 +29,7 @@ import TokenTable from "@/components/token/TokenTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
+import {fetchGetURLs} from "../MockUtils";
 
 /*
     Bookmarks
@@ -41,7 +42,7 @@ HMSF.forceUTC = true
 
 describe("Tokens.vue", () => {
 
-    test.skip("no props", async () => {
+    test("no props", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -60,16 +61,22 @@ describe("Tokens.vue", () => {
         await flushPromises()
         // console.log(wrapper.text())
 
-        expect(wrapper.vm.nftTableController.mounted.value).toBe(true)
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/tokens",
+            "api/v1/tokens",
+        ])
+
+            expect(wrapper.vm.nftTableController.mounted.value).toBe(true)
         expect(wrapper.vm.tokenTableController.mounted.value).toBe(true)
 
         const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(2)
 
-        expect(cards[0].text()).toMatch(RegExp("^Recent Non Fungible Tokens"))
+        expect(cards[0].text()).toMatch(RegExp("^Recent NFTs"))
         const table1 = cards[0].findComponent(TokenTable)
         expect(table1.exists()).toBe(true)
-        expect(table1.get('thead').text()).toBe("Token Name Symbol")
+        expect(table1.get('thead').text()).toBe("TOKEN NAME SYMBOL")
         expect(table1.get('tbody').text()).toBe(
             SAMPLE_TOKENS.tokens[0].token_id +
             SAMPLE_TOKENS.tokens[0].name +
@@ -82,7 +89,7 @@ describe("Tokens.vue", () => {
         expect(cards[1].text()).toMatch(RegExp("^Recent Fungible Tokens"))
         const table2 = cards[1].findComponent(TokenTable)
         expect(table2.exists()).toBe(true)
-        expect(table2.get('thead').text()).toBe("Token Name Symbol")
+        expect(table2.get('thead').text()).toBe("TOKEN NAME SYMBOL")
         expect(table2.get('tbody').text()).toBe(
             SAMPLE_TOKENS.tokens[0].token_id +
             SAMPLE_TOKENS.tokens[0].name +
