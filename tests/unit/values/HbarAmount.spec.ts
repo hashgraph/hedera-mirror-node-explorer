@@ -28,6 +28,7 @@
 import {afterAll, beforeAll, describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import HbarAmount from "@/components/values/HbarAmount.vue";
+import HbarExtra from "@/components/values/HbarExtra.vue";
 import {SAMPLE_NETWORK_EXCHANGERATE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
@@ -62,7 +63,7 @@ describe("HbarAmount.vue ", () => {
         wrapper.unmount()
     });
 
-    test.skip("with amount set and showExtra", async () => {
+    test("with amount set and showExtra", async () => {
 
         const testTinybarAmount = 42
         const expectedHbarAmount = "0.00000042ℏ"
@@ -78,33 +79,8 @@ describe("HbarAmount.vue ", () => {
 
         await flushPromises()
 
+        expect(wrapper.getComponent(HbarExtra).exists()).toBe(true)
         expect(wrapper.text()).toBe(expectedHbarAmount + expectedDollarAmount)
-        expect(wrapper.get(".h-is-extra-text").classes('h-is-smaller')).toBe(true)
-        expect(wrapper.get(".h-is-extra-text").text()).toBe(expectedDollarAmount)
-
-        wrapper.unmount()
-        await flushPromises()
-    });
-
-    test.skip("with amount set and showExtra and not smallExtra", async () => {
-
-        const testTinybarAmount = 42
-        const expectedHbarAmount = "0.00000042ℏ"
-        const expectedDollarAmount = "$0.00001"
-
-        const wrapper = mount(HbarAmount, {
-            props: {
-                amount: testTinybarAmount,
-                showExtra: true,
-                smallExtra: false,
-                timestamp: "0"
-            },
-        });
-
-        await flushPromises()
-        expect(wrapper.text()).toBe(expectedHbarAmount + expectedDollarAmount)
-        expect(wrapper.get(".h-is-extra-text").classes('h-is-smaller')).toBe(false)
-        expect(wrapper.get(".h-is-extra-text").text()).toBe(expectedDollarAmount)
 
         wrapper.unmount()
         await flushPromises()
