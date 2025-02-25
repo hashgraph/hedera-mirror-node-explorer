@@ -19,7 +19,7 @@
  */
 
 import {computed, Ref, ref} from "vue";
-import {decode} from "@ethereum-sourcify/bytecode-utils";
+import {AuxdataStyle, decode} from "@ethereum-sourcify/bytecode-utils";
 
 export class ByteCodeAnalyzer {
 
@@ -43,7 +43,7 @@ export class ByteCodeAnalyzer {
         let result: DecodedObject | null
         if (this.byteCode.value) {
             try {
-                result = decode(this.byteCode.value)
+                result = decode(this.byteCode.value, AuxdataStyle.SOLIDITY)
             } catch {
                 result = null
             }

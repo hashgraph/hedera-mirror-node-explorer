@@ -20,7 +20,7 @@
 
 import {SolcInput} from "@/utils/solc/SolcInput";
 import {ContractDescription, SolcOutput} from "@/utils/solc/SolcOutput";
-import {splitAuxdata} from "@ethereum-sourcify/bytecode-utils";
+import {AuxdataStyle, splitAuxdata} from "@ethereum-sourcify/bytecode-utils";
 
 export class SolcUtils {
 
@@ -53,8 +53,8 @@ export class SolcUtils {
 
         // Last bytes of each bytecode represents metadata hash
         // https://docs.soliditylang.org/en/v0.4.25/metadata.html#encoding-of-the-metadata-hash-in-the-bytecode
-        const components1 = splitAuxdata(bytecode1)
-        const components2 = splitAuxdata(bytecode2)
+        const components1 = splitAuxdata(bytecode1, AuxdataStyle.SOLIDITY)
+        const components2 = splitAuxdata(bytecode2, AuxdataStyle.SOLIDITY)
         const opCodes1 = components1.length >= 2 ? components1[0] : bytecode1
         const opCodes2 = components2.length >= 2 ? components2[0] : bytecode2
         const hash1 = components1.length >= 2 ? components1[1] : ""
