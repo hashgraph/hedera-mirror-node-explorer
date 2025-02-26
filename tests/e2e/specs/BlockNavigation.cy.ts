@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Block Navigation', () => {
+describe('Block Navigation', () => {
 
     it('should navigate from block table to block details', () => {
         cy.visit('testnet/blocks/')
@@ -48,12 +48,12 @@ describe.skip('Block Navigation', () => {
         cy.contains('Block ' + blockNumber)
 
         cy.get('#prev-block-button')
-            .contains('< PREV. BLOCK')
+            .contains('PREV. BLOCK')
             .click()
         cy.contains('Block ' + (Number(blockNumber) - 1))
 
         cy.get('#next-block-button')
-            .contains('NEXT BLOCK >')
+            .contains('NEXT BLOCK')
             .click()
         cy.contains('Block ' + blockNumber)
     })
