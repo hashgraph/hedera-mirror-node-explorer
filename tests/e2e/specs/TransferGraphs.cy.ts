@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Transfer Graphs Navigation', () => {
+describe('Transfer Graphs Navigation', () => {
 
     it('should follow links from Hbar transfer graph', () => {
         const timestamp = "1645611953.351954692"
@@ -36,7 +36,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
         cy.go('back')
@@ -49,7 +49,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
         cy.go('back')
@@ -62,7 +62,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
     })
@@ -81,7 +81,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
         cy.go('back')
@@ -106,7 +106,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click()
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
     })
@@ -125,7 +125,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click({force: true})
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
         cy.go('back')
@@ -169,7 +169,7 @@ describe.skip('Transfer Graphs Navigation', () => {
                     .find('a')
                     .click({force: true})
                 cy.url().should('include', '/mainnet/account/' + $account.text())
-                cy.contains('Account ID:' + $account.text())
+                cy.get('title').contains('Account ' + $account.text())
             })
 
     })
