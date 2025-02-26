@@ -24,37 +24,42 @@
 
 import {makeExchangeFormat} from "../TestUtils";
 
-describe.skip('Search Bar', () => {
+describe('Search Bar', () => {
 
     beforeEach(() => {
         cy.viewport(700, 800)
-        cy.visit('/mainnet/dashboard')
-        cy.url().should('include', '/mainnet/dashboard')
-        cy.get('#mobile-search-icon').click()
-        cy.url().should('include', '/mainnet/mobile-search')
+        cy.visit('/mainnet/transactions')
+        cy.url().should('include', '/mainnet/transactions')
+        cy.get('[data-cy="mobile-search-button"]').click()
+        cy.url().should('include', '/mainnet/transactions')
     })
 
     it('should find the account ID', () => {
         const searchAccount = "0.0.3"
-        testBody(searchAccount, '/mainnet/account/' + searchAccount, 'Account ID:', true)
+        testBodyV2(
+            searchAccount,
+            '/mainnet/account/' + searchAccount,
+            'Account ' + searchAccount,
+            true)
     })
 
     it('should find the transaction ID', () => {
         const searchTransaction = "0.0.2@1627434000.000000000"
         const timestamp = "1627434006.848027000"
-        testBody(
+        testBodyV2(
             searchTransaction,
             '/mainnet/transaction/' + timestamp,
-            'Transaction '
+            'Transaction ' + timestamp,
+            false
         )
     })
 
     it('should find and list the scheduling/scheduled transactions', () => {
         const searchTransaction = "0.0.1407723@1674820202.780744468"
-        testBody(
+        testBodyV2(
             searchTransaction,
             '/mainnet/transactionsById/' + makeExchangeFormat(searchTransaction),
-            'Transactions with ID '
+            'Transactions with ID ' + searchTransaction,
         )
         cy.get('table')
             .find('tbody tr')
@@ -74,10 +79,10 @@ describe.skip('Search Bar', () => {
 
     it('should find and list the parent/child transactions', () => {
         const searchTransaction = "0.0.445590@1674821543.265349407"
-        testBody(
+        testBodyV2(
             searchTransaction,
             '/mainnet/transactionsById/' + makeExchangeFormat(searchTransaction),
-            'Transactions with ID '
+            'Transactions with ID ' + searchTransaction,
         )
         cy.get('table')
             .find('tbody tr')
@@ -105,87 +110,96 @@ describe.skip('Search Bar', () => {
         const searchHash = "0x08e62c0531e603fa6d29930195682e937978d542bd404d490546717bb128da4ec4ed586e6d516735f24049b2c3eb7b20"
         const timestamp = "1674821555.935799283"
         const transactionId = "0.0.445590@1674821543.265349407"
-        testBody(
-            transactionId,
+        testBodyV2(
+            searchHash,
             '/mainnet/transaction/' + timestamp,
-            'Transaction ',
-            false,
-            searchHash
+            'Transaction ' + timestamp,
+            false
         )
     })
 
     it('should find the transaction by timestamp', () => {
         const searchTimestamp = "1674821555.935799283"
         const transactionId = "0.0.445590@1674821543.265349407"
-        testBody(
-            transactionId,
+        testBodyV2(
+            searchTimestamp,
             '/mainnet/transaction/' + searchTimestamp,
-            'Transaction ',
-            false,
-            searchTimestamp
+            'Transaction ' + searchTimestamp,
+            false
         )
     })
 
     it('should find the NFT ID', () => {
         const searchNFT = "0.0.1752721"
-        testBody(searchNFT, '/mainnet/token/' + searchNFT, 'Token ID:', true)
+        testBodyV2(
+            searchNFT,
+            '/mainnet/token/' + searchNFT,
+            'Token ' + searchNFT,
+            true)
     })
 
     it('should find the token ID', () => {
         const searchToken = "0.0.1738816"
-        testBody(searchToken, '/mainnet/token/' + searchToken, 'Token ID:', true)
+        testBodyV2(searchToken,
+            '/mainnet/token/' + searchToken,
+            'Token ' + searchToken,
+            true)
     })
 
     it('should find the topic ID', () => {
         const searchTopic = "0.0.1750326"
-        testBody(searchTopic, '/mainnet/topic/' + searchTopic, 'Topic ', true)
+        testBodyV2(
+            searchTopic,
+            '/mainnet/topic/' + searchTopic,
+            'Topic ' + searchTopic,
+            true)
     })
 
     it('should find the contract ID', () => {
         const searchContract = "0.0.1077627"
-        testBody(searchContract, '/mainnet/contract/' + searchContract, 'Contract ID:', true)
+        testBodyV2(searchContract,
+            '/mainnet/contract/' + searchContract,
+            'Contract ' + searchContract,
+            true)
     })
 
     it('should find the account by public key', () => {
         const searchKey = "0x02e783457e4d054db3c7850c2dc83e458a13b210fca75984bc7cfb0fae7343ff60"
         const searchAccount = "0.0.1753997"
-        testBody(
-            searchAccount,
+        testBodyV2(
+            searchKey,
             '/mainnet/account/' + searchAccount,
-            'Account ID:',
+            'Account ' + searchAccount,
             false,
-            searchKey
         )
     })
 
     it('should find the account by public-key-format alias', () => {
         const searchBase32Alias = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
         const searchAccount = "0.0.721838"
-        testBody(
-            searchAccount,
+        testBodyV2(
+            searchBase32Alias,
             '/mainnet/account/' + searchAccount,
-            'Account ID:',
+            'Account ' + searchAccount,
             false,
-            searchBase32Alias
         )
     })
 
     it('should find the account by Ethereum-format alias', () => {
         const searchAlias = "0x00000000000000000000000000000000000b03ae"
         const searchAccount = "0.0.721838"
-        testBody(
-            searchAccount,
+        testBodyV2(
+            searchAlias,
             '/mainnet/account/' + searchAccount,
-            'Account ID:',
+            'Account ' + searchAccount,
             false,
-            searchAlias
         )
     })
 
     it('should not fail with empty search string', () => {
-        cy.get('[data-cy=searchBar]').submit()
-        cy.url().should('include', '/mobile-search')
-        cy.get('form').get('input').should('be.enabled')
+        cy.get('[data-cy=searchBar]').submit() // => replaces search field by search button
+        cy.get('[data-cy="mobile-search-button"]')
+        cy.url().should('include', '/mainnet/transactions')
     })
 
     it('should bring "No result" with unknown ID', () => {
@@ -202,24 +216,19 @@ describe.skip('Search Bar', () => {
 
 })
 
-const testBody = (searchID: string,
+const testBodyV2 = (searchString: string,
                   expectedPath: string,
                   expectedTitle: string|null = null,
-                  expectTable = false,
-                  searchString: string|null = null) => {
+                  expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
-        if (searchString !== null) {
-            cy.get('input').type(searchString)
-        } else {
-            cy.get('input').type(searchID)
-        }
+        cy.get('input').type(searchString)
     })
 
     cy.get('[data-cy=searchCompleted]')
     cy.get('[data-cy=searchBar]').submit()
 
     cy.url().should('include', expectedPath)
-    cy.contains(expectedTitle ? (expectedTitle + searchID) : 'No result')
+    cy.get('title').contains(expectedTitle ? expectedTitle : 'No result')
     if (expectTable) {
         cy.get('table')
             .find('tbody tr')
