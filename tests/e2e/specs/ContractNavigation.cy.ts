@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Contract Navigation', () => {
+describe('Contract Navigation', () => {
 
     it('should navigate from table to contract details', () => {
         cy.visit('testnet/contracts/')
@@ -37,7 +37,7 @@ describe.skip('Contract Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/testnet/contract/' + $id.text())
-                cy.contains('Contract ID:' + $id.text())
+                cy.contains('Contract ID ' + $id.text())
             })
     })
 
@@ -46,7 +46,7 @@ describe.skip('Contract Navigation', () => {
 
         cy.visit('mainnet/contract/' + contractId)
         cy.url().should('include', '/mainnet/contract/' + contractId)
-        cy.contains('Contract ID:' + contractId)
+        cy.contains('Contract ID ' + contractId)
 
         cy.get('table').contains('td', '0x')
             .click()
@@ -63,7 +63,7 @@ describe.skip('Contract Navigation', () => {
         const contractId = "0.0.1186129"
         cy.visit('mainnet/contract/' + contractId)
         cy.url().should('include', '/mainnet/contract/' + contractId)
-        cy.contains('Contract ID:' + contractId)
+        cy.contains('Contract ID ' + contractId)
     })
 
     it('should display contract details using contract evm address', () => {
@@ -72,7 +72,7 @@ describe.skip('Contract Navigation', () => {
 
         cy.visit('mainnet/contract/' + evmAddress)
         cy.url().should('include', '/mainnet/contract/' + evmAddress)
-        cy.contains('Contract ID:' + contractId)
+        cy.contains('Contract ID ' + contractId)
     })
 
     it('should detect navigation to unknown contract ID', () => {
@@ -82,7 +82,7 @@ describe.skip('Contract Navigation', () => {
         cy.contains('Contract')
 
         cy.get('[id=notificationBanner]')
-            .find('span')
+            .find('div')
             .contains('Contract with ID ' + unknownID + ' was not found')
     })
 
