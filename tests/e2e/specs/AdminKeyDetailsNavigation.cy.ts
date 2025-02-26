@@ -20,14 +20,14 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('AdminKeyDetails Navigation', () => {
+describe('AdminKeyDetails Navigation', () => {
 
     it('should follow link from account to admin key details and back', () => {
         const accountId = "0.0.2"
 
         cy.visit('mainnet/account/' + accountId)
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
+        cy.contains('Account ID ' + accountId)
 
         cy.get('#keyValue')
             .find('a')
@@ -41,7 +41,7 @@ describe.skip('AdminKeyDetails Navigation', () => {
             .click()
 
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
+        cy.contains('Account ID ' + accountId)
     })
 
     it('should detect navigation to unknown account ID', () => {
@@ -51,7 +51,7 @@ describe.skip('AdminKeyDetails Navigation', () => {
         cy.contains('Admin Key for Account')
 
         cy.get('[id=notificationBanner]')
-            .find('span')
+            .find('div')
             .contains('Account with ID ' + unknownID + ' was not found')
     })
 
@@ -62,7 +62,7 @@ describe.skip('AdminKeyDetails Navigation', () => {
         cy.contains('Admin Key for Account')
 
         cy.get('[id=notificationBanner]')
-            .find('span')
+            .find('div')
             .contains('Invalid account ID, address or alias: ' + invalidID)
     })
 })

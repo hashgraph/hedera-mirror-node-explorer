@@ -60,6 +60,7 @@ import SearchHelp from "@/pages/SearchHelp.vue";
 import axios from "axios";
 import {Transaction, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {CacheUtils} from "@/utils/cache/CacheUtils";
+import {TransactionID} from "@/utils/TransactionID.ts";
 import {CoreConfig} from "@/config/CoreConfig";
 import {NetworkConfig, NetworkEntry} from "@/config/NetworkConfig";
 import ERC20ByName from "@/pages/ERC20ByName.vue";
@@ -543,6 +544,10 @@ export class RouteManager {
         switch (to.name as string) {
             case "MainDashboard":
                 document.title = titlePrefix + "Dashboard"
+                break;
+            case "TransactionsById":
+                const tid = TransactionID.normalizeForDisplay(to.params.transactionId as string)
+                document.title = titlePrefix + "Transactions with ID " + tid
                 break;
             case "TransactionDetails":
                 document.title = titlePrefix + "Transaction " + (to.query.tid ?? to.params.transactionLoc)

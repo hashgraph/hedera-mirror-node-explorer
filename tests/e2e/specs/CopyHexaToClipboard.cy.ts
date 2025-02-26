@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Copy HexaValue to Clipboard', () => {
+describe('Copy HexaValue to Clipboard', () => {
 
     beforeEach(() => {
         cy.wrap(Cypress.automation('remote:debugger:protocol', {
@@ -59,11 +59,10 @@ describe.skip('Copy HexaValue to Clipboard', () => {
             .then(($txt) => {
                 // cy.log($txt)
                 cy.get('#transactionHashValue').should(($hash) => {
-                    const hexBytes = $txt.substr(2, $txt.length - 2) // Removes 0x prefix
-                    expect(hexBytes).equal(
+                    expect($txt).equal(
                         $hash.text()
                             .replace(/\s/g, "")
-                            .substr(0, hexBytes.length));
+                            .substring(0, $txt.length));
                 });
             })
     })

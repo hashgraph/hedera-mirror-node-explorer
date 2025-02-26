@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Mobile Menu', () => {
+describe('Mobile Menu', () => {
 
     const defaultNetwork = 'mainnet'
 
@@ -32,24 +32,27 @@ describe.skip('Mobile Menu', () => {
 
         cy.visit('/')
         cy.url().should('include', '/' + defaultNetwork + '/dashboard')
-        cy.contains('Crypto Transfers')
-        cy.contains('Smart Contract Calls')
-        cy.contains('HCS Messages')
+        cy.contains('Transactions Over Time')
+        cy.contains('Network Fees')
+        cy.contains('Active Accounts')
 
-        cy.get('#mobile-menu-icon').click()
-        cy.url().should('include', '/' + defaultNetwork + '/mobile-menu?from=MainDashboard')
+        cy.get('[data-cy="mobile-menu-icon"]').click()
+        cy.url().should('include', '/' + defaultNetwork + '/dashboard')
 
-        cy.contains('Dashboard')
-        cy.contains('Transactions')
-        cy.contains('Tokens')
-        cy.contains('Topics')
-        cy.contains('Contracts')
-        cy.contains('Accounts')
-        cy.contains('Nodes')
-        cy.contains('Staking')
-        cy.contains('Blocks')
+        cy.get('[data-cy="mobile-menu-content"]').then(($element) => {
+            cy.contains('Dashboard')
+            cy.contains('Transactions')
+            cy.contains('Tokens')
+            cy.contains('Topics')
+            cy.contains('Contracts')
+            cy.contains('Accounts')
+            cy.contains('Nodes')
+            cy.contains('Staking')
+            cy.contains('Blocks')
+        })
 
-        cy.get('#close-icon').click()
+
+        cy.get('[data-cy="mobile-menu-close-icon"]').click()
         cy.url().should('include', '/' + defaultNetwork + '/dashboard')
     })
 
@@ -58,8 +61,8 @@ describe.skip('Mobile Menu', () => {
         cy.visit('/mainnet/dashboard')
         cy.url().should('include', '/mainnet/dashboard')
 
-        cy.get('#mobile-menu-icon').click()
-        cy.url().should('include', '/mainnet/mobile-menu?from=MainDashboard')
+        cy.get('[data-cy="mobile-menu-icon"]').click()
+        cy.url().should('include', '/' + defaultNetwork + '/dashboard')
 
         for (const n of ['PREVIEWNET', 'TESTNET', 'MAINNET']) {
             cy.get('select')
@@ -67,7 +70,7 @@ describe.skip('Mobile Menu', () => {
                 .should('have.value', n.toLowerCase())
             cy.url().should('include', '/' + n.toLowerCase() + '/dashboard')
 
-            cy.get('#mobile-menu-icon').click()
+            cy.get('[data-cy="mobile-menu-icon"]').click()
         }
     })
 
@@ -76,14 +79,14 @@ describe.skip('Mobile Menu', () => {
         cy.visit('/')
         cy.url().should('include', '/' + defaultNetwork + '/dashboard')
 
-        cy.get('#mobile-menu-icon').click()
-        cy.url().should('include', '/' + defaultNetwork + '/mobile-menu?from=MainDashboard')
+        cy.get('[data-cy="mobile-menu-icon"]').click()
+        cy.url().should('include', '/' + defaultNetwork + '/dashboard')
 
         for (const p of ['Transactions', 'Tokens', 'Topics', 'Contracts', 'Accounts', 'Nodes', 'Staking', 'Blocks', 'Dashboard']) {
             cy.contains(p).click()
             cy.url().should('include', '/' + defaultNetwork + '/' + p.toLowerCase())
 
-            cy.get('#mobile-menu-icon').click()
+            cy.get('[data-cy="mobile-menu-icon"]').click()
         }
     })
 

@@ -23,7 +23,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="searchDropdown">
+  <div class="searchDropdown" data-cy="searchDropdown">
     <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
     <div>
       <SearchSection v-if="selectedAgent !== null" :search-controller="searchController" :search-agent="selectedAgent"/>

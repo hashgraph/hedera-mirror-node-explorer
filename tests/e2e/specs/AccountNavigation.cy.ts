@@ -22,7 +22,7 @@
 
 import {makeExchangeFormat} from "../TestUtils";
 
-describe.skip('Account Navigation', () => {
+describe('Account Navigation', () => {
 
     it('should navigate from table to account details', () => {
         cy.visit('testnet/accounts/')
@@ -39,7 +39,7 @@ describe.skip('Account Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/testnet/account/' + $id.text())
-                cy.contains('Account ID:' + $id.text())
+                cy.contains('Account ID ' + $id.text())
             })
     })
 
@@ -48,7 +48,7 @@ describe.skip('Account Navigation', () => {
 
         cy.visit('mainnet/account/' + accountId1)
         cy.url().should('include', '/mainnet/account/')
-        cy.contains('Account ID:' + accountId1)
+        cy.contains('Account ID ' + accountId1)
 
         cy.get('#hbarAllowancesTable')
             .find('tbody tr')
@@ -126,7 +126,7 @@ describe.skip('Account Navigation', () => {
 
         cy.visit('mainnet/account/' + accountId2)
         cy.url().should('include', '/mainnet/account/')
-        cy.contains('Account ID:' + accountId2)
+        cy.contains('Account ID ' + accountId2)
 
         cy.get('table')
             .find('tbody tr')
@@ -165,7 +165,7 @@ describe.skip('Account Navigation', () => {
         const accountID = "0.0.592746"
         cy.visit('mainnet/account/' + accountID)
         cy.url().should('include', '/mainnet/account/' + accountID)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
 
         cy.get('#tab-rewards')
             .click()
@@ -188,7 +188,7 @@ describe.skip('Account Navigation', () => {
         const accountID = "0.0.902"
         cy.visit('testnet/account/' + accountID)
         cy.url().should('include', '/testnet/account/' + accountID)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
 
         cy.get('#tab-contracts')
             .click()
@@ -211,7 +211,7 @@ describe.skip('Account Navigation', () => {
         const accountID = "0.0.592746"
         cy.visit('mainnet/account/' + accountID)
         cy.url().should('include', '/mainnet/account/' + accountID)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
     })
 
     it.skip('should display account details using account base32 alias', () => {
@@ -219,7 +219,7 @@ describe.skip('Account Navigation', () => {
         const accountAlias = "HIQQGOGHZGVM3E7KT47Z6VQYY2TTYY3USZUDJGVSRLYRUR5J72ZD6PI4"
         cy.visit('mainnet/account/' + accountAlias)
         cy.url().should('include', '/mainnet/account/' + accountAlias)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
     })
 
     it.skip('should display account details using account hex alias', () => {
@@ -227,7 +227,7 @@ describe.skip('Account Navigation', () => {
         const accountAliasInHex = "0x3a210338c7c9aacd93ea9f3f9f5618c6a73c63749668349ab28af11a47a9feb23f3d1c"
         cy.visit('testnet/account/' + accountAliasInHex)
         cy.url().should('include', '/testnet/account/' + accountAliasInHex)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
     })
 
     it('should display account details using account evm address', () => {
@@ -236,12 +236,12 @@ describe.skip('Account Navigation', () => {
 
         cy.visit('mainnet/account/' + evmAddress)
         cy.url().should('include', '/mainnet/account/' + evmAddress)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
 
         // EIP 3091
         cy.visit('mainnet/address/' + evmAddress)
         cy.url().should('include', '/mainnet/account/' + accountID)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
     })
 
     it('should detect navigation to unknown account ID', () => {
@@ -251,7 +251,7 @@ describe.skip('Account Navigation', () => {
         cy.contains('Account')
 
         cy.get('[id=notificationBanner]')
-            .find('span')
+            .find('div')
             .contains('Account with ID ' + unknownID + ' was not found')
     })
 
@@ -259,17 +259,17 @@ describe.skip('Account Navigation', () => {
         const accountId = '0.0.1744776'
         cy.visit('mainnet/account/' + accountId)
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
-        cy.contains('a', "Show associated contract")
+        cy.contains('Account ID ' + accountId)
+        cy.contains('a', "Associated contract")
             .click()
 
         cy.url().should('include', '/mainnet/contract/' + accountId)
-        cy.contains('Contract ID:' + accountId)
-        cy.contains('a', "Show associated account")
+        cy.contains('Contract ID ' + accountId)
+        cy.contains('a', "Associated account")
             .click()
 
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
+        cy.contains('Account ID ' + accountId)
     })
 
     it('should follow link to associated contract and back using evm address', () => {
@@ -278,17 +278,17 @@ describe.skip('Account Navigation', () => {
 
         cy.visit('mainnet/account/' + evmAddress)
         cy.url().should('include', '/mainnet/account/' + evmAddress)
-        cy.contains('Account ID:' + accountID)
-        cy.contains('a', "Show associated contract")
+        cy.contains('Account ID ' + accountID)
+        cy.contains('a', "Associated contract")
             .click()
 
         cy.url().should('include', '/mainnet/contract/' + accountID)
-        cy.contains('Contract ID:' + accountID)
-        cy.contains('a', "Show associated account")
+        cy.contains('Contract ID ' + accountID)
+        cy.contains('a', "Associated account")
             .click()
 
         cy.url().should('include', '/mainnet/account/' + accountID)
-        cy.contains('Account ID:' + accountID)
+        cy.contains('Account ID ' + accountID)
     })
 
     it('should follow link to corresponding node and back', () => {
@@ -296,7 +296,7 @@ describe.skip('Account Navigation', () => {
         const nodeId = '0'
         cy.visit('testnet/account/' + accountId)
         cy.url().should('include', '/testnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
+        cy.contains('Account ID ' + accountId)
         cy.contains('a', 'node1')
             .click()
 
@@ -306,7 +306,7 @@ describe.skip('Account Navigation', () => {
             .click()
 
         cy.url().should('include', '/testnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
+        cy.contains('Account ID ' + accountId)
     })
 
     it('should not show a link to associated contract', () => {
@@ -314,8 +314,8 @@ describe.skip('Account Navigation', () => {
         const searchId = '0.0.3'
         cy.visit('mainnet/account/' + accountId)
         cy.url().should('include', '/mainnet/account/' + accountId)
-        cy.contains('Account ID:' + accountId)
-        cy.contains('a', "Show associated contract")
+        cy.contains('Account ID ' + accountId)
+        cy.contains('a', "Associated contract")
 
         cy.get('[data-cy=searchBar]').within(() => {
             cy.get('input').type(searchId)
@@ -324,7 +324,7 @@ describe.skip('Account Navigation', () => {
         cy.get('[data-cy=searchBar]').submit()
 
         cy.url().should('include', '/mainnet/account/' + searchId)
-        cy.contains('Account ID:' + searchId)
-        cy.contains('a', "Show associated contract").should('not.exist')
+        cy.contains('Account ID ' + searchId)
+        cy.contains('a', "Associated contract").should('not.exist')
     })
 })

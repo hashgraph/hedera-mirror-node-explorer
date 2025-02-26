@@ -68,7 +68,7 @@
         </template>
         <template v-else>
           <div class="title">{{ props.pageTitle }}</div>
-          <button class="search-button" @click="onClick">
+          <button class="search-button" @click="onClick" data-cy="mobile-search-button">
             <Search :size="18" class="search-icon"/>
           </button>
         </template>

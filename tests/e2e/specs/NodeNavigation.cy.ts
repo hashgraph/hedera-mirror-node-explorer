@@ -20,7 +20,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Node Navigation', () => {
+describe('Node Navigation', () => {
 
     it('should navigate from node table to node details', () => {
         cy.visit('testnet/nodes/')
@@ -57,7 +57,7 @@ describe.skip('Node Navigation', () => {
             .click()
 
         cy.url().should('include', '/testnet/account/' + nodeAccount)
-        cy.contains('Account ID:' + nodeAccount)
+        cy.contains('Account ID ' + nodeAccount)
         // cy.contains('Node ' + nodeId)
     })
 
