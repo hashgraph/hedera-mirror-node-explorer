@@ -20,49 +20,47 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe.skip('Top Navigation Bar', () => {
+describe('Top Navigation Bar', () => {
 
     const defaultNetwork = 'mainnet'
 
     beforeEach(() => {
+        cy.viewport(2000, 800)
         cy.visit('/')
         cy.url().should('include', '/' + defaultNetwork + '/dashboard')
     })
 
     it('should switch networks', () => {
-        cy.contains('Crypto Transfers')
-        cy.contains('Smart Contract Calls')
-        cy.contains('HCS Messages')
+        cy.contains('Transactions Over Time')
+        cy.contains('Network Fees')
+        cy.contains('Active Accounts')
 
-        cy.get('#drop-down-menu')
-            .find('select')
+        cy.get('[data-cy="network-selector"]')
             .select('MAINNET')
             .should('have.value', 'mainnet')
 
         cy.url().should('include', '/mainnet/dashboard')
-        cy.contains('Crypto Transfers')
-        cy.contains('Smart Contract Calls')
-        cy.contains('HCS Messages')
+        cy.contains('Transactions Over Time')
+        cy.contains('Network Fees')
+        cy.contains('Active Accounts')
 
-        cy.get('#drop-down-menu')
-            .find('select')
+        cy.get('[data-cy="network-selector"]')
             .select('TESTNET')
             .should('have.value', 'testnet')
 
         cy.url().should('include', '/testnet/dashboard')
-        cy.contains('Crypto Transfers')
-        cy.contains('Smart Contract Calls')
-        cy.contains('HCS Messages')
+        cy.contains('Transactions Over Time')
+        cy.contains('Network Fees')
+        cy.contains('Active Accounts')
 
-        cy.get('#drop-down-menu')
-            .find('select')
+        cy.get('[data-cy="network-selector"]')
             .select('PREVIEWNET')
             .should('have.value', 'previewnet')
 
         cy.url().should('include', '/previewnet/dashboard')
-        cy.contains('Crypto Transfers')
-        cy.contains('Smart Contract Calls')
-        cy.contains('HCS Messages')
+        cy.contains('Transactions Over Time')
+        cy.contains('Network Fees')
+        cy.contains('Active Accounts')
     })
 
     it('should navigate to top level pages', () => {
@@ -70,7 +68,7 @@ describe.skip('Top Navigation Bar', () => {
         cy.contains('Recent Transactions')
 
         cy.contains('Tokens').click()
-        cy.contains('Recent Non Fungible Tokens')
+        cy.contains('Recent NFTs')
         cy.contains('Recent Fungible Tokens')
 
         cy.contains('Topics').click()
@@ -94,9 +92,9 @@ describe.skip('Top Navigation Bar', () => {
         cy.contains('Blocks')
 
         cy.contains('Dashboard').click()
-        cy.contains('Crypto Transfers')
-        cy.contains('Smart Contract Calls')
-        cy.contains('HCS Messages')
+        cy.contains('Transactions Over Time')
+        cy.contains('Network Fees')
+        cy.contains('Active Accounts')
     })
 
 })
