@@ -68,7 +68,6 @@ describe("MainDashboard.vue", () => {
 
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/network/exchangerate",
-            "api/v1/blocks?limit=100",
             "api/v1/network/exchangerate",
             "api/v1/network/supply",
             "api/v1/network/supply",
