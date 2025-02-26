@@ -22,7 +22,7 @@
 
 import {makeExchangeFormat} from "../TestUtils";
 
-describe.skip('Transaction Navigation', () => {
+describe('Transaction Navigation', () => {
 
     it('should navigate from table to transaction details', () => {
         cy.visit('testnet/transactions/')
@@ -55,12 +55,10 @@ describe.skip('Transaction Navigation', () => {
                 cy.url().should('include', '/testnet/transactions?type=' + selectType.toLowerCase())
             })
 
-        cy.get('.box')
-            .find('[data-cy="pauseButton"]')
+        cy.get('[data-cy="pauseButton"]')
             .click()
 
-        cy.get('.box')
-            .find('[data-cy="playButton"]')
+        cy.get('[data-cy="playButton"]')
             .click()
     })
 
@@ -77,7 +75,7 @@ describe.skip('Transaction Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ID:' + $id.text())
+                cy.get('title').contains('Account ' + $id.text())
             })
 
         cy.go('back')
@@ -90,7 +88,7 @@ describe.skip('Transaction Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/account/' + $id.text())
-                cy.contains('Account ID:' + $id.text())
+                cy.get('title').contains('Account ' + $id.text())
             })
 
         cy.go('back')
@@ -114,7 +112,7 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', scheduledConsensusTimestamp)
-                cy.contains('Transaction ' + transactionId)
+                cy.get('title').contains('Transaction ' + scheduledConsensusTimestamp)
             })
 
         cy.get('#scheduledValue')
@@ -124,7 +122,7 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', schedulingConsensusTimestamp)
-                cy.contains('Transaction ' + transactionId)
+                cy.get('title').contains('Transaction ' + schedulingConsensusTimestamp)
             })
     })
 
@@ -146,7 +144,7 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', childConsensusTimestamp)
-                cy.contains('Transaction ' + transactionId)
+                cy.get('title').contains('Transaction ' + childConsensusTimestamp)
             })
 
         cy.get('#parentTransactionValue')
@@ -156,11 +154,12 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', parentConsensusTimestamp)
-                cy.contains('Transaction ' + transactionId)
+                cy.get('title').contains('Transaction ' + parentConsensusTimestamp)
             })
     })
 
-    it('should follow link "Show all transactions with same ID"', () => {
+    // TODO: To be re-enabled one "Show all transactions with same ID" is restored
+    it.skip('should follow link "Show all transactions with same ID"', () => {
         const timestamp = "1674505116.619586693"
         const transactionId = "0.0.995584@1674505107.270597663"
 
@@ -234,7 +233,7 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/contract/')
                 cy.url().should('include', contractId)
-                cy.contains('Contract ID:' + contractId)
+                cy.get('title').contains('Contract ' + contractId)
             })
         cy.go('back')
 
@@ -247,7 +246,7 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', childConsensusTimestamp)
-                cy.contains('Transaction ' + transactionId)
+                cy.get('title').contains('Transaction ' + childConsensusTimestamp)
             })
 
         cy.get('#parentTransactionValue')
@@ -257,7 +256,7 @@ describe.skip('Transaction Navigation', () => {
                 // cy.log('Selected operator Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.url().should('include', parentConsensusTimestamp)
-                cy.contains('Transaction ' + transactionId)
+                cy.get('title').contains('Transaction ' + parentConsensusTimestamp)
             })
     })
 
@@ -269,7 +268,7 @@ describe.skip('Transaction Navigation', () => {
         cy.contains('Transaction')
 
         cy.get('[id=notificationBanner]')
-            .find('span')
+            .find('div')
             .contains('Transaction with timestamp ' + unknownTimestamp + ' was not found')
     })
 
