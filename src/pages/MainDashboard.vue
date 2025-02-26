@@ -69,7 +69,6 @@ import {TxOverTimeController} from "@/charts/hgraph/TxOverTimeController.ts";
 import ChartView from "@/charts/core/ChartView.vue";
 import {NetworkFeeController} from "@/charts/hgraph/NetworkFeeController.ts";
 import {ActiveAccountController} from "@/charts/hgraph/ActiveAccountController.ts";
-import {TPSMetricLoader} from "@/components/dashboard/metrics/TPSMetricLoader.ts";
 import {ThemeController} from "@/components/ThemeController.ts";
 import {routeManager} from "@/router.ts";
 
@@ -82,15 +81,6 @@ const themeController = ThemeController.inject()
 const txOverTimeController = new TxOverTimeController(themeController, routeManager)
 onMounted(() => txOverTimeController.mount())
 onBeforeUnmount(() => txOverTimeController.unmount())
-
-// const tpsController = new TPSController(themeController, routeManager)
-// onMounted(() => tpsController.mount())
-// onBeforeUnmount(() => tpsController.unmount())
-
-const tpsMetricLoader = new TPSMetricLoader()
-const currentTPS = tpsMetricLoader.currentTPS
-onMounted(() => tpsMetricLoader.mount())
-onBeforeUnmount(() => tpsMetricLoader.unmount())
 
 const networkFeeController = new NetworkFeeController(themeController, routeManager)
 onMounted(() => networkFeeController.mount())
