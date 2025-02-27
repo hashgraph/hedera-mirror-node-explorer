@@ -126,6 +126,7 @@
           v-if="showAllTokensLink"
           :route="routeManager.makeRouteToTokensByAccount(accountId)"
           text="All tokens"
+          style="display: flex; justify-content: center;"
       />
     </template>
 
