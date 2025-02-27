@@ -65,11 +65,12 @@
           <template #name>Type</template>
           <template #value>
             <StringValue :string-value="transactionType ? makeTypeLabel(transactionType) : null"/>
-            <div v-if="scheduledTransaction" id="scheduledLink">
-              <router-link :to="routeManager.makeRouteToTransactionObj(scheduledTransaction)">
-                <span class="h-is-low-contrast">Show scheduled transaction</span>
-              </router-link>
-            </div>
+            <ArrowLink
+                v-if="scheduledTransaction"
+                id="scheduledLink"
+                :route="routeManager.makeRouteToTransactionObj(scheduledTransaction)"
+                text="Scheduled transaction"
+            />
           </template>
         </Property>
         <Property v-if="displayResult" id="result">
@@ -194,11 +195,12 @@
           <template #name>Scheduled</template>
           <template v-if="transaction?.scheduled===true" #value>
             True
-            <div v-if="schedulingTransaction" id="schedulingLink">
-              <router-link :to="routeManager.makeRouteToTransactionObj(schedulingTransaction)">
-                <span class="h-is-low-contrast">Show schedule create transaction</span>
-              </router-link>
-            </div>
+            <ArrowLink
+                v-if="schedulingTransaction"
+                id="schedulingLink"
+                :route="routeManager.makeRouteToTransactionObj(schedulingTransaction)"
+                text="Schedule create transaction"
+            />
           </template>
           <template v-else-if="scheduledTransaction!==null" #value>
             False
@@ -227,10 +229,13 @@
                 <TokenExtra :token-id="id" :use-anchor="true"/>
               </span>
             </div>
-            <router-link v-if="displayAllChildrenLinks" class="h-is-low-contrast"
-                         :to="routeManager.makeRouteToTransactionsById(transactionId ?? '')">
-              {{ 'Show all ' + childTransactions.length + ' child transactions' }}
-            </router-link>
+            <ArrowLink
+                style="text-align: left"
+                v-if="displayAllChildrenLink"
+                id="allChildrenLink"
+                :route="routeManager.makeRouteToTransactionsById(transactionId ?? '')"
+                :text="'All ' + childTransactions.length + ' child transactions'"
+            />
           </template>
         </Property>
       </template>
@@ -334,7 +339,7 @@ onBeforeUnmount(() => transactionGroupLookup.unmount())
 
 const transactionGroupAnalyzer = new TransactionGroupAnalyzer(transactionGroupLookup.entity)
 
-const displayAllChildrenLinks = computed(() => {
+const displayAllChildrenLink = computed(() => {
   return transactionGroupAnalyzer.childTransactions.value.length > MAX_INLINE_CHILDREN
 })
 
