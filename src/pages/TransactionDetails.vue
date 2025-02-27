@@ -38,6 +38,12 @@
             FAILURE
           </div>
         </template>
+        <ArrowLink
+            v-if="transactionId && displayAllTransactionsLink"
+            id="allTransactionsLink"
+            :route="routeManager.makeRouteToTransactionsById(transactionId)"
+            text="Transactions with same ID"
+        />
       </template>
       <template #right-control>
         <SelectView
@@ -294,6 +300,7 @@ import {CoreConfig} from "@/config/CoreConfig.ts";
 import SelectView from "@/elements/SelectView.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import HexaValue from "@/components/values/HexaValue.vue";
+import ArrowLink from "@/components/ArrowLink.vue";
 
 const MAX_INLINE_CHILDREN = 10
 
@@ -303,6 +310,11 @@ const props = defineProps({
 })
 
 const cryptoName = CoreConfig.inject().cryptoName
+
+const displayAllTransactionsLink = computed(() => {
+  const txnCount = transactionGroupAnalyzer.transactions.value?.length ?? 0
+  return txnCount >= 2
+})
 
 const txIdForm = ref(TransactionID.useAtForm.value ? 'atForm' : 'dashForm')
 watch(txIdForm, () => TransactionID.setUseAtForm(txIdForm.value === 'atForm'))
