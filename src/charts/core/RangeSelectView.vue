@@ -51,7 +51,7 @@ const props = defineProps({
 })
 
 const ids = [ChartRange.day, ChartRange.year, ChartRange.all]
-const labels = ['24h', 'YTD', 'All']
+const labels = ['24h', '1Y', 'All']
 const active = computed(() => [dayRangeSupported.value, yearRangeSupported.value, allRangeSupported.value])
 
 const loading = computed(() => props.controller.state.value === ChartState.loading)
