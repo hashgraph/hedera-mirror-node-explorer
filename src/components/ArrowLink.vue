@@ -66,7 +66,6 @@ div.arrow-link {
   display: flex;
   gap: 2px;
   height: 18px;
-  justify-content: center;
 }
 
 span.link-text {

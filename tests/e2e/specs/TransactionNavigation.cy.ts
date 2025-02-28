@@ -158,8 +158,7 @@ describe('Transaction Navigation', () => {
             })
     })
 
-    // TODO: To be re-enabled one "Show all transactions with same ID" is restored
-    it.skip('should follow link "Show all transactions with same ID"', () => {
+    it('should follow link "Transactions with same ID"', () => {
         const timestamp = "1674505116.619586693"
         const transactionId = "0.0.995584@1674505107.270597663"
 
@@ -167,7 +166,7 @@ describe('Transaction Navigation', () => {
         cy.url().should('include', '/mainnet/transaction/' + timestamp)
 
         cy.get('#allTransactionsLink')
-            .contains('Show all transactions with the same ID')
+            .contains('Transactions with same ID')
             .click()
 
         cy.url().should('include', '/mainnet/transactionsById/' + makeExchangeFormat(transactionId))
