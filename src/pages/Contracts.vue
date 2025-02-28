@@ -114,7 +114,7 @@ div.verify-switch {
 }
 
 div.switch-text {
-  font-family: 'Styrene A Web', serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 14px;
   font-weight: 400;
   height: 18px;

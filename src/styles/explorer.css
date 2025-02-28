@@ -267,7 +267,7 @@ ul {
     background-color: var(--tab-background);
     border-radius: 8px;
     color: var(--text-primary);
-    font-family: "Styrene A Web", sans-serif;
+    font-family: var(--font-family-heading), sans-serif;
     font-weight: 700;
     font-size: 14px;
     max-width: fit-content;
@@ -279,7 +279,7 @@ ul {
     border-radius: 32px;
     color: var(--network-chip-text-color);
     display: inline-block;
-    font-family: "Styrene A Web", sans-serif;
+    font-family: var(--font-family-heading), sans-serif;
     font-size: 10px;
     font-weight: 400;
     height: 20px;
@@ -344,7 +344,7 @@ hr.horizontal-line {
     background: #383838;
     border: solid 0.5px var(--network-theme-color);
     border-radius: 4px;
-    font-family: "Styrene A Web", sans-serif;
+    font-family: var(--font-family-heading), sans-serif;
     font-weight: normal;
     font-size: 13px;
     line-height: 19px;
@@ -358,7 +358,7 @@ hr.horizontal-line {
     background: #383838;
     border: solid 0.5px var(--network-theme-color);
     border-radius: 4px;
-    font-family: "Styrene A Web", sans-serif;
+    font-family: var(--font-family-heading), sans-serif;
     font-weight: normal;
     font-size: 11px;
     line-height: 16px;
@@ -481,7 +481,7 @@ a.h-banner-link:hover {
 */
 
 :root {
-    --dp-font-family: "Inter", sans-serif;
+    --dp-font-family: var(--font-family-proportional), sans-serif;
     --dp-border-radius: 0;
     --dp-font-size: 11px;
 }

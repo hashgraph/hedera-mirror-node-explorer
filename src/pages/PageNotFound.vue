@@ -56,7 +56,7 @@ div.page-not-found {
   min-height: 450px;
   text-align: center;
   padding-top: 100px;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-family-proportional), sans-serif;
   font-weight: 300;
   ;
 }

@@ -77,7 +77,7 @@ div.notification-banner {
 
 .notification-text {
   color: white;
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 14px;
   font-weight: 500;
   text-align: center;

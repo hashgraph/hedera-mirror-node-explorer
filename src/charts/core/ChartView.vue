@@ -107,7 +107,7 @@ div.chart-view {
   display: flex;
   flex-direction: column;
   row-gap: 32px;
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
 }
 
 div.chart-view-header {

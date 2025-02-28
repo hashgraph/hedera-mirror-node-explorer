@@ -54,8 +54,7 @@
 <script setup lang="ts">
 
 import {PropType, useSlots} from "vue";
-import {CircleCheck} from 'lucide-vue-next';
-import {TriangleAlert} from 'lucide-vue-next';
+import {CircleCheck, TriangleAlert} from 'lucide-vue-next';
 import {TaskPanelMode} from "@/dialogs/core/DialogUtils.ts";
 import SpinnerView from "@/elements/SpinnerView.vue";
 
@@ -89,7 +88,7 @@ div.task-panel-message {
   color: var(--text-primary);
   display: flex;
   flex-direction: column;
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 20px;
   font-weight: 500;
   line-height: 28px;
@@ -102,7 +101,7 @@ div.task-panel-extra {
   color: var(--text-secondary);
   display: flex;
   flex-direction: column;
-  font-family: "Inter", sans-serif;
+  font-family: var(--font-family-proportional), sans-serif;
   font-size: 14px;
   font-weight: 400;
   row-gap: 4px;

@@ -79,7 +79,7 @@ div.left {
   align-items: center;
   column-gap: 10px;
   display: flex;
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   justify-content: space-between;
 }
 

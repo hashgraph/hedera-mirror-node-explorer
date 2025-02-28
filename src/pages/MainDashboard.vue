@@ -100,7 +100,7 @@ onBeforeUnmount(() => activeAccountsController.unmount())
 
 div.dashboard-title {
   color: var(--text-primary);
-  font-family: 'Styrene A Web', serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 20px;
   font-weight: 500;
   line-height: 26px;

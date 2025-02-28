@@ -69,7 +69,7 @@ div.arrow-link {
 }
 
 span.link-text {
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 14px;
   font-weight: 400;
 }

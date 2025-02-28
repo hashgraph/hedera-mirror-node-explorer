@@ -265,7 +265,7 @@ span.checksum {
 
 p.connect-wallet-text {
   color: var(--text-disabled);
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 20px;
   font-weight: 500;
   height: 26px;
