@@ -270,7 +270,7 @@
             <option value="LATEST">LATEST</option>
             <option value="JUMP">JUMP TO DATE</option>
           </SelectView>
-          <DownloadButton @click="transactionDownloadDialogVisible = true"/>
+          <Download :size="24" @click="transactionDownloadDialogVisible = true"/>
           <TransactionFilterSelect v-model:selected-filter="transactionType"/>
         </template>
         <template v-else-if="selectedTab === 'contracts'">
@@ -370,7 +370,6 @@ import AccountCreatedContractsTable from "@/components/account/AccountCreatedCon
 import {VerifiedContractsByAccountIdCache} from "@/utils/cache/VerifiedContractsByAccountIdCache";
 import {VerifiedContractsController} from "@/components/contract/VerifiedContractsController";
 import DateTimePicker from "@/components/DateTimePicker.vue";
-import DownloadButton from "@/components/DownloadButton.vue";
 import TransactionDownloadDialog from "@/dialogs/download/TransactionDownloadDialog.vue";
 import {NameQuery} from "@/utils/name_service/NameQuery";
 import EntityIOL from "@/components/values/link/EntityIOL.vue";
@@ -388,6 +387,7 @@ import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import ArrowLink from "@/components/ArrowLink.vue";
 import {ButtonSize} from "@/dialogs/core/DialogUtils.ts";
 import EntityIDView from "@/components/values/EntityIDView.vue";
+import {Download} from 'lucide-vue-next';
 
 const props = defineProps({
   accountId: String,

@@ -29,6 +29,10 @@
 
     <template #downloadDialogInput>
 
+      <div class="download-hint">
+        This will download the transaction history of the account as a CSV file.
+      </div>
+
       <ContentCell>
         <template #cellTitle>Select Scope:</template>
         <template #cellContent>
@@ -143,5 +147,11 @@ const tokenIdRequired = controller.tokenIdRequired
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+div.download-hint {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 400;
+}
 
 </style>
