@@ -287,6 +287,21 @@ ul {
     text-wrap: nowrap;
 }
 
+.h-has-pill.h-chip-success {
+    background-color: var(--status-success-color);
+    color: #FFFFFF;
+}
+
+.h-has-pill.h-chip-error {
+    background-color: var(--status-error-color);
+    color: #FFFFFF;
+}
+
+.h-has-pill.h-chip-default {
+    background-color: var(--chip-secondary-default);
+    color: var(--text-primary);
+}
+
 .h-is-bold {
     font-weight: 600;
 }
@@ -311,17 +326,6 @@ ul {
     color: var(--network-text-accent-color);
 }
 
-.h-status-success {
-    background-color: var(--status-success-color);
-}
-
-.h-status-error {
-    background-color: var(--status-error-color);
-}
-
-.h-chip-default {
-    background-color: var(--chip-secondary-default);
-}
 
 .h-should-wrap {
     word-break: break-word;

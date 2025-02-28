@@ -52,10 +52,10 @@
       <o-table-column v-slot="props" field="call_type" label="CALL TYPE">
         <div class="call-type">
           {{ props.row.depthPath }}
-          <span v-if="isSuccessful(props.row.action)" class="h-has-pill h-status-success">
+          <span v-if="isSuccessful(props.row.action)" class="h-has-pill h-chip-success">
             {{ makeOperationType(props.row.action) }}
           </span>
-          <span v-else class="h-has-pill h-status-error">
+          <span v-else class="h-has-pill h-chip-error">
             {{ '! ' + makeOperationType(props.row.action) }}
           </span>
         </div>
