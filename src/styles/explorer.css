@@ -83,7 +83,7 @@
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
     --light-chip-text-primary: white;
-    --light-chip-secondary-default: #545454;
+    --light-chip-secondary-default: #EFEFEF;
     --light-button-text-secondary: var(--text-primary);
     --light-button-background-secondary: #EFEFEF;
     --light-copy-button-text: #FFFFFF;
@@ -281,7 +281,7 @@ ul {
     display: inline-block;
     font-family: "Styrene A Web", sans-serif;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 400;
     height: 20px;
     padding: 2px 8px;
     text-wrap: nowrap;
