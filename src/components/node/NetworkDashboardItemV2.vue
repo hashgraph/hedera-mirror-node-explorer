@@ -107,7 +107,7 @@ div.item-l2 {
 
 .item-value {
   color: var(--text-primary);
-  font-family: 'Styrene A Web', sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 20px;
   font-weight: 500;
   height: 26px;

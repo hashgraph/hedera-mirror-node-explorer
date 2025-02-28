@@ -70,7 +70,7 @@ div.group-box-title {
   align-items: center;
   column-gap: 8px;
   color: var(--text-secondary);
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-family-proportional), sans-serif;
   font-weight: 400;
   font-size: 12px;
 }

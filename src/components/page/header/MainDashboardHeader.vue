@@ -144,7 +144,7 @@ div.top-side {
 
 div.title {
   color: var(--text-primary);
-  font-family: 'Styrene A Web', serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 32px;
   font-weight: 400;
   line-height: 42px;

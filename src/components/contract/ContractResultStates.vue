@@ -306,7 +306,7 @@ div.pagination {
 
 p.not-supported {
   color: var(--text-secondary);
-  font-family: "Styrene A Web", sans-serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-weight: 300;
   font-size: 14px;
 }
