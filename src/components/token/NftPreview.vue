@@ -34,7 +34,7 @@
   >
     <template #placeHolder>
       <div class="placeholder">
-        <FileX v-if="size >= 100" :size="40"/>
+        <ImageOff v-if="size >= 100" :size="40"/>
         <span>
         {{ size > 200 ? 'Non Fungible Token' : 'NFT' }}
       </span>
@@ -58,7 +58,7 @@
 import {computed, PropType, ref} from "vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import MediaContent from "@/components/MediaContent.vue";
-import {FileX} from 'lucide-vue-next';
+import {ImageOff} from 'lucide-vue-next';
 
 const props = defineProps({
   url: {
