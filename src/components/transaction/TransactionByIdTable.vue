@@ -44,12 +44,10 @@
       @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
-      <span>
+      <div style="display: flex; gap: 8px; line-height: 18px">
         <TimestampValue class="h-is-bold" v-bind:timestamp="props.row.consensus_timestamp"/>
-        <span v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-          <i class="fas fa-exclamation-triangle"></i>
-        </span>
-      </span>
+        <TriangleAlert v-if="props.row.result !== 'SUCCESS'" :size="18" class="h-text-error"/>
+      </div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="name" label="TYPE">
@@ -90,6 +88,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
+import {TriangleAlert} from "lucide-vue-next";
 
 const props = defineProps({
   narrowed: Boolean,
