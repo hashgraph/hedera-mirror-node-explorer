@@ -30,7 +30,7 @@
       <div
           v-if="isVerificationAvailable"
           class="h-has-pill"
-          :class="{'h-status-success':isVerified, 'h-chip-default':!isVerified}"
+          :class="{'h-chip-success':isVerified, 'h-chip-default':!isVerified}"
            style="margin-top: 2px">
         {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>

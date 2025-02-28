@@ -31,10 +31,10 @@
         <span>Transaction </span>
         <TransactionIdValue :id="formattedTransactionId"/>
         <template v-if="transaction">
-          <div v-if="transactionSucceeded" class="h-has-pill h-status-success" style="margin-top: 2px">
+          <div v-if="transactionSucceeded" class="h-has-pill h-chip-success" style="margin-top: 2px">
             SUCCESS
           </div>
-          <div v-else class="h-has-pill h-status-error" style="margin-top: 2px">
+          <div v-else class="h-has-pill h-chip-error" style="margin-top: 2px">
             FAILURE
           </div>
         </template>

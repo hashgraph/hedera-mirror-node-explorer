@@ -35,23 +35,25 @@
           </div>
         </template>
       </Copyable>
-      <span v-if="entityId && showId">
-        <span style="word-wrap: break-word">(</span>
-        <router-link v-if="verified && !showType" :to="routeManager.makeRouteToContract(entityId)">
-          <span>{{ contractName }}</span>
+      <div v-if="entityId && showId" class="entity-id-or-name">
+        <span>(</span>
+        <router-link v-if="verified && !showType" :to="routeManager.makeRouteToContract(entityId)"
+                     class="h-is-extra-text">
+          {{ contractName }}
         </router-link>
-        <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)">
-          <span>{{ displayId }}</span>
+        <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)"
+                     class="h-is-extra-text">
+          {{ displayId }}
         </router-link>
         <ContractLink v-else-if="entityLinkType === ExtendedEntityType.CONTRACT" :contract-id="entityId"/>
         <AccountLink v-else-if="entityLinkType === ExtendedEntityType.ACCOUNT" :account-id="entityId"/>
         <TokenLink v-else-if="entityLinkType === ExtendedEntityType.TOKEN" :token-id="entityId"/>
-        <span v-else>{{ displayId }}</span>
-        <span style="margin-right: 4px">)</span>
-        <span v-if="verified && !showType" class="icon is-small has-text-success">
-          <i class="fas fa-check-circle"></i>
+        <span v-else>
+          {{ displayId }}
         </span>
-      </span>
+        <span>)</span>
+        <CircleCheckBig v-if="verified && !showType" :size="18" class="circle-check ml-1"/>
+      </div>
     </div>
     <div v-if="showType" class="address-type">
       <div class="h-is-low-contrast">{{ entityType }}</div>
@@ -59,9 +61,7 @@
         <div class="h-is-extra-text">
           {{ contractName }}
         </div>
-        <div class="icon is-small has-text-success">
-          <i class="fas fa-check-circle"></i>
-        </div>
+        <CircleCheckBig :size="18" class="circle-check"/>
       </template>
     </div>
   </div>
@@ -88,6 +88,7 @@ import {routeManager} from "@/router";
 import ContractLink from "@/components/values/link/ContractLink.vue";
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
+import {CircleCheckBig} from 'lucide-vue-next';
 
 enum ExtendedEntityType { UNDEFINED, ACCOUNT, CONTRACT, TOKEN }
 
@@ -180,7 +181,7 @@ const updateFromAccount = async (): Promise<boolean> => {
     entityLinkType.value = ExtendedEntityType.ACCOUNT
     evmAddress.value = account.evm_address
     entityId.value = account.account
-  }/* else {  // Causes side effect : ContractAnalyzer.contract passes from non null to null contractIdDidChange() ?????
+  }/* else {  // Causes side effect : ContractAnalyzer.contract passes from non-null to null contractIdDidChange() ?????
     entityLinkType.value = ExtendedEntityType.UNDEFINED
     evmAddress.value = null
     entityId.value = null
@@ -241,13 +242,22 @@ const verified = computed(() => contractAnalyzer.globalState.value !== GlobalSta
 
 div.evm-address {
   display: inline-block;
-  line-height: 20px;
+  line-height: 18px;
   word-wrap: break-word;
+}
+
+div.entity-id-or-name {
+  display: inline-flex;
 }
 
 div.address-type {
   display: flex;
+  line-height: 18px;
   gap: 4px;
+}
+
+.circle-check {
+  color: var(--text-success);
 }
 
 </style>

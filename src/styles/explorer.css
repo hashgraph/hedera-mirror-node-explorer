@@ -83,7 +83,7 @@
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
     --light-chip-text-primary: white;
-    --light-chip-secondary-default: #545454;
+    --light-chip-secondary-default: #EFEFEF;
     --light-button-text-secondary: var(--text-primary);
     --light-button-background-secondary: #EFEFEF;
     --light-copy-button-text: #FFFFFF;
@@ -281,10 +281,25 @@ ul {
     display: inline-block;
     font-family: "Styrene A Web", sans-serif;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 400;
     height: 20px;
     padding: 2px 8px;
     text-wrap: nowrap;
+}
+
+.h-has-pill.h-chip-success {
+    background-color: var(--status-success-color);
+    color: #FFFFFF;
+}
+
+.h-has-pill.h-chip-error {
+    background-color: var(--status-error-color);
+    color: #FFFFFF;
+}
+
+.h-has-pill.h-chip-default {
+    background-color: var(--chip-secondary-default);
+    color: var(--text-primary);
 }
 
 .h-is-bold {
@@ -311,17 +326,6 @@ ul {
     color: var(--network-text-accent-color);
 }
 
-.h-status-success {
-    background-color: var(--status-success-color);
-}
-
-.h-status-error {
-    background-color: var(--status-error-color);
-}
-
-.h-chip-default {
-    background-color: var(--chip-secondary-default);
-}
 
 .h-should-wrap {
     word-break: break-word;
