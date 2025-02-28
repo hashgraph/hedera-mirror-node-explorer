@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="Staking">
 
+    <template v-if="temporaryBanner" #banner>
+      <NotificationBanner :message="temporaryBanner" :is-error="false"/>
+    </template>
+
     <UpdateAccountDialog
         v-model:show-dialog="changeStakingDialogVisible"
         :staking-only="true"
@@ -35,8 +39,6 @@
     <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
                        :account-id="accountId"
                        v-on:staking-changed="stakingChanged"/>
-
-    <NotificationBanner v-if="temporaryBanner" :message="temporaryBanner" :is-error="false"/>
 
     <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
       <template #title>

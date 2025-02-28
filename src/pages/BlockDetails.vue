@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="Block Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
+
     <DashboardCardV2 collapsible-key="blockDetails">
       <template #title>
         Block {{ block?.number?.toString() ?? "" }}
@@ -53,8 +57,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-
         <Property id="count" full-width>
           <template #name>No. Transactions</template>
           <template v-slot:value>

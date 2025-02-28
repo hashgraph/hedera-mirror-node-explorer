@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="Admin Key Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
+
     <DashboardCardV2>
       <template #title>
         <span>Admin Key for Account </span>
@@ -38,8 +42,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-
         <KeyValue
             v-if="normalizedAccountId"
             :details="true"

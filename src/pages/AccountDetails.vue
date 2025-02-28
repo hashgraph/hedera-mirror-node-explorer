@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="Account Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification" :is-error="!isInactiveEvmAddress"/>
+    </template>
+
     <DashboardCardV2 collapsible-key="accountDetails">
       <template #title>
           <span v-if="isInactiveEvmAddress">
@@ -61,8 +65,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
-
         <Property id="entityId" full-width>
           <template #name>
             Account ID

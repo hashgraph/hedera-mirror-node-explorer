@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="Contract Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
+
     <DashboardCardV2 collapsible-key="contractDetails">
       <template #title>
         {{ `Contract ${contractName ?? ''}` }}
@@ -50,8 +54,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-
         <Property id="entityId" full-width>
           <template #name>
             Contract ID

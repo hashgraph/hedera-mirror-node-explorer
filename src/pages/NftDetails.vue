@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="NFT Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
+
     <DashboardCardV2 collapsible-key="nftDetails">
       <template #title>
         <div class="title-extra">
@@ -34,13 +38,6 @@
         <div>
           {{ `#${props.serialNumber}` }}
         </div>
-      </template>
-
-      <template #content>
-        <NotificationBanner
-            v-if="notification"
-            :message="notification"
-        />
       </template>
 
       <template #media-content>
