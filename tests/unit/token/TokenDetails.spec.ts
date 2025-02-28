@@ -426,7 +426,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
@@ -497,7 +497,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
@@ -568,8 +568,9 @@ describe("TokenDetails.vue", () => {
         ])
 
         expect(wrapper.text()).toContain(
-            "NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenIdWithChecksum
-                + 'EVM Address' + testTokenEVMAddress + "Copy")
+            "Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')'
+            + 'Token ID' + testTokenIdWithChecksum
+            + 'EVM Address' + testTokenEVMAddress + "Copy")
         expect(wrapper.text()).toMatch("Token is deleted")
 
         mock.restore()
@@ -788,7 +789,9 @@ describe("TokenDetails.vue", () => {
             "api/v1/tokens/" + SAMPLE_NFTS.nfts[2].token_id + "/nfts/342",
         ])
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain(
+            "Token DetailsToken is deletedNFT Collection" + testTokenName
+            + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenFeesSection)
         expect(customFees.exists()).toBe(false)

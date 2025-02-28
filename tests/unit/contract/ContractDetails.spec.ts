@@ -802,7 +802,7 @@ describe("ContractDetails.vue", () => {
             "api/v1/accounts/0x00000000000000000000000000000000000004ec",
         ])
 
-        expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account" + "Contract is deleted " + "Contract ID " + contract.contract_id))
+        expect(wrapper.text()).toMatch(RegExp("Contract DetailsContract is deletedContract  Associated account Contract ID " + contract.contract_id))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)

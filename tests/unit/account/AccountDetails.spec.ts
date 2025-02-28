@@ -487,7 +487,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
         ])
 
-        expect(wrapper.text()).toMatch(RegExp("Account is deleted Account ID " + deletedAccount.account))
+        expect(wrapper.text()).toMatch(RegExp("Account DetailsAccount is deleted Account  Account ID " + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
