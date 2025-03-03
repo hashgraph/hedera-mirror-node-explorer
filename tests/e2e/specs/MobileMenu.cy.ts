@@ -39,7 +39,7 @@ describe('Mobile Menu', () => {
         cy.get('[data-cy="mobile-menu-icon"]').click()
         cy.url().should('include', '/' + defaultNetwork + '/dashboard')
 
-        cy.get('[data-cy="mobile-menu-content"]').then(($element) => {
+        cy.get('[data-cy="mobile-menu-content"]').then(() => {
             cy.contains('Dashboard')
             cy.contains('Transactions')
             cy.contains('Tokens')

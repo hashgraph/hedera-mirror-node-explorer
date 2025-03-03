@@ -29,7 +29,7 @@
         time-picker-inline
         :dark="darkSelected"
         @closed="handleClosed"
-        @cleared="$emit('dateCleared')"
+        @cleared="emit('dateCleared')"
     />
   </div>
 </template>

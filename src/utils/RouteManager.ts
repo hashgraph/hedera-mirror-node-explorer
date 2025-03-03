@@ -546,8 +546,7 @@ export class RouteManager {
                 document.title = titlePrefix + "Dashboard"
                 break;
             case "TransactionsById":
-                const tid = TransactionID.normalizeForDisplay(to.params.transactionId as string)
-                document.title = titlePrefix + "Transactions with ID " + tid
+                document.title = titlePrefix + "Transactions with ID " + TransactionID.normalizeForDisplay(to.params.transactionId as string)
                 break;
             case "TransactionDetails":
                 document.title = titlePrefix + "Transaction " + (to.query.tid ?? to.params.transactionLoc)
