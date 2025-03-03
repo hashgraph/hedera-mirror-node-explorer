@@ -40,7 +40,7 @@ describe("TransactionTableController.ts", () => {
     test("mount + unmount", async () => {
         const PAGE_SIZE = 5
         //
-        // const mock = new MockAdapter(axios)
+        // const mock = new MockAdapter(axios as any)
 
         const router = makeRouter()
         const accountId = ref<string | null>(null)
@@ -96,7 +96,7 @@ describe("TransactionTableController.ts", () => {
     test("route with p/k + mount + accountId setup + unmount", async () => {
         const PAGE_SIZE = 5
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
@@ -161,7 +161,7 @@ describe("TransactionTableController.ts", () => {
         const ACCOUNT_ID = "0.0.4"
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         const param1 = {
             limit: PAGE_SIZE,
@@ -225,7 +225,7 @@ describe("TransactionTableController.ts", () => {
     test("mount + transactionType setup + unmount [accountMandatory=false]", async () => {
         const PAGE_SIZE = 5
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         const params1 = {limit: 5, order: "desc"}

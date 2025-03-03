@@ -28,7 +28,7 @@ import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(axios as any);
 const matcher1 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
 mock.onGet(matcher1).reply(200, SAMPLE_TOKEN);
 const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id

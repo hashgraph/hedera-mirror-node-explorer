@@ -46,7 +46,7 @@ describe("Contracts.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contracts = SAMPLE_CONTRACTS
         const matcher1 = "api/v1/contracts"

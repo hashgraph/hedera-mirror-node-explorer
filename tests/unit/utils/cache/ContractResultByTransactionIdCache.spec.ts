@@ -33,7 +33,7 @@ describe("ContractResultByTransactionIdCache", () => {
 
         expect(ContractResultByTransactionIdCache.instance.isEmpty()).toBeTruthy()
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const transactionId = "0.0.2307776@1683720888.979207121"
         const matcher1 = "/api/v1/contracts/results/" + transactionId

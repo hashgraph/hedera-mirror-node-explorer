@@ -35,7 +35,7 @@ describe("ContractAnalyzer.spec.ts", () => {
     test("unknown custom contract", async () => {
 
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT)
 
         // 1) new
@@ -90,7 +90,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     test("custom contract verified on sourcify", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT)
@@ -152,7 +152,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     test("fungible token as a contract", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN)
@@ -214,7 +214,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     test("non fungible token as a contract", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN_WITH_KEYS.token_id
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS)

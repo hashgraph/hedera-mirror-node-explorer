@@ -35,7 +35,7 @@ describe("ContractResultByTsCache", () => {
 
         expect(ContractResultByTsCache.instance.isEmpty()).toBeTruthy()
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const timestamp = SAMPLE_CONTRACT_RESULT_DETAILS.timestamp
         const matcher1 = "/api/v1/contracts/results"
@@ -75,7 +75,7 @@ describe("ContractResultByTsCache", () => {
 
         expect(ContractResultByTsCache.instance.isEmpty()).toBeTruthy()
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const timestamp = SAMPLE_ERROR_RESULTS.results[0].timestamp
         const matcher1 = "/api/v1/contracts/results"

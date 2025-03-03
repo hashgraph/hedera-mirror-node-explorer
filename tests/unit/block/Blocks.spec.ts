@@ -46,7 +46,7 @@ describe("Blocks.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/blocks"
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCKSRESPONSE);

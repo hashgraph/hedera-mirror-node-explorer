@@ -59,7 +59,7 @@ describe("NftCell.vue", () => {
 
     test("tokenId and no serial #", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -90,7 +90,7 @@ describe("NftCell.vue", () => {
 
     test("tokenId, serial # and default prop", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -127,7 +127,7 @@ describe("NftCell.vue", () => {
 
     test("tokenId, serial # and various props", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id

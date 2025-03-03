@@ -68,7 +68,7 @@ describe("AccountDetails.vue", () => {
     it("Should display account details", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -202,7 +202,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const account1 = SAMPLE_ACCOUNT
         let matcher1 = "/api/v1/accounts/" + account1.account
@@ -373,7 +373,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const invalidAccountId = "0.0.0.1000"
         const wrapper = mount(AccountDetails, {
@@ -403,7 +403,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const deletedAccount = SAMPLE_ACCOUNT_DELETED
         const matcher1 = "/api/v1/accounts/" + deletedAccount.account
@@ -502,7 +502,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_NODE);
@@ -599,7 +599,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const config = [
             {

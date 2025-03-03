@@ -43,7 +43,7 @@ describe("ABIAnalyzer.ts", async () => {
 
     it("Non proxy contract", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -140,7 +140,7 @@ describe("ABIAnalyzer.ts", async () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -253,7 +253,7 @@ describe("ABIAnalyzer.ts", async () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 

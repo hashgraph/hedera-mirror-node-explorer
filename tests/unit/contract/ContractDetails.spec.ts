@@ -62,7 +62,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
         mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
@@ -194,7 +194,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
         mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
@@ -325,7 +325,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
         mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
@@ -427,7 +427,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contract1 = SAMPLE_CONTRACT
         let matcherAirdrop = "api/v1/accounts/" + contract1.contract_id + "/airdrops/pending"
@@ -575,7 +575,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contract = SAMPLE_CONTRACT_DUDE
         const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
@@ -652,7 +652,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contract = SAMPLE_CONTRACT_DUDE
         const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
@@ -734,7 +734,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contract = SAMPLE_CONTRACT_DELETED
         const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
@@ -817,7 +817,7 @@ describe("ContractDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const invalidContractId = "0.0.0.1000"
         const wrapper = mount(ContractDetails, {

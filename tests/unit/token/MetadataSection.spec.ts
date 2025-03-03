@@ -46,7 +46,7 @@ describe("MetadataSection.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         const metadata = ref(IPFS_METADATA)

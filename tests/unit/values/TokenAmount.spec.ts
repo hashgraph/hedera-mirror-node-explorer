@@ -37,7 +37,7 @@ import {truncateTokenSymbol} from "./TokenLink.spec";
 
 describe("TokenAmount.vue", () => {
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(() => {
         const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id

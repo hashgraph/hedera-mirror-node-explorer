@@ -56,7 +56,7 @@ describe("NftCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -91,7 +91,7 @@ describe("NftCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -128,7 +128,7 @@ describe("NftCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id

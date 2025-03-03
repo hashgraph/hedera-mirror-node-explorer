@@ -35,7 +35,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id
         mock.onGet(matcher0).reply(200, CONTRACT);
@@ -133,7 +133,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher0 = "/api/v1/contracts/" + CONTRACT_RESULT.contract_id
         mock.onGet(matcher0).reply(200, CONTRACT);
@@ -229,7 +229,7 @@ describe("ContractResultAnalyzer.spec.ts", () => {
 
     test("new + setup with HTS result + mount + unmount", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/contracts/results"
         const param1 = {timestamp: CONTRACT_RESULT_HTS.timestamp, internal: true, limit: 1}

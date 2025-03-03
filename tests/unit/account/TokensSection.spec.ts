@@ -59,7 +59,7 @@ describe("TokensSection.vue", () => {
         ]
     }
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(async () => {
         // For NFTs tab

@@ -34,7 +34,7 @@ describe("TokenCell.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const wrapper = mount(TokenCell, {
             global: {
@@ -59,7 +59,7 @@ describe("TokenCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const tokenId = SAMPLE_NONFUNGIBLE.token_id
         const name = SAMPLE_NONFUNGIBLE.name
@@ -94,7 +94,7 @@ describe("TokenCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const token = SAMPLE_NONFUNGIBLE
         const tokenId = token.token_id
@@ -156,7 +156,7 @@ describe("TokenCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const token = SAMPLE_ASSOCIATED_TOKEN
         const tokenId = token.token_id

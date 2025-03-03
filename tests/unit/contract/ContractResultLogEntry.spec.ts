@@ -47,7 +47,7 @@ describe("ContractResultLogEntry.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT)
 
         const networkEntry = routeManager.currentNetworkEntry.value

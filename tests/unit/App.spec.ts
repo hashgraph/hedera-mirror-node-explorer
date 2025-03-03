@@ -49,7 +49,7 @@ describe("App.vue", () => {
         await router.push({name: "MainDashboard", params: {network: 'mainnet'}})
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS)

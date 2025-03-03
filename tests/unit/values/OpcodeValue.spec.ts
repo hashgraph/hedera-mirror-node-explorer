@@ -37,7 +37,7 @@ import router from "@/router";
 
 describe("OpcodeValue.vue", () => {
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(() => {
     })

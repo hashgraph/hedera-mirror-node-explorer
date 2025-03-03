@@ -46,7 +46,7 @@ import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache.ts";
 
 describe("SearchController.vue", () => {
 
-    const mock = new MockAdapter(axios)
+    const mock = new MockAdapter(axios as any)
     const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction_hash))
 
     // We duplicate SAMPLE_ACCOUNT and patch its account id so that it conflicts with block number

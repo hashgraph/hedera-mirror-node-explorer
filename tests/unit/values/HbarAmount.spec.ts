@@ -35,7 +35,7 @@ import axios from "axios";
 
 describe("HbarAmount.vue ", () => {
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(() => {
         const matcher = "api/v1/network/exchangerate"

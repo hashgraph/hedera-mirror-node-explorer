@@ -36,7 +36,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction caller and recipient are defined", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         // 1) new
         const action = ref<ContractAction | null>(null)
@@ -89,7 +89,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction caller is undefined", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_ACTION = cloneMock(SAMPLE_CONTRACT_ACTIONS.actions[1])
         SAMPLE_ACTION.caller = undefined
@@ -151,7 +151,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction recipient is undefined", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_ACTION = cloneMock(SAMPLE_CONTRACT_ACTIONS.actions[1])
         SAMPLE_ACTION.recipient = undefined
@@ -209,7 +209,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction recipient is undefined and to is HTS", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_ACTION = cloneMock(SAMPLE_CONTRACT_ACTIONS.actions[1])
         SAMPLE_ACTION.recipient = undefined

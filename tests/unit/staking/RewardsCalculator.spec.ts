@@ -45,7 +45,7 @@ describe("RewardsCalculator.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mocks axios
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
@@ -96,7 +96,7 @@ describe("RewardsCalculator.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mocks axios
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher2 = "/api/v1/network/nodes"
         for (const node of SAMPLE_NETWORK_NODES.nodes) {
             const body = {params: {"node.id": node.node_id}}
@@ -152,7 +152,7 @@ describe("RewardsCalculator.vue", () => {
         const TEST_ACCOUNT = SAMPLE_ACCOUNT_STAKING_ACCOUNT
 
         // Mocks axios
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/accounts/" + TEST_ACCOUNT.account
         mock.onGet(matcher1).reply(200, TEST_ACCOUNT)
         const matcher2 = "/api/v1/network/nodes"

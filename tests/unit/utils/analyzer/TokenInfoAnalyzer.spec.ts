@@ -47,7 +47,7 @@ describe.skip("TokenInfoAnalyzer.spec.ts", () => {
         // expect(walletManager.accountId.value).toBe(null) // because not connected
         //
         // // Mock axios
-        // const mock = new MockAdapter(axios)
+        // const mock = new MockAdapter(axios as any)
         // const matcher1 = "api/v1/accounts/" + walletAccountId + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN.token_id + "&limit=1"
         // const response1 = {
         //     "tokens": [SAMPLE_ASSOCIATED_TOKEN],

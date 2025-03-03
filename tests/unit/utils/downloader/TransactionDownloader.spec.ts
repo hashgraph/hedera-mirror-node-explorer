@@ -32,7 +32,7 @@ describe("TransactionDownloader.ts", () => {
 
     test("no mock", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         // Constructs
         const accountId = ref<string | null>(null)

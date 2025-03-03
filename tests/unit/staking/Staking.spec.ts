@@ -72,7 +72,7 @@ describe.skip("Staking.vue", () => {
         walletManager.getDrivers().push(testDriver)
 
         // Mocks axios
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/accounts/" + testDriver.account.account
         mock.onGet(matcher1).reply(200, testDriver.account)
         const matcher2 = "/api/v1/network/nodes"

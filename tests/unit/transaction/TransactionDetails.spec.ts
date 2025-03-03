@@ -81,7 +81,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -181,7 +181,7 @@ describe("TransactionDetails.vue", () => {
         const contractId = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].entity_id
         const timestamp = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -315,7 +315,7 @@ describe("TransactionDetails.vue", () => {
         const contractId = SAMPLE_TRANSACTION.entity_id
         const timestamp = SAMPLE_TRANSACTION.consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transactionHash
         mock.onGet(matcher1).reply(200, {transactions: [SAMPLE_TRANSACTION]});
         const matcher11 = "/api/v1/transactions/" + transactionId
@@ -427,7 +427,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         let matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
@@ -538,7 +538,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_FAILED_TRANSACTION.consensus_timestamp) {
@@ -597,7 +597,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher3 = "api/v1/network/nodes"
         mock.onGet(matcher3).reply(200, SAMPLE_NETWORK_NODES);
 
@@ -634,7 +634,7 @@ describe("TransactionDetails.vue", () => {
 
         const transaction = SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS.transactions[0]
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
@@ -691,7 +691,7 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SCHEDULING.consensus_timestamp) {
@@ -754,7 +754,7 @@ describe("TransactionDetails.vue", () => {
         const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SCHEDULED.consensus_timestamp) {
@@ -820,7 +820,7 @@ describe("TransactionDetails.vue", () => {
             const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
             const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
 
-            const mock = new MockAdapter(axios)
+            const mock = new MockAdapter(axios as any)
             const matcher1 = "/api/v1/transactions"
             mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
                 if (config.params.timestamp == CHILD.consensus_timestamp) {
@@ -883,7 +883,7 @@ describe("TransactionDetails.vue", () => {
         const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
         const TARGETED_TOKEN = CHILD1.entity_id
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.timestamp == PARENT.consensus_timestamp) {
@@ -960,7 +960,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const NONCE_1 = SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[1]
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
@@ -1015,7 +1015,7 @@ describe("TransactionDetails.vue", () => {
         const token1 = SAMPLE_ASSOCIATED_TOKEN
         const token2 = SAMPLE_ASSOCIATED_TOKEN_2
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, {transactions: [transaction]});
         const matcher11 = "/api/v1/transactions"
@@ -1103,7 +1103,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].entity_id
         const timestamp = SAMPLE_TOKEN_CALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_CALL_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
@@ -1159,7 +1159,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].entity_id
         const timestamp = SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT);
         const matcher11 = "/api/v1/transactions"
@@ -1227,7 +1227,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].entity_id
         const timestamp = SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT);
         const matcher11 = "/api/v1/transactions"
@@ -1293,7 +1293,7 @@ describe("TransactionDetails.vue", () => {
         const entityId = transaction.entity_id
         const timestamp = transaction.consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN);
         const matcher11 = "/api/v1/transactions"
@@ -1450,7 +1450,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const transaction = SAMPLE_FILE_UPDATE_TRANSACTION
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, {transactions: [transaction]});
@@ -1510,7 +1510,7 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"

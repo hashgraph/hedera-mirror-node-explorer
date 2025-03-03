@@ -46,7 +46,7 @@ describe("Tokens.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher = "/api/v1/tokens"
         mock.onGet(matcher).reply(200, SAMPLE_TOKENS);

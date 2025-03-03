@@ -54,7 +54,7 @@ describe("BlockDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/blocks/" + BLOCK_NUMBER
         mock.onGet(matcher1).reply(200, BLOCK);
@@ -115,7 +115,7 @@ describe("BlockDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/blocks/" + NORMALIZED_BLOCK_HASH
         mock.onGet(matcher1).reply(200, BLOCK);
@@ -176,7 +176,7 @@ describe("BlockDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         let normalizedBlockHash = PathParam.parseBlockLoc(BLOCK_HASH)
         let matcher1 = "/api/v1/blocks/" + normalizedBlockHash!.toString()
@@ -292,7 +292,7 @@ describe("BlockDetails.vue", () => {
     it("Should detect invalid block number", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const INVALID_BLOCK_NUMBER = "-42"
         const wrapper = mount(BlockDetails, {
             global: {
@@ -332,7 +332,7 @@ describe("BlockDetails.vue", () => {
     it("Should detect invalid block hash", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const INVALID_BLOCK_HASH = "0xABCDEF"
         const wrapper = mount(BlockDetails, {
             global: {
@@ -372,7 +372,7 @@ describe("BlockDetails.vue", () => {
     it("Should detect non-existent block number", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/blocks/" + BLOCK_NUMBER
         mock.onGet(matcher1).reply(404);
 
@@ -417,7 +417,7 @@ describe("BlockDetails.vue", () => {
     it("Should detect non-existent block hash", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/blocks/" + NORMALIZED_BLOCK_HASH
         mock.onGet(matcher1).reply(404);
 
