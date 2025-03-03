@@ -340,32 +340,26 @@ hr.horizontal-line {
 }
 
 .h-is-label {
-    color: #DDD;
-    background: #383838;
-    border: solid 0.5px var(--network-theme-color);
+    background: var(--button-background-secondary);
+    border: solid 1px var(--border-secondary);
     border-radius: 4px;
-    font-family: var(--font-family-heading), sans-serif;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 19px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
     padding: 3px 6px 3px;
-    letter-spacing: normal;
-    align-content: center;
 }
 
 .h-is-compact-label {
-    color: #DDD;
-    background: #383838;
-    border: solid 0.5px var(--network-theme-color);
+    background: var(--button-background-secondary);
+    border: solid 1px var(--border-secondary);
     border-radius: 4px;
-    font-family: var(--font-family-heading), sans-serif;
-    font-weight: normal;
+    color: var(--text-primary);
     font-size: 11px;
-    line-height: 16px;
+    font-weight: 400;
+    line-height: 14px;
+    margin-bottom: 2px;
     padding: 1px 4px 2px;
-    width: fit-content;
-    letter-spacing: normal;
-    align-content: center;
 }
 
 .w250 {
