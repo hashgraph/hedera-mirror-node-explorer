@@ -29,7 +29,7 @@ describe("InfoTooltip.vue", () => {
     const sampleInfoLabel = 'Sample information label'
     const sampleWarningLabel = 'Sample warning label'
     const infoIconClass = 'lucide-info-icon'
-    const warningIconClass = 'lucide-info-icon'
+    const warningIconClass = 'lucide-triangle-alert-icon'
 
     test("InfoTooltip with information message", async () => {
 
@@ -104,7 +104,7 @@ describe("InfoTooltip.vue", () => {
         wrapper.unmount()
     })
 
-    test.skip("InfoTooltip with no message", async () => {
+    test("InfoTooltip with no message", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -120,7 +120,7 @@ describe("InfoTooltip.vue", () => {
         // console.log(wrapper.html())
 
         expect(wrapper.text()).toBe('')
-        expect(wrapper.find('i').exists()).toBe(false)
+        expect(wrapper.find('svg').exists()).toBe(false)
 
         wrapper.unmount()
     })
