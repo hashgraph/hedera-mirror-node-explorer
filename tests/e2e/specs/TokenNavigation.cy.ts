@@ -106,7 +106,7 @@ describe('Token Navigation', () => {
     //         })
     // })
     //
-    const tokenId = "0.0.1738807"
+    // const tokenId = "0.0.1738807"
     // it('should follow links from fungible token details', () => {
     //     cy.visit('mainnet/token/' + tokenId)
     //     cy.url().should('include', '/mainnet/token/' + tokenId)
@@ -187,7 +187,7 @@ describe('Token Navigation', () => {
             .find('td')
             .eq(0)
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.contains('CONTRACT CALL')

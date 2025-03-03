@@ -109,7 +109,6 @@ describe('Search Bar', () => {
     it('should find the transaction by hash', () => {
         const searchHash = "0x08e62c0531e603fa6d29930195682e937978d542bd404d490546717bb128da4ec4ed586e6d516735f24049b2c3eb7b20"
         const timestamp = "1674821555.935799283"
-        const transactionId = "0.0.445590@1674821543.265349407"
         testBodyV2(
             searchHash,
             '/mainnet/transaction/' + timestamp,
@@ -120,7 +119,6 @@ describe('Search Bar', () => {
 
     it('should find the transaction by timestamp', () => {
         const searchTimestamp = "1674821555.935799283"
-        const transactionId = "0.0.445590@1674821543.265349407"
         testBodyV2(
             searchTimestamp,
             '/mainnet/transaction/' + searchTimestamp,

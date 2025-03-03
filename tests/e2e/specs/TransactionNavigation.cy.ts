@@ -97,7 +97,6 @@ describe('Transaction Navigation', () => {
     })
 
     it('should follow schedule relationship links', () => {
-        const transactionId = "0.0.723493@1674825784.117967020"
         const schedulingConsensusTimestamp = "1674825796.070463898"
         const scheduledConsensusTimestamp = "1674825835.244778007"
 
@@ -127,7 +126,6 @@ describe('Transaction Navigation', () => {
     })
 
     it('should follow parent/child relationship links', () => {
-        const transactionId = "0.0.1425530@1674827792.993110472"
         const parentConsensusTimestamp = "1674827805.332465003"
         const childConsensusTimestamp = "1674827805.332465004"
 
@@ -209,7 +207,6 @@ describe('Transaction Navigation', () => {
     })
 
     it('should handle ETHEREUMTRANSACTION type', () => {
-        const transactionId = "0.0.995584@1674505107.270597663"
         const parentConsensusTimestamp = "1674505116.619586691"
         const childConsensusTimestamp = "1674505116.619586692"
         const contractId = "0.0.1718841"
