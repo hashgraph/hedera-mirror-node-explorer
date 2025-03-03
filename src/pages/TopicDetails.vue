@@ -26,6 +26,9 @@
 
 
   <PageFrameV2 page-title="Topic Details">
+    <template v-if="!initialLoading && notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
 
     <DashboardCardV2 collapsible-key="topicDetails">
       <template #title>
@@ -36,8 +39,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="!initialLoading && notification" :message="notification"/>
-
         <Property id="memo" full-width>
           <template #name>Memo</template>
           <template #value>

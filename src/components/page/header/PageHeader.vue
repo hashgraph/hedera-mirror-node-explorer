@@ -128,7 +128,6 @@ div.root {
   background: var(--background-secondary);
   border-bottom-left-radius: 32px;
   border-bottom-right-radius: 32px;
-  margin-bottom: 16px;
   padding: 0 16px ;
 }
 @media (min-width: 1080px) {

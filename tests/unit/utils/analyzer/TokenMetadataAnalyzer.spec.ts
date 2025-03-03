@@ -348,11 +348,14 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.restore()
     })
 
+    // This test in disabled because the processing of HCS-1 based contents
+    // involves decoding using the @bokuweb/zstd-wasm module, which currently
+    // fails when run in Vitest.
     test.skip("metadata containing HCS-1 URI", async () => {
 
         // Mock axios
         const mock = new MockAdapter(axios)
-        const matcher = `/api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
+        const matcher = `api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
         mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
 
         const metadata = ref(HCS_METADATA)

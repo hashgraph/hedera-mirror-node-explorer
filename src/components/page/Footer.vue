@@ -124,7 +124,7 @@ div.footer-root {
   align-items: center;
   display: flex;
   justify-content: space-between;
-  margin: 32px
+  margin: 0 32px 32px 32px
 }
 
 div.footer-left {

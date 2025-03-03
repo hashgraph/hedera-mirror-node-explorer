@@ -25,6 +25,9 @@
 <template>
 
   <PageFrameV2 page-title="Transaction Details">
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
 
     <DashboardCardV2 collapsible-key="transactionDetails">
       <template #title>
@@ -54,10 +57,6 @@
           <option value="atForm">DEFAULT FORMAT</option>
           <option value="dashForm">EXCHANGE FORMAT</option>
         </SelectView>
-      </template>
-
-      <template v-if="notification" #notification>
-        <NotificationBanner :message="notification"/>
       </template>
 
       <template #left-content>

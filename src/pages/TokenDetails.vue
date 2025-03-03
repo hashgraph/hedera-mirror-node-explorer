@@ -26,6 +26,10 @@
 
   <PageFrameV2 page-title="Token Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
+
     <DashboardCardV2 collapsible-key="tokenDetails">
       <template #title>
           <span v-if="tokenInfo">
@@ -44,8 +48,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="notification" :message="notification"/>
-
         <Property id="entityId" full-width>
           <template #name>Token ID</template>
           <template #value>

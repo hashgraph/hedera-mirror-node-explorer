@@ -26,13 +26,13 @@
 
   <PageFrameV2 page-title="Node Details">
 
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
+
     <DashboardCardV2>
       <template #title>
         {{ `Node ${nodeIdNb}` }}
-      </template>
-
-      <template v-if="notification" #content>
-        <NotificationBanner :message="notification"/>
       </template>
 
       <template #left-content>
