@@ -134,7 +134,6 @@ describe('Search Bar', () => {
 
     it('should find the transaction by timestamp', () => {
         const searchTimestamp = "1674821555.935799283"
-        const transactionId = "0.0.445590@1674821543.265349407"
         testBodyV2(
             searchTimestamp,
             '/mainnet/transaction/' + searchTimestamp,
@@ -215,7 +214,7 @@ describe('Search Bar', () => {
         const searchKey = "0x02e783457e4d054db3c7850c2dc83e458a13b210fca75984bc7cfb0fae7343ff60"
         const searchAccount = "0.0.1753997"
         testBodyV2(
-            searchAccount,
+            searchKey,
             '/mainnet/account/' + searchAccount,
             'Account ' + searchAccount,
             false,
@@ -228,14 +227,14 @@ describe('Search Bar', () => {
         const searchAccount = "0.0.721838"
         cy.visit('/mainnet/dashboard')
         testBodyV2(
-            searchAccount,
+            searchBase32Alias,
             '/mainnet/account/' + searchAccount,
             'Account ' + searchAccount,
             false,
         )
         cy.visit('/mainnet/dashboard')
         testBodyV2(
-            searchAccount,
+            searchHexaAlias,
             '/mainnet/account/' + searchAccount,
             'Account ' + searchAccount,
             false,
@@ -244,7 +243,6 @@ describe('Search Bar', () => {
 
     it('should find the account by Ethereum-format alias', () => {
         cy.visit('/mainnet/dashboard')
-        const searchAlias = "0x00000000000000000000000000000000000b03ae"
         const searchAccount = "0.0.721838"
         testBodyV2(
             searchAccount,
@@ -292,9 +290,9 @@ describe('Search Bar', () => {
             true)
     })
 
-    it.skip('should find account with kns name', () => {
-        const searchName = "kabuto.hh"
-        const searchAccount = "0.0.1001"
+    it('should find account with KNS name', () => {
+        const searchName = "hashgraph.hh"
+        const searchAccount = "0.0.1273453"
         testBodyV2(
             searchName,
             '/mainnet/account/' + searchAccount,
@@ -304,11 +302,27 @@ describe('Search Bar', () => {
         testBodyV2(
             searchName.toUpperCase(),
             '/mainnet/account/' + searchAccount,
-            'Account ' + searchName,
+            'Account ' + searchAccount,
             true
         )
     })
 
+    it('should find account with HNS name', () => {
+        const searchName = "hashgraph.hbar"
+        const searchAccount = "0.0.944899"
+        testBodyV2(
+            searchName,
+            '/mainnet/account/' + searchAccount,
+            'Account ' + searchAccount,
+            false
+        )
+        testBodyV2(
+            searchName.toUpperCase(),
+            '/mainnet/account/' + searchAccount,
+            'Account ' + searchAccount,
+            false
+        )
+    })
 })
 
 const testBodyV2 = (searchString: string,
