@@ -36,8 +36,8 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import NftCell, {NftCellItem} from "../../../src/components/token/NftCell.vue";
-import router from "../../../src/router";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
+import router from "@/router";
 
 describe("NftCell.vue", () => {
 

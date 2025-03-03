@@ -25,7 +25,7 @@ import {ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {TokenMetadataAnalyzer} from "../../../../src/components/token/TokenMetadataAnalyzer";
+import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import {
     AR_CID_METADATA,
     AR_IMAGE_URL,

@@ -45,8 +45,8 @@ import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
-import {TransactionID} from "../../../src/utils/TransactionID";
-import TokenFeesSection from "../../../src/components/token/TokenFeesSection.vue";
+import {TransactionID} from "@/utils/TransactionID";
+import TokenFeesSection from "@/components/token/TokenFeesSection.vue";
 import {fetchGetURLs} from "../MockUtils";
 
 /*

@@ -30,7 +30,7 @@ import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {AccountAlias} from "@/utils/AccountAlias";
 import {makeEthAddressForAccount} from "@/schemas/MirrorNodeUtils";
 import {AccountInfo} from "@/schemas/MirrorNodeSchemas";
-import {NetworkConfig} from "../../../src/config/NetworkConfig";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 describe("AccountLocParser.ts", () => {
 

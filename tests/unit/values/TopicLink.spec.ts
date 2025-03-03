@@ -20,7 +20,7 @@
 
 import {describe, it, expect} from 'vitest'
 import {mount} from "@vue/test-utils"
-import TopicLink from "../../../src/components/values/link/TopicLink.vue"
+import TopicLink from "@/components/values/link/TopicLink.vue"
 import router from "@/router";
 
 describe("TopicLink.vue", () => {

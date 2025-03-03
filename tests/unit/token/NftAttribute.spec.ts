@@ -20,9 +20,9 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import NftAttribute from '../../../src/components/token/NftAttribute.vue';
-import router from "../../../src/router";
-import {HMSF} from "../../../src/utils/HMSF";
+import NftAttribute from '@/components/token/NftAttribute.vue';
+import router from "@/router";
+import {HMSF} from "@/utils/HMSF";
 
 /*
   POSSIBLE DISPLAY TYPES:

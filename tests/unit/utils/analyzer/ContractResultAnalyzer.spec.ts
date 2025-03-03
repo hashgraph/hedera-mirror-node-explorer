@@ -27,7 +27,7 @@ import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {fetchGetURLs} from "../../MockUtils";
-import {routeManager} from "../../../../src/router";
+import {routeManager} from "@/router";
 
 describe("ContractResultAnalyzer.spec.ts", () => {
 

@@ -20,8 +20,8 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import TopicMessageCell, {TopicMessageCellItem} from "../../../src/components/topic/TopicMessageCell.vue";
-import router from "../../../src/router";
+import TopicMessageCell, {TopicMessageCellItem} from "@/components/topic/TopicMessageCell.vue";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 import {SAMPLE_TOPIC_MESSAGES} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";

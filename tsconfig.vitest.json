@@ -1,5 +1,6 @@
 {
   "extends": "./tsconfig.app.json",
+  "include": ["env.d.ts", "src/**/*", "src/**/*.vue", "tests/unit/**/*"],
   "exclude": [],
   "compilerOptions": {
     "composite": true,

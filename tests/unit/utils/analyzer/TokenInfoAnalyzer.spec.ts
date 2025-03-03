@@ -32,7 +32,7 @@ import {describe, test} from 'vitest'
 // import {WalletDriver_Mock} from "../../staking/WalletDriver_Mock";
 // import {walletManager} from "@/router";
 // import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
-// import {NetworkConfig} from "../../../../src/config/NetworkConfig";
+// import {NetworkConfig} from "@/config/NetworkConfig";
 
 describe.skip("TokenInfoAnalyzer.spec.ts", () => {
 

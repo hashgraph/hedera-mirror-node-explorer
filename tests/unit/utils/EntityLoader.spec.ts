@@ -21,9 +21,9 @@
  */
 
 import {describe, expect, test, vi} from 'vitest'
-import {EntityLoaderState, EntityLoader} from "../../../src/utils/loader/EntityLoader";
+import {EntityLoaderState, EntityLoader} from "@/utils/loader/EntityLoader";
 import {flushPromises} from "@vue/test-utils";
-import {waitFor} from "../../../src/utils/TimerUtils";
+import {waitFor} from "@/utils/TimerUtils";
 
 describe("EntityLoader", () => {
 

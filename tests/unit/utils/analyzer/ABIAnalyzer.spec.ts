@@ -23,7 +23,7 @@
 import {describe, expect, it} from 'vitest'
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ref} from "vue";
-import {ABIAnalyzer} from "../../../../src/utils/analyzer/ABIAnalyzer";
+import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 import {
     SAMPLE_ADMIN_ADDRESS_RESPONSE,
     SAMPLE_CONTRACT,
@@ -35,8 +35,8 @@ import {flushPromises} from "@vue/test-utils";
 import {fetchGetURLs} from "../../MockUtils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {ABIController, ABIMode} from "../../../../src/components/contract/ABIController";
-import {routeManager} from "../../../../src/router";
+import {ABIController, ABIMode} from "@/components/contract/ABIController";
+import {routeManager} from "@/router";
 
 
 describe("ABIAnalyzer.ts", async () => {

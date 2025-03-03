@@ -24,11 +24,11 @@ import axios from "axios";
 import {IPFS_GATEWAY_PREFIX, IPFS_METADATA, IPFS_METADATA_CONTENT, IPFS_METADATA_CONTENT_URL,} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "../../../src/utils/HMSF";
-import router from "../../../src/router";
-import MetadataSection from "../../../src/components/token/MetadataSection.vue";
+import {HMSF} from "@/utils/HMSF.ts";
+import router from "@/router";
+import MetadataSection from "@/components/token/MetadataSection.vue";
 import {ref} from "vue";
-import {TokenMetadataAnalyzer} from "../../../src/components/token/TokenMetadataAnalyzer";
+import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer.ts";
 
 /*
     Bookmarks

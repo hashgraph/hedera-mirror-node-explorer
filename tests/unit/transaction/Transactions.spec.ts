@@ -27,7 +27,7 @@ import Transactions from "@/pages/Transactions.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import TablePageSize from "../../../src/components/transaction/TablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";

@@ -21,7 +21,7 @@
 import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import AccountLink from "../../../src/components/values/link/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";

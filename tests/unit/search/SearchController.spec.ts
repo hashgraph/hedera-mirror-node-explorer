@@ -41,8 +41,8 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {fetchGetURLs} from "../MockUtils";
-import {base64DecToArr, byteToHex} from "../../../src/utils/B64Utils";
-import {SelectedTokensCache} from "../../../src/utils/cache/SelectedTokensCache";
+import {base64DecToArr, byteToHex} from "@/utils/B64Utils.ts";
+import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache.ts";
 
 describe("SearchController.vue", () => {
 
@@ -186,9 +186,9 @@ describe("SearchController.vue", () => {
     it("should trim leading/trailing whitespaces from the search input text", async () => {
         const inputText = ref<string>("")
         const controller = new SearchController(inputText)
-    
+
         await flushPromises()
-    
+
         expect(vi.getTimerCount()).toBe(0)
         expect(controller.visible.value).toBe(false)
         expect(controller.actualInputText.value).toBe("")
@@ -196,8 +196,8 @@ describe("SearchController.vue", () => {
         expect(controller.candidateCount.value).toBe(0)
         expect(controller.visibleAgents.value.length).toBe(0)
         expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
-    
-        inputText.value = `   ${SAMPLE_ACCOUNT.account}   `        
+
+        inputText.value = `   ${SAMPLE_ACCOUNT.account}   `
         await nextTick()
         expect(vi.getTimerCount()).toBe(1)
         vi.advanceTimersToNextTimer()
@@ -207,7 +207,7 @@ describe("SearchController.vue", () => {
         expect(controller.candidateCount.value).toBe(0)
         expect(controller.visibleAgents.value.length).toBe(0)
         expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
-    
+
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/0.0.730631",
@@ -215,7 +215,7 @@ describe("SearchController.vue", () => {
             "api/v1/tokens/0.0.730631",
             "api/v1/topics/0.0.730631",
         ])
-    
+
         expect(controller.visible.value).toBe(true)
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.account)
         expect(controller.loading.value).toBe(false)

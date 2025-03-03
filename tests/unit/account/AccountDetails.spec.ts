@@ -50,8 +50,8 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {NetworkConfig} from "../../../src/config/NetworkConfig";
-import {networkConfigKey} from "../../../src/AppKeys";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+import {networkConfigKey} from "@/AppKeys.ts";
 import {fetchGetURLs} from "../MockUtils";
 
 /*

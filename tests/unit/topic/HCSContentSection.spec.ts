@@ -20,13 +20,13 @@
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import router from "../../../src/router";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "../../../src/utils/HMSF";
-import HCSContentSection from "../../../src/components/topic/HCSContentSection.vue";
-import InfoTooltip from "../../../src/components/InfoTooltip.vue";
-import {HCSAsset} from "../../../src/utils/cache/HCSAsset";
-import {HCSTopicMemo} from "../../../src/utils/HCSTopicMemo";
+import {HMSF} from "@/utils/HMSF";
+import HCSContentSection from "@/components/topic/HCSContentSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+import {HCSAsset} from "@/utils/cache/HCSAsset";
+import {HCSTopicMemo} from "@/utils/HCSTopicMemo";
 
 /*
     Bookmarks

@@ -21,9 +21,9 @@
  */
 
 import {describe, test, expect} from 'vitest'
-import {NameService} from "../../../../src/utils/name_service/NameService";
-import {NameServiceProvider} from "../../../../src/utils/name_service/provider/NameServiceProvider";
-import {nameServiceProviders} from "../../../../src/utils/name_service/provider/AllProviders";
+import {NameService} from "@/utils/name_service/NameService";
+import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
+import {nameServiceProviders} from "@/utils/name_service/provider/AllProviders";
 
 describe("NameService", () => {
 

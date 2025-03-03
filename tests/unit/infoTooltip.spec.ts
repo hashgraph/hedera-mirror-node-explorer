@@ -20,8 +20,8 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import InfoTooltip from "../../src/components/InfoTooltip.vue";
-import router from "../../src/router";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 
 describe("InfoTooltip.vue", () => {

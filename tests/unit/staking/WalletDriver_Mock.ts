@@ -18,7 +18,7 @@
  *
  */
 
-// import {WalletDriver_Hiero} from "../../../src/utils/wallet/WalletDriver_Hiero";
+// import {WalletDriver_Hiero} from "@/utils/wallet/WalletDriver_Hiero";
 // import {AccountAllowanceApproveTransaction, AccountUpdateTransaction} from "@hashgraph/sdk";
 // import {AccountBalanceTransactions} from "@/schemas/MirrorNodeSchemas";
 // import {Signer} from "@hashgraph/sdk/lib/Signer";
