@@ -103,8 +103,10 @@
             Domain
           </template>
           <template #value>
-            <EntityIOL :label="domainName"/>
-            <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
+            <div style="display: flex; align-items: center; gap: 4px">
+              <EntityIOL :label="domainName" :compact="false"/>
+              <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
+            </div>
           </template>
         </Property>
       </template>
