@@ -49,6 +49,12 @@
         />
       </template>
       <template #media-description>
+        <Property v-if="name" id="name" custom-nb-col-class="is-one-quarter">
+          <template #name>Name</template>
+          <template #value>
+            <BlobValue :blob-value="name"/>
+          </template>
+        </Property>
         <Property v-if="description" id="description" custom-nb-col-class="is-one-quarter">
           <template #name>Description</template>
           <template #value>
@@ -302,6 +308,7 @@ watch(serialNumber, () => {
 
 const nftInfo = nftLookup.entity
 const transactionType = transactionTableController.transactionType
+const name = metadataAnalyzer.name
 const creator = metadataAnalyzer.creator
 const description = metadataAnalyzer.description
 const type = metadataAnalyzer.type
