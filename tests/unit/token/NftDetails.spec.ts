@@ -107,7 +107,7 @@ describe("NftDetails.vue", () => {
         expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
     });
 
-    it.skip("Should display NFT with image and metadata", async () => {
+    it("Should display NFT with image and metadata", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
@@ -129,7 +129,8 @@ describe("NftDetails.vue", () => {
 
         const wrapper = mount(NftDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: { "isMediumScreen": false }
             },
             props: {
                 tokenId: nftId,
@@ -142,11 +143,12 @@ describe("NftDetails.vue", () => {
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp(IPFS_METADATA_CONTENT.name + 'Non Fungible Token'))
+        expect(wrapper.text()).toMatch(RegExp('Non Fungible Token'))
 
         const media = wrapper.get('#image-content')
         expect(media.find('img').exists()).toBe(true)
 
+        expect(wrapper.find("#nameValue").text()).toBe(IPFS_METADATA_CONTENT.name)
         expect(wrapper.find("#descriptionValue").text()).toBe(IPFS_METADATA_CONTENT.description)
         expect(wrapper.get("#tokenIdValue").text()).toBe(`${SAMPLE_NONFUNGIBLE.name}(${SAMPLE_NONFUNGIBLE.token_id})`)
         expect(wrapper.get("#serialNumberValue").text()).toBe(nft.serial_number.toString())
