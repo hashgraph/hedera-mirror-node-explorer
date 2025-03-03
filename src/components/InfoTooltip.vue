@@ -24,12 +24,14 @@
 
 <template>
   <Tooltip
+      v-if="props.warningLabel || props.label"
       id="info-tooltip"
       :text="props.warningLabel ?? props.label"
       :position="props.position"
       style="height: 16px;"
   >
-    <Info :size="16" style="color: var(--network-text-accent-color);"/>
+    <TriangleAlert v-if="props.warningLabel" :size="16" style="color: var(--network-text-accent-color);"/>
+    <Info v-else :size="16" style="color: var(--network-text-accent-color);"/>
   </Tooltip>
 </template>
 
@@ -41,7 +43,7 @@
 
 import {PropType} from "vue";
 import Tooltip from "@/components/Tooltip.vue";
-import {Info} from "lucide-vue-next"
+import {Info, TriangleAlert} from "lucide-vue-next"
 
 const props = defineProps({
   warningLabel: {
@@ -52,7 +54,10 @@ const props = defineProps({
     type: String as PropType<string | null>,
     default: null
   },
-  position: String
+  position: {
+    type: String as PropType<string | null>,
+    default: 'auto'
+  },
 })
 
 </script>
