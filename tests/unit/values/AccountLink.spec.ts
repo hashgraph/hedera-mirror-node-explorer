@@ -21,7 +21,7 @@
 import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import AccountLink from "../../../src/components/values/link/AccountLink.vue";
+import AccountLink from "@/components/values/link/AccountLink.vue";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
@@ -32,7 +32,7 @@ describe("AccountLink.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
@@ -102,7 +102,7 @@ describe("AccountLink.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 

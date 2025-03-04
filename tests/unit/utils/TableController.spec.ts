@@ -23,8 +23,8 @@
 import {afterEach, beforeEach, describe, expect, test, vi} from 'vitest'
 import {computed, nextTick, Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
-import {KeyOperator, SortOrder, TableController} from "../../../src/utils/table/TableController";
-import {RouteManager} from "../../../src/utils/RouteManager";
+import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
+import {RouteManager} from "@/utils/RouteManager";
 import {Router} from "vue-router";
 
 describe("TableController.ts", () => {

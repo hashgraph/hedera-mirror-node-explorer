@@ -32,7 +32,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
 
     test("set account before mount()", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/balances"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
 
@@ -81,7 +81,7 @@ describe("BalanceAnalyzer.spec.ts", () => {
 
     test("set account between mount() and unmount() ", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/balances"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_BALANCES)
 

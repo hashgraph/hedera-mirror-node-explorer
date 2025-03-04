@@ -46,7 +46,7 @@ describe("Tokens.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher = "/api/v1/tokens"
         mock.onGet(matcher).reply(200, SAMPLE_TOKENS);
@@ -67,8 +67,8 @@ describe("Tokens.vue", () => {
             "api/v1/tokens",
         ])
 
-            expect(wrapper.vm.nftTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.tokenTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenTableController.mounted.value).toBe(true)
 
         const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(2)
@@ -103,8 +103,8 @@ describe("Tokens.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.nftTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.tokenTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenTableController.mounted.value).toBe(false)
     });
 
 });

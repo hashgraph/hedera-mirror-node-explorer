@@ -21,9 +21,9 @@
  */
 
 import {describe, test, expect} from 'vitest'
-import {NameService} from "../../../../src/utils/name_service/NameService";
-import {NameServiceProvider} from "../../../../src/utils/name_service/provider/NameServiceProvider";
-import {nameServiceProviders} from "../../../../src/utils/name_service/provider/AllProviders";
+import {NameService} from "@/utils/name_service/NameService";
+import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
+import {nameServiceProviders} from "@/utils/name_service/provider/AllProviders";
 
 describe("NameService", () => {
 
@@ -73,9 +73,9 @@ describe("NameService", () => {
 
         const r1 = await NameService.instance.singleResolve("castor1", TEST_NETWORK, "P1")
         expect(r1).not.toBeNull()
-        expect(r1.entityId).toBe("0.0.100")
-        expect(r1.name).toBe("castor1")
-        expect(r1.providerAlias).toBe("P1")
+        expect(r1!.entityId).toBe("0.0.100")
+        expect(r1!.name).toBe("castor1")
+        expect(r1!.providerAlias).toBe("P1")
         expect(castor.requestCount).toBe(1)
         expect(castor.resolutionCount).toBe(1)
         expect(pollux.requestCount).toBe(0)
@@ -89,9 +89,10 @@ describe("NameService", () => {
         expect(pollux.resolutionCount).toBe(0)
 
         const r3 = await NameService.instance.singleResolve("ambiguous", TEST_NETWORK, "P1")
-        expect(r3.entityId).toBe("0.0.102")
-        expect(r3.name).toBe("ambiguous")
-        expect(r3.providerAlias).toBe("P1")
+        expect(r3).not.toBeNull()
+        expect(r3!.entityId).toBe("0.0.102")
+        expect(r3!.name).toBe("ambiguous")
+        expect(r3!.providerAlias).toBe("P1")
         expect(castor.requestCount).toBe(2)
         expect(castor.resolutionCount).toBe(2)
         expect(pollux.requestCount).toBe(1)

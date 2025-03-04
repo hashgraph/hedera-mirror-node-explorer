@@ -45,8 +45,8 @@ import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
-import {TransactionID} from "../../../src/utils/TransactionID";
-import TokenFeesSection from "../../../src/components/token/TokenFeesSection.vue";
+import {TransactionID} from "@/utils/TransactionID";
+import TokenFeesSection from "@/components/token/TokenFeesSection.vue";
 import {fetchGetURLs} from "../MockUtils";
 
 /*
@@ -64,7 +64,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN.token_id
         const testTokenName = SAMPLE_TOKEN.name
@@ -155,7 +155,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
         const testTokenName = SAMPLE_NONFUNGIBLE_DUDE.name
@@ -237,7 +237,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         let testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
         let testTokenName = SAMPLE_NONFUNGIBLE_DUDE.name
@@ -349,7 +349,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const invalidTokenId = "0.0.0.1000"
         const wrapper = mount(TokenDetails, {
@@ -379,7 +379,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
         const testTokenName = SAMPLE_TOKEN_WITH_KEYS.name
@@ -450,7 +450,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name
@@ -521,7 +521,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = "0.0.91961"
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name
@@ -582,7 +582,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN.token_id
         const testTokenName = SAMPLE_TOKEN.name
@@ -662,7 +662,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_NONFUNGIBLE.token_id
         const testTokenName = SAMPLE_NONFUNGIBLE.name
@@ -745,7 +745,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name

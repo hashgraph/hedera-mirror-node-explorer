@@ -23,7 +23,7 @@
 import {describe, expect, it} from 'vitest'
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ref} from "vue";
-import {ABIAnalyzer} from "../../../../src/utils/analyzer/ABIAnalyzer";
+import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 import {
     SAMPLE_ADMIN_ADDRESS_RESPONSE,
     SAMPLE_CONTRACT,
@@ -35,15 +35,15 @@ import {flushPromises} from "@vue/test-utils";
 import {fetchGetURLs} from "../../MockUtils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {ABIController, ABIMode} from "../../../../src/components/contract/ABIController";
-import {routeManager} from "../../../../src/router";
+import {ABIController, ABIMode} from "@/components/contract/ABIController";
+import {routeManager} from "@/router";
 
 
 describe("ABIAnalyzer.ts", async () => {
 
     it("Non proxy contract", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -140,7 +140,7 @@ describe("ABIAnalyzer.ts", async () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -253,7 +253,7 @@ describe("ABIAnalyzer.ts", async () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 

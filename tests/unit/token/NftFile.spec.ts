@@ -20,8 +20,8 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import NftFile from "../../../src/components/token/NftFile.vue";
-import router from "../../../src/router";
+import NftFile from "@/components/token/NftFile.vue";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 
 describe("NftFile.vue", () => {

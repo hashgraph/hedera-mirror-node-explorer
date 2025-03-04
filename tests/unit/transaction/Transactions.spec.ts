@@ -27,7 +27,7 @@ import Transactions from "@/pages/Transactions.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import TablePageSize from "../../../src/components/transaction/TablePageSize.vue";
+import TablePageSize from "@/components/transaction/TablePageSize.vue";
 import TransactionTable from "@/components/transaction/TransactionTable.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
@@ -49,7 +49,7 @@ describe("Transactions.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS)
@@ -112,7 +112,7 @@ describe("Transactions.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200,  {
@@ -162,7 +162,7 @@ describe("Transactions.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200,  {

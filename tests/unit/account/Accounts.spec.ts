@@ -45,7 +45,7 @@ describe("Accounts.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNTS);
@@ -64,7 +64,7 @@ describe("Accounts.vue", () => {
         // console.log(wrapper.text())
 
         const card = wrapper.findComponent(DashboardCardV2)
-        expect(wrapper.vm.accountTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).accountTableController.mounted.value).toBe(true)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Accounts"))
 
@@ -83,7 +83,7 @@ describe("Accounts.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.accountTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).accountTableController.mounted.value).toBe(false)
     });
 
 });

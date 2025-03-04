@@ -20,8 +20,8 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import NftCell, {NftCellItem} from "../../../src/components/token/NftCell.vue";
-import router from "../../../src/router";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 import {IPFS_IMAGE_URL, IPFS_METADATA_CONTENT, IPFS_METADATA_CONTENT_URL, SAMPLE_NFTS} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -56,7 +56,7 @@ describe("NftCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -91,7 +91,7 @@ describe("NftCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -128,7 +128,7 @@ describe("NftCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id

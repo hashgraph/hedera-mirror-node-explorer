@@ -34,7 +34,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
     test("Call to system contract", async () => {
 
         const abi = require('../../../../public/abi/IHederaTokenService.json')
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "http://localhost:3000/abi/IHederaTokenService.json"
         mock.onGet(matcher1).reply(200, abi)
 
@@ -183,7 +183,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000002E7A5D"
         mock.onGet(matcher1).reply(200, SOURCIFY_RESPONSE)
         const matcher2 = "api/v1/contracts/" + CONTRACT_DETAILS.contract_id
@@ -277,7 +277,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000002E7A5D"
         mock.onGet(matcher1).reply(200, SOURCIFY_RESPONSE)
         const matcher2 = "api/v1/contracts/" + CONTRACT_DETAILS.contract_id
@@ -372,7 +372,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         SignatureCache.instance.clear()
 
         const functionHash = "0xf305d719"
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=" + functionHash
         mock.onGet(matcher1).reply(200, BYTES4_RESPONSE)
 

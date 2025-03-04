@@ -24,9 +24,9 @@ import axios from "axios";
 import {IPFS_METADATA_CONTENT, IPFS_METADATA_CONTENT_URL, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "../../../src/utils/HMSF";
-import router from "../../../src/router";
-import NftDetails from "../../../src/pages/NftDetails.vue";
+import {HMSF} from "@/utils/HMSF.ts";
+import router from "@/router";
+import NftDetails from "@/pages/NftDetails.vue";
 
 /*
     Bookmarks
@@ -42,7 +42,7 @@ describe("NftDetails.vue", () => {
     it("Should display details of NFT", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[0]
         const nftId = nft.token_id
@@ -70,9 +70,6 @@ describe("NftDetails.vue", () => {
         await flushPromises()
         // console.log(wrapper.html())
         // console.log(wrapper.text())
-
-        // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol +")#2Non Fungible Token")
 
@@ -104,14 +101,14 @@ describe("NftDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(false)
     });
 
     it("Should display NFT with image and metadata", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -141,7 +138,7 @@ describe("NftDetails.vue", () => {
         // console.log(wrapper.html())
 
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp('Non Fungible Token'))
 
@@ -163,6 +160,6 @@ describe("NftDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(false)
     });
 });

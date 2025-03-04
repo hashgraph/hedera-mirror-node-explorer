@@ -46,7 +46,7 @@ describe("Contracts.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contracts = SAMPLE_CONTRACTS
         const matcher1 = "api/v1/contracts"
@@ -68,7 +68,7 @@ describe("Contracts.vue", () => {
             "api/v1/tokens/" + SAMPLE_CONTRACTS.contracts[0].contract_id,
         ])
 
-        expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).contractTableController.mounted.value).toBe(true)
 
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)

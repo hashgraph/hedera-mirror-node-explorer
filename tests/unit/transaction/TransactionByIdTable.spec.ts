@@ -50,7 +50,7 @@ describe("TransactionByIdTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/tokens/" + "0.0.48193741"
         mock.onGet(matcher1).reply(200, SAMPLE_DUDE_WITH_KEYS)
 
@@ -61,7 +61,7 @@ describe("TransactionByIdTable.vue", () => {
             props: {
                 narrowed: true,
                 nbItems: 42,
-                transactions: SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions as Array<Transaction>,
+                transactions: SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions,
             },
         });
 
@@ -84,9 +84,9 @@ describe("TransactionByIdTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
         mock.onGet(matcher5).reply(200, SAMPLE_TOKEN)
         const matcher1 = "/api/v1/tokens/" + "0.0.48193741"
@@ -99,7 +99,7 @@ describe("TransactionByIdTable.vue", () => {
             props: {
                 narrowed: true,
                 nbItems: 42,
-                transactions: SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions as Array<Transaction>,
+                transactions: SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions!,
             },
         });
 
@@ -125,7 +125,7 @@ describe("TransactionByIdTable.vue", () => {
     it("Should list transactions as unrelated", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/tokens/" + "0.0.48193741"
         mock.onGet(matcher1).reply(200, SAMPLE_DUDE_WITH_KEYS)
 

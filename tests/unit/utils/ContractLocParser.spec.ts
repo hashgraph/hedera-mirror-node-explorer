@@ -36,7 +36,7 @@ describe("ContractLocParser.ts", () => {
 
     test("mount + set/unset contract loc + unmount", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -101,7 +101,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc + mount + unmount + unset account loc", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -166,7 +166,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract with contract address", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -231,7 +231,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc with unknown contract id", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ID = "0.0.42"
         const matcher1 = "/api/v1/contracts/" + UNKNOWN_ACCOUNT_ID
@@ -297,7 +297,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc with unknown contract address", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ADDRESS = "0x0001020304050607080900010203040506070809"
         const matcher1 = "/api/v1/contracts/" + UNKNOWN_ACCOUNT_ADDRESS
@@ -364,7 +364,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc with dummy value", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const DUMMY_LOC = "dummy loc"
         const matcher1 = "/api/v1/accounts/" + DUMMY_LOC

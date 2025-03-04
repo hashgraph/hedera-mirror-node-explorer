@@ -58,7 +58,7 @@ describe("NodeDetails.vue", () => {
         //     }
         // ]
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         //
         //
         // const configUrl = NetworkRegistry.NETWORKS_CONFIG_URL
@@ -112,7 +112,7 @@ describe("NodeDetails.vue", () => {
     it("should update when node id changes", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         let node = 0
         const matcher1 = "api/v1/network/nodes"

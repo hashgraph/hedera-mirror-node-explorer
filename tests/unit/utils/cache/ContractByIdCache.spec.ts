@@ -35,7 +35,7 @@ describe("ContractByIdCache", () => {
 
         expect(ContractByIdCache.instance.isEmpty()).toBeTruthy()
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);

@@ -181,8 +181,8 @@ describe("Tabs.vue", () => {
         // Stars with no tabs
         //
 
-        const tabIds = []
-        const tabLabels = []
+        const tabIds: string[] = []
+        const tabLabels: string[] = []
 
         const wrapper = mount(Tabs, {
             global: {

@@ -38,7 +38,7 @@ describe("EVMAddress", () => {
 
     test("Constructing with EVM address and no Hedera ID", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/accounts/" + evmAddress
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
@@ -62,7 +62,7 @@ describe("EVMAddress", () => {
 
     test("Constructing a compact form with EVM address and no Hedera ID", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/accounts/" + evmAddress
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
@@ -87,7 +87,7 @@ describe("EVMAddress", () => {
 
     test("Constructing with long-zero address and no Hedera ID", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher2 = "/api/v1/accounts/" + longZeroAddress
         mock.onGet(matcher2).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
@@ -154,7 +154,7 @@ describe("EVMAddress", () => {
     test("Constructing with System Contract address", async () => {
 
         const abi = require('../../../public/abi/IHederaTokenService.json')
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "http://localhost:3000/abi/IHederaTokenService.json"
         mock.onGet(matcher1).reply(200, abi)
 

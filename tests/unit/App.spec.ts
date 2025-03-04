@@ -27,8 +27,8 @@ import App from "@/App.vue";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
 import {HMSF} from "@/utils/HMSF";
-import {NetworkConfig} from "../../src/config/NetworkConfig";
-import {routeManager} from "../../src/router";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+import {routeManager} from "@/router.ts";
 import MainDashboardHeader from "@/components/page/header/MainDashboardHeader.vue";
 import Footer from "@/components/page/Footer.vue";
 import ChartView from "@/charts/core/ChartView.vue";
@@ -49,7 +49,7 @@ describe("App.vue", () => {
         await router.push({name: "MainDashboard", params: {network: 'mainnet'}})
         Object.defineProperty(window, 'innerWidth', {writable: true, configurable: true, value: 1920})
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS)
@@ -95,7 +95,7 @@ describe("App.vue", () => {
                 sourcifySetup: null
             }
         ]);
-        routeManager.configure(routeManager.coreConfig, networkConfig)
+        routeManager.configure(routeManager.coreConfig.value, networkConfig)
         await router.push("/")
 
         const wrapper = mount(App, {
@@ -103,8 +103,8 @@ describe("App.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                coreConfig: routeManager.coreConfig,
-                networkConfig: routeManager.networkConfig
+                coreConfig: routeManager.coreConfig.value,
+                networkConfig: routeManager.networkConfig.value
             },
         });
         expect(routeManager.currentNetwork.value).toBe("customnet1")

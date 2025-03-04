@@ -20,8 +20,8 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import TokenCell, {TokenCellItem} from "../../../src/components/token/TokenCell.vue";
-import router from "../../../src/router";
+import TokenCell, {TokenCellItem} from "@/components/token/TokenCell.vue";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 import {SAMPLE_ASSOCIATED_TOKEN, SAMPLE_NONFUNGIBLE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -34,7 +34,7 @@ describe("TokenCell.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const wrapper = mount(TokenCell, {
             global: {
@@ -59,7 +59,7 @@ describe("TokenCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const tokenId = SAMPLE_NONFUNGIBLE.token_id
         const name = SAMPLE_NONFUNGIBLE.name
@@ -94,7 +94,7 @@ describe("TokenCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const token = SAMPLE_NONFUNGIBLE
         const tokenId = token.token_id
@@ -156,7 +156,7 @@ describe("TokenCell.vue", () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const token = SAMPLE_ASSOCIATED_TOKEN
         const tokenId = token.token_id

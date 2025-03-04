@@ -28,7 +28,7 @@
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import TokenLink from "../../../src/components/values/link/TokenLink.vue";
+import TokenLink from "@/components/values/link/TokenLink.vue";
 import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
@@ -40,7 +40,7 @@ describe("TokenLink.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
 
@@ -69,7 +69,7 @@ describe("TokenLink.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id

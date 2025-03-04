@@ -52,7 +52,7 @@ describe("Nodes.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         // const config = [
         //     {

@@ -28,16 +28,16 @@
 import {describe, it, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import {SAMPLE_ACCOUNT, SAMPLE_CONTRACT} from "../Mocks";
-import OpcodeValue from "../../../src/components/values/OpcodeValue.vue";
+import OpcodeValue from "@/components/values/OpcodeValue.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {afterAll, beforeAll} from "vitest";
-import {DisassembledOpcodeOutput} from "../../../src/utils/bytecode_tools/disassembler/utils/helpers";
-import router from "../../../src/router";
+import {DisassembledOpcodeOutput} from "@/utils/bytecode_tools/disassembler/utils/helpers";
+import router from "@/router";
 
 describe("OpcodeValue.vue", () => {
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(() => {
     })

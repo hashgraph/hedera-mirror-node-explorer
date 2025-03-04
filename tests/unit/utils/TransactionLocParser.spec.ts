@@ -41,16 +41,16 @@ describe("TransactionLocParser.ts", () => {
 
     test("mount + set/unset transaction loc + unmount", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -118,16 +118,16 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc + mount + unmount + unset transaction loc", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -195,7 +195,7 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with transaction hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const transactionHash = TransactionHash.parseBase64(SAMPLE_TRANSACTION.transaction_hash)!.toString()
         const matcher1 = "/api/v1/transactions/" + transactionHash
@@ -267,18 +267,18 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with ethereum hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/results/" + SAMPLE_CONTRACT_RESULT_DETAILS.hash
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
         const matcher2 = "/api/v1/transactions"
-        mock.onGet(matcher2).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher2).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_CONTRACT_CALL_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_CONTRACT_CALL_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -346,17 +346,17 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with transaction id (single transaction with nonce 0)", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
-        const PARENT_TRANSACTION = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
+        const PARENT_TRANSACTION = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0]
         const matcher1 = "/api/v1/transactions/" + PARENT_TRANSACTION.transaction_id
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.nonce == 0) {
                 return [200, {transactions: [PARENT_TRANSACTION]}]
             } else {
                 return [200, SAMPLE_PARENT_CHILD_TRANSACTIONS]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -424,10 +424,10 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with transaction id (two transactions with nonce 0)", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
-        const SCHEDULING_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
-        const SCHEDULED_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const SCHEDULING_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![0]
+        const SCHEDULED_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![1]
         expect(SCHEDULING_TRANSACTION.transaction_id).toBe(SCHEDULED_TRANSACTION.transaction_id)
         expect(SCHEDULING_TRANSACTION.scheduled).toBeFalsy()
         expect(SCHEDULED_TRANSACTION.scheduled).toBeTruthy()
@@ -503,17 +503,17 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with unknown consensus timestamp", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_TIMESTAMP = "7777777777.888888888"
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == UNKNOWN_TIMESTAMP) {
                 return [404]
             } else {
                 return [500]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -582,7 +582,7 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with unknown transaction hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_HASH = "0x001122334455667788990011223344556677889900112233445566778899001122334455667788990011223344556677"
         const matcher1 = "/api/v1/transactions/" + UNKNOWN_HASH
@@ -655,7 +655,7 @@ describe("TransactionLocParser.ts", () => {
 
     test("set transaction loc with unknown ethereum hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ETH_HASH = "0x0011223344556677001122334455667700112233445566770011223344556677"
         const matcher1 = "/api/v1/contracts/results/" + UNKNOWN_ETH_HASH

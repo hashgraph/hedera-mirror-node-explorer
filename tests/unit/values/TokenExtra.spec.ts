@@ -31,7 +31,7 @@ import router from "@/router";
 import {SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import TokenExtra from "../../../src/components/values/link/TokenExtra.vue";
+import TokenExtra from "@/components/values/link/TokenExtra.vue";
 import {truncateTokenSymbol} from "./TokenLink.spec";
 
 describe("TokenExtra.vue", () => {
@@ -40,7 +40,7 @@ describe("TokenExtra.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher).reply(200, SAMPLE_TOKEN);
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN_DUDE.token_id

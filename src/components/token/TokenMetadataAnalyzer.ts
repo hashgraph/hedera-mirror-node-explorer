@@ -29,9 +29,9 @@ import {HCSURI} from "@/utils/HCSURI.ts";
 
 export interface NftAttribute {
     trait_type: string
-    display_type: string | undefined
+    display_type?: string
     value: string | number | boolean
-    max_value: string | number | undefined
+    max_value?: string | number
 }
 
 export interface NftFile {

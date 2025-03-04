@@ -20,11 +20,11 @@
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import BlobValue from '../../../src/components/values/BlobValue.vue';
+import BlobValue from '@/components/values/BlobValue.vue';
 import {IPFS_GATEWAY_PREFIX} from "../Mocks";
-import router from "../../../src/router";
-import {CoreConfig} from "../../../src/config/CoreConfig";
-import {coreConfigKey} from "../../../src/AppKeys";
+import router from "@/router";
+import {CoreConfig} from "@/config/CoreConfig";
+import {coreConfigKey} from "@/AppKeys";
 
 describe("BlobValue.vue", () => {
 

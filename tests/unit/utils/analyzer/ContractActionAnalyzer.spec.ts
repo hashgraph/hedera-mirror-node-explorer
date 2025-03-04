@@ -27,7 +27,7 @@ import {ref} from "vue"
 import {ContractActionAnalyzer} from "@/utils/analyzer/ContractActionAnalyzer"
 import {flushPromises} from "@vue/test-utils"
 import {SAMPLE_CONTRACT_ACTIONS, SAMPLE_TOKEN} from "../../Mocks"
-import ContractAction from "@/schemas/MirrorNodeSchemas"
+import {ContractAction} from "@/schemas/MirrorNodeSchemas"
 import {SignatureCache} from "@/utils/cache/SignatureCache";
 import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache";
 import {cloneMock, fetchGetURLs} from "../../MockUtils";
@@ -36,7 +36,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction caller and recipient are defined", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         // 1) new
         const action = ref<ContractAction | null>(null)
@@ -89,7 +89,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction caller is undefined", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_ACTION = cloneMock(SAMPLE_CONTRACT_ACTIONS.actions[1])
         SAMPLE_ACTION.caller = undefined
@@ -151,7 +151,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction recipient is undefined", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_ACTION = cloneMock(SAMPLE_CONTRACT_ACTIONS.actions[1])
         SAMPLE_ACTION.recipient = undefined
@@ -209,7 +209,7 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 
     test("ContractAction recipient is undefined and to is HTS", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_ACTION = cloneMock(SAMPLE_CONTRACT_ACTIONS.actions[1])
         SAMPLE_ACTION.recipient = undefined

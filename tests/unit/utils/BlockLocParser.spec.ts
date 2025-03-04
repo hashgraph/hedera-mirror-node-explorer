@@ -37,7 +37,7 @@ describe("BlockLocParser.ts", () => {
 
     test("mount + set/unset block loc + unmount", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK.number
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
@@ -108,7 +108,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc + mount + unmount + unset block loc", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK.number
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
@@ -179,7 +179,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc with block hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_BLOCK_HASH = PathParam.parseBlockLoc(SAMPLE_BLOCK.hash)!.toString()
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK_HASH
@@ -251,7 +251,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc with unknown block number", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_NB = 42
         const matcher1 = "/api/v1/blocks/" + UNKNOWN_NB
@@ -324,7 +324,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc with unknown ethereum hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_HASH = "0x0011223344556677001122334455667700112233445566770011223344556677"
         const matcher1 = "/api/v1/blocks/" + UNKNOWN_HASH

@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -20,13 +22,13 @@
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import router from "../../../src/router";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "../../../src/utils/HMSF";
-import HCSContentSection from "../../../src/components/topic/HCSContentSection.vue";
-import InfoTooltip from "../../../src/components/InfoTooltip.vue";
-import {HCSAsset} from "../../../src/utils/cache/HCSAsset";
-import {HCSTopicMemo} from "../../../src/utils/HCSTopicMemo";
+import {HMSF} from "@/utils/HMSF";
+import HCSContentSection from "@/components/topic/HCSContentSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+import {HCSAsset} from "@/utils/cache/HCSAsset";
+import {HCSTopicMemo} from "@/utils/HCSTopicMemo";
 
 /*
     Bookmarks
@@ -97,7 +99,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')
@@ -134,7 +136,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')
@@ -169,7 +171,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')

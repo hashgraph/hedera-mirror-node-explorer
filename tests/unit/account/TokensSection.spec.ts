@@ -34,10 +34,10 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import TokensSection from "../../../src/components/token/TokensSection.vue";
-import Tabs from "../../../src/components/Tabs.vue";
-import {HMSF} from "../../../src/utils/HMSF";
-import router from "../../../src/router";
+import TokensSection from "@/components/token/TokensSection.vue";
+import Tabs from "@/components/Tabs.vue";
+import {HMSF} from "@/utils/HMSF.ts";
+import router from "@/router";
 import {fetchGetURLs} from "../MockUtils";
 
 /*
@@ -59,7 +59,7 @@ describe("TokensSection.vue", () => {
         ]
     }
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(async () => {
         // For NFTs tab

@@ -28,7 +28,7 @@ export abstract class AbstractTransactionDownloader extends EntityDownloader<Tra
     public readonly accountId: Ref<string | null>
     public readonly transactionType: Ref<TransactionType | null>
 
-    protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
+    public readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
 
     //
     // EntityDownloader

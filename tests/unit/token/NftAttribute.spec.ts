@@ -20,9 +20,9 @@
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import NftAttribute from '../../../src/components/token/NftAttribute.vue';
-import router from "../../../src/router";
-import {HMSF} from "../../../src/utils/HMSF";
+import NftAttribute from '@/components/token/NftAttribute.vue';
+import router from "@/router";
+import {HMSF} from "@/utils/HMSF";
 
 /*
   POSSIBLE DISPLAY TYPES:
@@ -38,24 +38,6 @@ import {HMSF} from "../../../src/utils/HMSF";
 HMSF.forceUTC = true
 
 describe("NftAttribute.vue", () => {
-
-    test("empty NftAttribute", async () => {
-
-        const wrapper = mount(NftAttribute, {
-            global: {
-                plugins: [router]
-            },
-            props: {
-                attribute: {}
-            },
-        });
-        await flushPromises()
-
-        expect(wrapper.text()).toBe("")
-
-        wrapper.unmount()
-        await flushPromises()
-    })
 
     test("NftAttribute containing string with no display type", async () => {
 

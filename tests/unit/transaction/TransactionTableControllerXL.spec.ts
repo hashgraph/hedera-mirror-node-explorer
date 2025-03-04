@@ -40,13 +40,13 @@ describe("TransactionTableController.ts", () => {
     test("mount + unmount", async () => {
         const PAGE_SIZE = 5
         //
-        // const mock = new MockAdapter(axios)
+        // const mock = new MockAdapter(axios as any)
 
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Just after construction
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
@@ -96,7 +96,7 @@ describe("TransactionTableController.ts", () => {
     test("route with p/k + mount + accountId setup + unmount", async () => {
         const PAGE_SIZE = 5
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
@@ -105,7 +105,7 @@ describe("TransactionTableController.ts", () => {
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Preset p and k params in current route
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
@@ -161,7 +161,7 @@ describe("TransactionTableController.ts", () => {
         const ACCOUNT_ID = "0.0.4"
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         const param1 = {
             limit: PAGE_SIZE,
@@ -175,7 +175,7 @@ describe("TransactionTableController.ts", () => {
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Preset p and k params in current route
         await tc.router.replace({query: {p: 10, k: TIMESTAMP0}})
@@ -225,7 +225,7 @@ describe("TransactionTableController.ts", () => {
     test("mount + transactionType setup + unmount [accountMandatory=false]", async () => {
         const PAGE_SIZE = 5
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         const params1 = {limit: 5, order: "desc"}
@@ -242,7 +242,7 @@ describe("TransactionTableController.ts", () => {
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false, "testKey")
         const currentRoute = tc.router.currentRoute
 
         // Sanity checks

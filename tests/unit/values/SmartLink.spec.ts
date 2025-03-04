@@ -21,7 +21,7 @@
 import {describe, test, expect} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
 import router from "@/router";
-import SmartLink from "../../../src/components/values/link/SmartLink.vue";
+import SmartLink from "@/components/values/link/SmartLink.vue";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 import {SAMPLE_NETWORK_NODES} from "../Mocks";
@@ -30,7 +30,7 @@ describe("SmartLink.vue", () => {
 
     test("AccountLink; no extra", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
@@ -46,7 +46,7 @@ describe("SmartLink.vue", () => {
 
     test("AccountLink; extra", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/network/nodes"
         mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
 
