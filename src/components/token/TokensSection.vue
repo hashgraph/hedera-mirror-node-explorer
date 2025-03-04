@@ -124,6 +124,7 @@
       </div>
       <ArrowLink
           v-if="showAllTokensLink"
+          id="all-tokens-link"
           :route="routeManager.makeRouteToTokensByAccount(accountId)"
           text="All tokens"
           style="display: flex; justify-content: center;"
