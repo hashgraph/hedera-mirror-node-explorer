@@ -26,7 +26,6 @@
 import {
     ContractStateResponse,
     KeyType,
-    Transaction,
     TransactionResponse,
     TransactionType
 } from "@/schemas/MirrorNodeSchemas.ts";

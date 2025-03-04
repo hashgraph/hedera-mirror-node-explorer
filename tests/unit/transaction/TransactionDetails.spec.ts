@@ -85,13 +85,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN);
@@ -185,13 +185,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == timestamp) {
                 return [200, SAMPLE_CONTRACTCALL_TRANSACTIONS]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/contracts/" + contractId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
@@ -321,13 +321,13 @@ describe("TransactionDetails.vue", () => {
         const matcher11 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS);
         const matcher12 = "/api/v1/transactions"
-        mock.onGet(matcher12).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher12).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == timestamp) {
                 return [200, SAMPLE_CONTRACTCALL_TRANSACTIONS]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/contracts/" + contractId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
@@ -429,13 +429,13 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios as any)
         let matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         let matcher11 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_TRANSACTIONS)
@@ -482,13 +482,13 @@ describe("TransactionDetails.vue", () => {
 
         const transaction = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0]
         matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
                 return [200, {transactions: [transaction]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
 
@@ -540,13 +540,13 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_FAILED_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_FAILED_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher11 = "/api/v1/transactions/" + SAMPLE_FAILED_TRANSACTION.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_FAILED_TRANSACTIONS);
@@ -636,13 +636,13 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
                 return [200, {transactions: [transaction]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher11 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS)
 
@@ -693,13 +693,13 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SCHEDULING.consensus_timestamp) {
                 return [200, {transactions: [SCHEDULING]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher11 = "/api/v1/transactions/" + SCHEDULING.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
@@ -756,13 +756,13 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SCHEDULED.consensus_timestamp) {
                 return [200, {transactions: [SCHEDULED]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher11 = "/api/v1/transactions/" + SCHEDULED.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS);
         const matcher2 = "/api/v1/tokens/" + TOKEN_ID
@@ -822,13 +822,13 @@ describe("TransactionDetails.vue", () => {
 
             const mock = new MockAdapter(axios as any)
             const matcher1 = "/api/v1/transactions"
-            mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+            mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
                 if (config.params.timestamp == CHILD.consensus_timestamp) {
                     return [200, {transactions: [CHILD]}]
                 } else {
                     return [404]
                 }
-            });
+            }) as any);
             const matcher11 = "/api/v1/transactions/" + CHILD.transaction_id
             mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
             const matcher2 = "/api/v1/tokens/" + TOKEN_ID
@@ -885,13 +885,13 @@ describe("TransactionDetails.vue", () => {
 
         const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == PARENT.consensus_timestamp) {
                 return [200, {transactions: [PARENT]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher11 = "/api/v1/transactions/" + PARENT.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_PARENT_CHILD_TRANSACTIONS);
         const matcher2 = "/api/v1/tokens/" + TARGETED_TOKEN
@@ -963,13 +963,13 @@ describe("TransactionDetails.vue", () => {
         const mock = new MockAdapter(axios as any)
         const NONCE_1 = SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS.transactions[1]
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == NONCE_1.consensus_timestamp) {
                 return [200, {transactions: [NONCE_1]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher11 = "/api/v1/transactions/" + NONCE_1.transaction_id
         mock.onGet(matcher11).reply(200, SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS);
 
@@ -1019,13 +1019,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, {transactions: [transaction]});
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
                 return [200, {transactions: [transaction]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher3 = "/api/v1/accounts/" + transaction.entity_id + "/tokens?limit=100"
         mock.onGet(matcher3).reply(200, SAMPLE_TOKEN_RELATIONSHIP_RESPONSE);
         const matcher4 = "/api/v1/tokens/" + token1.token_id
@@ -1107,13 +1107,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_CALL_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == timestamp) {
                 return [200, SAMPLE_TOKEN_CALL_TRANSACTIONS]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/contracts/" + entityId
         mock.onGet(matcher2).reply(404)
@@ -1163,13 +1163,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == timestamp) {
                 return [200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/contracts/" + entityId
         mock.onGet(matcher2).reply(404)
@@ -1231,13 +1231,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == timestamp) {
                 return [200, SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/contracts/" + entityId
         mock.onGet(matcher2).reply(200, SAMPLE_CONTRACT)
@@ -1297,13 +1297,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transactionId
         mock.onGet(matcher1).reply(200, SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == timestamp) {
                 return [200, SAMPLE_ETHEREUM_TRANSACTIONS_ASSOCIATING_TOKEN]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const matcher2 = "/api/v1/tokens/" + entityId
         mock.onGet(matcher2).reply(200, SAMPLE_TOKEN)
@@ -1455,13 +1455,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + transaction.transaction_id
         mock.onGet(matcher1).reply(200, {transactions: [transaction]});
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == transaction.consensus_timestamp) {
                 return [200, {transactions: [transaction]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         const wrapper = mount(TransactionDetails, {
             global: {
@@ -1514,13 +1514,13 @@ describe("TransactionDetails.vue", () => {
         const matcher1 = "/api/v1/transactions/" + SAMPLE_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply(200, SAMPLE_TRANSACTIONS);
         const matcher11 = "/api/v1/transactions"
-        mock.onGet(matcher11).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher11).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
         const matcher111 = "/api/v1/blocks"
         mock.onGet(matcher111).reply(200, {blocks: [SAMPLE_BLOCK_ZERO]});
         const matcher2 = "/api/v1/tokens/" + SAMPLE_TOKEN.token_id

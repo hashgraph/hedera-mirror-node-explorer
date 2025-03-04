@@ -41,14 +41,14 @@ describe("TransactionGroupByBlockCache", () => {
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
 
         const matcher2 = "/api/v1/transactions"
-        mock.onGet(matcher2).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher2).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == "lte:" + SAMPLE_BLOCK.timestamp.to
                 && config.params.limit == SAMPLE_BLOCK.count) {
                 return [200, SAMPLE_PARENT_CHILD_TRANSACTIONS]
             } else {
                 return [404]
             }
-        })
+        }) as any)
 
         // lookup() triggers http requests
         const blockNumber = SAMPLE_BLOCK.number

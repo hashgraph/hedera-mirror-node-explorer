@@ -44,13 +44,13 @@ describe("TransactionLocParser.ts", () => {
         const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -121,13 +121,13 @@ describe("TransactionLocParser.ts", () => {
         const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -272,13 +272,13 @@ describe("TransactionLocParser.ts", () => {
         const matcher1 = "/api/v1/contracts/results/" + SAMPLE_CONTRACT_RESULT_DETAILS.hash
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT_RESULT_DETAILS);
         const matcher2 = "/api/v1/transactions"
-        mock.onGet(matcher2).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher2).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == SAMPLE_CONTRACT_CALL_TRANSACTION.consensus_timestamp) {
                 return [200, {transactions: [SAMPLE_CONTRACT_CALL_TRANSACTION]}]
             } else {
                 return [404]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -350,13 +350,13 @@ describe("TransactionLocParser.ts", () => {
 
         const PARENT_TRANSACTION = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0]
         const matcher1 = "/api/v1/transactions/" + PARENT_TRANSACTION.transaction_id
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.nonce == 0) {
                 return [200, {transactions: [PARENT_TRANSACTION]}]
             } else {
                 return [200, SAMPLE_PARENT_CHILD_TRANSACTIONS]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
@@ -507,13 +507,13 @@ describe("TransactionLocParser.ts", () => {
 
         const UNKNOWN_TIMESTAMP = "7777777777.888888888"
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher1).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == UNKNOWN_TIMESTAMP) {
                 return [404]
             } else {
                 return [500]
             }
-        });
+        }) as any);
 
         // 0) Creates parser
         const transactionLoc: Ref<string | null> = ref(null)
