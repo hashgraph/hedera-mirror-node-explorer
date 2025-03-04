@@ -20,8 +20,6 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-import {makeExchangeFormat} from "../TestUtils";
-
 describe('Account Navigation', () => {
 
     it('should navigate from table to account details', () => {
@@ -43,48 +41,12 @@ describe('Account Navigation', () => {
             })
     })
 
-    it('should follow links from account with many tokens', () => {
+    it('should follow links to HTS tokens', () => {
         const accountId1 = "0.0.592746"
 
         cy.visit('mainnet/account/' + accountId1)
         cy.url().should('include', '/mainnet/account/')
         cy.contains('Account ID ' + accountId1)
-
-        cy.get('#hbarAllowancesTable')
-            .find('tbody tr')
-            .should('be.visible')
-            .should('have.length.at.least', 1)
-
-        cy.get('#tab-token').click()
-
-        cy.get('#tokenAllowancesTable')
-            .find('tbody tr')
-            .should('be.visible')
-            .should('have.length.at.least', 1)
-
-        cy.get('#tab-nft').click()
-
-        cy.get('#nftAllowancesTable')
-            .find('tbody tr')
-            .should('be.visible')
-            .should('have.length.at.least', 1)
-
-        cy.get('#recentTransactionsTable')
-            .find('tbody tr')
-            .should('be.visible')
-            .should('have.length.at.least', 2)
-            .eq(0)
-            .find('td')
-            .eq(0)
-            .click()
-            .then(($id) => {
-                // cy.log('Selected transaction Id: ' + $id.text())
-                cy.url().should('include', '/mainnet/transaction/')
-                cy.contains('Transaction ' + $id.text())
-            })
-
-        cy.go('back')
-        cy.url().should('include', '/mainnet/account/')
 
         cy.get('#tab-fungible').click()
         cy.get('#fungibleTable')
@@ -96,16 +58,16 @@ describe('Account Navigation', () => {
             .eq(0)
             .click()
             .then(($id) => {
-                        cy.url().should('include', `/mainnet/token/${$id.text()}`)
-                        cy.contains('Fungible Token')
-                        cy.contains(`${$id.text()}`)
+                cy.url().should('include', `/mainnet/token/${$id.text()}`)
+                cy.contains('Fungible Token')
+                cy.contains(`${$id.text()}`)
             })
 
         cy.go('back')
         cy.url().should('include', '/mainnet/account/')
+        cy.contains('Account ID ' + accountId1)
 
         cy.get('#tab-nfts').click()
-
         cy.get('#nftsTable')
             .find('tbody tr')
             .should('be.visible')
@@ -116,20 +78,33 @@ describe('Account Navigation', () => {
             .click()
             .then(($id) => {
                 cy.url().should('include', `/mainnet/token/${$id.text()}`)
+                cy.contains('NFT Details')
                 cy.contains('Non Fungible Token')
+                cy.contains('NFT Collection')
                 cy.contains(`${$id.text()}`)
             })
+
+        cy.go('back')
+        cy.url().should('include', '/mainnet/account/')
+        cy.contains('Account ID ' + accountId1)
+
+        cy.get('#all-tokens-link').click()
+
+        cy.url().should('include', `/mainnet/tokensByAccount/${accountId1}`)
+        cy.contains('Tokens by Account')
+        cy.contains('HTS Tokens of Account ' + accountId1)
     })
 
-    it.skip('should follow links from account with few tokens', () => {
-        const accountId2 = "0.0.30974874"
+    it('should follow link to recent transaction', () => {
+        const accountId1 = "0.0.902"
 
-        cy.visit('mainnet/account/' + accountId2)
-        cy.url().should('include', '/mainnet/account/')
-        cy.contains('Account ID ' + accountId2)
+        cy.visit('testnet/account/' + accountId1)
+        cy.url().should('include', '/testnet/account/')
+        cy.contains('Account ID ' + accountId1)
 
-        cy.get('table')
+        cy.get('#recentTransactionsTable')
             .find('tbody tr')
+            .should('be.visible')
             .should('have.length.at.least', 2)
             .eq(0)
             .find('td')
@@ -138,50 +113,8 @@ describe('Account Navigation', () => {
             .then(($id) => {
                 // cy.log('Selected transaction Id: ' + $id.text())
                 cy.url().should('include', '/testnet/transaction/')
-                cy.url().should('include', 'tid=' + makeExchangeFormat($id.text()))
                 cy.contains('Transaction ' + $id.text())
             })
-
-        cy.go('back')
-        cy.url().should('include', '/mainnet/account/')
-
-        cy.get('#balance')
-            .find('a')
-            .then(($a) => {
-                cy.wrap($a)
-                    .invoke('attr', 'href')
-                    .should('not.be.empty')
-                    .then((href) => {
-                        const parts = (href as string).split('/')
-                        const tokenId = parts[parts.length - 1]
-                        cy.wrap($a).click()
-                        cy.url().should('include', '/mainnet/token/' + tokenId)
-                        cy.contains('Token ID:' + tokenId)
-                    })
-            })
-    })
-
-    it('should follow link to reward transaction', () => {
-        const accountID = "0.0.592746"
-        cy.visit('mainnet/account/' + accountID)
-        cy.url().should('include', '/mainnet/account/' + accountID)
-        cy.contains('Account ID ' + accountID)
-
-        cy.get('#tab-rewards')
-            .click()
-
-        cy.get('#recentRewardsTable')
-            .find('tbody tr')
-            .should('be.visible')
-            .should('have.length.at.least', 2)
-            .eq(0)
-            .find('td')
-            .eq(0)
-            .click()
-
-        cy.url().should('include', '/mainnet/transaction/')
-        cy.contains('Transaction')
-        cy.contains('0.0.800')
     })
 
     it('should follow link to recent created contract', () => {
@@ -201,10 +134,64 @@ describe('Account Navigation', () => {
             .find('td')
             .eq(0)
             .click()
+            .then(($id) => {
+                cy.url().should('include', '/testnet/contract/'+ $id.text())
+                cy.contains('Contract Details')
+                cy.contains($id.text())
+                cy.contains(accountID)
+            })
+    })
 
-        cy.url().should('include', '/testnet/contract/')
-        cy.contains('Contract')
+    it('should follow link to recent reward transaction', () => {
+        const accountID = "0.0.592746"
+        cy.visit('mainnet/account/' + accountID)
+        cy.url().should('include', '/mainnet/account/' + accountID)
+        cy.contains('Account ID ' + accountID)
+
+        cy.get('#tab-rewards')
+            .click()
+
+        cy.get('#recentRewardsTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 2)
+            .eq(0)
+            .find('td')
+            .eq(0)
+            .click()
+
+        cy.url().should('include', '/mainnet/transaction/')
+        cy.contains('Transaction')
+        cy.contains('Staking Rewards')
+        cy.contains('0.0.800')
         cy.contains(accountID)
+    })
+
+    it('should display allowance tables', () => {
+        const accountId = "0.0.592746"
+
+        cy.visit('mainnet/account/' + accountId)
+        cy.url().should('include', '/mainnet/account/')
+        cy.contains('Account ID ' + accountId)
+
+        cy.get('#hbarAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('#tab-token').click()
+
+        cy.get('#tokenAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
+
+        cy.get('#tab-nft').click()
+
+        cy.get('#nftAllowancesTable')
+            .find('tbody tr')
+            .should('be.visible')
+            .should('have.length.at.least', 1)
     })
 
     it('should display account details using account ID', () => {
@@ -214,19 +201,19 @@ describe('Account Navigation', () => {
         cy.contains('Account ID ' + accountID)
     })
 
-    it.skip('should display account details using account base32 alias', () => {
-        const accountID = "0.0.592746"
-        const accountAlias = "HIQQGOGHZGVM3E7KT47Z6VQYY2TTYY3USZUDJGVSRLYRUR5J72ZD6PI4"
+    it('should display account details using account key alias (base32)', () => {
+        const accountID = "0.0.721838"
+        const accountAlias = "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ"
         cy.visit('mainnet/account/' + accountAlias)
         cy.url().should('include', '/mainnet/account/' + accountAlias)
         cy.contains('Account ID ' + accountID)
     })
 
-    it.skip('should display account details using account hex alias', () => {
-        const accountID = "0.0.46022656"
-        const accountAliasInHex = "0x3a210338c7c9aacd93ea9f3f9f5618c6a73c63749668349ab28af11a47a9feb23f3d1c"
-        cy.visit('testnet/account/' + accountAliasInHex)
-        cy.url().should('include', '/testnet/account/' + accountAliasInHex)
+    it('should display account details using account key alias (hexa)', () => {
+        const accountID = "0.0.721838"
+        const accountAliasInHex = "0x12200000fc0634e2ab455eff393f04819efa262fe5e6ab1c7ed1d4f85fbcd8e6e296"
+        cy.visit('mainnet/account/' + accountAliasInHex)
+        cy.url().should('include', '/mainnet/account/' + accountAliasInHex)
         cy.contains('Account ID ' + accountID)
     })
 
