@@ -51,7 +51,7 @@ describe("SearchController.vue", () => {
 
     // We duplicate SAMPLE_ACCOUNT and patch its account id so that it conflicts with block number
     const SAMPLE_PATCHED_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT))
-    const SAMPLE_PATCHED_ACCOUNT_ID = new EntityID(0, 0, SAMPLE_BLOCK.number)
+    const SAMPLE_PATCHED_ACCOUNT_ID = new EntityID(0, 0, SAMPLE_BLOCK.number, null)
     SAMPLE_PATCHED_ACCOUNT.account = SAMPLE_PATCHED_ACCOUNT_ID.toString()
 
     // We derive a NAME_PATTERN from SAMPLE_TOKEN.name

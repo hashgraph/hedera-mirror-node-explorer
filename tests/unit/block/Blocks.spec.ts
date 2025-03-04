@@ -66,7 +66,7 @@ describe("Blocks.vue", () => {
             "api/v1/blocks",
         ])
 
-        expect(wrapper.vm.blockTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).blockTableController.mounted.value).toBe(true)
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Blocks"))
@@ -83,6 +83,6 @@ describe("Blocks.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.blockTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).blockTableController.mounted.value).toBe(false)
     });
 });

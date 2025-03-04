@@ -68,7 +68,7 @@ describe("Contracts.vue", () => {
             "api/v1/tokens/" + SAMPLE_CONTRACTS.contracts[0].contract_id,
         ])
 
-        expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).contractTableController.mounted.value).toBe(true)
 
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)

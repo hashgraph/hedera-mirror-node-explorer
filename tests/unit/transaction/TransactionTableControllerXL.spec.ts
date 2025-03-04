@@ -46,7 +46,7 @@ describe("TransactionTableController.ts", () => {
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Just after construction
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
@@ -105,7 +105,7 @@ describe("TransactionTableController.ts", () => {
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Preset p and k params in current route
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
@@ -175,7 +175,7 @@ describe("TransactionTableController.ts", () => {
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Preset p and k params in current route
         await tc.router.replace({query: {p: 10, k: TIMESTAMP0}})
@@ -242,7 +242,7 @@ describe("TransactionTableController.ts", () => {
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false, "testKey")
         const currentRoute = tc.router.currentRoute
 
         // Sanity checks

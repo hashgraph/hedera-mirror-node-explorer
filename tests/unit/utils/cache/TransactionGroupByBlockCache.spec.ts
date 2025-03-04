@@ -65,7 +65,7 @@ describe("TransactionGroupByBlockCache", () => {
         expect(mock.history.get.length).toBe(0)
 
         // Checks that TransactionByHashCache and TransactionByTsCache has been populated
-        for (const t of SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions) {
+        for (const t of SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions!) {
             expect(TransactionByHashCache.instance.contains(t.transaction_hash)).toBeTruthy()
             expect(TransactionByTsCache.instance.contains(t.consensus_timestamp)).toBeTruthy()
         }

@@ -67,8 +67,8 @@ describe("Tokens.vue", () => {
             "api/v1/tokens",
         ])
 
-            expect(wrapper.vm.nftTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.tokenTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).nftTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).tokenTableController.mounted.value).toBe(true)
 
         const cards = wrapper.findAllComponents(DashboardCardV2)
         expect(cards.length).toBe(2)
@@ -103,8 +103,8 @@ describe("Tokens.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.nftTableController.mounted.value).toBe(false)
-        expect(wrapper.vm.tokenTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).nftTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).tokenTableController.mounted.value).toBe(false)
     });
 
 });

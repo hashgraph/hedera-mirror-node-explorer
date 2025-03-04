@@ -1,3 +1,5 @@
+// noinspection DuplicatedCode
+
 /*-
  *
  * Hedera Mirror Node Explorer
@@ -97,7 +99,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')
@@ -134,7 +136,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')
@@ -169,7 +171,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')

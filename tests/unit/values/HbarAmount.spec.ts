@@ -79,7 +79,7 @@ describe("HbarAmount.vue ", () => {
 
         await flushPromises()
 
-        expect(wrapper.getComponent(HbarExtra).exists()).toBe(true)
+        expect(wrapper.findComponent(HbarExtra).exists()).toBe(true)
         expect(wrapper.text()).toBe(expectedHbarAmount + expectedDollarAmount)
 
         wrapper.unmount()

@@ -119,7 +119,7 @@ describe("EntityID.ts", () => {
         expect(EntityID.parse(str2)).toBeNull()
         expect(EntityID.parse(str2, true)).toBeNull()
         expect(EntityID.parseWithChecksum(str2)).toBeNull()
-        const obj2 = EntityID.parseWithChecksum(str2, true, true)
+        const obj2 = EntityID.parseWithChecksum(str2, true)
         expect(obj2?.shard).toBe(0)
         expect(obj2?.realm).toBe(0)
         expect(obj2?.num).toBe(98)

@@ -32,7 +32,9 @@ export function cloneMock(mock: object): any {
 export function fetchGetURLs(mock: MockAdapter): string[] {
     const result: string[] = []
     for (const e of mock.history.get) {
-        result.push(e.url)
+        if (e.url) {
+            result.push(e.url)
+        }
     }
     return result
 }

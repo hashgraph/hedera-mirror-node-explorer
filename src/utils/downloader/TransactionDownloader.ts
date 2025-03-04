@@ -25,9 +25,6 @@ import {Ref} from "vue";
 
 export class TransactionDownloader extends AbstractTransactionDownloader {
 
-
-    protected readonly wrongSetupError = new Error("this.accountId or this.startDate not set")
-
     //
     // Public
     //

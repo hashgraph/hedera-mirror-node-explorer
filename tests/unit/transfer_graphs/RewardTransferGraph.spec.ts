@@ -91,7 +91,7 @@ describe("RewardTransferGraph.vue", () => {
                 plugins: [router]
             },
             props: {
-                transaction: SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS as TransactionDetail,
+                transaction: SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS as unknown as TransactionDetail,
 
             },
         })

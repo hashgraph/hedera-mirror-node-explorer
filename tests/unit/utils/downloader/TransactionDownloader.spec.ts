@@ -52,7 +52,7 @@ describe("TransactionDownloader.ts", () => {
         expect(d.failureReason.value).toBeNull()
         expect(d.lastDownloadedEntityDate.value).toBeNull()
         expect(d.progress.value).toBe(0)
-        expect(d.getOutputName()).toBe("")
+        expect(d.getOutputName("dummy")).toBe("")
         expect(d.csvBlob.value).toBeNull()
 
         expect(mock.history.get.length).toBe(0)
@@ -71,7 +71,7 @@ describe("TransactionDownloader.ts", () => {
         expect(d.failureReason.value).toBe(d.wrongSetupError)
         expect(d.lastDownloadedEntityDate.value).toBeNull()
         expect(d.progress.value).toBe(0)
-        expect(d.getOutputName()).toBe("")
+        expect(d.getOutputName("dummy")).toBe("")
         expect(d.csvBlob.value).toBeNull()
 
         expect(mock.history.get.length).toBe(0)
@@ -93,7 +93,7 @@ describe("TransactionDownloader.ts", () => {
         expect(d.failureReason.value).not.toBeNull()
         expect(d.lastDownloadedEntityDate.value).toBeNull()
         expect(d.progress.value).toBe(0)
-        expect(d.getOutputName()).toBe("Hedera Transactions 0.0.98 03/01/2024 to 03/02/2024.csv")
+        expect(d.getOutputName("dummy")).toBe("Hedera Transactions 0.0.98 03/01/2024 to 03/02/2024.csv")
         expect(d.csvBlob.value).toBeNull()
 
         expect(mock.history.get.length).toBe(1)

@@ -348,7 +348,7 @@ describe("TransactionLocParser.ts", () => {
 
         const mock = new MockAdapter(axios as any)
 
-        const PARENT_TRANSACTION = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
+        const PARENT_TRANSACTION = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0]
         const matcher1 = "/api/v1/transactions/" + PARENT_TRANSACTION.transaction_id
         mock.onGet(matcher1).reply((config: AxiosRequestConfig) => {
             if (config.params.nonce == 0) {
@@ -426,8 +426,8 @@ describe("TransactionLocParser.ts", () => {
 
         const mock = new MockAdapter(axios as any)
 
-        const SCHEDULING_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
-        const SCHEDULED_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const SCHEDULING_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![0]
+        const SCHEDULED_TRANSACTION = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![1]
         expect(SCHEDULING_TRANSACTION.transaction_id).toBe(SCHEDULED_TRANSACTION.transaction_id)
         expect(SCHEDULING_TRANSACTION.scheduled).toBeFalsy()
         expect(SCHEDULED_TRANSACTION.scheduled).toBeTruthy()

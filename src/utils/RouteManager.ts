@@ -70,7 +70,7 @@ export class RouteManager {
 
     public readonly router: Router
     public readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
-    private readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
+    public readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
 
     //
     // Public

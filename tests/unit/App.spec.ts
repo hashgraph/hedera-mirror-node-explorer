@@ -95,7 +95,7 @@ describe("App.vue", () => {
                 sourcifySetup: null
             }
         ]);
-        routeManager.configure(routeManager.coreConfig, networkConfig)
+        routeManager.configure(routeManager.coreConfig.value, networkConfig)
         await router.push("/")
 
         const wrapper = mount(App, {
@@ -103,8 +103,8 @@ describe("App.vue", () => {
                 plugins: [router, Oruga]
             },
             props: {
-                coreConfig: routeManager.coreConfig,
-                networkConfig: routeManager.networkConfig
+                coreConfig: routeManager.coreConfig.value,
+                networkConfig: routeManager.networkConfig.value
             },
         });
         expect(routeManager.currentNetwork.value).toBe("customnet1")

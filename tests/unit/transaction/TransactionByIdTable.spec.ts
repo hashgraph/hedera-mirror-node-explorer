@@ -61,7 +61,7 @@ describe("TransactionByIdTable.vue", () => {
             props: {
                 narrowed: true,
                 nbItems: 42,
-                transactions: SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions as Array<Transaction>,
+                transactions: SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions,
             },
         });
 
@@ -84,7 +84,7 @@ describe("TransactionByIdTable.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
         const mock = new MockAdapter(axios as any);
         const matcher5 = "/api/v1/tokens/" + TOKEN_ID
@@ -99,7 +99,7 @@ describe("TransactionByIdTable.vue", () => {
             props: {
                 narrowed: true,
                 nbItems: 42,
-                transactions: SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions as Array<Transaction>,
+                transactions: SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions!,
             },
         });
 

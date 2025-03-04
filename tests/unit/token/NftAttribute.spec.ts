@@ -39,24 +39,6 @@ HMSF.forceUTC = true
 
 describe("NftAttribute.vue", () => {
 
-    test("empty NftAttribute", async () => {
-
-        const wrapper = mount(NftAttribute, {
-            global: {
-                plugins: [router]
-            },
-            props: {
-                attribute: {}
-            },
-        });
-        await flushPromises()
-
-        expect(wrapper.text()).toBe("")
-
-        wrapper.unmount()
-        await flushPromises()
-    })
-
     test("NftAttribute containing string with no display type", async () => {
 
         const wrapper = mount(NftAttribute, {

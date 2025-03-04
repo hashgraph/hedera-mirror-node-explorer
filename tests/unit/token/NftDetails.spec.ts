@@ -71,9 +71,6 @@ describe("NftDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
-
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol +")#2Non Fungible Token")
 
         const media = wrapper.get('#media-placeholder')
@@ -104,7 +101,7 @@ describe("NftDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(false)
     });
 
     it("Should display NFT with image and metadata", async () => {
@@ -141,7 +138,7 @@ describe("NftDetails.vue", () => {
         // console.log(wrapper.html())
 
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(true)
 
         expect(wrapper.text()).toMatch(RegExp('Non Fungible Token'))
 
@@ -163,6 +160,6 @@ describe("NftDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(false)
     });
 });

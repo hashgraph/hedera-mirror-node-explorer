@@ -687,8 +687,8 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
-        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![0]
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
 
         const mock = new MockAdapter(axios as any)
@@ -750,8 +750,8 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[0]
-        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions[1]
+        const SCHEDULING = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![0]
+        const SCHEDULED = SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS.transactions![1]
         const TOKEN_ID = SCHEDULED.token_transfers ? SCHEDULED.token_transfers[0].token_id : "0.0.1304757"
 
         const mock = new MockAdapter(axios as any)
@@ -816,8 +816,8 @@ describe("TransactionDetails.vue", () => {
 
             await router.push("/") // To avoid "missing required param 'network'" error
 
-            const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
-            const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
+            const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0]
+            const CHILD = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![1]
             const TOKEN_ID = CHILD.nft_transfers ? CHILD.nft_transfers[0].token_id : "0.0.48193741"
 
             const mock = new MockAdapter(axios as any)
@@ -856,7 +856,7 @@ describe("TransactionDetails.vue", () => {
                 "api/v1/blocks",
                 "api/v1/contracts/results",
                 "api/v1/network/fees",
-                "api/v1/contracts/" + SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0].transfers[1].account,
+                "api/v1/contracts/" + SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0].transfers[1].account,
                 "api/v1/network/exchangerate",
                 "api/v1/tokens/" + CHILD.entity_id,
             ])
@@ -878,9 +878,9 @@ describe("TransactionDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0]
-        const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[1]
-        const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[2]
+        const PARENT = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0]
+        const CHILD1 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![1]
+        const CHILD2 = SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![2]
         const TARGETED_TOKEN = CHILD1.entity_id
 
         const mock = new MockAdapter(axios as any)
@@ -924,7 +924,7 @@ describe("TransactionDetails.vue", () => {
             "api/v1/network/exchangerate",
             "api/v1/tokens/" + CHILD1.entity_id,
             "api/v1/contracts/" + PARENT.transfers[0].account,
-            "api/v1/contracts/results/" + SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions[0].transaction_id,
+            "api/v1/contracts/results/" + SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions![0].transaction_id,
             "api/v1/accounts/",
             "api/v1/blocks",
             "api/v1/tokens/" + PARENT.entity_id,
