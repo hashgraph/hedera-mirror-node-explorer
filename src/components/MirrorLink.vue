@@ -79,7 +79,7 @@ const endpointURL = computed(() => {
   if (props.query !== null) {
     result += `?${props.query}`
   }
-  console.log(`endpointURL: ${endpointURL.value}`)
+  // console.log(`endpointURL: ${endpointURL.value}`)
   return result
 })
 
