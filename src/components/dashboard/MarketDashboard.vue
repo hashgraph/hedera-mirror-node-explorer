@@ -27,6 +27,7 @@
   <div class="dashboard-root">
     <div class="dashboard-content">
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarPriceLabel"
           :value="hbarPrice"
       >
@@ -36,6 +37,7 @@
       <div class="line"/>
 
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarMarketCapLabel"
           :value="hbarMarketCap"
       >
@@ -45,6 +47,7 @@
       <div v-if="isLargeScreen || !isSmallScreen" class="line"/>
 
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarReleasedLabel"
           :value="hbarReleased"
       >
@@ -54,6 +57,7 @@
       <div class="line"/>
 
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarTotalLabel"
           :value="hbarTotal"
       >
