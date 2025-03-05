@@ -405,6 +405,49 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
     return result
 }
 
+export async function drainAndFilterTransactions(
+    r: TransactionResponse,
+    limit: number,
+    minTinyBar: number,
+    account: string
+): Promise<Transaction[]> {
+
+    const filterTinyTxn = (txn: Transaction) => {
+        let filter = true
+        let reward = 0
+        if (txn.name === TransactionType.CRYPTOTRANSFER && minTinyBar > 0) {
+            for (const r of txn.staking_reward_transfers) {
+                if (r.account === account) {
+                    reward = r.amount
+                }
+            }
+            for (const t of txn.transfers) {
+                if (t.account === account) {
+                    const netAmount = t.amount - reward
+                    if (netAmount < minTinyBar) {
+                        filter = false
+                    }
+                    break
+                }
+            }
+        }
+        return filter
+    }
+
+    let result = (r.transactions ?? []).filter(filterTinyTxn)
+    // let i = 1
+    while (r.links?.next && result.length < limit) {
+        // console.log("drain iteration: " + i);
+        // i += 1
+        const ar = await axios.get<TransactionResponse>(r.links.next)
+        if (ar.data.transactions) {
+            result = result.concat(ar.data.transactions.filter(filterTinyTxn))
+        }
+        r = ar.data
+    }
+    return result
+}
+
 export async function drainAccounts(r: AccountsResponse, limit: number): Promise<AccountInfo[]> {
     let result = r.accounts ?? []
     // let i = 1
