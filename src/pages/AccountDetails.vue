@@ -267,12 +267,36 @@
       </template>
 
       <template #content>
-        <Tabs
-            :selected-tab="selectedTab"
-            :tab-ids="tabIds"
-            :tabLabels="tabLabels"
-            @update:selected-tab="handleTabUpdate($event)"
-        />
+
+        <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap:16px">
+          <Tabs
+              :selected-tab="selectedTab"
+              :tab-ids="tabIds"
+              :tabLabels="tabLabels"
+              @update:selected-tab="handleTabUpdate($event)"
+          />
+          <div style="display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;">
+            <div>Hide transfers below</div>
+            <SelectView v-model="minTinyBar" small :style="{'font-size':minTinyBar!=0?'12px':'10px'}" style="width: 110px">
+              <option value=100000000>
+                <HbarAmount :amount="100000000"/>
+              </option>
+              <option value=10000000>
+                <HbarAmount :amount="10000000"/>
+              </option>
+              <option value=1000000>
+                <HbarAmount :amount="1000000"/>
+              </option>
+              <option value=100000>
+                <HbarAmount :amount="100000"/>
+              </option>
+              <option value=10000>
+                <HbarAmount :amount="10000"/>
+              </option>
+              <option value=0>NONE</option>
+            </SelectView>
+          </div>
+        </div>
 
         <div v-if="selectedTab === 'transactions'" id="recentTransactionsTable">
           <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
@@ -404,6 +428,9 @@ function onDateCleared() {
   // (1) will restart auto-refresh
 }
 
+const minTinyBar = ref(AppStorage.getMinTinyBarTransfer() ?? 0)
+watch(minTinyBar, (newValue) => AppStorage.setMinTinyBarTransfer(newValue))
+
 //
 // account
 //
@@ -478,7 +505,8 @@ const transactionTableController = new TransactionTableControllerXL(
     perPage,
     true,
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-    "p1", "k1")
+    "p1", "k1",
+    minTinyBar)
 
 const contractCreateTableController = new TransactionTableController(
     router,
