@@ -414,6 +414,8 @@ export async function drainAndFilterTransactions(
     account: string
 ): Promise<Transaction[]> {
 
+    const MAX_DRAIN_ITERATION_WHEN_FILTERING = 40
+
     const filterTinyTxn = (txn: Transaction) => {
         let filter = true
         let reward = 0
@@ -437,9 +439,9 @@ export async function drainAndFilterTransactions(
     }
 
     let result = (r.transactions ?? []).filter(filterTinyTxn)
-    // let i = 1
-    while (r.links?.next && result.length < limit) {
-        // console.log(`drainAndFilterTransactions (iteration ${i++})`)
+    let i = 0
+    while (r.links?.next && result.length < limit && i < MAX_DRAIN_ITERATION_WHEN_FILTERING) {
+        // console.log(`drainAndFilterTransactions (iteration ${i + 1})`)
         // console.log(`  - limit:${limit}`)
         // console.log(`  - result.length:${result.length}`)
         // console.log(`  - r.links.next:${r.links.next}`)
@@ -448,6 +450,7 @@ export async function drainAndFilterTransactions(
             result = result.concat(ar.data.transactions.filter(filterTinyTxn))
         }
         r = ar.data
+        i += 1
     }
     return result
 }
