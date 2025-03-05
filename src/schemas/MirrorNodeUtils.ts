@@ -416,6 +416,10 @@ export async function drainAndFilterTransactions(
 
     const MAX_DRAIN_ITERATION_WHEN_FILTERING = 40
 
+    // This function is used to filter out what we consider as 'spam' transactions
+    // A transaction is considered spam if it contains a CREDIT transfer involving the user account which has an amount
+    // below the limit chosen by the user (e.g. 1 hbar).
+    // The amount considered is the net value of the transfer -- we deduce the amount of the perceived staking reward if any.
     const filterTinyTxn = (txn: Transaction) => {
         let filter = true
         let reward = 0
@@ -426,7 +430,7 @@ export async function drainAndFilterTransactions(
                 }
             }
             for (const t of txn.transfers) {
-                if (t.account === account) {
+                if (t.account === account && t.amount > 0) {
                     const netAmount = t.amount - reward
                     if (netAmount < minTinyBar) {
                         filter = false
