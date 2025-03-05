@@ -275,7 +275,7 @@
               :tabLabels="tabLabels"
               @update:selected-tab="handleTabUpdate($event)"
           />
-          <div style="display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;">
+          <div v-if="selectedTab === 'transactions'" style="display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;">
             <div>Hide transfers below</div>
             <SelectView v-model="minTinyBar" small :style="{'font-size':minTinyBar!=0?'12px':'10px'}" style="width: 110px">
               <option value=100000000>
