@@ -351,6 +351,21 @@ export class AppStorage {
     }
 
     //
+    // minimum transfer value for filtering 'spam' CRYPTO TRANSFER transactions
+    //
+
+    private static readonly MIN_TINYBAR_TRANSFER_KEY = 'minTinyBarTransfer'
+
+    public static getMinTinyBarTransfer(): number | null {
+        const size = this.getLocalStorageItem(this.MIN_TINYBAR_TRANSFER_KEY)
+        return size ? Number(size) : null
+    }
+
+    public static setMinTinyBarTransfer(newValue: number | null): void {
+        this.setLocalStorageItem(this.MIN_TINYBAR_TRANSFER_KEY, newValue ? newValue?.toString() : null)
+    }
+
+    //
     // Private
     //
 
