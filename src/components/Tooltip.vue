@@ -58,7 +58,7 @@ const props = defineProps({
   },
   delay: {
     type: Number as PropType<number | null>,
-    default: 500
+    default: 100
   }
 })
 
@@ -71,7 +71,7 @@ const props = defineProps({
 <style scoped>
 
 .tooltip {
-  cursor: help;
+  cursor: default;
 }
 
 </style>

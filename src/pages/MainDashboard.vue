@@ -34,11 +34,11 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="txOverTimeController"/>
+      <ChartView :controller="txOverTimeController" data-cy="chart-view"/>
     </div>
 
     <div class="dashboard-content">
-      <ChartView :controller="networkFeeController"/>
+      <ChartView :controller="networkFeeController" data-cy="chart-view"/>
     </div>
 
     <div class="dashboard-title">
@@ -48,7 +48,7 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="activeAccountsController"/>
+      <ChartView :controller="activeAccountsController" data-cy="chart-view"/>
     </div>
   </div>
 
