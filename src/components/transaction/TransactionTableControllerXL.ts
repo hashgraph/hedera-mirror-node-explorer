@@ -64,7 +64,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                 transactiontype: string | undefined
                 timestamp: string | undefined
             }
-            params.limit = limit
+            params.limit = (this.minTinyBar.value > 0) ? 100 : limit
             params.order = order
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value

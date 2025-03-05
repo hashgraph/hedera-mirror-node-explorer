@@ -394,8 +394,10 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
     let result = r.transactions ?? []
     // let i = 1
     while (r.links?.next && result.length < limit) {
-        // console.log("drain iteration: " + i);
-        // i += 1
+        // console.log(`drainTransactions (iteration ${i++})`)
+        // console.log(`  - limit:${limit}`)
+        // console.log(`  - result.length:${result.length}`)
+        // console.log(`  - r.links.next:${r.links.next}`)
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions)
@@ -437,8 +439,10 @@ export async function drainAndFilterTransactions(
     let result = (r.transactions ?? []).filter(filterTinyTxn)
     // let i = 1
     while (r.links?.next && result.length < limit) {
-        // console.log("drain iteration: " + i);
-        // i += 1
+        // console.log(`drainAndFilterTransactions (iteration ${i++})`)
+        // console.log(`  - limit:${limit}`)
+        // console.log(`  - result.length:${result.length}`)
+        // console.log(`  - r.links.next:${r.links.next}`)
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions.filter(filterTinyTxn))
