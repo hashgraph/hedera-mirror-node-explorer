@@ -56,10 +56,11 @@
     --oruga-checkbox-border-width: 1px;
     --oruga-checkbox-active-background-color: var(--network-theme-color);
     --oruga-checkbox-checkmark-color: var(--background-tertiary);
-    --oruga-tooltip-background-color: var(--network-theme-color);
+    --oruga-tooltip-content-font-size: 12px;
+    --oruga-tooltip-content-weight-normal: 500;
+    --oruga-tooltip-color: var(--network-button-text-color);
+    --oruga-tooltip-background-color: var(--network-button-color);
     --oruga-tooltip-arrow-margin: 5px;
-    --oruga-tooltip-content-font-size: 0.75rem;
-    --oruga-tooltip-content-weight-normal: 300;
 }
 
 table.o-table {
