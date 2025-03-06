@@ -277,21 +277,21 @@
           />
           <div v-if="selectedTab === 'transactions'" style="display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;">
             <div>Hide transfers below</div>
-            <SelectView v-model="minTinyBar" small :style="{'font-size':minTinyBar!=0?'12px':'10px'}" style="width: 110px">
+            <SelectView v-model="minTinyBar" small :style="{'font-size':minTinyBar!=0?'12px':'10px'}" style="min-width: 70px">
+              <option value=500000000>
+                <HbarAmount :amount="500000000" :decimals="0"/>
+              </option>
+              <option value=400000000>
+                <HbarAmount :amount="400000000" :decimals="0"/>
+              </option>
+              <option value=300000000>
+                <HbarAmount :amount="300000000" :decimals="0"/>
+              </option>
+              <option value=200000000>
+                <HbarAmount :amount="200000000" :decimals="0"/>
+              </option>
               <option value=100000000>
-                <HbarAmount :amount="100000000"/>
-              </option>
-              <option value=10000000>
-                <HbarAmount :amount="10000000"/>
-              </option>
-              <option value=1000000>
-                <HbarAmount :amount="1000000"/>
-              </option>
-              <option value=100000>
-                <HbarAmount :amount="100000"/>
-              </option>
-              <option value=10000>
-                <HbarAmount :amount="10000"/>
+                <HbarAmount :amount="100000000" :decimals="0"/>
               </option>
               <option value=0>NONE</option>
             </SelectView>
