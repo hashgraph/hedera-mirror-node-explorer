@@ -97,7 +97,7 @@ jobs:
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Report Unit Test Coverage
-        uses: step-security/vitest-coverage-report-action@aba564d7473e0398ae1f89a0f8987405608c1536 # v2.5.1
+        uses: step-security/vitest-coverage-report-action@c0d7154060c9f5bb7def5e23475dda4c4b14086e # v2.5.2
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Cypress run
