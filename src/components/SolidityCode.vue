@@ -25,8 +25,7 @@
 <script lang="ts">
 
 import {defineComponent, h} from "vue";
-import Prism from 'prismjs'
-
+import * as Prism from 'prismjs';
 
 export default defineComponent({
   name: "SolidityCode",
