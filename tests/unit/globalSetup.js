@@ -20,5 +20,5 @@ Object.defineProperty(window, 'matchMedia', {
     })),
 });
 
-
+/* global global */
 global["ResizeObserver"] = ResizeObserverModule.default
