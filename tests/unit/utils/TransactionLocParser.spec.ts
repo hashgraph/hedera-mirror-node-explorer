@@ -1,32 +1,16 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {TransactionLocParser} from "@/utils/parser/TransactionLocParser";
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {
     SAMPLE_CONTRACT_CALL_TRANSACTION,
-    SAMPLE_CONTRACT_RESULT_DETAILS, SAMPLE_PARENT_CHILD_TRANSACTIONS, SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
+    SAMPLE_CONTRACT_RESULT_DETAILS,
+    SAMPLE_PARENT_CHILD_TRANSACTIONS,
+    SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS,
     SAMPLE_TRANSACTION
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
