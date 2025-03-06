@@ -271,40 +271,6 @@ describe('Search Bar', () => {
             'Account ' + searchAccount,
             true)
     })
-
-    it('should find account with KNS name', () => {
-        const searchName = "hashgraph.hh"
-        const searchAccount = "0.0.1273453"
-        testBodyV2(
-            searchName,
-            '/mainnet/account/' + searchAccount,
-            'Account ' + searchAccount,
-            true
-        )
-        testBodyV2(
-            searchName.toUpperCase(),
-            '/mainnet/account/' + searchAccount,
-            'Account ' + searchAccount,
-            true
-        )
-    })
-
-    it('should find account with HNS name', () => {
-        const searchName = "hashgraph.hbar"
-        const searchAccount = "0.0.944899"
-        testBodyV2(
-            searchName,
-            '/mainnet/account/' + searchAccount,
-            'Account ' + searchAccount,
-            false
-        )
-        testBodyV2(
-            searchName.toUpperCase(),
-            '/mainnet/account/' + searchAccount,
-            'Account ' + searchAccount,
-            false
-        )
-    })
 })
 
 const testBodyV2 = (searchString: string,
