@@ -22,7 +22,7 @@ export class TxOverTimeController extends HgraphChartController {
     // HgraphChartController
     //
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     protected makeQuery(range: ChartRange): string {
         // We request all rows so that transformMetrics() can perform accumulation
         return "{" +

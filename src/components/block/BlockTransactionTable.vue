@@ -103,7 +103,7 @@ const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: M
   routeManager.routeToTransaction(t, event)
 }
 
-let currentPage = ref(1)
+const currentPage = ref(1)
 
 const paginated = computed(() => props.transactions.length > perPage.value)
 const showPageSizeSelector = computed(() => props.transactions.length > 5)

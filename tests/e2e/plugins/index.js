@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
-/* eslint-disable arrow-body-style */
+
 // https://docs.cypress.io/guides/guides/plugins-guide.html
 
 // if you need a custom webpack configuration you can uncomment the following import
@@ -19,7 +19,6 @@ export default (on, config) => {
     //  watchOptions: {}
     // }))
 
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
     generated(on, config)
 
     return Object.assign({}, config, {

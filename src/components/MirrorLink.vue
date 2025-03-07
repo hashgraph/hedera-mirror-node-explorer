@@ -26,11 +26,11 @@ const props = defineProps({
   network: String,
   entityUrl: String,
   loc: {
-    type: String as PropType<String | null>,
+    type: String as PropType<string | null>,
     default: null
   },
   query: {
-    type: String as PropType<String | null>,
+    type: String as PropType<string | null>,
     default: null
   }
 })

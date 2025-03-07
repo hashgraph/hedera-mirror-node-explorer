@@ -11,7 +11,7 @@ export default tseslint.config(
         extends: [
             eslint.configs.recommended,
             ...tseslint.configs.recommended,
-            ...eslintPluginVue.configs['flat/recommended'],
+            ...eslintPluginVue.configs['flat/essential'],
             pluginCypress.configs.recommended
         ],
         files: ['**/*.{ts,vue}'],
@@ -34,6 +34,7 @@ export default tseslint.config(
             "@typescript-eslint/no-unsafe-function-type": "off",
             "@typescript-eslint/no-this-alias": "off",
 
+            "vue/attributes-order": "off",
             "vue/no-reserved-component-names": "off",
             "vue/multi-word-component-names": "off",
             "vue/no-mutating-props": "off",

@@ -97,7 +97,7 @@ const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: M
   routeManager.routeToTransaction(t, event)
 }
 
-let currentPage = ref(1)
+const currentPage = ref(1)
 
 const hasChild = computed(() => {
   let result = false

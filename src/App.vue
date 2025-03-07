@@ -140,7 +140,7 @@ const handleChooseAcceptCookies = () => {
 
 function insertGoogleTag(tagId: string) {
   const src1 = `https://www.googletagmanager.com/gtag/js?id=${tagId}`
-  let s1 = document.createElement('script');
+  const s1 = document.createElement('script');
   s1.setAttribute('async', '');
   s1.setAttribute('src', src1);
   document.head.appendChild(s1);
@@ -150,7 +150,7 @@ function insertGoogleTag(tagId: string) {
     function gtag() {dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', '${tagId}',{ send_page_view: false });`
-  let s2 = document.createElement('script');
+  const s2 = document.createElement('script');
   s2.innerHTML = src2;
   document.head.appendChild(s2);
 }

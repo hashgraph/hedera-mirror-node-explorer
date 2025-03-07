@@ -111,7 +111,7 @@ export default defineComponent({
       totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
-      pageSize: props.controller.pageSize as Ref<Number>,
+      pageSize: props.controller.pageSize as Ref<number>,
       handleClick,
       NftCellItem,
       ORUGA_MOBILE_BREAKPOINT

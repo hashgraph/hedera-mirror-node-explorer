@@ -69,7 +69,7 @@ function clearSize(baseType: string): string {
 
 function parseBaseType(baseType: string): SizedType | null {
   let result: SizedType | null = null
-  let sizableTypes = ["int", "uint", "string", "bytes"]
+  const sizableTypes = ["int", "uint", "string", "bytes"]
   for (const t of sizableTypes) {
     if (baseType.startsWith(t)) {
       const coreType = baseType.slice(0, t.length)
