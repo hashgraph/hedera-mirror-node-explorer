@@ -7,6 +7,7 @@ import {networkConfigKey} from "@/AppKeys";
 import {hip15checksum} from "@/schemas/MirrorNodeUtils.ts";
 import {EntityID} from "@/utils/EntityID";
 import {EthereumAddress} from "@/utils/EthereumAddress";
+import {ColorMap, NetworkColorMaps} from "@/config/NetworkColorMaps.ts";
 
 export class SourcifySetup {
 
@@ -93,22 +94,6 @@ export class NetworkEntry {
         const erc20IndexURL = fetchURL(obj, "erc20IndexURL")
         const erc721IndexURL = fetchURL(obj, "erc721IndexURL")
 
-        const lightButtonTextColor = fetchString(obj, "lightButtonTextColor") ?? "white"
-        const lightButtonColor = fetchString(obj, "lightButtonColor") ?? "grey"
-        const lightChipTextColor = fetchString(obj, "lightChipTextColor") ?? "grey"
-        const lightChipColor = fetchString(obj, "lightChipColor") ?? "grey"
-        const lightTextAccentColor = fetchString(obj, "lightTextAccentColor") ?? "grey"
-        const lightBorderAccentColor = fetchString(obj, "lightBorderAccentColor") ?? "grey"
-        const lightGraphBarColor = fetchString(obj, "lightGraphBarColor") ?? "grey"
-
-        const darkButtonTextColor = fetchString(obj, "darkButtonTextColor") ?? "white"
-        const darkButtonColor = fetchString(obj, "darkButtonColor") ?? "grey"
-        const darkChipTextColor = fetchString(obj, "darkChipTextColor") ?? "grey"
-        const darkChipColor = fetchString(obj, "darkChipColor") ?? "grey"
-        const darkTextAccentColor = fetchString(obj, "darkTextAccentColor") ?? "grey"
-        const darkBorderAccentColor = fetchString(obj, "darkBorderAccentColor") ?? "grey"
-        const darkGraphBarColor = fetchString(obj, "darkGraphBarColor") ?? "grey"
-
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
         if (name === null) {
@@ -140,20 +125,6 @@ export class NetworkEntry {
             popularTokenIndexURL,
             erc20IndexURL,
             erc721IndexURL,
-            lightButtonTextColor,
-            lightButtonColor,
-            lightChipTextColor,
-            lightChipColor,
-            lightTextAccentColor,
-            lightBorderAccentColor,
-            lightGraphBarColor,
-            darkButtonTextColor,
-            darkButtonColor,
-            darkChipTextColor,
-            darkChipColor,
-            darkTextAccentColor,
-            darkBorderAccentColor,
-            darkGraphBarColor,
             sourcifySetup
         )
     }
@@ -186,25 +157,6 @@ export class NetworkEntry {
 
         // The URL of the ERC721 contract index
         public readonly erc721IndexURL: string|null,
-
-        // The light variants of the network theme color
-        public readonly lightButtonTextColor: string|null,
-        public readonly lightButtonColor: string|null,
-        public readonly lightChipTextColor: string|null,
-        public readonly lightChipColor: string|null,
-        public readonly lightTextAccentColor: string|null,
-        public readonly lightBorderAccentColor: string|null,
-        public readonly lightGraphBarColor: string|null,
-
-        // The dark variants of the network theme color
-        public readonly darkButtonTextColor: string|null,
-        public readonly darkButtonColor: string|null,
-        public readonly darkChipTextColor: string|null,
-        public readonly darkChipColor: string|null,
-        public readonly darkTextAccentColor: string|null,
-        public readonly darkBorderAccentColor: string|null,
-        public readonly darkGraphBarColor: string|null,
-
         public readonly sourcifySetup: SourcifySetup | null
     ) {}
 
@@ -303,6 +255,10 @@ export class NetworkConfig {
         return this.entries.find(element => element.name === name) ?? null
     }
 
+    public indexOf(name: string): number {
+        return this.entries.findIndex(element => element.name === name)
+    }
+
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
         return this.computeChecksum(id, network) == checksum
     }
@@ -317,12 +273,19 @@ export class NetworkConfig {
         return hip15checksum(ledgerID ?? 'FF', id)
     }
 
+    public getColorMap(name: string): ColorMap | null {
+        return this.networkColorMaps.getColorMap(this.indexOf(name))
+    }
+
     //
     // Private
     //
 
-    private constructor(public readonly entries: NetworkEntry[]) {}
+    private networkColorMaps: NetworkColorMaps
 
+    private constructor(public readonly entries: NetworkEntry[]) {
+        this.networkColorMaps = new NetworkColorMaps()
+    }
 
     public static parse(obj: object): NetworkConfig {
         const entries: NetworkEntry[] = []
