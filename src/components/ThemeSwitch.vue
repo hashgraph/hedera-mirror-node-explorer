@@ -5,11 +5,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div @click="darkSelected = !darkSelected" :class="{'start': !darkSelected, 'end': darkSelected}">
-    <img :src="imageURL" alt="theme switch"/>
+  <div
+    :class="{'start': !darkSelected, 'end': darkSelected}"
+    @click="darkSelected = !darkSelected"
+  >
+    <img
+      :src="imageURL"
+      alt="theme switch"
+    >
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

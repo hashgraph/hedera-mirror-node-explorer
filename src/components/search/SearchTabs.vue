@@ -5,7 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Tabs :tab-ids=tabIds :tab-labels=tabLabels v-model:selected-tab="selectedAgentId" :compact="true"/>
+  <Tabs
+    v-model:selected-tab="selectedAgentId"
+    :tab-ids="tabIds"
+    :tab-labels="tabLabels"
+    :compact="true"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -55,4 +60,4 @@ const tabLabels = computed(() => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

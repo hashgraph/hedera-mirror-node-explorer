@@ -5,19 +5,38 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DropdownPanel v-model:deployed="showMobileMenu" :right-aligned="false">
+  <DropdownPanel
+    v-model:deployed="showMobileMenu"
+    :right-aligned="false"
+  >
     <template #button>
-      <Menu :size="18" style="color: var(--text-primary)" @click="showMobileMenu = !showMobileMenu" data-cy="mobile-menu-icon"/>
+      <Menu
+        :size="18"
+        style="color: var(--text-primary)"
+        data-cy="mobile-menu-icon"
+        @click="showMobileMenu = !showMobileMenu"
+      />
     </template>
 
     <template #panel>
-      <div class="menu" data-cy="mobile-menu-content">
+      <div
+        class="menu"
+        data-cy="mobile-menu-content"
+      >
         <div class="menu-l1">
-          <ThemeSwitch/>
-          <X :size="18" style="color: var(--text-primary)" @click="showMobileMenu = false" data-cy="mobile-menu-close-icon"/>
+          <ThemeSwitch />
+          <X
+            :size="18"
+            style="color: var(--text-primary)"
+            data-cy="mobile-menu-close-icon"
+            @click="showMobileMenu = false"
+          />
         </div>
-        <TabBar vertical style="padding-left: 8px"/>
-        <NetworkSelector/>
+        <TabBar
+          vertical
+          style="padding-left: 8px"
+        />
+        <NetworkSelector />
       </div>
     </template>
   </DropdownPanel>

@@ -5,23 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Accounts">
-
     <DashboardCardV2>
       <template #title>
         <span>Recent Accounts</span>
       </template>
       <template #left-control>
-        <PlayPauseButton :controller="accountTableController"/>
+        <PlayPauseButton :controller="accountTableController" />
       </template>
       <template #content>
-        <AccountTable :controller="accountTableController"/>
+        <AccountTable :controller="accountTableController" />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

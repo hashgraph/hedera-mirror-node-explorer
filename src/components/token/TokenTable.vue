@@ -5,58 +5,71 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="tokens"
-      :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="tokens"
+    :loading="loading"
+    paginated
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="narrowed"
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="token_id"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="token_id"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="token_id" label="TOKEN">
-      <TokenIOL class="token_id" :token-id="props.row.token_id"/>
+    <o-table-column
+      v-slot="props"
+      field="token_id"
+      label="TOKEN"
+    >
+      <TokenIOL
+        class="token_id"
+        :token-id="props.row.token_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="NAME">
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="NAME"
+    >
       <div class="w250">
         {{ props.row.name }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="SYMBOL">
+    <o-table-column
+      v-slot="props"
+      field="symbol"
+      label="SYMBOL"
+    >
       <div class="w250">
         {{ props.row.symbol }}
       </div>
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
-  <EmptyTable v-if="!tokens.length"/>
-
+  <EmptyTable v-if="!tokens.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

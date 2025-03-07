@@ -5,9 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <input type="text" v-model="text"
-         :placeholder="props.placeholder"
-         :class="{ 'small': props.small }"/>
+  <input
+    v-model="text"
+    type="text"
+    :placeholder="props.placeholder"
+    :class="{ 'small': props.small }"
+  >
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

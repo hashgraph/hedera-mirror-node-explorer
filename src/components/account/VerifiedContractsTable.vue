@@ -5,57 +5,73 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="contracts"
-      :hoverable="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :paginated="contracts.length > perPage"
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
+    :data="contracts"
+    :hoverable="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :paginated="contracts.length > perPage"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
 
-      :per-page="perPage"
-      :striped="true"
-      aria-current-label="Current page"
+    :per-page="perPage"
+    :striped="true"
+    aria-current-label="Current page"
 
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="contract_id"
-      @cell-click="handleClick"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    custom-row-key="contract_id"
+    @cell-click="handleClick"
   >
-
-    <o-table-column v-slot="props" field="contract_id" label="ID">
-      <ContractIOL class="entity-id" :contract-id="props.row.contract_id"/>
+    <o-table-column
+      v-slot="props"
+      field="contract_id"
+      label="ID"
+    >
+      <ContractIOL
+        class="entity-id"
+        :contract-id="props.row.contract_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
-      <ContractName :contract-id="props.row.contract_id"/>
+    <o-table-column
+      v-slot="props"
+      field="contract_name"
+      label="CONTRACT NAME"
+    >
+      <ContractName :contract-id="props.row.contract_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="CREATED">
-      <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="created"
+      label="CREATED"
+    >
+      <TimestampValue :timestamp="props.row.created_timestamp" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="storageKey"
+        v-model:size="perPage"
+        :storage-key="storageKey"
       />
     </template>
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="storageKey"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="storageKey"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!contracts.length" :loading="!loaded" :no-data-message="noDataMessage"/>
-
+  <EmptyTable
+    v-if="!contracts.length"
+    :loading="!loaded"
+    :no-data-message="noDataMessage"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

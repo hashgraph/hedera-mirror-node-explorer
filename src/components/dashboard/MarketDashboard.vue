@@ -5,49 +5,54 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="dashboard-root">
     <div class="dashboard-content">
       <MarketDashboardItem
-          data-cy="market-dashboard-item"
-          :title="hbarPriceLabel"
-          :value="hbarPrice"
+        data-cy="market-dashboard-item"
+        :title="hbarPriceLabel"
+        :value="hbarPrice"
       >
-        <img id="crypto-logo" alt="Crypto Logo" :src="cryptoLogoURL ?? ''">
+        <img
+          id="crypto-logo"
+          alt="Crypto Logo"
+          :src="cryptoLogoURL ?? ''"
+        >
       </MarketDashboardItem>
 
-      <div class="line"/>
+      <div class="line" />
 
       <MarketDashboardItem
-          data-cy="market-dashboard-item"
-          :title="hbarMarketCapLabel"
-          :value="hbarMarketCap"
+        data-cy="market-dashboard-item"
+        :title="hbarMarketCapLabel"
+        :value="hbarMarketCap"
       >
-        <Globe :size="32"/>
+        <Globe :size="32" />
       </MarketDashboardItem>
 
-      <div v-if="isLargeScreen || !isSmallScreen" class="line"/>
+      <div
+        v-if="isLargeScreen || !isSmallScreen"
+        class="line"
+      />
 
       <MarketDashboardItem
-          data-cy="market-dashboard-item"
-          :title="hbarReleasedLabel"
-          :value="hbarReleased"
+        data-cy="market-dashboard-item"
+        :title="hbarReleasedLabel"
+        :value="hbarReleased"
       >
-        <ArrowBigUpDash :size="32"/>
+        <ArrowBigUpDash :size="32" />
       </MarketDashboardItem>
 
-      <div class="line"/>
+      <div class="line" />
 
       <MarketDashboardItem
-          data-cy="market-dashboard-item"
-          :title="hbarTotalLabel"
-          :value="hbarTotal"
+        data-cy="market-dashboard-item"
+        :title="hbarTotalLabel"
+        :value="hbarTotal"
       >
-        <Coins :size="32"/>
+        <Coins :size="32" />
       </MarketDashboardItem>
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

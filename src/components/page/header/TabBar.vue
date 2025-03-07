@@ -5,27 +5,47 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="tab-bar" :class="{'vertical': props.vertical}">
-
-    <TabItem :tabId="TabId.Dashboard"
-                 :target-route="routeManager.makeRouteToMainDashboard()"/>
-    <TabItem :tabId="TabId.Transactions"
-                 :target-route="routeManager.makeRouteToTransactions()"/>
-    <TabItem :tabId="TabId.Tokens"
-                 :target-route="routeManager.makeRouteToTokens()"/>
-    <TabItem :tabId="TabId.Topics"
-                 :target-route="routeManager.makeRouteToTopics()"/>
-    <TabItem :tabId="TabId.Contracts"
-                 :target-route="routeManager.makeRouteToContracts()"/>
-    <TabItem :tabId="TabId.Accounts"
-                 :target-route="routeManager.makeRouteToAccounts()"/>
-    <TabItem :tabId="TabId.Nodes"
-                 :target-route="routeManager.makeRouteToNodes()"/>
-    <TabItem v-if="enableStaking"
-                 :tabId="TabId.Staking"
-                 :target-route="routeManager.makeRouteToStaking()"/>
-    <TabItem :tabId="TabId.Blocks"
-                 :target-route="routeManager.makeRouteToBlocks()"/>
+  <div
+    class="tab-bar"
+    :class="{'vertical': props.vertical}"
+  >
+    <TabItem
+      :tab-id="TabId.Dashboard"
+      :target-route="routeManager.makeRouteToMainDashboard()"
+    />
+    <TabItem
+      :tab-id="TabId.Transactions"
+      :target-route="routeManager.makeRouteToTransactions()"
+    />
+    <TabItem
+      :tab-id="TabId.Tokens"
+      :target-route="routeManager.makeRouteToTokens()"
+    />
+    <TabItem
+      :tab-id="TabId.Topics"
+      :target-route="routeManager.makeRouteToTopics()"
+    />
+    <TabItem
+      :tab-id="TabId.Contracts"
+      :target-route="routeManager.makeRouteToContracts()"
+    />
+    <TabItem
+      :tab-id="TabId.Accounts"
+      :target-route="routeManager.makeRouteToAccounts()"
+    />
+    <TabItem
+      :tab-id="TabId.Nodes"
+      :target-route="routeManager.makeRouteToNodes()"
+    />
+    <TabItem
+      v-if="enableStaking"
+      :tab-id="TabId.Staking"
+      :target-route="routeManager.makeRouteToStaking()"
+    />
+    <TabItem
+      :tab-id="TabId.Blocks"
+      :target-route="routeManager.makeRouteToBlocks()"
+    />
   </div>
 </template>
 

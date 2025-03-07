@@ -6,24 +6,35 @@
 
 <template>
   <ModalDialog v-model:show-dialog="showDialog">
-
-    <template #modalDialogTitle>Disclaimer</template>
+    <template #modalDialogTitle>
+      Disclaimer
+    </template>
 
     <template #modalDialogContent>
       <div class="opt-out-dialog-content">
-        <div v-html="disclaimer"/>
+        <div v-html="disclaimer" />
         <label>
-          <input v-model="dontShowNextTime" type="checkbox" style="margin-right: 0.5em; vertical-align: text-top" />
+          <input
+            v-model="dontShowNextTime"
+            type="checkbox"
+            style="margin-right: 0.5em; vertical-align: text-top"
+          >
           <span>Please don't show me this next time</span>
         </label>
       </div>
     </template>
 
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showDialog" @action="handleAgree">AGREE</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog">
+        CANCEL
+      </ModalDialogButton>
+      <ModalDialogButton
+        v-model:show-dialog="showDialog"
+        @action="handleAgree"
+      >
+        AGREE
+      </ModalDialogButton>
     </template>
-
   </ModalDialog>
 </template>
 

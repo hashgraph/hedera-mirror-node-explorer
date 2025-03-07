@@ -6,21 +6,25 @@
 
 <template>
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
   >
+    <template #transactionDialogTitle>
+      My Staking for account {{ accountId }}
+    </template>
 
-    <template #transactionDialogTitle>My Staking for account {{ accountId }}</template>
-
-    <template #transactionExecutionLabel>STOP STAKING</template>
+    <template #transactionExecutionLabel>
+      STOP STAKING
+    </template>
 
     <template #transactionDialogInput>
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Do you want to stop staking to {{ stakedTo }} ?</template>
+        <template #taskPanelMessage>
+          Do you want to stop staking to {{ stakedTo }} ?
+        </template>
       </TaskPanel>
     </template>
-
   </TransactionDialog>
 </template>
 

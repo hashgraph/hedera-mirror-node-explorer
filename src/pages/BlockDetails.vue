@@ -5,11 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Block Details">
-
-    <template v-if="notification" #banner>
-      <NotificationBanner :message="notification"/>
+    <template
+      v-if="notification"
+      #banner
+    >
+      <NotificationBanner :message="notification" />
     </template>
 
     <DashboardCardV2 collapsible-key="blockDetails">
@@ -19,78 +20,129 @@
 
       <template #right-control>
         <ButtonView
-            id="prev-block-button"
-            :enabled="!disablePreviousButton"
-            :size="ButtonSize.small"
-            @action="handlePreviousBlock"
+          id="prev-block-button"
+          :enabled="!disablePreviousButton"
+          :size="ButtonSize.small"
+          @action="handlePreviousBlock"
         >
-          <ArrowLeft :size="18" class="block-navigation-button"/>
+          <ArrowLeft
+            :size="18"
+            class="block-navigation-button"
+          />
           <span class="block-navigation-button">{{ isSmallScreen ? 'PREV. BLOCK' : 'PREV.' }}</span>
         </ButtonView>
         <ButtonView
-            id="next-block-button"
-            :enabled="!disableNextButton"
-            :size="ButtonSize.small"
-            @action="handleNextBlock"
+          id="next-block-button"
+          :enabled="!disableNextButton"
+          :size="ButtonSize.small"
+          @action="handleNextBlock"
         >
           <span class="block-navigation-button">{{ isSmallScreen ? 'NEXT BLOCK' : 'NEXT' }}</span>
-          <ArrowRight :size="18" class="block-navigation-button"/>
+          <ArrowRight
+            :size="18"
+            class="block-navigation-button"
+          />
         </ButtonView>
       </template>
 
       <template #content>
-        <Property id="count" full-width>
-          <template #name>No. Transactions</template>
-          <template v-slot:value>
-            <PlainAmount :amount="block?.count"/>
+        <Property
+          id="count"
+          full-width
+        >
+          <template #name>
+            No. Transactions
+          </template>
+          <template #value>
+            <PlainAmount :amount="block?.count" />
           </template>
         </Property>
-        <Property id="blockHash" full-width>
-          <template v-slot:name>Hash</template>
-          <template v-slot:value>
-            <KeyValue :key-bytes="block?.hash" :show-none="true" key-type="SHA384"/>
+        <Property
+          id="blockHash"
+          full-width
+        >
+          <template #name>
+            Hash
+          </template>
+          <template #value>
+            <KeyValue
+              :key-bytes="block?.hash"
+              :show-none="true"
+              key-type="SHA384"
+            />
           </template>
         </Property>
-        <Property id="fromTimestamp" full-width>
-          <template v-slot:name>From Timestamp</template>
-          <template v-slot:value>
-            <TimestampValue :show-none="true" :timestamp="block?.timestamp?.from"/>
+        <Property
+          id="fromTimestamp"
+          full-width
+        >
+          <template #name>
+            From Timestamp
+          </template>
+          <template #value>
+            <TimestampValue
+              :show-none="true"
+              :timestamp="block?.timestamp?.from"
+            />
           </template>
         </Property>
-        <Property id="toTimestamp" full-width>
-          <template v-slot:name>To Timestamp</template>
-          <template v-slot:value>
-            <TimestampValue :show-none="true" :timestamp="block?.timestamp?.to ?? undefined"/>
+        <Property
+          id="toTimestamp"
+          full-width
+        >
+          <template #name>
+            To Timestamp
+          </template>
+          <template #value>
+            <TimestampValue
+              :show-none="true"
+              :timestamp="block?.timestamp?.to ?? undefined"
+            />
           </template>
         </Property>
-        <Property id="gasUsed" full-width>
-          <template v-slot:name>Gas Used</template>
-          <template v-slot:value>
-            <PlainAmount :amount="block?.gas_used"/>
+        <Property
+          id="gasUsed"
+          full-width
+        >
+          <template #name>
+            Gas Used
+          </template>
+          <template #value>
+            <PlainAmount :amount="block?.gas_used" />
           </template>
         </Property>
-        <Property id="recordFileName" full-width>
-          <template v-slot:name>Record File Name</template>
-          <template v-slot:value>
-            <StringValue :string-value="block?.name"/>
+        <Property
+          id="recordFileName"
+          full-width
+        >
+          <template #name>
+            Record File Name
+          </template>
+          <template #value>
+            <StringValue :string-value="block?.name" />
           </template>
         </Property>
       </template>
     </DashboardCardV2>
 
-    <DashboardCardV2 id="blockTransactions" collapsible-key="blockTransactions">
+    <DashboardCardV2
+      id="blockTransactions"
+      collapsible-key="blockTransactions"
+    >
       <template #title>
         Block Transactions
       </template>
       <template #content>
-        <BlockTransactionTable :transactions="transactions"/>
+        <BlockTransactionTable :transactions="transactions" />
       </template>
     </DashboardCardV2>
 
-    <MirrorLink :network="props.network" entityUrl="blocks" :loc="props.blockHon"/>
-
+    <MirrorLink
+      :network="props.network"
+      entity-url="blocks"
+      :loc="props.blockHon"
+    />
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

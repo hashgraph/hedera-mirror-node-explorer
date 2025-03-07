@@ -5,60 +5,71 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div id="token-balance-table">
-
     <o-table
-        :data="tokenBalances"
-        :loading="loading"
-        :paginated="paginated"
-        backend-pagination
-        pagination-order="centered"
-        :range-before="1"
-        :range-after="1"
-        :total="total"
-        v-model:current-page="currentPage"
-        :per-page="perPage"
-        @page-change="onPageChange"
-        @cell-click="handleClick"
+      v-model:current-page="currentPage"
+      :data="tokenBalances"
+      :loading="loading"
+      :paginated="paginated"
+      backend-pagination
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
+      :total="total"
+      :per-page="perPage"
+      :hoverable="true"
+      :narrowed="true"
 
-        :hoverable="true"
-        :narrowed="true"
-        :striped="true"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
 
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
-        customRowKey="account"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      @page-change="onPageChange"
+      custom-row-key="account"
+      @cell-click="handleClick"
     >
-      <o-table-column v-slot="props" field="account" label="ACCOUNT ID">
-        <AccountIOL class="account-id" :account-id="props.row.account"/>
+      <o-table-column
+        v-slot="props"
+        field="account"
+        label="ACCOUNT ID"
+      >
+        <AccountIOL
+          class="account-id"
+          :account-id="props.row.account"
+        />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="balance" label="BALANCE" position="right">
-        <TokenAmount :amount="BigInt(props.row.balance)" :token-id="tokenId"/>
+      <o-table-column
+        v-slot="props"
+        field="balance"
+        label="BALANCE"
+        position="right"
+      >
+        <TokenAmount
+          :amount="BigInt(props.row.balance)"
+          :token-id="tokenId"
+        />
       </o-table-column>
 
-      <template v-slot:bottom-left>
+      <template #bottom-left>
         <TablePageSize
-            v-model:size="perPage"
-            :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
+          v-model:size="perPage"
+          :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
         />
       </template>
-
     </o-table>
 
     <TablePageSize
-        v-if="!paginated && showPageSizeSelector"
-        v-model:size="perPage"
-        :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
-        style="width: 116px; margin-left: 4px"
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
     />
 
-    <EmptyTable v-if="!tokenBalances.length"/>
-
+    <EmptyTable v-if="!tokenBalances.length" />
   </div>
 </template>
 

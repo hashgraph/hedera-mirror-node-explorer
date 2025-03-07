@@ -6,11 +6,14 @@
 
 <template>
   <div class="group-box">
-    <div v-if="slots.groupBoxTitle" class="group-box-title">
-      <slot name="groupBoxTitle"/>
+    <div
+      v-if="slots.groupBoxTitle"
+      class="group-box-title"
+    >
+      <slot name="groupBoxTitle" />
     </div>
     <div class="group-box-content">
-      <slot/>
+      <slot />
     </div>
   </div>
 </template>

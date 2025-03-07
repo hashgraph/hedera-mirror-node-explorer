@@ -5,72 +5,100 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      v-model:current-page="currentPage"
-      :data="nfts"
-      :hoverable="false"
-      :loading="loading"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :paginated="paginated"
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :per-page="perPage"
-      :striped="true"
+    v-model:current-page="currentPage"
+    :data="nfts"
+    :hoverable="false"
+    :loading="loading"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :paginated="paginated"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :per-page="perPage"
+    :striped="true"
 
-      :total="total"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
+    :total="total"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
 
-      aria-previous-label="Previous page"
-      backend-pagination
-      customRowKey="spender"
-      default-sort="spender"
-      @page-change="onPageChange">
-
-    <o-table-column v-slot="props" field="token" label="TOKEN ID">
-      <TokenLink class="entity-id" :token-id="props.row.token_id" :show-extra="true"/>
+    aria-previous-label="Previous page"
+    backend-pagination
+    custom-row-key="spender"
+    default-sort="spender"
+    @page-change="onPageChange"
+  >
+    <o-table-column
+      v-slot="props"
+      field="token"
+      label="TOKEN ID"
+    >
+      <TokenLink
+        class="entity-id"
+        :token-id="props.row.token_id"
+        :show-extra="true"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="serial" label="SERIAL #">
+    <o-table-column
+      v-slot="props"
+      field="serial"
+      label="SERIAL #"
+    >
       <div class="h-is-numeric">
         {{ props.row.serial_number }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="spender" label="SPENDER">
-      <AccountLink :account-id="props.row.spender" :show-extra="true"/>
+    <o-table-column
+      v-slot="props"
+      field="spender"
+      label="SPENDER"
+    >
+      <AccountLink
+        :account-id="props.row.spender"
+        :show-extra="true"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="TIME">
-      <TimestampValue v-bind:timestamp="props.row.modified_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="TIME"
+    >
+      <TimestampValue :timestamp="props.row.modified_timestamp" />
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props" field="action" position="right">
-      <i class="far fa-trash-alt" @click="emit('deleteAllowance', props.row)"/>
+    <o-table-column
+      v-if="isWalletConnected"
+      v-slot="props"
+      field="action"
+      position="right"
+    >
+      <i
+        class="far fa-trash-alt"
+        @click="emit('deleteAllowance', props.row)"
+      />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!nfts.length"/>
-
+  <EmptyTable v-if="!nfts.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

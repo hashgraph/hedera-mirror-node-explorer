@@ -5,22 +5,25 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <TransactionDialog
-      :controller="controller"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    @transaction-did-execute="transactionDidExecute"
   >
-
-    <template #transactionDialogTitle>Dissociate Token</template>
+    <template #transactionDialogTitle>
+      Dissociate Token
+    </template>
 
     <template #transactionDialogInput>
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Dissociate {{ tokenType }} {{ tokenId }} from account {{ accountId }} ?</template>
+        <template #taskPanelMessage>
+          Dissociate {{ tokenType }} {{ tokenId }} from account {{ accountId }} ?
+        </template>
       </TaskPanel>
     </template>
 
-    <template #transactionExecutionLabel>DISSOCIATE</template>
-
+    <template #transactionExecutionLabel>
+      DISSOCIATE
+    </template>
   </TransactionDialog>
 </template>
 

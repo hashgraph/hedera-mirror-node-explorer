@@ -106,7 +106,7 @@ export class WalletClient_Ethereum extends WalletClient {
         return Promise.resolve(result)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     public async callContract(contractId: string, functionData: string): Promise<ContractResultDetails | string> {
         throw "to be implemented"
     }

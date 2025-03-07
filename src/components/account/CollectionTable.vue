@@ -6,52 +6,85 @@
 
 <template>
   <o-table
-      :data="collection"
-      :loading="loading"
-      :hoverable="true"
-      :paginated="!isTouchDevice"
-      backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
-      :total="totalRowCount"
-      :current-page="currentPage"
-      :per-page="pageSize"
-      @page-change="onPageChange"
-      :striped="true"
-      :v-model:current-page="currentPage"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      @cell-click="handleClick"
+    :data="collection"
+    :loading="loading"
+    :hoverable="true"
+    :paginated="!isTouchDevice"
+    backend-pagination
+    pagination-order="left"
+    :range-before="0"
+    :range-after="0"
+    :total="totalRowCount"
+    :current-page="currentPage"
+    :per-page="pageSize"
+    :striped="true"
+    :v-model:current-page="currentPage"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    @cell-click="handleClick"
   >
-
-    <o-table-column v-slot="props" field="image" label="Preview">
-      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.image"/>
+    <o-table-column
+      v-slot="props"
+      field="image"
+      label="Preview"
+    >
+      <NftCell
+        :token-id="tokenId"
+        :serial-number="props.row.serial_number"
+        :property="NftCellItem.image"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="serial" label="#">
+    <o-table-column
+      v-slot="props"
+      field="serial"
+      label="#"
+    >
       {{ props.row.serial_number }}
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
-      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.name"/>
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="Name"
+    >
+      <NftCell
+        :token-id="tokenId"
+        :serial-number="props.row.serial_number"
+        :property="NftCellItem.name"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="creator" label="Creator">
-      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.creator"/>
+    <o-table-column
+      v-slot="props"
+      field="creator"
+      label="Creator"
+    >
+      <NftCell
+        :token-id="tokenId"
+        :serial-number="props.row.serial_number"
+        :property="NftCellItem.creator"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="description" label="Description">
-      <NftCell :token-id="tokenId" :serial-number="props.row.serial_number" :property="NftCellItem.description"/>
+    <o-table-column
+      v-slot="props"
+      field="description"
+      label="Description"
+    >
+      <NftCell
+        :token-id="tokenId"
+        :serial-number="props.row.serial_number"
+        :property="NftCellItem.description"
+      />
     </o-table-column>
-
   </o-table>
 
-  <EmptyTable v-if="!collection.length"/>
-
+  <EmptyTable v-if="!collection.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -111,7 +144,7 @@ export default defineComponent({
       totalRowCount: props.controller.totalRowCount as ComputedRef<number>,
       currentPage: props.controller.currentPage as Ref<number>,
       onPageChange: props.controller.onPageChange,
-      pageSize: props.controller.pageSize as Ref<Number>,
+      pageSize: props.controller.pageSize as Ref<number>,
       handleClick,
       NftCellItem,
       ORUGA_MOBILE_BREAKPOINT

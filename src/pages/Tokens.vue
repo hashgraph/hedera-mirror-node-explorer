@@ -5,20 +5,17 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Tokens">
-
     <div class="h-side-by-side-content">
-
       <DashboardCardV2>
         <template #title>
           <span>Recent NFTs</span>
         </template>
         <template #left-control>
-          <PlayPauseButton :controller="nftTableController"/>
+          <PlayPauseButton :controller="nftTableController" />
         </template>
         <template #content>
-          <TokenTable :controller="nftTableController"/>
+          <TokenTable :controller="nftTableController" />
         </template>
       </DashboardCardV2>
 
@@ -27,17 +24,14 @@
           <span>Recent Fungible Tokens</span>
         </template>
         <template #left-control>
-          <PlayPauseButton :controller="tokenTableController"/>
+          <PlayPauseButton :controller="tokenTableController" />
         </template>
         <template #content>
-          <TokenTable :controller="tokenTableController"/>
+          <TokenTable :controller="tokenTableController" />
         </template>
       </DashboardCardV2>
-
     </div>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

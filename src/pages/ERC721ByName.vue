@@ -5,18 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="ERC721 Token by Name">
     <DashboardCardV2>
       <template #title>
         ERC 721 Tokens matching "{{ props.name }}"
       </template>
       <template #content>
-        <ERC721ByNameTable :name="props.name"/>
+        <ERC721ByNameTable :name="props.name" />
       </template>
     </DashboardCardV2>
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -44,4 +42,4 @@ const props = defineProps({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

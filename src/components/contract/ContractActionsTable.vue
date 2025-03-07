@@ -6,85 +6,115 @@
 
 
 <template>
-
   <div id="contractActionsTable">
     <o-table
-        :data="props.actions ?? []"
-        :paginated="isPaginated"
-        pagination-order="centered"
-        :range-before="1"
-        :range-after="1"
-        :per-page="NB_ACTIONS_PER_PAGE"
+      v-model:detailed-rows="expandedActions"
+      :data="props.actions ?? []"
+      :paginated="isPaginated"
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
 
-        :detailed="isMediumScreen"
-        custom-detail-row
-        v-model:detailed-rows="expandedActions"
+      :per-page="NB_ACTIONS_PER_PAGE"
+      :detailed="isMediumScreen"
+      custom-detail-row
 
-        :hoverable="false"
-        :narrowed="true"
-        :striped="false"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :hoverable="false"
+      :narrowed="true"
+      :striped="false"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
 
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
     >
-
-      <o-table-column v-slot="props" field="call_type" label="CALL TYPE">
+      <o-table-column
+        v-slot="props"
+        field="call_type"
+        label="CALL TYPE"
+      >
         <div class="call-type">
           {{ props.row.depthPath }}
-          <span v-if="isSuccessful(props.row.action)" class="h-has-pill h-chip-success">
+          <span
+            v-if="isSuccessful(props.row.action)"
+            class="h-has-pill h-chip-success"
+          >
             {{ makeOperationType(props.row.action) }}
           </span>
-          <span v-else class="h-has-pill h-chip-error">
+          <span
+            v-else
+            class="h-has-pill h-chip-error"
+          >
             {{ '! ' + makeOperationType(props.row.action) }}
           </span>
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="from" label="FROM">
-        <EVMAddress :address="props.row.action.from"
-                    :id="props.row.action.caller"
-                    :entity-type="props.row.action.caller_type"
-                    compact/>
+      <o-table-column
+        v-slot="props"
+        field="from"
+        label="FROM"
+      >
+        <EVMAddress
+          :id="props.row.action.caller"
+          :address="props.row.action.from"
+          :entity-type="props.row.action.caller_type"
+          compact
+        />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="amount" label="AMOUNT">
+      <o-table-column
+        v-slot="props"
+        field="amount"
+        label="AMOUNT"
+      >
         <div class="hbar-amount h-is-numeric">
           <span style="font-size: 13px; margin-right: 2px">&#8594;</span>
-          <HbarAmount :amount="props.row.action.value" :timestamp="props.row.action.timestamp" :show-extra="true"/>
+          <HbarAmount
+            :amount="props.row.action.value"
+            :timestamp="props.row.action.timestamp"
+            :show-extra="true"
+          />
           <span style="font-size: 13px; margin-left: 2px; margin-right: 2px">&#8594;</span>
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="to" label="TO">
-        <EVMAddress :address="props.row.action.to"
-                    :id="props.row.action.recipient??''"
-                    :entity-type="props.row.action.recipient_type"
-                    compact/>
+      <o-table-column
+        v-slot="props"
+        field="to"
+        label="TO"
+      >
+        <EVMAddress
+          :id="props.row.action.recipient??''"
+          :address="props.row.action.to"
+          :entity-type="props.row.action.recipient_type"
+          compact
+        />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="gas_limit" label="GAS LIMIT">
+      <o-table-column
+        v-slot="props"
+        field="gas_limit"
+        label="GAS LIMIT"
+      >
         <div class="h-is-numeric">
           {{ props.row.action.gas }}
         </div>
       </o-table-column>
 
-      <template v-slot:detail="props">
+      <template #detail="props">
         <tr>
-          <td/>
+          <td />
           <td colspan="4">
-            <ContractActionDetails :action="props.row.action"/>
+            <ContractActionDetails :action="props.row.action" />
           </td>
         </tr>
       </template>
-
     </o-table>
   </div>
 
-  <EmptyTable v-if="!props.actions?.length"/>
-
+  <EmptyTable v-if="!props.actions?.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

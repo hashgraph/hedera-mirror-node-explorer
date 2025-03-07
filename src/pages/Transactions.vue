@@ -5,26 +5,22 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Transactions">
-
     <DashboardCardV2>
       <template #title>
         <span>Recent Transactions</span>
       </template>
       <template #left-control>
-        <PlayPauseButton :controller="transactionTableController"/>
+        <PlayPauseButton :controller="transactionTableController" />
       </template>
       <template #right-control>
-        <TransactionFilterSelect v-model:selected-filter="transactionType"/>
+        <TransactionFilterSelect v-model:selected-filter="transactionType" />
       </template>
       <template #content>
-        <TransactionTable :controller="transactionTableController"/>
+        <TransactionTable :controller="transactionTableController" />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

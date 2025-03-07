@@ -5,25 +5,50 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="searchDropdown" data-cy="searchDropdown">
-    <SearchTabs :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+  <div
+    class="searchDropdown"
+    data-cy="searchDropdown"
+  >
+    <SearchTabs
+      v-model:selected-agent-id="selectedAgentId"
+      :search-controller="searchController"
+    />
     <div>
-      <SearchSection v-if="selectedAgent !== null" :search-controller="searchController" :search-agent="selectedAgent"/>
+      <SearchSection
+        v-if="selectedAgent !== null"
+        :search-controller="searchController"
+        :search-agent="selectedAgent"
+      />
       <template v-if="searchController.loadingDomainNameSearchAgents.value.length >= 1">
-        <hr v-if="searchController.visibleAgents.value.length >= 1"/>
-        <template v-for="a in searchController.domainNameSearchAgents" :key="a.id">
-          <div v-if="a.loading.value" class="connecting-to-provider">
+        <hr v-if="searchController.visibleAgents.value.length >= 1">
+        <template
+          v-for="a in searchController.domainNameSearchAgents"
+          :key="a.id"
+        >
+          <div
+            v-if="a.loading.value"
+            class="connecting-to-provider"
+          >
             Connecting to {{ a.provider.providerAlias }}…
           </div>
         </template>
       </template>
-      <div v-if="searchController.candidateCount.value == 0 && !searchController.loading.value"
-           @click="navigateToHelp"
-           class="no-match">
+      <div
+        v-if="searchController.candidateCount.value == 0 && !searchController.loading.value"
+        class="no-match"
+        @click="navigateToHelp"
+      >
         No match
-        <img src="@/assets/question-circle.svg" alt="info button"/>
+        <img
+          src="@/assets/question-circle.svg"
+          alt="info button"
+        >
       </div>
-      <div v-if="!searchController.loading.value" data-cy="searchCompleted" style="display: none"/>
+      <div
+        v-if="!searchController.loading.value"
+        data-cy="searchCompleted"
+        style="display: none"
+      />
     </div>
   </div>
 </template>

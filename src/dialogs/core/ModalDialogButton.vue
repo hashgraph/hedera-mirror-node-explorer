@@ -6,12 +6,12 @@
 
 <template>
   <ButtonView
-      @action="handleAction"
-      :is-default="props.isDefault"
-      :disabled="!props.enabled"
-      :sameSize="true"
+    :is-default="props.isDefault"
+    :disabled="!props.enabled"
+    :same-size="true"
+    @action="handleAction"
   >
-    <slot/>
+    <slot />
   </ButtonView>
 </template>
 

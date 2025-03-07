@@ -5,24 +5,46 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="footer-root">
-
     <div class="footer-left">
-      <a v-if="builtOnURL" :href="builtOnURL">
-        <img id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
+      <a
+        v-if="builtOnURL"
+        :href="builtOnURL"
+      >
+        <img
+          id="built-on-logo"
+          alt="Built On Logo"
+          :src="builtOnLogoURL ?? ''"
+          class="footer-logo"
+        >
       </a>
-      <img v-else id="built-on-logo" alt="Built On Logo" :src="builtOnLogoURL ?? ''" class="footer-logo">
+      <img
+        v-else
+        id="built-on-logo"
+        alt="Built On Logo"
+        :src="builtOnLogoURL ?? ''"
+        class="footer-logo"
+      >
 
       <div class="footer-text">
-        <div v-if="isSmallScreen" class="footer-text-item">
+        <div
+          v-if="isSmallScreen"
+          class="footer-text-item"
+        >
           {{ productDescription }}
         </div>
 
         <template v-if="termsOfUseURL">
-          <div v-if="isSmallScreen" class="line"></div>
+          <div
+            v-if="isSmallScreen"
+            class="line"
+          />
 
-          <a data-cy="termsOfUse" :href="termsOfUseURL" style="line-height: 1rem">
+          <a
+            data-cy="termsOfUse"
+            :href="termsOfUseURL"
+            style="line-height: 1rem"
+          >
             <div class="footer-text-item">
               See Terms of Service
             </div>
@@ -30,7 +52,7 @@
         </template>
 
         <template v-if="isMediumScreen">
-          <div class="line"></div>
+          <div class="line" />
           <div class="footer-text-item">
             <span>Release </span>
             <a :href="buildReleaseUrl">{{ buildRelease }}</a>
@@ -41,13 +63,26 @@
     </div>
 
     <template v-if="isSmallScreen">
-      <a v-if="sponsorURL" :href="sponsorURL" class="footer-logo">
-        <img id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+      <a
+        v-if="sponsorURL"
+        :href="sponsorURL"
+        class="footer-logo"
+      >
+        <img
+          id="sponsor-logo"
+          alt="Sponsor Logo"
+          :src="sponsorLogoURL ?? ''"
+        >
       </a>
-      <img v-else class="footer-logo" id="sponsor-logo" alt="Sponsor Logo" :src="sponsorLogoURL ?? ''">
+      <img
+        v-else
+        id="sponsor-logo"
+        class="footer-logo"
+        alt="Sponsor Logo"
+        :src="sponsorLogoURL ?? ''"
+      >
     </template>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

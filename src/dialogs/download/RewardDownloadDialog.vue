@@ -6,7 +6,6 @@
 
 <template>
   <DownloadDialog :controller="controller">
-
     <template #downloadDialogTitle>
       <span>
         <span>Download rewards</span>
@@ -21,27 +20,38 @@
         </div>
         <div class="column">
           <SelectView v-model="periodOption">
-            <option :key="Period.Day" :value="Period.Day"
-                    style="background-color: var(--h-theme-box-background-color)">
+            <option
+              :key="Period.Day"
+              :value="Period.Day"
+              style="background-color: var(--h-theme-box-background-color)"
+            >
               LAST 24 HOURS
             </option>
-            <option :key="Period.Week" :value="Period.Week"
-                    style="background-color: var(--h-theme-box-background-color)">
+            <option
+              :key="Period.Week"
+              :value="Period.Week"
+              style="background-color: var(--h-theme-box-background-color)"
+            >
               LAST 7 DAYS
             </option>
-            <option :key="Period.Month" :value="Period.Month"
-                    style="background-color: var(--h-theme-box-background-color)">
+            <option
+              :key="Period.Month"
+              :value="Period.Month"
+              style="background-color: var(--h-theme-box-background-color)"
+            >
               LAST 30 DAYS
             </option>
-            <option :key="Period.Year" :value="Period.Year"
-                    style="background-color: var(--h-theme-box-background-color)">
+            <option
+              :key="Period.Year"
+              :value="Period.Year"
+              style="background-color: var(--h-theme-box-background-color)"
+            >
               LAST 365 DAYS
             </option>
           </SelectView>
         </div>
       </div>
     </template>
-
   </DownloadDialog>
 </template>
 

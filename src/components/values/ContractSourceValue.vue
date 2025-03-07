@@ -7,11 +7,14 @@
 <!--suppress HtmlWrongAttributeValue -->
 <template>
   <div
-      v-if="props.sourceFiles.length > 0"
-      id="h-code-source"
-      class="h-code-box"
+    v-if="props.sourceFiles.length > 0"
+    id="h-code-source"
+    class="h-code-box"
   >
-    <template v-for="(file, index) in props.sourceFiles" :key="file.path">
+    <template
+      v-for="(file, index) in props.sourceFiles"
+      :key="file.path"
+    >
       <template v-if="isFiltered(file)">
         <div class="source-filename">
           {{ file.name }}
@@ -20,15 +23,19 @@
           {{ file.content }}
         </SolidityCode>
       </template>
-      <hr v-if="props.filter === '' && index < props.sourceFiles.length - 1"
-          class="horizontal-line"
-      />
+      <hr
+        v-if="props.filter === '' && index < props.sourceFiles.length - 1"
+        class="horizontal-line"
+      >
     </template>
   </div>
 
-  <span v-else-if="initialLoading"/>
+  <span v-else-if="initialLoading" />
 
-  <span v-else class="h-is-low-contrast">None</span>
+  <span
+    v-else
+    class="h-is-low-contrast"
+  >None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

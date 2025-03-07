@@ -6,9 +6,15 @@
 
 <template>
   <label style="font-size: 14px">
-    <input type="radio" :name="props.name" :value="props.value" v-model="model" style="vertical-align: text-top"/>
+    <input
+      v-model="model"
+      type="radio"
+      :name="props.name"
+      :value="props.value"
+      style="vertical-align: text-top"
+    >
     <span style="padding-left: 6px">
-      <slot/>
+      <slot />
     </span>
   </label>
 </template>

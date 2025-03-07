@@ -6,8 +6,14 @@
 
 <template>
   <div class="label-view">
-    <img v-if="props.iconUrl" :src="props.iconUrl" :height="props.iconSize" class="label-view-icon" alt="label logo">
-    <slot/>
+    <img
+      v-if="props.iconUrl"
+      :src="props.iconUrl"
+      :height="props.iconSize"
+      class="label-view-icon"
+      alt="label logo"
+    >
+    <slot />
   </div>
 </template>
 

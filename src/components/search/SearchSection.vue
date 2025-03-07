@@ -5,15 +5,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <template v-for="(c,i) in searchAgent.candidates.value" :key="i">
-    <button class="button-as-link"
-            :class="{'secondary': c.route === null || c.secondary}"
-            @click="navigate(c)"
-            :disabled="c.route === null"
-            style="width: 100%">
+  <template
+    v-for="(c,i) in searchAgent.candidates.value"
+    :key="i"
+  >
+    <button
+      class="button-as-link"
+      :class="{'secondary': c.route === null || c.secondary}"
+      :disabled="c.route === null"
+      style="width: 100%"
+      @click="navigate(c)"
+    >
       {{ c.description }}
-      <span v-if="c.extra" style="color: var(--text-secondary); padding-left: 16px">{{ c.extra }}</span>
-      <span v-if="i == 0" style="float: right">&#x23ce;</span>
+      <span
+        v-if="c.extra"
+        style="color: var(--text-secondary); padding-left: 16px"
+      >{{ c.extra }}</span>
+      <span
+        v-if="i == 0"
+        style="float: right"
+      >&#x23ce;</span>
     </button>
   </template>
 </template>

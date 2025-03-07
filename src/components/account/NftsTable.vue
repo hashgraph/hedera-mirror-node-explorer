@@ -5,89 +5,132 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="props.controller.rows.value"
-      :loading="props.controller.loading.value"
-      :paginated="props.controller.paginated.value && props.fullPage"
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="props.controller.totalRowCount.value"
-      v-model:current-page="props.controller.currentPage.value"
-      :per-page="props.controller.pageSize.value"
-      @page-change="props.controller.onPageChange"
-      @cell-click="handleClick"
-      :checkable="props.checkEnabled"
-      v-model:checked-rows="checkedRows"
+    v-model:current-page="props.controller.currentPage.value"
+    :data="props.controller.rows.value"
+    :loading="props.controller.loading.value"
+    :paginated="props.controller.paginated.value && props.fullPage"
+    backend-pagination
+    v-model:checked-rows="checkedRows"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="props.controller.totalRowCount.value"
+    :per-page="props.controller.pageSize.value"
+    :checkable="props.checkEnabled"
+    :hoverable="true"
+    :narrowed="true"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
+    @page-change="props.controller.onPageChange"
+    aria-page-label="Page"
+    @cell-click="handleClick"
+    aria-previous-label="Previous page"
   >
-
-    <o-table-column v-slot="{ row }" field="image" label="IMAGE">
+    <o-table-column
+      v-slot="{ row }"
+      field="image"
+      label="IMAGE"
+    >
       <NftCell
-          :token-id="row.token_id"
-          :serial-number="row.serial_number"
-          :property="NftCellItem.image"
-          :size="32"
+        :token-id="row.token_id"
+        :serial-number="row.serial_number"
+        :property="NftCellItem.image"
+        :size="32"
       />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-id" label="TOKEN ID">
-      <TokenIOL class="token-id-label" :token-id="row.token_id"/>
+    <o-table-column
+      v-slot="{ row }"
+      field="token-id"
+      label="TOKEN ID"
+    >
+      <TokenIOL
+        class="token-id-label"
+        :token-id="row.token_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="serial" label="SERIAL #">
+    <o-table-column
+      v-slot="{ row }"
+      field="serial"
+      label="SERIAL #"
+    >
       {{ row.serial_number }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-name" label="COLLECTION NAME">
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenName"/>
+    <o-table-column
+      v-slot="{ row }"
+      field="token-name"
+      label="COLLECTION NAME"
+    >
+      <TokenCell
+        class="is-inline-block"
+        :token-id="row.token_id"
+        :property="TokenCellItem.tokenName"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="token-name" label="SYMBOL">
-      <TokenCell class="is-inline-block" :token-id="row.token_id" :property="TokenCellItem.tokenSymbol"/>
+    <o-table-column
+      v-slot="{ row }"
+      field="token-name"
+      label="SYMBOL"
+    >
+      <TokenCell
+        class="is-inline-block"
+        :token-id="row.token_id"
+        :property="TokenCellItem.tokenSymbol"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="NFT NAME">
-      <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.name"/>
+    <o-table-column
+      v-slot="{ row }"
+      field="name"
+      label="NFT NAME"
+    >
+      <NftCell
+        :token-id="row.token_id"
+        :serial-number="row.serial_number"
+        :property="NftCellItem.name"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="creator" label="CREATOR">
-      <NftCell :token-id="row.token_id" :serial-number="row.serial_number" :property="NftCellItem.creator"/>
+    <o-table-column
+      v-slot="{ row }"
+      field="creator"
+      label="CREATOR"
+    >
+      <NftCell
+        :token-id="row.token_id"
+        :serial-number="row.serial_number"
+        :property="NftCellItem.creator"
+      />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-if="props.fullPage"
-          v-model:size="props.controller.pageSize.value"
-          :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+        v-if="props.fullPage"
+        v-model:size="props.controller.pageSize.value"
+        :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!props.controller.paginated.value
+    v-if="!props.controller.paginated.value
       && props.controller.showPageSizeSelector.value
       && !props.checkEnabled
       && props.fullPage"
-      v-model:size="props.controller.pageSize.value"
-      :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
-      style="width: 102px; margin-left: 4px"
+    v-model:size="props.controller.pageSize.value"
+    :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+    style="width: 102px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!props.controller.totalRowCount.value"/>
-
+  <EmptyTable v-if="!props.controller.totalRowCount.value" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

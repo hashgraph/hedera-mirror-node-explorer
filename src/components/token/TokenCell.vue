@@ -5,18 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <TokenAmount
-      v-if="property === TokenCellItem.tokenBalance && propertyValue"
-      :amount="BigInt(propertyValue)"
-      :token-id="tokenId"
+    v-if="property === TokenCellItem.tokenBalance && propertyValue"
+    :amount="BigInt(propertyValue)"
+    :token-id="tokenId"
   />
 
   <BlobValue
-      v-else
-      :blob-value="propertyValue"
+    v-else
+    :blob-value="propertyValue"
   />
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -128,4 +126,4 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

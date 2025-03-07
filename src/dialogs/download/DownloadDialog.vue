@@ -5,20 +5,28 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TaskDialog :controller="controller" @task-dialog-did-succeed="handleSuccess" :width="props.width">
-
+  <TaskDialog
+    :controller="controller"
+    :width="props.width"
+    @task-dialog-did-succeed="handleSuccess"
+  >
     <template #taskDialogTitle>
-      <slot name="downloadDialogTitle"/>
+      <slot name="downloadDialogTitle" />
     </template>
 
-    <template #taskExecuteLabel>DOWNLOAD</template>
+    <template #taskExecuteLabel>
+      DOWNLOAD
+    </template>
 
     <template #taskDialogInput>
-      <slot name="downloadDialogInput"/>
+      <slot name="downloadDialogInput" />
     </template>
 
     <template #taskDialogBusy>
-      <progress id="progress" :value="props.controller.getDownloader().progress.value"/>
+      <progress
+        id="progress"
+        :value="props.controller.getDownloader().progress.value"
+      />
       <span>Downloading:</span>
       <span class="h-is-low-contrast h-is-numeric ml-2">{{ busyMessage }}</span>
     </template>
@@ -28,8 +36,12 @@
         <span>Download completed:</span>
         <div style="margin-left: 0.5rem; color: var(--text-secondary)">
           <div>{{ successMessage }}</div>
-          <div v-if="successMessage2">{{ successMessage2 }}</div>
-          <div v-if="successMessage3">{{ successMessage3 }}</div>
+          <div v-if="successMessage2">
+            {{ successMessage2 }}
+          </div>
+          <div v-if="successMessage3">
+            {{ successMessage3 }}
+          </div>
         </div>
       </div>
     </template>
@@ -40,9 +52,8 @@
     </template>
 
     <template #taskDialogControls>
-      <slot name="downloadDialogControls"/>
+      <slot name="downloadDialogControls" />
     </template>
-
   </TaskDialog>
 </template>
 

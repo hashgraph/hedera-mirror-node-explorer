@@ -5,30 +5,31 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <MediaContent
-      :url="props.url"
-      :type="props.type"
-      :size="props.size"
-      :auto="props.auto"
-      :no-anchor="props.noAnchor"
-      @on-load-error="onLoadError"
+    :url="props.url"
+    :type="props.type"
+    :size="props.size"
+    :auto="props.auto"
+    :no-anchor="props.noAnchor"
+    @on-load-error="onLoadError"
   >
     <template #placeHolder>
       <div class="placeholder">
-        <ImageOff v-if="size >= 100" :size="40"/>
+        <ImageOff
+          v-if="size >= 100"
+          :size="40"
+        />
         <span>
-        {{ size > 200 ? 'Non Fungible Token' : 'NFT' }}
-      </span>
+          {{ size > 200 ? 'Non Fungible Token' : 'NFT' }}
+        </span>
         <InfoTooltip
-            v-if="size >= 100 && (warningTooltip || infoTooltip)"
-            :warning-label="warningTooltip"
-            :label="infoTooltip"
+          v-if="size >= 100 && (warningTooltip || infoTooltip)"
+          :warning-label="warningTooltip"
+          :label="infoTooltip"
         />
       </div>
     </template>
   </MediaContent>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

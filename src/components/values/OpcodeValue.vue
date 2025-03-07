@@ -6,20 +6,50 @@
 
 <template>
   <div class="opcode-value">
-    <p class="h-is-low-contrast">{{ opcode.index16 }}:</p>
-    <p v-if="showHexaOpcode" class="h-is-extra-text">{{ opcode.hex }}</p>
-    <p v-if="showHexaOpcode" class="h-is-low-contrast">-</p>
-    <p :class="{'h-is-low-contrast':isInvalidOpcode}">{{ opcode.mnemonic }}</p>
+    <p class="h-is-low-contrast">
+      {{ opcode.index16 }}:
+    </p>
+    <p
+      v-if="showHexaOpcode"
+      class="h-is-extra-text"
+    >
+      {{ opcode.hex }}
+    </p>
+    <p
+      v-if="showHexaOpcode"
+      class="h-is-low-contrast"
+    >
+      -
+    </p>
+    <p :class="{'h-is-low-contrast':isInvalidOpcode}">
+      {{ opcode.mnemonic }}
+    </p>
     <div v-if="opcode.operand.length > 0">
-      <ContractLink v-if="contract" :contract-id="displayAddress"/>
-      <AccountLink v-else-if="account" :account-id="displayAddress"/>
-      <p v-else>{{ displayAddress }}</p>
+      <ContractLink
+        v-if="contract"
+        :contract-id="displayAddress"
+      />
+      <AccountLink
+        v-else-if="account"
+        :account-id="displayAddress"
+      />
+      <p v-else>
+        {{ displayAddress }}
+      </p>
     </div>
     <template v-if="contract || account">
       <p>//</p>
-      <ContractLink v-if="contract" :contract-id="contract.contract_id" class="h-is-low-contrast"/>
-      <AccountLink v-else-if="account" :account-id="account.account" class="h-is-low-contrast"/>
-      <p v-else/>
+      <ContractLink
+        v-if="contract"
+        :contract-id="contract.contract_id"
+        class="h-is-low-contrast"
+      />
+      <AccountLink
+        v-else-if="account"
+        :account-id="account.account"
+        class="h-is-low-contrast"
+      />
+      <p v-else />
     </template>
   </div>
 </template>

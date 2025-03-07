@@ -6,103 +6,142 @@
 
 <template>
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute">
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
+  >
+    <template #transactionDialogTitle>
+      Approve allowance
+    </template>
 
-    <template #transactionDialogTitle>Approve allowance</template>
-
-    <template #transactionExecutionLabel>APPROVE</template>
+    <template #transactionExecutionLabel>
+      APPROVE
+    </template>
 
     <template #transactionDialogInput>
-
       <!-- spender -->
 
       <ContentCell>
-        <template #cellTitle>Spender</template>
+        <template #cellTitle>
+          Spender
+        </template>
         <template #cellContent>
           <TextFieldView
-              v-model="spenderInput"
-              placeholder="Account or Contract ID (0.0.1234)"
-              style="width: 100%"/>
+            v-model="spenderInput"
+            placeholder="Account or Contract ID (0.0.1234)"
+            style="width: 100%"
+          />
         </template>
       </ContentCell>
 
       <!-- Allowance Type -->
       <ContentCell>
-        <template #cellTitle>Allowance Type</template>
+        <template #cellTitle>
+          Allowance Type
+        </template>
         <template #cellContent>
           <div style="display: flex; column-gap: 12px">
-            <RabioBoxView name="allowanceType" value="crypto" v-model="allowanceChoice">HBAR</RabioBoxView>
-            <RabioBoxView name="allowanceType" value="token" v-model="allowanceChoice">Fungible Token</RabioBoxView>
-            <RabioBoxView name="allowanceType" value="nft" v-model="allowanceChoice">NFT</RabioBoxView>
+            <RabioBoxView
+              v-model="allowanceChoice"
+              name="allowanceType"
+              value="crypto"
+            >
+              HBAR
+            </RabioBoxView>
+            <RabioBoxView
+              v-model="allowanceChoice"
+              name="allowanceType"
+              value="token"
+            >
+              Fungible Token
+            </RabioBoxView>
+            <RabioBoxView
+              v-model="allowanceChoice"
+              name="allowanceType"
+              value="nft"
+            >
+              NFT
+            </RabioBoxView>
           </div>
         </template>
       </ContentCell>
 
       <StackView :visible-index="visibleIndex">
-
         <ContentCell>
-          <template #cellTitle>HBAR Amount</template>
+          <template #cellTitle>
+            HBAR Amount
+          </template>
           <template #cellContent>
             <TextFieldView
-                v-model="cryptoAmountInput"
-                placeholder="HBAR Amount"
-                style="width: 100%"/>
+              v-model="cryptoAmountInput"
+              placeholder="HBAR Amount"
+              style="width: 100%"
+            />
           </template>
         </ContentCell>
 
         <div style="display: flex; flex-direction: column; row-gap: 12px; width: 100%">
           <ContentCell>
-            <template #cellTitle>Token ID</template>
+            <template #cellTitle>
+              Token ID
+            </template>
             <template #cellContent>
               <TextFieldView
-                  v-model="tokenInput"
-                  placeholder="Token ID (0.0.1234)"
-                  style="width: 100%"/>
+                v-model="tokenInput"
+                placeholder="Token ID (0.0.1234)"
+                style="width: 100%"
+              />
             </template>
           </ContentCell>
 
           <ContentCell>
-            <template #cellTitle>Token Amount</template>
+            <template #cellTitle>
+              Token Amount
+            </template>
             <template #cellContent>
               <TextFieldView
-                  v-model="tokenAmountInput"
-                  placeholder="Token Amount"
-                  style="width: 100%"/>
+                v-model="tokenAmountInput"
+                placeholder="Token Amount"
+                style="width: 100%"
+              />
             </template>
           </ContentCell>
         </div>
 
         <div style="display: flex; flex-direction: column; row-gap: 12px">
           <ContentCell>
-            <template #cellTitle>Token ID</template>
+            <template #cellTitle>
+              Token ID
+            </template>
             <template #cellContent>
               <TextFieldView
-                  v-model="nftInput"
-                  placeholder="Collection ID (0.0.1234)"
-                  style="width: 100%"/>
+                v-model="nftInput"
+                placeholder="Collection ID (0.0.1234)"
+                style="width: 100%"
+              />
             </template>
           </ContentCell>
 
           <ContentCell>
-            <template #cellTitle>Serial Numbers</template>
+            <template #cellTitle>
+              Serial Numbers
+            </template>
             <template #cellContent>
               <TextFieldView
-                  v-model="nftSerialInput"
-                  placeholder="serial numbers (1, 2, 3…)"
-                  style="width: 100%"/>
+                v-model="nftSerialInput"
+                placeholder="serial numbers (1, 2, 3…)"
+                style="width: 100%"
+              />
               <span class="nft-inline-help">leave empty to approve for ALL</span>
             </template>
           </ContentCell>
         </div>
-
       </StackView>
-
     </template>
 
-    <template #transactionDialogControls>{{ feedbackMessage }}</template>
-
+    <template #transactionDialogControls>
+      {{ feedbackMessage }}
+    </template>
   </TransactionDialog>
 </template>
 

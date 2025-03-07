@@ -5,41 +5,52 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="transactions"
-      :loading="loading"
-      :per-page="perPage"
-      @cell-click="handleClick"
+    :data="transactions"
+    :loading="loading"
+    :per-page="perPage"
+    :hoverable="true"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    custom-row-key="consensus_timestamp"
 
-      customRowKey="consensus_timestamp"
+    @cell-click="handleClick"
   >
-
-    <o-table-column v-slot="props" field="topic_id" label="TOPIC ID">
-      <TopicIOL class="topic-id" :topic-id="props.row.entity_id"/>
-    </o-table-column>
-
-    <o-table-column v-slot="props" field="content" label="CONTENT">
-      <TopicMessageCell
-          :timestamp="props.row.consensus_timestamp"
-          :property="TopicMessageCellItem.message"
-          :truncation="36"
+    <o-table-column
+      v-slot="props"
+      field="topic_id"
+      label="TOPIC ID"
+    >
+      <TopicIOL
+        class="topic-id"
+        :topic-id="props.row.entity_id"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
-      <TimestampValue :timestamp="props.row.consensus_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="content"
+      label="CONTENT"
+    >
+      <TopicMessageCell
+        :timestamp="props.row.consensus_timestamp"
+        :property="TopicMessageCellItem.message"
+        :truncation="36"
+      />
     </o-table-column>
 
+    <o-table-column
+      v-slot="props"
+      field="consensus_timestamp"
+      label="TIME"
+    >
+      <TimestampValue :timestamp="props.row.consensus_timestamp" />
+    </o-table-column>
   </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
-
+  <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

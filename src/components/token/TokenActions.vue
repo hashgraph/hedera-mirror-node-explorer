@@ -5,69 +5,82 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <!-- Single action -->
 
   <ButtonView
-      v-if="associateEnabled"
-      :enabled="true"
-      :size="buttonSize"
-      @action="showAssociateDialog=true"
-  >ASSOCIATE</ButtonView>
+    v-if="associateEnabled"
+    :enabled="true"
+    :size="buttonSize"
+    @action="showAssociateDialog=true"
+  >
+    ASSOCIATE
+  </ButtonView>
 
   <ButtonView
-      v-if="dissociateEnabled"
-      :enabled="true"
-      :size="buttonSize"
-      @action="showDissociateDialog=true"
-  >DISSOCIATE</ButtonView>
+    v-if="dissociateEnabled"
+    :enabled="true"
+    :size="buttonSize"
+    @action="showDissociateDialog=true"
+  >
+    DISSOCIATE
+  </ButtonView>
 
   <ButtonView
-      v-if="rejectEnabled"
-      :enabled="true"
-      :size="buttonSize"
-      @action="showRejectDialog=true"
-  >REJECT</ButtonView>
+    v-if="rejectEnabled"
+    :enabled="true"
+    :size="buttonSize"
+    @action="showRejectDialog=true"
+  >
+    REJECT
+  </ButtonView>
 
   <ButtonView
-      v-if="claimEnabled"
-      :enabled="true"
-      :size="buttonSize"
-      @action="showClaimDialog=true"
-  >CLAIM</ButtonView>
+    v-if="claimEnabled"
+    :enabled="true"
+    :size="buttonSize"
+    @action="showClaimDialog=true"
+  >
+    CLAIM
+  </ButtonView>
 
   <ButtonView
-      v-if="watchEnabled"
-      :enabled="true"
-      :size="buttonSize"
-      @action="showWatchDialog=true"
-  >IMPORT</ButtonView>
+    v-if="watchEnabled"
+    :enabled="true"
+    :size="buttonSize"
+    @action="showWatchDialog=true"
+  >
+    IMPORT
+  </ButtonView>
 
   <AssociateTokenDialog
-      v-model:show-dialog="showAssociateDialog"
-      :analyzer="analyzer"
-      @token-associated="emit('completed')"/>
+    v-model:show-dialog="showAssociateDialog"
+    :analyzer="analyzer"
+    @token-associated="emit('completed')"
+  />
 
   <DissociateTokenDialog
-      v-model:show-dialog="showDissociateDialog"
-      :analyzer="analyzer"
-      @token-dissociated="emit('completed')"/>
+    v-model:show-dialog="showDissociateDialog"
+    :analyzer="analyzer"
+    @token-dissociated="emit('completed')"
+  />
 
   <RejectTokenDialog
-      v-model:show-dialog="showRejectDialog"
-      :analyzer="analyzer"
-      @token-rejected="emit('completed')"/>
+    v-model:show-dialog="showRejectDialog"
+    :analyzer="analyzer"
+    @token-rejected="emit('completed')"
+  />
 
   <ClaimTokenDialog
-      v-model:show-dialog="showClaimDialog"
-      :analyzer="analyzer"
-      @token-claimed="emit('completed')"/>
+    v-model:show-dialog="showClaimDialog"
+    :analyzer="analyzer"
+    @token-claimed="emit('completed')"
+  />
 
   <WatchTokenDialog
-      v-model:show-dialog="showWatchDialog"
-      :analyzer="analyzer"
-      @token-watched="emit('completed')"/>
-
+    v-model:show-dialog="showWatchDialog"
+    :analyzer="analyzer"
+    @token-watched="emit('completed')"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

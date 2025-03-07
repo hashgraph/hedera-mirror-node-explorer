@@ -5,65 +5,74 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      v-model:current-page="currentPage"
-      :data="transactions"
-      :hoverable="true"
-      :loading="loading"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :paginated="paginated"
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :per-page="perPage"
-      :striped="true"
+    v-model:current-page="currentPage"
+    :data="transactions"
+    :hoverable="true"
+    :loading="loading"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :paginated="paginated"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :per-page="perPage"
+    :striped="true"
 
-      :total="total"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
+    :total="total"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
 
-      aria-previous-label="Previous page"
-      backend-pagination
-      customRowKey="consensus_timestamp"
-      default-sort="consensus_timestamp"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    aria-previous-label="Previous page"
+    backend-pagination
+    custom-row-key="consensus_timestamp"
+    default-sort="consensus_timestamp"
+    @page-change="onPageChange"
+    @cell-click="handleClick"
   >
-
-    <o-table-column v-slot="props" field="contract_id" label="ID">
+    <o-table-column
+      v-slot="props"
+      field="contract_id"
+      label="ID"
+    >
       <div class="entity-id">
         {{ props.row.entity_id }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
-      <ContractName :contract-id="props.row.entity_id"/>
+    <o-table-column
+      v-slot="props"
+      field="contract_name"
+      label="CONTRACT NAME"
+    >
+      <ContractName :contract-id="props.row.entity_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="CREATE">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="created"
+      label="CREATE"
+    >
+      <TimestampValue :timestamp="props.row.consensus_timestamp" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"/>
+        v-model:size="perPage"
+        :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"
+      />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!transactions.length"/>
-
+  <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

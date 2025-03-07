@@ -22,33 +22,53 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog v-model:show-dialog="showDialog" :width="0">
-
-    <template #modalDialogTitle>Connect Wallet</template>
+  <ModalDialog
+    v-model:show-dialog="showDialog"
+    :width="0"
+  >
+    <template #modalDialogTitle>
+      Connect Wallet
+    </template>
 
     <template #modalDialogContent>
       <div style="display: flex; align-items: center; justify-content: center;">
-        <div class="wallet-chooser-container" :style="{ 'grid-template-columns': gridTemplateColumns }">
-          <template v-for="i in walletItems" :key="i.name">
-            <WalletChooserItem v-model:selection="chosenWallet" :wallet-item="i" @connect="handleConnect"/>
+        <div
+          class="wallet-chooser-container"
+          :style="{ 'grid-template-columns': gridTemplateColumns }"
+        >
+          <template
+            v-for="i in walletItems"
+            :key="i.name"
+          >
+            <WalletChooserItem
+              v-model:selection="chosenWallet"
+              :wallet-item="i"
+              @connect="handleConnect"
+            />
           </template>
         </div>
       </div>
     </template>
 
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showDialog"
-                         :enabled="chosenWallet !== null"
-                         :is-default="true"
-                         @action="handleConnect">CONNECT</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog">
+        CANCEL
+      </ModalDialogButton>
+      <ModalDialogButton
+        v-model:show-dialog="showDialog"
+        :enabled="chosenWallet !== null"
+        :is-default="true"
+        @action="handleConnect"
+      >
+        CONNECT
+      </ModalDialogButton>
     </template>
-
   </ModalDialog>
 
-  <OptOutDialog v-model:show-dialog="showDisclaimerDialog"
-                @onAgree="handleAgreeDisclaimer"></OptOutDialog>
-
+  <OptOutDialog
+    v-model:show-dialog="showDisclaimerDialog"
+    @on-agree="handleAgreeDisclaimer"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

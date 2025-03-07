@@ -5,24 +5,20 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="is-inline-block">
-
     <EntityLink :route="!noAnchor ? tokenRoute : null">
-      <TokenIOL :token-id="tokenId"/>
+      <TokenIOL :token-id="tokenId" />
     </EntityLink>
 
     <template v-if="showExtra">
       <span class="ml-2">
         <TokenExtra
-            :token-id="tokenId ?? undefined"
-            :use-anchor="!noAnchor"
+          :token-id="tokenId ?? undefined"
+          :use-anchor="!noAnchor"
         />
       </span>
     </template>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -60,4 +56,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

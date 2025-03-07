@@ -5,80 +5,92 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Staking">
-
-    <template v-if="temporaryBanner" #banner>
-      <NotificationBanner :message="temporaryBanner" :is-error="false"/>
+    <template
+      v-if="temporaryBanner"
+      #banner
+    >
+      <NotificationBanner
+        :message="temporaryBanner"
+        :is-error="false"
+      />
     </template>
 
     <UpdateAccountDialog
-        v-model:show-dialog="changeStakingDialogVisible"
-        :staking-only="true"
-        @updated="stakingChanged"
+      v-model:show-dialog="changeStakingDialogVisible"
+      :staking-only="true"
+      @updated="stakingChanged"
     />
 
-    <StopStakingDialog v-model:show-dialog="stopStakingDialogVisible"
-                       :account-id="accountId"
-                       v-on:staking-changed="stakingChanged"/>
+    <StopStakingDialog
+      v-model:show-dialog="stopStakingDialogVisible"
+      :account-id="accountId"
+      @staking-changed="stakingChanged"
+    />
 
-    <DashboardCardV2 v-if="enableWallet" collapsible-key="stakingDetails">
+    <DashboardCardV2
+      v-if="enableWallet"
+      collapsible-key="stakingDetails"
+    >
       <template #title>
         <span>My Staking </span>
         <template v-if="accountId">
           <span> for account </span>
-          <AccountLink :account-id="accountId"/>
+          <AccountLink :account-id="accountId" />
           <span class="checksum">-{{ accountChecksum }}</span>
         </template>
       </template>
 
       <template #content>
-
         <div class="my-staking-section">
-
           <template v-if="accountId">
-
             <div class="my-staking-dashboard">
               <NetworkDashboardItemV2
-                  title="STAKED TO"
-                  :value="stakedTo"
-                  :extra="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
+                title="STAKED TO"
+                :value="stakedTo"
+                :extra="stakePeriodStart ? ('since ' + stakePeriodStart) : undefined"
               />
               <NetworkDashboardItemV2
-                  title="MY STAKE"
-                  :value="stakedAmount"
-                  :unit="stakedAmount ? cryptoName : ''"
+                title="MY STAKE"
+                :value="stakedAmount"
+                :unit="stakedAmount ? cryptoName : ''"
               />
               <NetworkDashboardItemV2
-                  v-if="!ignoreReward && declineReward && !pendingReward"
-                  title="REWARDS"
-                  value="Declined"
+                v-if="!ignoreReward && declineReward && !pendingReward"
+                title="REWARDS"
+                value="Declined"
               />
               <NetworkDashboardItemV2
-                  v-else
-                  title="PENDING REWARDS"
-                  :value="pendingReward"
-                  :unit="pendingReward ? cryptoName : ''"
+                v-else
+                title="PENDING REWARDS"
+                :value="pendingReward"
+                :unit="pendingReward ? cryptoName : ''"
               />
             </div>
 
-            <div v-if="isHieroWallet" class="my-staking-buttons">
+            <div
+              v-if="isHieroWallet"
+              class="my-staking-buttons"
+            >
               <ButtonView
-                  id="stopStakingButton"
-                  :enabled="stakedTo !== null"
-                  @action="stopStakingDialogVisible = true"
+                id="stopStakingButton"
+                :enabled="stakedTo !== null"
+                @action="stopStakingDialogVisible = true"
               >
                 STOP STAKING
               </ButtonView>
               <ButtonView
-                  id="showStakingDialog"
-                  :is-default="true"
-                  @action="changeStakingDialogVisible = true"
+                id="showStakingDialog"
+                :is-default="true"
+                @action="changeStakingDialogVisible = true"
               >
                 CHANGE STAKING
               </ButtonView>
             </div>
-            <p v-else class="connect-wallet-text">
+            <p
+              v-else
+              class="connect-wallet-text"
+            >
               To change your staking options use Blade or HashPack.
             </p>
 
@@ -94,16 +106,16 @@
             </p>
           </template>
         </div>
-
       </template>
     </DashboardCardV2>
 
-    <RecentRewardsSection/>
+    <RecentRewardsSection />
 
-    <RewardsCalculator :amount-in-hbar="balanceInHbar" :node-id="stakedNode?.node_id"/>
-
+    <RewardsCalculator
+      :amount-in-hbar="balanceInHbar"
+      :node-id="stakedNode?.node_id"
+    />
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

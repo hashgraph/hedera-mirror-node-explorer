@@ -5,20 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Topics">
-
     <DashboardCardV2>
       <template #title>
         <span>Recent Topics</span>
       </template>
       <template #content>
-        <TopicTable v-bind:controller="transactionTableController"/>
+        <TopicTable :controller="transactionTableController" />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

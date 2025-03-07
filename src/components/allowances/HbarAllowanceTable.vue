@@ -5,65 +5,87 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      v-model:current-page="currentPage"
-      :data="allowances"
-      :hoverable="false"
-      :loading="loading"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :paginated="paginated"
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :per-page="perPage"
-      :striped="true"
+    v-model:current-page="currentPage"
+    :data="allowances"
+    :hoverable="false"
+    :loading="loading"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :paginated="paginated"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :per-page="perPage"
+    :striped="true"
 
-      :total="total"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
+    :total="total"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
 
-      aria-previous-label="Previous page"
-      backend-pagination
-      customRowKey="spender"
-      default-sort="spender"
-      @page-change="onPageChange">
-
-    <o-table-column v-slot="props" field="spender" label="SPENDER">
-      <AccountLink class="entity-id" :account-id="props.row.spender" :show-extra="true"/>
+    aria-previous-label="Previous page"
+    backend-pagination
+    custom-row-key="spender"
+    default-sort="spender"
+    @page-change="onPageChange"
+  >
+    <o-table-column
+      v-slot="props"
+      field="spender"
+      label="SPENDER"
+    >
+      <AccountLink
+        class="entity-id"
+        :account-id="props.row.spender"
+        :show-extra="true"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="TIME">
-      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="TIME"
+    >
+      <TimestampValue :timestamp="props.row.timestamp.from" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="AMOUNT" position="right">
-      <HbarAmount :amount="props.row.amount_granted"/>
+    <o-table-column
+      v-slot="props"
+      field="amount"
+      label="AMOUNT"
+      position="right"
+    >
+      <HbarAmount :amount="props.row.amount_granted" />
     </o-table-column>
 
-    <o-table-column v-if="isWalletConnected" v-slot="props" position="right">
-      <i class="fa fa-pen" @click="emit('editAllowance', props.row)"/>
+    <o-table-column
+      v-if="isWalletConnected"
+      v-slot="props"
+      position="right"
+    >
+      <i
+        class="fa fa-pen"
+        @click="emit('editAllowance', props.row)"
+      />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!allowances.length"/>
-
+  <EmptyTable v-if="!allowances.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

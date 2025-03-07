@@ -5,91 +5,116 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div id="nft-holder-table">
     <o-table
-        :data="nfts"
-        :loading="loading"
-        :paginated="paginated"
-        backend-pagination
-        pagination-order="centered"
-        :range-before="1"
-        :range-after="1"
-        :total="total"
-        v-model:current-page="currentPage"
-        :per-page="perPage"
-        @page-change="onPageChange"
+      v-model:current-page="currentPage"
+      :data="nfts"
+      :loading="loading"
+      :paginated="paginated"
+      backend-pagination
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
+      :total="total"
+      :per-page="perPage"
+      :hoverable="true"
 
-        @cell-click="handleClick"
-        :hoverable="true"
-        :narrowed="true"
-        :striped="true"
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      :narrowed="true"
+      :striped="true"
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
 
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
-        customRowKey="serial_number"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      @page-change="onPageChange"
+      custom-row-key="serial_number"
+      @cell-click="handleClick"
     >
-      <o-table-column v-slot="props" field="image" label="PREVIEW">
+      <o-table-column
+        v-slot="props"
+        field="image"
+        label="PREVIEW"
+      >
         <NftCell
-            class="w400"
-            :token-id="props.row.token_id"
-            :serial-number="props.row.serial_number"
-            :property="NftCellItem.image"/>
+          class="w400"
+          :token-id="props.row.token_id"
+          :serial-number="props.row.serial_number"
+          :property="NftCellItem.image"
+        />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="serial" label="#">
+      <o-table-column
+        v-slot="props"
+        field="serial"
+        label="#"
+      >
         <span class="serial-number">
           {{ props.row.serial_number }}
         </span>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="name" label="NAME">
+      <o-table-column
+        v-slot="props"
+        field="name"
+        label="NAME"
+      >
         <NftCell
-            :token-id="props.row.token_id"
-            :serial-number="props.row.serial_number"
-            :property="NftCellItem.name"/>
+          :token-id="props.row.token_id"
+          :serial-number="props.row.serial_number"
+          :property="NftCellItem.name"
+        />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="creator" label="CREATOR">
+      <o-table-column
+        v-slot="props"
+        field="creator"
+        label="CREATOR"
+      >
         <NftCell
-            :token-id="props.row.token_id"
-            :serial-number="props.row.serial_number"
-            :property="NftCellItem.creator"/>
+          :token-id="props.row.token_id"
+          :serial-number="props.row.serial_number"
+          :property="NftCellItem.creator"
+        />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="account_id" label="OWNER">
-        <AccountIOL :account-id="props.row.account_id"/>
+      <o-table-column
+        v-slot="props"
+        field="account_id"
+        label="OWNER"
+      >
+        <AccountIOL :account-id="props.row.account_id" />
       </o-table-column>
 
-      <o-table-column v-slot="props" field="description" label="DESCRIPTION">
+      <o-table-column
+        v-slot="props"
+        field="description"
+        label="DESCRIPTION"
+      >
         <NftCell
-            :token-id="props.row.token_id"
-            :serial-number="props.row.serial_number"
-            :property="NftCellItem.description"/>
+          :token-id="props.row.token_id"
+          :serial-number="props.row.serial_number"
+          :property="NftCellItem.description"
+        />
       </o-table-column>
 
-      <template v-slot:bottom-left>
+      <template #bottom-left>
         <TablePageSize
-            v-model:size="perPage"
-            :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
+          v-model:size="perPage"
+          :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
         />
       </template>
-
     </o-table>
 
     <TablePageSize
-        v-if="!paginated && showPageSizeSelector"
-        v-model:size="perPage"
-        :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
-        style="width: 116px; margin-left: 4px"
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
     />
 
-    <EmptyTable v-if="!nfts.length"/>
+    <EmptyTable v-if="!nfts.length" />
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

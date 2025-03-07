@@ -5,41 +5,70 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="fees"
-      :hoverable="false"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :striped="false"
+    :data="fees"
+    :hoverable="false"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :striped="false"
   >
-
-    <o-table-column v-slot="props" field="amount" label="FRACTIONAL_FEE">
-      <StringValue :string-value="makeAmount(props.row.amount)"/>
+    <o-table-column
+      v-slot="props"
+      field="amount"
+      label="FRACTIONAL_FEE"
+    >
+      <StringValue :string-value="makeAmount(props.row.amount)" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="token" label="FEE CURRENCY">
-      <TokenLink :show-extra="true" :token-id="props.row.denominating_token_id"/>
+    <o-table-column
+      v-slot="props"
+      field="token"
+      label="FEE CURRENCY"
+    >
+      <TokenLink
+        :show-extra="true"
+        :token-id="props.row.denominating_token_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="collector" label="COLLECTOR ACCOUNT">
-      <AccountLink :account-id="props.row.collector_account_id"/>
+    <o-table-column
+      v-slot="props"
+      field="collector"
+      label="COLLECTOR ACCOUNT"
+    >
+      <AccountLink :account-id="props.row.collector_account_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="min" label="MIN">
-      <PlainAmount :amount="props.row.minimum" none-label="None"/>
+    <o-table-column
+      v-slot="props"
+      field="min"
+      label="MIN"
+    >
+      <PlainAmount
+        :amount="props.row.minimum"
+        none-label="None"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="max" label="MAX">
-      <PlainAmount :amount="props.row.maximum" none-label="None"/>
+    <o-table-column
+      v-slot="props"
+      field="max"
+      label="MAX"
+    >
+      <PlainAmount
+        :amount="props.row.maximum"
+        none-label="None"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="net" label="NET">
+    <o-table-column
+      v-slot="props"
+      field="net"
+      label="NET"
+    >
       {{ props.row.net_of_transfers ? "&check;" : "" }}
     </o-table-column>
-
   </o-table>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -86,4 +115,4 @@ const fees = props.analyzer.fractionalFees
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

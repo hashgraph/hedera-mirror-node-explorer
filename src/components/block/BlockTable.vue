@@ -5,58 +5,76 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="blocks"
-      :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="blocks"
+    :loading="loading"
+    paginated
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="narrowed"
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="number"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="number"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="number" label="NUMBER">
-      <p class="block_number">{{ props.row.number }}</p>
+    <o-table-column
+      v-slot="props"
+      field="number"
+      label="NUMBER"
+    >
+      <p class="block_number">
+        {{ props.row.number }}
+      </p>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="timestamp" label="START TIME">
-      <TimestampValue v-bind:timestamp="props.row.timestamp.from"/>
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="START TIME"
+    >
+      <TimestampValue :timestamp="props.row.timestamp.from" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="count" label="NO. TRANSACTIONS" position="right">
-      <PlainAmount v-bind:amount="props.row.count"/>
+    <o-table-column
+      v-slot="props"
+      field="count"
+      label="NO. TRANSACTIONS"
+      position="right"
+    >
+      <PlainAmount :amount="props.row.count" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="gas_used" label="GAS USED" position="right">
-      <PlainAmount v-bind:amount="props.row.gas_used"/>
+    <o-table-column
+      v-slot="props"
+      field="gas_used"
+      label="GAS USED"
+      position="right"
+    >
+      <PlainAmount :amount="props.row.gas_used" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.BLOCK_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.BLOCK_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
-  <EmptyTable v-if="!blocks.length"/>
-
+  <EmptyTable v-if="!blocks.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -5,13 +5,13 @@
 <template>
   <div class="date-picker">
     <Datepicker
-        v-model="date"
-        placeholder="SELECT A DATE"
-        :is-24="false"
-        time-picker-inline
-        :dark="darkSelected"
-        @closed="handleClosed"
-        @cleared="emit('dateCleared')"
+      v-model="date"
+      placeholder="SELECT A DATE"
+      :is-24="false"
+      time-picker-inline
+      :dark="darkSelected"
+      @closed="handleClosed"
+      @cleared="emit('dateCleared')"
     />
   </div>
 </template>

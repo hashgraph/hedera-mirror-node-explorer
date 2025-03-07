@@ -5,11 +5,24 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <router-link v-if="isXLargeScreen && productLogoURL !== null" :to="routeManager.makeRouteToMainDashboard()">
-    <img alt="Product Logo" :src="productLogoURL"/>
+  <router-link
+    v-if="isXLargeScreen && productLogoURL !== null"
+    :to="routeManager.makeRouteToMainDashboard()"
+  >
+    <img
+      alt="Product Logo"
+      :src="productLogoURL"
+    >
   </router-link>
-  <router-link v-else-if="productMiniLogoURL !== null" :to="routeManager.makeRouteToMainDashboard()">
-    <img class="mini-logo" alt="Product Logo" :src="productMiniLogoURL"/>
+  <router-link
+    v-else-if="productMiniLogoURL !== null"
+    :to="routeManager.makeRouteToMainDashboard()"
+  >
+    <img
+      class="mini-logo"
+      alt="Product Logo"
+      :src="productMiniLogoURL"
+    >
   </router-link>
 </template>
 

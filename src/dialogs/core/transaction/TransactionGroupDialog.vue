@@ -5,34 +5,42 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TaskDialog :controller="props.controller"
-              @task-dialog-did-succeed="taskDidSucceed"
-              :width="props.width">
-
+  <TaskDialog
+    :controller="props.controller"
+    :width="props.width"
+    @task-dialog-did-succeed="taskDidSucceed"
+  >
     <!-- title -->
     <template #taskDialogTitle>
-      <slot name="transactionGroupDialogTitle"/>
+      <slot name="transactionGroupDialogTitle" />
     </template>
 
     <!-- label -->
     <template #taskExecuteLabel>
-      <slot name="transactionGroupExecutionLabel"/>
+      <slot name="transactionGroupExecutionLabel" />
     </template>
 
     <!-- confirm -->
-    <template v-if="$slots.transactionGroupDialogConfirm" #taskDialogConfirm>
-      <slot name="transactionGroupDialogConfirm"/>
+    <template
+      v-if="$slots.transactionGroupDialogConfirm"
+      #taskDialogConfirm
+    >
+      <slot name="transactionGroupDialogConfirm" />
     </template>
 
     <!-- input -->
     <template #taskDialogInput>
       <template v-if="walletSupported">
-        <slot name="transactionGroupDialogInput"/>
+        <slot name="transactionGroupDialogInput" />
       </template>
       <template v-else>
         <TaskPanel :mode="TaskPanelMode.error">
-          <template #taskPanelMessage>This operation cannot be done using {{ walletName }}</template>
-          <template #taskPanelExtra1>Use another wallet (Blade or HashPack)</template>
+          <template #taskPanelMessage>
+            This operation cannot be done using {{ walletName }}
+          </template>
+          <template #taskPanelExtra1>
+            Use another wallet (Blade or HashPack)
+          </template>
         </TaskPanel>
       </template>
     </template>
@@ -40,12 +48,18 @@
     <!-- busy -->
     <template #taskDialogBusy>
       <TaskPanel :mode="TaskPanelMode.busy">
-        <template #taskPanelMessage>{{ busyMessage }}</template>
+        <template #taskPanelMessage>
+          {{ busyMessage }}
+        </template>
         <template #taskPanelExtra1>
           <div>Check {{ walletName }} for any approval request</div>
         </template>
         <template #taskPanelExtra2>
-          <img :src="walletIconURL" height=32 alt="Wallet Logo"/>
+          <img
+            :src="walletIconURL"
+            height="32"
+            alt="Wallet Logo"
+          >
         </template>
       </TaskPanel>
     </template>
@@ -53,13 +67,15 @@
     <!-- success -->
     <template #taskDialogSuccess>
       <TaskPanel :mode="taskPanelMode">
-        <template #taskPanelMessage>{{ taskPanelMessage }}</template>
+        <template #taskPanelMessage>
+          {{ taskPanelMessage }}
+        </template>
         <template #taskPanelExtra1>
           <template v-if="singleTransactionId">
             Transaction ID: {{ singleTransactionId }}
           </template>
           <template v-else-if="taskPanelExtra1">
-            {{ taskPanelExtra1}}
+            {{ taskPanelExtra1 }}
           </template>
         </template>
         <template #taskPanelExtra2>
@@ -69,8 +85,6 @@
         </template>
       </TaskPanel>
     </template>
-
-
   </TaskDialog>
 </template>
 

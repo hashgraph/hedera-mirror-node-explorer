@@ -5,20 +5,18 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-tooltip
-      v-if="props.text"
-      :label="props.text"
-      :position="position ?? 'auto'"
-      :delay="props.delay"
-      multiline
-      class="tooltip"
+    v-if="props.text"
+    :label="props.text"
+    :position="position ?? 'auto'"
+    :delay="props.delay"
+    multiline
+    class="tooltip"
   >
-    <slot/>
+    <slot />
   </o-tooltip>
 
-  <slot v-else/>
-
+  <slot v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

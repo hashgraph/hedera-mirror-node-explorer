@@ -5,81 +5,98 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div v-if="nftTransferLayout.length >= 1">
-    <div v-if="!compact" class="h-sub-section">
+    <div
+      v-if="!compact"
+      class="h-sub-section"
+    >
       NFT Transfers
     </div>
 
     <div
-        class="graph-container"
-        :class="{'graph-full': !compact,'graph-container-6': !compact && descriptionVisible}"
+      class="graph-container"
+      :class="{'graph-full': !compact,'graph-container-6': !compact && descriptionVisible}"
     >
-
       <template v-if="!compact">
-
-        <div class="transfer-header">ACCOUNT</div>
-        <div/>
-        <div class="transfer-header">NFT</div>
-        <div/>
-        <div class="transfer-header">ACCOUNT</div>
-        <div v-if="!compact && descriptionVisible"/>
+        <div class="transfer-header">
+          ACCOUNT
+        </div>
+        <div />
+        <div class="transfer-header">
+          NFT
+        </div>
+        <div />
+        <div class="transfer-header">
+          ACCOUNT
+        </div>
+        <div v-if="!compact && descriptionVisible" />
       </template>
 
-      <template v-for="i in nftTransferLayout.length" :key="i">
-
+      <template
+        v-for="i in nftTransferLayout.length"
+        :key="i"
+      >
         <!-- #0 : account id -->
         <div class="transfer-account">
           <AccountLink
-              :account-id="nftTransferLayout[i-1].sender_account_id"
-              :no-anchor="compact"
-              null-label="MINT"
-              data-cy="sourceAccount"/>
+            :account-id="nftTransferLayout[i-1].sender_account_id"
+            :no-anchor="compact"
+            null-label="MINT"
+            data-cy="sourceAccount"
+          />
         </div>
 
         <!-- #1 : arrow -->
         <div style="position: relative">
-          <ArrowSegment :compact="compact"/>
+          <ArrowSegment :compact="compact" />
         </div>
 
         <!-- #2 : nfts -->
         <div class="transfer-token">
           <TokenLink
-              :token-id="nftTransferLayout[i-1].token_id ?? undefined"
-              :show-extra="true"
-              :no-anchor="compact"
-              data-cy="nft"/>
-          <div v-if="!compact" class="transfer-serial">
-              <span v-for="sn in nftTransferLayout[i-1].serial_numbers" :key="sn">
-                #{{ sn }}
-              </span>
+            :token-id="nftTransferLayout[i-1].token_id ?? undefined"
+            :show-extra="true"
+            :no-anchor="compact"
+            data-cy="nft"
+          />
+          <div
+            v-if="!compact"
+            class="transfer-serial"
+          >
+            <span
+              v-for="sn in nftTransferLayout[i-1].serial_numbers"
+              :key="sn"
+            >
+              #{{ sn }}
+            </span>
           </div>
         </div>
 
         <!-- #3 : arrow -->
         <div style="position: relative">
-          <ArrowSegment :compact="compact"/>
+          <ArrowSegment :compact="compact" />
         </div>
 
         <!-- #4 : account id -->
         <div class="transfer-account">
           <AccountLink
-              :account-id="nftTransferLayout[i-1].receiver_account_id"
-              :no-anchor="compact"
-              null-label="BURN"
-              data-cy="destinationAccount"/>
+            :account-id="nftTransferLayout[i-1].receiver_account_id"
+            :no-anchor="compact"
+            null-label="BURN"
+            data-cy="destinationAccount"
+          />
         </div>
 
         <!-- #5 : description -->
-        <div v-if="!compact && descriptionVisible" class="description">
+        <div
+          v-if="!compact && descriptionVisible"
+          class="description"
+        >
           {{ nftTransferLayout[i - 1].description }}
         </div>
-
       </template>
-
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -5,29 +5,34 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="actions?.length" collapsible-key="callTrace">
+  <DashboardCardV2
+    v-if="actions?.length"
+    collapsible-key="callTrace"
+  >
     <template #title>
       <span>Call Trace</span>
     </template>
 
-    <template v-if="isMediumScreen" #right-control>
+    <template
+      v-if="isMediumScreen"
+      #right-control
+    >
       <ButtonView
-          v-if="collapseAllVisible"
-          id="collapseAllButton"
-          :enabled="!collapseAllDisabled"
-          :is-default="true"
-          :size="ButtonSize.small"
-          @action="collapseAll"
+        v-if="collapseAllVisible"
+        id="collapseAllButton"
+        :enabled="!collapseAllDisabled"
+        :is-default="true"
+        :size="ButtonSize.small"
+        @action="collapseAll"
       >
         COLLAPSE ALL
       </ButtonView>
       <ButtonView
-          v-else
-          id="expandAllButton"
-          :is-default="true"
-          :size="ButtonSize.small"
-          @action="expandAll"
+        v-else
+        id="expandAllButton"
+        :is-default="true"
+        :size="ButtonSize.small"
+        @action="expandAll"
       >
         EXPAND ALL
       </ButtonView>
@@ -35,13 +40,12 @@
 
     <template #content>
       <ContractActionsTable
-          :actions="actions"
-          v-model:expandedActions="expandedActions"
-          :analyzer="props.analyzer"
+        v-model:expanded-actions="expandedActions"
+        :actions="actions"
+        :analyzer="props.analyzer"
       />
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

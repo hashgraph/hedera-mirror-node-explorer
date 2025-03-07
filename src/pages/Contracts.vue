@@ -5,40 +5,46 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Contracts">
-
     <DashboardCardV2>
       <template #title>
         <span>Recent Contracts</span>
       </template>
       <template #left-control>
-        <PlayPauseButton v-if="!filterVerified" :controller="contractTableController"/>
-        <PlayPauseButton v-else :controller="verifiedContractsController"/>
+        <PlayPauseButton
+          v-if="!filterVerified"
+          :controller="contractTableController"
+        />
+        <PlayPauseButton
+          v-else
+          :controller="verifiedContractsController"
+        />
       </template>
       <template #right-control>
         <div class="verify-switch">
-          <div class="switch-text">All</div>
-          <SwitchView v-model="filterVerified"/>
-          <div class="switch-text">Verified</div>
+          <div class="switch-text">
+            All
+          </div>
+          <SwitchView v-model="filterVerified" />
+          <div class="switch-text">
+            Verified
+          </div>
         </div>
       </template>
       <template #content>
         <ContractTable
-            v-if="!filterVerified"
-            :controller="contractTableController"
+          v-if="!filterVerified"
+          :controller="contractTableController"
         />
         <VerifiedContractsTable
-            v-else
-            :controller="verifiedContractsController"
-            :loaded="loaded"
-            :overflow="overflow"
+          v-else
+          :controller="verifiedContractsController"
+          :loaded="loaded"
+          :overflow="overflow"
         />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

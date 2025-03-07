@@ -5,11 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="switch"
-       @click="checked = !checked"
-       :class="{'unchecked': !checked, 'checked': checked}"
+  <div
+    class="switch"
+    :class="{'unchecked': !checked, 'checked': checked}"
+    @click="checked = !checked"
   >
-    <div/>
+    <div />
   </div>
 </template>
 

@@ -5,7 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <EVMAddress :address="senderAddress ?? undefined" :compact="false" :show-id="true" :show-none="false"/>
+  <EVMAddress
+    :address="senderAddress ?? undefined"
+    :compact="false"
+    :show-id="true"
+    :show-none="false"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -49,4 +54,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

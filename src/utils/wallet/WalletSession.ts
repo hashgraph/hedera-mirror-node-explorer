@@ -10,7 +10,7 @@ export abstract class WalletSession {
     // Public
     //
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     public async makeClient(accountId: string): Promise<WalletClient|null> {
         throw "to be implemented"
     }

@@ -5,8 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <button class="button is-white h-is-smaller" @click="showDialog = true">EDIT…</button>
-  <JsonEditorDialog v-model:show-dialog="showDialog" :param-builder="props.paramBuilder"/>
+  <button
+    class="button is-white h-is-smaller"
+    @click="showDialog = true"
+  >
+    EDIT…
+  </button>
+  <JsonEditorDialog
+    v-model:show-dialog="showDialog"
+    :param-builder="props.paramBuilder"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,4 +42,4 @@ const showDialog = ref(false)
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped />

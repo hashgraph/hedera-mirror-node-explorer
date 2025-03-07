@@ -5,24 +5,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <TransactionDialog
-      :controller="controller"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    @transaction-did-execute="transactionDidExecute"
   >
-
-    <template #transactionDialogTitle>Import Token</template>
+    <template #transactionDialogTitle>
+      Import Token
+    </template>
 
     <template #transactionDialogInput>
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Import {{ tokenType }} {{ tokenId }} to wallet {{ walletName }} ?</template>
+        <template #taskPanelMessage>
+          Import {{ tokenType }} {{ tokenId }} to wallet {{ walletName }} ?
+        </template>
       </TaskPanel>
     </template>
 
-    <template #transactionExecutionLabel>IMPORT</template>
-
+    <template #transactionExecutionLabel>
+      IMPORT
+    </template>
   </TransactionDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

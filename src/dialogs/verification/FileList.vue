@@ -7,23 +7,27 @@
 <!--suppress CssUnusedSymbol -->
 
 <template>
-  <div v-if="displayedAuditItems.length> 0" id="file-table">
+  <div
+    v-if="displayedAuditItems.length> 0"
+    id="file-table"
+  >
     <div class="table-header">
       <div class="h-is-bold">
         {{ tableTitle }}
       </div>
       <div class="header-right">
-        <div v-if="nbUnusedAuditItems > 0"
-             style="cursor: pointer; color: var(--network-text-accent-color)"
-             @click="handleToggleFiltering"
+        <div
+          v-if="nbUnusedAuditItems > 0"
+          style="cursor: pointer; color: var(--network-text-accent-color)"
+          @click="handleToggleFiltering"
         >
           {{ isListFiltered ? 'Show unused' : 'Hide unused' }}
           {{ ' (' + nbUnusedAuditItems + ')' }}
         </div>
         <div
-            class=" ml-5"
-            style="cursor: pointer; color: var(--network-text-accent-color)"
-            @click="handleClearAllFiles"
+          class=" ml-5"
+          style="cursor: pointer; color: var(--network-text-accent-color)"
+          @click="handleClearAllFiles"
         >
           Clear all
         </div>
@@ -31,50 +35,57 @@
     </div>
 
     <o-table
-        :current-page="currentPage"
-        :data="displayedAuditItems"
-        :paginated="isPaginated"
-        pagination-order="centered"
-        :range-before="0"
-        :range-after="0"
-        :per-page="perPage"
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page">
-
-      <o-table-column v-slot="props" field="type_and_name">
+      :current-page="currentPage"
+      :data="displayedAuditItems"
+      :paginated="isPaginated"
+      pagination-order="centered"
+      :range-before="0"
+      :range-after="0"
+      :per-page="perPage"
+      aria-current-label="Current page"
+      aria-next-label="Next page"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+    >
+      <o-table-column
+        v-slot="props"
+        field="type_and_name"
+      >
         <div class="table-row ">
-
           <div v-if="isMetadata(props.row)">
-            <FileJson :size="20"/>
+            <FileJson :size="20" />
           </div>
 
-          <img v-else-if="isUnused(props.row)"
-               alt="Solidity file"
-               style="width: 20px; height: 20px;"
-               src="../../assets/solidity-icon-grey.svg"
+          <img
+            v-else-if="isUnused(props.row)"
+            alt="Solidity file"
+            style="width: 20px; height: 20px;"
+            src="../../assets/solidity-icon-grey.svg"
           >
 
-          <img v-else
-               alt="Solidity file"
-               style="width: 20px; height: 20px;"
-               src="../../assets/solidity-icon.svg"
+          <img
+            v-else
+            alt="Solidity file"
+            style="width: 20px; height: 20px;"
+            src="../../assets/solidity-icon.svg"
           >
 
-          <div :class="{'h-is-low-contrast':isUnused(props.row)}" class="ml-1 w300">
+          <div
+            :class="{'h-is-low-contrast':isUnused(props.row)}"
+            class="ml-1 w300"
+          >
             {{ props.row.path }}
           </div>
 
-          <div v-if="!isMetadata(props.row) && props.row.target"
-               class="icon ml-1 h-is-low-contrast"
-               style="font-size: 14px"
+          <div
+            v-if="!isMetadata(props.row) && props.row.target"
+            class="icon ml-1 h-is-low-contrast"
+            style="font-size: 14px"
           >
-            <i class="fa fa-arrow-left"></i>
+            <i class="fa fa-arrow-left" />
           </div>
         </div>
       </o-table-column>
-
     </o-table>
   </div>
 </template>
@@ -105,7 +116,7 @@ const isPaginated = computed(() => props.auditItems.length > perPage.value)
 const tableTitle = computed(() => `Added (${props.auditItems.length})`)
 
 const filteredAuditItems = computed(() => {
-  let result: Array<ContractSourceAnalyzerItem> = []
+  const result: Array<ContractSourceAnalyzerItem> = []
   for (let i = 0; i < props.auditItems.length; i++) {
     if (!props.auditItems[i].unused) {
       result.push(props.auditItems[i])

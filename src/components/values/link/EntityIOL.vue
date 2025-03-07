@@ -5,11 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="is-inline-block">
-
     <template v-if="actualLabel !== null">
-      <span :class="{'h-is-label':!compact, 'h-is-compact-label':compact}" class="is-inline-block">
+      <span
+        :class="{'h-is-label':!compact, 'h-is-compact-label':compact}"
+        class="is-inline-block"
+      >
         {{ actualLabel }}
       </span>
     </template>
@@ -29,9 +30,7 @@
     <template v-else>
       <!-- Nothing because entityId is null and (showNone=false or initialLoading is true) -->
     </template>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -98,4 +97,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

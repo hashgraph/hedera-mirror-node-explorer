@@ -7,56 +7,87 @@
 <template>
   <template v-if="errorSignature">
     <template v-if="error">
-      <div class="h-sub-section">Error</div>
+      <div class="h-sub-section">
+        Error
+      </div>
 
-      <Property :custom-nb-col-class="customNbColClass" id="errorFunction">
+      <Property
+        id="errorFunction"
+        :custom-nb-col-class="customNbColClass"
+      >
         <template #name>
           <span style="padding-left: 16px;">Signature</span>
         </template>
         <template #value>
-          <HexaDumpValue :byte-string="errorHash" :show-none="true"/>
-          <div class="h-is-extra-text h-should-wrap">{{ errorSignature }}</div>
+          <HexaDumpValue
+            :byte-string="errorHash"
+            :show-none="true"
+          />
+          <div class="h-is-extra-text h-should-wrap">
+            {{ errorSignature }}
+          </div>
         </template>
       </Property>
 
-      <template v-for="arg in errorInputs" :key="arg.name">
+      <template
+        v-for="arg in errorInputs"
+        :key="arg.name"
+      >
         <Property :custom-nb-col-class="customNbColClass">
           <template #name>
             <span style="padding-left: 16px;">{{ arg.name != "" ? arg.name : "message" }}</span>
           </template>
           <template #value>
-            <FunctionValue :ntv="arg"/>
+            <FunctionValue :ntv="arg" />
           </template>
         </Property>
       </template>
     </template>
 
     <template v-else>
-      <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-        <template #name>Error Message</template>
+      <Property
+        id="functionInput"
+        :custom-nb-col-class="customNbColClass"
+      >
+        <template #name>
+          Error Message
+        </template>
         <template #value>
-          <HexaDumpValue :show-none="true"/>
+          <HexaDumpValue :show-none="true" />
         </template>
       </Property>
     </template>
   </template>
 
   <template v-else>
-    <Property :custom-nb-col-class="customNbColClass" id="errorMessage">
-      <template #name>Error Message</template>
+    <Property
+      id="errorMessage"
+      :custom-nb-col-class="customNbColClass"
+    >
+      <template #name>
+        Error Message
+      </template>
       <template #value>
-        <StringValue v-if="decodedError" :string-value="decodedError"/>
+        <StringValue
+          v-if="decodedError"
+          :string-value="decodedError"
+        />
         <template v-else>
-          <HexaDumpValue :byte-string="error" :show-none="true"/>
-          <div v-if="errorDecodingStatus" class="h-is-extra-text">
-            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
+          <HexaDumpValue
+            :byte-string="error"
+            :show-none="true"
+          />
+          <div
+            v-if="errorDecodingStatus"
+            class="h-is-extra-text"
+          >
+            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1" />
             <span>{{ errorDecodingStatus }}</span>
           </div>
         </template>
       </template>
     </Property>
   </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -100,4 +131,4 @@ const errorDecodingStatus = props.analyzer.errorDecodingStatus
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

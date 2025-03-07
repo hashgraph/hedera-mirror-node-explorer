@@ -5,28 +5,35 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <TransactionDialog
-      :controller="controller"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    @transaction-did-execute="transactionDidExecute"
   >
-
-    <template #transactionDialogTitle>Associate Token</template>
+    <template #transactionDialogTitle>
+      Associate Token
+    </template>
 
     <template #transactionDialogInput>
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?</template>
+        <template #taskPanelMessage>
+          Associate {{ tokenType }} {{ tokenId }} to account {{ accountId }} ?
+        </template>
         <template #taskPanelExtra1>
           <label v-if="isWatchSupported">
-            <input type="checkbox" style="margin-right: 0.5em; vertical-align: middle" v-model="watchInWallet">
+            <input
+              v-model="watchInWallet"
+              type="checkbox"
+              style="margin-right: 0.5em; vertical-align: middle"
+            >
             <span>Import to {{ walletName }}</span>
           </label>
         </template>
       </TaskPanel>
     </template>
 
-    <template #transactionExecutionLabel>ASSOCIATE</template>
-
+    <template #transactionExecutionLabel>
+      ASSOCIATE
+    </template>
   </TransactionDialog>
 </template>
 

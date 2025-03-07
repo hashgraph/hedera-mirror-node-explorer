@@ -9,54 +9,90 @@
     <div style="display: flex; flex-direction: column; gap: 8px;  padding-bottom: 16px;  border-bottom: 1px solid var(--network-theme-color);">
       <div class="card-header">
         <div class="left-header">
-          <slot name="title"/>
-          <slot name="left-control" v-if="!isCollapsed"/>
+          <slot name="title" />
+          <slot
+            v-if="!isCollapsed"
+            name="left-control"
+          />
         </div>
-        <div v-if="isMediumScreen" class="right-header">
-          <slot name="right-control" v-if="!isCollapsed"/>
-          <img v-if="isCollapsed" alt="Expand" @click="toggleCollapsed" :src="arrowDownURL">
-          <img v-else alt="Collapse" @click="toggleCollapsed" :src="arrowUpURL">
+        <div
+          v-if="isMediumScreen"
+          class="right-header"
+        >
+          <slot
+            v-if="!isCollapsed"
+            name="right-control"
+          />
+          <img
+            v-if="isCollapsed"
+            alt="Expand"
+            :src="arrowDownURL"
+            @click="toggleCollapsed"
+          >
+          <img
+            v-else
+            alt="Collapse"
+            :src="arrowUpURL"
+            @click="toggleCollapsed"
+          >
         </div>
       </div>
-      <div v-if="!isMediumScreen && !isCollapsed" class="wrapped-controls">
-        <slot name="right-control"/>
+      <div
+        v-if="!isMediumScreen && !isCollapsed"
+        class="wrapped-controls"
+      >
+        <slot name="right-control" />
       </div>
     </div>
 
     <div v-if="!isCollapsed">
-
-      <div v-if="slots['notification']" style="padding-bottom: 16px;">
-        <slot name="notification"/>
-      </div>
-
-      <div v-if="slots['content']" class="left-content">
-        <slot name="content"/>
+      <div
+        v-if="slots['notification']"
+        style="padding-bottom: 16px;"
+      >
+        <slot name="notification" />
       </div>
 
       <div
-          v-if="slots['media-content'] || slots['media-description']"
-          class="split-media"
-          :class="{'left-content': !isMediumScreen}"
+        v-if="slots['content']"
+        class="left-content"
+      >
+        <slot name="content" />
+      </div>
+
+      <div
+        v-if="slots['media-content'] || slots['media-description']"
+        class="split-media"
+        :class="{'left-content': !isMediumScreen}"
       >
         <div class="media-content">
-          <slot name="media-content"/>
+          <slot name="media-content" />
         </div>
-        <div class="media-description" :class="{'split-separator': isMediumScreen}">
-          <slot name="media-description"/>
+        <div
+          class="media-description"
+          :class="{'split-separator': isMediumScreen}"
+        >
+          <slot name="media-description" />
         </div>
       </div>
 
-      <hr v-if="showHorizontalSeparation" class="horizontal-line">
+      <hr
+        v-if="showHorizontalSeparation"
+        class="horizontal-line"
+      >
 
       <div
-          v-if="slots['left-content'] || slots['right-content']"
-          :class="{'split-content': isMediumScreen, 'left-content': !isMediumScreen}"
+        v-if="slots['left-content'] || slots['right-content']"
+        :class="{'split-content': isMediumScreen, 'left-content': !isMediumScreen}"
       >
         <div class="left-content">
-          <slot name="left-content"/>
+          <slot name="left-content" />
         </div>
-        <div class="right-content" :class="{'split-separator': isMediumScreen}">
-          <slot name="right-content"/>
+        <div
+          class="right-content"
+          :class="{'split-separator': isMediumScreen}"
+        >
+          <slot name="right-content" />
         </div>
       </div>
     </div>

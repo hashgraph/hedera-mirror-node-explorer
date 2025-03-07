@@ -21,25 +21,38 @@
 
 <template>
   <template v-if="late">
-    <span class="loader is-inline-block"/>
+    <span class="loader is-inline-block" />
   </template>
   <template v-else-if="error">
     <TriangleAlert
-        :size="18"
-        class="h-text-error"
-        style="cursor: pointer;"
-        @click="showErrorDialog = true"
+      :size="18"
+      class="h-text-error"
+      style="cursor: pointer;"
+      @click="showErrorDialog = true"
     />
   </template>
-  <ModalDialog v-model:show-dialog="showErrorDialog" iconClass="fa fa-2x fa-exclamation-triangle has-text-danger">
+  <ModalDialog
+    v-model:show-dialog="showErrorDialog"
+    icon-class="fa fa-2x fa-exclamation-triangle has-text-danger"
+  >
     <template #modalDialogContent>
       <TaskPanel :mode="TaskPanelMode.error">
-        <template #taskPanelMessage>{{ explanation }}</template>
-        <template v-if="explanation" #taskPanelExtra1>
+        <template #taskPanelMessage>
+          {{ explanation }}
+        </template>
+        <template
+          v-if="explanation"
+          #taskPanelExtra1
+        >
           Some of the data required by this page could not be downloaded.
           Displayed information may not be accurate.
         </template>
-        <template v-if="suggestion" #taskPanelExtra2>{{ suggestion }}</template>
+        <template
+          v-if="suggestion"
+          #taskPanelExtra2
+        >
+          {{ suggestion }}
+        </template>
       </TaskPanel>
     </template>
   </ModalDialog>

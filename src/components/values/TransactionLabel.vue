@@ -7,7 +7,11 @@
 <template>
   <span style="display: flex; gap: 8px; align-items: center;">
     <span class="h-is-numeric">{{ transactionText }}</span>
-    <TriangleAlert v-if="errorFlagVisible" :size="18" class="h-text-error"/>
+    <TriangleAlert
+      v-if="errorFlagVisible"
+      :size="18"
+      class="h-text-error"
+    />
   </span>
 </template>
 
@@ -41,4 +45,4 @@ const errorFlagVisible = computed(() => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

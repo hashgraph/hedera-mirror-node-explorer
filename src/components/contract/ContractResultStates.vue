@@ -5,22 +5,33 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="stateChanges?.length && isSmallScreen" collapsible-key="stateChanges">
+  <DashboardCardV2
+    v-if="stateChanges?.length && isSmallScreen"
+    collapsible-key="stateChanges"
+  >
     <template #title>
       Contract States Accessed & Changed
     </template>
 
-    <template #right-control v-if="displayStateChanges.length > 5">
-      <SelectView v-model="pageSize" :small="true">
-        <option v-for="n of actualSizeOptions" :key="n" :value="n">
+    <template
+      v-if="displayStateChanges.length > 5"
+      #right-control
+    >
+      <SelectView
+        v-model="pageSize"
+        :small="true"
+      >
+        <option
+          v-for="n of actualSizeOptions"
+          :key="n"
+          :value="n"
+        >
           {{ (n >= displayStateChanges?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
         </option>
       </SelectView>
     </template>
 
     <template #content>
-
       <div class="state-heading">
         <div>CONTRACT</div>
         <div>ADDRESS</div>
@@ -28,48 +39,55 @@
         <div>VALUE WRITTEN</div>
       </div>
 
-      <hr class="heading-separator"/>
+      <hr class="heading-separator">
 
       <div class="state-changes">
-        <template v-for="s in nbChangeDisplayed" :key="s">
+        <template
+          v-for="s in nbChangeDisplayed"
+          :key="s"
+        >
           <ContractResultStateChangeEntry
-              :change="displayStateChanges[changeCursor + s - 1]"
-              :timestamp="timeStamp"
+            :change="displayStateChanges[changeCursor + s - 1]"
+            :timestamp="timeStamp"
           />
-          <hr class="table-separator"/>
+          <hr class="table-separator">
         </template>
       </div>
 
-      <div v-if="isPaginated" class="pagination">
+      <div
+        v-if="isPaginated"
+        class="pagination"
+      >
         <o-pagination
-            :total="stateChanges.length"
-            v-model:current="currentPage"
-            order="centered"
-            :range-before="1"
-            :range-after="1"
-            :per-page="pageSize"
-            aria-next-label="Next page"
-            aria-previous-label="Previous page"
-            aria-page-label="Page"
-            aria-current-label="Current page"
-        >
-        </o-pagination>
+          v-model:current="currentPage"
+          :total="stateChanges.length"
+          order="centered"
+          :range-before="1"
+          :range-after="1"
+          :per-page="pageSize"
+          aria-next-label="Next page"
+          aria-previous-label="Previous page"
+          aria-page-label="Page"
+          aria-current-label="Current page"
+        />
       </div>
-
     </template>
-
   </DashboardCardV2>
 
-  <DashboardCardV2 v-else-if="stateChanges?.length" collapsible-key="stateChanges">
+  <DashboardCardV2
+    v-else-if="stateChanges?.length"
+    collapsible-key="stateChanges"
+  >
     <template #title>
       Contract States Accessed & Changed
     </template>
 
     <template #content>
-      <p class="not-supported">Not available on this screen size</p>
+      <p class="not-supported">
+        Not available on this screen size
+      </p>
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -171,7 +189,7 @@ export default defineComponent({
       if (props.stateChanges) {
         for (const s of props.stateChanges) {
 
-          let newItem: DisplayStateChange = {
+          const newItem: DisplayStateChange = {
             changes: {...s},
             header: true,
             balanceChange: null,

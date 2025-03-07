@@ -8,7 +8,7 @@
   <router-link :to="props.route">
     <div class="arrow-link">
       <span class="link-text">{{ props.text }}</span>
-      <ArrowRight :size="16"/>
+      <ArrowRight :size="16" />
     </div>
   </router-link>
 </template>

@@ -5,9 +5,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <template v-if="props.coreConfig instanceof CoreConfig && props.networkConfig instanceof NetworkConfig">
-    <App :core-config="props.coreConfig" :network-config="props.networkConfig"/>
+    <App
+      :core-config="props.coreConfig"
+      :network-config="props.networkConfig"
+    />
   </template>
   <template v-else>
     <div v-if="coreConfigErrorMessage">
@@ -19,7 +21,6 @@
       <code>{{ networkConfigErrorMessage }}</code>
     </div>
   </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -74,4 +75,4 @@ const networkConfigErrorMessage = computed(() => {
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style scoped/>
+<style scoped />

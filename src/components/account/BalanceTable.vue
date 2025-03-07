@@ -5,95 +5,118 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="relationships"
-      :loading="loading"
-      :paginated="paginated"
-      backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
-      :total="totalRowCount"
-      :current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cellClick="handleClick"
+    :data="relationships"
+    :loading="loading"
+    :paginated="paginated"
+    backend-pagination
+    pagination-order="left"
+    :range-before="0"
+    :range-after="0"
+    :total="totalRowCount"
+    :current-page="currentPage"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="true"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="token_id"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="token_id"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="token_id" label="Token">
+    <o-table-column
+      v-slot="props"
+      field="token_id"
+      label="Token"
+    >
       <TokenLink
-          :show-extra="false"
-          :token-id="props.row.token_id"
-          :no-anchor="true"
+        :show-extra="false"
+        :token-id="props.row.token_id"
+        :no-anchor="true"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="Name">
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="Name"
+    >
       <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenName"
+        :token-id="props.row.token_id"
+        :property="TokenCellItem.tokenName"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="Symbol">
+    <o-table-column
+      v-slot="props"
+      field="symbol"
+      label="Symbol"
+    >
       <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenSymbol"
+        :token-id="props.row.token_id"
+        :property="TokenCellItem.tokenSymbol"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="type" label="Type">
+    <o-table-column
+      v-slot="props"
+      field="type"
+      label="Type"
+    >
       <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenType"
+        :token-id="props.row.token_id"
+        :property="TokenCellItem.tokenType"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="Balance" position="right">
+    <o-table-column
+      v-slot="props"
+      field="balance"
+      label="Balance"
+      position="right"
+    >
       <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenBalance"
-          :balance-or-nb-serials="props.row.balance"
+        :token-id="props.row.token_id"
+        :property="TokenCellItem.tokenBalance"
+        :balance-or-nb-serials="props.row.balance"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="nb-nfts" label="Nb. of NFTs" position="right">
+    <o-table-column
+      v-slot="props"
+      field="nb-nfts"
+      label="Nb. of NFTs"
+      position="right"
+    >
       <TokenCell
-          :token-id="props.row.token_id"
-          :property="TokenCellItem.tokenNbSerials"
-          :balance-or-nb-serials="props.row.balance"
+        :token-id="props.row.token_id"
+        :property="TokenCellItem.tokenNbSerials"
+        :balance-or-nb-serials="props.row.balance"
       />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!relationships.length"/>
-
+  <EmptyTable v-if="!relationships.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -5,40 +5,40 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div
-      class="media-container"
-      :class="{'media-container-background': !mediaLoaded}"
-      :style="containerStyle"
-      @click="onClick"
+    class="media-container"
+    :class="{'media-container-background': !mediaLoaded}"
+    :style="containerStyle"
+    @click="onClick"
   >
-
     <!--  PLACE-HOLDER  -->
     <div
-        id="media-placeholder"
-        :class="{'invisible-element': !showPlaceHolder}"
-        class="media-content"
+      id="media-placeholder"
+      :class="{'invisible-element': !showPlaceHolder}"
+      class="media-content"
     >
-      <slot name="placeHolder"></slot>
+      <slot name="placeHolder" />
     </div>
 
     <!--  SPINNER  -->
     <span
-        :class="{'invisible-element': !showSpinner}"
-        class="media-content loader"
+      :class="{'invisible-element': !showSpinner}"
+      class="media-content loader"
     />
 
     <!--  IMAGE PREVIEW  -->
     <template v-if="imageUrl">
       <figure
-          id="image-content"
-          class="media-content">
+        id="image-content"
+        class="media-content"
+      >
         <img
-            :class="{'invisible-element': !mediaLoaded}" alt=""
-            :style="contentStyle"
-            :src="imageUrl"
-            @error="onLoadError"
-            @load="onLoadSuccess"
+          :class="{'invisible-element': !mediaLoaded}"
+          alt=""
+          :style="contentStyle"
+          :src="imageUrl"
+          @error="onLoadError"
+          @load="onLoadSuccess"
         >
       </figure>
     </template>
@@ -46,24 +46,25 @@
     <!--  VIDEO PREVIEW  -->
     <template v-else-if="videoUrl">
       <video
-          id="video-content"
-          class="media-content"
-          :style="contentStyle"
-          :autoplay="auto"
-          :controls="!auto && size >= 100"
-          loop
-          @error="onLoadError"
-          @loadeddata="onLoadSuccess"
+        id="video-content"
+        class="media-content"
+        :style="contentStyle"
+        :autoplay="auto"
+        :controls="!auto && size >= 100"
+        loop
+        @error="onLoadError"
+        @loadeddata="onLoadSuccess"
       >
-        <source :src="videoUrl" :type="type ?? ''"/>
+        <source
+          :src="videoUrl"
+          :type="type ?? ''"
+        >
       </video>
     </template>
 
     <!--  NO USABLE CONTENT (place-holder will be shown)  -->
-    <template v-else/>
-
+    <template v-else />
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

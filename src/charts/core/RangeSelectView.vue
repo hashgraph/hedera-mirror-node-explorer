@@ -6,11 +6,11 @@
 
 <template>
   <TabsView
-      v-model:selected-tab="selectedRange"
-      :tab-ids="ids"
-      :tab-labels="labels"
-      :active-tabs="active"
-      :is-enabled="!loading"
+    v-model:selected-tab="selectedRange"
+    :tab-ids="ids"
+    :tab-labels="labels"
+    :active-tabs="active"
+    :is-enabled="!loading"
   />
 </template>
 

@@ -5,25 +5,27 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog v-model:show-dialog="visible" :width="350">
-
+  <ModalDialog
+    v-model:show-dialog="visible"
+    :width="350"
+  >
     <template #modalDialogContent>
       <TaskPanel :mode="TaskPanelMode.error">
         <template #taskPanelMessage>
-          <slot name="alertDialogMessage"/>
+          <slot name="alertDialogMessage" />
         </template>
         <template #taskPanelExtra1>
-          <slot name="alertDialogExtra"/>
+          <slot name="alertDialogExtra" />
         </template>
       </TaskPanel>
     </template>
 
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="visible">CLOSE</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="visible">
+        CLOSE
+      </ModalDialogButton>
     </template>
-
   </ModalDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

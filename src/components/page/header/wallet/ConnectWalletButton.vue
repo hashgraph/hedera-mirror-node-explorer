@@ -5,24 +5,29 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <ButtonView
-      id="connectWalletButton"
-      :size="ButtonSize.medium"
-      :is-default="true"
-      :enabled="!connecting"
-      @action="chooseWallet"
+    id="connectWalletButton"
+    :size="ButtonSize.medium"
+    :is-default="true"
+    :enabled="!connecting"
+    @action="chooseWallet"
   >
     {{ connecting ? "Connecting…" : isLargeScreen ? "CONNECT WALLET" : "CONNECT" }}
   </ButtonView>
 
-  <WalletChooserDialog v-model:show-dialog="showWalletChooser" @choose-wallet="handleChooseWallet"/>
+  <WalletChooserDialog
+    v-model:show-dialog="showWalletChooser"
+    @choose-wallet="handleChooseWallet"
+  />
 
   <AlertDialog v-model:visible="showConnectErrorDialog">
-    <template #alertDialogMessage>{{ mainMessage }}</template>
-    <template #alertDialogExtra>{{ extraMessage }}</template>
+    <template #alertDialogMessage>
+      {{ mainMessage }}
+    </template>
+    <template #alertDialogExtra>
+      {{ extraMessage }}
+    </template>
   </AlertDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -5,16 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Page not found">
-
     <div class="page-not-found">
       <p>No page matches the specified URL.</p>
       <p>Check URL value or use tabs in navigation bar.</p>
     </div>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

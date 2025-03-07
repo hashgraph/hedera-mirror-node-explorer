@@ -5,25 +5,32 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="item-root">
-
-    <slot/>
+    <slot />
 
     <div class="item-content">
       <div class="item-l1">
         {{ props.title }}
       </div>
 
-      <div v-if="props.value !== null" class="item-l2">
+      <div
+        v-if="props.value !== null"
+        class="item-l2"
+      >
         <span class="item-value">{{ props.value }}</span>
-        <span v-if="props.info" class="item-info">({{ props.info }}%)</span>
+        <span
+          v-if="props.info"
+          class="item-info"
+        >({{ props.info }}%)</span>
       </div>
-      <div v-else class="none-value">None</div>
+      <div
+        v-else
+        class="none-value"
+      >
+        None
+      </div>
     </div>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

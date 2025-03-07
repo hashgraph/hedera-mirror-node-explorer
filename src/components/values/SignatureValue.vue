@@ -6,17 +6,32 @@
 
 <template>
   <div v-if="functionHash">
-    <HexaDumpValue :byte-string="functionHash" show-none/>
+    <HexaDumpValue
+      :byte-string="functionHash"
+      show-none
+    />
     <div class="signature">
-      <div class="h-is-extra-text h-should-wrap">{{ signature }}</div>
-      <Tooltip v-if="is4byteSignature"
-               text="Decoding of the signature provided by the 4byte.directory Signature Database">
-        <span class="h-has-pill" style="background-color: var(--status-success-color)">4byte</span>
+      <div class="h-is-extra-text h-should-wrap">
+        {{ signature }}
+      </div>
+      <Tooltip
+        v-if="is4byteSignature"
+        text="Decoding of the signature provided by the 4byte.directory Signature Database"
+      >
+        <span
+          class="h-has-pill"
+          style="background-color: var(--status-success-color)"
+        >4byte</span>
       </Tooltip>
     </div>
   </div>
-  <div v-else-if="initialLoading"/>
-  <div v-else class="h-is-low-contrast">None</div>
+  <div v-else-if="initialLoading" />
+  <div
+    v-else
+    class="h-is-low-contrast"
+  >
+    None
+  </div>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

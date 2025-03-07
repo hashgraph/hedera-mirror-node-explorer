@@ -5,15 +5,22 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="nonNullValue" id="bytecode">
-    <HexaDumpValue :byte-string="textValue" :copyable="false"/>
+  <div
+    v-if="nonNullValue"
+    id="bytecode"
+  >
+    <HexaDumpValue
+      :byte-string="textValue"
+      :copyable="false"
+    />
   </div>
 
-  <span v-else-if="initialLoading"/>
+  <span v-else-if="initialLoading" />
 
-  <span v-else class="h-is-low-contrast">None</span>
-
+  <span
+    v-else
+    class="h-is-low-contrast"
+  >None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -55,4 +62,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -5,29 +5,34 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="showDialog" class="modal-dialog">
-    <div class="modal-dialog-box" :style="{'width': dialogWidth}">
-
-      <div v-if="slots.modalDialogTitle" class="modal-dialog-header">
-        <slot name="modalDialogTitle"/>
+  <div
+    v-if="showDialog"
+    class="modal-dialog"
+  >
+    <div
+      class="modal-dialog-box"
+      :style="{'width': dialogWidth}"
+    >
+      <div
+        v-if="slots.modalDialogTitle"
+        class="modal-dialog-header"
+      >
+        <slot name="modalDialogTitle" />
       </div>
 
       <div class="modal-dialog-body">
-        <slot name="modalDialogContent"/>
+        <slot name="modalDialogContent" />
       </div>
 
       <div class="modal-dialog-buttons">
-
         <slot name="modalDialogButtons">
-          <ModalDialogButton v-model:show-dialog="showDialog">CLOSE</ModalDialogButton>
+          <ModalDialogButton v-model:show-dialog="showDialog">
+            CLOSE
+          </ModalDialogButton>
         </slot>
-
       </div>
-
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

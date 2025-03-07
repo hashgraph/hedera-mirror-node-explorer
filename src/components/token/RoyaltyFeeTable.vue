@@ -5,37 +5,61 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="fees"
-      :hoverable="false"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :striped="false"
+    :data="fees"
+    :hoverable="false"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :striped="false"
   >
-
-    <o-table-column v-slot="props" field="amount" label="PERCENTAGE FEE">
-      <StringValue :string-value="makeAmount(props.row.amount)"/>
+    <o-table-column
+      v-slot="props"
+      field="amount"
+      label="PERCENTAGE FEE"
+    >
+      <StringValue :string-value="makeAmount(props.row.amount)" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="collector" label="COLLECTOR ACCOUNT">
-      <AccountLink :account-id="props.row.collector_account_id"/>
+    <o-table-column
+      v-slot="props"
+      field="collector"
+      label="COLLECTOR ACCOUNT"
+    >
+      <AccountLink :account-id="props.row.collector_account_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackAmount" label="FALLBACK FEE">
-      <PlainAmount v-if="props.row.fallback_fee?.denominating_token_id"
-                   :amount="props.row.fallback_fee?.amount" none-label="None"/>
-      <HbarAmount v-else :amount="props.row.fallback_fee?.amount" :show-extra="true"/>
+    <o-table-column
+      v-slot="props"
+      field="fallbackAmount"
+      label="FALLBACK FEE"
+    >
+      <PlainAmount
+        v-if="props.row.fallback_fee?.denominating_token_id"
+        :amount="props.row.fallback_fee?.amount"
+        none-label="None"
+      />
+      <HbarAmount
+        v-else
+        :amount="props.row.fallback_fee?.amount"
+        :show-extra="true"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="fallbackToken" label="FEE CURRENCY">
-      <TokenLink v-if="props.row.fallback_fee?.denominating_token_id"
-                 :token-id="props.row.fallback_fee?.denominating_token_id" :show-extra="true"/>
-      <div v-else-if="props.row.fallback_fee?.amount">{{ cryptoName }}</div>
+    <o-table-column
+      v-slot="props"
+      field="fallbackToken"
+      label="FEE CURRENCY"
+    >
+      <TokenLink
+        v-if="props.row.fallback_fee?.denominating_token_id"
+        :token-id="props.row.fallback_fee?.denominating_token_id"
+        :show-extra="true"
+      />
+      <div v-else-if="props.row.fallback_fee?.amount">
+        {{ cryptoName }}
+      </div>
     </o-table-column>
-
   </o-table>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -86,4 +110,4 @@ const fees = props.analyzer.royaltyFees
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

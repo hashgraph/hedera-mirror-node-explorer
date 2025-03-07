@@ -6,23 +6,26 @@
 
 <template>
   <template v-if="transaction">
-    <NftDetailsTransferGraph v-if="shouldGraph" :transaction="transactionDetail"/>
+    <NftDetailsTransferGraph
+      v-if="shouldGraph"
+      :transaction="transactionDetail"
+    />
     <div v-else-if="isTokenAssociation">
       {{ transaction?.sender_account_id }}
       <span v-if="tokens.length">
-                <i class="fas fa-link mr-1 h-is-low-contrast"></i>
-                <TokenExtra :token-id="tokens[0]"/>
-                <span
-                    v-if="additionalTokensNumber"
-                    class="h-is-smaller h-is-extra-text h-should-wrap"
-                >
-                    {{ " ( + " + additionalTokensNumber + " more )" }}
-                </span>
-            </span>
+        <i class="fas fa-link mr-1 h-is-low-contrast" />
+        <TokenExtra :token-id="tokens[0]" />
+        <span
+          v-if="additionalTokensNumber"
+          class="h-is-smaller h-is-extra-text h-should-wrap"
+        >
+          {{ " ( + " + additionalTokensNumber + " more )" }}
+        </span>
+      </span>
     </div>
-    <div v-else/>
+    <div v-else />
   </template>
-  <div v-else/>
+  <div v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -76,4 +79,4 @@ const tokens = transactionAnalyzer.tokens
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -5,9 +5,7 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <template v-if="contractResult">
-
     <DashboardCardV2 collapsible-key="contractResult">
       <template #title>
         <span v-if="props.topLevel">
@@ -18,115 +16,174 @@
 
       <template #left-content>
         <Property id="result">
-          <template v-slot:name>Result</template>
-          <template v-slot:value>
-            <StringValue :string-value="contractResult?.result"/>
+          <template #name>
+            Result
+          </template>
+          <template #value>
+            <StringValue :string-value="contractResult?.result" />
           </template>
         </Property>
         <Property id="evm-hash">
-          <template v-slot:name>EVM Transaction Hash</template>
-          <template v-slot:value>
-            <HexaValue v-bind:byteString="contractResult?.hash" v-bind:show-none="true"/>
+          <template #name>
+            EVM Transaction Hash
+          </template>
+          <template #value>
+            <HexaValue
+              :byte-string="contractResult?.hash"
+              :show-none="true"
+            />
           </template>
         </Property>
         <Property id="from">
-          <template v-slot:name>From</template>
-          <template v-slot:value>
-            <EVMAddress :address="contractResult?.from" :id="fromId ?? undefined" :compact="!isXLargeScreen"/>
+          <template #name>
+            From
+          </template>
+          <template #value>
+            <EVMAddress
+              :id="fromId ?? undefined"
+              :address="contractResult?.from"
+              :compact="!isXLargeScreen"
+            />
           </template>
         </Property>
         <Property id="to">
-          <template v-slot:name>To</template>
-          <template v-slot:value>
-            <EVMAddress :address="contractResult?.to ?? undefined" :id="toId ?? undefined" :compact="!isXLargeScreen"/>
+          <template #name>
+            To
+          </template>
+          <template #value>
+            <EVMAddress
+              :id="toId ?? undefined"
+              :address="contractResult?.to ?? undefined"
+              :compact="!isXLargeScreen"
+            />
           </template>
         </Property>
 
-        <FunctionInput :analyzer="analyzer"/>
-        <FunctionResult :analyzer="analyzer"/>
-        <FunctionError :analyzer="analyzer"/>
+        <FunctionInput :analyzer="analyzer" />
+        <FunctionResult :analyzer="analyzer" />
+        <FunctionError :analyzer="analyzer" />
       </template>
 
       <template #right-content>
-        <Property v-if="contractType" id="type">
-          <template v-slot:name>Type</template>
-          <template v-slot:value>
-            <StringValue :string-value="contractType"/>
+        <Property
+          v-if="contractType"
+          id="type"
+        >
+          <template #name>
+            Type
+          </template>
+          <template #value>
+            <StringValue :string-value="contractType" />
           </template>
         </Property>
         <Property id="gasLimit">
-          <template v-slot:name>Gas Limit</template>
-          <template v-slot:value>
+          <template #name>
+            Gas Limit
+          </template>
+          <template #value>
             <GasAmount
-                :gas="contractResult?.gas_limit"
-                :price="gasPrice"
+              :gas="contractResult?.gas_limit"
+              :price="gasPrice"
             />
           </template>
         </Property>
-        <Property id="gasUsed" :tooltip="gasUsedTooltip">
-          <template v-slot:name>Gas Used</template>
-          <template v-slot:value>
+        <Property
+          id="gasUsed"
+          :tooltip="gasUsedTooltip"
+        >
+          <template #name>
+            Gas Used
+          </template>
+          <template #value>
             <GasAmount
-                :gas="contractResult?.gas_used"
-                :price="gasPrice"
+              :gas="contractResult?.gas_used"
+              :price="gasPrice"
             />
           </template>
         </Property>
-        <Property id="gasConsumed" :tooltip="gasConsumedTooltip">
-          <template v-slot:name>Gas Consumed</template>
-          <template v-slot:value>
+        <Property
+          id="gasConsumed"
+          :tooltip="gasConsumedTooltip"
+        >
+          <template #name>
+            Gas Consumed
+          </template>
+          <template #value>
             <GasAmount
-                :gas="contractResult?.gas_consumed"
-                :price="gasPrice"
+              :gas="contractResult?.gas_consumed"
+              :price="gasPrice"
             />
           </template>
         </Property>
         <template v-if="contractType==='Post-Eip1559'">
           <Property id="maxFeePerGas">
-            <template v-slot:name>Max Fee Per Gas</template>
-            <template v-slot:value>
-              <HbarAmount :amount="maxFeePerGas"/>
-              <span v-if="maxFeePerGas"
-                    class="h-is-extra-text h-is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxFeePerGas) }}</span>
+            <template #name>
+              Max Fee Per Gas
+            </template>
+            <template #value>
+              <HbarAmount :amount="maxFeePerGas" />
+              <span
+                v-if="maxFeePerGas"
+                class="h-is-extra-text h-is-numeric h-is-smaller ml-1"
+              >{{ gWeiExtra(maxFeePerGas) }}</span>
             </template>
           </Property>
           <Property id="maxPriorityFeePerGas">
-            <template v-slot:name>Max Priority Fee Per Gas</template>
-            <template v-slot:value>
-              <HbarAmount :amount="maxPriorityFeePerGas"/>
-              <span v-if="maxPriorityFeePerGas"
-                    class="h-is-extra-text h-is-numeric h-is-smaller ml-1">{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
+            <template #name>
+              Max Priority Fee Per Gas
+            </template>
+            <template #value>
+              <HbarAmount :amount="maxPriorityFeePerGas" />
+              <span
+                v-if="maxPriorityFeePerGas"
+                class="h-is-extra-text h-is-numeric h-is-smaller ml-1"
+              >{{ gWeiExtra(maxPriorityFeePerGas) }}</span>
             </template>
           </Property>
         </template>
         <Property id="gasPrice">
-          <template v-slot:name>Gas Price</template>
-          <template v-slot:value>
-            <HbarAmount :amount="gasPrice"/>
-            <span v-if="gasPrice"
-                  class="h-is-extra-text h-is-numeric ml-1">{{ gWeiExtra(gasPrice) }}</span>
+          <template #name>
+            Gas Price
+          </template>
+          <template #value>
+            <HbarAmount :amount="gasPrice" />
+            <span
+              v-if="gasPrice"
+              class="h-is-extra-text h-is-numeric ml-1"
+            >{{ gWeiExtra(gasPrice) }}</span>
           </template>
         </Property>
         <Property id="ethereumNonce">
-          <template v-slot:name>Ethereum Nonce</template>
-          <template v-slot:value>
-            <PlainAmount :amount="ethereumNonce" none-label="None"/>
+          <template #name>
+            Ethereum Nonce
+          </template>
+          <template #value>
+            <PlainAmount
+              :amount="ethereumNonce"
+              none-label="None"
+            />
           </template>
         </Property>
       </template>
-
     </DashboardCardV2>
 
-    <ContractResultTrace v-if="props.isParent" :transaction-id-or-hash="contractResult?.hash ?? undefined"
-                         :analyzer="analyzer"/>
+    <ContractResultTrace
+      v-if="props.isParent"
+      :transaction-id-or-hash="contractResult?.hash ?? undefined"
+      :analyzer="analyzer"
+    />
 
-    <ContractResultStates :state-changes="contractResult?.state_changes" :time-stamp="contractResult?.timestamp"/>
+    <ContractResultStates
+      :state-changes="contractResult?.state_changes"
+      :time-stamp="contractResult?.timestamp"
+    />
 
-    <ContractResultLogs :logs="contractResult?.logs" :block-number="props.blockNumber"
-                        :transaction-hash="props.transactionHash"/>
-
+    <ContractResultLogs
+      :logs="contractResult?.logs"
+      :block-number="props.blockNumber"
+      :transaction-hash="props.transactionHash"
+    />
   </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -223,4 +280,4 @@ const ethereumNonce = contractResultAnalyzer.ethereumNonce
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

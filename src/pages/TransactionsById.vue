@@ -5,20 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Transactions by ID">
-
     <DashboardCardV2>
       <template #title>
         {{ `Transactions with ID ${normalizedTransactionId}` }}
       </template>
       <template #content>
-        <TransactionByIdTable :transactions="transactions"/>
+        <TransactionByIdTable :transactions="transactions" />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -59,4 +55,4 @@ const transactions = computed(() => groupLookup.entity.value ?? [])
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

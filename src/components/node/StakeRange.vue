@@ -6,28 +6,37 @@
 
 <template>
   <div class="stake-range-root">
-    <div class="mini-bar" :style="{'width': progressSize+'px'}">
+    <div
+      class="mini-bar"
+      :style="{'width': progressSize+'px'}"
+    >
       <div
-          class="mini-bar-progress plain-range"
-          :style="{'left': 0, 'width': '100%'}"
+        class="mini-bar-progress plain-range"
+        :style="{'left': 0, 'width': '100%'}"
       />
       <div
-          class="mini-bar-progress unrewarded-range"
-          :style="{'left': 0, 'width': (stakeRewardedProgress + stakeNotRewardedProgress)+'%'}"
+        class="mini-bar-progress unrewarded-range"
+        :style="{'left': 0, 'width': (stakeRewardedProgress + stakeNotRewardedProgress)+'%'}"
       />
       <div
-          v-if="stakeRewardedProgress > 2"
-          class="mini-bar-progress"
-          :class="{'rewarded-range': isPastRewardThreshold, 'unrewarded-range': !isPastRewardThreshold}"
-          :style="{'left': 0, 'width': stakeRewardedProgress+'%'}"
+        v-if="stakeRewardedProgress > 2"
+        class="mini-bar-progress"
+        :class="{'rewarded-range': isPastRewardThreshold, 'unrewarded-range': !isPastRewardThreshold}"
+        :style="{'left': 0, 'width': stakeRewardedProgress+'%'}"
       />
     </div>
 
     <div class="stake-range-marks">
-      <span class="stake-mark" :style="{'margin-left': minStakePix}">
+      <span
+        class="stake-mark"
+        :style="{'margin-left': minStakePix}"
+      >
         min
       </span>
-      <span class="stake-mark" :style="{'margin-left': maxStakePix}">
+      <span
+        class="stake-mark"
+        :style="{'margin-left': maxStakePix}"
+      >
         max
       </span>
     </div>

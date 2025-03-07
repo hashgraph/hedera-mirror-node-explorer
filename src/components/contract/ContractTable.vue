@@ -5,60 +5,81 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="contracts"
-      :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="contracts"
+    :loading="loading"
+    paginated
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="props.narrowed"
 
-      :hoverable="true"
-      :narrowed="props.narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="contract_id"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="contract_id"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="contract_id" label="ID">
-      <ContractIOL class="contract_id" :contract-id="props.row.contract_id"/>
+    <o-table-column
+      v-slot="props"
+      field="contract_id"
+      label="ID"
+    >
+      <ContractIOL
+        class="contract_id"
+        :contract-id="props.row.contract_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="contract_name" label="CONTRACT NAME">
-      <ContractName :contract-id="props.row.contract_id"/>
+    <o-table-column
+      v-slot="props"
+      field="contract_name"
+      label="CONTRACT NAME"
+    >
+      <ContractName :contract-id="props.row.contract_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="CREATED">
-      <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="created"
+      label="CREATED"
+    >
+      <TimestampValue :timestamp="props.row.created_timestamp" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="MEMO">
+    <o-table-column
+      v-slot="props"
+      field="memo"
+      label="MEMO"
+    >
       <div class="h-should-wrap">
-        <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
+        <BlobValue
+          :blob-value="props.row.memo"
+          :base64="true"
+          :show-none="true"
+        />
       </div>
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
-  <EmptyTable v-if="!contracts.length"/>
-
+  <EmptyTable v-if="!contracts.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

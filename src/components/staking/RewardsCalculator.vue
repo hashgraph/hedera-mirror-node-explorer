@@ -5,7 +5,6 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <DashboardCardV2 collapsible-key="rewardsEstimator">
     <template #title>
       Rewards Estimator
@@ -16,9 +15,16 @@
         <div class="calculator-input">
           <div class="node-selector">
             <p>Choose a node to stake to</p>
-            <SelectView v-model="selectedNodeId" width="100%" style="border-radius: 8px; border-color: var(--border-secondary);">
-              <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                      style="background-color: var(--h-theme-box-background-color);"
+            <SelectView
+              v-model="selectedNodeId"
+              width="100%"
+              style="border-radius: 8px; border-color: var(--border-secondary);"
+            >
+              <option
+                v-for="n in nodes"
+                :key="n.node_id"
+                :value="n.node_id"
+                style="background-color: var(--h-theme-box-background-color);"
               >
                 {{ makeNodeSelectorDescription(n) }}
               </option>
@@ -26,48 +32,48 @@
           </div>
           <div class="amount-chooser">
             <p>{{ `Enter the number of ${cryptoName} you want to stake` }}</p>
-            <TextFieldView v-model="amountStaked"
-                           id="selectedAutoRenewPeriod"
-                           placeholder="0"
-                           type="number"
-                           min="1"
-                           step="1"
-                           style="width: 100%; border-radius: 8px; border-color: var(--border-secondary)"
+            <TextFieldView
+              id="selectedAutoRenewPeriod"
+              v-model="amountStaked"
+              placeholder="0"
+              type="number"
+              min="1"
+              step="1"
+              style="width: 100%; border-radius: 8px; border-color: var(--border-secondary)"
             />
           </div>
         </div>
 
         <div class="calculator-dashboard">
           <NetworkDashboardItemV2
-              id="currentReward"
-              title="Current 24h Period Reward"
-              :value="currentReward.toString()"
-              :unit="cryptoName"
+            id="currentReward"
+            title="Current 24h Period Reward"
+            :value="currentReward.toString()"
+            :unit="cryptoName"
           />
           <NetworkDashboardItemV2
-              id="monthlyReward"
-              title="Approx Monthly Reward"
-              :value="monthlyReward.toString()"
-              :unit=cryptoName
+            id="monthlyReward"
+            title="Approx Monthly Reward"
+            :value="monthlyReward.toString()"
+            :unit="cryptoName"
           />
           <NetworkDashboardItemV2
-              id="yearlyReward"
-              title="Approx Yearly Reward"
-              :value="yearlyReward.toString()"
-              :unit=cryptoName
+            id="yearlyReward"
+            title="Approx Yearly Reward"
+            :value="yearlyReward.toString()"
+            :unit="cryptoName"
           />
           <NetworkDashboardItemV2
-              id="yearlyRate"
-              title="Approx Yearly Reward Rate"
-              :value="annualizedRate"
+            id="yearlyRate"
+            title="Approx Yearly Reward Rate"
+            :value="annualizedRate"
           />
         </div>
 
-        <div v-html="htmlNotice"/>
+        <div v-html="htmlNotice" />
       </div>
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

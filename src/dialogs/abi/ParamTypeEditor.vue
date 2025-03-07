@@ -7,13 +7,13 @@
 <template>
   <div>
     <template v-if="needsTextEditor">
-      <ParamTextEditor :param-builder="props.paramBuilder"/>
+      <ParamTextEditor :param-builder="props.paramBuilder" />
     </template>
     <template v-else-if="needsBooleanEditor">
-      <ParamBooleanEditor :param-builder="props.paramBuilder"/>
+      <ParamBooleanEditor :param-builder="props.paramBuilder" />
     </template>
     <template v-else>
-      <ParamJsonEditor :param-builder="props.paramBuilder"/>
+      <ParamJsonEditor :param-builder="props.paramBuilder" />
     </template>
   </div>
 </template>
@@ -69,7 +69,7 @@ function clearSize(baseType: string): string {
 
 function parseBaseType(baseType: string): SizedType | null {
   let result: SizedType | null = null
-  let sizableTypes = ["int", "uint", "string", "bytes"]
+  const sizableTypes = ["int", "uint", "string", "bytes"]
   for (const t of sizableTypes) {
     if (baseType.startsWith(t)) {
       const coreType = baseType.slice(0, t.length)
@@ -89,4 +89,4 @@ function parseBaseType(baseType: string): SizedType | null {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

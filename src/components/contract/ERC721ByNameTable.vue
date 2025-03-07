@@ -5,57 +5,70 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="ercs"
-      :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="pageSize"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="ercs"
+    :loading="loading"
+    paginated
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="pageSize"
+    :hoverable="true"
 
-      :hoverable="true"
-      :narrowed="props.narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="props.narrowed"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="token_id"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    custom-row-key="token_id"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="contract_id" label="CONTRACT ID">
-      <ContractIOL class="h-is-bold" :contract-id="props.row.contractId"/>
+    <o-table-column
+      v-slot="props"
+      field="contract_id"
+      label="CONTRACT ID"
+    >
+      <ContractIOL
+        class="h-is-bold"
+        :contract-id="props.row.contractId"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="NAME">
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="NAME"
+    >
       <div class="w400">
         {{ props.row.name }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="symbol" label="SYMBOL">
+    <o-table-column
+      v-slot="props"
+      field="symbol"
+      label="SYMBOL"
+    >
       <div class="w400">
         {{ props.row.symbol }}
       </div>
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
-  <EmptyTable v-if="!ercs.length"/>
-
+  <EmptyTable v-if="!ercs.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

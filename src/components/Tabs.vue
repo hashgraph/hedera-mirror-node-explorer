@@ -5,13 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ul v-if="props.tabIds.length >= 1" style="padding: 0; margin: 0;">
+  <ul
+    v-if="props.tabIds.length >= 1"
+    style="padding: 0; margin: 0;"
+  >
     <li
-        :class="{'is-active':selectedTab === tab,'sub-tab': props.subTabs}"
-        v-for="(tab, i) in props.tabIds"
-        :key="tab"
-        :id="'tab-' + tab"
-        @click="handleSelect(tab, true)"
+      v-for="(tab, i) in props.tabIds"
+      :id="'tab-' + tab"
+      :key="tab"
+      :class="{'is-active':selectedTab === tab,'sub-tab': props.subTabs}"
+      @click="handleSelect(tab, true)"
     >
       <a>
         {{ props.tabLabels[i] ?? tab }}

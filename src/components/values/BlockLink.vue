@@ -5,7 +5,10 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="blockNumber !== undefined && blockRoute" class="is-inline-block">
+  <div
+    v-if="blockNumber !== undefined && blockRoute"
+    class="is-inline-block"
+  >
     <router-link :to="blockRoute">
       <span class="h-is-numeric">{{ blockNumber }}</span>
     </router-link>
@@ -40,5 +43,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
 

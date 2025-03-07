@@ -5,8 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <router-link :to="props.targetRoute" custom v-slot="{href, navigate}">
-    <a :class="{ 'is-rimmed': isRimmed }" :href="href" @click="navigate">{{ props.tabId }}</a>
+  <router-link
+    v-slot="{href, navigate}"
+    :to="props.targetRoute"
+    custom
+  >
+    <a
+      :class="{ 'is-rimmed': isRimmed }"
+      :href="href"
+      @click="navigate"
+    >{{ props.tabId }}</a>
   </router-link>
 </template>
 

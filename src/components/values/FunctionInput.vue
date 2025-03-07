@@ -5,62 +5,86 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <template v-if="signature">
-
-    <Property :custom-nb-col-class="customNbColClass" id="function">
-      <template #name>Signature</template>
+    <Property
+      id="function"
+      :custom-nb-col-class="customNbColClass"
+    >
+      <template #name>
+        Signature
+      </template>
       <template #value>
-        <SignatureValue :analyzer="analyzer"/>
+        <SignatureValue :analyzer="analyzer" />
       </template>
     </Property>
 
     <template v-if="inputs && inputs.length >= 1">
+      <div class="h-sub-section">
+        Input
+      </div>
 
-      <div class="h-sub-section">Input</div>
-
-      <template v-for="arg in inputs" :key="arg.name">
+      <template
+        v-for="arg in inputs"
+        :key="arg.name"
+      >
         <Property :custom-nb-col-class="customNbColClass">
           <template #name>
             <span style="padding-left: 16px;">{{ arg.name }}</span>
           </template>
           <template #value>
-            <FunctionValue :ntv="arg"/>
+            <FunctionValue :ntv="arg" />
           </template>
         </Property>
       </template>
-
     </template>
     <template v-else>
-
-      <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-        <template #name>Input Args</template>
+      <Property
+        id="functionInput"
+        :custom-nb-col-class="customNbColClass"
+      >
+        <template #name>
+          Input Args
+        </template>
         <template #value>
-          <ByteCodeValue :byte-code="inputArgsOnly ?? undefined" :height-in-pixel="140"/>
-          <div v-if="inputDecodingStatus" class="h-is-extra-text">
-            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
+          <ByteCodeValue
+            :byte-code="inputArgsOnly ?? undefined"
+            :height-in-pixel="140"
+          />
+          <div
+            v-if="inputDecodingStatus"
+            class="h-is-extra-text"
+          >
+            <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1" />
             <span>{{ inputDecodingStatus }}</span>
           </div>
         </template>
       </Property>
-
     </template>
-
   </template>
 
   <template v-else>
-    <Property :custom-nb-col-class="customNbColClass" id="functionInput">
-      <template #name>Input - Function & Args</template>
+    <Property
+      id="functionInput"
+      :custom-nb-col-class="customNbColClass"
+    >
+      <template #name>
+        Input - Function & Args
+      </template>
       <template #value>
-        <ByteCodeValue :byte-code="input ?? undefined" :heightInPixel="140"/>
-        <div v-if="functionDecodingStatus" class="h-is-extra-text">
-          <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
+        <ByteCodeValue
+          :byte-code="input ?? undefined"
+          :height-in-pixel="140"
+        />
+        <div
+          v-if="functionDecodingStatus"
+          class="h-is-extra-text"
+        >
+          <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1" />
           <span>{{ functionDecodingStatus }}</span>
         </div>
       </template>
     </Property>
   </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -97,4 +121,4 @@ const inputArgsOnly = props.analyzer.inputArgsOnly
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

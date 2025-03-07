@@ -5,8 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <SelectView :border-visible="false" v-model="selectedNetwork" data-cy="network-selector">
-    <option v-for="network in networkEntries" :key="network.name" :value="network.name">
+  <SelectView
+    v-model="selectedNetwork"
+    :border-visible="false"
+    data-cy="network-selector"
+  >
+    <option
+      v-for="network in networkEntries"
+      :key="network.name"
+      :value="network.name"
+    >
       {{ network.displayName }}
     </option>
   </SelectView>

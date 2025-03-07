@@ -5,23 +5,27 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="showContractResults" collapsible-key="contractCalls">
+  <DashboardCardV2
+    v-if="showContractResults"
+    collapsible-key="contractCalls"
+  >
     <template #title>
       Recent Contract Calls
     </template>
 
     <template #left-control>
-      <PlayPauseButton :controller="resultTableController"/>
+      <PlayPauseButton :controller="resultTableController" />
     </template>
 
     <template #content>
       <div id="contract-results-table">
-        <ContractResultTable v-if="props.contractId" :controller="resultTableController"/>
+        <ContractResultTable
+          v-if="props.contractId"
+          :controller="resultTableController"
+        />
       </div>
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

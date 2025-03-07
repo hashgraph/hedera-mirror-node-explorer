@@ -6,27 +6,27 @@
 
 <template>
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
   >
+    <template #transactionDialogTitle>
+      {{ transactionTitle }}
+    </template>
 
-    <template #transactionDialogTitle>{{ transactionTitle }}</template>
-
-    <template #transactionExecutionLabel>DELETE</template>
+    <template #transactionExecutionLabel>
+      DELETE
+    </template>
 
     <template #transactionDialogInput>
-
       <template v-if="serialNumber === null">
         Do you want to delete the allowance for all NFTs of collection {{ tokenName }}?
       </template>
 
       <template v-else>
-        Do you want to delete the allowance for NFT #{{ serialNumber}} of collection  {{ tokenName }} ?
+        Do you want to delete the allowance for NFT #{{ serialNumber }} of collection  {{ tokenName }} ?
       </template>
-
     </template>
-
   </TransactionDialog>
 </template>
 

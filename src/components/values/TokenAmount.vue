@@ -6,35 +6,42 @@
 
 <template>
   <div>
-    <span v-if="decimalOverflow" :class="{'mr-2': showExtra && tokenId}">
+    <span
+      v-if="decimalOverflow"
+      :class="{'mr-2': showExtra && tokenId}"
+    >
       ?
     </span>
-    <span v-else class="h-is-numeric" :class="{'mr-2': showExtra && tokenId}">
+    <span
+      v-else
+      class="h-is-numeric"
+      :class="{'mr-2': showExtra && tokenId}"
+    >
       {{ formattedAmount }}
     </span>
 
     <template v-if="routeToCollection">
       <router-link :to="routeToCollection ?? ''">
         <TokenExtra
-            v-if="showExtra && tokenId != null"
-            :token-id="tokenId"
-            :use-anchor="false"
+          v-if="showExtra && tokenId != null"
+          :token-id="tokenId"
+          :use-anchor="false"
         />
       </router-link>
     </template>
 
     <template v-else>
       <TokenExtra
-          v-if="showExtra && tokenId != null"
-          :token-id="tokenId"
-          :use-anchor="true"
+        v-if="showExtra && tokenId != null"
+        :token-id="tokenId"
+        :use-anchor="true"
       />
     </template>
 
     <InfoTooltip
-        v-if="decimalOverflow"
-        class="ml-2"
-        :label="`This token amount cannot be displayed because the number of decimals (${decimalCount}) of the token is too large`"
+      v-if="decimalOverflow"
+      class="ml-2"
+      :label="`This token amount cannot be displayed because the number of decimals (${decimalCount}) of the token is too large`"
     />
   </div>
 </template>
@@ -150,5 +157,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
 

@@ -5,18 +5,20 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <SelectView
-      v-bind:model-value="selectedFilter"
-      @update:model-value="handleOption($event)"
-      :small="true"
-      data-cy="select-type"
+    :model-value="selectedFilter"
+    :small="true"
+    data-cy="select-type"
+    @update:model-value="handleOption($event)"
   >
-    <option v-for="f in filterValues" v-bind:key="f" v-bind:value="f">
+    <option
+      v-for="f in filterValues"
+      :key="f"
+      :value="f"
+    >
       {{ makeFilterLabel(f) }}
     </option>
   </SelectView>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -91,4 +93,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

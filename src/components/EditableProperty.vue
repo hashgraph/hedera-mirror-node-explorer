@@ -5,24 +5,27 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <Property :id="id" :full-width="fullWidth" :custom-nb-col-class="customNbColClass" :tooltip="tooltip">
+  <Property
+    :id="id"
+    :full-width="fullWidth"
+    :custom-nb-col-class="customNbColClass"
+    :tooltip="tooltip"
+  >
     <template #name>
-      <slot name="name"/>
+      <slot name="name" />
     </template>
     <template #value>
       <div class="property-value">
-        <slot name="value"/>
+        <slot name="value" />
         <Pencil
-            v-if="editable"
-            :size="16"
-            @click="onEdit"
-            style="margin-left: 8px; color: var(--network-text-accent-color);"
+          v-if="editable"
+          :size="16"
+          style="margin-left: 8px; color: var(--network-text-accent-color);"
+          @click="onEdit"
         />
       </div>
     </template>
   </Property>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

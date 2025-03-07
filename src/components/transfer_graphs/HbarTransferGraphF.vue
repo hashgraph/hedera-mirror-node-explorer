@@ -10,97 +10,139 @@
       {{ title }}
     </div>
 
-    <div class="graph-container" :class="{'graph-container-8': dollarVisible }">
+    <div
+      class="graph-container"
+      :class="{'graph-container-8': dollarVisible }"
+    >
       <template v-if="dollarVisible">
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           ACCOUNT
         </div>
-        <div style="grid-column-end: span 2" class="transfer-header">
+        <div
+          style="grid-column-end: span 2"
+          class="transfer-header"
+        >
           AMOUNT
         </div>
-        <div/>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div />
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           ACCOUNT
         </div>
-        <div style="grid-column-end: span 2" class="transfer-header">
+        <div
+          style="grid-column-end: span 2"
+          class="transfer-header"
+        >
           AMOUNT
         </div>
-        <div/>
+        <div />
       </template>
       <template v-else>
-        <div style="grid-column-end: span 1" class="transfer-header2">
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header2"
+        >
           ACCOUNT
         </div>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           AMOUNT
         </div>
-        <div/>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div />
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           ACCOUNT
         </div>
-        <div style="grid-column-end: span 1" class="transfer-header2">
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header2"
+        >
           AMOUNT
         </div>
       </template>
 
-      <template v-for="i in hbarTransferLayout.rowCount" :key="i">
-
+      <template
+        v-for="i in hbarTransferLayout.rowCount"
+        :key="i"
+      >
         <!-- #0 : account id -->
         <div class="transfer-account">
-          <AccountLink v-if="i <= hbarTransferLayout.sources.length"
-                       :account-id="hbarTransferLayout.sources[i-1].transfer.account"
-                       null-label="MINT"
-                       data-cy="sourceAccount"/>
+          <AccountLink
+            v-if="i <= hbarTransferLayout.sources.length"
+            :account-id="hbarTransferLayout.sources[i-1].transfer.account"
+            null-label="MINT"
+            data-cy="sourceAccount"
+          />
         </div>
 
         <!-- #1 : hbar amount -->
         <div class="justify-end">
-          <HbarAmount v-if="i <= hbarTransferLayout.sources.length"
-                      :amount="hbarTransferLayout.sources[i-1].transfer.amount"
-                      :colored="true"/>
+          <HbarAmount
+            v-if="i <= hbarTransferLayout.sources.length"
+            :amount="hbarTransferLayout.sources[i-1].transfer.amount"
+            :colored="true"
+          />
         </div>
 
         <template v-if="dollarVisible">
-
           <!-- #2 : dollar amount -->
           <div class="justify-end dollar-amount">
-            <HbarExtra v-if="i <= hbarTransferLayout.sources.length"
-                       :tbarAmount="hbarTransferLayout.sources[i-1].transfer.amount"
-                       :timestamp="props.transaction?.consensus_timestamp"/>
+            <HbarExtra
+              v-if="i <= hbarTransferLayout.sources.length"
+              :tbar-amount="hbarTransferLayout.sources[i-1].transfer.amount"
+              :timestamp="props.transaction?.consensus_timestamp"
+            />
           </div>
-
         </template>
 
         <!-- #3 : arrow -->
         <div style="position: relative">
           <ArrowSegment
-              :source-count="hbarTransferLayout.sources.length"
-              :dest-count="hbarTransferLayout.destinations.length"
-              :row-index="i-1"/>
+            :source-count="hbarTransferLayout.sources.length"
+            :dest-count="hbarTransferLayout.destinations.length"
+            :row-index="i-1"
+          />
         </div>
 
         <!-- #4 : account id -->
-        <div class="transfer-account" :class="{'low-contrast': hasLowContrast(i-1)}">
-          <AccountLink v-if="i <= hbarTransferLayout.destinations.length"
-                       :account-id="hbarTransferLayout.destinations[i-1].transfer.account"
-                       null-label="BURN"
-                       data-cy="destinationAccount"/>
+        <div
+          class="transfer-account"
+          :class="{'low-contrast': hasLowContrast(i-1)}"
+        >
+          <AccountLink
+            v-if="i <= hbarTransferLayout.destinations.length"
+            :account-id="hbarTransferLayout.destinations[i-1].transfer.account"
+            null-label="BURN"
+            data-cy="destinationAccount"
+          />
         </div>
 
         <!-- #5 : hbar amount -->
         <div class="justify-end">
-          <HbarAmount v-if="i <= hbarTransferLayout.destinations.length"
-                      :amount="hbarTransferLayout.destinations[i-1].transfer.amount"
-                      :colored="true"/>
+          <HbarAmount
+            v-if="i <= hbarTransferLayout.destinations.length"
+            :amount="hbarTransferLayout.destinations[i-1].transfer.amount"
+            :colored="true"
+          />
         </div>
 
         <template v-if="dollarVisible">
-
           <!-- #6 : dollar amount -->
           <div class="justify-end dollar-amount">
-            <HbarExtra v-if="i <= hbarTransferLayout.destinations.length"
-                       :tbarAmount="hbarTransferLayout.destinations[i-1].transfer.amount"
-                       :timestamp="props.transaction?.consensus_timestamp"/>
+            <HbarExtra
+              v-if="i <= hbarTransferLayout.destinations.length"
+              :tbar-amount="hbarTransferLayout.destinations[i-1].transfer.amount"
+              :timestamp="props.transaction?.consensus_timestamp"
+            />
           </div>
 
           <!-- #7 : description -->
@@ -109,10 +151,8 @@
               {{ hbarTransferLayout.destinations[i - 1].description }}
             </span>
           </div>
-
         </template>
       </template>
-
     </div>
   </div>
 </template>

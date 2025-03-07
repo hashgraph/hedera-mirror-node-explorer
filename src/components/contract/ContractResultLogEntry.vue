@@ -5,88 +5,138 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="props.log" :class="{'log-wrapper-grid': isMediumScreen, 'log-wrapper-flex': !isMediumScreen}">
-
+  <div
+    v-if="props.log"
+    :class="{'log-wrapper-grid': isMediumScreen, 'log-wrapper-flex': !isMediumScreen}"
+  >
     <!-- left content-->
     <div :class="{'log-left-content-grid': isMediumScreen}">
-      <Property id="transactionHash" :vertical="isMediumScreen">
-        <template v-slot:name>Transaction Hash</template>
-        <template v-slot:value>
-          <HexaDumpValue :byteString="txHashToShow" :show-none="true"/>
+      <Property
+        id="transactionHash"
+        :vertical="isMediumScreen"
+      >
+        <template #name>
+          Transaction Hash
+        </template>
+        <template #value>
+          <HexaDumpValue
+            :byte-string="txHashToShow"
+            :show-none="true"
+          />
         </template>
       </Property>
 
-      <Property id="blockNumber" :vertical="isMediumScreen">
-        <template v-slot:name>Block</template>
-        <template v-slot:value>
-          <BlockLink :block-number="blockNumberToShow"/>
+      <Property
+        id="blockNumber"
+        :vertical="isMediumScreen"
+      >
+        <template #name>
+          Block
+        </template>
+        <template #value>
+          <BlockLink :block-number="blockNumberToShow" />
         </template>
       </Property>
 
-      <Property id="address" :vertical="isMediumScreen">
-        <template v-slot:name>Address</template>
-        <template v-slot:value>
-          <EVMAddress :address="props.log.address" enable-copy compact/>
+      <Property
+        id="address"
+        :vertical="isMediumScreen"
+      >
+        <template #name>
+          Address
+        </template>
+        <template #value>
+          <EVMAddress
+            :address="props.log.address"
+            enable-copy
+            compact
+          />
         </template>
       </Property>
     </div>
 
     <!-- right content -->
-    <Property id="Args" vertical style="grid-column: span 14;">
-      <template v-slot:name>Logs</template>
-      <template v-slot:value>
-
+    <Property
+      id="Args"
+      vertical
+      style="grid-column: span 14;"
+    >
+      <template #name>
+        Logs
+      </template>
+      <template #value>
         <!-- not verified -->
-        <div v-if="!isContractVerified" class="log-content">
+        <div
+          v-if="!isContractVerified"
+          class="log-content"
+        >
           <div
-              v-for="(t, ti) in props.log.topics"
-              :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}"
-              :key="t"
-              class="unverified-log-entry"
+            v-for="(t, ti) in props.log.topics"
+            :key="t"
+            :class="{'unverif-log-args-prop': !isMediumScreen || !isSmallScreen}"
+            class="unverified-log-entry"
           >
             <div class="topic-title-box">
               <span>{{ 'Topic ' + ti }}</span>
             </div>
-            <HexaDumpValue :show-none="true" :byteString="t" :word-wrap-small="0" :word-wrap-medium="8"/>
+            <HexaDumpValue
+              :show-none="true"
+              :byte-string="t"
+              :word-wrap-small="0"
+              :word-wrap-medium="8"
+            />
           </div>
         </div>
 
         <!-- verified -->
-        <div v-else class="log-content">
+        <div
+          v-else
+          class="log-content"
+        >
           <span class="h-should-wrap">{{ fullLogSignature }}</span>
 
           <div
-              v-for="(arg, i) in args"
-              :key="arg.name"
-              class="verified-log-entry"
+            v-for="(arg, i) in args"
+            :key="arg.name"
+            class="verified-log-entry"
           >
-            <div v-if="arg.indexed" class="topic-title-box">{{ 'Topic ' + i }}</div>
-            <div v-else/>
+            <div
+              v-if="arg.indexed"
+              class="topic-title-box"
+            >
+              {{ 'Topic ' + i }}
+            </div>
+            <div v-else />
 
             <div class="log-entry-arg">
-              <Property :id="'logArg_' + arg.name" keep-case full-width :vertical="isMediumScreen">
-                <template v-slot:name>
+              <Property
+                :id="'logArg_' + arg.name"
+                keep-case
+                full-width
+                :vertical="isMediumScreen"
+              >
+                <template #name>
                   <span class=" log-arg-title">
-                      <span class="h-is-extra-text">
-                        {{ arg.type }}
-                      </span>
-                      {{ " " + arg.name }}
+                    <span class="h-is-extra-text">
+                      {{ arg.type }}
                     </span>
+                    {{ " " + arg.name }}
+                  </span>
                 </template>
-                <template v-slot:value>
-                  <FunctionValue :ntv="arg" :hide-type="true" :low-contrast="i === 0"/>
+                <template #value>
+                  <FunctionValue
+                    :ntv="arg"
+                    :hide-type="true"
+                    :low-contrast="i === 0"
+                  />
                 </template>
               </Property>
             </div>
           </div>
         </div>
-
       </template>
     </Property>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

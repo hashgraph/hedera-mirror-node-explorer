@@ -5,28 +5,40 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div>
     <Tooltip :text="props.tooltipLabel">
       <div class="item-root">
         <div class="item-l1">
           {{ title }}
-          <InfoTooltip v-if="props.infoLabel" :label="props.infoLabel"/>
+          <InfoTooltip
+            v-if="props.infoLabel"
+            :label="props.infoLabel"
+          />
         </div>
 
-        <div v-if="props.value !== null" class="item-l2">
+        <div
+          v-if="props.value !== null"
+          class="item-l2"
+        >
           <span class="item-value">{{ props.value }}</span>
           <span class="item-unit">{{ props.unit }}</span>
         </div>
-        <div v-else class="none-value">None</div>
+        <div
+          v-else
+          class="none-value"
+        >
+          None
+        </div>
 
-        <div v-if="props.extra" class=" item-l3">
+        <div
+          v-if="props.extra"
+          class=" item-l3"
+        >
           {{ props.extra }}
         </div>
       </div>
     </Tooltip>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

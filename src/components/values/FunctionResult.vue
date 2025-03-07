@@ -5,38 +5,48 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <template v-if="outputs && outputs.length >= 1">
+    <div class="h-sub-section">
+      Output
+    </div>
 
-    <div class="h-sub-section">Output</div>
-
-    <template v-for="result in outputs" :key="result.name">
+    <template
+      v-for="result in outputs"
+      :key="result.name"
+    >
       <Property :custom-nb-col-class="customNbColClass">
-        <template v-slot:name>
+        <template #name>
           <span style="padding-left: 16px;">{{ result.name }}</span>
         </template>
-        <template v-slot:value>
-          <FunctionValue :ntv="result"/>
+        <template #value>
+          <FunctionValue :ntv="result" />
         </template>
       </Property>
     </template>
-
   </template>
   <template v-else>
-
-    <Property :custom-nb-col-class="customNbColClass" id="functionOutput">
-      <template v-slot:name>Output Result</template>
-      <template v-slot:value>
-        <ByteCodeValue :byte-code="output ?? undefined" :height-in-pixel="140"/>
-        <div v-if="outputDecodingStatus" class="h-is-extra-text">
-          <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1"/>
+    <Property
+      id="functionOutput"
+      :custom-nb-col-class="customNbColClass"
+    >
+      <template #name>
+        Output Result
+      </template>
+      <template #value>
+        <ByteCodeValue
+          :byte-code="output ?? undefined"
+          :height-in-pixel="140"
+        />
+        <div
+          v-if="outputDecodingStatus"
+          class="h-is-extra-text"
+        >
+          <span class="icon fas fa-exclamation-circle h-is-low-contrast is-small mt-1 mr-1" />
           <span>{{ outputDecodingStatus }}</span>
         </div>
       </template>
     </Property>
-
   </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -73,4 +83,4 @@ const outputDecodingStatus = props.analyzer.outputDecodingStatus
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -5,83 +5,112 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="accounts"
-      :loading="loading"
-      :paginated="paginated"
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="accounts"
+    :loading="loading"
+    :paginated="paginated"
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="narrowed"
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="account"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="account"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="account" label="ID">
-      <AccountIOL class="account_id" :account-id="props.row.account"/>
+    <o-table-column
+      v-slot="props"
+      field="account"
+      label="ID"
+    >
+      <AccountIOL
+        class="account_id"
+        :account-id="props.row.account"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="CREATED">
-      <TimestampValue v-bind:timestamp="props.row.created_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="created"
+      label="CREATED"
+    >
+      <TimestampValue :timestamp="props.row.created_timestamp" />
     </o-table-column>
 
-    <o-table-column field="nb_tokens" label="TOKENS" v-slot="props">
+    <o-table-column
+      v-slot="props"
+      field="nb_tokens"
+      label="TOKENS"
+    >
       <div v-if="props.row.balance?.tokens?.length > 1">
         {{ props.row.balance?.tokens?.length }} Types of Token
       </div>
       <div v-else-if="props.row.balance?.tokens?.length === 1">
         <TokenAmount
-            v-bind:amount="BigInt(props.row.balance?.tokens[0].balance)"
-            v-bind:token-id="props.row.balance?.tokens[0].token_id"
-            v-bind:show-extra="true"/>
+          :amount="BigInt(props.row.balance?.tokens[0].balance)"
+          :token-id="props.row.balance?.tokens[0].token_id"
+          :show-extra="true"
+        />
       </div>
-      <div v-else class="h-is-low-contrast">
+      <div
+        v-else
+        class="h-is-low-contrast"
+      >
         None
       </div>
-
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="MEMO">
+    <o-table-column
+      v-slot="props"
+      field="memo"
+      label="MEMO"
+    >
       <div class="w250">
-        <BlobValue v-bind:blob-value="props.row.memo" v-bind:base64="true" v-bind:show-none="true"/>
+        <BlobValue
+          :blob-value="props.row.memo"
+          :base64="true"
+          :show-none="true"
+        />
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="balance" label="BALANCE" position="right">
-      <HbarAmount v-bind:amount="props.row.balance.balance ?? 0"/>
+    <o-table-column
+      v-slot="props"
+      field="balance"
+      label="BALANCE"
+      position="right"
+    >
+      <HbarAmount :amount="props.row.balance.balance ?? 0" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.ACCOUNT_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.ACCOUNT_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.ACCOUNT_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.ACCOUNT_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!accounts.length"/>
-
+  <EmptyTable v-if="!accounts.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

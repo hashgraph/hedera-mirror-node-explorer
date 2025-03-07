@@ -7,9 +7,10 @@
 <!-- TODO: remove BULMA styling -->
 
 <template>
-
-  <div id="abi" class="h-code-box">
-
+  <div
+    id="abi"
+    class="h-code-box"
+  >
     <template v-if="showAll && roContractCallBuilders.length == 0 && rwContractCallBuilders.length == 0">
       <SolidityCode class="h-code-source">
         {{ "//\n// No function\n//" }}
@@ -21,10 +22,19 @@
           <SolidityCode class="h-code-source">
             {{ "//\n// Functions (read-only)\n//" }}
           </SolidityCode>
-          <div v-for="(b,i) in roContractCallBuilders" :key="b.fragment.selector">
-            <div class="mb-2" style="margin-left: 0.6rem">
-              <ContractAbiEntry :contract-call-builder="b" :index="i"
-                                @did-update-contract-state="entryDidUpdateContractState"/>
+          <div
+            v-for="(b,i) in roContractCallBuilders"
+            :key="b.fragment.selector"
+          >
+            <div
+              class="mb-2"
+              style="margin-left: 0.6rem"
+            >
+              <ContractAbiEntry
+                :contract-call-builder="b"
+                :index="i"
+                @did-update-contract-state="entryDidUpdateContractState"
+              />
             </div>
           </div>
         </template>
@@ -35,17 +45,29 @@
         </template>
       </template>
 
-      <hr v-if="showAll" class="horizontal-line"/>
+      <hr
+        v-if="showAll"
+        class="horizontal-line"
+      >
 
       <template v-if="showReadWrite">
         <template v-if="rwContractCallBuilders.length >= 1">
           <SolidityCode class="h-code-source">
             {{ "//\n// Functions (read-write)\n//" }}
           </SolidityCode>
-          <div v-for="(b,i) in rwContractCallBuilders" :key="b.fragment.selector">
-            <div class="mb-2" style="margin-left: 0.6rem">
-              <ContractAbiEntry :contract-call-builder="b" :index="i"
-                                @did-update-contract-state="entryDidUpdateContractState"/>
+          <div
+            v-for="(b,i) in rwContractCallBuilders"
+            :key="b.fragment.selector"
+          >
+            <div
+              class="mb-2"
+              style="margin-left: 0.6rem"
+            >
+              <ContractAbiEntry
+                :contract-call-builder="b"
+                :index="i"
+                @did-update-contract-state="entryDidUpdateContractState"
+              />
             </div>
           </div>
         </template>
@@ -57,7 +79,10 @@
       </template>
     </template>
 
-    <hr v-if="showAll" class="horizontal-line"/>
+    <hr
+      v-if="showAll"
+      class="horizontal-line"
+    >
 
     <template v-if="showEvents">
       <SolidityCode class="h-code-source">
@@ -65,7 +90,10 @@
       </SolidityCode>
     </template>
 
-    <hr v-if="showAll" class="horizontal-line"/>
+    <hr
+      v-if="showAll"
+      class="horizontal-line"
+    >
 
     <template v-if="showErrors">
       <SolidityCode class="h-code-source">
@@ -73,16 +101,17 @@
       </SolidityCode>
     </template>
 
-    <hr v-if="showAll" class="horizontal-line"/>
+    <hr
+      v-if="showAll"
+      class="horizontal-line"
+    >
 
     <template v-if="showOther">
       <SolidityCode class="h-code-source">
         {{ otherList }}
       </SolidityCode>
     </template>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

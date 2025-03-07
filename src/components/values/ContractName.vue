@@ -6,11 +6,18 @@
 
 <template>
   <template v-if="contractId != null">
-
     <template v-if="fullMatch || partialMatch">
-      <div class="h-has-pill h-chip-success" >
-        <CheckCheck v-if="fullMatch" :size="12" style="margin-top: 2px"/>
-        <Check v-else :size="12" style="margin-top: 2px"/>
+      <div class="h-has-pill h-chip-success">
+        <CheckCheck
+          v-if="fullMatch"
+          :size="12"
+          style="margin-top: 2px"
+        />
+        <Check
+          v-else
+          :size="12"
+          style="margin-top: 2px"
+        />
         <span class="contract-name">{{ name }}</span>
       </div>
     </template>
@@ -20,7 +27,6 @@
         NOT VERIFIED
       </div>
     </template>
-
   </template>
 </template>
 

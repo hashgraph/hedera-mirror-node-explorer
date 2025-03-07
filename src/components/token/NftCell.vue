@@ -5,21 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <NftPreview
-      v-if="props.property === NftCellItem.image"
-      :url="url"
-      :type="type"
-      :size="props.size"
-      :auto="false"
-      :no-anchor="true"
+    v-if="props.property === NftCellItem.image"
+    :url="url"
+    :type="type"
+    :size="props.size"
+    :auto="false"
+    :no-anchor="true"
   />
 
   <BlobValue
-      v-else
-      :blob-value="propertyValue"
+    v-else
+    :blob-value="propertyValue"
   />
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -52,7 +50,7 @@ const props = defineProps({
     default: null
   },
   serialNumber: {
-    type: Number as PropType<Number | null>,
+    type: Number as PropType<number | null>,
     default: null
   },
   property: {
@@ -110,4 +108,4 @@ const type = metadataAnalyzer.type
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

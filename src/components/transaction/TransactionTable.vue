@@ -6,76 +6,96 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="transactions"
-      :loading="loading"
-      :paginated="paginated"
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="transactions"
+    :loading="loading"
+    :paginated="paginated"
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="props.narrowed"
 
-      :hoverable="true"
-      :narrowed="props.narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="consensus_timestamp"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="timestamp" label="ID">
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="ID"
+    >
       <TransactionLabel
-          class="h-is-bold"
-          :transaction-id="props.row.transaction_id"
-          :result="props.row.result"
+        class="h-is-bold"
+        :transaction-id="props.row.transaction_id"
+        :result="props.row.result"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="TYPE">
-      <div class="h-has-pill" style="display: inline-block">
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="TYPE"
+    >
+      <div
+        class="h-has-pill"
+        style="display: inline-block"
+      >
         {{ makeTypeLabel(props.row.name) }}
       </div>
     </o-table-column>
 
-    <o-table-column v-if="showingEthereumTransactions" v-slot="props" field="sender" label="Sender">
-      <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
+    <o-table-column
+      v-if="showingEthereumTransactions"
+      v-slot="props"
+      field="sender"
+      label="Sender"
+    >
+      <InnerSenderEVMAddress :transaction-id="props.row.transaction_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" label="CONTENT">
-      <TransactionSummary v-bind:transaction="props.row"/>
+    <o-table-column
+      v-slot="props"
+      label="CONTENT"
+    >
+      <TransactionSummary :transaction="props.row" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="consensus_timestamp"
+      label="TIME"
+    >
+      <TimestampValue :timestamp="props.row.consensus_timestamp" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="storageKey ?? undefined"
+        v-model:size="perPage"
+        :storage-key="storageKey ?? undefined"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="storageKey ?? undefined"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="storageKey ?? undefined"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="transactions.length === 0"/>
-
+  <EmptyTable v-if="transactions.length === 0" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

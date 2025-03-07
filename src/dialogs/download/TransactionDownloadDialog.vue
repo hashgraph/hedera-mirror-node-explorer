@@ -5,74 +5,92 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <DownloadDialog :controller="controller" :width="450">
-
-    <template #downloadDialogTitle>{{ dialogTitle }}</template>
+  <DownloadDialog
+    :controller="controller"
+    :width="450"
+  >
+    <template #downloadDialogTitle>
+      {{ dialogTitle }}
+    </template>
 
     <template #downloadDialogInput>
-
       <div class="download-hint">
         This will download the transaction history of the account as a CSV file.
       </div>
 
       <ContentCell>
-        <template #cellTitle>Select Scope:</template>
+        <template #cellTitle>
+          Select Scope:
+        </template>
         <template #cellContent>
-
           <div style="display: flex; align-items: center; column-gap: 12px; width: 100%;">
-
-            <SelectView v-model="selectedScope" :small="true">
-              <option v-for="s in scopes" v-bind:key="s" v-bind:value="s">
+            <SelectView
+              v-model="selectedScope"
+              :small="true"
+            >
+              <option
+                v-for="s in scopes"
+                :key="s"
+                :value="s"
+              >
                 {{ s }}
               </option>
             </SelectView>
 
             <template v-if="tokenIdRequired">
               <TextFieldView
-                  v-model="tokenInput"
-                  placeholder="Token ID (0.0.1234)"
-                  :small="true"
-                  style="width: 100%"/>
+                v-model="tokenInput"
+                placeholder="Token ID (0.0.1234)"
+                :small="true"
+                style="width: 100%"
+              />
             </template>
             <template v-else-if="selectedScope==='TRANSACTION TYPE'">
-              <TransactionFilterSelect v-model:selected-filter="selectedFilter" style="width: 100%"/>
+              <TransactionFilterSelect
+                v-model:selected-filter="selectedFilter"
+                style="width: 100%"
+              />
             </template>
-
           </div>
-
         </template>
       </ContentCell>
 
       <ContentCell>
-        <template #cellTitle>Start date:</template>
+        <template #cellTitle>
+          Start date:
+        </template>
         <template #cellContent>
           <Datepicker
-              v-model="selectedStartDate"
-              placeholder="SELECT A DATE"
-              :is-24="false"
-              :enable-time-picker="false"
-              :dark="darkSelected"
-              :teleport="true"/>
+            v-model="selectedStartDate"
+            placeholder="SELECT A DATE"
+            :is-24="false"
+            :enable-time-picker="false"
+            :dark="darkSelected"
+            :teleport="true"
+          />
         </template>
       </ContentCell>
 
       <ContentCell>
-        <template #cellTitle>End date:</template>
+        <template #cellTitle>
+          End date:
+        </template>
         <template #cellContent>
           <Datepicker
-              v-model="selectedEndDate"
-              placeholder="SELECT A DATE"
-              :is-24="false"
-              :enable-time-picker="false"
-              :dark="darkSelected"
-              :teleport="true"/>
+            v-model="selectedEndDate"
+            placeholder="SELECT A DATE"
+            :is-24="false"
+            :enable-time-picker="false"
+            :dark="darkSelected"
+            :teleport="true"
+          />
         </template>
       </ContentCell>
-
     </template>
 
-    <template #downloadDialogControls>{{ feedbackMessage }}</template>
-
+    <template #downloadDialogControls>
+      {{ feedbackMessage }}
+    </template>
   </DownloadDialog>
 </template>
 

@@ -5,23 +5,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
   >
-
-    <template #transactionDialogTitle>Reject Token</template>
+    <template #transactionDialogTitle>
+      Reject Token
+    </template>
 
     <template #transactionDialogInput>
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Reject token {{ tokenId }} from account {{ accountId }} ?</template>
+        <template #taskPanelMessage>
+          Reject token {{ tokenId }} from account {{ accountId }} ?
+        </template>
       </TaskPanel>
     </template>
 
-    <template #transactionExecutionLabel>REJECT</template>
-
+    <template #transactionExecutionLabel>
+      REJECT
+    </template>
   </TransactionDialog>
 </template>
 

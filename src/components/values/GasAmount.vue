@@ -5,9 +5,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <PlainAmount :amount="gas" none-label="None"/>
-  <span v-if="amount" class="h-is-extra-text ml-2">
-    <HbarAmount :amount="amount"/>
+  <PlainAmount
+    :amount="gas"
+    none-label="None"
+  />
+  <span
+    v-if="amount"
+    class="h-is-extra-text ml-2"
+  >
+    <HbarAmount :amount="amount" />
   </span>
 </template>
 
@@ -52,5 +58,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
 

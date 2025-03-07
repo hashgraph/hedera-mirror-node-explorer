@@ -5,70 +5,96 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      v-model:current-page="currentPage"
-      :data="results"
-      :hoverable="true"
-      :loading="loading"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :paginated="paginated"
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :per-page="perPage"
-      :striped="true"
+    v-model:current-page="currentPage"
+    :data="results"
+    :hoverable="true"
+    :loading="loading"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :paginated="paginated"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :per-page="perPage"
+    :striped="true"
 
-      :total="total"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
+    :total="total"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
 
-      aria-previous-label="Previous page"
-      backend-pagination
-      customRowKey="consensus_timestamp"
-      default-sort="consensus_timestamp"
-      @cell-click="handleClick"
-      @page-change="onPageChange">
-
-    <o-table-column v-slot="props" field="timestamp" label="TIME">
+    aria-previous-label="Previous page"
+    backend-pagination
+    custom-row-key="consensus_timestamp"
+    default-sort="consensus_timestamp"
+    @cell-click="handleClick"
+    @page-change="onPageChange"
+  >
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="TIME"
+    >
       <div style="display: flex; gap: 8px;">
-        <TimestampValue class="h-is-bold" :timestamp="props.row.timestamp"/>
-        <TriangleAlert v-if="props.row.error_message" :size="18" class="h-text-error"/>
+        <TimestampValue
+          class="h-is-bold"
+          :timestamp="props.row.timestamp"
+        />
+        <TriangleAlert
+          v-if="props.row.error_message"
+          :size="18"
+          class="h-text-error"
+        />
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="from" label="FROM">
-      <EVMAddress :address="props.row.from" :compact="!isLargeScreen" :enable-copy="false"/>
+    <o-table-column
+      v-slot="props"
+      field="from"
+      label="FROM"
+    >
+      <EVMAddress
+        :address="props.row.from"
+        :compact="!isLargeScreen"
+        :enable-copy="false"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="message" label="MESSAGE" position="left">
-      <StringValue :string-value="makeErrorMessage(props.row)"/>
+    <o-table-column
+      v-slot="props"
+      field="message"
+      label="MESSAGE"
+      position="left"
+    >
+      <StringValue :string-value="makeErrorMessage(props.row)" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="TRANSFER AMOUNT" position="right">
-      <HbarAmount :amount="props.row.amount"/>
+    <o-table-column
+      v-slot="props"
+      field="amount"
+      label="TRANSFER AMOUNT"
+      position="right"
+    >
+      <HbarAmount :amount="props.row.amount" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!results.length"/>
-
+  <EmptyTable v-if="!results.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

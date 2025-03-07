@@ -5,31 +5,51 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="isNone" style="display: inline-block">
-    <span v-if="initialLoading"/>
-    <span v-else class="h-is-low-contrast">None</span>
+  <div
+    v-if="isNone"
+    style="display: inline-block"
+  >
+    <span v-if="initialLoading" />
+    <span
+      v-else
+      class="h-is-low-contrast"
+    >None</span>
   </div>
 
-  <div v-else-if="props.amount !== 0 || !props.hideZero" class="hbar-amount">
+  <div
+    v-else-if="props.amount !== 0 || !props.hideZero"
+    class="hbar-amount"
+  >
     <div>
       <span
-          id="hbar-amount"
-          class="h-is-numeric"
-          :class="{ 'h-is-low-contrast': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
+        id="hbar-amount"
+        class="h-is-numeric"
+        :class="{ 'h-is-low-contrast': isGrey, 'debit-amount': isRed, 'credit-amount': isGreen }"
       >
         {{ formattedAmount }}
       </span>
-      <span v-if="cryptoSymbol" v-html="cryptoSymbol"/>
-      <span v-else style="color: var(--text-secondary)">ℏ</span>
+      <span
+        v-if="cryptoSymbol"
+        v-html="cryptoSymbol"
+      />
+      <span
+        v-else
+        style="color: var(--text-secondary)"
+      >ℏ</span>
     </div>
-    <span v-if="props.showExtra" class="dollar-amount">
-      <HbarExtra :hide-zero="props.hideZero" :tbar-amount="amount ?? 0" :timestamp="timestamp"/>
+    <span
+      v-if="props.showExtra"
+      class="dollar-amount"
+    >
+      <HbarExtra
+        :hide-zero="props.hideZero"
+        :tbar-amount="amount ?? 0"
+        :timestamp="timestamp"
+      />
     </span>
   </div>
 
-  <template v-else/>
-
+  <template v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

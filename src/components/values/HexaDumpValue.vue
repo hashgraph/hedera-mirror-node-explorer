@@ -5,8 +5,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Copyable v-if="normByteString"
-            :content-to-copy="'0x' + normByteString" :enable-copy="isCopyEnabled">
+  <Copyable
+    v-if="normByteString"
+    :content-to-copy="'0x' + normByteString"
+    :enable-copy="isCopyEnabled"
+  >
     <template #content>
       <div class="hexa-dump-value">
         {{ flow(isMediumScreen ? wordWrapMedium : wordWrapSmall) }}
@@ -14,10 +17,17 @@
     </template>
   </Copyable>
   <template v-else-if="showNone && !initialLoading">
-    <div class="h-is-low-contrast">None</div>
-    <div v-if="noneExtra" class="h-is-low-contrast">{{ noneExtra }}</div>
+    <div class="h-is-low-contrast">
+      None
+    </div>
+    <div
+      v-if="noneExtra"
+      class="h-is-low-contrast"
+    >
+      {{ noneExtra }}
+    </div>
   </template>
-  <template v-else/>
+  <template v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

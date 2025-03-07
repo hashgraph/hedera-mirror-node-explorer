@@ -5,35 +5,36 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="root">
-
     <!--  First line of page header-->
     <div class="l1">
       <template v-if="isLargeScreen">
         <div class="left">
-          <ProductLogo/>
-          <AxiosStatus/>
-          <TabBar/>
+          <ProductLogo />
+          <AxiosStatus />
+          <TabBar />
         </div>
         <div class="right">
-          <NetworkSelector/>
+          <NetworkSelector />
           <template v-if="enableWallet">
-            <ConnectWalletButton v-if="!connected"/>
-            <WalletStatusButton v-else/>
+            <ConnectWalletButton v-if="!connected" />
+            <WalletStatusButton v-else />
           </template>
-          <ThemeSwitch/>
+          <ThemeSwitch />
         </div>
       </template>
       <template v-else>
         <div class="left">
-          <MobileMenuButton/>
-          <ProductLogo/>
-          <AxiosStatus/>
+          <MobileMenuButton />
+          <ProductLogo />
+          <AxiosStatus />
         </div>
-        <div v-if="enableWallet" class="right">
-          <ConnectWalletButton v-if="!connected"/>
-          <WalletStatusButton v-else/>
+        <div
+          v-if="enableWallet"
+          class="right"
+        >
+          <ConnectWalletButton v-if="!connected" />
+          <WalletStatusButton v-else />
         </div>
       </template>
     </div>
@@ -41,24 +42,36 @@
     <!--  Second line of page header-->
     <div class="l2">
       <template v-if="isMediumScreen">
-        <div class="title">{{ props.pageTitle }}</div>
-        <SearchBar/>
+        <div class="title">
+          {{ props.pageTitle }}
+        </div>
+        <SearchBar />
       </template>
       <template v-else>
         <template v-if="showSearchBar">
-          <SearchBar @search="onSearch" style="flex-grow: 1"/>
+          <SearchBar
+            style="flex-grow: 1"
+            @search="onSearch"
+          />
         </template>
         <template v-else>
-          <div class="title">{{ props.pageTitle }}</div>
-          <button class="search-button" @click="onClick" data-cy="mobile-search-button">
-            <Search :size="18" class="search-icon"/>
+          <div class="title">
+            {{ props.pageTitle }}
+          </div>
+          <button
+            class="search-button"
+            data-cy="mobile-search-button"
+            @click="onClick"
+          >
+            <Search
+              :size="18"
+              class="search-icon"
+            />
           </button>
         </template>
       </template>
     </div>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

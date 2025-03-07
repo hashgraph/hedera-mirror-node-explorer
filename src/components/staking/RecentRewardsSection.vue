@@ -5,25 +5,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <RewardDownloadDialog
-      v-if="accountId"
-      v-model:show-dialog="showDownloadDialog"
-      :account-id="accountId"
+    v-if="accountId"
+    v-model:show-dialog="showDownloadDialog"
+    :account-id="accountId"
   />
 
-  <DashboardCardV2 v-if="accountId" collapsible-key="myRecentRewards">
+  <DashboardCardV2
+    v-if="accountId"
+    collapsible-key="myRecentRewards"
+  >
     <template #title>
       <span>Recent Staking Rewards</span>
     </template>
     <template #right-control>
-      <DownloadButton @click="showDownloadDialog = true"/>
+      <DownloadButton @click="showDownloadDialog = true" />
     </template>
     <template #content>
-      <StakingRewardsTable :controller="transactionTableController"/>
+      <StakingRewardsTable :controller="transactionTableController" />
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

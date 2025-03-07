@@ -9,23 +9,23 @@
     <div class="graph-container">
       <div class="transfer-account">
         <AccountLink
-            :account-id="nftTransferLayout.sender_account_id"
-            no-anchor
-            null-label="MINT"
-            data-cy="sourceAccount"
+          :account-id="nftTransferLayout.sender_account_id"
+          no-anchor
+          null-label="MINT"
+          data-cy="sourceAccount"
         />
       </div>
 
       <div style="position: relative">
-        <ArrowSegment compact/>
+        <ArrowSegment compact />
       </div>
 
       <div class="transfer-token">
         <TokenLink
-            :token-id="nftTransferLayout.token_id ?? undefined"
-            :show-extra="true"
-            no-anchor
-            data-cy="nft"
+          :token-id="nftTransferLayout.token_id ?? undefined"
+          :show-extra="true"
+          no-anchor
+          data-cy="nft"
         />
         <!--        <div class="transfer-serial">-->
         <!--            <span v-for="sn in nftTransferLayout.serial_numbers" :key="sn">-->
@@ -35,15 +35,15 @@
       </div>
 
       <div style="position: relative">
-        <ArrowSegment compact/>
+        <ArrowSegment compact />
       </div>
 
       <div class="transfer-account">
         <AccountLink
-            :account-id="nftTransferLayout.receiver_account_id"
-            no-anchor
-            null-label="BURN"
-            data-cy="destinationAccount"
+          :account-id="nftTransferLayout.receiver_account_id"
+          no-anchor
+          null-label="BURN"
+          data-cy="destinationAccount"
         />
       </div>
     </div>

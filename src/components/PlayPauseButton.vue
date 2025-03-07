@@ -6,8 +6,20 @@
 
 <template>
   <div class="root">
-    <img v-if="!isPlaying" alt="Play" :src="playURL" @click="handleClick" data-cy="playButton">
-    <img v-else alt="Pause" :src="pauseURL" @click="handleClick" data-cy="pauseButton">
+    <img
+      v-if="!isPlaying"
+      alt="Play"
+      :src="playURL"
+      data-cy="playButton"
+      @click="handleClick"
+    >
+    <img
+      v-else
+      alt="Pause"
+      :src="pauseURL"
+      data-cy="pauseButton"
+      @click="handleClick"
+    >
   </div>
 </template>
 

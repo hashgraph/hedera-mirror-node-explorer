@@ -6,11 +6,11 @@
 
 <template>
   <select
-      v-model="selected"
-      :style="{ 'width': width }"
-      :class="{ 'border-visible': props.borderVisible, 'small': props.small, 'dark-mode': darkSelected }"
+    v-model="selected"
+    :style="{ 'width': width }"
+    :class="{ 'border-visible': props.borderVisible, 'small': props.small, 'dark-mode': darkSelected }"
   >
-    <slot/>
+    <slot />
   </select>
 </template>
 

@@ -5,10 +5,9 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <Property
-      :id="attribute.trait_type"
-      :full-width="true"
+    :id="attribute.trait_type"
+    :full-width="true"
   >
     <template #name>
       {{ attribute.trait_type }}
@@ -19,14 +18,13 @@
         {{ attribute.value + '%' }}
       </template>
       <template v-else-if="isDateTime">
-        <TimestampValue :timestamp="timestamp"/>
+        <TimestampValue :timestamp="timestamp" />
       </template>
       <template v-else>
         {{ attribute.value }}
       </template>
     </template>
   </Property>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

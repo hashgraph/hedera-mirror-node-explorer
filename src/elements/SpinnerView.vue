@@ -10,19 +10,22 @@
   -->
 
 <template>
-  <div class="spinner" :style="{width: props.size + 'px', height: props.size + 'px'}">
-    <div class="bar1"></div>
-    <div class="bar2"></div>
-    <div class="bar3"></div>
-    <div class="bar4"></div>
-    <div class="bar5"></div>
-    <div class="bar6"></div>
-    <div class="bar7"></div>
-    <div class="bar8"></div>
-    <div class="bar9"></div>
-    <div class="bar10"></div>
-    <div class="bar11"></div>
-    <div class="bar12"></div>
+  <div
+    class="spinner"
+    :style="{width: props.size + 'px', height: props.size + 'px'}"
+  >
+    <div class="bar1" />
+    <div class="bar2" />
+    <div class="bar3" />
+    <div class="bar4" />
+    <div class="bar5" />
+    <div class="bar6" />
+    <div class="bar7" />
+    <div class="bar8" />
+    <div class="bar9" />
+    <div class="bar10" />
+    <div class="bar11" />
+    <div class="bar12" />
   </div>
 </template>
 

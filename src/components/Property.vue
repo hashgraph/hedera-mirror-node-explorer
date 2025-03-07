@@ -5,31 +5,35 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div
-      :class="{'property-root': !vertical, 'property-root-vertical' : vertical}"
-      :style="{'justify-content': (isSmallScreen || vertical) ? 'flex-start' : 'space-between'}"
-      :id="id"
+    :id="id"
+    :class="{'property-root': !vertical, 'property-root-vertical' : vertical}"
+    :style="{'justify-content': (isSmallScreen || vertical) ? 'flex-start' : 'space-between'}"
   >
     <div
-        class="property-left-side"
-        :style="{'width': vertical ? '100%' : (props.fullWidth && isMediumScreen) ? '16.66666674%' : leftSideWidth}"
-        :id="nameId"
+      :id="nameId"
+      class="property-left-side"
+      :style="{'width': vertical ? '100%' : (props.fullWidth && isMediumScreen) ? '16.66666674%' : leftSideWidth}"
     >
-      <span class="property-name" :class="{'uppercase': !props.keepCase}">
-        <slot name="name"/>
+      <span
+        class="property-name"
+        :class="{'uppercase': !props.keepCase}"
+      >
+        <slot name="name" />
       </span>
-      <InfoTooltip v-if="tooltip" :label="tooltip"/>
+      <InfoTooltip
+        v-if="tooltip"
+        :label="tooltip"
+      />
     </div>
     <div
-        class="property-value"
-        :style="{'text-align': isSmallScreen ? 'left' : 'right'}"
-        :id="valueId"
+      :id="valueId"
+      class="property-value"
+      :style="{'text-align': isSmallScreen ? 'left' : 'right'}"
     >
-      <slot name="value"/>
+      <slot name="value" />
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

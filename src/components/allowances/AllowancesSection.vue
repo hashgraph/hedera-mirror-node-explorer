@@ -5,20 +5,21 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="accountId" collapsible-key="allowances">
-
+  <DashboardCardV2
+    v-if="accountId"
+    collapsible-key="allowances"
+  >
     <template #title>
       Allowances
     </template>
 
     <template #right-control>
       <ButtonView
-          v-if="isWalletConnected && isHieroWallet"
-          id="approve-button"
-          :is-default="true"
-          :size="ButtonSize.small"
-          @action="onClick"
+        v-if="isWalletConnected && isHieroWallet"
+        id="approve-button"
+        :is-default="true"
+        :size="ButtonSize.small"
+        @action="onClick"
       >
         APPROVE ALLOWANCE
       </ButtonView>
@@ -26,69 +27,88 @@
 
     <template #content>
       <Tabs
-          :selected-tab="selectedTab"
-          :tab-ids="tabIds"
-          :tabLabels="tabLabels"
-          @update:selected-tab="onUpdate($event)"
+        :selected-tab="selectedTab"
+        :tab-ids="tabIds"
+        :tab-labels="tabLabels"
+        @update:selected-tab="onUpdate($event)"
       />
 
-      <div v-if="selectedTab === 'nft'" id="approvedForAll" class="approved-for-all-checkbox">
-        <input type="checkbox" v-model="selectApprovedForAll" id="approvedForAll" name="approvedForAll"/>
+      <div
+        v-if="selectedTab === 'nft'"
+        id="approvedForAll"
+        class="approved-for-all-checkbox"
+      >
+        <input
+          id="approvedForAll"
+          v-model="selectApprovedForAll"
+          type="checkbox"
+          name="approvedForAll"
+        >
         <label for="approvedForAll">Approved for all</label>
       </div>
 
-      <div v-if="selectedTab === 'hbar'" id="hbarAllowancesTable">
+      <div
+        v-if="selectedTab === 'hbar'"
+        id="hbarAllowancesTable"
+      >
         <HbarAllowanceTable
-            :controller="hbarAllowanceTableController"
-            @edit-allowance="onEditHbar"
+          :controller="hbarAllowanceTableController"
+          @edit-allowance="onEditHbar"
         />
       </div>
 
-      <div v-else-if="selectedTab === 'token'" id="tokenAllowancesTable">
+      <div
+        v-else-if="selectedTab === 'token'"
+        id="tokenAllowancesTable"
+      >
         <TokenAllowanceTable
-            :controller="tokenAllowanceTableController"
-            @edit-allowance="onEditToken"
+          :controller="tokenAllowanceTableController"
+          @edit-allowance="onEditToken"
         />
       </div>
 
-      <div v-else id="nftAllowancesTable">
+      <div
+        v-else
+        id="nftAllowancesTable"
+      >
         <NftAllSerialsAllowanceTable
-            v-if="selectApprovedForAll"
-            :controller="nftAllSerialsAllowanceTableController"
-            @delete-allowance="onDeleteAllSerialsNft"
+          v-if="selectApprovedForAll"
+          :controller="nftAllSerialsAllowanceTableController"
+          @delete-allowance="onDeleteAllSerialsNft"
         />
         <NftAllowanceTable
-            v-else
-            :controller="nftAllowanceTableController"
-            @delete-allowance="onDeleteNft"
+          v-else
+          :controller="nftAllowanceTableController"
+          @delete-allowance="onDeleteNft"
         />
       </div>
     </template>
-
   </DashboardCardV2>
 
-  <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
-                          @allowance-approved="onAllowanceApproved"
+  <ApproveAllowanceDialog
+    v-model:show-dialog="showApproveAllowanceDialog"
+    @allowance-approved="onAllowanceApproved"
   />
 
-  <UpdateCryptoAllowanceDialog v-model:show-dialog="showUpdateHbarAllowanceDialog"
-                               :hbar-allowance="currentHbarAllowance"
-                               @allowance-approved="onAllowanceApproved"
+  <UpdateCryptoAllowanceDialog
+    v-model:show-dialog="showUpdateHbarAllowanceDialog"
+    :hbar-allowance="currentHbarAllowance"
+    @allowance-approved="onAllowanceApproved"
   />
 
-  <UpdateTokenAllowanceDialog v-model:show-dialog="showUpdateTokenAllowanceDialog"
-                               :token-allowance="currentTokenAllowance"
-                               @allowance-approved="onAllowanceApproved"
+  <UpdateTokenAllowanceDialog
+    v-model:show-dialog="showUpdateTokenAllowanceDialog"
+    :token-allowance="currentTokenAllowance"
+    @allowance-approved="onAllowanceApproved"
   />
 
   <DeleteNftAllowanceDialog
-      v-model:show-dialog="showDeleteNftAllowanceDialog"
-      :token-id="currentNftId"
-      :spender-id="currentSpenderId"
-      :serial-number="currentNftSerialNumber"
-      @allowance-deleted="onNftDeleted"
+    v-model:show-dialog="showDeleteNftAllowanceDialog"
+    :token-id="currentNftId"
+    :spender-id="currentSpenderId"
+    :serial-number="currentNftSerialNumber"
+    @allowance-deleted="onNftDeleted"
   />
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

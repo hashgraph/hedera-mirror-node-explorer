@@ -5,20 +5,22 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div ref="rootRef">
-    <slot name="button"/>
-    <div v-if="deployed" style="position: relative">
+    <slot name="button" />
+    <div
+      v-if="deployed"
+      style="position: relative"
+    >
       <div
-          class="panelHolder"
-          style="position: absolute; z-index: 999; top:6px;"
-          :style="{left: panelDX + 'px', 'box-shadow': boxShadow, 'background-color': props.backgroundColor, 'right': rightDX}"
-          ref="panelRef">
-        <slot name="panel"/>
+        ref="panelRef"
+        class="panelHolder"
+        style="position: absolute; z-index: 999; top:6px;"
+        :style="{left: panelDX + 'px', 'box-shadow': boxShadow, 'background-color': props.backgroundColor, 'right': rightDX}"
+      >
+        <slot name="panel" />
       </div>
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

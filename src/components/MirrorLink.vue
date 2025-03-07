@@ -5,11 +5,14 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <a v-if="isMediumScreen"
-     :href="`${networkUrl}${endpointURL}`" target="_blank">
+  <a
+    v-if="isMediumScreen"
+    :href="`${networkUrl}${endpointURL}`"
+    target="_blank"
+  >
     <div class="mirror-link">
       <span class="link-text">Raw data</span>
-      <ArrowRight :size="16"/>
+      <ArrowRight :size="16" />
     </div>
   </a>
 </template>
@@ -26,11 +29,11 @@ const props = defineProps({
   network: String,
   entityUrl: String,
   loc: {
-    type: String as PropType<String | null>,
+    type: String as PropType<string | null>,
     default: null
   },
   query: {
-    type: String as PropType<String | null>,
+    type: String as PropType<string | null>,
     default: null
   }
 })

@@ -5,9 +5,11 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="accountId && showSection" id="tokensSection" collapsible-key="tokens">
-
+  <DashboardCardV2
+    v-if="accountId && showSection"
+    id="tokensSection"
+    collapsible-key="tokens"
+  >
     <template #title>
       <div v-if="fullPage">
         <span>HTS Tokens of Account </span>
@@ -20,114 +22,131 @@
 
     <template #right-control>
       <template v-if="(selectedTab === 'fungible' || selectedTab ==='nfts') && rejectEnabled">
-        <div v-if="rejectButtonHint" class="h-is-low-contrast">
+        <div
+          v-if="rejectButtonHint"
+          class="h-is-low-contrast"
+        >
           {{ rejectButtonHint }}
         </div>
         <ButtonView
-            id="reject-button"
-            :enabled="rejectButtonEnabled"
-            :is-default="true"
-            :size="ButtonSize.small"
-            @action="onReject"
+          id="reject-button"
+          :enabled="rejectButtonEnabled"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="onReject"
         >
           REJECT
         </ButtonView>
       </template>
       <template v-else-if="selectedTab === 'pendingAirdrop' && claimEnabled">
-        <div v-if="claimButtonHint" class="h-is-low-contrast">
+        <div
+          v-if="claimButtonHint"
+          class="h-is-low-contrast"
+        >
           {{ claimButtonHint }}
         </div>
         <ButtonView
-            id="claim-button"
-            :enabled="claimActionEnabled"
-            :is-default="true"
-            :size="ButtonSize.small"
-            @action="onClaim"
+          id="claim-button"
+          :enabled="claimActionEnabled"
+          :is-default="true"
+          :size="ButtonSize.small"
+          @action="onClaim"
         >
           {{ checkedAirdrops.length === 0 ? 'CLAIM ALL' : 'CLAIM' }}
         </ButtonView>
       </template>
-      <template v-else/>
+      <template v-else />
     </template>
 
     <template #content>
       <Tabs
-          :selected-tab="selectedTab"
-          :tab-ids="tabIds"
-          :tabLabels="tabLabels"
-          @update:selected-tab="onSelectTab($event)"
+        :selected-tab="selectedTab"
+        :tab-ids="tabIds"
+        :tab-labels="tabLabels"
+        @update:selected-tab="onSelectTab($event)"
       />
 
-      <div v-if="selectedTab === 'fungible'" id="fungibleTable">
+      <div
+        v-if="selectedTab === 'fungible'"
+        id="fungibleTable"
+      >
         <FungibleTable
-            :controller="fungibleTableController"
-            :check-enabled="rejectEnabled"
-            v-model:checked-tokens="checkedTokens"
-            :full-page="props.fullPage"
-        />
-      </div>
-
-      <div v-else-if="selectedTab === 'nfts'" id="nftsTable">
-        <NftsTable
-            :controller="nftsTableController"
-            :check-enabled="rejectEnabled"
-            v-model:checked-nfts="checkedTokens"
-            :full-page="props.fullPage"
+          v-model:checked-tokens="checkedTokens"
+          :controller="fungibleTableController"
+          :check-enabled="rejectEnabled"
+          :full-page="props.fullPage"
         />
       </div>
 
       <div
-          v-else-if="selectedTab === 'pendingAirdrop'" id="pendingAirdropTable"
-          class="pending-airdrops-container"
+        v-else-if="selectedTab === 'nfts'"
+        id="nftsTable"
+      >
+        <NftsTable
+          v-model:checked-nfts="checkedTokens"
+          :controller="nftsTableController"
+          :check-enabled="rejectEnabled"
+          :full-page="props.fullPage"
+        />
+      </div>
+
+      <div
+        v-else-if="selectedTab === 'pendingAirdrop'"
+        id="pendingAirdropTable"
+        class="pending-airdrops-container"
       >
         <Tabs
-            :selected-tab="airdropSelectedTab"
-            :tab-ids="airdropTabIds"
-            :tabLabels="airdropTabLabels"
-            :sub-tabs="true"
-            @update:selectedTab="onAirdropSelectTab"
+          :selected-tab="airdropSelectedTab"
+          :tab-ids="airdropTabIds"
+          :tab-labels="airdropTabLabels"
+          :sub-tabs="true"
+          @update:selected-tab="onAirdropSelectTab"
         />
-        <div v-if="airdropSelectedTab === 'nfts'" id="pendingNftsTable">
+        <div
+          v-if="airdropSelectedTab === 'nfts'"
+          id="pendingNftsTable"
+        >
           <PendingNftAirdropTable
-              :controller="nftsAirdropTableController"
-              :check-enabled="claimEnabled"
-              v-model:checked-airdrops="checkedAirdrops"
-              :full-page="props.fullPage"
+            v-model:checked-airdrops="checkedAirdrops"
+            :controller="nftsAirdropTableController"
+            :check-enabled="claimEnabled"
+            :full-page="props.fullPage"
           />
         </div>
-        <div v-else id="pendingFungibleTable">
+        <div
+          v-else
+          id="pendingFungibleTable"
+        >
           <PendingFungibleAirdropTable
-              :controller="fungibleAirdropTableController"
-              :check-enabled="claimEnabled"
-              v-model:checked-airdrops="checkedAirdrops"
-              :full-page="props.fullPage"
+            v-model:checked-airdrops="checkedAirdrops"
+            :controller="fungibleAirdropTableController"
+            :check-enabled="claimEnabled"
+            :full-page="props.fullPage"
           />
         </div>
       </div>
       <ArrowLink
-          v-if="showAllTokensLink"
-          id="all-tokens-link"
-          :route="routeManager.makeRouteToTokensByAccount(accountId)"
-          text="All tokens"
-          style="display: flex; justify-content: center;"
+        v-if="showAllTokensLink"
+        id="all-tokens-link"
+        :route="routeManager.makeRouteToTokensByAccount(accountId)"
+        text="All tokens"
+        style="display: flex; justify-content: center;"
       />
     </template>
-
   </DashboardCardV2>
 
   <RejectTokenGroupDialog
-      v-model:show-dialog="showRejectTokenDialog"
-      :tokens="checkedTokens"
-      @rejected="onRejectCompleted"
+    v-model:show-dialog="showRejectTokenDialog"
+    :tokens="checkedTokens"
+    @rejected="onRejectCompleted"
   />
 
   <ClaimTokenGroupDialog
-      v-model:showDialog="showClaimDialog"
-      :airdrops="candidateAirdrops"
-      :drained="checkedAirdrops.length < MAX_AIRDROPS"
-      @claimed="onClaimCompleted"
+    v-model:show-dialog="showClaimDialog"
+    :airdrops="candidateAirdrops"
+    :drained="checkedAirdrops.length < MAX_AIRDROPS"
+    @claimed="onClaimCompleted"
   />
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

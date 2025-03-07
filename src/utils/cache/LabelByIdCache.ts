@@ -6,7 +6,7 @@ export class LabelByIdCache extends EntityCache<string, string | null> {
 
     public static readonly instance = new LabelByIdCache()
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     protected async load(key: string): Promise<string | null> {
         // let label: string | null
         // const lastDigit = key.slice(-1)

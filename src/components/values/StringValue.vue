@@ -5,15 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
+  <span
+    v-if="stringValue"
+    class="h-should-wrap"
+  >{{ stringValue }}</span>
 
-  <span v-if="stringValue" class="h-should-wrap">{{ stringValue }}</span>
+  <span v-else-if="initialLoading" />
 
-  <span v-else-if="initialLoading"/>
+  <span
+    v-else-if="showNone"
+    class="h-is-low-contrast"
+  >None</span>
 
-  <span v-else-if="showNone" class="h-is-low-contrast">None</span>
-
-  <span v-else/>
-
+  <span v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -51,4 +55,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

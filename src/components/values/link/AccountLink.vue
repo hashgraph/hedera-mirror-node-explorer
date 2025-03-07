@@ -5,11 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="is-inline-block">
-
     <EntityLink :route="accountRoute">
-      <AccountIOL :account-id="accountId" :null-label="nullLabel"/>
+      <AccountIOL
+        :account-id="accountId"
+        :null-label="nullLabel"
+      />
     </EntityLink>
 
     <template v-if="showExtra && extra.length > 0">
@@ -17,9 +18,7 @@
         {{ extra }}
       </span>
     </template>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -113,5 +112,5 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
 

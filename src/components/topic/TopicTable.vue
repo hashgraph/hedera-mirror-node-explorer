@@ -5,53 +5,70 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="transactions"
-      :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="transactions"
+    :loading="loading"
+    paginated
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :striped="true"
 
-      :hoverable="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    custom-row-key="consensus_timestamp"
+    @page-change="onPageChange"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="topic_id" label="TOPIC">
-      <TopicIOL class="topic_id" :topic-id="props.row.entity_id"/>
+    <o-table-column
+      v-slot="props"
+      field="topic_id"
+      label="TOPIC"
+    >
+      <TopicIOL
+        class="topic_id"
+        :topic-id="props.row.entity_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="created" label="CREATED">
-      <TimestampValue v-bind:timestamp="props.row.valid_start_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="created"
+      label="CREATED"
+    >
+      <TimestampValue :timestamp="props.row.valid_start_timestamp" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="memo" label="MEMO">
-      <BlobValue :blob-value="props.row.memo_base64" :base64="true" :show-none="true"/>
+    <o-table-column
+      v-slot="props"
+      field="memo"
+      label="MEMO"
+    >
+      <BlobValue
+        :blob-value="props.row.memo_base64"
+        :base64="true"
+        :show-none="true"
+      />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
-
+  <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

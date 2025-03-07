@@ -6,55 +6,79 @@
 
 <template>
   <o-table
-      :data="transactions"
-      :loading="loading"
-      paginated
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
+    v-model:current-page="currentPage"
+    :data="transactions"
+    :loading="loading"
+    paginated
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="narrowed"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="consensus_timestamp"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="timestamp" label="ID">
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="ID"
+    >
       <TransactionLabel
-          :transaction-id="props.row.transaction_id"
-          :result="props.row.result"
+        :transaction-id="props.row.transaction_id"
+        :result="props.row.result"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="type" label="TYPE">
-      <div class="h-has-pill" style="display: inline-block">
+    <o-table-column
+      v-slot="props"
+      field="type"
+      label="TYPE"
+    >
+      <div
+        class="h-has-pill"
+        style="display: inline-block"
+      >
         {{ makeTypeLabel(props.row.type) }}
       </div>
     </o-table-column>
 
-    <o-table-column v-if="showingEthereumTransactions" v-slot="props" field="sender" label="SENDER">
-      <InnerSenderEVMAddress :transaction-id="props.row.transaction_id"/>
+    <o-table-column
+      v-if="showingEthereumTransactions"
+      v-slot="props"
+      field="sender"
+      label="SENDER"
+    >
+      <InnerSenderEVMAddress :transaction-id="props.row.transaction_id" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="content" label="CONTENT">
-      <NftTransactionSummary :transaction="props.row"/>
+    <o-table-column
+      v-slot="props"
+      field="content"
+      label="CONTENT"
+    >
+      <NftTransactionSummary :transaction="props.row" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
-      <TimestampValue :timestamp="props.row.consensus_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="consensus_timestamp"
+      label="TIME"
+    >
+      <TimestampValue :timestamp="props.row.consensus_timestamp" />
     </o-table-column>
   </o-table>
 
-  <EmptyTable v-if="transactions.length === 0"/>
+  <EmptyTable v-if="transactions.length === 0" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

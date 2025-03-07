@@ -6,41 +6,88 @@
 
 <template>
   <div class="action-details">
-    <Property id="actionDetailFrom" :custom-nb-col-class="propertySizeClass">
-      <template v-slot:name>From</template>
-      <template v-slot:value>
-        <EVMAddress :id="action?.caller" :address="action?.from" :entity-type="action?.caller_type"
-                    :show-type="true" :compact="!isSmallScreen"/>
+    <Property
+      id="actionDetailFrom"
+      :custom-nb-col-class="propertySizeClass"
+    >
+      <template #name>
+        From
+      </template>
+      <template #value>
+        <EVMAddress
+          :id="action?.caller"
+          :address="action?.from"
+          :entity-type="action?.caller_type"
+          :show-type="true"
+          :compact="!isSmallScreen"
+        />
       </template>
     </Property>
-    <Property id="actionDetailTo" :custom-nb-col-class="propertySizeClass">
-      <template v-slot:name>To</template>
-      <template v-slot:value>
-        <EVMAddress :id="action?.recipient" :address="action?.to" :entity-type="action?.recipient_type"
-                    :show-type="true" :compact="!isSmallScreen"/>
+    <Property
+      id="actionDetailTo"
+      :custom-nb-col-class="propertySizeClass"
+    >
+      <template #name>
+        To
+      </template>
+      <template #value>
+        <EVMAddress
+          :id="action?.recipient"
+          :address="action?.to"
+          :entity-type="action?.recipient_type"
+          :show-type="true"
+          :compact="!isSmallScreen"
+        />
       </template>
     </Property>
-    <Property id="actionDetailValue" :custom-nb-col-class="propertySizeClass">
-      <template v-slot:name>Value</template>
-      <template v-slot:value>
-        <HbarAmount :amount="action?.value"/>
+    <Property
+      id="actionDetailValue"
+      :custom-nb-col-class="propertySizeClass"
+    >
+      <template #name>
+        Value
+      </template>
+      <template #value>
+        <HbarAmount :amount="action?.value" />
       </template>
     </Property>
-    <Property id="actionDetailGasLimit" :custom-nb-col-class="propertySizeClass">
-      <template v-slot:name>Gas Limit</template>
-      <template v-slot:value>
-        <PlainAmount :amount="action?.gas"/>
+    <Property
+      id="actionDetailGasLimit"
+      :custom-nb-col-class="propertySizeClass"
+    >
+      <template #name>
+        Gas Limit
+      </template>
+      <template #value>
+        <PlainAmount :amount="action?.gas" />
       </template>
     </Property>
-    <Property id="actionDetailGasUsed" :custom-nb-col-class="propertySizeClass">
-      <template v-slot:name>Gas Used</template>
-      <template v-slot:value>
-        <PlainAmount :amount="action?.gas_used"/>
+    <Property
+      id="actionDetailGasUsed"
+      :custom-nb-col-class="propertySizeClass"
+    >
+      <template #name>
+        Gas Used
+      </template>
+      <template #value>
+        <PlainAmount :amount="action?.gas_used" />
       </template>
     </Property>
-    <FunctionError :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-    <FunctionInput :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
-    <FunctionResult :analyzer="functionCallAnalyzer" :custom-nb-col-class="propertySizeClass" :show-none="true"/>
+    <FunctionError
+      :analyzer="functionCallAnalyzer"
+      :custom-nb-col-class="propertySizeClass"
+      :show-none="true"
+    />
+    <FunctionInput
+      :analyzer="functionCallAnalyzer"
+      :custom-nb-col-class="propertySizeClass"
+      :show-none="true"
+    />
+    <FunctionResult
+      :analyzer="functionCallAnalyzer"
+      :custom-nb-col-class="propertySizeClass"
+      :show-none="true"
+    />
   </div>
 </template>
 

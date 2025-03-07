@@ -8,46 +8,68 @@
   <div v-if="key">
     <div v-if=" !details && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
       <span>{{ 'Complex Key (' + (maxLevel + 1) + ' levels)' }}</span>
-      <router-link v-if="adminKeyRoute" :to="adminKeyRoute">
+      <router-link
+        v-if="adminKeyRoute"
+        :to="adminKeyRoute"
+      >
         <span class="ml-2 h-is-low-contrast">
           See details
         </span>
       </router-link>
     </div>
-    <div v-else :style="containerStyle(details ? 30 : 20)">
-      <template v-for="line in lines" :key="line.seqNb">
+    <div
+      v-else
+      :style="containerStyle(details ? 30 : 20)"
+    >
+      <template
+        v-for="line in lines"
+        :key="line.seqNb"
+      >
         <div :style="lineStyle(line)">
           <template v-if="line.innerKeyBytes() !== null">
-            <div v-if="details" :class="lineClass(line)">
+            <div
+              v-if="details"
+              :class="lineClass(line)"
+            >
               <span class="h-is-extra-text">{{ line.innerKeyType() }}</span>
               <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
             </div>
             <div v-else>
-              <HexaDumpValue :byte-string="line.innerKeyBytes()"/>
-              <div class="h-is-extra-text">{{ line.innerKeyType() }}</div>
+              <HexaDumpValue :byte-string="line.innerKeyBytes()" />
+              <div class="h-is-extra-text">
+                {{ line.innerKeyType() }}
+              </div>
             </div>
           </template>
           <template v-else-if="line.contractId() !== null">
             Contract:
-            <ContractLink :contract-id="line.contractId()"/>
+            <ContractLink :contract-id="line.contractId()" />
           </template>
           <template v-else-if="line.delegatableContractId() !== null">
             Delegatable Contract:
-            <ContractLink :contract-id="line.delegatableContractId()"/>
+            <ContractLink :contract-id="line.delegatableContractId()" />
           </template>
           <template v-else>
-            <div v-if="details && line.level" :class="lineClass(line)">{{ lineText(line) }}</div>
-            <div v-else>{{ lineText(line) }}</div>
+            <div
+              v-if="details && line.level"
+              :class="lineClass(line)"
+            >
+              {{ lineText(line) }}
+            </div>
+            <div v-else>
+              {{ lineText(line) }}
+            </div>
           </template>
         </div>
       </template>
     </div>
   </div>
   <div v-else-if="showNone && !initialLoading">
-    <div class="h-is-low-contrast">None</div>
+    <div class="h-is-low-contrast">
+      None
+    </div>
   </div>
-  <div v-else/>
-
+  <div v-else />
 </template>
 
 

@@ -6,66 +6,81 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      v-model:current-page="currentPage"
-      :data="transactions"
-      :hoverable="true"
-      :narrowed="narrowed"
-      :paginated="paginated"
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :per-page="perPage"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="transactions"
+    :hoverable="true"
+    :narrowed="narrowed"
+    :paginated="paginated"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :per-page="perPage"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    custom-row-key="consensus_timestamp"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
+    <o-table-column
+      v-slot="props"
+      field="transaction_id"
+      label="ID"
+    >
       <TransactionLabel
-          class="transaction-label"
-          :transaction-id="props.row.transaction_id"
-          :result="props.row.result"
+        class="transaction-label"
+        :transaction-id="props.row.transaction_id"
+        :result="props.row.result"
       />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="name" label="TYPE">
-      <div class="h-has-pill" style="display: inline-block">
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="TYPE"
+    >
+      <div
+        class="h-has-pill"
+        style="display: inline-block"
+      >
         {{ makeTypeLabel(props.row.name) }}
       </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" label="CONTENT">
-      <TransactionSummary v-bind:transaction="props.row"/>
+    <o-table-column
+      v-slot="props"
+      label="CONTENT"
+    >
+      <TransactionSummary :transaction="props.row" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="consensus_timestamp"
+      label="TIME"
+    >
+      <TimestampValue :timestamp="props.row.consensus_timestamp" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="AppStorage.BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY"
+        v-model:size="perPage"
+        :storage-key="AppStorage.BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="AppStorage.BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="AppStorage.BLOCK_TRANSACTION_TABLE_PAGE_SIZE_KEY"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!transactions.length"/>
-
+  <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -103,7 +118,7 @@ const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: M
   routeManager.routeToTransaction(t, event)
 }
 
-let currentPage = ref(1)
+const currentPage = ref(1)
 
 const paginated = computed(() => props.transactions.length > perPage.value)
 const showPageSizeSelector = computed(() => props.transactions.length > 5)

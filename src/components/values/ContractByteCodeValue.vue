@@ -7,28 +7,44 @@
 <!--suppress HtmlWrongAttributeValue -->
 <template>
   <div :class="{'split-bytecode-container':isMediumScreen,'bytecode-container':!isMediumScreen}">
-
-    <div id="bytecode" class="code-pane" :class="{'split-padding': isMediumScreen}">
-      <div class="property-name">Runtime Bytecode</div>
+    <div
+      id="bytecode"
+      class="code-pane"
+      :class="{'split-padding': isMediumScreen}"
+    >
+      <div class="property-name">
+        Runtime Bytecode
+      </div>
       <ByteCodeValue
-          class="h-code-box h-code-source"
-          :byte-code="props.byteCode ?? undefined"
+        class="h-code-box h-code-source"
+        :byte-code="props.byteCode ?? undefined"
       />
     </div>
 
-    <div id="assembly-code" class="code-pane" :class="{'split-separator': isMediumScreen}">
+    <div
+      id="assembly-code"
+      class="code-pane"
+      :class="{'split-separator': isMediumScreen}"
+    >
       <div class="assembly-header">
-        <div class="property-name">Assembly Bytecode</div>
+        <div class="property-name">
+          Assembly Bytecode
+        </div>
         <div class="show-hexa-opcode-checkbox">
-          <input type="checkbox" v-model="showHexaOpcode" id="show-hexa-opcode" name="show-hexa-opcode"/>
+          <input
+            id="show-hexa-opcode"
+            v-model="showHexaOpcode"
+            type="checkbox"
+            name="show-hexa-opcode"
+          >
           <label for="show-hexa-opcode">Show hexa opcode</label>
         </div>
       </div>
 
       <DisassembledCodeValue
-          class="h-code-box h-code-source"
-          :byte-code="props.byteCode ?? undefined"
-          :show-hexa-opcode="showHexaOpcode"
+        class="h-code-box h-code-source"
+        :byte-code="props.byteCode ?? undefined"
+        :show-hexa-opcode="showHexaOpcode"
       />
     </div>
   </div>

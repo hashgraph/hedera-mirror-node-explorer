@@ -5,37 +5,42 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Admin Key Details">
-
-    <template v-if="notification" #banner>
-      <NotificationBanner :message="notification"/>
+    <template
+      v-if="notification"
+      #banner
+    >
+      <NotificationBanner :message="notification" />
     </template>
 
     <DashboardCardV2>
       <template #title>
         <span>Admin Key for Account </span>
         <div v-if="normalizedAccountId">
-          <AccountLink id="accountId" :account-id="normalizedAccountId">
+          <AccountLink
+            id="accountId"
+            :account-id="normalizedAccountId"
+          >
             {{ normalizedAccountId }}
           </AccountLink>
-          <span v-if="accountChecksum" class="h-is-low-contrast">-{{ accountChecksum }}</span>
+          <span
+            v-if="accountChecksum"
+            class="h-is-low-contrast"
+          >-{{ accountChecksum }}</span>
         </div>
       </template>
 
       <template #content>
         <KeyValue
-            v-if="normalizedAccountId"
-            :details="true"
-            :key-bytes="key?.key"
-            :key-type="key?._type"
-            :show-none="true"
+          v-if="normalizedAccountId"
+          :details="true"
+          :key-bytes="key?.key"
+          :key-type="key?._type"
+          :show-none="true"
         />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -76,4 +81,4 @@ const key = accountLocParser.key
 
 </script>
 
-<style/>
+<style />

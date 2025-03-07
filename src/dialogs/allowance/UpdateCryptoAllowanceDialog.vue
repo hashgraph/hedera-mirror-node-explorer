@@ -6,37 +6,41 @@
 
 <template>
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
   >
+    <template #transactionDialogTitle>
+      {{ transactionTitle }}
+    </template>
 
-    <template #transactionDialogTitle>{{ transactionTitle }}</template>
-
-    <template #transactionExecutionLabel>APPROVE</template>
+    <template #transactionExecutionLabel>
+      APPROVE
+    </template>
 
     <template #transactionDialogInput>
-
       <ContentCell>
-        <template #cellTitle>HBAR Amount</template>
+        <template #cellTitle>
+          HBAR Amount
+        </template>
         <template #cellContent>
           <TextFieldView
-              v-model="hbarAmountInput"
-              placeholder="HBAR Amount"
-              style="width: 100%"/>
+            v-model="hbarAmountInput"
+            placeholder="HBAR Amount"
+            style="width: 100%"
+          />
         </template>
       </ContentCell>
-
     </template>
 
     <template #transactionDialogConfirm>
       Do you want to approve an allowance for {{ allowanceSpec }}
     </template>
 
-    <template #transactionDialogControls>{{ feedbackMessage }}</template>
-
+    <template #transactionDialogControls>
+      {{ feedbackMessage }}
+    </template>
   </TransactionDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -10,86 +10,111 @@
       Staking Rewards
     </div>
 
-    <div class="graph-container" :class="{'graph-container-8': dollarVisible }">
-
+    <div
+      class="graph-container"
+      :class="{'graph-container-8': dollarVisible }"
+    >
       <template v-if="dollarVisible">
-        <div style="grid-column-end: span 2" class="transfer-header">
+        <div
+          style="grid-column-end: span 2"
+          class="transfer-header"
+        >
           REWARD ACC.
         </div>
-        <div/>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div />
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           ACCOUNT
         </div>
-        <div style="grid-column-end: span 2" class="transfer-header">
+        <div
+          style="grid-column-end: span 2"
+          class="transfer-header"
+        >
           AMOUNT
         </div>
-        <div/>
-        <div/>
+        <div />
+        <div />
       </template>
       <template v-else>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           REWARD ACCOUNT
         </div>
-        <div/>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div />
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           ACCOUNT
         </div>
-        <div style="grid-column-end: span 1" class="transfer-header">
+        <div
+          style="grid-column-end: span 1"
+          class="transfer-header"
+        >
           AMOUNT
         </div>
-        <div/>
+        <div />
       </template>
 
-      <template v-for="i in rewardTransferLayout.destinations.length" :key="i">
-
+      <template
+        v-for="i in rewardTransferLayout.destinations.length"
+        :key="i"
+      >
         <!-- #0 : account id -->
         <div class="transfer-account">
           <AccountLink
-              v-if="i === 1"
-              account-id="0.0.800"
-              data-cy="awardSourceAccount"
+            v-if="i === 1"
+            account-id="0.0.800"
+            data-cy="awardSourceAccount"
           />
-          <div v-else/>
+          <div v-else />
         </div>
-        <div/>
+        <div />
 
         <!-- #1 : arrow -->
         <div style="position: relative">
           <ArrowSegment
-              :source-count="1"
-              :dest-count="rewardTransferLayout.destinations.length"
-              :row-index="i-1"/>
+            :source-count="1"
+            :dest-count="rewardTransferLayout.destinations.length"
+            :row-index="i-1"
+          />
         </div>
 
         <!-- #2 : account id -->
         <div class="transfer-account">
-          <AccountLink v-if="i <= rewardTransferLayout.destinations.length"
-                       :account-id="rewardTransferLayout.destinations[i-1].account"
-                       data-cy="destinationAccount"/>
+          <AccountLink
+            v-if="i <= rewardTransferLayout.destinations.length"
+            :account-id="rewardTransferLayout.destinations[i-1].account"
+            data-cy="destinationAccount"
+          />
         </div>
 
         <!-- #3 : reward amount -->
         <div class="justify-end">
-          <HbarAmount v-if="i <= rewardTransferLayout.destinations.length"
-                      :amount="rewardTransferLayout.destinations[i-1].amount"
-                      :colored="true"/>
+          <HbarAmount
+            v-if="i <= rewardTransferLayout.destinations.length"
+            :amount="rewardTransferLayout.destinations[i-1].amount"
+            :colored="true"
+          />
         </div>
 
         <template v-if="dollarVisible">
-
           <!-- #4 : dollar amount -->
           <div class="justify-end dollar-amount">
-            <HbarExtra v-if="i <= rewardTransferLayout.destinations.length"
-                       :tbarAmount="rewardTransferLayout.destinations[i-1].amount"
-                       :timestamp="transaction?.consensus_timestamp"/>
+            <HbarExtra
+              v-if="i <= rewardTransferLayout.destinations.length"
+              :tbar-amount="rewardTransferLayout.destinations[i-1].amount"
+              :timestamp="transaction?.consensus_timestamp"
+            />
           </div>
-
         </template>
-        <div/>
-        <div/>
-
+        <div />
+        <div />
       </template>
-
     </div>
   </div>
 </template>

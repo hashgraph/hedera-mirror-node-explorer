@@ -5,49 +5,57 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="header">
-
     <!--  First line of header-->
     <div class="header-top">
       <template v-if="isLargeScreen">
         <div class="top-side">
-          <ProductLogo/>
-          <AxiosStatus/>
-          <TabBar/>
+          <ProductLogo />
+          <AxiosStatus />
+          <TabBar />
         </div>
         <div class="top-side">
-          <NetworkSelector/>
+          <NetworkSelector />
           <template v-if="enableWallet">
-            <ConnectWalletButton v-if="!connected"/>
-            <WalletStatusButton v-else/>
+            <ConnectWalletButton v-if="!connected" />
+            <WalletStatusButton v-else />
           </template>
-          <ThemeSwitch/>
+          <ThemeSwitch />
         </div>
       </template>
       <template v-else>
         <div class="top-side">
-          <MobileMenuButton/>
-          <ProductLogo/>
-          <AxiosStatus/>
+          <MobileMenuButton />
+          <ProductLogo />
+          <AxiosStatus />
         </div>
-        <div v-if="enableWallet" class="top-side">
-          <ConnectWalletButton v-if="!connected"/>
-          <WalletStatusButton v-else/>
+        <div
+          v-if="enableWallet"
+          class="top-side"
+        >
+          <ConnectWalletButton v-if="!connected" />
+          <WalletStatusButton v-else />
         </div>
       </template>
     </div>
 
     <!--  Central part of header-->
-    <div class="title">Explore Hedera Blockchain</div>
-    <SearchBar :size="90" class="search-bar"/>
+    <div class="title">
+      Explore Hedera Blockchain
+    </div>
+    <SearchBar
+      :size="90"
+      class="search-bar"
+    />
 
     <!--  Market dashboard part of header-->
-    <div v-if="enableMarketData" class="market-dashboard">
-      <MarketDashboard/>
+    <div
+      v-if="enableMarketData"
+      class="market-dashboard"
+    >
+      <MarketDashboard />
     </div>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

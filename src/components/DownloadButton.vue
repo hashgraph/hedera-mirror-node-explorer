@@ -5,11 +5,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <button class="download-button" data-cy="downloadButton">
-    <img alt="Download" :src="downloadURL">
+  <button
+    class="download-button"
+    data-cy="downloadButton"
+  >
+    <img
+      alt="Download"
+      :src="downloadURL"
+    >
   </button>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

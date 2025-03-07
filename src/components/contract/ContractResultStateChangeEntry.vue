@@ -5,16 +5,15 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template v-if="change">
-
   <template v-if="change?.header===true">
     <div class="state-header">
       <div class="property-value">
         <EVMAddress
-            style="display: inline-block"
-            :id="change?.changes.contract_id"
-            :address="change.changes.address"
-            compact
-            has-custom-font
+          :id="change?.changes.contract_id"
+          style="display: inline-block"
+          :address="change.changes.address"
+          compact
+          has-custom-font
         />
       </div>
       <div class="balance-info">
@@ -22,32 +21,48 @@
           HBar Balance Difference:
         </div>
         <div class="property-value">
-          <HbarAmount :amount="change?.balanceChange" :timestamp="timestamp" :colored="true" :show-extra="true"/>
+          <HbarAmount
+            :amount="change?.balanceChange"
+            :timestamp="timestamp"
+            :colored="true"
+            :show-extra="true"
+          />
         </div>
       </div>
     </div>
-    <hr class="table-separator"/>
+    <hr class="table-separator">
   </template>
 
   <div class="state-change">
-
-    <div></div>
+    <div />
     <div>
-      <HexaDumpValue :byte-string="change?.changes.slot" :word-wrap-small="4" :word-wrap-medium="8"/>
+      <HexaDumpValue
+        :byte-string="change?.changes.slot"
+        :word-wrap-small="4"
+        :word-wrap-medium="8"
+      />
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.slotDecimal ?? 'not available') }}
       </div>
     </div>
     <div>
-      <HexaDumpValue :byte-string="change?.changes.value_read" :word-wrap-small="4" :word-wrap-medium="8"
-                 :show-none="true"/>
+      <HexaDumpValue
+        :byte-string="change?.changes.value_read"
+        :word-wrap-small="4"
+        :word-wrap-medium="8"
+        :show-none="true"
+      />
       <div class="h-is-extra-text">
         {{ 'Decimal: ' + (change?.valueReadDecimal ?? 'not available') }}
       </div>
     </div>
     <div>
-      <HexaDumpValue :byte-string="change?.changes.value_written" :word-wrap-small="4" :word-wrap-medium="8"
-                 :show-none="true"/>
+      <HexaDumpValue
+        :byte-string="change?.changes.value_written"
+        :word-wrap-small="4"
+        :word-wrap-medium="8"
+        :show-none="true"
+      />
       <div class="h-is-extra-text">
         <span v-if="change?.changes.value_written">
           {{ 'Decimal: ' + (change?.valueWrittenDecimal ?? 'not available') }}
@@ -57,9 +72,7 @@
         </span>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

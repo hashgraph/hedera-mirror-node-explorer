@@ -59,7 +59,7 @@ const createAndMount = async () => {
     head.appendChild(link);
 
     const app = createApp(Root, {coreConfig, networkConfig})
-    app.component("font-awesome-icon", FontAwesomeIcon)
+    app.component("FontAwesomeIcon", FontAwesomeIcon)
     app.use(router)
     app.use(Oruga, {iconPack: 'fas'})
     app.mount('#app')

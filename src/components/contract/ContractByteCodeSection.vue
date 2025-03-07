@@ -5,80 +5,117 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <DashboardCardV2 collapsible-key="contractBytecode">
     <template #title>
       Contract Bytecode
       <div
-          v-if="isVerificationAvailable"
-          class="h-has-pill"
-          :class="{'h-chip-success':isVerified, 'h-chip-default':!isVerified}"
-           style="margin-top: 2px">
+        v-if="isVerificationAvailable"
+        class="h-has-pill"
+        :class="{'h-chip-success':isVerified, 'h-chip-default':!isVerified}"
+        style="margin-top: 2px"
+      >
         {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>
     </template>
 
     <template #right-control>
       <ButtonView
-          v-if="isVerificationAvailable && !isVerified"
-          :is-default="true"
-          :size="ButtonSize.small"
-          @action="showVerifyDialog = true"
+        v-if="isVerificationAvailable && !isVerified"
+        :is-default="true"
+        :size="ButtonSize.small"
+        @action="showVerifyDialog = true"
       >
         VERIFY
       </ButtonView>
     </template>
 
     <template #content>
-      <Property v-if="isVerified" id="verificationStatus" :full-width="true">
-        <template v-slot:name>Verification Status</template>
-        <template v-slot:value>
+      <Property
+        v-if="isVerified"
+        id="verificationStatus"
+        :full-width="true"
+      >
+        <template #name>
+          Verification Status
+        </template>
+        <template #value>
           <div class="verification-status">
             {{ isFullMatch ? "Full Match" : "Partial Match" }}
-            <InfoTooltip :label="tooltipText"/>
+            <InfoTooltip :label="tooltipText" />
             <ButtonView
-                v-if="!isFullMatch"
-                id="verify-button"
-                :is-default="true"
-                :size="ButtonSize.small"
-                @action="showVerifyDialog = true"
+              v-if="!isFullMatch"
+              id="verify-button"
+              :is-default="true"
+              :size="ButtonSize.small"
+              @action="showVerifyDialog = true"
             >
               RE-VERIFY
             </ButtonView>
           </div>
         </template>
       </Property>
-      <Property v-if="isVerified" id="contractName" :full-width="true">
-        <template v-slot:name>Contract Name</template>
-        <template v-slot:value>
-          <StringValue :string-value="contractName ?? undefined"/>
+      <Property
+        v-if="isVerified"
+        id="contractName"
+        :full-width="true"
+      >
+        <template #name>
+          Contract Name
+        </template>
+        <template #value>
+          <StringValue :string-value="contractName ?? undefined" />
         </template>
       </Property>
-      <Property id="solcVersion" :full-width="true">
-        <template v-slot:name>Solidity Compiler Version</template>
-        <template v-slot:value>
-          <StringValue :string-value="solcVersion ?? undefined"/>
+      <Property
+        id="solcVersion"
+        :full-width="true"
+      >
+        <template #name>
+          Solidity Compiler Version
+        </template>
+        <template #value>
+          <StringValue :string-value="solcVersion ?? undefined" />
         </template>
       </Property>
-      <Property v-if="isVerified" id="contractName" :full-width="true">
-        <template v-slot:name>EVM Version</template>
-        <template v-slot:value>
-          <StringValue :string-value="evmVersion"/>
+      <Property
+        v-if="isVerified"
+        id="contractName"
+        :full-width="true"
+      >
+        <template #name>
+          EVM Version
+        </template>
+        <template #value>
+          <StringValue :string-value="evmVersion" />
         </template>
       </Property>
       <template v-if="logicContractId">
-        <Property id="logicContract" :full-width="true">
-          <template v-slot:name>Proxying to Logic Contract</template>
-          <template v-slot:value>
-            <AccountLink v-bind:accountId="logicContractId"
-                         v-bind:show-extra="true"/>
+        <Property
+          id="logicContract"
+          :full-width="true"
+        >
+          <template #name>
+            Proxying to Logic Contract
+          </template>
+          <template #value>
+            <AccountLink
+              :account-id="logicContractId"
+              :show-extra="true"
+            />
           </template>
         </Property>
-        <Property id="adminContract" :full-width="true">
-          <template v-slot:name>Proxying with Admin Contract</template>
-          <template v-slot:value>
-            <AccountLink v-bind:accountId="adminContractId"
-                         v-bind:show-extra="true"/>
+        <Property
+          id="adminContract"
+          :full-width="true"
+        >
+          <template #name>
+            Proxying with Admin Contract
+          </template>
+          <template #value>
+            <AccountLink
+              :account-id="adminContractId"
+              :show-extra="true"
+            />
           </template>
         </Property>
       </template>
@@ -87,66 +124,111 @@
 
       <template v-if="isVerified">
         <div class="contract-code-header">
-          <Tabs :tab-ids=tabIds :tab-labels=tabLabels
-                :selected-tab="selectedOption"
-                @update:selected-tab="handleTabUpdate($event)"
+          <Tabs
+            :tab-ids="tabIds"
+            :tab-labels="tabLabels"
+            :selected-tab="selectedOption"
+            @update:selected-tab="handleTabUpdate($event)"
           />
-          <div v-if="selectedOption==='source'" class="contract-code-controls">
-            <DownloadButton @click="handleDownload"/>
-            <SelectView v-model="selectedSource" :small="true">
-              <option value="">All source files</option>
+          <div
+            v-if="selectedOption==='source'"
+            class="contract-code-controls"
+          >
+            <DownloadButton @click="handleDownload" />
+            <SelectView
+              v-model="selectedSource"
+              :small="true"
+            >
+              <option value="">
+                All source files
+              </option>
               <optgroup label="Main contract file">
-                <option :value="contractFileName">{{ sourceFileName }}</option>
+                <option :value="contractFileName">
+                  {{ sourceFileName }}
+                </option>
               </optgroup>
               <optgroup label="Include files">
-                <option v-for="file in solidityFiles" v-bind:key="file.path"
-                        v-bind:value="file.name"
-                        v-show="isImportFile(file)">
+                <option
+                  v-for="file in solidityFiles"
+                  v-show="isImportFile(file)"
+                  :key="file.path"
+                  :value="file.name"
+                >
                   {{ relevantPath(file.path) }}
                 </option>
               </optgroup>
             </SelectView>
           </div>
-          <div v-else-if="selectedOption==='abi'" class="contract-code-controls">
+          <div
+            v-else-if="selectedOption==='abi'"
+            class="contract-code-controls"
+          >
             <template v-if="logicModeAvailable">
               <p>Show Logic Contract ABI</p>
-              <SwitchView v-model="showLogicABI"/>
+              <SwitchView v-model="showLogicABI" />
             </template>
-            <DownloadButton @click="handleDownloadABI"/>
-            <SelectView v-model="selectedType" :small="true">
-              <option :value="FragmentType.ALL">All definitions</option>
-              <option :value="FragmentType.READONLY">Read-only functions</option>
-              <option :value="FragmentType.READWRITE">Read-write functions</option>
-              <option :value="FragmentType.EVENTS">Events</option>
-              <option :value="FragmentType.ERRORS">Errors</option>
-              <option :value="FragmentType.OTHER">Other definitions</option>
+            <DownloadButton @click="handleDownloadABI" />
+            <SelectView
+              v-model="selectedType"
+              :small="true"
+            >
+              <option :value="FragmentType.ALL">
+                All definitions
+              </option>
+              <option :value="FragmentType.READONLY">
+                Read-only functions
+              </option>
+              <option :value="FragmentType.READWRITE">
+                Read-write functions
+              </option>
+              <option :value="FragmentType.EVENTS">
+                Events
+              </option>
+              <option :value="FragmentType.ERRORS">
+                Errors
+              </option>
+              <option :value="FragmentType.OTHER">
+                Other definitions
+              </option>
             </SelectView>
           </div>
         </div>
 
         <template v-if="selectedOption==='source'">
-          <ContractSourceValue :source-files="solidityFiles" :filter="selectedSource"/>
+          <ContractSourceValue
+            :source-files="solidityFiles"
+            :filter="selectedSource"
+          />
         </template>
 
         <template v-else-if="selectedOption==='bytecode'">
-          <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
+          <ContractByteCodeValue
+            :byte-code="byteCode"
+            :show-hexa-opcode="showHexaOpcode"
+          />
         </template>
 
         <template v-else>
-          <ContractAbiValue :abiController="abiController" :fragment-type="selectedType as FragmentType"/>
+          <ContractAbiValue
+            :abi-controller="abiController"
+            :fragment-type="selectedType as FragmentType"
+          />
         </template>
       </template>
       <template v-else>
-        <ContractByteCodeValue :byte-code="byteCode" :show-hexa-opcode="showHexaOpcode"/>
+        <ContractByteCodeValue
+          :byte-code="byteCode"
+          :show-hexa-opcode="showHexaOpcode"
+        />
       </template>
     </template>
   </DashboardCardV2>
 
   <ContractVerificationDialog
-      v-model:show-dialog="showVerifyDialog"
-      :contract-id="contractId"
-      v-on:verify-did-complete="verifyDidComplete"/>
-
+    v-model:show-dialog="showVerifyDialog"
+    :contract-id="contractId"
+    @verify-did-complete="verifyDidComplete"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

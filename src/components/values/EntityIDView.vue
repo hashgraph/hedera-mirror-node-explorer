@@ -5,19 +5,20 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div>
     <Copyable
-        :content-to-copy="props.id ?? ''"
-        :enable-copy="props.enableCopy"
+      :content-to-copy="props.id ?? ''"
+      :enable-copy="props.enableCopy"
     >
       <template #content>
         <span style="font-weight: bold">{{ props.id ?? "" }}</span>
       </template>
     </Copyable>
-    <span v-if="props.checksum" class="h-is-low-contrast">-{{ props.checksum }}</span>
+    <span
+      v-if="props.checksum"
+      class="h-is-low-contrast"
+    >-{{ props.checksum }}</span>
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

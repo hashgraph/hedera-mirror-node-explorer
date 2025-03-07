@@ -5,24 +5,25 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <MediaContent
-      :url="url"
-      :type="type"
-      :size="size"
-      :auto="false"
-      :no-anchor="noAnchor"
+    :url="url"
+    :type="type"
+    :size="size"
+    :auto="false"
+    :no-anchor="noAnchor"
   >
     <template #placeHolder>
-      <div class="icon mt-4" style="font-size: 50px">
-        <i class="fas fa-file"></i>
+      <div
+        class="icon mt-4"
+        style="font-size: 50px"
+      >
+        <i class="fas fa-file" />
       </div>
       <div class="place-holder-text">
         {{ type }}
       </div>
     </template>
   </MediaContent>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

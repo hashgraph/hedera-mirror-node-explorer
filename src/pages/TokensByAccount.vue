@@ -5,16 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Tokens by Account">
-
     <TokensSection
-        :account-id="props.accountId"
-        :full-page="true"
+      :account-id="props.accountId"
+      :full-page="true"
     />
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

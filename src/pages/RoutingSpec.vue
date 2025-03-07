@@ -5,34 +5,45 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Mirror Explorer Routes">
-
     <DashboardCardV2>
       <template #title>
         Mirror Explorer Routes
       </template>
       <template #content>
         <div
-            class="route"
-            v-for="(route, index) of routes"
-            :key="index"
-            @click="handleClick(index)">
+          v-for="(route, index) of routes"
+          :key="index"
+          class="route"
+          @click="handleClick(index)"
+        >
           <div class="trigger">
             <span>{{ route.title }}</span>
             <div class="route-subtitle">
-              <StringValue :string-value="route.subtitle"/>
-              <ChevronUp v-if="isOpen.includes(index)"/>
-              <ChevronDown v-if="!isOpen.includes(index)"/>
+              <StringValue :string-value="route.subtitle" />
+              <ChevronUp v-if="isOpen.includes(index)" />
+              <ChevronDown v-if="!isOpen.includes(index)" />
             </div>
           </div>
-          <hr v-if="isOpen.includes(index)" class="horizontal-line">
-          <div v-if="isOpen.includes(index)" class="route-content">
+          <hr
+            v-if="isOpen.includes(index)"
+            class="horizontal-line"
+          >
+          <div
+            v-if="isOpen.includes(index)"
+            class="route-content"
+          >
             {{ route.description }}
-            <div v-if="route.data" class="route-data">
+            <div
+              v-if="route.data"
+              class="route-data"
+            >
               Data Displayed:
               <div class="route-data-items">
-                <div v-for="d of route.data" :key="d">
+                <div
+                  v-for="d of route.data"
+                  :key="d"
+                >
                   {{ d }}
                 </div>
               </div>
@@ -41,9 +52,7 @@
         </div>
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <script setup lang="ts">

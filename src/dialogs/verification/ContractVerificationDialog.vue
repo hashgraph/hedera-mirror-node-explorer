@@ -5,13 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <TaskDialog :controller="controller" @task-dialog-did-succeed="emit('verifyDidComplete')">
-
+  <TaskDialog
+    :controller="controller"
+    @task-dialog-did-succeed="emit('verifyDidComplete')"
+  >
     <!-- title -->
-    <template #taskDialogTitle>{{ dialogTitle }}</template>
+    <template #taskDialogTitle>
+      {{ dialogTitle }}
+    </template>
 
     <!-- execute label -->
-    <template #taskExecuteLabel>VERIFY</template>
+    <template #taskExecuteLabel>
+      VERIFY
+    </template>
 
     <!-- input -->
     <template #taskDialogInput>
@@ -25,30 +31,40 @@
         <div class="has-text-centered h-is-bold mb-2">
           Contract files
         </div>
-        <div class="h-is-low-contrast mb-4 has-text-centered" style="font-size: 14px">
+        <div
+          class="h-is-low-contrast mb-4 has-text-centered"
+          style="font-size: 14px"
+        >
           {{ controller.status.value }}
         </div>
-        <div class="dotted-area" @drop="handleDrop" @dragover="handleDragOver">
+        <div
+          class="dotted-area"
+          @drop="handleDrop"
+          @dragover="handleDragOver"
+        >
           <template v-if="items.length >= 1">
-            <FileList :audit-items="items" @clear-all-files="controller.handleClearAllFiles()"/>
+            <FileList
+              :audit-items="items"
+              @clear-all-files="controller.handleClearAllFiles()"
+            />
           </template>
           <template v-else>
             <div class="inline-help">
-              <FilePlus :size="24"/>
+              <FilePlus :size="24" />
               <span>Drop .sol and .json files, or folder here... or
                 <a @click="showFileChooser">
                   <span style="margin-left: 0.5rem; color: var(--network-text-accent-color); cursor: pointer">Choose files</span>
                 </a>
               </span>
               <input
-                  type="file"
-                  ref="fileChooser"
-                  id="file-chooser"
-                  accept=".json, .sol"
-                  multiple
-                  style="display: none"
-                  @change="handleFileSelected"
-              />
+                id="file-chooser"
+                ref="fileChooser"
+                type="file"
+                accept=".json, .sol"
+                multiple
+                style="display: none"
+                @change="handleFileSelected"
+              >
             </div>
           </template>
         </div>
@@ -63,15 +79,23 @@
     <!-- busy -->
     <template #taskDialogBusy>
       <TaskPanel :mode="TaskPanelMode.busy">
-        <template #taskPanelMessage>Verifying {{ controller.matchingContractName.value }} contract…</template>
+        <template #taskPanelMessage>
+          Verifying {{ controller.matchingContractName.value }} contract…
+        </template>
       </TaskPanel>
     </template>
 
     <!-- success -->
     <template #taskDialogSuccess>
       <TaskPanel :mode="TaskPanelMode.success">
-        <template #taskPanelMessage>{{ controller.mainSuccessMessage.value }}</template>
-        <template v-if="controller.extraSuccessMessage.value" #taskPanelExtra1>{{
+        <template #taskPanelMessage>
+          {{ controller.mainSuccessMessage.value }}
+        </template>
+        <template
+          v-if="controller.extraSuccessMessage.value"
+          #taskPanelExtra1
+        >
+          {{
             controller.extraSuccessMessage.value
           }}
         </template>
@@ -81,8 +105,13 @@
     <!-- error -->
     <template #taskDialogError>
       <TaskPanel :mode="TaskPanelMode.error">
-        <template #taskPanelMessage>Verification failed</template>
-        <template v-if="controller.extraErrorMessage.value !== null" #taskPanelExtra1>
+        <template #taskPanelMessage>
+          Verification failed
+        </template>
+        <template
+          v-if="controller.extraErrorMessage.value !== null"
+          #taskPanelExtra1
+        >
           {{ controller.extraErrorMessage.value }}
         </template>
       </TaskPanel>
@@ -90,23 +119,23 @@
 
     <!-- feedback -->
     <template #taskDialogControls>
-      <ButtonView :size="ButtonSize.small"
-                  :class="{'is-invisible': items.length === 0}"
-                  @action="showFileChooser">
+      <ButtonView
+        :size="ButtonSize.small"
+        :class="{'is-invisible': items.length === 0}"
+        @action="showFileChooser"
+      >
         ADD MORE FILES
       </ButtonView>
       <input
-          type="file"
-          ref="fileChooser"
-          id="file-chooser"
-          accept=".json, .sol"
-          multiple
-          style="display: none"
-          @change="handleFileSelected"
-      />
+        id="file-chooser"
+        ref="fileChooser"
+        type="file"
+        accept=".json, .sol"
+        multiple
+        style="display: none"
+        @change="handleFileSelected"
+      >
     </template>
-
-
   </TaskDialog>
 </template>
 

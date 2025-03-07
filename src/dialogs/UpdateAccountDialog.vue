@@ -6,29 +6,36 @@
 
 <template>
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="emit('updated')">
-
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="emit('updated')"
+  >
     <!-- title -->
     <template #transactionDialogTitle>
-      <template v-if="props.stakingOnly">Change Staking</template>
-      <template v-else>Account Update</template>
+      <template v-if="props.stakingOnly">
+        Change Staking
+      </template>
+      <template v-else>
+        Account Update
+      </template>
     </template>
 
-    <template #transactionExecutionLabel>UPDATE</template>
+    <template #transactionExecutionLabel>
+      UPDATE
+    </template>
 
     <template #transactionDialogInput>
-
       <template v-if="!props.stakingOnly">
-
         <!-- Account Memo -->
         <ContentCell>
-          <template #cellTitle>Account Memo</template>
+          <template #cellTitle>
+            Account Memo
+          </template>
           <template #cellContent>
-            <TextFieldView v-model="memoInputText"
-                           placeholder="Memo (string)"
-                           style="width: 100%"
+            <TextFieldView
+              v-model="memoInputText"
+              placeholder="Memo (string)"
+              style="width: 100%"
             />
           </template>
         </ContentCell>
@@ -36,78 +43,97 @@
 
         <!-- Auto Renew Period -->
         <ContentCell>
-
           <template #cellTitle>
             Auto Renew Period
             <InfoTooltip
-                label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
+              label="Account auto-renew is not turned on yet. This value is not taken into account for the time being."
             />
           </template>
 
           <template #cellContent>
             <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
-              <TextFieldView v-model="selectedAutoRenewPeriod"
-                             id="selectedAutoRenewPeriod"
-                             placeholder="> 0"
-                             type="number"
-                             min="1"
-                             step="1"
-                             style="width: 100%"
+              <TextFieldView
+                id="selectedAutoRenewPeriod"
+                v-model="selectedAutoRenewPeriod"
+                placeholder="> 0"
+                type="number"
+                min="1"
+                step="1"
+                style="width: 100%"
               />
-              <SelectView v-model="selectedUnit" width="100%">
-                <option v-for="p in PeriodUnit" :key="p" :value="p"
-                        style="background-color: var(--h-theme-page-background-color)">
+              <SelectView
+                v-model="selectedUnit"
+                width="100%"
+              >
+                <option
+                  v-for="p in PeriodUnit"
+                  :key="p"
+                  :value="p"
+                  style="background-color: var(--h-theme-page-background-color)"
+                >
                   {{ p }}
                 </option>
               </SelectView>
             </div>
           </template>
-
         </ContentCell>
 
-        <hr style="width: 100%;" />
+        <hr style="width: 100%;">
 
         <!-- Max. Auto. Associations -->
         <ContentCell>
-
           <template #cellTitle>
             Max. Auto. Associations
-            <span class="ml-1"/>
+            <span class="ml-1" />
             <InfoTooltip
-                label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
+              label="Max.Auto.Associations sets the amount of available airdrop slots. Unlimited(-1), Limited(>0), No airdrop slots(0)."
             />
           </template>
 
           <template #cellContent>
             <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
-              <SelectView v-model="autoAssociationMode" width="100%">
-                <option :key="0" :value="AutoAssociationMode.NoAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+              <SelectView
+                v-model="autoAssociationMode"
+                width="100%"
+              >
+                <option
+                  :key="0"
+                  :value="AutoAssociationMode.NoAutoAssociation"
+                  style="background-color: var(--h-theme-page-background-color)"
+                >
                   No Automatic Association
                 </option>
-                <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option
+                  :key="1"
+                  :value="AutoAssociationMode.LimitedAutoAssociation"
+                  style="background-color: var(--h-theme-page-background-color)"
+                >
                   Limited Automatic Association
                 </option>
-                <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option
+                  :key="-1"
+                  :value="AutoAssociationMode.UnlimitedAutoAssociation"
+                  style="background-color: var(--h-theme-page-background-color)"
+                >
                   Unlimited Automatic Association
                 </option>
               </SelectView>
-              <TextFieldView v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
-                             style="width: 100px"
-                             :style="{'visibility': autoAssociationMode!==AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'inherit'}"
-                             v-model="maxAutoAssociationInputText"
-                             placeholder="> 0"
-                             type="number"
-                             min="1"
-                             step="1"
+              <TextFieldView
+                v-if="autoAssociationMode==AutoAssociationMode.LimitedAutoAssociation"
+                v-model="maxAutoAssociationInputText"
+                style="width: 100px"
+                :style="{'visibility': autoAssociationMode!==AutoAssociationMode.LimitedAutoAssociation ? 'hidden' : 'inherit'}"
+                placeholder="> 0"
+                type="number"
+                min="1"
+                step="1"
               />
             </div>
           </template>
-
         </ContentCell>
 
         <!-- Receiver Signature Required -->
         <ContentCell direction="horizontal">
-
           <template #cellTitle>
             <div>
               Receiver Signature Required
@@ -115,43 +141,64 @@
           </template>
 
           <template #cellContent>
-            <SwitchView v-model="newRecSigRequired"/>
+            <SwitchView v-model="newRecSigRequired" />
           </template>
-
         </ContentCell>
-
       </template>
 
       <template v-if="enableStaking">
-
-        <hr style="width: 100%;" />
+        <hr style="width: 100%;">
 
         <!-- Staking Choice -->
         <ContentCell>
-
-          <template #cellTitle>Staking</template>
+          <template #cellTitle>
+            Staking
+          </template>
 
           <template #cellContent>
             <div style="display: flex; column-gap: 12px">
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice">To Node</RabioBoxView>
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice">To Account</RabioBoxView>
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice">Not Staking</RabioBoxView>
+              <RabioBoxView
+                v-model="stakeChoice"
+                name="stakeTarget"
+                :value="StakeChoice.StakeToNode"
+              >
+                To Node
+              </RabioBoxView>
+              <RabioBoxView
+                v-model="stakeChoice"
+                name="stakeTarget"
+                :value="StakeChoice.StakeToAccount"
+              >
+                To Account
+              </RabioBoxView>
+              <RabioBoxView
+                v-model="stakeChoice"
+                name="stakeTarget"
+                :value="StakeChoice.NotStaking"
+              >
+                Not Staking
+              </RabioBoxView>
             </div>
           </template>
-
         </ContentCell>
 
         <StackView :visible-index="visibleIndex">
-
           <div style="display: flex; flex-direction: column; row-gap: 12px">
-
             <!-- Staked Node ID -->
             <ContentCell>
-              <template #cellTitle>Staked Node ID</template>
+              <template #cellTitle>
+                Staked Node ID
+              </template>
               <template #cellContent>
-                <SelectView v-model="newStakedNodeId" style="width: 100%">
-                  <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
-                          style="background-color: var(--h-theme-page-background-color)"
+                <SelectView
+                  v-model="newStakedNodeId"
+                  style="width: 100%"
+                >
+                  <option
+                    v-for="n in nodes"
+                    :key="n.node_id"
+                    :value="n.node_id"
+                    style="background-color: var(--h-theme-page-background-color)"
                   >
                     {{ makeNodeSelectorDescription(n) }}
                   </option>
@@ -161,40 +208,41 @@
 
             <!-- Decline Rewards -->
             <ContentCell direction="horizontal">
-              <template #cellTitle>Decline Rewards</template>
+              <template #cellTitle>
+                Decline Rewards
+              </template>
               <template #cellContent>
-                <SwitchView v-model="newDeclineReward"/>
+                <SwitchView v-model="newDeclineReward" />
               </template>
             </ContentCell>
-
           </div>
 
 
           <ContentCell>
-
-            <template #cellTitle>Staked Account ID</template>/>
+            <template #cellTitle>
+              Staked Account ID
+            </template>/>
 
             <template #cellContent>
               <div style="display:flex; align-items: center; width: 100%">
-                <TextFieldView v-model="stakedAccountIdInputText" placeholder="Account ID (0.0.1234)" style="width: 100%"/>
+                <TextFieldView
+                  v-model="stakedAccountIdInputText"
+                  placeholder="Account ID (0.0.1234)"
+                  style="width: 100%"
+                />
               </div>
             </template>
-
           </ContentCell>
 
-          <div/>
-
+          <div />
         </StackView>
-
-
       </template>
-
     </template>
 
-    <template #transactionDialogControls>{{ feedbackMessage ?? ""}}</template>
-
+    <template #transactionDialogControls>
+      {{ feedbackMessage ?? "" }}
+    </template>
   </TransactionDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

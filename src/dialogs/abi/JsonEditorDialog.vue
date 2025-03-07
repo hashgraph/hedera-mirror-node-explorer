@@ -5,23 +5,33 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <ModalDialog v-model:show-dialog="showDialog">
-
-    <template #modalDialogTitle>{{ dialogTitle }}</template>
+    <template #modalDialogTitle>
+      {{ dialogTitle }}
+    </template>
 
     <template #modalDialogContent>
-      <div style="margin-bottom: 1em">{{ typeDeclaration }}</div>
-      <TextAreaView style="width: 728px; height: 100px; margin-bottom: 16px" v-model="currentText"/>
+      <div style="margin-bottom: 1em">
+        {{ typeDeclaration }}
+      </div>
+      <TextAreaView
+        v-model="currentText"
+        style="width: 728px; height: 100px; margin-bottom: 16px"
+      />
     </template>
 
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="showDialog">CANCEL</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showDialog" :enabled="isValidText">OK</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog">
+        CANCEL
+      </ModalDialogButton>
+      <ModalDialogButton
+        v-model:show-dialog="showDialog"
+        :enabled="isValidText"
+      >
+        OK
+      </ModalDialogButton>
     </template>
-
   </ModalDialog>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -112,4 +122,4 @@ onBeforeUnmount(() => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

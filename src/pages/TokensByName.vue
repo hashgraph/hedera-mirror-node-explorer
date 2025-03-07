@@ -5,20 +5,16 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Tokens by Name">
-
     <DashboardCardV2>
       <template #title>
         {{ `Tokens matching "${props.name}"` }}
       </template>
       <template #content>
-        <TokensByNameTable :name="props.name"/>
+        <TokensByNameTable :name="props.name" />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -46,4 +42,4 @@ const props = defineProps({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

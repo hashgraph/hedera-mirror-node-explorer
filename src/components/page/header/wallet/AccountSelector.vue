@@ -5,17 +5,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <SelectView
-      v-model="selected"
-      :border-visible="false"
-      data-cy="select-page-size"
+    v-model="selected"
+    :border-visible="false"
+    data-cy="select-page-size"
   >
-    <template v-for="accountId in props.accountIds" :key="accountId">
-      <option class="account-selector-option" :value="accountId">{{ accountId }}</option>
+    <template
+      v-for="accountId in props.accountIds"
+      :key="accountId"
+    >
+      <option
+        class="account-selector-option"
+        :value="accountId"
+      >
+        {{ accountId }}
+      </option>
     </template>
   </SelectView>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -34,7 +40,7 @@ const selected = defineModel({
 
 const props = defineProps({
   accountIds: {
-    type: Array as PropType<String[]>,
+    type: Array as PropType<string[]>,
     required: true
   }
 })

@@ -6,35 +6,40 @@
 
 <template>
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
   >
+    <template #transactionDialogTitle>
+      {{ transactionTitle }}
+    </template>
 
-    <template #transactionDialogTitle>{{ transactionTitle }}</template>
-
-    <template #transactionExecutionLabel>APPROVE</template>
+    <template #transactionExecutionLabel>
+      APPROVE
+    </template>
 
     <template #transactionDialogInput>
-
       <ContentCell>
-        <template #cellTitle>Token Amount</template>
+        <template #cellTitle>
+          Token Amount
+        </template>
         <template #cellContent>
           <TextFieldView
-              v-model="tokenAmountInput"
-              placeholder="Token Amount"
-              style="width: 100%"/>
+            v-model="tokenAmountInput"
+            placeholder="Token Amount"
+            style="width: 100%"
+          />
         </template>
       </ContentCell>
-
     </template>
 
     <template #transactionDialogConfirm>
       Do you want to approve an allowance for {{ allowanceSpec }}
     </template>
 
-    <template #transactionDialogControls>{{ feedbackMessage }}</template>
-
+    <template #transactionDialogControls>
+      {{ feedbackMessage }}
+    </template>
   </TransactionDialog>
 </template>
 

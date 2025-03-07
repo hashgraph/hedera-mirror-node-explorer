@@ -6,28 +6,44 @@
 
 <template>
   <DropdownPanel
-      v-model:deployed="showSearchDropdown"
-      background-color="var(--border-secondary)"
-      :stretched="true">
+    v-model:deployed="showSearchDropdown"
+    background-color="var(--border-secondary)"
+    :stretched="true"
+  >
     <template #button>
-      <form data-cy="searchBar" id="searchBar" action=""
-            v-on:submit.prevent="handleSubmit">
+      <form
+        id="searchBar"
+        data-cy="searchBar"
+        action=""
+        @submit.prevent="handleSubmit"
+      >
         <input
-            type="text"
-            spellcheck="false"
-            placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
-            v-model="searchedText"
-            ref="inputElement"
-            :size="isMediumScreen ? props.size : undefined"
-            style="width: 100%; text-overflow: ellipsis;"
-        />
-        <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none" >
-          <Search :size="18" style="color: var(--network-button-text-color); margin-top: 4px;"/>
+          ref="inputElement"
+          v-model="searchedText"
+          type="text"
+          spellcheck="false"
+          placeholder="Search by ID / Address / Domain Name / Public Key / Hash / Alias / Timestamp"
+          :size="isMediumScreen ? props.size : undefined"
+          style="width: 100%; text-overflow: ellipsis;"
+        >
+        <button
+          type="submit"
+          value="searchBar"
+          :disabled="submitDisabled"
+          style="flex: none"
+        >
+          <Search
+            :size="18"
+            style="color: var(--network-button-text-color); margin-top: 4px;"
+          />
         </button>
       </form>
     </template>
     <template #panel>
-      <SearchDropdown :search-controller="searchController" v-model:selected-agent-id="selectedAgentId"/>
+      <SearchDropdown
+        v-model:selected-agent-id="selectedAgentId"
+        :search-controller="searchController"
+      />
     </template>
   </DropdownPanel>
 </template>

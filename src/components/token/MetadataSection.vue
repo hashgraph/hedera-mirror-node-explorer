@@ -5,130 +5,203 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <DashboardCardV2
-      id="metadata-section"
-      collapsible-key="metadataSection"
-      :collapsed="true"
+    id="metadata-section"
+    collapsible-key="metadataSection"
+    :collapsed="true"
   >
     <template #title>
       Metadata Details
     </template>
 
     <template #right-control>
-      <div v-if="metadataString" id="raw-metadata-checkbox">
-        <input type="checkbox" v-model="showRawMetadata" name="raw-metadata-checkbox"/>
+      <div
+        v-if="metadataString"
+        id="raw-metadata-checkbox"
+      >
+        <input
+          v-model="showRawMetadata"
+          type="checkbox"
+          name="raw-metadata-checkbox"
+        >
         <label for="raw-metadata-checkbox">Raw content</label>
       </div>
     </template>
 
     <template #content>
-      <Property id="raw-metadata-property" full-width>
+      <Property
+        id="raw-metadata-property"
+        full-width
+      >
         <template #name>
           Raw Metadata
         </template>
         <template #value>
-          <BlobValue :blob-value="rawMetadata" :show-none="true"/>
+          <BlobValue
+            :blob-value="rawMetadata"
+            :show-none="true"
+          />
         </template>
       </Property>
-      <Property v-if="rawMetadata" id="metadata-location" full-width>
-        <template #name>Content Location</template>
+      <Property
+        v-if="rawMetadata"
+        id="metadata-location"
+        full-width
+      >
+        <template #name>
+          Content Location
+        </template>
         <template #value>
           <BlobValue
-              class="is-inline-block"
-              :blob-value="metadata"
-              :show-none="true"
+            class="is-inline-block"
+            :blob-value="metadata"
+            :show-none="true"
           />
           <InfoTooltip
-              v-if="metadataWarning || metadataInfo"
-              :warning-label="metadataWarning"
-              :label="metadataInfo"
-              class="ml-2"
+            v-if="metadataWarning || metadataInfo"
+            :warning-label="metadataWarning"
+            :label="metadataInfo"
+            class="ml-2"
           />
         </template>
       </Property>
 
       <template v-if="showRawMetadata">
-        <Property id="raw-content" full-width>
+        <Property
+          id="raw-content"
+          full-width
+        >
           <template #name>
             Content
           </template>
           <template #value>
             <BlobValue
-                :blob-value="metadataString"
-                :pretty="true"
+              :blob-value="metadataString"
+              :pretty="true"
             />
           </template>
         </Property>
       </template>
 
       <template v-else>
-        <Property v-if="format" id="format" full-width>
+        <Property
+          v-if="format"
+          id="format"
+          full-width
+        >
           <template #name>
             Format
           </template>
           <template #value>
-            <BlobValue :blob-value="format" :show-none="true"/>
+            <BlobValue
+              :blob-value="format"
+              :show-none="true"
+            />
           </template>
         </Property>
-        <Property v-if="image" id="image" full-width>
+        <Property
+          v-if="image"
+          id="image"
+          full-width
+        >
           <template #name>
             Image
           </template>
           <template #value>
-            <BlobValue :blob-value="image" :show-none="true"/>
+            <BlobValue
+              :blob-value="image"
+              :show-none="true"
+            />
           </template>
         </Property>
-        <Property v-if="type" id="type" full-width>
+        <Property
+          v-if="type"
+          id="type"
+          full-width
+        >
           <template #name>
             Type
           </template>
           <template #value>
-            <BlobValue :blob-value="type" :show-none="true"/>
+            <BlobValue
+              :blob-value="type"
+              :show-none="true"
+            />
           </template>
         </Property>
-        <Property v-if="checksum" id="checksum" full-width>
+        <Property
+          v-if="checksum"
+          id="checksum"
+          full-width
+        >
           <template #name>
             Checksum
           </template>
           <template #value>
-            <BlobValue :blob-value="checksum" :show-none="true"/>
+            <BlobValue
+              :blob-value="checksum"
+              :show-none="true"
+            />
           </template>
         </Property>
-        <Property v-if="creatorDID" id="creator-did" full-width>
+        <Property
+          v-if="creatorDID"
+          id="creator-did"
+          full-width
+        >
           <template #name>
             Creator DID
           </template>
           <template #value>
-            <BlobValue :blob-value="creatorDID" :show-none="true"/>
+            <BlobValue
+              :blob-value="creatorDID"
+              :show-none="true"
+            />
           </template>
         </Property>
-        <Property v-if="properties" id="properties" full-width>
+        <Property
+          v-if="properties"
+          id="properties"
+          full-width
+        >
           <template #name>
             Properties
           </template>
           <template #value>
-            <BlobValue :blob-value="properties" :pretty="true" :show-none="true"/>
+            <BlobValue
+              :blob-value="properties"
+              :pretty="true"
+              :show-none="true"
+            />
           </template>
         </Property>
 
         <template v-if="attributes.length">
-          <template v-for="attr in attributes" :key="attr.trait_type">
-            <NftAttribute :attribute="attr"/>
+          <template
+            v-for="attr in attributes"
+            :key="attr.trait_type"
+          >
+            <NftAttribute :attribute="attr" />
           </template>
         </template>
 
         <template v-if="files.length">
           <Property full-width>
-            <template #name>Files</template>
+            <template #name>
+              Files
+            </template>
             <template #value>
-              <div id="file-container-area" class="file-container">
+              <div
+                id="file-container-area"
+                class="file-container"
+              >
                 <NftFile
-                    v-for="(file) in files" :key="file.uri"
-                    class="file-container-item mt-1"
-                    :type="file.type"
-                    :url="file.url"
-                    :size="200"
+                  v-for="(file) in files"
+                  :key="file.uri"
+                  class="file-container-item mt-1"
+                  :type="file.type"
+                  :url="file.url"
+                  :size="200"
                 />
               </div>
             </template>
@@ -137,7 +210,6 @@
       </template>
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

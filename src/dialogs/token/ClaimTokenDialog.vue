@@ -5,23 +5,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <TransactionDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-did-execute="transactionDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-did-execute="transactionDidExecute"
   >
+    <template #transactionDialogTitle>
+      Claim Token
+    </template>
 
-    <template #transactionDialogTitle>Claim Token</template>
-
-    <template #transactionExecutionLabel>CLAIM</template>
+    <template #transactionExecutionLabel>
+      CLAIM
+    </template>
 
     <template #transactionDialogInput>
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Claim token {{ tokenId }} airdropped to account {{ accountId }} ?</template>
+        <template #taskPanelMessage>
+          Claim token {{ tokenId }} airdropped to account {{ accountId }} ?
+        </template>
       </TaskPanel>
     </template>
-
   </TransactionDialog>
 </template>
 

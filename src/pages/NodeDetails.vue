@@ -5,11 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Node Details">
-
-    <template v-if="notification" #banner>
-      <NotificationBanner :message="notification"/>
+    <template
+      v-if="notification"
+      #banner
+    >
+      <NotificationBanner :message="notification" />
     </template>
 
     <DashboardCardV2>
@@ -19,129 +20,181 @@
 
       <template #left-content>
         <Property id="nodeAccount">
-          <template #name>Node Account</template>
+          <template #name>
+            Node Account
+          </template>
           <template #value>
-            <AccountLink :accountId="node?.node_account_id"/>
+            <AccountLink :account-id="node?.node_account_id" />
           </template>
         </Property>
         <Property id="description">
-          <template #name>Description</template>
+          <template #name>
+            Description
+          </template>
           <template #value>
-            <BlobValue :base64="false" :blob-value="nodeDescription" :show-none="true"/>
+            <BlobValue
+              :base64="false"
+              :blob-value="nodeDescription"
+              :show-none="true"
+            />
           </template>
         </Property>
         <Property id="file">
-          <template #name>Address Book File</template>
+          <template #name>
+            Address Book File
+          </template>
           <template #value>
-            <StringValue :string-value="node?.file_id"/>
+            <StringValue :string-value="node?.file_id" />
           </template>
         </Property>
         <Property id="rangeFrom">
-          <template #name>Node existed since</template>
+          <template #name>
+            Node existed since
+          </template>
           <template #value>
-            <TimestampValue :show-none="true" :timestamp="node?.timestamp?.from"/>
+            <TimestampValue
+              :show-none="true"
+              :timestamp="node?.timestamp?.from"
+            />
           </template>
         </Property>
         <Property id="rangeTo">
-          <template #name>Node expiry date</template>
+          <template #name>
+            Node expiry date
+          </template>
           <template #value>
-            <TimestampValue :show-none="true" :timestamp="node?.timestamp?.to"/>
+            <TimestampValue
+              :show-none="true"
+              :timestamp="node?.timestamp?.to"
+            />
           </template>
         </Property>
         <Property id="serviceEndpoints">
-          <template #name>Service Endpoints</template>
+          <template #name>
+            Service Endpoints
+          </template>
           <template #value>
-            <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
+            <Endpoints :endpoints="node?.service_endpoints" />
           </template>
         </Property>
         <template v-if="enableStaking">
           <Property id="publicKey">
-            <template #name>Public Key</template>
+            <template #name>
+              Public Key
+            </template>
             <template #value>
-              <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
+              <KeyValue
+                :key-bytes="node?.public_key"
+                :show-none="true"
+                key-type="RSA"
+              />
             </template>
           </Property>
           <Property id="nodeCertHash">
-            <template #name>Certificate Hash</template>
+            <template #name>
+              Certificate Hash
+            </template>
             <template #value>
-              <HexaValue :byteString="formattedHash" :show-none="true"/>
+              <HexaValue
+                :byte-string="formattedHash"
+                :show-none="true"
+              />
             </template>
           </Property>
         </template>
       </template>
 
-      <template v-if="enableStaking" #right-content>
+      <template
+        v-if="enableStaking"
+        #right-content
+      >
         <div class="dashboard-items">
           <NetworkDashboardItemV2
-              id="yearlyRate"
-              title="Last Period Reward Rate"
-              :value="annualizedRate.toString()"
-              unit="APPROX ANNUAL EQUIVALENT"
+            id="yearlyRate"
+            title="Last Period Reward Rate"
+            :value="annualizedRate.toString()"
+            unit="APPROX ANNUAL EQUIVALENT"
           />
           <NetworkDashboardItemV2
-              id="consensusStake"
-              title="Stake for Consensus"
-              :value="makeFloorHbarAmount(stake)"
-              :unit=cryptoName
-              :info-label="stakeLabel"
-              :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
+            id="consensusStake"
+            title="Stake for Consensus"
+            :value="makeFloorHbarAmount(stake)"
+            :unit="cryptoName"
+            :info-label="stakeLabel"
+            :extra="stake > 0 ? `${stakePercentage} of total` : undefined"
           />
           <NetworkDashboardItemV2
-              id="rewarded"
-              title="Staked for Reward"
-              :value="makeFloorHbarAmount(stakeRewarded)"
-              :unit=cryptoName
-              :extra="`${stakeRewardedPercentage}% of total`"
+            id="rewarded"
+            title="Staked for Reward"
+            :value="makeFloorHbarAmount(stakeRewarded)"
+            :unit="cryptoName"
+            :extra="`${stakeRewardedPercentage}% of total`"
           />
           <NetworkDashboardItemV2
-              id="notRewarded"
-              title="Staked For No Reward"
-              :value="makeFloorHbarAmount(stakeUnrewarded)"
-              :unit=cryptoName
-              :extra="`${stakeUnrewardedPercentage}% of total`"
+            id="notRewarded"
+            title="Staked For No Reward"
+            :value="makeFloorHbarAmount(stakeUnrewarded)"
+            :unit="cryptoName"
+            :extra="`${stakeUnrewardedPercentage}% of total`"
           />
           <NetworkDashboardItemV2
-              id="minStake"
-              title="Min Stake"
-              :value="makeFloorHbarAmount(minStake)"
-              :unit=cryptoName
+            id="minStake"
+            title="Min Stake"
+            :value="makeFloorHbarAmount(minStake)"
+            :unit="cryptoName"
           />
           <NetworkDashboardItemV2
-              id="maxStake"
-              title="Max Stake"
-              :value="makeFloorHbarAmount(maxStake)"
-              :unit=cryptoName
+            id="maxStake"
+            title="Max Stake"
+            :value="makeFloorHbarAmount(maxStake)"
+            :unit="cryptoName"
           />
           <NetworkDashboardItemV2
-              title="Current Staking Period"
-              id="stakingPeriod"
-              value="24"
-              unit="HOURS"
-              extra="from 00:00 am today to 11:59 pm today UTC"
+            id="stakingPeriod"
+            title="Current Staking Period"
+            value="24"
+            unit="HOURS"
+            extra="from 00:00 am today to 11:59 pm today UTC"
           />
         </div>
       </template>
 
-      <template v-else #right-content>
+      <template
+        v-else
+        #right-content
+      >
         <Property id="publicKey">
-          <template #name>Public Key</template>
+          <template #name>
+            Public Key
+          </template>
           <template #value>
-            <KeyValue :key-bytes="node?.public_key" :show-none="true" key-type="RSA"/>
+            <KeyValue
+              :key-bytes="node?.public_key"
+              :show-none="true"
+              key-type="RSA"
+            />
           </template>
         </Property>
         <Property id="nodeCertHash">
-          <template #name>Certificate Hash</template>
+          <template #name>
+            Certificate Hash
+          </template>
           <template #value>
-            <HexaDumpValue :byteString="formattedHash" :show-none="true"/>
+            <HexaDumpValue
+              :byte-string="formattedHash"
+              :show-none="true"
+            />
           </template>
         </Property>
       </template>
     </DashboardCardV2>
 
-    <MirrorLink :network="props.network" entityUrl="network/nodes" :query="`node.id=${props.nodeId}`"/>
-
+    <MirrorLink
+      :network="props.network"
+      entity-url="network/nodes"
+      :query="`node.id=${props.nodeId}`"
+    />
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

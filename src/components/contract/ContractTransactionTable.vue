@@ -5,62 +5,84 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="transactions"
-      :loading="loading"
-      :paginated="paginated"
-      backend-pagination
-      pagination-order="left"
-      :range-before="0"
-      :range-after="0"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="transactions"
+    :loading="loading"
+    :paginated="paginated"
+    backend-pagination
+    pagination-order="left"
+    :range-before="0"
+    :range-after="0"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="true"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
-      default-sort="consensus_timestamp"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="consensus_timestamp"
+    @cell-click="handleClick"
+    default-sort="consensus_timestamp"
   >
-
-    <o-table-column v-slot="props" field="transaction_id" label="ID">
-      <TransactionLabel v-bind:transaction-id="props.row.transaction_id" v-bind:result="props.row.result"/>
+    <o-table-column
+      v-slot="props"
+      field="transaction_id"
+      label="ID"
+    >
+      <TransactionLabel
+        :transaction-id="props.row.transaction_id"
+        :result="props.row.result"
+      />
     </o-table-column>
 
-    <o-table-column field="name" label="Type" v-slot="props">
-      <div class="h-has-pill" style="display: inline-block">
+    <o-table-column
+      v-slot="props"
+      field="name"
+      label="Type"
+    >
+      <div
+        class="h-has-pill"
+        style="display: inline-block"
+      >
         <div>{{ makeTypeLabel(props.row.name) }}</div>
       </div>
     </o-table-column>
 
-    <o-table-column field="transfers" label="Net Amount" v-slot="props">
+    <o-table-column
+      v-slot="props"
+      field="transfers"
+      label="Net Amount"
+    >
       <span v-if="showPositiveNetAmount(props.row)">
-        <HbarAmount v-bind:amount="computeNetAmount(props.row.transfers, props.row.charged_tx_fee)"/>
+        <HbarAmount :amount="computeNetAmount(props.row.transfers, props.row.charged_tx_fee)" />
       </span>
     </o-table-column>
 
-    <o-table-column field="fees" label="Fees" v-slot="props">
-      <HbarAmount v-bind:amount="props.row.charged_tx_fee"/>
+    <o-table-column
+      v-slot="props"
+      field="fees"
+      label="Fees"
+    >
+      <HbarAmount :amount="props.row.charged_tx_fee" />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="consensus_timestamp" label="Time">
-      <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="consensus_timestamp"
+      label="Time"
+    >
+      <TimestampValue :timestamp="props.row.consensus_timestamp" />
     </o-table-column>
-
   </o-table>
 
-  <EmptyTable v-if="!transactions.length"/>
-
+  <EmptyTable v-if="!transactions.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

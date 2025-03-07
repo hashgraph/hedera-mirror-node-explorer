@@ -6,45 +6,68 @@
 
 <template>
   <div class="chart-view">
-
     <div class="chart-view-header">
       <div class="chart-view-header-left">
         <div>{{ controller.chartTitle }}</div>
-        <div v-if="$slots.chartViewExtra" class="chart-view-extra">
-          <slot name="chartViewExtra"/>
+        <div
+          v-if="$slots.chartViewExtra"
+          class="chart-view-extra"
+        >
+          <slot name="chartViewExtra" />
         </div>
       </div>
       <div class="chart-view-header-right">
-        <RangeSelectView :controller="props.controller"/>
+        <RangeSelectView :controller="props.controller" />
       </div>
     </div>
 
-    <div class="chart-view-container" :style="{height: props.height + 'px'}">
-
+    <div
+      class="chart-view-container"
+      :style="{height: props.height + 'px'}"
+    >
       <template v-if="state === ChartState.unsupported">
-        <div class="unsupported">This chart is not supported for this network</div>
+        <div class="unsupported">
+          This chart is not supported for this network
+        </div>
       </template>
 
       <template v-if="state === ChartState.loading">
-        <div class="building">Loading data</div>
+        <div class="building">
+          Loading data
+        </div>
       </template>
 
       <template v-else-if="state === ChartState.error">
         <TaskPanel :mode="TaskPanelMode.error">
-          <template #taskPanelMessage>Chart data are not available</template>
-          <template v-if="errorExtra" #taskPanelExtra1>{{ errorExtra }}</template>
+          <template #taskPanelMessage>
+            Chart data are not available
+          </template>
+          <template
+            v-if="errorExtra"
+            #taskPanelExtra1
+          >
+            {{ errorExtra }}
+          </template>
         </TaskPanel>
       </template>
 
       <template v-else-if="state == ChartState.empty">
-        <div class="unsupported">No data for this time range</div>
-        <div v-if="latestMetricDate" class="unsupported">(latest measure on {{ latestMetricDate }})</div>
+        <div class="unsupported">
+          No data for this time range
+        </div>
+        <div
+          v-if="latestMetricDate"
+          class="unsupported"
+        >
+          (latest measure on {{ latestMetricDate }})
+        </div>
       </template>
 
-      <canvas ref="canvasRef" :style="{ display: canvasDisplay}"/>
-
+      <canvas
+        ref="canvasRef"
+        :style="{ display: canvasDisplay}"
+      />
     </div>
-
   </div>
 </template>
 

@@ -6,14 +6,22 @@
 
 <template>
   <Tooltip
-      v-if="props.warningLabel || props.label"
-      id="info-tooltip"
-      :text="props.warningLabel ?? props.label"
-      :position="props.position"
-      style="height: 16px;"
+    v-if="props.warningLabel || props.label"
+    id="info-tooltip"
+    :text="props.warningLabel ?? props.label"
+    :position="props.position"
+    style="height: 16px;"
   >
-    <TriangleAlert v-if="props.warningLabel" :size="16" style="color: var(--network-text-accent-color);"/>
-    <Info v-else :size="16" style="color: var(--network-text-accent-color);"/>
+    <TriangleAlert
+      v-if="props.warningLabel"
+      :size="16"
+      style="color: var(--network-text-accent-color);"
+    />
+    <Info
+      v-else
+      :size="16"
+      style="color: var(--network-text-accent-color);"
+    />
   </Tooltip>
 </template>
 
@@ -48,4 +56,4 @@ const props = defineProps({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

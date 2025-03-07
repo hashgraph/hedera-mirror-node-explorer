@@ -6,19 +6,19 @@
 
 <template>
   <button
-      class="button-view"
-      :class="{
-        'is-small': props.size === 'small',
-        'is-medium': props.size === 'medium',
-        'is-default': props.isDefault,
-        'is-transparent': props.isTransparent,
-        'same-size': props.sameSize
-      }"
-      :disabled="!props.enabled"
-      @click="handleClick"
+    class="button-view"
+    :class="{
+      'is-small': props.size === 'small',
+      'is-medium': props.size === 'medium',
+      'is-default': props.isDefault,
+      'is-transparent': props.isTransparent,
+      'same-size': props.sameSize
+    }"
+    :disabled="!props.enabled"
+    @click="handleClick"
   >
     <span class="button-slot">
-      <slot/>
+      <slot />
     </span>
   </button>
 </template>

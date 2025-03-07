@@ -7,16 +7,16 @@
 <template>
   <ul v-if="props.tabIds.length >= 1">
     <li
-        :class="{
-          'is-selected':selectedTab === tab,
-          'sub-tab': props.subTabs,
-          'is-active': isActive(i) && props.isEnabled,
-          'is-inactive': !isActive(i)
-        }"
-        v-for="(tab, i) in props.tabIds"
-        :key="tab"
-        :id="'tab-' + tabIds"
-        @click="onSelect(i)"
+      v-for="(tab, i) in props.tabIds"
+      :id="'tab-' + tabIds"
+      :key="tab"
+      :class="{
+        'is-selected':selectedTab === tab,
+        'sub-tab': props.subTabs,
+        'is-active': isActive(i) && props.isEnabled,
+        'is-inactive': !isActive(i)
+      }"
+      @click="onSelect(i)"
     >
       <div class="tab-label">
         {{ props.tabLabels[i] ?? tab }}

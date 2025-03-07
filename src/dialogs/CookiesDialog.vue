@@ -5,16 +5,30 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <ModalDialog v-model:show-dialog="showDialog" :show-close-icon="false">
+  <ModalDialog
+    v-model:show-dialog="showDialog"
+    :show-close-icon="false"
+  >
     <template #modalDialogTitle>
       <span>Accept Cookies</span>
     </template>
     <template #modalDialogContent>
-      <div v-html="cookiesDialogContent"/>
+      <div v-html="cookiesDialogContent" />
     </template>
     <template #modalDialogButtons>
-      <ModalDialogButton v-model:show-dialog="showDialog" @action="handleChooseReject">REJECT</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showDialog" :is-default="true" @action="handleChooseAccept">ACCEPT</ModalDialogButton>
+      <ModalDialogButton
+        v-model:show-dialog="showDialog"
+        @action="handleChooseReject"
+      >
+        REJECT
+      </ModalDialogButton>
+      <ModalDialogButton
+        v-model:show-dialog="showDialog"
+        :is-default="true"
+        @action="handleChooseAccept"
+      >
+        ACCEPT
+      </ModalDialogButton>
     </template>
   </ModalDialog>
 </template>

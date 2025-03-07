@@ -5,23 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="entity-link h-is-numeric">
-
     <template v-if="route === null">
-      <slot/>
+      <slot />
     </template>
 
     <template v-else>
       <router-link :to="route">
         <span class="hoverable">
-          <slot/>
+          <slot />
         </span>
       </router-link>
     </template>
-
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

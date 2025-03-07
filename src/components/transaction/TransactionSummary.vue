@@ -6,15 +6,20 @@
 
 <template>
   <template v-if="transaction">
-    <TransferGraphSection v-if="shouldGraph"
-                          v-bind:transaction="transactionDetail"
-                          v-bind:compact="true"/>
+    <TransferGraphSection
+      v-if="shouldGraph"
+      :transaction="transactionDetail"
+      :compact="true"
+    />
     <div v-else-if="isTokenAssociation">
       {{ transaction?.entity_id }}
       <span v-if="tokens.length">
-        <i class="fas fa-link mr-1 h-is-low-contrast"></i>
-        <TokenExtra :token-id="tokens[0]"/>
-        <span v-if="additionalTokensNumber" class="h-is-smaller h-is-extra-text h-should-wrap">
+        <i class="fas fa-link mr-1 h-is-low-contrast" />
+        <TokenExtra :token-id="tokens[0]" />
+        <span
+          v-if="additionalTokensNumber"
+          class="h-is-smaller h-is-extra-text h-should-wrap"
+        >
           {{ ' ( + ' + additionalTokensNumber + ' more )' }}
         </span>
       </span>
@@ -22,11 +27,14 @@
     <div v-else-if="isEthereumTransaction">
       {{ ethereumSummary }}
     </div>
-    <div v-else class="h-should-wrap">
+    <div
+      v-else
+      class="h-should-wrap"
+    >
       {{ makeSummaryLabel(transaction) }}
     </div>
   </template>
-  <div v-else/>
+  <div v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -108,4 +116,4 @@ export default defineComponent({
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

@@ -5,13 +5,21 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div class="wallet-chooser-item"
-       :class="{'selected': isSelected}"
-       @click="selection = props.walletItem"
-       @dblclick="handleDoubleClick">
+  <div
+    class="wallet-chooser-item"
+    :class="{'selected': isSelected}"
+    @click="selection = props.walletItem"
+    @dblclick="handleDoubleClick"
+  >
     <div style="display: flex; align-items: center; justify-content: center; column-gap: 8px">
-      <img :src="props.walletItem.iconURL ?? undefined" alt="wallet logo" style="height: 32px;"/>
-      <div style="flex-basis: 0">{{ props.walletItem.name }}</div>
+      <img
+        :src="props.walletItem.iconURL ?? undefined"
+        alt="wallet logo"
+        style="height: 32px;"
+      >
+      <div style="flex-basis: 0">
+        {{ props.walletItem.name }}
+      </div>
     </div>
   </div>
 </template>

@@ -5,31 +5,41 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DropdownPanel v-model:deployed="showWalletOptions" :right-aligned="true">
+  <DropdownPanel
+    v-model:deployed="showWalletOptions"
+    :right-aligned="true"
+  >
     <template #button>
       <ButtonView
-          id="walletInfoBanner"
-          :is-transparent="true"
-          :is-default="true"
-          :size="ButtonSize.medium"
-          @action="showWalletOptions = !showWalletOptions"
+        id="walletInfoBanner"
+        :is-transparent="true"
+        :is-default="true"
+        :size="ButtonSize.medium"
+        @action="showWalletOptions = !showWalletOptions"
       >
         <div class="left">
-          <img :src="walletIconURL ?? undefined" alt="wallet logo">
+          <img
+            :src="walletIconURL ?? undefined"
+            alt="wallet logo"
+          >
           {{ accountId !== null ? accountId : "No account" }}
         </div>
         <div class="right">
-          <i v-if="!showWalletOptions" class="fas fa-solid fa-angle-down"/>
-          <i v-else class="fas fa-solid fa-angle-up"/>
+          <i
+            v-if="!showWalletOptions"
+            class="fas fa-solid fa-angle-down"
+          />
+          <i
+            v-else
+            class="fas fa-solid fa-angle-up"
+          />
         </div>
       </ButtonView>
     </template>
     <template #panel>
-      <WalletOptions v-model:show-wallet-options="showWalletOptions"/>
+      <WalletOptions v-model:show-wallet-options="showWalletOptions" />
     </template>
   </DropdownPanel>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

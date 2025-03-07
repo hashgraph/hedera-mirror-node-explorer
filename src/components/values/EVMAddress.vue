@@ -7,49 +7,93 @@
 <template>
   <div v-if="evmAddress">
     <div class="evm-address">
-      <Copyable :content-to-copy="evmAddress ?? ''" :enable-copy="enableCopy">
-        <template v-slot:content>
-          <div class="h-is-low-contrast h-is-monospace" style="display: inline">
+      <Copyable
+        :content-to-copy="evmAddress ?? ''"
+        :enable-copy="enableCopy"
+      >
+        <template #content>
+          <div
+            class="h-is-low-contrast h-is-monospace"
+            style="display: inline"
+          >
             {{ (props.compact || !isSmallScreen) ? nonSignificantCompact : nonSignificantFull }}
           </div>
-          <div class="h-is-monospace" style="margin-right: 4px; display: inline">
+          <div
+            class="h-is-monospace"
+            style="margin-right: 4px; display: inline"
+          >
             {{ (props.compact || !isSmallScreen) ? significantCompact : significantFull }}
           </div>
         </template>
       </Copyable>
-      <div v-if="entityId && showId" class="entity-id-or-name">
+      <div
+        v-if="entityId && showId"
+        class="entity-id-or-name"
+      >
         <span>(</span>
-        <router-link v-if="verified && !showType" :to="routeManager.makeRouteToContract(entityId)"
-                     class="h-is-extra-text">
+        <router-link
+          v-if="verified && !showType"
+          :to="routeManager.makeRouteToContract(entityId)"
+          class="h-is-extra-text"
+        >
           {{ contractName }}
         </router-link>
-        <router-link v-else-if="systemContract !== null" :to="routeManager.makeRouteToContract(entityId)"
-                     class="h-is-extra-text">
+        <router-link
+          v-else-if="systemContract !== null"
+          :to="routeManager.makeRouteToContract(entityId)"
+          class="h-is-extra-text"
+        >
           {{ displayId }}
         </router-link>
-        <ContractLink v-else-if="entityLinkType === ExtendedEntityType.CONTRACT" :contract-id="entityId"/>
-        <AccountLink v-else-if="entityLinkType === ExtendedEntityType.ACCOUNT" :account-id="entityId"/>
-        <TokenLink v-else-if="entityLinkType === ExtendedEntityType.TOKEN" :token-id="entityId"/>
+        <ContractLink
+          v-else-if="entityLinkType === ExtendedEntityType.CONTRACT"
+          :contract-id="entityId"
+        />
+        <AccountLink
+          v-else-if="entityLinkType === ExtendedEntityType.ACCOUNT"
+          :account-id="entityId"
+        />
+        <TokenLink
+          v-else-if="entityLinkType === ExtendedEntityType.TOKEN"
+          :token-id="entityId"
+        />
         <span v-else>
           {{ displayId }}
         </span>
         <span>)</span>
-        <CircleCheckBig v-if="verified && !showType" :size="18" class="circle-check ml-1"/>
+        <CircleCheckBig
+          v-if="verified && !showType"
+          :size="18"
+          class="circle-check ml-1"
+        />
       </div>
     </div>
-    <div v-if="showType" class="address-type">
-      <div class="h-is-low-contrast">{{ entityType }}</div>
+    <div
+      v-if="showType"
+      class="address-type"
+    >
+      <div class="h-is-low-contrast">
+        {{ entityType }}
+      </div>
       <template v-if="verified">
         <div class="h-is-extra-text">
           {{ contractName }}
         </div>
-        <CircleCheckBig :size="18" class="circle-check"/>
+        <CircleCheckBig
+          :size="18"
+          class="circle-check"
+        />
       </template>
     </div>
   </div>
-  <div v-else-if="initialLoading"/>
-  <div v-else-if="showNone" class="h-is-low-contrast">None</div>
-  <div v-else></div>
+  <div v-else-if="initialLoading" />
+  <div
+    v-else-if="showNone"
+    class="h-is-low-contrast"
+  >
+    None
+  </div>
+  <div v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -5,68 +5,85 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div id="topic-message-table">
     <o-table
-        :data="messages"
-        :loading="loading"
-        :paginated="!isTouchDevice && paginated"
-        backend-pagination
-        pagination-order="centered"
-        :range-before="1"
-        :range-after="1"
-        :total="total"
-        v-model:current-page="currentPage"
-        :per-page="perPage"
-        focusable
-        @page-change="onPageChange"
-        @cell-click="handleClick"
+      v-model:current-page="currentPage"
+      :data="messages"
+      :loading="loading"
+      :paginated="!isTouchDevice && paginated"
+      backend-pagination
+      pagination-order="centered"
+      :range-before="1"
+      :range-after="1"
+      :total="total"
+      :per-page="perPage"
+      focusable
+      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-current-label="Current page"
 
-        :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+      aria-next-label="Next page"
 
-        aria-current-label="Current page"
-        aria-next-label="Next page"
-        aria-page-label="Page"
-        aria-previous-label="Previous page"
-        customRowKey="consensus_timestamp"
+      aria-page-label="Page"
+      aria-previous-label="Previous page"
+      custom-row-key="consensus_timestamp"
+      @page-change="onPageChange"
+      @cell-click="handleClick"
     >
-      <o-table-column v-slot="props" field="sequence_number" label="SEQ.#">
+      <o-table-column
+        v-slot="props"
+        field="sequence_number"
+        label="SEQ.#"
+      >
         {{ props.row.sequence_number != null ? props.row.sequence_number : "" }}
       </o-table-column>
 
-      <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
+      <o-table-column
+        v-slot="props"
+        field="consensus_timestamp"
+        label="TIME"
+      >
         <div style="text-wrap: nowrap">
-          <TimestampValue v-bind:timestamp="props.row.consensus_timestamp"/>
+          <TimestampValue :timestamp="props.row.consensus_timestamp" />
         </div>
       </o-table-column>
 
-      <o-table-column v-slot="props" field="chunk" label="CHUNK">
+      <o-table-column
+        v-slot="props"
+        field="chunk"
+        label="CHUNK"
+      >
         {{ formatChunk(props.row) }}
       </o-table-column>
 
-      <o-table-column v-slot="props" field="message" label="MESSAGE">
-        <BlobValue :blob-value="props.row.message" :base64="true" :show-none="true"/>
+      <o-table-column
+        v-slot="props"
+        field="message"
+        label="MESSAGE"
+      >
+        <BlobValue
+          :blob-value="props.row.message"
+          :base64="true"
+          :show-none="true"
+        />
       </o-table-column>
 
-      <template v-slot:bottom-left>
+      <template #bottom-left>
         <TablePageSize
-            v-model:size="perPage"
-            :storage-key="AppStorage.TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY"
+          v-model:size="perPage"
+          :storage-key="AppStorage.TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY"
         />
       </template>
-
     </o-table>
 
     <TablePageSize
-        v-if="!paginated && showPageSizeSelector"
-        v-model:size="perPage"
-        :storage-key="AppStorage.TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY"
-        style="width: 116px; margin-left: 4px"
+      v-if="!paginated && showPageSizeSelector"
+      v-model:size="perPage"
+      :storage-key="AppStorage.TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY"
+      style="width: 116px; margin-left: 4px"
     />
 
-    <EmptyTable v-if="!messages.length"/>
+    <EmptyTable v-if="!messages.length" />
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

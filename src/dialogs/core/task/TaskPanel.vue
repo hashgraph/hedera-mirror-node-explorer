@@ -6,25 +6,36 @@
 
 <template>
   <div class="task-panel">
-
     <template v-if="props.mode === TaskPanelMode.success">
-      <CircleCheck :size="48" style="color: var(--text-success)"/>
+      <CircleCheck
+        :size="48"
+        style="color: var(--text-success)"
+      />
     </template>
     <template v-else-if="props.mode === TaskPanelMode.error">
-      <TriangleAlert :size="48" style="color: var(--text-error)"/>
+      <TriangleAlert
+        :size="48"
+        style="color: var(--text-error)"
+      />
     </template>
     <template v-else-if="props.mode === TaskPanelMode.busy">
-      <SpinnerView :size="48"/>
+      <SpinnerView :size="48" />
     </template>
 
     <div class="task-panel-message">
-      <slot name="taskPanelMessage"/>
+      <slot name="taskPanelMessage" />
     </div>
-    <div v-if="slots.taskPanelExtra1" class="task-panel-extra">
-      <slot name="taskPanelExtra1"/>
+    <div
+      v-if="slots.taskPanelExtra1"
+      class="task-panel-extra"
+    >
+      <slot name="taskPanelExtra1" />
     </div>
-    <div v-if="slots.taskPanelExtra2" class="task-panel-extra">
-      <slot name="taskPanelExtra2"/>
+    <div
+      v-if="slots.taskPanelExtra2"
+      class="task-panel-extra"
+    >
+      <slot name="taskPanelExtra2" />
     </div>
   </div>
 </template>

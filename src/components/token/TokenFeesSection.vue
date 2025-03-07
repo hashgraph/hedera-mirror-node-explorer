@@ -5,55 +5,94 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <DashboardCardV2 collapsible-key="customFees">
-
     <template #title>
       Custom Fees
     </template>
 
     <template #content>
-      <Property id="customFeeCreatedAt" full-width>
-        <template #name>Created at</template>
+      <Property
+        id="customFeeCreatedAt"
+        full-width
+      >
+        <template #name>
+          Created at
+        </template>
         <template #value>
-          <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp?.toString()"/>
+          <TimestampValue
+            :nano="true"
+            :show-none="true"
+            :timestamp="fees?.created_timestamp?.toString()"
+          />
         </template>
       </Property>
 
-      <Property id="fixedFee" full-width>
-        <template #name>Fixed Fees</template>
-        <template v-if="hasFixedFees" #value>
-          <FixedFeeTable :analyzer="analyzer"/>
+      <Property
+        id="fixedFee"
+        full-width
+      >
+        <template #name>
+          Fixed Fees
         </template>
-        <template v-else #value>
+        <template
+          v-if="hasFixedFees"
+          #value
+        >
+          <FixedFeeTable :analyzer="analyzer" />
+        </template>
+        <template
+          v-else
+          #value
+        >
           <span class="h-is-low-contrast">None</span>
         </template>
       </Property>
 
-      <Property v-if="isFungible" id="fractionalFee" full-width>
-        <template #name>Fractional Fees</template>
-        <template v-if="hasFractionalFees" #value>
-          <FractionalFeeTable :analyzer="analyzer"/>
+      <Property
+        v-if="isFungible"
+        id="fractionalFee"
+        full-width
+      >
+        <template #name>
+          Fractional Fees
         </template>
-        <template v-else #value>
+        <template
+          v-if="hasFractionalFees"
+          #value
+        >
+          <FractionalFeeTable :analyzer="analyzer" />
+        </template>
+        <template
+          v-else
+          #value
+        >
           <span class="h-is-low-contrast">None</span>
         </template>
       </Property>
 
-      <Property v-else id="royalteeFee" full-width>
-        <template #name>Percentage & Fallback Fees</template>
-        <template v-if="hasRoyaltyFees" #value>
-          <RoyaltyFeeTable :analyzer="analyzer"/>
+      <Property
+        v-else
+        id="royalteeFee"
+        full-width
+      >
+        <template #name>
+          Percentage & Fallback Fees
         </template>
-        <template v-else #value>
+        <template
+          v-if="hasRoyaltyFees"
+          #value
+        >
+          <RoyaltyFeeTable :analyzer="analyzer" />
+        </template>
+        <template
+          v-else
+          #value
+        >
           <span class="h-is-low-contrast">None</span>
         </template>
       </Property>
-
     </template>
-
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

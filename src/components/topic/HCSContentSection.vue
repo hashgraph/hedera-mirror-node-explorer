@@ -5,68 +5,99 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="props.topicMemo" collapsible-key="hcs1Content">
-
+  <DashboardCardV2
+    v-if="props.topicMemo"
+    collapsible-key="hcs1Content"
+  >
     <template #title>
       HCS-1 Content
     </template>
 
     <template #content>
-      <Property id="hash" full-width>
-        <template #name>Hash</template>
+      <Property
+        id="hash"
+        full-width
+      >
+        <template #name>
+          Hash
+        </template>
         <template #value>
           {{ props.topicMemo?.hash }}
-          <div v-if="hashMatch" class="icon is-small ml-1" id="check-mark">
-            <i class="fas fa-check has-text-success"/>
+          <div
+            v-if="hashMatch"
+            id="check-mark"
+            class="icon is-small ml-1"
+          >
+            <i class="fas fa-check has-text-success" />
           </div>
           <InfoTooltip
-              v-else
-              class="ml-1"
-              :label="isAssetIncomplete ? INCOMPLETE_ASSET_TOOLTIP : HASH_MISMATCH_TOOLTIP"
+            v-else
+            class="ml-1"
+            :label="isAssetIncomplete ? INCOMPLETE_ASSET_TOOLTIP : HASH_MISMATCH_TOOLTIP"
           />
         </template>
       </Property>
-      <Property id="compression" full-width>
-        <template #name>Compression</template>
+      <Property
+        id="compression"
+        full-width
+      >
+        <template #name>
+          Compression
+        </template>
         <template #value>
           {{ props.topicMemo?.algo }}
         </template>
       </Property>
-      <Property id="encoding" full-width>
-        <template #name>Encoding</template>
+      <Property
+        id="encoding"
+        full-width
+      >
+        <template #name>
+          Encoding
+        </template>
         <template #value>
           {{ props.topicMemo?.encoding }}
         </template>
       </Property>
-      <Property v-if="hcs1DataType" id="mime-type" full-width>
-        <template #name>MIME Type</template>
+      <Property
+        v-if="hcs1DataType"
+        id="mime-type"
+        full-width
+      >
+        <template #name>
+          MIME Type
+        </template>
         <template #value>
           {{ hcs1DataType }}
         </template>
       </Property>
-      <Property v-if="hashMatch && (hcs1DataURL || jsonContent)" id="preview" full-width>
-        <template #name>Preview</template>
+      <Property
+        v-if="hashMatch && (hcs1DataURL || jsonContent)"
+        id="preview"
+        full-width
+      >
+        <template #name>
+          Preview
+        </template>
         <template #value>
           <MediaContent
-              v-if="hcs1DataURL"
-              :url="hcs1DataURL"
-              :type="hcs1DataType"
-              :size="200"
-              :auto="false"
+            v-if="hcs1DataURL"
+            :url="hcs1DataURL"
+            :type="hcs1DataType"
+            :size="200"
+            :auto="false"
           />
           <BlobValue
-              v-else-if="jsonContent"
-              :blob-value="jsonContent"
-              :show-none="true"
-              :base64="true"
-              :pretty="true"
+            v-else-if="jsonContent"
+            :blob-value="jsonContent"
+            :show-none="true"
+            :base64="true"
+            :pretty="true"
           />
         </template>
       </Property>
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

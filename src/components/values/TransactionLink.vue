@@ -5,19 +5,23 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <div v-if="formattedId && routeToTransaction" class="h-is-numeric h-should-wrap">
+  <div
+    v-if="formattedId && routeToTransaction"
+    class="h-is-numeric h-should-wrap"
+  >
     <router-link :to="routeToTransaction">
       <div>
-        <TransactionIdValue :id="formattedId"/>
+        <TransactionIdValue :id="formattedId" />
       </div>
     </router-link>
   </div>
 
-  <span v-else-if="showNone" class="h-is-low-contrast">None</span>
+  <span
+    v-else-if="showNone"
+    class="h-is-low-contrast"
+  >None</span>
 
-  <span v-else/>
-
+  <span v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -89,5 +93,5 @@ const routeToTransaction = computed(() => {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
 

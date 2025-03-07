@@ -10,10 +10,14 @@
   <div class="entry-container">
     <!-- Row 0 -->
     <button
-        data-cy="execFunction"
-        class="exec-button"
-        v-on:click="handleClick()">
-      <i :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}" class="fas fa-xs"/>
+      data-cy="execFunction"
+      class="exec-button"
+      @click="handleClick()"
+    >
+      <i
+        :class="{ 'fa-play': !isGetter, 'fa-redo': isGetter}"
+        class="fas fa-xs"
+      />
     </button>
     <div class="entry-content">
       <div class="entry-index">
@@ -31,9 +35,9 @@
     </div>
 
     <!-- Row 1 -->
-    <div/>
+    <div />
     <div v-if="hasResult">
-      <span class="icon h-is-low-contrast"><i class="fas fa-long-arrow-alt-right"/></span>
+      <span class="icon h-is-low-contrast"><i class="fas fa-long-arrow-alt-right" /></span>
       <span class="ml-1">
         {{ callOutput }}
       </span>
@@ -41,9 +45,10 @@
   </div>
 
   <ContractAbiDialog
-      v-model:show-dialog="showAbiCallDialog"
-      :contract-call-builder="props.contractCallBuilder"
-      @did-update-contract-state="dialogDidUpdateContractState"/>
+    v-model:show-dialog="showAbiCallDialog"
+    :contract-call-builder="props.contractCallBuilder"
+    @did-update-contract-state="dialogDidUpdateContractState"
+  />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

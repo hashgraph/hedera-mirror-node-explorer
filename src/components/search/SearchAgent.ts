@@ -42,7 +42,7 @@ export abstract class SearchAgent<L, E> {
     // Public
     //
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     public willNavigate(candidate: SearchCandidate<E>): void {
         // Possibly override by subclasses
     }
@@ -56,7 +56,7 @@ export abstract class SearchAgent<L, E> {
         watch(this.loc, this.entityLocDidChange)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     protected /* abstract */ async load(loc: L, abortController: AbortController): Promise<SearchCandidate<E>[]> {
         return Promise.reject("To be subclassed")
     }
@@ -532,7 +532,7 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
         super(title)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
         throw "Must be subclassed"
     }

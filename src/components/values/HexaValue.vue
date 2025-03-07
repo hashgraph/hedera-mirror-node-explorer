@@ -5,20 +5,31 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <Copyable v-if="normByteString" :content-to-copy="normByteString" :enable-copy="isCopyEnabled">
-    <template v-slot:content>
+  <Copyable
+    v-if="normByteString"
+    :content-to-copy="normByteString"
+    :enable-copy="isCopyEnabled"
+  >
+    <template #content>
       <div class="hexa-value">
         {{ normByteString }}
       </div>
     </template>
   </Copyable>
 
-  <template v-else-if="showNone && !initialLoading" >
-    <div class="h-is-low-contrast">None</div>
-    <div v-if="noneExtra" class="h-is-low-contrast">{{ noneExtra }}</div>
+  <template v-else-if="showNone && !initialLoading">
+    <div class="h-is-low-contrast">
+      None
+    </div>
+    <div
+      v-if="noneExtra"
+      class="h-is-low-contrast"
+    >
+      {{ noneExtra }}
+    </div>
   </template>
 
-  <template v-else/>
+  <template v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

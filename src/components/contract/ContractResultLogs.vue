@@ -5,50 +5,64 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="props.logs?.length" collapsible-key="contractEvents">
+  <DashboardCardV2
+    v-if="props.logs?.length"
+    collapsible-key="contractEvents"
+  >
     <template #title>
       Events
     </template>
 
-    <template #right-control v-if="props.logs.length > 2">
-      <SelectView v-model="pageSize" :small="true">
-        <option v-for="n of actualSizeOptions" :key="n" :value="n">
+    <template
+      v-if="props.logs.length > 2"
+      #right-control
+    >
+      <SelectView
+        v-model="pageSize"
+        :small="true"
+      >
+        <option
+          v-for="n of actualSizeOptions"
+          :key="n"
+          :value="n"
+        >
           {{ (n >= props.logs?.length) ? 'Show all items' : 'Show ' + n + ' items' }}
         </option>
       </SelectView>
     </template>
 
     <template #content>
-      <template v-for="l in nbLogDisplayed" :key="l">
+      <template
+        v-for="l in nbLogDisplayed"
+        :key="l"
+      >
         <ContractResultLogEntry
-            :log="props.logs[logCursor + l - 1]"
-            :block-number="props.blockNumber"
-            :transaction-hash="props.transactionHash"
+          :log="props.logs[logCursor + l - 1]"
+          :block-number="props.blockNumber"
+          :transaction-hash="props.transactionHash"
         />
-        <hr class="table-separator"/>
+        <hr class="table-separator">
       </template>
 
-      <div v-if="isPaginated" class="pagination">
+      <div
+        v-if="isPaginated"
+        class="pagination"
+      >
         <o-pagination
-            :total="props.logs.length"
-            v-model:current="currentPage"
-            order="centered"
-            :range-before="1"
-            :range-after="1"
-            :per-page="pageSize"
-            aria-next-label="Next page"
-            aria-previous-label="Previous page"
-            aria-page-label="Page"
-            aria-current-label="Current page"
-        >
-        </o-pagination>
+          v-model:current="currentPage"
+          :total="props.logs.length"
+          order="centered"
+          :range-before="1"
+          :range-after="1"
+          :per-page="pageSize"
+          aria-next-label="Next page"
+          aria-previous-label="Previous page"
+          aria-page-label="Page"
+          aria-current-label="Current page"
+        />
       </div>
-
     </template>
-
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

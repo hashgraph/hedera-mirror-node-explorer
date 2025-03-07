@@ -6,28 +6,37 @@
 
 <template>
   <TransactionGroupDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-group-did-execute="transactionGroupDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-group-did-execute="transactionGroupDidExecute"
   >
+    <template #transactionGroupDialogTitle>
+      {{ transactionTitle }}
+    </template>
 
-    <template #transactionGroupDialogTitle>{{ transactionTitle }}</template>
-
-    <template #transactionGroupExecutionLabel>REJECT</template>
+    <template #transactionGroupExecutionLabel>
+      REJECT
+    </template>
 
     <template #transactionGroupDialogInput>
-
-      <template v-if="filtering">Filtering…</template>
+      <template v-if="filtering">
+        Filtering…
+      </template>
 
       <template v-else>
         <TaskPanel :mode="panelMode">
-          <template #taskPanelMessage>{{ taskPanelMessage }}</template>
-          <template v-if="taskPanelExtra1" #taskPanelExtra1>{{ taskPanelExtra1 }}</template>
+          <template #taskPanelMessage>
+            {{ taskPanelMessage }}
+          </template>
+          <template
+            v-if="taskPanelExtra1"
+            #taskPanelExtra1
+          >
+            {{ taskPanelExtra1 }}
+          </template>
         </TaskPanel>
       </template>
-
     </template>
-
   </TransactionGroupDialog>
 </template>
 

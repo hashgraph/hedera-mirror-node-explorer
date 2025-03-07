@@ -6,7 +6,12 @@
 
 <template>
   <template v-if="isComplexKey">
-    <ComplexKeyValue :account-id="accountId" :details="details" :key-bytes="keyBytes" :show-none="showNone"/>
+    <ComplexKeyValue
+      :account-id="accountId"
+      :details="details"
+      :key-bytes="keyBytes"
+      :show-none="showNone"
+    />
   </template>
   <template v-else>
     <div v-if="details">
@@ -14,8 +19,17 @@
       <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + keyBytes }}</span>
     </div>
     <div v-else>
-      <HexaValue :byte-string="keyBytes" :none-extra="noneExtra" :show-none="showNone"/>
-      <div v-if="keyBytes" class="h-is-extra-text">{{ keyType }}</div>
+      <HexaValue
+        :byte-string="keyBytes"
+        :none-extra="noneExtra"
+        :show-none="showNone"
+      />
+      <div
+        v-if="keyBytes"
+        class="h-is-extra-text"
+      >
+        {{ keyType }}
+      </div>
     </div>
   </template>
 </template>
@@ -62,4 +76,4 @@ const isComplexKey = computed(() => props.keyType == "ProtobufEncoded")
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

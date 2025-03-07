@@ -5,53 +5,80 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
-  <DashboardCardV2 v-if="erc20 || erc721" collapsible-key="contractERCProperties">
+  <DashboardCardV2
+    v-if="erc20 || erc721"
+    collapsible-key="contractERCProperties"
+  >
     <template #title>
       ERC Token
     </template>
 
     <template #content>
-
       <!-- Properties common to ERC 20 and ERC 721 -->
-      <Property id="erc-type" :full-width="true">
-        <template #name>Type</template>
+      <Property
+        id="erc-type"
+        :full-width="true"
+      >
+        <template #name>
+          Type
+        </template>
         <template #value>
-          <StringValue :string-value="erc20 ? 'ERC 20' : 'ERC 721'"/>
+          <StringValue :string-value="erc20 ? 'ERC 20' : 'ERC 721'" />
         </template>
       </Property>
-      <Property id="erc-name" :full-width="true">
-        <template #name>Name</template>
+      <Property
+        id="erc-name"
+        :full-width="true"
+      >
+        <template #name>
+          Name
+        </template>
         <template #value>
-          <StringValue :string-value="ercName"/>
+          <StringValue :string-value="ercName" />
         </template>
       </Property>
-      <Property v-if="ercSymbol" id="erc-symbol" :full-width="true">
-        <template #name>Symbol</template>
+      <Property
+        v-if="ercSymbol"
+        id="erc-symbol"
+        :full-width="true"
+      >
+        <template #name>
+          Symbol
+        </template>
         <template #value>
-          <StringValue :string-value="ercSymbol"/>
+          <StringValue :string-value="ercSymbol" />
         </template>
       </Property>
 
       <!-- Properties specific to ERC 20 -->
       <template v-if="erc20">
-        <Property v-if="erc20.decimals" id="erc-decimals" :full-width="true">
-          <template #name>Decimals</template>
+        <Property
+          v-if="erc20.decimals"
+          id="erc-decimals"
+          :full-width="true"
+        >
+          <template #name>
+            Decimals
+          </template>
           <template #value>
-            <PlainAmount :amount="erc20.decimals"/>
+            <PlainAmount :amount="erc20.decimals" />
           </template>
         </Property>
-        <Property v-if="erc20TotalSupply" id="erc-total-supply" :full-width="true">
-          <template #name>Total Supply</template>
+        <Property
+          v-if="erc20TotalSupply"
+          id="erc-total-supply"
+          :full-width="true"
+        >
+          <template #name>
+            Total Supply
+          </template>
           <template #value>
-            <StringValue :string-value="erc20TotalSupply"/>
+            <StringValue :string-value="erc20TotalSupply" />
           </template>
         </Property>
       </template>
-
     </template>
   </DashboardCardV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

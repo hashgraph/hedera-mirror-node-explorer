@@ -5,18 +5,26 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div v-if="props.endpoints && props.endpoints.length">
-    <div v-for="s in props.endpoints" :key="s.ip_address_v4" class="h-is-monospace">
+    <div
+      v-for="s in props.endpoints"
+      :key="s.ip_address_v4"
+      class="h-is-monospace"
+    >
       <span v-if="s.ip_address_v4">{{ s.ip_address_v4 }}</span>
-      <span v-if="s.ip_address_v4 && s.port != null" class="h-is-low-contrast">{{ ':' + s.port }}</span>
+      <span
+        v-if="s.ip_address_v4 && s.port != null"
+        class="h-is-low-contrast"
+      >{{ ':' + s.port }}</span>
     </div>
   </div>
 
-  <span v-else-if="initialLoading"/>
+  <span v-else-if="initialLoading" />
 
-  <span v-else class="h-is-low-contrast">None</span>
-
+  <span
+    v-else
+    class="h-is-low-contrast"
+  >None</span>
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -41,4 +49,4 @@ const initialLoading = inject(initialLoadingKey, ref(false))
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

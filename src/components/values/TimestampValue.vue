@@ -5,18 +5,20 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <span v-if="timestamp">
     <template v-if="isNever">
       <span class="h-is-low-contrast">Never</span>
     </template>
     <template v-else-if="seconds != null">
       <span>
-        <span v-if="timePart" class="mr-3 h-is-numeric">
+        <span
+          v-if="timePart"
+          class="mr-3 h-is-numeric"
+        >
           <span>{{ timePart.hour }}:{{ timePart.minute }}</span>
           <span class="h-is-low-contrast">:{{ timePart.second }}.{{
-              timePart.fractionalSecond
-            }}&nbsp;{{ timePart.dayPeriod }}</span>
+            timePart.fractionalSecond
+          }}&nbsp;{{ timePart.dayPeriod }}</span>
         </span>
         <span class="h-is-numeric">{{ datePart }}</span>
       </span>
@@ -25,16 +27,18 @@
       <span class="icon-text">
         <span class="h-is-numeric">{{ timestamp }}</span>
         <span class="icon h-is-low-contrast-light">
-          <i class="fas fa-exclamation-triangle"></i>
+          <i class="fas fa-exclamation-triangle" />
         </span>
       </span>
     </template>
   </span>
 
-  <span v-else-if="showNone && !initialLoading" class="h-is-low-contrast">None</span>
+  <span
+    v-else-if="showNone && !initialLoading"
+    class="h-is-low-contrast"
+  >None</span>
 
-  <span v-else/>
-
+  <span v-else />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -135,5 +139,5 @@ function normalizedTimestamp(t: string, nano: boolean): string {
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />
 

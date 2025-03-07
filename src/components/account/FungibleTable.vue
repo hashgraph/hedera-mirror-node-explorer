@@ -5,76 +5,92 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="props.controller.rows.value"
-      :loading="props.controller.loading.value"
-      :paginated="props.controller.paginated.value && props.fullPage"
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="props.controller.totalRowCount.value"
-      v-model:current-page="props.controller.currentPage.value"
-      :per-page="props.controller.pageSize.value"
-      @page-change="props.controller.onPageChange"
-      @cellClick="handleClick"
-      :checkable="props.checkEnabled"
-      v-model:checked-rows="checkedRows"
+    v-model:current-page="props.controller.currentPage.value"
+    :data="props.controller.rows.value"
+    :loading="props.controller.loading.value"
+    :paginated="props.controller.paginated.value && props.fullPage"
+    backend-pagination
+    v-model:checked-rows="checkedRows"
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="props.controller.totalRowCount.value"
+    :per-page="props.controller.pageSize.value"
+    :checkable="props.checkEnabled"
+    :hoverable="true"
+    :narrowed="true"
 
-      :hoverable="true"
-      :narrowed="true"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="token_id"
+    @page-change="props.controller.onPageChange"
+    aria-page-label="Page"
+    @cell-click="handleClick"
+    aria-previous-label="Previous page"
+    custom-row-key="token_id"
   >
-    <o-table-column v-slot="{ row }" field="token_id" label="TOKEN ID">
-      <TokenIOL class="token-id-label" :token-id="row.token_id"/>
+    <o-table-column
+      v-slot="{ row }"
+      field="token_id"
+      label="TOKEN ID"
+    >
+      <TokenIOL
+        class="token-id-label"
+        :token-id="row.token_id"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="name" label="NAME">
+    <o-table-column
+      v-slot="{ row }"
+      field="name"
+      label="NAME"
+    >
       {{ row.name }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="symbol" label="SYMBOL">
+    <o-table-column
+      v-slot="{ row }"
+      field="symbol"
+      label="SYMBOL"
+    >
       {{ row.symbol }}
     </o-table-column>
 
-    <o-table-column v-slot="{ row }" field="balance" label="BALANCE">
+    <o-table-column
+      v-slot="{ row }"
+      field="balance"
+      label="BALANCE"
+    >
       <TokenCell
-          :account-id="props.controller.accountId.value"
-          :token-id="row.token_id"
-          :property="TokenCellItem.tokenBalance"
+        :account-id="props.controller.accountId.value"
+        :token-id="row.token_id"
+        :property="TokenCellItem.tokenBalance"
       />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-if="props.fullPage"
-          v-model:size="props.controller.pageSize.value"
-          :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+        v-if="props.fullPage"
+        v-model:size="props.controller.pageSize.value"
+        :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
       />
     </template>
-
   </o-table>
 
   <TablePageSize
-      v-if="!props.controller.paginated.value
+    v-if="!props.controller.paginated.value
       && props.controller.showPageSizeSelector.value
       && !props.checkEnabled
       && props.fullPage"
-      v-model:size="props.controller.pageSize.value"
-      :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
-      style="width: 102px; margin-left: 4px"
+    v-model:size="props.controller.pageSize.value"
+    :storage-key="AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY"
+    style="width: 102px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!props.controller.totalRowCount.value"/>
-
+  <EmptyTable v-if="!props.controller.totalRowCount.value" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

@@ -6,57 +6,67 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="rewards"
-      :loading="loading"
-      :paginated="paginated"
-      backend-pagination
-      pagination-order="centered"
-      :range-before="1"
-      :range-after="1"
-      :total="total"
-      v-model:current-page="currentPage"
-      :per-page="perPage"
-      @page-change="onPageChange"
-      @cell-click="handleClick"
+    v-model:current-page="currentPage"
+    :data="rewards"
+    :loading="loading"
+    :paginated="paginated"
+    backend-pagination
+    pagination-order="centered"
+    :range-before="1"
+    :range-after="1"
+    :total="total"
+    :per-page="perPage"
+    :hoverable="true"
+    :narrowed="narrowed"
 
-      :hoverable="true"
-      :narrowed="narrowed"
-      :striped="true"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :striped="true"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    aria-current-label="Current page"
+    aria-next-label="Next page"
 
-      aria-current-label="Current page"
-      aria-next-label="Next page"
-      aria-page-label="Page"
-      aria-previous-label="Previous page"
-      customRowKey="consensus_timestamp"
+    aria-page-label="Page"
+    aria-previous-label="Previous page"
+    @page-change="onPageChange"
+    custom-row-key="consensus_timestamp"
+    @cell-click="handleClick"
   >
-    <o-table-column v-slot="props" field="timestamp" label="TIME">
-      <TimestampValue class="timestamp-value" :timestamp="props.row.timestamp"/>
+    <o-table-column
+      v-slot="props"
+      field="timestamp"
+      label="TIME"
+    >
+      <TimestampValue
+        class="timestamp-value"
+        :timestamp="props.row.timestamp"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="amount" label="AMOUNT REWARDED" position="right">
-      <HbarAmount :amount="props.row.amount"/>
+    <o-table-column
+      v-slot="props"
+      field="amount"
+      label="AMOUNT REWARDED"
+      position="right"
+    >
+      <HbarAmount :amount="props.row.amount" />
     </o-table-column>
 
-    <template v-slot:bottom-left>
+    <template #bottom-left>
       <TablePageSize
-          v-model:size="perPage"
-          :storage-key="storageKey"
+        v-model:size="perPage"
+        :storage-key="storageKey"
       />
     </template>
   </o-table>
 
   <TablePageSize
-      v-if="!paginated && showPageSizeSelector"
-      v-model:size="perPage"
-      :storage-key="storageKey"
-      style="width: 116px; margin-left: 4px"
+    v-if="!paginated && showPageSizeSelector"
+    v-model:size="perPage"
+    :storage-key="storageKey"
+    style="width: 116px; margin-left: 4px"
   />
 
-  <EmptyTable v-if="!rewards.length"/>
-
+  <EmptyTable v-if="!rewards.length" />
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

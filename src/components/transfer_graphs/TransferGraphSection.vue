@@ -5,45 +5,49 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <template v-if="compact">
     <HbarTransferGraphC
-        v-if="netAmount > 0"
-        data-cy="hbarTransfers"
-        v-bind:transaction="transaction"/>
+      v-if="netAmount > 0"
+      data-cy="hbarTransfers"
+      :transaction="transaction"
+    />
   </template>
   <template v-else>
     <HbarTransferGraphF
-        data-cy="hbarTransfers"
-        title="Hbar Transfers"
-        v-bind:class="{'mb-4': displayRewardTransfers || displayNftTransfers || displayTokenTransfers}"
-        v-bind:transaction="transaction"/>
+      data-cy="hbarTransfers"
+      title="Hbar Transfers"
+      :class="{'mb-4': displayRewardTransfers || displayNftTransfers || displayTokenTransfers}"
+      :transaction="transaction"
+    />
   </template>
 
   <NftTransferGraph
-      data-cy="nftTransfers"
-      v-bind:class="{'mb-4': !compact && (displayTokenTransfers || displayRewardTransfers)}"
-      v-bind:transaction="transaction"
-      v-bind:compact="compact"/>
+    data-cy="nftTransfers"
+    :class="{'mb-4': !compact && (displayTokenTransfers || displayRewardTransfers)}"
+    :transaction="transaction"
+    :compact="compact"
+  />
 
   <template v-if="compact">
     <TokenTransferGraphC
-        data-cy="tokenTransfers"
-        v-bind:transaction="transaction"/>
+      data-cy="tokenTransfers"
+      :transaction="transaction"
+    />
   </template>
   <template v-else>
     <TokenTransferGraphF
-        data-cy="tokenTransfers"
-        v-bind:class="{'mb-4': displayRewardTransfers}"
-        v-bind:transaction="transaction"/>
+      data-cy="tokenTransfers"
+      :class="{'mb-4': displayRewardTransfers}"
+      :transaction="transaction"
+    />
   </template>
 
   <template v-if="!compact">
     <RewardTransferGraph
-        data-cy="rewardTransfers"
-        v-bind:transaction="transaction"/>
+      data-cy="rewardTransfers"
+      :transaction="transaction"
+    />
   </template>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -84,4 +88,4 @@ const displayTokenTransfers = computed(() => props.transaction?.token_transfers 
 <!--                                                      STYLE                                                      -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

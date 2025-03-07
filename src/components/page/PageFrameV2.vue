@@ -5,21 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <div class="page-frame">
-    <PageHeader :page-title="props.pageTitle"/>
+    <PageHeader :page-title="props.pageTitle" />
 
     <div v-if="slots.banner">
-      <slot name="banner"/>
+      <slot name="banner" />
     </div>
 
     <div class="h-page-content">
-      <slot/>
+      <slot />
     </div>
 
-    <Footer/>
+    <Footer />
   </div>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->

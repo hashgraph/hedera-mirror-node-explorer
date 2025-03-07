@@ -6,26 +6,31 @@
 
 <template>
   <TransactionGroupDialog
-      :controller="controller"
-      :native-wallet-only="true"
-      @transaction-group-did-execute="transactionGroupDidExecute"
+    :controller="controller"
+    :native-wallet-only="true"
+    @transaction-group-did-execute="transactionGroupDidExecute"
   >
+    <template #transactionGroupDialogTitle>
+      Claim Token Airdrops
+    </template>
 
-    <template #transactionGroupDialogTitle>Claim Token Airdrops</template>
-
-    <template #transactionGroupExecutionLabel>CLAIM</template>
+    <template #transactionGroupExecutionLabel>
+      CLAIM
+    </template>
 
     <template #transactionGroupDialogInput>
-
       <TaskPanel :mode="TaskPanelMode.none">
-        <template #taskPanelMessage>Do you want to claim {{ airdropCount }} token airdrops?</template>
-        <template v-if="!props.drained" #taskPanelExtra1>
+        <template #taskPanelMessage>
+          Do you want to claim {{ airdropCount }} token airdrops?
+        </template>
+        <template
+          v-if="!props.drained"
+          #taskPanelExtra1
+        >
           (You might have more but we have limited to the first 100)
         </template>
       </TaskPanel>
-
     </template>
-
   </TransactionGroupDialog>
 </template>
 

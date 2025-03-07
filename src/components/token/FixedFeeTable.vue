@@ -5,32 +5,53 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <o-table
-      :data="fees"
-      :hoverable="false"
-      :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
-      :narrowed="true"
-      :striped="false"
+    :data="fees"
+    :hoverable="false"
+    :mobile-breakpoint="ORUGA_MOBILE_BREAKPOINT"
+    :narrowed="true"
+    :striped="false"
   >
-
-    <o-table-column v-slot="props" field="amount" label="FIXED FEE">
-      <PlainAmount v-if="props.row.denominating_token_id" :amount="props.row.amount"/>
-      <HbarAmount v-else :amount="props.row.amount" timestamp="0" :show-extra="true"/>
+    <o-table-column
+      v-slot="props"
+      field="amount"
+      label="FIXED FEE"
+    >
+      <PlainAmount
+        v-if="props.row.denominating_token_id"
+        :amount="props.row.amount"
+      />
+      <HbarAmount
+        v-else
+        :amount="props.row.amount"
+        timestamp="0"
+        :show-extra="true"
+      />
     </o-table-column>
 
-    <o-table-column v-slot="props" field="currency" label="FEE CURRENCY">
-      <TokenLink v-if="props.row.denominating_token_id"
-                 :show-extra="true" :token-id="props.row.denominating_token_id"/>
-      <div v-else>{{ cryptoName }}</div>
+    <o-table-column
+      v-slot="props"
+      field="currency"
+      label="FEE CURRENCY"
+    >
+      <TokenLink
+        v-if="props.row.denominating_token_id"
+        :show-extra="true"
+        :token-id="props.row.denominating_token_id"
+      />
+      <div v-else>
+        {{ cryptoName }}
+      </div>
     </o-table-column>
 
-    <o-table-column v-slot="props" field="collector" label="COLLECTOR ACCOUNT">
-      <AccountLink :account-id="props.row.collector_account_id"/>
+    <o-table-column
+      v-slot="props"
+      field="collector"
+      label="COLLECTOR ACCOUNT"
+    >
+      <AccountLink :account-id="props.row.collector_account_id" />
     </o-table-column>
-
   </o-table>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -64,4 +85,4 @@ const fees = props.analyzer.fixedFees
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

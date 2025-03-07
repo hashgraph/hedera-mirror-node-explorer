@@ -6,7 +6,6 @@
 
 <template>
   <div class="wallet-options">
-
     <!-- header -->
     <div class="wallet-options-title">
       <div style="height: 40px">
@@ -24,47 +23,61 @@
     <!-- content -->
 
     <template v-if="accountId">
-
       <div class="wallet-options-content">
-
         <!-- EVM Address -->
         <GroupBoxView>
-          <template #groupBoxTitle>EVM Address</template>
+          <template #groupBoxTitle>
+            EVM Address
+          </template>
           <template #default>
-            <EVMAddress :address="accountEthereumAddress" :show-id="false"/>
+            <EVMAddress
+              :address="accountEthereumAddress"
+              :show-id="false"
+            />
           </template>
         </GroupBoxView>
 
         <!-- Balance -->
         <GroupBoxView>
-          <template #groupBoxTitle>Balance</template>
+          <template #groupBoxTitle>
+            Balance
+          </template>
           <template #default>
-            <HbarAmount :amount="tbarBalance"/>
+            <HbarAmount :amount="tbarBalance" />
             <div style="color: var(--text-secondary)">
-              <HbarExtra :hide-zero="false" :tbar-amount="tbarBalance ?? 0"/>
+              <HbarExtra
+                :hide-zero="false"
+                :tbar-amount="tbarBalance ?? 0"
+              />
             </div>
           </template>
         </GroupBoxView>
 
         <!-- Account Operations -->
         <GroupBoxView>
-          <template #groupBoxTitle>Account Operations</template>
+          <template #groupBoxTitle>
+            Account Operations
+          </template>
           <template #default>
             <div class="account-operations">
-              <div class="operation" @click="onUpdateAccount">
-                <UserRoundPen :size="18"/>
+              <div
+                class="operation"
+                @click="onUpdateAccount"
+              >
+                <UserRoundPen :size="18" />
                 Account Update
               </div>
-              <div class="operation" @click="onApproveAllowance">
-                <CheckCheck :size="18"/>
+              <div
+                class="operation"
+                @click="onApproveAllowance"
+              >
+                <CheckCheck :size="18" />
                 Approve Allowance
               </div>
             </div>
           </template>
         </GroupBoxView>
-
       </div>
-
     </template>
 
     <template v-else>
@@ -74,25 +87,31 @@
     <!-- footer -->
     <div class="wallet-options-footer">
       <template v-if="accountId">
-        <ButtonView @action="handleDisconnect">DISCONNECT WALLET</ButtonView>
-        <AccountSelector :account-ids="accountIds"
-                         :model-value="accountId"
-                         @update:model-value="handleChangeAccount"/>
+        <ButtonView @action="handleDisconnect">
+          DISCONNECT WALLET
+        </ButtonView>
+        <AccountSelector
+          :account-ids="accountIds"
+          :model-value="accountId"
+          @update:model-value="handleChangeAccount"
+        />
       </template>
       <template v-else>
-        <ButtonView @action="handleReconnect">RECONNECT WALLET</ButtonView>
+        <ButtonView @action="handleReconnect">
+          RECONNECT WALLET
+        </ButtonView>
       </template>
     </div>
 
     <UpdateAccountDialog
-        v-model:show-dialog="showUpdateAccountDialog"
-        @updated="onUpdateCompleted"
+      v-model:show-dialog="showUpdateAccountDialog"
+      @updated="onUpdateCompleted"
     />
 
-    <ApproveAllowanceDialog v-model:show-dialog="showApproveAllowanceDialog"
-                            @allowance-approved="onAllowanceApproved"
+    <ApproveAllowanceDialog
+      v-model:show-dialog="showApproveAllowanceDialog"
+      @allowance-approved="onAllowanceApproved"
     />
-
   </div>
 </template>
 

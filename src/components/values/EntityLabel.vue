@@ -5,10 +5,12 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-  <div v-if="label"
-       :class="{'h-is-label':!compact, 'h-is-compact-label':compact}"
-       class="is-inline-block">
-    <slot/>
+  <div
+    v-if="label"
+    :class="{'h-is-label':!compact, 'h-is-compact-label':compact}"
+    class="is-inline-block"
+  >
+    <slot />
     <span>
       {{ label }}
     </span>
@@ -77,4 +79,4 @@ export default defineComponent({
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style/>
+<style />

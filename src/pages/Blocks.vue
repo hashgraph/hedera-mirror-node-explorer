@@ -5,23 +5,19 @@
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <template>
-
   <PageFrameV2 page-title="Blocks">
-
     <DashboardCardV2>
       <template #title>
         <span>Blocks</span>
       </template>
       <template #left-control>
-        <PlayPauseButton :controller="blockTableController"/>
+        <PlayPauseButton :controller="blockTableController" />
       </template>
       <template #content>
-        <BlockTable :controller="blockTableController"/>
+        <BlockTable :controller="blockTableController" />
       </template>
     </DashboardCardV2>
-
   </PageFrameV2>
-
 </template>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
