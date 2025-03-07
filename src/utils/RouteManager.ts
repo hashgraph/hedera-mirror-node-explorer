@@ -636,23 +636,28 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        // Apply network theme colors to Light mode
-        document.documentElement.style.setProperty('--light-network-button-text-color', this.currentNetworkEntry.value.lightButtonTextColor)
-        document.documentElement.style.setProperty('--light-network-button-color', this.currentNetworkEntry.value.lightButtonColor)
-        document.documentElement.style.setProperty('--light-network-chip-color', this.currentNetworkEntry.value.lightChipColor)
-        document.documentElement.style.setProperty('--light-network-text-accent-color', this.currentNetworkEntry.value.lightTextAccentColor)
-        document.documentElement.style.setProperty('--light-network-border-accent-color', this.currentNetworkEntry.value.lightBorderAccentColor)
-        document.documentElement.style.setProperty('--light-network-graph-bar-color', this.currentNetworkEntry.value.lightGraphBarColor)
-        document.documentElement.style.setProperty('--light-network-chip-text-color', this.currentNetworkEntry.value.lightChipTextColor)
 
-        // Apply network theme to Dark mode
-        document.documentElement.style.setProperty('--dark-network-button-text-color', this.currentNetworkEntry.value.darkButtonTextColor)
-        document.documentElement.style.setProperty('--dark-network-button-color', this.currentNetworkEntry.value.darkButtonColor)
-        document.documentElement.style.setProperty('--dark-network-chip-color', this.currentNetworkEntry.value.darkChipColor)
-        document.documentElement.style.setProperty('--dark-network-text-accent-color', this.currentNetworkEntry.value.darkTextAccentColor)
-        document.documentElement.style.setProperty('--dark-network-border-accent-color', this.currentNetworkEntry.value.darkBorderAccentColor)
-        document.documentElement.style.setProperty('--dark-network-graph-bar-color', this.currentNetworkEntry.value.darkGraphBarColor)
-        document.documentElement.style.setProperty('--dark-network-chip-text-color', this.currentNetworkEntry.value.darkChipTextColor)
+        const colorMap = this.networkConfig.value.getColorMap(this.currentNetwork.value)
+
+        if (colorMap !== null) {
+            // Apply network theme colors to Light mode
+            document.documentElement.style.setProperty('--light-network-button-text-color', colorMap.lightButtonTextColor)
+            document.documentElement.style.setProperty('--light-network-button-color', colorMap.lightButtonColor)
+            document.documentElement.style.setProperty('--light-network-chip-color', colorMap.lightChipColor)
+            document.documentElement.style.setProperty('--light-network-text-accent-color', colorMap.lightTextAccentColor)
+            document.documentElement.style.setProperty('--light-network-border-accent-color', colorMap.lightBorderAccentColor)
+            document.documentElement.style.setProperty('--light-network-graph-bar-color', colorMap.lightGraphBarColor)
+            document.documentElement.style.setProperty('--light-network-chip-text-color', colorMap.lightChipTextColor)
+
+            // Apply network theme to Dark mode
+            document.documentElement.style.setProperty('--dark-network-button-text-color', colorMap.darkButtonTextColor)
+            document.documentElement.style.setProperty('--dark-network-button-color', colorMap.darkButtonColor)
+            document.documentElement.style.setProperty('--dark-network-chip-color', colorMap.darkChipColor)
+            document.documentElement.style.setProperty('--dark-network-text-accent-color', colorMap.darkTextAccentColor)
+            document.documentElement.style.setProperty('--dark-network-border-accent-color', colorMap.darkBorderAccentColor)
+            document.documentElement.style.setProperty('--dark-network-graph-bar-color', colorMap.darkGraphBarColor)
+            document.documentElement.style.setProperty('--dark-network-chip-text-color', colorMap.darkChipTextColor)
+        }
     }
 }
 
