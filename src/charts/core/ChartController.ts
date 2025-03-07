@@ -97,19 +97,19 @@ export abstract class ChartController<M> {
     // To be subclassed
     //
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     public isSupported(): boolean {
         return true
     }
 
     public abstract getMetricDate(metric: M): Date | null
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     protected async loadData(range: ChartRange): Promise<LoadedData<M>> {
         throw "to be subclassed"
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     protected async transformMetrics(metrics: M[], range: ChartRange): Promise<M[]> {
         // No transformation by default
         return metrics

@@ -171,7 +171,7 @@ export default defineComponent({
       if (props.stateChanges) {
         for (const s of props.stateChanges) {
 
-          let newItem: DisplayStateChange = {
+          const newItem: DisplayStateChange = {
             changes: {...s},
             header: true,
             balanceChange: null,

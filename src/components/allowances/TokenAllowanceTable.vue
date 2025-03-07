@@ -118,7 +118,7 @@ const allowances = ref<DisplayedTokenAllowance[]>([])
 watch(props.controller.rows, async () => {
   const result = []
   for (const a of props.controller.rows.value) {
-    let allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
+    const allowance: DisplayedTokenAllowance = a as DisplayedTokenAllowance
     allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
     result.push(allowance)
   }

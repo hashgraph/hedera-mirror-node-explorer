@@ -105,7 +105,7 @@ const isPaginated = computed(() => props.auditItems.length > perPage.value)
 const tableTitle = computed(() => `Added (${props.auditItems.length})`)
 
 const filteredAuditItems = computed(() => {
-  let result: Array<ContractSourceAnalyzerItem> = []
+  const result: Array<ContractSourceAnalyzerItem> = []
   for (let i = 0; i < props.auditItems.length; i++) {
     if (!props.auditItems[i].unused) {
       result.push(props.auditItems[i])

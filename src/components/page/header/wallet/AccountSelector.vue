@@ -34,7 +34,7 @@ const selected = defineModel({
 
 const props = defineProps({
   accountIds: {
-    type: Array as PropType<String[]>,
+    type: Array as PropType<string[]>,
     required: true
   }
 })

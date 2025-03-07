@@ -250,7 +250,7 @@ describe("EntityLoader", () => {
 
 
 
-class TestLoader extends EntityLoader<String> {
+class TestLoader extends EntityLoader<string> {
 
     public executionCount = 0
 
@@ -262,7 +262,7 @@ class TestLoader extends EntityLoader<String> {
         super(refreshPeriod, maxRefreshCount)
     }
 
-    protected async load(): Promise<String | null> {
+    protected async load(): Promise<string | null> {
         await waitFor(1000)
         this.executionCount += 1
         return "Execution " + this.executionCount

@@ -6,7 +6,7 @@ export abstract class NameServiceProvider {
     // Public
     //
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+     
     public async resolve(name: string, network: string): Promise<string|null> {
         throw "must be subclassed"
     }

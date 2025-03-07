@@ -52,7 +52,7 @@ const props = defineProps({
     default: null
   },
   serialNumber: {
-    type: Number as PropType<Number | null>,
+    type: Number as PropType<number | null>,
     default: null
   },
   property: {

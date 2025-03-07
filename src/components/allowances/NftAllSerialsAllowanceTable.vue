@@ -113,7 +113,7 @@ const allowances = ref<DisplayedNftAllowance[]>([])
 watch(props.controller.rows, async () => {
   const result = []
   for (const a of props.controller.rows.value) {
-    let allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
+    const allowance: DisplayedNftAllowance = a as DisplayedNftAllowance
     // isValidAssociation(a.owner, a.token_id).then((r) => allowance.isEditable = r)
     allowance.isEditable = await isValidAssociation(a.owner, a.token_id)
     result.push(allowance)
