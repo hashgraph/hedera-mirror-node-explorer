@@ -2,7 +2,7 @@
 
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Search Bar', () => {
+describe('Name Service Search', () => {
 
     beforeEach(() => {
         cy.visit('/mainnet/dashboard')
