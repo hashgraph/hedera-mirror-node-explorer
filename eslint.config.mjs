@@ -11,7 +11,7 @@ export default tseslint.config(
         extends: [
             eslint.configs.recommended,
             ...tseslint.configs.recommended,
-            ...eslintPluginVue.configs['flat/recommended'],
+            ...eslintPluginVue.configs['flat/essential'],
             pluginCypress.configs.recommended
         ],
         files: ['**/*.{ts,vue}'],
