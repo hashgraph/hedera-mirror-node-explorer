@@ -34,7 +34,7 @@ import {ERC721Cache} from "@/utils/cache/ERC721Cache.ts";
 export abstract class SearchAgent<L, E> {
 
     public readonly loading = ref<boolean>(false)
-    public readonly loc: Ref<L|null> = ref(null)
+    public readonly loc: Ref<L | null> = ref(null)
     public readonly candidates: Ref<SearchCandidate<E>[]> = ref([])
     private readonly abortController = new AbortController()
 
@@ -42,7 +42,7 @@ export abstract class SearchAgent<L, E> {
     // Public
     //
 
-     
+
     public willNavigate(candidate: SearchCandidate<E>): void {
         // Possibly override by subclasses
     }
@@ -56,7 +56,7 @@ export abstract class SearchAgent<L, E> {
         watch(this.loc, this.entityLocDidChange)
     }
 
-     
+
     protected /* abstract */ async load(loc: L, abortController: AbortController): Promise<SearchCandidate<E>[]> {
         return Promise.reject("To be subclassed")
     }
@@ -75,7 +75,7 @@ export abstract class SearchAgent<L, E> {
                 this.candidates.value = []
             }
             this.loading.value = false
-        } catch(reason) {
+        } catch (reason) {
             this.candidates.value = []
             if (!this.isAbortError(reason)) {
                 this.loading.value = false
@@ -96,15 +96,16 @@ export abstract class SearchAgent<L, E> {
 
 export class SearchCandidate<E> {
     constructor(readonly description: string,
-                readonly extra: string|null,
+                readonly extra: string | null,
                 readonly route: RouteLocationRaw | null,
                 readonly entity: E,
-                readonly agent: SearchAgent<unknown,E>,
-                readonly secondary: boolean = false) {}
+                readonly agent: SearchAgent<unknown, E>,
+                readonly secondary: boolean = false) {
+    }
 }
 
 
-export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | string, AccountInfo>{
+export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | string, AccountInfo> {
 
     //
     // Public
@@ -120,10 +121,10 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
 
     protected async load(accountParam: EntityID | Uint8Array | string): Promise<SearchCandidate<AccountInfo>[]> {
 
-        let accountLoc: string|Uint8Array
+        let accountLoc: string | Uint8Array
         if (accountParam instanceof EntityID) {
             accountLoc = accountParam.toString()
-        } else if (accountParam instanceof  Uint8Array) {
+        } else if (accountParam instanceof Uint8Array) {
             if (accountParam.length == 32 || accountParam.length == 33) {
                 // accountParam is a public key
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/accounts/listAccounts
@@ -201,7 +202,7 @@ export class AccountSearchAgent extends SearchAgent<EntityID | Uint8Array | stri
 }
 
 
-export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, ContractResponse>{
+export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, ContractResponse> {
 
     //
     // Public
@@ -217,7 +218,7 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
 
     protected async load(contractParam: EntityID | Uint8Array): Promise<SearchCandidate<ContractResponse>[]> {
 
-        let contractLoc: string|null
+        let contractLoc: string | null
         if (contractParam instanceof EntityID) {
             contractLoc = contractParam.toString()
         } else if (contractParam.length <= 20) {
@@ -227,7 +228,7 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
             contractLoc = null
         }
 
-        let contractInfo: ContractResponse|null
+        let contractInfo: ContractResponse | null
         if (contractLoc !== null) {
             // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
             const r = await axios.get<ContractResponse>("api/v1/contracts/" + contractLoc)
@@ -251,7 +252,7 @@ export class ContractSearchAgent extends SearchAgent<EntityID | Uint8Array, Cont
 
 }
 
-export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenInfo>{
+export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenInfo> {
 
     //
     // Public
@@ -267,7 +268,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
 
     protected async load(tokenParam: EntityID | Uint8Array): Promise<SearchCandidate<TokenInfo>[]> {
 
-        let tokenLoc: string|null
+        let tokenLoc: string | null
         if (tokenParam instanceof EntityID) {
             tokenLoc = tokenParam.toString()
         } else if (tokenParam.length <= 20) {
@@ -279,7 +280,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
             tokenLoc = null
         }
 
-        let tokenInfo: TokenInfo|null
+        let tokenInfo: TokenInfo | null
         if (tokenLoc !== null) {
             try {
                 // https://testnet.mirrornode.hedera.com/api/v1/docs/#/contracts/getContractById
@@ -296,7 +297,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
         if (tokenInfo !== null && tokenInfo.token_id !== null) {
             const description = tokenInfo.token_id
             const route = routeManager.makeRouteToToken(tokenInfo.token_id)
-            const candidate = new SearchCandidate(description, null,route, tokenInfo, this)
+            const candidate = new SearchCandidate(description, null, route, tokenInfo, this)
             result = [candidate]
         } else {
             result = []
@@ -307,7 +308,7 @@ export class TokenSearchAgent extends SearchAgent<EntityID | Uint8Array, TokenIn
 
 }
 
-export class TopicSearchAgent extends SearchAgent<EntityID, Topic>{
+export class TopicSearchAgent extends SearchAgent<EntityID, Topic> {
 
     //
     // Public
@@ -449,7 +450,7 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
     }
 
     protected async load(domainName: string): Promise<SearchCandidate<DomainNameResolution>[]> {
-        let result: SearchCandidate<DomainNameResolution>|null
+        let result: SearchCandidate<DomainNameResolution> | null
         try {
             const network = routeManager.currentNetwork.value
             const record = await NameService.instance.singleResolve(domainName, network, this.provider.providerAlias)
@@ -473,10 +474,11 @@ export class DomainNameSearchAgent extends SearchAgent<string, DomainNameResolut
 }
 
 export class DomainNameResolution {
-    constructor(public readonly record: NameRecord, public readonly accountInfo: AccountInfo|null) {}
+    constructor(public readonly record: NameRecord, public readonly accountInfo: AccountInfo | null) {
+    }
 }
 
-export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
+export class BlockSearchAgent extends SearchAgent<number | Uint8Array, Block> {
 
     //
     // Public
@@ -490,10 +492,10 @@ export class BlockSearchAgent extends SearchAgent<number|Uint8Array, Block> {
     // SearchAgent
     //
 
-    protected async load(blockParam: number|Uint8Array): Promise<SearchCandidate<Block>[]> {
+    protected async load(blockParam: number | Uint8Array): Promise<SearchCandidate<Block>[]> {
         let result: SearchCandidate<Block>[]
         try {
-            let block: Block|null
+            let block: Block | null
             if (blockParam instanceof Uint8Array) {
                 if (blockParam.length == 48) {
                     block = (await axios.get<Block>("api/v1/blocks/" + byteToHex(blockParam))).data
@@ -532,7 +534,7 @@ export abstract class TokenNameSearchAgent extends SearchAgent<string, TokenLike
         super(title)
     }
 
-     
+
     protected async loadTokens(tokenName: string): Promise<TokenLike[]> {
         throw "Must be subclassed"
     }
@@ -633,7 +635,7 @@ export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
         // https://previewnet.mirrornode.hedera.com/api/v1/docs/#/tokens/getToken
         const r = await axios.get<TokensResponse>("api/v1/tokens/?name=" + tokenName + "&limit=100")
         const result = r.data.tokens ?? []
-        result.sort((t1: TokenLike, t2:TokenLike) => FullTokenNameSearchAgent.compareToken(t1, t2, tokenName))
+        result.sort((t1: TokenLike, t2: TokenLike) => FullTokenNameSearchAgent.compareToken(t1, t2, tokenName))
         return Promise.resolve(result)
     }
 
@@ -685,7 +687,7 @@ export class FullTokenNameSearchAgent extends TokenNameSearchAgent {
 }
 
 export interface TokenLike {
-    token_id: string|null
+    token_id: string | null
     name: string
 }
 

@@ -13,7 +13,7 @@
         <div class="dialog-grid" style="align-self: stretch">
           <template v-for="b of paramBuilders" :key="b.paramType.name">
             <div style="align-self: center">{{ b.paramType.name }}</div>
-            <ParamTypeEditor :param-builder="b" style="width: 100%" />
+            <ParamTypeEditor :param-builder="b" style="width: 100%"/>
             <div/>
             <div>{{ b.paramType.format() }}</div>
           </template>
@@ -91,7 +91,7 @@ const controller = new ContractAbiController(showDialog, props.contractCallBuild
 const dialogTitle = computed(() => props.contractCallBuilder.fragment.name + "()")
 const paramBuilders = computed(() => props.contractCallBuilder.paramBuilders)
 const hasResult = computed(() => props.contractCallBuilder.hasResult())
-const callOutput =computed( () => props.contractCallBuilder.callOutput)
+const callOutput = computed(() => props.contractCallBuilder.callOutput)
 const errorMessage = controller.errorMessage
 const walletName = walletManager.walletName
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? "")

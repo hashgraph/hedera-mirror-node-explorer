@@ -58,11 +58,11 @@ describe("TokensSection.vue", () => {
         const matcher5 = "/api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id
         mock.onGet(matcher5).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
         const token1 = SAMPLE_TOKEN_RELATIONSHIP_1.token_id
-        const response1 = { tokens: [SAMPLE_TOKEN_RELATIONSHIP_1]}
+        const response1 = {tokens: [SAMPLE_TOKEN_RELATIONSHIP_1]}
         const matcher6 = "/api/v1/accounts/" + accountId + "/tokens?token.id=" + token1 + "&limit=1"
         mock.onGet(matcher6).reply(200, response1)
         const token2 = SAMPLE_TOKEN_RELATIONSHIP_2.token_id
-        const response2 = { tokens: [SAMPLE_TOKEN_RELATIONSHIP_2]}
+        const response2 = {tokens: [SAMPLE_TOKEN_RELATIONSHIP_2]}
         const matcher7 = "/api/v1/accounts/" + accountId + "/tokens?token.id=" + token2 + "&limit=1"
         mock.onGet(matcher7).reply(200, response2)
 

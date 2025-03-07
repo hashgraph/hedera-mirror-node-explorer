@@ -36,7 +36,7 @@ export class UpdateTokenAllowanceController extends TransactionController {
     })
 
     public readonly currentUserAmount = computed(() => {
-        let result: string|null
+        let result: string | null
         const currentTinyAmount = this.currentTinyAmount.value
         const decimals = this.tokenAmountController.decimals.value
         if (currentTinyAmount !== null && decimals !== null) {
@@ -52,8 +52,8 @@ export class UpdateTokenAllowanceController extends TransactionController {
     public readonly newUserAmount = computed(() => this.tokenAmountController.userAmount.value)
 
     public readonly feedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.tokenAmountController.state.value) {
+        let result: string | null
+        switch (this.tokenAmountController.state.value) {
             case TokenAmountTextFieldState.empty:
                 result = null
                 break
@@ -84,7 +84,7 @@ export class UpdateTokenAllowanceController extends TransactionController {
             && this.newTinyAmount.value !== this.currentTinyAmount.value
     }
 
-    public async executeTransaction(): Promise<string|null> {
+    public async executeTransaction(): Promise<string | null> {
         const tokenId = this.tokenId.value!
         const spenderId = this.spenderId.value!
         const newUserAmount = this.newUserAmount.value!

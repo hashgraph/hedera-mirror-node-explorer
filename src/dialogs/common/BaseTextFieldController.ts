@@ -4,7 +4,7 @@ import {computed, Ref, ref, watch} from "vue";
 
 export class BaseTextFieldController {
 
-    public readonly oldText: Ref<string|null>
+    public readonly oldText: Ref<string | null>
     public readonly inputText: Ref<string> = ref("")
     private readonly newTextRef: Ref<string> = ref("")
     private timeoutID = -1
@@ -14,7 +14,7 @@ export class BaseTextFieldController {
     // Public
     //
 
-    public constructor(oldText: Ref<string|null>) {
+    public constructor(oldText: Ref<string | null>) {
         this.oldText = oldText
         watch(this.inputText, this.inputTextDidChange, {immediate: true})
     }

@@ -29,16 +29,17 @@ export class WalletManagerV4 {
     private readonly initializing = ref(false)
     private readonly restoring = ref(false)
     private readonly connecting = ref(false)
-    private readonly walletSession = ref<WalletSession|null>(null)
-    public readonly accountId = ref<string|null>(null)
-    public readonly client = ref<WalletClient|null>(null)
-    private walletConnectAgent: WalletConnectAgent|null = null
+    private readonly walletSession = ref<WalletSession | null>(null)
+    public readonly accountId = ref<string | null>(null)
+    public readonly client = ref<WalletClient | null>(null)
+    private walletConnectAgent: WalletConnectAgent | null = null
 
     //
     // Public
     //
 
-    public constructor(private readonly routeManager: RouteManager) {}
+    public constructor(private readonly routeManager: RouteManager) {
+    }
 
     public launch(): void {
         this.initialize().catch()
@@ -66,13 +67,13 @@ export class WalletManagerV4 {
         = computed(() => this.walletSession.value?.name ?? null)
 
     public readonly walletIconURL
-        = computed<string|null>(() => this.walletSession.value?.iconURL ?? null)
+        = computed<string | null>(() => this.walletSession.value?.iconURL ?? null)
 
     public readonly walletDN
-        = computed<string|null>(() => this.walletSession.value?.getWalletDN() ?? null)
+        = computed<string | null>(() => this.walletSession.value?.getWalletDN() ?? null)
 
     public readonly walletUUID
-        = computed<string|null>(() => this.walletSession.value?.getWalletUUID() ?? null)
+        = computed<string | null>(() => this.walletSession.value?.getWalletUUID() ?? null)
 
     public readonly accountIds
         = computed<string[]>(() => this.walletSession.value?.usableAccountIds ?? [])
@@ -100,7 +101,7 @@ export class WalletManagerV4 {
         return result
     })
 
-    public async connect(walletUUID: string|null): Promise<boolean> {
+    public async connect(walletUUID: string | null): Promise<boolean> {
 
         // Updates this.walletSession
         if (walletUUID === null) {
@@ -108,7 +109,7 @@ export class WalletManagerV4 {
             if (this.walletConnectAgent !== null) {
                 try {
                     this.walletSession.value = await this.walletConnectAgent.requestSession()
-                } catch(error) {
+                } catch (error) {
                     this.traceError(error, "WalletManagerV4.connect()")
                     this.walletSession.value = null
                 }
@@ -122,7 +123,7 @@ export class WalletManagerV4 {
                 if (this.walletSession.value === null) {
                     this.walletSession.value = await EIP6963Agent.instance.requestSession(walletUUID)
                 }
-            } catch(error) {
+            } catch (error) {
                 this.traceError(error, "WalletManagerV4.connect()")
                 this.walletSession.value = null
             }
@@ -157,7 +158,7 @@ export class WalletManagerV4 {
         if (this.walletSession.value !== null) {
             try {
                 await this.walletSession.value.revoke()
-            } catch(error) {
+            } catch (error) {
                 this.traceError(error, "WalletManagerV4.disconnect()")
             }
             this.walletSession.value = null
@@ -303,7 +304,7 @@ export class WalletManagerV4 {
             this.restoring.value = true
             await this.restoreLastSession()
             this.restoring.value = false
-        }, { immediate: true })
+        }, {immediate: true})
     }
 
     private async initWalletConnect(): Promise<void> {
@@ -311,7 +312,7 @@ export class WalletManagerV4 {
         if (walletConnectID !== null) {
             try {
                 this.walletConnectAgent = await WalletConnectAgent.makeInstance(walletConnectID)
-            } catch(error) {
+            } catch (error) {
                 // this.traceError(error, "WalletManagerV4.initWalletConnect()")
                 this.walletConnectAgent = null
             }
@@ -344,7 +345,7 @@ export class WalletManagerV4 {
                 const providerRDN = walletDN.slice(EIP6963Agent.WALLET_DN_PREFIX.length)
                 try {
                     this.walletSession.value = await EIP6963Agent.instance.checkAccessWithRDN(providerRDN)
-                } catch(error) {
+                } catch (error) {
                     this.traceError(error, "WalletManagerV4.restoreLastAccess()")
                     this.walletSession.value = null
                 }

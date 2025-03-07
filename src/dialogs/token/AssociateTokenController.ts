@@ -29,11 +29,11 @@ export class AssociateTokenController extends TransactionController {
 
     public canBeExecuted(): boolean {
         return this.tokenAnalyzer.value.associationStatus.value === TokenAssociationStatus.Dissociated &&
-                    (walletManager.isWatchSupported.value || !this.watchInWallet.value)
+            (walletManager.isWatchSupported.value || !this.watchInWallet.value)
     }
 
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         const tid = await walletManager.associateToken(this.tokenId.value!)
         const result = await waitForTransactionRefresh(tid)
         this.tokenAnalyzer.value.tokenAssociationDidChange()

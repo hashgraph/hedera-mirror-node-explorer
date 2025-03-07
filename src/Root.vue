@@ -39,17 +39,17 @@ import App from "@/App.vue";
 
 const props = defineProps({
   coreConfig: {
-    type: Object as PropType<CoreConfig|Error>,
+    type: Object as PropType<CoreConfig | Error>,
     required: true
   },
   networkConfig: {
-    type: Object as PropType<NetworkConfig|Error>,
+    type: Object as PropType<NetworkConfig | Error>,
     required: true
   }
 })
 
 const coreConfigErrorMessage = computed(() => {
-  let result: string|null
+  let result: string | null
   if (props.coreConfig instanceof CoreConfig) {
     result = null
   } else {
@@ -59,7 +59,7 @@ const coreConfigErrorMessage = computed(() => {
 })
 
 const networkConfigErrorMessage = computed(() => {
-  let result: string|null
+  let result: string | null
   if (props.networkConfig instanceof NetworkConfig) {
     result = null
   } else {

@@ -13,7 +13,7 @@
           v-if="isVerificationAvailable"
           class="h-has-pill"
           :class="{'h-chip-success':isVerified, 'h-chip-default':!isVerified}"
-           style="margin-top: 2px">
+          style="margin-top: 2px">
         {{ isVerified ? 'VERIFIED' : 'NOT VERIFIED' }}
       </div>
     </template>
@@ -359,6 +359,7 @@ div.verification-status {
   flex-wrap: wrap;
   justify-content: right;
 }
+
 @media (min-width: 768px) {
   div.verification-status {
     justify-content: left;

@@ -41,7 +41,7 @@ export class ClaimTokenController extends TransactionController {
     }
 
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         const pendingAirdrop = this.pendingAirdrop.value!
         const tid = await walletManager.claimTokenAirdrops([pendingAirdrop])
         const result = await waitForTransactionRefresh(tid)

@@ -21,7 +21,7 @@
             :size="isMediumScreen ? props.size : undefined"
             style="width: 100%; text-overflow: ellipsis;"
         />
-        <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none" >
+        <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none">
           <Search :size="18" style="color: var(--network-button-text-color); margin-top: 4px;"/>
         </button>
       </form>

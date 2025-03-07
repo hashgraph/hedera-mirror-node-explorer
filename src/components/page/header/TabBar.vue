@@ -8,24 +8,24 @@
   <div class="tab-bar" :class="{'vertical': props.vertical}">
 
     <TabItem :tabId="TabId.Dashboard"
-                 :target-route="routeManager.makeRouteToMainDashboard()"/>
+             :target-route="routeManager.makeRouteToMainDashboard()"/>
     <TabItem :tabId="TabId.Transactions"
-                 :target-route="routeManager.makeRouteToTransactions()"/>
+             :target-route="routeManager.makeRouteToTransactions()"/>
     <TabItem :tabId="TabId.Tokens"
-                 :target-route="routeManager.makeRouteToTokens()"/>
+             :target-route="routeManager.makeRouteToTokens()"/>
     <TabItem :tabId="TabId.Topics"
-                 :target-route="routeManager.makeRouteToTopics()"/>
+             :target-route="routeManager.makeRouteToTopics()"/>
     <TabItem :tabId="TabId.Contracts"
-                 :target-route="routeManager.makeRouteToContracts()"/>
+             :target-route="routeManager.makeRouteToContracts()"/>
     <TabItem :tabId="TabId.Accounts"
-                 :target-route="routeManager.makeRouteToAccounts()"/>
+             :target-route="routeManager.makeRouteToAccounts()"/>
     <TabItem :tabId="TabId.Nodes"
-                 :target-route="routeManager.makeRouteToNodes()"/>
+             :target-route="routeManager.makeRouteToNodes()"/>
     <TabItem v-if="enableStaking"
-                 :tabId="TabId.Staking"
-                 :target-route="routeManager.makeRouteToStaking()"/>
+             :tabId="TabId.Staking"
+             :target-route="routeManager.makeRouteToStaking()"/>
     <TabItem :tabId="TabId.Blocks"
-                 :target-route="routeManager.makeRouteToBlocks()"/>
+             :target-route="routeManager.makeRouteToBlocks()"/>
   </div>
 </template>
 

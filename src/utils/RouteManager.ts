@@ -155,8 +155,8 @@ export class RouteManager {
         this.switchThemes()
     }
 
-    public findChainID(network: string): number|null {
-        let result: number|null
+    public findChainID(network: string): number | null {
+        let result: number | null
         const entry = this.networkConfig.value.lookup(network)
         if (entry !== null) {
             result = entry.sourcifySetup?.chainID ?? null
@@ -446,11 +446,11 @@ export class RouteManager {
     // Main Pages
     //
 
-    public makeRouteToMainDashboard(network: string|null = null): RouteLocationRaw {
-        return {name: 'MainDashboard', params: {network: network ??  this.currentNetwork.value}}
+    public makeRouteToMainDashboard(network: string | null = null): RouteLocationRaw {
+        return {name: 'MainDashboard', params: {network: network ?? this.currentNetwork.value}}
     }
 
-    public routeToMainDashboard(network: string|null = null): Promise<NavigationFailure | void | undefined> {
+    public routeToMainDashboard(network: string | null = null): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToMainDashboard(network))
     }
 
@@ -508,7 +508,7 @@ export class RouteManager {
     // Private
     //
 
-    private readonly checkNetwork = (to: RouteLocationNormalized): boolean|string => {
+    private readonly checkNetwork = (to: RouteLocationNormalized): boolean | string => {
         let result: boolean | string
 
         if (this.getNetworkEntryFromRoute(to) === null) { // Unknown network)
@@ -519,7 +519,7 @@ export class RouteManager {
         return result
     }
 
-    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
+    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized): void => {
         const envTitlePrefix = this.coreConfig.value.documentTitlePrefix
         const titlePrefix = envTitlePrefix !== "" ? envTitlePrefix + " " : ""
 
@@ -683,7 +683,6 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
     }
     return result
 }
-
 
 
 export enum TabId {

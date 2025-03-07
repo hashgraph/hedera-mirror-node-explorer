@@ -162,8 +162,8 @@ export class SearchController {
         return result
     })
 
-    public findAgentById(id: string): SearchAgent<unknown, unknown>|null {
-        let result: SearchAgent<unknown, unknown>|null = null
+    public findAgentById(id: string): SearchAgent<unknown, unknown> | null {
+        let result: SearchAgent<unknown, unknown> | null = null
         for (const a of this.allAgents) {
             if (id == a.id) {
                 result = a

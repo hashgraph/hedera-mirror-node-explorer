@@ -62,8 +62,7 @@ export function getDataURLType(dataURL: string): string | null {
         }
         if (delimiter !== -1) {
             result = dataURL.substring(DATA_URL_PREFIX.length, delimiter)
-        }
-        else {
+        } else {
             result = null
         }
     } else {

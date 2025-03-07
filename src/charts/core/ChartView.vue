@@ -72,7 +72,7 @@ const props = defineProps({
 })
 
 const canvasRef = props.controller.canvas
-const canvasDisplay = computed(() => props.controller.state.value === ChartState.ok ? "block": "none")
+const canvasDisplay = computed(() => props.controller.state.value === ChartState.ok ? "block" : "none")
 const state = props.controller.state
 const errorExtra = props.controller.errorExtra
 const latestMetricDate = props.controller.latestMetricDate

@@ -13,7 +13,7 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
 
     public constructor() {
         // Refresh every 10 min, forever
-        super(60*10*1000, EntityLoader.HUGE_COUNT)
+        super(60 * 10 * 1000, EntityLoader.HUGE_COUNT)
     }
 
     public readonly hbarPriceText = computed(() => {
@@ -57,15 +57,15 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
 
         const timeNow = new Date().getTime()
         const time24 = timeNow - 24 * 3600 * 1000
-        const paramsNow = { timestamp: timeNow / 1000 }
-        const params24 = { timestamp: time24 / 1000 }
+        const paramsNow = {timestamp: timeNow / 1000}
+        const params24 = {timestamp: time24 / 1000}
 
         const lastExchangeRate = (await axios.get<NetworkExchangeRateSetResponse>(
-            "api/v1/network/exchangerate", { params: paramsNow})).data
+            "api/v1/network/exchangerate", {params: paramsNow})).data
         const lastExchangeRate24 = (await axios.get<NetworkExchangeRateSetResponse>(
             "api/v1/network/exchangerate", {params: params24})).data
         const lastSupply = (await axios.get<NetworkSupplyResponse>(
-            "api/v1/network/supply", { params: paramsNow})).data
+            "api/v1/network/supply", {params: paramsNow})).data
         const lastSupply24 = (await axios.get<NetworkSupplyResponse>(
             "api/v1/network/supply", {params: params24})).data
 
@@ -159,7 +159,8 @@ export class NetworksMetrics {
         readonly lastExchangeRate: NetworkExchangeRateSetResponse,
         readonly lastExchangeRate24: NetworkExchangeRateSetResponse,
         readonly lastSupply: NetworkSupplyResponse,
-        readonly lastSupply24: NetworkSupplyResponse) {}
+        readonly lastSupply24: NetworkSupplyResponse) {
+    }
 
 }
 

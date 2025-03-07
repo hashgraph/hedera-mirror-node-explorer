@@ -10,24 +10,24 @@ import {TokenAssociationCache} from "@/utils/cache/TokenAssociationCache.ts";
 
 export class TokenTextFieldController {
 
-    public readonly oldTokenId: Ref<string|null>
-    public readonly accountId: Ref<string|null>
+    public readonly oldTokenId: Ref<string | null>
+    public readonly accountId: Ref<string | null>
     public readonly inputText: Ref<string>
     private readonly entityFieldController: EntityTextFieldController
-    private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
+    private readonly tokenLookup: EntityLookup<string, TokenInfo | null>
     private readonly tokenAssociationLookup: EntityLookup<string, TokenRelationship[] | null>
 
     //
     // Public
     //
 
-    public constructor(oldTokenId: Ref<string|null>, accountId: Ref<string|null>, networkConfig: NetworkConfig) {
+    public constructor(oldTokenId: Ref<string | null>, accountId: Ref<string | null>, networkConfig: NetworkConfig) {
         this.oldTokenId = oldTokenId
         this.accountId = accountId
         this.entityFieldController = new EntityTextFieldController(this.oldTokenId, networkConfig)
         this.inputText = this.entityFieldController.inputText
         this.tokenLookup = TokenInfoCache.instance.makeLookup(this.newTokenId)
-        this.tokenAssociationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(this.accountId,this.newTokenId)
+        this.tokenAssociationLookup = TokenAssociationCache.instance.makeTokenAssociationLookup(this.accountId, this.newTokenId)
     }
 
     public mount(): void {
@@ -42,7 +42,7 @@ export class TokenTextFieldController {
 
     public readonly state = computed(() => {
         let result: TokenTextFieldState
-        switch(this.entityFieldController.state.value) {
+        switch (this.entityFieldController.state.value) {
             case EntityTextFieldState.empty:
                 result = TokenTextFieldState.empty
                 break

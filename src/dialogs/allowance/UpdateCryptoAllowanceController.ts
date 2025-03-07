@@ -35,8 +35,8 @@ export class UpdateCryptoAllowanceController extends TransactionController {
     public readonly newUserAmount = computed(() => this.cryptoController.newUserAmount.value)
 
     public readonly feedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.cryptoController.state.value) {
+        let result: string | null
+        switch (this.cryptoController.state.value) {
             case HbarTextFieldState.empty:
                 result = null
                 break
@@ -67,7 +67,7 @@ export class UpdateCryptoAllowanceController extends TransactionController {
             && this.newTinyAmount.value !== this.oldTinyAmount.value
     }
 
-    public async executeTransaction(): Promise<string|null> {
+    public async executeTransaction(): Promise<string | null> {
         const spenderId = this.spenderId.value!
         const newUserAmount = this.newUserAmount.value!
         return await walletManager.approveHbarAllowance(spenderId, Number(newUserAmount))

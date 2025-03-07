@@ -9,16 +9,16 @@ import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
 
 export class AccountTextFieldController {
 
-    public readonly oldAccountId: Ref<string|null>
+    public readonly oldAccountId: Ref<string | null>
     public readonly inputText: Ref<string>
     private readonly entityFieldController: EntityTextFieldController
-    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions|null>
+    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions | null>
 
     //
     // Public
     //
 
-    public constructor(oldAccountId: Ref<string|null>, networkConfig: NetworkConfig) {
+    public constructor(oldAccountId: Ref<string | null>, networkConfig: NetworkConfig) {
         this.oldAccountId = oldAccountId
         this.entityFieldController = new EntityTextFieldController(this.oldAccountId, networkConfig)
         this.inputText = this.entityFieldController.inputText
@@ -41,7 +41,7 @@ export class AccountTextFieldController {
 
     public readonly state = computed<AccountTextFieldState>(() => {
         let result: AccountTextFieldState
-        switch(this.entityFieldController.state.value) {
+        switch (this.entityFieldController.state.value) {
             case EntityTextFieldState.empty:
                 result = AccountTextFieldState.empty
                 break

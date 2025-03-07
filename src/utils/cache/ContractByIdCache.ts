@@ -14,8 +14,8 @@ export class ContractByIdCache extends EntityCache<string, ContractResponse | nu
     // Public
     //
 
-    public async findContractAddress(contractId: string): Promise<string|null> {
-        let result: string|null
+    public async findContractAddress(contractId: string): Promise<string | null> {
+        let result: string | null
         const contractInfo = await this.lookup(contractId)
         if (contractInfo !== null) {
             result = contractInfo.evm_address ?? EntityID.parse(contractId)?.toAddress() ?? null

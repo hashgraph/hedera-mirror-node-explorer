@@ -38,7 +38,7 @@ export default defineComponent({
   components: {},
   props: {
     route: {
-      type: Object as PropType<RouteLocationRaw|null>,
+      type: Object as PropType<RouteLocationRaw | null>,
       default: null
     },
   },

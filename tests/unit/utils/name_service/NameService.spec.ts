@@ -97,14 +97,14 @@ class TestProvider extends NameServiceProvider {
         this.resolutions = new Map<string, string>(resolutions)
     }
 
-    public async resolve(name: string, network: string): Promise<string|null> {
-        let result: string|null
+    public async resolve(name: string, network: string): Promise<string | null> {
+        let result: string | null
         if (network == TEST_NETWORK) {
             result = this.resolutions.get(name) ?? null
         } else {
             result = null
         }
-        this.requestCount +=1
+        this.requestCount += 1
         this.resolutionCount += result !== null ? 1 : 0
         return Promise.resolve(result)
     }
@@ -116,14 +116,14 @@ class TestProvider extends NameServiceProvider {
 }
 
 const castor = new TestProvider("P1", [
-    ["castor1",     "0.0.100"],
-    ["castor2",     "0.0.101"],
-    ["ambiguous",   "0.0.102"],
+    ["castor1", "0.0.100"],
+    ["castor2", "0.0.101"],
+    ["ambiguous", "0.0.102"],
 ])
 const pollux = new TestProvider("P2", [
-    ["pollux1",     "0.0.200"],
-    ["pollux2",     "0.0.201"],
-    ["ambiguous",   "0.0.202"],
+    ["pollux1", "0.0.200"],
+    ["pollux2", "0.0.201"],
+    ["ambiguous", "0.0.202"],
 ])
 
 function installTestProviders() {

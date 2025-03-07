@@ -9,7 +9,7 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache.ts";
 
 export class DeleteNftAllowanceController extends TransactionController {
 
-    private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
+    private readonly tokenLookup: EntityLookup<string, TokenInfo | null>
 
 
     //
@@ -19,7 +19,7 @@ export class DeleteNftAllowanceController extends TransactionController {
     public constructor(showDialog: Ref<boolean>,
                        public readonly tokenId: Ref<string | null>,
                        public readonly spenderId: Ref<string | null>,
-                       public readonly serial: Ref<number|null>) {
+                       public readonly serial: Ref<number | null>) {
         super(showDialog)
         this.tokenLookup = TokenInfoCache.instance.makeLookup(this.tokenId)
     }
@@ -35,7 +35,7 @@ export class DeleteNftAllowanceController extends TransactionController {
         return this.spenderId.value !== null && this.tokenId.value !== null
     }
 
-    public async executeTransaction(): Promise<string|null> {
+    public async executeTransaction(): Promise<string | null> {
         let result: string | null
 
         const tokenId = this.tokenId.value!

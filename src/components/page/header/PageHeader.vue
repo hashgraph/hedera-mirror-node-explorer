@@ -110,8 +110,9 @@ div.root {
   background: var(--background-secondary);
   border-bottom-left-radius: 32px;
   border-bottom-right-radius: 32px;
-  padding: 0 16px ;
+  padding: 0 16px;
 }
+
 @media (min-width: 1080px) {
   div.root {
     background: url('@/assets/header-background.svg') top left no-repeat, var(--background-tertiary);
@@ -156,6 +157,7 @@ div.title {
   line-height: 20px;
   margin: 0;
 }
+
 @media (min-width: 1080px) {
   div.title {
     font-size: 32px;

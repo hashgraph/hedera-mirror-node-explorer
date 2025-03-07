@@ -88,7 +88,7 @@ provide(networkConfigKey, props.networkConfig)
 
 const themeController = new ThemeController(props.coreConfig)
 provide(themeControllerKey, themeController)
-onMounted(() =>themeController.mount())
+onMounted(() => themeController.mount())
 
 const showCookiesDialog = ref(false)
 
@@ -121,7 +121,7 @@ onBeforeMount(() => {
 onMounted(() => {
   windowWidth.value = window.innerWidth
   window.addEventListener('resize', onResizeHandler);
-      walletManager.launch()
+  walletManager.launch()
 })
 
 onBeforeUnmount(() => {

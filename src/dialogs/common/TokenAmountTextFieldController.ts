@@ -10,14 +10,14 @@ import {TokenInfo} from "@/schemas/MirrorNodeSchemas.ts";
 export class TokenAmountTextFieldController {
 
     private readonly inputChangeController: InputChangeController
-    private readonly tokenLookup: EntityLookup<string, TokenInfo|null>
+    private readonly tokenLookup: EntityLookup<string, TokenInfo | null>
 
     //
     // Public
     //
 
     public constructor(
-        public readonly tokenId: Ref<string|null>,
+        public readonly tokenId: Ref<string | null>,
         private readonly rejectZero: boolean,
         public readonly input: Ref<string> = ref("")) {
         this.inputChangeController = new InputChangeController(input)
@@ -52,8 +52,8 @@ export class TokenAmountTextFieldController {
         return result
     })
 
-    public readonly userAmount = computed<string|null>(() => {
-        let result: string|null
+    public readonly userAmount = computed<string | null>(() => {
+        let result: string | null
         if (this.tinyAmount.value !== null && this.decimals.value !== null) {
             result = ethers.formatUnits(this.tinyAmount.value, this.decimals.value)
         } else {
@@ -62,8 +62,8 @@ export class TokenAmountTextFieldController {
         return result
     })
 
-    public readonly tinyAmount = computed<bigint|null>(() => {
-        let result: bigint|null
+    public readonly tinyAmount = computed<bigint | null>(() => {
+        let result: bigint | null
         if (this.state.value === TokenAmountTextFieldState.ok && this.decimals.value !== null) {
             const trimmedValue = this.inputChangeController.outputText.value.trim()
             try {

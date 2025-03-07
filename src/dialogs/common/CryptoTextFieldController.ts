@@ -6,7 +6,7 @@ import {BaseTextFieldController} from "@/dialogs/common/BaseTextFieldController.
 
 export class CryptoTextFieldController {
 
-    public readonly oldTinyAmount: Ref<bigint|null>
+    public readonly oldTinyAmount: Ref<bigint | null>
     public readonly inputText: Ref<string>
     public readonly rejectZero: boolean
     private readonly baseTextFieldController: BaseTextFieldController
@@ -15,7 +15,7 @@ export class CryptoTextFieldController {
     // Public
     //
 
-    public constructor(oldTinyAmount: Ref<bigint|null>, rejectZero: boolean) {
+    public constructor(oldTinyAmount: Ref<bigint | null>, rejectZero: boolean) {
         this.oldTinyAmount = oldTinyAmount
         this.rejectZero = rejectZero
         this.baseTextFieldController = new BaseTextFieldController(this.oldUserAmount)
@@ -26,8 +26,8 @@ export class CryptoTextFieldController {
         return this.oldTinyAmount.value !== null ? ethers.formatUnits(this.oldTinyAmount.value, 8) : null
     })
 
-    public readonly newUserAmount = computed<string|null>(() => {
-        let result: string|null
+    public readonly newUserAmount = computed<string | null>(() => {
+        let result: string | null
         if (this.newTinyAmount.value !== null) {
             result = ethers.formatUnits(this.newTinyAmount.value, 8)
         } else {
@@ -36,8 +36,8 @@ export class CryptoTextFieldController {
         return result
     })
 
-    public readonly newTinyAmount = computed<bigint|null>(() => {
-        let result: bigint|null
+    public readonly newTinyAmount = computed<bigint | null>(() => {
+        let result: bigint | null
         if (this.state.value === HbarTextFieldState.ok) {
             const trimmedValue = this.baseTextFieldController.newText.value.trim()
             try {

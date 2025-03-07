@@ -245,7 +245,6 @@ describe("Tabs.vue", () => {
         expect(tabs4[0].text()).toContain("label3")
 
 
-
         wrapper.unmount()
     })
 

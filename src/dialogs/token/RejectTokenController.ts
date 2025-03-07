@@ -28,13 +28,13 @@ export class RejectTokenController extends TransactionController {
 
     public canBeExecuted(): boolean {
         return this.tokenAnalyzer.value.balance.value !== null
-                && this.tokenAnalyzer.value.balance.value > 0
-                && this.tokenAnalyzer.value.isFungible.value !== null
-                && this.tokenAnalyzer.value.isFungible.value
+            && this.tokenAnalyzer.value.balance.value > 0
+            && this.tokenAnalyzer.value.isFungible.value !== null
+            && this.tokenAnalyzer.value.isFungible.value
     }
 
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         const transaction = new TokenRejectTransaction()
         transaction.addTokenId(TokenId.fromString(this.tokenId.value!))
         const tid = await walletManager.rejectTokens(transaction)

@@ -31,7 +31,8 @@
 
       <o-table-column v-slot="props" field="description" label="DESCRIPTION">
         <div class="h-should-wrap regular-node-column is-inline-block">
-          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" :show-none="false" class="h-is-low-contrast"/>
+          <StringValue :string-value="makeNodeDescriptionPrefix(props.row)" :show-none="false"
+                       class="h-is-low-contrast"/>
           <StringValue :string-value="makeNodeOwnerDescription(props.row)"/>
         </div>
       </o-table-column>

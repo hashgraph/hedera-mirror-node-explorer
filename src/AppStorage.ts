@@ -26,7 +26,7 @@ export class AppStorage {
 
     private static readonly LAST_USED_NETWORK_KEY = 'network'
 
-    public static getLastNetwork(): string|null {
+    public static getLastNetwork(): string | null {
         return this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
     }
 

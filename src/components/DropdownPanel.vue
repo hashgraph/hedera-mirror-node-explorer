@@ -49,12 +49,12 @@ const props = defineProps({
 // deployed
 //
 
-const deployed = defineModel("deployed",{
+const deployed = defineModel("deployed", {
   type: Boolean,
   required: true
 })
 
-const rootRef = ref<HTMLElement|null>(null)
+const rootRef = ref<HTMLElement | null>(null)
 const isInside = (target: Node) => rootRef.value !== null && rootRef.value.contains(target)
 
 const onMouseDown = (ev: MouseEvent) => {
@@ -67,9 +67,9 @@ const onMouseDown = (ev: MouseEvent) => {
 // right alignment
 //
 
-const buttonWidth = ref<number|null>(null)
-const panelRef = ref<HTMLElement|null>(null)
-const panelWidth = ref<number|null>(null)
+const buttonWidth = ref<number | null>(null)
+const panelRef = ref<HTMLElement | null>(null)
+const panelWidth = ref<number | null>(null)
 
 const resizeObserver = new ResizeObserver(() => {
   buttonWidth.value = rootRef.value?.offsetWidth ?? 0

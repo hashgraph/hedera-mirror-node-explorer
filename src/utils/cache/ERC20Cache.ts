@@ -22,7 +22,7 @@ export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
 
     public async search(name: string): Promise<ERC20Contract[]> {
         name = name.toLowerCase()
-        const result : ERC20Contract[] = []
+        const result: ERC20Contract[] = []
         const tokens = await this.lookup()
         for (const t of tokens) {
             if (t.name && t.name.toLowerCase().indexOf(name) != -1) {
@@ -44,7 +44,8 @@ export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
         } else {
             result = []
         }
-        return Promise.resolve(result)}
+        return Promise.resolve(result)
+    }
 
 }
 

@@ -34,15 +34,9 @@ export default tseslint.config(
             "@typescript-eslint/no-unsafe-function-type": "off",
             "@typescript-eslint/no-this-alias": "off",
 
-            "vue/attributes-order": "off",
             "vue/no-reserved-component-names": "off",
             "vue/multi-word-component-names": "off",
             "vue/no-mutating-props": "off",
-            "vue/require-default-prop": "off",
-            "vue/no-template-shadow": "off",
-            "vue/no-v-html": "off",
-            "vue/require-explicit-emits": "off",
-            "vue/require-prop-types": "off",
 
             "cypress/unsafe-to-chain-command": "off",
         }

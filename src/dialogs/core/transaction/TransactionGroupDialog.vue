@@ -59,7 +59,7 @@
             Transaction ID: {{ singleTransactionId }}
           </template>
           <template v-else-if="taskPanelExtra1">
-            {{ taskPanelExtra1}}
+            {{ taskPanelExtra1 }}
           </template>
         </template>
         <template #taskPanelExtra2>
@@ -187,7 +187,7 @@ const taskPanelMessage = computed(() => {
 
 
 const taskPanelExtra1 = computed(() => {
-  let result: string|null
+  let result: string | null
 
   const errorOutcomes = props.controller.errorOutcomes.value      // transactions have thrown an exception
   const successOutcomes = props.controller.successOutcomes.value  // transactions have completed with successful status
@@ -213,7 +213,7 @@ const taskPanelExtra1 = computed(() => {
 
 
 const singleTransactionId = computed(() => {
-  let result: string|null
+  let result: string | null
   const transactionCount = props.controller.transactionOutcomes.value.length
   const outcome0 = props.controller.outcome0.value
   if (transactionCount === 1 && outcome0 !== null) {
@@ -226,7 +226,7 @@ const singleTransactionId = computed(() => {
 })
 
 const singleTransactionFailedStatus = computed(() => {
-  let result: string|null
+  let result: string | null
   const transactionCount = props.controller.transactionOutcomes.value.length
   const outcome0 = props.controller.outcome0.value
   if (transactionCount === 1 && outcome0 !== null) {

@@ -95,9 +95,9 @@ export default defineComponent({
     const routeToCollection = computed(() => {
       let result
       if (isNft.value && props.useAnchor && props.accountId && props.tokenId) {
-          result = routeManager.makeRouteToCollection(props.accountId, props.tokenId)
+        result = routeManager.makeRouteToCollection(props.accountId, props.tokenId)
       } else {
-          result = null
+        result = null
       }
       return result
     })

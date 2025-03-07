@@ -41,7 +41,7 @@ const isPlaying = computed(() => {
 })
 
 const darkSelected = ThemeController.inject().darkSelected
-const playURL = computed(() =>  darkSelected.value ? playDarkURL : playLightURL)
+const playURL = computed(() => darkSelected.value ? playDarkURL : playLightURL)
 const pauseURL = computed(() => darkSelected.value ? pauseDarkURL : pauseLightURL)
 
 const userRequestedStop = ref(false)

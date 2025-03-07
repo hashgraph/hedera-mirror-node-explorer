@@ -19,14 +19,14 @@ export class RejectTokenGroupController extends TransactionGroupController {
     private readonly zeroBalanceTokens = ref<string[]>([])
     public readonly filtering = ref(false)
 
-    private watchStopHandle: WatchStopHandle|null = null
+    private watchStopHandle: WatchStopHandle | null = null
 
 
     //
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, public readonly tokens: Ref<(Token|Nft)[]>) {
+    public constructor(showDialog: Ref<boolean>, public readonly tokens: Ref<(Token | Nft)[]>) {
         super(showDialog)
     }
 

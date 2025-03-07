@@ -50,7 +50,7 @@ export default defineComponent({
     const id = computed(() => props.id)
 
     const labelLookup = LabelByIdCache.instance.makeLookup(id)
-    onMounted(() =>labelLookup.mount())
+    onMounted(() => labelLookup.mount())
     onBeforeUnmount(() => labelLookup.unmount())
 
     const slice = computed(() => props.compact ? 12 : props.slice)

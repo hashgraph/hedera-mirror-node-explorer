@@ -248,8 +248,6 @@ describe("EntityLoader", () => {
 })
 
 
-
-
 class TestLoader extends EntityLoader<string> {
 
     public executionCount = 0

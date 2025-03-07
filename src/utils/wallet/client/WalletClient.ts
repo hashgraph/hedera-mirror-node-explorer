@@ -12,19 +12,20 @@ export abstract class WalletClient {
     public constructor(
         protected readonly accountId: string,
         protected readonly network: string,
-        protected readonly provider: EIP1193Provider) {}
+        protected readonly provider: EIP1193Provider) {
+    }
 
-     
+
     public async associateToken(tokenId: string): Promise<string> {
         throw "to be implemented"
     }
 
-     
+
     public async dissociateToken(tokenId: string): Promise<string> {
         throw "to be implemented"
     }
 
-     
+
     public async callContract(contractId: string, functionData: string): Promise<ContractResultDetails | string> {
         throw "to be implemented"
     }

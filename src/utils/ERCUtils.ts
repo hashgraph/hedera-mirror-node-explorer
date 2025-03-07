@@ -12,7 +12,7 @@ export class ERCUtils {
     // Public (ERC20, ERC721)
     //
 
-    public static async loadName(contractAddress: string):Promise<string|null> {
+    public static async loadName(contractAddress: string): Promise<string | null> {
         // https://eips.ethereum.org/EIPS/eip-20
         // https://eips.ethereum.org/EIPS/eip-721
         const abi = "function name() public view returns (string)"
@@ -21,7 +21,7 @@ export class ERCUtils {
         return Promise.resolve(result)
     }
 
-    public static async loadSymbol(contractAddress: string): Promise<string|null> {
+    public static async loadSymbol(contractAddress: string): Promise<string | null> {
         // https://eips.ethereum.org/EIPS/eip-20
         // https://eips.ethereum.org/EIPS/eip-721
         const abi = "function symbol() public view returns (string)"
@@ -30,7 +30,7 @@ export class ERCUtils {
         return Promise.resolve(result)
     }
 
-    public static async loadBalance(contractAddress: string, accountAddress: string): Promise<bigint|null> {
+    public static async loadBalance(contractAddress: string, accountAddress: string): Promise<bigint | null> {
         // https://eips.ethereum.org/EIPS/eip-20
         // https://eips.ethereum.org/EIPS/eip-721
         const abi = "function balanceOf(address owner) view returns (uint256)"
@@ -80,7 +80,7 @@ export class ERCUtils {
     // Public (ERC20)
     //
 
-    public static async loadDecimals(contractAddress: string): Promise<number|null> {
+    public static async loadDecimals(contractAddress: string): Promise<number | null> {
         // https://eips.ethereum.org/EIPS/eip-20
         const abi = "function decimals() public view returns (uint8)"
         const results = await this.call(contractAddress, abi, [])
@@ -88,7 +88,7 @@ export class ERCUtils {
         return Promise.resolve(result)
     }
 
-    public static async loadTotalSupply(contractAddress: string): Promise<string|null> {
+    public static async loadTotalSupply(contractAddress: string): Promise<string | null> {
         // https://eips.ethereum.org/EIPS/eip-20
         const abi = "function totalSupply() public view returns (uint256)"
         const results = await this.call(contractAddress, abi, [])
@@ -97,12 +97,11 @@ export class ERCUtils {
     }
 
 
-
     //
     // Private
     //
 
-    private static async call(targetAddress: string, abi: string, values: unknown[]): Promise<unknown[]|null> {
+    private static async call(targetAddress: string, abi: string, values: unknown[]): Promise<unknown[] | null> {
         let result: unknown[] | null
         const itf = new ethers.Interface([abi])
         const functionData = itf.encodeFunctionData(abi, values)
@@ -114,7 +113,7 @@ export class ERCUtils {
         try {
             const response = await axios.post<ContractCallResponse>(url, body)
             result = itf.decodeFunctionResult(abi, response.data.result)
-        } catch(error) {
+        } catch (error) {
             if (axios.isAxiosError(error) && error.status === 400) {
                 console.log("Call to " + abi + " failed with error: " + JSON.stringify(error.response?.data))
             }

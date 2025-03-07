@@ -9,7 +9,7 @@ export enum Period { Day = 1, Week = 7, Month = 30, Year = 365 }
 
 export class RewardDownloadController extends DownloadController<StakingReward, StakingRewardsResponse> {
 
-    public readonly accountId: Ref<string|null>
+    public readonly accountId: Ref<string | null>
     public readonly periodOption: Ref<Period> = ref(Period.Day)
     private readonly downloader: RewardDownloader
 
@@ -17,7 +17,7 @@ export class RewardDownloadController extends DownloadController<StakingReward, 
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, accountId: Ref<string|null>) {
+    public constructor(showDialog: Ref<boolean>, accountId: Ref<string | null>) {
         super(showDialog)
         this.accountId = accountId
         this.downloader = new RewardDownloader(

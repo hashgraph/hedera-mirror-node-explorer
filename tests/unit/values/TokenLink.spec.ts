@@ -107,6 +107,6 @@ describe("TokenLink.vue", () => {
     });
 });
 
-export function truncateTokenSymbol(name:string, max= 40): string {
+export function truncateTokenSymbol(name: string, max = 40): string {
     return name.length > max ? name.slice(0, max) + '…' : name
 }

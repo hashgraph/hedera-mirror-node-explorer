@@ -65,7 +65,7 @@
 
         </ContentCell>
 
-        <hr style="width: 100%;" />
+        <hr style="width: 100%;"/>
 
         <!-- Max. Auto. Associations -->
         <ContentCell>
@@ -81,13 +81,16 @@
           <template #cellContent>
             <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
               <SelectView v-model="autoAssociationMode" width="100%">
-                <option :key="0" :value="AutoAssociationMode.NoAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option :key="0" :value="AutoAssociationMode.NoAutoAssociation"
+                        style="background-color: var(--h-theme-page-background-color)">
                   No Automatic Association
                 </option>
-                <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation"
+                        style="background-color: var(--h-theme-page-background-color)">
                   Limited Automatic Association
                 </option>
-                <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation"
+                        style="background-color: var(--h-theme-page-background-color)">
                   Unlimited Automatic Association
                 </option>
               </SelectView>
@@ -124,7 +127,7 @@
 
       <template v-if="enableStaking">
 
-        <hr style="width: 100%;" />
+        <hr style="width: 100%;"/>
 
         <!-- Staking Choice -->
         <ContentCell>
@@ -133,9 +136,12 @@
 
           <template #cellContent>
             <div style="display: flex; column-gap: 12px">
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice">To Node</RabioBoxView>
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice">To Account</RabioBoxView>
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice">Not Staking</RabioBoxView>
+              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice">To Node
+              </RabioBoxView>
+              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice">To Account
+              </RabioBoxView>
+              <RabioBoxView name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice">Not Staking
+              </RabioBoxView>
             </div>
           </template>
 
@@ -172,11 +178,13 @@
 
           <ContentCell>
 
-            <template #cellTitle>Staked Account ID</template>/>
+            <template #cellTitle>Staked Account ID</template>
+            />
 
             <template #cellContent>
               <div style="display:flex; align-items: center; width: 100%">
-                <TextFieldView v-model="stakedAccountIdInputText" placeholder="Account ID (0.0.1234)" style="width: 100%"/>
+                <TextFieldView v-model="stakedAccountIdInputText" placeholder="Account ID (0.0.1234)"
+                               style="width: 100%"/>
               </div>
             </template>
 
@@ -191,7 +199,7 @@
 
     </template>
 
-    <template #transactionDialogControls>{{ feedbackMessage ?? ""}}</template>
+    <template #transactionDialogControls>{{ feedbackMessage ?? "" }}</template>
 
   </TransactionDialog>
 
@@ -256,10 +264,9 @@ const nodes = controller.nodes
 const enableStaking = routeManager.enableStaking
 
 
-
 const visibleIndex = computed(() => {
   let result: number
-  switch(stakeChoice.value) {
+  switch (stakeChoice.value) {
     case StakeChoice.StakeToNode:
       result = 0
       break

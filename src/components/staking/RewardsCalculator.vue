@@ -16,7 +16,8 @@
         <div class="calculator-input">
           <div class="node-selector">
             <p>Choose a node to stake to</p>
-            <SelectView v-model="selectedNodeId" width="100%" style="border-radius: 8px; border-color: var(--border-secondary);">
+            <SelectView v-model="selectedNodeId" width="100%"
+                        style="border-radius: 8px; border-color: var(--border-secondary);">
               <option v-for="n in nodes" :key="n.node_id" :value="n.node_id"
                       style="background-color: var(--h-theme-box-background-color);"
               >

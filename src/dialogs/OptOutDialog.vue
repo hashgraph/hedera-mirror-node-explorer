@@ -13,7 +13,7 @@
       <div class="opt-out-dialog-content">
         <div v-html="disclaimer"/>
         <label>
-          <input v-model="dontShowNextTime" type="checkbox" style="margin-right: 0.5em; vertical-align: text-top" />
+          <input v-model="dontShowNextTime" type="checkbox" style="margin-right: 0.5em; vertical-align: text-top"/>
           <span>Please don't show me this next time</span>
         </label>
       </div>

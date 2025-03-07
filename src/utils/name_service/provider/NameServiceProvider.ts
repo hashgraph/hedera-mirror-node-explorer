@@ -6,8 +6,8 @@ export abstract class NameServiceProvider {
     // Public
     //
 
-     
-    public async resolve(name: string, network: string): Promise<string|null> {
+
+    public async resolve(name: string, network: string): Promise<string | null> {
         throw "must be subclassed"
     }
 
@@ -19,5 +19,6 @@ export abstract class NameServiceProvider {
     protected constructor(
         public readonly providerAlias: string,
         public readonly providerDisplayName: string,
-        public readonly providerHomeURL: string|null) {}
+        public readonly providerHomeURL: string | null) {
+    }
 }

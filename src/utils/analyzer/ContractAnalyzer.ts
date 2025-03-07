@@ -17,7 +17,7 @@ export class ContractAnalyzer {
     public readonly contractId: Ref<string | null>
     public readonly byteCodeAnalyzer: ByteCodeAnalyzer
     private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
-    public readonly tokenInfo: Ref<TokenInfo|null> = ref(null)
+    public readonly tokenInfo: Ref<TokenInfo | null> = ref(null)
     public readonly systemContractEntry: Ref<SystemContractEntry | null> = ref(null)
     public readonly sourcifyRecord: Ref<SourcifyRecord | null> = ref(null)
     private readonly abi: Ref<ethers.Fragment[] | null> = ref(null)
@@ -53,7 +53,7 @@ export class ContractAnalyzer {
     }
 
     public readonly contractAddress: ComputedRef<string | null> = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.contractResponse.value !== null) {
             result = this.contractResponse.value.evm_address ?? null
         } else if (this.tokenInfo.value !== null) {
@@ -267,8 +267,8 @@ export class ContractAnalyzer {
         } else if (this.metadata.value !== null) {
             this.abi.value = this.metadata.value.output.abi as ethers.Fragment[] | null
         } else if (this.tokenInfo.value !== null) {
-            let abiName: string|null
-            switch(this.tokenInfo.value.type) {
+            let abiName: string | null
+            switch (this.tokenInfo.value.type) {
                 case TokenType.FUNGIBLE_COMMON:
                     abiName = "IERC20+IHRC"
                     break

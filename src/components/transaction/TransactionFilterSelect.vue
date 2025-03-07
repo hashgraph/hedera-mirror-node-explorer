@@ -61,16 +61,16 @@ export default defineComponent({
       if (props.nftFilter) {
         result = result.filter(el => {
           return el === TransactionType.CRYPTOTRANSFER
-              || el ===TransactionType.TOKENMINT
-              || el ===TransactionType.CRYPTOAPPROVEALLOWANCE
-              || el ===TransactionType.CRYPTODELETEALLOWANCE
-              || el ===TransactionType.TOKENWIPE
-              || el ===TransactionType.TOKENAIRDROP
-              || el ===TransactionType.TOKENBURN
-              || el ===TransactionType.TOKENCANCELAIRDROP
-              || el ===TransactionType.TOKENCLAIMAIRDROP
-              || el ===TransactionType.TOKENREJECT
-              || el ===TransactionType.TOKENDELETION;
+              || el === TransactionType.TOKENMINT
+              || el === TransactionType.CRYPTOAPPROVEALLOWANCE
+              || el === TransactionType.CRYPTODELETEALLOWANCE
+              || el === TransactionType.TOKENWIPE
+              || el === TransactionType.TOKENAIRDROP
+              || el === TransactionType.TOKENBURN
+              || el === TransactionType.TOKENCANCELAIRDROP
+              || el === TransactionType.TOKENCLAIMAIRDROP
+              || el === TransactionType.TOKENREJECT
+              || el === TransactionType.TOKENDELETION;
         })
       }
       result.splice(0, 0, "")

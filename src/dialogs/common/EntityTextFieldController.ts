@@ -9,7 +9,7 @@ import {extractChecksum, stripChecksum} from "@/schemas/MirrorNodeUtils.ts";
 
 export class EntityTextFieldController {
 
-    public readonly oldEntityId: Ref<string|null>
+    public readonly oldEntityId: Ref<string | null>
     public readonly inputText: Ref<string>
     private readonly networkConfig: NetworkConfig
     private readonly baseTextFieldController: BaseTextFieldController
@@ -18,7 +18,7 @@ export class EntityTextFieldController {
     // Public
     //
 
-    public constructor(oldEntityId: Ref<string|null>, networkConfig: NetworkConfig) {
+    public constructor(oldEntityId: Ref<string | null>, networkConfig: NetworkConfig) {
 
         this.oldEntityId = oldEntityId
         this.baseTextFieldController = new BaseTextFieldController(oldEntityId)
@@ -40,7 +40,7 @@ export class EntityTextFieldController {
             if (entityID !== null) {
                 const checksum = extractChecksum(trimmedValue)
                 const network = routeManager.currentNetwork.value
-                if (checksum === null ||  this.networkConfig.isValidChecksum(entityID.toString(), checksum, network)) {
+                if (checksum === null || this.networkConfig.isValidChecksum(entityID.toString(), checksum, network)) {
                     result = EntityTextFieldState.ok
                 } else {
                     result = EntityTextFieldState.invalidChecksum
@@ -55,7 +55,7 @@ export class EntityTextFieldController {
     })
 
     public readonly newEntityId = computed(() => {
-        let result: string|null
+        let result: string | null
         const trimmedValue = this.baseTextFieldController.newText.value.trim()
         if (trimmedValue !== "") {
             const entityID = EntityID.parse(stripChecksum(trimmedValue), true)

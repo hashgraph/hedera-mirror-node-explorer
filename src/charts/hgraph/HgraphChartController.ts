@@ -13,6 +13,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
 
     protected abstract makeQuery(range: ChartRange): string
+
     protected abstract makeLatestQuery(): string
 
 
@@ -21,7 +22,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
 
     protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange,
-                                 logarithmic: boolean, yLabel: string|null): ChartConfiguration {
+                                 logarithmic: boolean, yLabel: string | null): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
@@ -126,10 +127,10 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     // Private
     //
 
-    private getHgraphURL(): string|null {
-        let result: string|null
+    private getHgraphURL(): string | null {
+        let result: string | null
         const hgraphKey = this.routeManager.hgraphKey.value
-        switch(this.routeManager.currentNetworkEntry.value.mirrorNodeURL) {
+        switch (this.routeManager.currentNetworkEntry.value.mirrorNodeURL) {
             case "https://mainnet-public.mirrornode.hedera.com/":
             case "https://mainnet.mirrornode.hedera.com/":
                 result = hgraphKey !== null
@@ -168,7 +169,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         let result: EcosystemMetric[]
 
         const config = this.makeConfig()
-        const response = await axios.post<GraphQLResponse>(url, { query }, config)
+        const response = await axios.post<GraphQLResponse>(url, {query}, config)
         if (response.status === 200 && typeof response.data === "object" && response.data !== null) {
             if (response.data.data) {
                 result = response.data.data.all_metrics ?? []

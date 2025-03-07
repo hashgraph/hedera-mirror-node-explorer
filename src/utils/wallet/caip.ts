@@ -41,7 +41,8 @@ export class CAChainId {
 
     public constructor(
         public readonly namespace: string,
-        public readonly reference: string) {}
+        public readonly reference: string) {
+    }
 
     public toString(): string {
         return this.namespace + ":" + this.reference
@@ -55,8 +56,8 @@ export class CAChainId {
         return this.namespace === CAChainId.NAMESPACE_EIP155
     }
 
-    public static parse(text: string): CAChainId|null {
-        let result: CAChainId|null
+    public static parse(text: string): CAChainId | null {
+        let result: CAChainId | null
         const components = text.split(":")
         if (components.length == 2) {
             result = new CAChainId(components[0], components[1])
@@ -78,14 +79,15 @@ export class CAAccountId {
 
     public constructor(
         public readonly chainId: CAChainId,
-        public readonly accountAddress: string) {}
+        public readonly accountAddress: string) {
+    }
 
     public toString(): string {
         return this.chainId.toString() + ":" + this.accountAddress
     }
 
-    public static parse(text: string): CAAccountId|null {
-        let result: CAAccountId|null
+    public static parse(text: string): CAAccountId | null {
+        let result: CAAccountId | null
         const components = text.split(":")
         if (components.length == 3) {
             result = new CAAccountId(new CAChainId(components[0], components[1]), components[2])

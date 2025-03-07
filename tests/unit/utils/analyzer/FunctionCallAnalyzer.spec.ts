@@ -108,8 +108,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
                 "name": "balanceOf",
                 "type": "uint256",
                 "value": 67920691671575n,
-              },
-            ])
+            },
+        ])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])

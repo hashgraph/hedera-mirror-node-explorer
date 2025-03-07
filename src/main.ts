@@ -20,22 +20,22 @@ export default FontAwesomeIcon;
 AxiosMonitor.instance.setTargetAxios(axios)
 
 const loadCoreConfig = async () => {
-    let result: CoreConfig|unknown
+    let result: CoreConfig | unknown
     const coreConfigURL = window.location.origin + '/core-config.json'
     try {
         result = await CoreConfig.load(coreConfigURL)
-    } catch(error) {
+    } catch (error) {
         result = error
     }
     return result
 }
 
 const loadNetworkConfig = async () => {
-    let result: NetworkConfig|unknown
+    let result: NetworkConfig | unknown
     const url = window.location.origin + '/networks-config.json'
     try {
         result = await NetworkConfig.load(url)
-    } catch(error) {
+    } catch (error) {
         result = error
     }
     return result

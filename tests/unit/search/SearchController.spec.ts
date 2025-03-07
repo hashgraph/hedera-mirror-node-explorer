@@ -93,7 +93,7 @@ describe("SearchController.vue", () => {
             //
             const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100"
             mock.onGet(matcher0).reply(200, {
-                tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
+                tokens: [SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE],
                 links: {next: null}
             })
         }
@@ -916,7 +916,6 @@ describe("SearchController.vue", () => {
         expect(candidates[1].entity).toStrictEqual(SAMPLE_TOKEN_DUDE)
 
     })
-
 
 
     //

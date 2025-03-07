@@ -242,7 +242,7 @@ export class FunctionCallAnalyzer {
                     } else {
                         this.functionFragment.value = ff
                     }
-                } catch(failure) {
+                } catch (failure) {
                     this.functionFragment.value = null
                     this.functionDecodingFailure.value = failure
                     this.is4byteFunctionFragment.value = false

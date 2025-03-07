@@ -82,8 +82,8 @@ export async function wallet_revokePermissions(p: EIP1193Provider): Promise<void
 // Error tooling
 //
 
-export function eth_getErrorCode(reason: unknown): number|null {
-    let result: number|null
+export function eth_getErrorCode(reason: unknown): number | null {
+    let result: number | null
     if (typeof reason == "object" && reason !== null && "code" in reason && typeof reason["code"] == "number") {
         result = reason["code"]
     } else {
@@ -92,8 +92,8 @@ export function eth_getErrorCode(reason: unknown): number|null {
     return result
 }
 
-export function eth_getMessage(reason: unknown): string|null {
-    let result: string|null
+export function eth_getMessage(reason: unknown): string | null {
+    let result: string | null
     if (typeof reason == "object" && reason !== null && "message" in reason && typeof reason["message"] == "string") {
         result = reason["message"]
     } else {
@@ -136,6 +136,6 @@ export interface AddEthereumChainParameter {
 export async function wallet_addEthereumChain(p: EIP1193Provider, param: AddEthereumChainParameter): Promise<void> {
     await p.request({
         "method": "wallet_addEthereumChain",
-        "params": [ param ],
+        "params": [param],
     })
 }

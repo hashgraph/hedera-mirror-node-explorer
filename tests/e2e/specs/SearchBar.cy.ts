@@ -275,7 +275,7 @@ describe('Search Bar', () => {
 
 const testBodyV2 = (searchString: string,
                     expectedPath: string,
-                    expectedTitle: string|null = null,
+                    expectedTitle: string | null = null,
                     expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
         cy.get('input').type(searchString)
@@ -295,9 +295,9 @@ const testBodyV2 = (searchString: string,
 }
 
 const clickTestBodV2 = (searchString: string,
-                       expectedPath: string,
-                       expectedTitle: string|null = null,
-                       expectTable = false) => {
+                        expectedPath: string,
+                        expectedTitle: string | null = null,
+                        expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
         cy.get('input').type(searchString)
     })

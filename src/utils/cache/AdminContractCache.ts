@@ -5,7 +5,7 @@ import {ContractResponse} from "@/schemas/MirrorNodeSchemas";
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {LogicContractCache} from "@/utils/cache/LogicContractCache";
 
-export class AdminContractCache extends EntityCache<string, ContractResponse|null> {
+export class AdminContractCache extends EntityCache<string, ContractResponse | null> {
 
     public static readonly instance = new AdminContractCache()
 
@@ -14,8 +14,8 @@ export class AdminContractCache extends EntityCache<string, ContractResponse|nul
     // Cache
     //
 
-    protected async load(contractId: string): Promise<ContractResponse|null> {
-        let result: ContractResponse|null
+    protected async load(contractId: string): Promise<ContractResponse | null> {
+        let result: ContractResponse | null
 
         // See https://eips.ethereum.org/EIPS/eip-1967
         const adminContractSlotAddress = "0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"

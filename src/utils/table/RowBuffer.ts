@@ -185,7 +185,7 @@ export class RowBuffer<R, K> {
                     this.executedAbortCounter += 1
                 }
 
-            } else if (nextEndIndex > bufferLength + shadowRowCount  && !this.drained.value) {
+            } else if (nextEndIndex > bufferLength + shadowRowCount && !this.drained.value) {
 
                 // We need to load rows at buffer tail      :\
                 const rowCount = nextEndIndex - bufferLength - shadowRowCount
@@ -233,7 +233,7 @@ export class RowBuffer<R, K> {
     //
 
     private async headLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
-        let result: R[]|null
+        let result: R[] | null
 
         if (rowCount >= 1) {
 
@@ -262,7 +262,7 @@ export class RowBuffer<R, K> {
     }
 
     private async tailLoad(key: K | null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
-        let result: R[]|null
+        let result: R[] | null
 
         if (rowCount >= 1) {
 
@@ -291,7 +291,7 @@ export class RowBuffer<R, K> {
     }
 
     private async lastLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
-        let result: R[]|null
+        let result: R[] | null
 
         if (rowCount >= 1) {
 

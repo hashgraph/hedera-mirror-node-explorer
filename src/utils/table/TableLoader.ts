@@ -20,7 +20,7 @@ export abstract class TableLoader<R> {
                 this.allRows.value = await this.load()
                 this.loadError.value = null
                 this.mounted.value = true
-            } catch(reason) {
+            } catch (reason) {
                 this.allRows.value = []
                 this.loadError.value = reason
                 this.mounted.value = false
@@ -72,7 +72,8 @@ export abstract class TableLoader<R> {
     // Protected
     //
 
-    protected constructor(public readonly pageSize: Ref<number>) {}
+    protected constructor(public readonly pageSize: Ref<number>) {
+    }
 
     //
     // Private

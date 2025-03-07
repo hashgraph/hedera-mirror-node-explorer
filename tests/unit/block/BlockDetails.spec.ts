@@ -51,7 +51,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_NUMBER
@@ -112,7 +112,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -174,7 +174,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -279,7 +279,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: INVALID_BLOCK_NUMBER
@@ -319,7 +319,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: INVALID_BLOCK_HASH
@@ -361,7 +361,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_NUMBER
@@ -406,7 +406,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_HASH

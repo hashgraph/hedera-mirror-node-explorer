@@ -39,8 +39,7 @@ div.page-not-found {
   text-align: center;
   padding-top: 100px;
   font-family: var(--font-family-proportional), sans-serif;
-  font-weight: 300;
-  ;
+  font-weight: 300;;
 }
 
 </style>

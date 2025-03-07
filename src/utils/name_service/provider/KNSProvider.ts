@@ -19,14 +19,14 @@ export class KNSProvider extends NameServiceProvider {
     // NameServiceProvider
     //
 
-    public async resolve(name: string, network: string): Promise<string|null> {
-        let result: string|null
+    public async resolve(name: string, network: string): Promise<string | null> {
+        let result: string | null
         const s = this.findService(network)
         if (s !== null) {
             try {
                 const accountId = await s.getHederaAddress(name)
                 result = accountId.toString()
-            } catch(error) {
+            } catch (error) {
                 if (error instanceof NameNotFoundError) {
                     result = null
                 } else {
@@ -43,8 +43,8 @@ export class KNSProvider extends NameServiceProvider {
     // Private
     //
 
-    private findService(network: string): KNS|null {
-        let result: KNS|null
+    private findService(network: string): KNS | null {
+        let result: KNS | null
         if (network == "mainnet" || network == "testnet") {
             result = this.serviceCache.get(network) ?? null
             if (result === null) {
