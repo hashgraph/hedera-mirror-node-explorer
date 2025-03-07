@@ -47,7 +47,7 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios as any);
 
         const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -68,22 +68,22 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher6).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
         const matcher7 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher10 = "api/v1/tokens"
-        mock.onGet(matcher10).reply(200, { tokens: [] });
+        mock.onGet(matcher10).reply(200, {tokens: []});
 
         const matcher11 = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts"
-        mock.onGet(matcher11).reply(200, { nfts: [] });
+        mock.onGet(matcher11).reply(200, {nfts: []});
 
 
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
@@ -179,7 +179,7 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios as any);
 
         const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -200,21 +200,21 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher6).reply(200, SAMPLE_ACCOUNT_BALANCES);
 
         const matcher7 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher10 = "api/v1/tokens"
-        mock.onGet(matcher10).reply(200, { tokens: [] });
+        mock.onGet(matcher10).reply(200, {tokens: []});
 
         const matcher11 = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts"
-        mock.onGet(matcher11).reply(200, { nfts: [] });
+        mock.onGet(matcher11).reply(200, {nfts: []});
 
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: SAMPLE_CONTRACT.evm_address
@@ -310,7 +310,7 @@ describe("ContractDetails.vue", () => {
         const mock = new MockAdapter(axios as any);
 
         const matcherAirdrop = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -328,21 +328,21 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const matcher7 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher8 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher10 = "api/v1/tokens"
-        mock.onGet(matcher10).reply(200, { tokens: [] });
+        mock.onGet(matcher10).reply(200, {tokens: []});
 
         const matcher11 = "api/v1/accounts/" + SAMPLE_CONTRACT.contract_id + "/nfts"
-        mock.onGet(matcher11).reply(200, { nfts: [] });
+        mock.onGet(matcher11).reply(200, {nfts: []});
 
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
@@ -413,7 +413,7 @@ describe("ContractDetails.vue", () => {
 
         const contract1 = SAMPLE_CONTRACT
         let matcherAirdrop = "api/v1/accounts/" + contract1.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         let matcher1 = "/api/v1/contracts/" + contract1.contract_id
         mock.onGet(matcher1).reply(200, contract1);
@@ -428,21 +428,21 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         let matcher7 = "api/v1/contracts/" + contract1.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         let matcher8 = "api/v1/contracts/" + contract1.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher10 = "api/v1/tokens"
-        mock.onGet(matcher10).reply(200, { tokens: [] });
+        mock.onGet(matcher10).reply(200, {tokens: []});
 
         const matcher11 = "api/v1/accounts/" + contract1.contract_id + "/nfts"
-        mock.onGet(matcher11).reply(200, { nfts: [] });
+        mock.onGet(matcher11).reply(200, {nfts: []});
 
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: SAMPLE_CONTRACT.contract_id
@@ -492,7 +492,7 @@ describe("ContractDetails.vue", () => {
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcherAirdrop = "api/v1/accounts/" + contract2.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         matcher1 = "/api/v1/contracts/" + contract2.contract_id
         mock.onGet(matcher1).reply(200, contract2);
@@ -504,13 +504,13 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         matcher7 = "api/v1/contracts/" + contract2.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         matcher8 = "api/v1/contracts/" + contract2.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher12 = "api/v1/accounts/" + contract2.contract_id + "/nfts"
-        mock.onGet(matcher12).reply(200, { nfts: [] });
+        mock.onGet(matcher12).reply(200, {nfts: []});
 
         mock.resetHistory()
         await wrapper.setProps({
@@ -561,7 +561,7 @@ describe("ContractDetails.vue", () => {
 
         const contract = SAMPLE_CONTRACT_DUDE
         const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         const matcher1 = "/api/v1/contracts/" + contract.contract_id
         mock.onGet(matcher1).reply(200, contract);
@@ -576,10 +576,10 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const matcher7 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const wrapper = mount(ContractDetails, {
             global: {
@@ -638,7 +638,7 @@ describe("ContractDetails.vue", () => {
 
         const contract = SAMPLE_CONTRACT_DUDE
         const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         const matcher1 = "/api/v1/contracts/" + contract.contract_id
         mock.onGet(matcher1).reply(200, contract);
@@ -653,21 +653,21 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const matcher7 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher10 = "api/v1/tokens"
-        mock.onGet(matcher10).reply(200, { tokens: [] });
+        mock.onGet(matcher10).reply(200, {tokens: []});
 
         const matcher11 = "api/v1/accounts/" + contract.contract_id + "/nfts"
-        mock.onGet(matcher11).reply(200, { nfts: [] });
+        mock.onGet(matcher11).reply(200, {nfts: []});
 
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: contract.contract_id
@@ -720,7 +720,7 @@ describe("ContractDetails.vue", () => {
 
         const contract = SAMPLE_CONTRACT_DELETED
         const matcherAirdrop = "api/v1/accounts/" + contract.contract_id + "/airdrops/pending"
-        mock.onGet(matcherAirdrop).reply(200, {"airdrops":[]})
+        mock.onGet(matcherAirdrop).reply(200, {"airdrops": []})
 
         const matcher1 = "/api/v1/contracts/" + contract.contract_id
         mock.onGet(matcher1).reply(200, contract);
@@ -735,21 +735,21 @@ describe("ContractDetails.vue", () => {
         mock.onGet(matcher5).reply(200, SAMPLE_CONTRACT_RESULTS);
 
         const matcher7 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
-        mock.onGet(matcher7).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher7).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher8 = "api/v1/contracts/" + contract.contract_id + "/state?slot=0xb53127684a568b3173ae13b9f8a6016e243e63b6e8ee1178d6a717850b5d6103"
-        mock.onGet(matcher8).reply<ContractStateResponse>(200, { state: [], links: undefined })
+        mock.onGet(matcher8).reply<ContractStateResponse>(200, {state: [], links: undefined})
 
         const matcher10 = "api/v1/tokens"
-        mock.onGet(matcher10).reply(200, { tokens: [] });
+        mock.onGet(matcher10).reply(200, {tokens: []});
 
         const matcher11 = "api/v1/accounts/" + contract.contract_id + "/nfts"
-        mock.onGet(matcher11).reply(200, { nfts: [] });
+        mock.onGet(matcher11).reply(200, {nfts: []});
 
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: contract.contract_id
@@ -805,7 +805,7 @@ describe("ContractDetails.vue", () => {
         const wrapper = mount(ContractDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 contractId: invalidContractId

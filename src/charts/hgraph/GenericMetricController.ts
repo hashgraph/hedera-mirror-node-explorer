@@ -15,11 +15,11 @@ export abstract class GenericMetricController extends HgraphChartController {
     //
 
     protected constructor(chartTitle: string,
-                       metricName: string,
-                       themeController: ThemeController,
-                       routeManager: RouteManager,
-                       supportedRanges: ChartRange[] = []) {
-        super(chartTitle, themeController, routeManager,supportedRanges)
+                          metricName: string,
+                          themeController: ThemeController,
+                          routeManager: RouteManager,
+                          supportedRanges: ChartRange[] = []) {
+        super(chartTitle, themeController, routeManager, supportedRanges)
         this.metricName = metricName
     }
 

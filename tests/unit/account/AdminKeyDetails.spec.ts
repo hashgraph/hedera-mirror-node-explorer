@@ -48,16 +48,16 @@ describe("AdminKeyDetails.vue", () => {
         const matcher4 = "/api/v1/tokens/0.0.29662956"
         mock.onGet(matcher4).reply(200, SAMPLE_TOKEN);
         const matcher5 = "api/v1/tokens"
-        mock.onGet(matcher5).reply(200, { tokens: [] });
+        mock.onGet(matcher5).reply(200, {tokens: []});
         const matcher6 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/nfts"
-        mock.onGet(matcher6).reply(200, { nfts: [] });
+        mock.onGet(matcher6).reply(200, {nfts: []});
         const matcher7 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/airdrops/pending"
-        mock.onGet(matcher7).reply(200, { airdrops: [] });
+        mock.onGet(matcher7).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_PROTOBUF_KEY.account

@@ -49,12 +49,12 @@ const props = defineProps({
 })
 
 const selectedAgentId = defineModel("selectedAgentId", {
-  type: String as PropType<string|null>,
+  type: String as PropType<string | null>,
   default: null
 })
 
 const selectedAgent = computed(() => {
-  let result: SearchAgent<unknown, unknown>|null
+  let result: SearchAgent<unknown, unknown> | null
   if (selectedAgentId.value !== null) {
     result = props.searchController.findAgentById(selectedAgentId.value)
   } else {

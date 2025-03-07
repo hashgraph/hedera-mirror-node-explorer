@@ -16,12 +16,12 @@ export enum ChartState {
 
 export abstract class ChartController<M> {
 
-    public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
+    public readonly canvas: Ref<HTMLCanvasElement | null> = ref(null)
     public readonly range: Ref<ChartRange>
-    public readonly latestMetric: Ref<M|null> = ref(null)
+    public readonly latestMetric: Ref<M | null> = ref(null)
 
-    private metrics: M[]|null = null
-    private chart: Chart|null = null
+    private metrics: M[] | null = null
+    private chart: Chart | null = null
     private readonly error: Ref<unknown> = ref(null)
     private readonly building: Ref<boolean> = ref(false)
     private watchHandles: WatchStopHandle[] = []
@@ -41,7 +41,7 @@ export abstract class ChartController<M> {
     public mount(): void {
         this.watchHandles = [
             watch([this.range, this.routeManager.currentNetworkEntry], this.updateMetrics, {immediate: true}),
-            watch([this.canvas, this.themeController.darkSelected], this.updateChart, { immediate: true }),
+            watch([this.canvas, this.themeController.darkSelected], this.updateChart, {immediate: true}),
         ]
     }
 
@@ -73,7 +73,7 @@ export abstract class ChartController<M> {
     })
 
     public readonly errorExtra = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.state.value === ChartState.error) {
             result = JSON.stringify(this.error.value)
         } else {
@@ -97,19 +97,19 @@ export abstract class ChartController<M> {
     // To be subclassed
     //
 
-     
+
     public isSupported(): boolean {
         return true
     }
 
     public abstract getMetricDate(metric: M): Date | null
 
-     
+
     protected async loadData(range: ChartRange): Promise<LoadedData<M>> {
         throw "to be subclassed"
     }
 
-     
+
     protected async transformMetrics(metrics: M[], range: ChartRange): Promise<M[]> {
         // No transformation by default
         return metrics
@@ -137,7 +137,7 @@ export abstract class ChartController<M> {
                 this.latestMetric.value = null
                 this.error.value = null
             }
-        } catch(error) {
+        } catch (error) {
             this.metrics = null
             this.latestMetric.value = null
             this.error.value = error
@@ -147,7 +147,7 @@ export abstract class ChartController<M> {
         }
     }
 
-    private readonly updateChart =  () => {
+    private readonly updateChart = () => {
         if (this.chart !== null) {
             this.chart.destroy()
             this.chart = null
@@ -157,8 +157,8 @@ export abstract class ChartController<M> {
         if (this.canvas.value !== null && this.metrics !== null) {
             try {
                 const chartConfig = this.makeChartConfig(this.metrics, this.range.value)
-                this.chart = new Chart(this.canvas.value,  chartConfig)
-            } catch(error) {
+                this.chart = new Chart(this.canvas.value, chartConfig)
+            } catch (error) {
                 this.chart = null
             }
         } // else leaves this.chart to null
@@ -176,5 +176,6 @@ export abstract class ChartController<M> {
 }
 
 export class LoadedData<M> {
-    constructor(public readonly metrics: M[], public readonly latestMetric: M|null) {}
+    constructor(public readonly metrics: M[], public readonly latestMetric: M | null) {
+    }
 }

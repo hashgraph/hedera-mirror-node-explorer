@@ -26,12 +26,12 @@ import {computed, PropType} from "vue";
 import {WalletItem} from "@/dialogs/wallet_chooser/WalletChooserDialog.vue";
 
 const selection = defineModel("selection", {
-  type: Object as PropType<WalletItem|null>,
+  type: Object as PropType<WalletItem | null>,
   default: null
 })
 
 const props = defineProps({
-  walletItem: { type: Object as PropType<WalletItem>, required: true},
+  walletItem: {type: Object as PropType<WalletItem>, required: true},
 })
 
 const emit = defineEmits(["connect"])
@@ -68,7 +68,7 @@ div.wallet-chooser-item {
   border-width: 1px;
   border-color: var(--border-secondary);
   color: var(--text-primary);
-  font-family: Inter,serif;
+  font-family: Inter, serif;
   font-size: 14px;
   font-weight: 700;
   text-align: center;

@@ -7,7 +7,7 @@ import {EntityLookup} from "@/utils/cache/base/EntityCache";
 
 export class ContractResultsLogsAnalyzer {
     public readonly contractId: Ref<string | null>
-    public readonly contractResultsLookup: EntityLookup<string, ContractLog[]|null>
+    public readonly contractResultsLookup: EntityLookup<string, ContractLog[] | null>
 
     //
     // Public

@@ -77,8 +77,8 @@
   />
 
   <UpdateTokenAllowanceDialog v-model:show-dialog="showUpdateTokenAllowanceDialog"
-                               :token-allowance="currentTokenAllowance"
-                               @allowance-approved="onAllowanceApproved"
+                              :token-allowance="currentTokenAllowance"
+                              @allowance-approved="onAllowanceApproved"
   />
 
   <DeleteNftAllowanceDialog
@@ -182,7 +182,7 @@ const currentNftAllowance = ref<Nft | null>(null)
 const currentNftAllSerialsAllowance = ref<NftAllowance | null>(null)
 
 const currentNftId = computed(() => {
-  let result: string|null
+  let result: string | null
   if (selectApprovedForAll.value) {
     result = currentNftAllSerialsAllowance.value?.token_id ?? null
   } else {
@@ -192,7 +192,7 @@ const currentNftId = computed(() => {
 })
 
 const currentSpenderId = computed(() => {
-  let result: string|null
+  let result: string | null
   if (selectApprovedForAll.value) {
     result = currentNftAllSerialsAllowance.value?.spender ?? null
   } else {
@@ -202,7 +202,7 @@ const currentSpenderId = computed(() => {
 })
 
 const currentNftSerialNumber = computed(() => {
-  let result: number|null
+  let result: number | null
   if (selectApprovedForAll.value) {
     result = null
   } else {

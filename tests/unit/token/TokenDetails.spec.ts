@@ -66,7 +66,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -155,7 +155,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -237,7 +237,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -298,7 +298,7 @@ describe("TokenDetails.vue", () => {
 
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
-            "api/v1/contracts/" + SAMPLE_TOKEN.token_id ,
+            "api/v1/contracts/" + SAMPLE_TOKEN.token_id,
             "api/v1/transactions",
             "api/v1/contracts/" + SAMPLE_TOKEN.auto_renew_account,
             "api/v1/contracts/" + SAMPLE_TOKEN.treasury_account_id,
@@ -337,7 +337,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: invalidTokenId
@@ -379,7 +379,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -450,7 +450,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -523,7 +523,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -584,7 +584,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -664,7 +664,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -745,7 +745,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId

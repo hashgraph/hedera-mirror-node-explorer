@@ -6,7 +6,7 @@ export function makeExchangeFormat(id: string): string {
 
     if (re.test(id)) {
         result = id.replace('@', '-')
-        const lastDot  = result.lastIndexOf('.')
+        const lastDot = result.lastIndexOf('.')
         result = result.substring(0, lastDot) + '-' + result.substring(lastDot + 1)
     } else {
         result = id

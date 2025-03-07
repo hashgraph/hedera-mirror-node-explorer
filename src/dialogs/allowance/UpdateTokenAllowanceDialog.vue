@@ -79,7 +79,7 @@ const allowanceSpec = computed(() => {
   return controller.newUserAmount.value
 })
 
-const transactionDidExecute = async (transactionId: string|null) => {
+const transactionDidExecute = async (transactionId: string | null) => {
   emit("allowanceApproved", transactionId)
 }
 

@@ -10,14 +10,14 @@ import {NftCollectionCache, NftCollectionInfo} from "@/utils/cache/NftCollection
 export class NftSerialsTextFieldController {
 
     private readonly inputChangeController: InputChangeController
-    private readonly nftCollectionLookup: EntityLookup<string, NftCollectionInfo[]|null>
+    private readonly nftCollectionLookup: EntityLookup<string, NftCollectionInfo[] | null>
 
     //
     // Public
     //
 
     public constructor(
-        public readonly tokenId: Ref<string|null>,
+        public readonly tokenId: Ref<string | null>,
         public readonly input: Ref<string> = ref("")) {
         this.inputChangeController = new InputChangeController(input)
         this.nftCollectionLookup = NftCollectionCache.instance.makeLookup(walletManager.accountId)
@@ -36,7 +36,7 @@ export class NftSerialsTextFieldController {
         return serials !== null ? NftSerialsTextFieldState.ok : NftSerialsTextFieldState.invalidSyntax
     })
 
-    public readonly serials = computed<number[]|null>(() => {
+    public readonly serials = computed<number[] | null>(() => {
         let ok = true
         const result: number[] = []
         const trimmedValue = this.inputChangeController.outputText.value.trim()
@@ -55,7 +55,7 @@ export class NftSerialsTextFieldController {
     })
 
     public readonly rejectedSerials = computed<number[] | null>(() => {
-        let result: number[]|null
+        let result: number[] | null
         const tokenId = this.tokenId.value
         const serials = this.serials.value
         const nftCollectionInfos = this.nftCollectionLookup.entity.value

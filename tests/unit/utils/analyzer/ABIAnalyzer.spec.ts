@@ -36,7 +36,7 @@ describe("ABIAnalyzer.ts", async () => {
         mock.onGet(matcher2).reply(200, []);
 
         // 1) new
-        const contractId = ref<string|null>(null)
+        const contractId = ref<string | null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
         const abiMode = ref<ABIMode>(ABIMode.Normal)
@@ -140,7 +140,7 @@ describe("ABIAnalyzer.ts", async () => {
 
 
         // 1) new
-        const contractId = ref<string|null>(null)
+        const contractId = ref<string | null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
         const abiMode = ref<ABIMode>(ABIMode.Normal)
@@ -259,7 +259,7 @@ describe("ABIAnalyzer.ts", async () => {
 
 
         // 1) new
-        const contractId = ref<string|null>(null)
+        const contractId = ref<string | null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
         const abiMode = ref<ABIMode>(ABIMode.Normal)
@@ -358,7 +358,6 @@ describe("ABIAnalyzer.ts", async () => {
 
 
 })
-
 
 
 const PROXY_SOURCIFY_RESPONSE = {

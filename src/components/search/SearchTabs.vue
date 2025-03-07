@@ -27,7 +27,7 @@ const props = defineProps({
 })
 
 const selectedAgentId = defineModel("selectedAgentId", {
-  type: String as PropType<string|null>,
+  type: String as PropType<string | null>,
   default: null
 })
 

@@ -11,9 +11,9 @@ export class ABIAnalyzer {
     public readonly contractAnalyzer: ContractAnalyzer
     private readonly logicContractAnalyzer: ContractAnalyzer
     private readonly adminContractAnalyzer: ContractAnalyzer
-    private readonly logicContractResponse = ref<ContractResponse|null>(null)
-    private readonly adminContractResponse = ref<ContractResponse|null>(null)
-    private watchHandle: WatchStopHandle|null = null
+    private readonly logicContractResponse = ref<ContractResponse | null>(null)
+    private readonly adminContractResponse = ref<ContractResponse | null>(null)
+    private watchHandle: WatchStopHandle | null = null
 
     //
     // Public

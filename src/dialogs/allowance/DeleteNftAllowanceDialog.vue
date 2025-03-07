@@ -22,7 +22,7 @@
       </template>
 
       <template v-else>
-        Do you want to delete the allowance for NFT #{{ serialNumber}} of collection  {{ tokenName }} ?
+        Do you want to delete the allowance for NFT #{{ serialNumber }} of collection {{ tokenName }} ?
       </template>
 
     </template>
@@ -67,11 +67,11 @@ const spenderId = computed(() => props.spenderId)
 const serialNumber = computed(() => props.serialNumber)
 const controller = new DeleteNftAllowanceController(showDialog, tokenId, spenderId, serialNumber)
 
-const transactionTitle = computed(() =>  "Delete allowance to account " + spenderId.value)
+const transactionTitle = computed(() => "Delete allowance to account " + spenderId.value)
 
 const tokenName = computed(() => controller.tokenName.value)
 
-const transactionDidExecute = async (transactionId: string|null) => {
+const transactionDidExecute = async (transactionId: string | null) => {
   emit('allowanceDeleted', transactionId)
 }
 

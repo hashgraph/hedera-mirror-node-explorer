@@ -34,8 +34,8 @@ export class Timestamp {
         return this.seconds + "." + this.nanoseconds.toString().padStart(9, "0")
     }
 
-    public static computeRange(t1: string, t2: string): number|null {
-        let result: number|null
+    public static computeRange(t1: string, t2: string): number | null {
+        let result: number | null
 
         const tt1 = Timestamp.parse(t1)
         const tt2 = Timestamp.parse(t2)

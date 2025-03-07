@@ -527,8 +527,8 @@ export function extractChecksum(address: string): string | null {
     return dash != -1 ? address.substring(dash + 1) : null
 }
 
-export function computeTPS(blocks: Block[]): number|null { // blocks should be in ascending order
-    let result: number|null
+export function computeTPS(blocks: Block[]): number | null { // blocks should be in ascending order
+    let result: number | null
 
     if (blocks.length >= 1) {
         const startBlock = blocks[0]

@@ -6,7 +6,7 @@ import {ContractResponse, ContractStateResponse} from "@/schemas/MirrorNodeSchem
 import {ContractByAddressCache} from "@/utils/cache/ContractByAddressCache";
 import {ethers} from "ethers";
 
-export class LogicContractCache extends EntityCache<string, ContractResponse|null> {
+export class LogicContractCache extends EntityCache<string, ContractResponse | null> {
 
     public static readonly instance = new LogicContractCache()
 
@@ -15,8 +15,8 @@ export class LogicContractCache extends EntityCache<string, ContractResponse|nul
     // Cache
     //
 
-    protected async load(contractId: string): Promise<ContractResponse|null> {
-        let result: ContractResponse|null
+    protected async load(contractId: string): Promise<ContractResponse | null> {
+        let result: ContractResponse | null
 
         // See https://eips.ethereum.org/EIPS/eip-1967
         const logicContractSlotAddress = "0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc"
@@ -33,8 +33,8 @@ export class LogicContractCache extends EntityCache<string, ContractResponse|nul
     // Private
     //
 
-    public static async fetchContractAddress(contractId: string, slotAddress: string): Promise<string|null> {
-        let result: string|null
+    public static async fetchContractAddress(contractId: string, slotAddress: string): Promise<string | null> {
+        let result: string | null
 
         const slotValue = await this.fetchSlot(slotAddress, contractId)
         if (slotValue !== null && slotValue !== "0x") {
@@ -45,10 +45,10 @@ export class LogicContractCache extends EntityCache<string, ContractResponse|nul
             result = null
         }
         // Address is the last 20 bytes of the slot value
-       return Promise.resolve(result)
+        return Promise.resolve(result)
     }
 
-    private static async fetchSlot(slotAddress: string, contractId: string): Promise<string|null> {
+    private static async fetchSlot(slotAddress: string, contractId: string): Promise<string | null> {
         const url = "api/v1/contracts/" + contractId + "/state?slot=" + slotAddress
         const response = await axios.get<ContractStateResponse>(url)
         const states = response.data.state ?? []

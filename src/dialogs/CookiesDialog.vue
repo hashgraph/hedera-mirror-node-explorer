@@ -14,7 +14,8 @@
     </template>
     <template #modalDialogButtons>
       <ModalDialogButton v-model:show-dialog="showDialog" @action="handleChooseReject">REJECT</ModalDialogButton>
-      <ModalDialogButton v-model:show-dialog="showDialog" :is-default="true" @action="handleChooseAccept">ACCEPT</ModalDialogButton>
+      <ModalDialogButton v-model:show-dialog="showDialog" :is-default="true" @action="handleChooseAccept">ACCEPT
+      </ModalDialogButton>
     </template>
   </ModalDialog>
 </template>

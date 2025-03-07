@@ -67,7 +67,7 @@ const taskPanelMessage = controller.taskPanelMessage
 const taskPanelExtra1 = controller.taskPanelExtra1
 
 const transactionTitle = computed(
-    () =>  controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens' )
+    () => controller.isNft.value ? 'Reject NFTs' : 'Reject Tokens')
 
 const transactionGroupDidExecute = async () => {
   emit('rejected')

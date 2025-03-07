@@ -9,8 +9,8 @@ import {ContractSourceAnalyzer, ContractSourceAnalyzerItem} from "@/utils/analyz
 export class ContractVerificationController extends TaskController {
 
 
-    public readonly contractId: Ref<string|null>
-    public readonly items:  ComputedRef<ContractSourceAnalyzerItem[]>
+    public readonly contractId: Ref<string | null>
+    public readonly items: ComputedRef<ContractSourceAnalyzerItem[]>
     private readonly contractSourceAnalyzer: ContractSourceAnalyzer
 
 
@@ -30,7 +30,7 @@ export class ContractVerificationController extends TaskController {
     public readonly matchingContractName = computed(
         () => this.contractSourceAnalyzer.matchingContract.value?.name ?? null)
 
-    public readonly newMatchingContract = ref<SourcifyVerifyCheckedContract|null>(null)
+    public readonly newMatchingContract = ref<SourcifyVerifyCheckedContract | null>(null)
     public readonly verificationError = ref<unknown>(null)
 
     //
@@ -60,7 +60,7 @@ export class ContractVerificationController extends TaskController {
     //
 
     public readonly mainSuccessMessage = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.newMatchingContract.value !== null) {
             const status = this.newMatchingContract.value.status
             if (status == "perfect" || status == "partial") {
@@ -75,7 +75,7 @@ export class ContractVerificationController extends TaskController {
     })
 
     public readonly extraSuccessMessage = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.newMatchingContract.value !== null) {
             const status = this.newMatchingContract.value.status
             if (status == "perfect" || status == "partial") {
@@ -94,7 +94,7 @@ export class ContractVerificationController extends TaskController {
     //
 
     public readonly extraErrorMessage = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.verificationError.value !== null) {
             result = (this.verificationError.value as any).toString()
         } else {

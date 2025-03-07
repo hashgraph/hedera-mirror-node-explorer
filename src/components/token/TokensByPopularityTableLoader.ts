@@ -9,7 +9,7 @@ import {TokenInfoCache} from "@/utils/cache/TokenInfoCache";
 export class TokensByPopulariyTableLoader extends TableLoader<Token> {
 
     private readonly name: Ref<string | null>
-    private nameWatchHandle: WatchStopHandle|null = null
+    private nameWatchHandle: WatchStopHandle | null = null
 
     //
     // Public

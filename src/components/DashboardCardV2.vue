@@ -6,7 +6,8 @@
 
 <template>
   <div class="card-root">
-    <div style="display: flex; flex-direction: column; gap: 8px;  padding-bottom: 16px;  border-bottom: 1px solid var(--network-theme-color);">
+    <div
+        style="display: flex; flex-direction: column; gap: 8px;  padding-bottom: 16px;  border-bottom: 1px solid var(--network-theme-color);">
       <div class="card-header">
         <div class="left-header">
           <slot name="title"/>

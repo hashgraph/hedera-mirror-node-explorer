@@ -10,8 +10,8 @@ export abstract class WalletSession {
     // Public
     //
 
-     
-    public async makeClient(accountId: string): Promise<WalletClient|null> {
+
+    public async makeClient(accountId: string): Promise<WalletClient | null> {
         throw "to be implemented"
     }
 
@@ -21,16 +21,17 @@ export abstract class WalletSession {
 
     public abstract getWalletDN(): string
 
-    public abstract getWalletUUID(): string|null
+    public abstract getWalletUUID(): string | null
 
     //
     // Protected
     //
 
     protected constructor(public readonly name: string,
-                          public readonly iconURL: string|null,
+                          public readonly iconURL: string | null,
                           public readonly usableAccountIds: string[],
-                          public readonly otherAccountIds: string[]) {}
+                          public readonly otherAccountIds: string[]) {
+    }
 
 
 }

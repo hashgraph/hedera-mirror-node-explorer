@@ -5,7 +5,7 @@ import {ChartGranularity, ChartRange, computeStartDateForRange} from "@/charts/c
 
 export interface EcosystemMetric {
     start_date: string,
-    end_date: string|null,
+    end_date: string | null,
     total: number
 }
 
@@ -99,13 +99,13 @@ export function selectMetrics(rawMetrics: EcosystemMetric[], granularity: ChartG
     return result
 }
 
-export function getStartDate(metric: EcosystemMetric): Date|null {
+export function getStartDate(metric: EcosystemMetric): Date | null {
     const startTime = Date.parse(metric.start_date)
     return isNaN(startTime) ? null : new Date(startTime)
 }
 
-export function getEndDate(metric: EcosystemMetric): Date|null {
-    let result: Date|null
+export function getEndDate(metric: EcosystemMetric): Date | null {
+    let result: Date | null
     if (metric.end_date !== null) {
         const endTime = Date.parse(metric.end_date)
         result = isNaN(endTime) ? null : new Date(endTime)
@@ -114,6 +114,7 @@ export function getEndDate(metric: EcosystemMetric): Date|null {
     }
     return result
 }
+
 //
 // export function getTimeRange(metric: EcosystemMetric): number|null {
 //     let result: number|null
@@ -187,7 +188,7 @@ function aggregateMetricSegment(rawMetrics: EcosystemMetric[], startIndex: numbe
     }
     return {
         start_date: rawMetrics[startIndex].start_date,
-        end_date: rawMetrics[endIndex-1].end_date,
+        end_date: rawMetrics[endIndex - 1].end_date,
         total: aggregatedTotal
     }
 }
@@ -263,7 +264,7 @@ function selectMetricsByDay(rawMetrics: EcosystemMetric[]): EcosystemMetric[] {
         while (i < rawMetrics.length && getDayFromDate(rawMetrics[i].start_date) === startDay) {
             i += 1
         }
-        result.push(rawMetrics[i-1])
+        result.push(rawMetrics[i - 1])
     }
     return result
 }
@@ -278,7 +279,7 @@ function selectMetricsByMonth(rawMetrics: EcosystemMetric[]): EcosystemMetric[] 
         while (i < rawMetrics.length && getMonthFromDate(rawMetrics[i].start_date) === startMonth) {
             i += 1
         }
-        result.push(rawMetrics[i-1])
+        result.push(rawMetrics[i - 1])
     }
     return result
 }
@@ -293,7 +294,7 @@ function selectMetricsByYear(rawMetrics: EcosystemMetric[]): EcosystemMetric[] {
         while (i < rawMetrics.length && getYearFromDate(rawMetrics[i].start_date) === startYear) {
             i += 1
         }
-        result.push(rawMetrics[i-1])
+        result.push(rawMetrics[i - 1])
     }
     return result
 }
@@ -303,19 +304,19 @@ function selectMetricsByYear(rawMetrics: EcosystemMetric[]): EcosystemMetric[] {
 // Private
 //
 
-export function getDayFromDate(date: string): number|null {
+export function getDayFromDate(date: string): number | null {
     const t = Date.parse(date)
     const d = isNaN(t) ? null : new Date(t)
     return d !== null ? d.getDate() : null
 }
 
-export function getMonthFromDate(date: string): number|null {
+export function getMonthFromDate(date: string): number | null {
     const t = Date.parse(date)
     const d = isNaN(t) ? null : new Date(t)
     return d !== null ? d.getMonth() : null
 }
 
-export function getYearFromDate(date: string): number|null {
+export function getYearFromDate(date: string): number | null {
     const t = Date.parse(date)
     const d = isNaN(t) ? null : new Date(t)
     return d !== null ? d.getFullYear() : null

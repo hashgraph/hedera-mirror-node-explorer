@@ -22,7 +22,7 @@ export class TxOverTimeController extends HgraphChartController {
     // HgraphChartController
     //
 
-     
+
     protected makeQuery(range: ChartRange): string {
         // We request all rows so that transformMetrics() can perform accumulation
         return "{" +

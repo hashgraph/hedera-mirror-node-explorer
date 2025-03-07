@@ -58,13 +58,13 @@ const navigate = (c: SearchCandidate<unknown>) => {
 <style scoped>
 
 .button-as-link {
-  background: none!important;
+  background: none !important;
   border: none;
   color: var(--text-primary);
   cursor: pointer;
   font-size: 14px;
   font-weight: 400;
-  padding: 0!important;
+  padding: 0 !important;
   text-align: left;
 }
 

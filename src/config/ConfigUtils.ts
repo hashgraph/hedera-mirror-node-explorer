@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
-export function fetchBoolean(obj: any, key: string): boolean|null {
-    let result: boolean|null
+export function fetchBoolean(obj: any, key: string): boolean | null {
+    let result: boolean | null
     if (key in obj) {
         const value = obj[key]
         if (value === null) {
@@ -17,8 +17,8 @@ export function fetchBoolean(obj: any, key: string): boolean|null {
     return result
 }
 
-export function fetchNumber(obj: any, key: string): number|null {
-    let result: number|null
+export function fetchNumber(obj: any, key: string): number | null {
+    let result: number | null
     if (key in obj) {
         const value = obj[key]
         if (value === null) {
@@ -34,8 +34,8 @@ export function fetchNumber(obj: any, key: string): number|null {
     return result
 }
 
-export function fetchString(obj: any, key: string): string|null {
-    let result: string|null
+export function fetchString(obj: any, key: string): string | null {
+    let result: string | null
     if (key in obj) {
         const value = obj[key]
         if (value === null) {
@@ -51,8 +51,8 @@ export function fetchString(obj: any, key: string): string|null {
     return result
 }
 
-export function fetchURL(obj: any, key: string): string|null {
-    let result: string|null
+export function fetchURL(obj: any, key: string): string | null {
+    let result: string | null
     const s = fetchString(obj, key)
     if (s !== null) {
         try {
@@ -67,8 +67,8 @@ export function fetchURL(obj: any, key: string): string|null {
     return result
 }
 
-export function fetchObject(obj: any, key: string): object|null {
-    let result: object|null
+export function fetchObject(obj: any, key: string): object | null {
+    let result: object | null
     if (key in obj) {
         const value = obj[key]
         if (value === null) {

@@ -17,8 +17,8 @@ export class SelectedTokensCache extends SingletonCache<SelectedTokensIndex> {
         const popularTokenIndexURL = routeManager.currentNetworkEntry.value.popularTokenIndexURL
         if (popularTokenIndexURL !== null) {
             try {
-                selectedTokenEntries= (await axios.get<SelectedTokenEntry[]>(popularTokenIndexURL)).data
-            } catch(reason) {
+                selectedTokenEntries = (await axios.get<SelectedTokenEntry[]>(popularTokenIndexURL)).data
+            } catch (reason) {
                 console.log("reason=" + reason)
                 throw reason
             }
@@ -31,7 +31,8 @@ export class SelectedTokensCache extends SingletonCache<SelectedTokensIndex> {
 
 export class SelectedTokensIndex {
 
-    constructor(private readonly entries: SelectedTokenEntry[]) {}
+    constructor(private readonly entries: SelectedTokenEntry[]) {
+    }
 
     search(name: string): SelectedTokenEntry[] {
         name = name.toLowerCase()

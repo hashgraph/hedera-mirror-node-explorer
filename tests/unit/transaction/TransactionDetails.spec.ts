@@ -88,7 +88,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
@@ -213,7 +213,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: timestamp,
@@ -337,7 +337,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: transactionHash
@@ -428,7 +428,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp
@@ -536,7 +536,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: SAMPLE_FAILED_TRANSACTION.consensus_timestamp
@@ -587,7 +587,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: invalidTimestamp
@@ -631,7 +631,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp
@@ -690,7 +690,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: SCHEDULING.consensus_timestamp
@@ -753,7 +753,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: SCHEDULED.consensus_timestamp
@@ -819,7 +819,7 @@ describe("TransactionDetails.vue", () => {
             const wrapper = mount(TransactionDetails, {
                 global: {
                     plugins: [router, Oruga],
-                    provide: { "isMediumScreen": false }
+                    provide: {"isMediumScreen": false}
                 },
                 props: {
                     transactionLoc: CHILD.consensus_timestamp,
@@ -882,7 +882,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: PARENT.consensus_timestamp
@@ -958,7 +958,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: NONCE_1.consensus_timestamp,
@@ -1025,7 +1025,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp,
@@ -1106,7 +1106,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: timestamp
@@ -1161,7 +1161,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: timestamp
@@ -1227,7 +1227,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: timestamp
@@ -1367,7 +1367,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: timestamp
@@ -1448,7 +1448,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: transaction.consensus_timestamp,
@@ -1511,7 +1511,7 @@ describe("TransactionDetails.vue", () => {
         const wrapper = mount(TransactionDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 transactionLoc: SAMPLE_TRANSACTION.consensus_timestamp,
@@ -1539,7 +1539,7 @@ describe("TransactionDetails.vue", () => {
             "api/v1/contracts/" + SAMPLE_TRANSACTION.token_transfers[1].account,
         ])
 
-            expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
+        expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id)))
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC

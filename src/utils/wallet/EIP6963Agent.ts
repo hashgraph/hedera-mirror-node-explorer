@@ -30,8 +30,8 @@ export class EIP6963Agent {
     // Public
     //
 
-    public async requestSession(providerUUID: string): Promise<WalletSession|null> {
-        let result: WalletSession|null
+    public async requestSession(providerUUID: string): Promise<WalletSession | null> {
+        let result: WalletSession | null
 
         const d = this.findProviderDetails(providerUUID)
         if (d !== null) {
@@ -48,7 +48,7 @@ export class EIP6963Agent {
                     }
                 }
                 result = new WalletSession_EIP6963(d, d.info.name, d.info.icon, usableAccountIds, otherAccounts)
-            } catch(reason) {
+            } catch (reason) {
                 if (eth_isUserReject(reason)) {
                     result = null
                 } else {
@@ -62,8 +62,8 @@ export class EIP6963Agent {
         return Promise.resolve(result)
     }
 
-    public async restoreSession(providerUUID: string): Promise<WalletSession|null> {
-        let result: WalletSession|null
+    public async restoreSession(providerUUID: string): Promise<WalletSession | null> {
+        let result: WalletSession | null
 
         const d = this.findProviderDetails(providerUUID)
         if (d !== null) {
@@ -90,7 +90,7 @@ export class EIP6963Agent {
         return Promise.resolve(result)
     }
 
-    public async checkAccessWithRDN(providerRDN: string): Promise<WalletSession|null> {
+    public async checkAccessWithRDN(providerRDN: string): Promise<WalletSession | null> {
         const d = this.providers.value.find((d: EIP6963ProviderDetail) => d.info.rdns === providerRDN) ?? null
         return d !== null ? this.restoreSession(d.info.uuid) : null
     }
@@ -102,7 +102,7 @@ export class EIP6963Agent {
             try {
                 await wallet_revokePermissions(d.provider)
                 result = true
-            } catch(reason) {
+            } catch (reason) {
                 if (eth_isUnsupportedMethod(reason)) {
                     result = false
                 } else {
@@ -136,7 +136,7 @@ export class EIP6963Agent {
         }
     }
 
-    private findProviderDetails(uuid: string): EIP6963ProviderDetail|null {
+    private findProviderDetails(uuid: string): EIP6963ProviderDetail | null {
         const result = this.providers.value.find((d: EIP6963ProviderDetail) => d.info.uuid === uuid) ?? null
         if (result === null) {
             console.log("No provider found for UUID: " + uuid)
@@ -150,7 +150,7 @@ class WalletSession_EIP6963 extends WalletSession {
 
     constructor(public providerDetails: EIP6963ProviderDetail,
                 name: string,
-                iconURL: string|null,
+                iconURL: string | null,
                 usableAccountIds: string[],
                 otherAccountIds: string[]) {
         super(name, iconURL, usableAccountIds, otherAccountIds)
@@ -160,7 +160,7 @@ class WalletSession_EIP6963 extends WalletSession {
     // WalletSession
     //
 
-    public makeClient(accountId: string): Promise<WalletClient|null> {
+    public makeClient(accountId: string): Promise<WalletClient | null> {
         const result = new WalletClient_Ethereum(accountId,
             routeManager.currentNetwork.value, this.providerDetails.provider)
         return Promise.resolve(result)
@@ -174,7 +174,7 @@ class WalletSession_EIP6963 extends WalletSession {
         return "eip6963:" + this.providerDetails.info.rdns
     }
 
-    public getWalletUUID(): string|null {
+    public getWalletUUID(): string | null {
         return this.providerDetails.info.uuid
     }
 }

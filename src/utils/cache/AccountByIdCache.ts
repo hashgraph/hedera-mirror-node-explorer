@@ -15,8 +15,8 @@ export class AccountByIdCache extends EntityCache<string, AccountBalanceTransact
     // Public
     //
 
-    public async findAccountAddress(accountId: string): Promise<string|null> {
-        let result: string|null
+    public async findAccountAddress(accountId: string): Promise<string | null> {
+        let result: string | null
         const accountInfo = await this.lookup(accountId)
         if (accountInfo !== null) {
             result = accountInfo.evm_address ?? EntityID.parse(accountId)?.toAddress() ?? null

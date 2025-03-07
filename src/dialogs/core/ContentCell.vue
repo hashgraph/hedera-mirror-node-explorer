@@ -7,7 +7,8 @@
 <template>
 
   <template v-if="props.direction == 'vertical'">
-    <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: stretch; row-gap: 4px; width: 100%;">
+    <div
+        style="display: flex; flex-direction: column; align-items: flex-start; justify-content: stretch; row-gap: 4px; width: 100%;">
       <div class="cellTitle">
         <slot name="cellTitle"/>
       </div>

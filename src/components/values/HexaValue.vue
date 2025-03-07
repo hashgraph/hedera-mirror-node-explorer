@@ -13,7 +13,7 @@
     </template>
   </Copyable>
 
-  <template v-else-if="showNone && !initialLoading" >
+  <template v-else-if="showNone && !initialLoading">
     <div class="h-is-low-contrast">None</div>
     <div v-if="noneExtra" class="h-is-low-contrast">{{ noneExtra }}</div>
   </template>

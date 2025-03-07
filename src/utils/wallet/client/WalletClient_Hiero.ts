@@ -238,7 +238,7 @@ export class WalletClient_Hiero extends WalletClient {
             const response = await this.provider.request(request) as TransactionResponseJSON
             const tr = TransactionResponse.fromJSON(response)
             result = tr.transactionId.toString()
-        } catch(reason) {
+        } catch (reason) {
             if (isUserReject(reason)) {
                 throw new WalletClientRejectError()
             } else {
@@ -268,7 +268,6 @@ export class WalletClient_Hiero extends WalletClient {
 
         return result
     }
-
 
 
     protected async waitForContractResultSurfacing(transactionId: string): Promise<ContractResultDetails | string> {

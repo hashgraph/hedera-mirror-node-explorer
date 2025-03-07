@@ -87,7 +87,7 @@ export class TokenInfoAnalyzer {
 
 
     public readonly balance = computed(() => {
-        let result: number|null
+        let result: number | null
         const relationships = this.associationLookup.entity.value
         if (relationships !== null) {
             result = relationships.length >= 1 ? relationships[0].balance : 0

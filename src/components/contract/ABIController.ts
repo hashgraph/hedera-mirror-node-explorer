@@ -22,8 +22,8 @@ export class ABIController {
         () => this.abiAnalyzer.logicInterface.value !== null)
 
     public readonly targetInterface = computed(() => {
-        let result: ethers.Interface|null
-        switch(this.mode.value) {
+        let result: ethers.Interface | null
+        switch (this.mode.value) {
             case ABIMode.Normal:
                 result = this.abiAnalyzer.contractAnalyzer.interface.value
                 break
@@ -38,8 +38,8 @@ export class ABIController {
     })
 
     public readonly targetContractName = computed(() => {
-        let result: string|null
-        switch(this.mode.value) {
+        let result: string | null
+        switch (this.mode.value) {
             case ABIMode.Normal:
                 result = this.abiAnalyzer.contractAnalyzer.contractName.value
                 break
@@ -56,6 +56,6 @@ export class ABIController {
 }
 
 export enum ABIMode {
-    Normal= "normal",
+    Normal = "normal",
     Logic = "logic",
 }

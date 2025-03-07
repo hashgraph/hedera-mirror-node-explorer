@@ -244,7 +244,6 @@ describe("ContractActionAnalyzer.spec.ts", () => {
 })
 
 
-
 const SAMPLE_CALLER = {
     "account": "0.0.96039",
     "alias": "CIQAAAH4AY2OFK2FL37TSPYEQGPPUJRP4XTKWHD62HKPQX543DTOFFQ",

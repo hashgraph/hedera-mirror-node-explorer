@@ -57,7 +57,7 @@ describe("NodeDetails.vue", () => {
         const wrapper = mount(NodeDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 nodeId: node.toString()
@@ -106,7 +106,7 @@ describe("NodeDetails.vue", () => {
         const wrapper = mount(NodeDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 nodeId: node.toString()

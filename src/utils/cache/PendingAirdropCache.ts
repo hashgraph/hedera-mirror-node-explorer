@@ -22,7 +22,7 @@ export class PendingAirdropCache extends EntityCache<string, TokenAirdrop[] | nu
         return components.length == 2 ? components : []
     }
 
-    public makeAirdropLookup(accountId: Ref<string | null>, tokenId: Ref<string | null>): EntityLookup<string, TokenAirdrop[]|null> {
+    public makeAirdropLookup(accountId: Ref<string | null>, tokenId: Ref<string | null>): EntityLookup<string, TokenAirdrop[] | null> {
         const key = computed(() => {
             let result: string | null
             if (accountId.value !== null && tokenId.value !== null) {
@@ -51,8 +51,8 @@ export class PendingAirdropCache extends EntityCache<string, TokenAirdrop[] | nu
     // Cache
     //
 
-    protected async load(airdropKey: string): Promise<TokenAirdrop[]|null> {
-        let result: TokenAirdrop[]|null
+    protected async load(airdropKey: string): Promise<TokenAirdrop[] | null> {
+        let result: TokenAirdrop[] | null
 
         const components = PendingAirdropCache.parseAirdropKey(airdropKey)
         if (components.length == 2) {

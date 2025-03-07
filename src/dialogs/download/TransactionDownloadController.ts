@@ -13,36 +13,36 @@ import {DownloadController} from "@/dialogs/download/DownloadController.ts";
 
 export class TransactionDownloadController extends DownloadController<Transaction, TransactionResponse> {
 
-    public readonly accountId: Ref<string|null>
+    public readonly accountId: Ref<string | null>
     public readonly selectedScope = ref<string>("HBAR TRANSFERS")
     public readonly selectedFilter = ref<string>("CRYPTOTRANSFER")
     public readonly tokenController: TokenTextFieldController
-    public readonly selectedStartDate: Ref<Date|null> = ref(null)
-    public readonly selectedEndDate: Ref<Date|null> = ref(null)
+    public readonly selectedStartDate: Ref<Date | null> = ref(null)
+    public readonly selectedEndDate: Ref<Date | null> = ref(null)
 
     //
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, accountId: Ref<string|null>, networkConfig: NetworkConfig) {
+    public constructor(showDialog: Ref<boolean>, accountId: Ref<string | null>, networkConfig: NetworkConfig) {
         super(showDialog)
         this.accountId = accountId
         this.tokenController = new TokenTextFieldController(ref(null), ref(null), networkConfig)
     }
 
     public readonly tokenIdRequired = computed(
-        () => this.selectedScope.value ==='TOKEN TRANSFERS BY ID'
-                  || this.selectedScope.value ==='NFT TRANSFERS BY ID'
+        () => this.selectedScope.value === 'TOKEN TRANSFERS BY ID'
+            || this.selectedScope.value === 'NFT TRANSFERS BY ID'
     )
 
     public readonly feedbackMessage = computed(
         () => this.tokenFeedbackMessage.value
-               ?? this.startDateFeedbackMessage.value
-               ?? this.endDateFeedbackMessage.value)
+            ?? this.startDateFeedbackMessage.value
+            ?? this.endDateFeedbackMessage.value)
 
-    public readonly downloader = computed( () => {
+    public readonly downloader = computed(() => {
         let result: AbstractTransactionDownloader
-        switch(this.selectedScope.value) {
+        switch (this.selectedScope.value) {
             case "TOKEN TRANSFERS":
             case "TOKEN TRANSFERS BY ID":
                 result = new TokenTransferDownloader(
@@ -117,11 +117,11 @@ export class TransactionDownloadController extends DownloadController<Transactio
 
     private readonly tokenIdValid = computed(
         () => this.tokenController.newTokenId.value !== null
-                  && this.tokenController.newTokenInfo.value !== null)
+            && this.tokenController.newTokenInfo.value !== null)
 
     private readonly tokenFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.tokenController.state.value) {
+        let result: string | null
+        switch (this.tokenController.state.value) {
             case TokenTextFieldState.empty:
                 result = null
                 break
@@ -145,7 +145,6 @@ export class TransactionDownloadController extends DownloadController<Transactio
     })
 
 
-
     //
     // Private (startDate)
     //
@@ -153,7 +152,7 @@ export class TransactionDownloadController extends DownloadController<Transactio
     private readonly lastMidnight = new Date(new Date().setHours(0, 0, 0, 0))
 
     private readonly startDate = computed<Date | null>(() => {
-            let result: Date|null
+            let result: Date | null
             if (this.selectedStartDate.value != null) {
                 result = new Date(this.selectedStartDate.value)
                 result.setHours(0, 0, 0, 0)

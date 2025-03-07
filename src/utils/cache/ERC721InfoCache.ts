@@ -5,7 +5,7 @@ import {AccountByIdCache} from "@/utils/cache/AccountByIdCache.ts";
 import {ERC721Cache, ERC721Contract} from "@/utils/cache/ERC721Cache.ts";
 import {ERCUtils} from "@/utils/ERCUtils.ts";
 
-export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
+export class ERC721InfoCache extends EntityCache<string, ERC721Info | null> {
 
     public static readonly instance = new ERC721InfoCache()
 
@@ -13,8 +13,8 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
     // Cache
     //
 
-    protected async load(contractId: string): Promise<ERC721Info|null> {
-        let result: ERC721Info|null
+    protected async load(contractId: string): Promise<ERC721Info | null> {
+        let result: ERC721Info | null
         const erc721Contract = await ERC721Cache.instance.lookupContract(contractId)
         if (erc721Contract !== null) {
             result = await this.loadInfo(contractId)
@@ -44,8 +44,8 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
     // Private
     //
 
-    private async loadInfo(contractId: string): Promise<ERC721Info|null> {
-        let result: ERC721Info|null
+    private async loadInfo(contractId: string): Promise<ERC721Info | null> {
+        let result: ERC721Info | null
         const evmAddress = await AccountByIdCache.instance.findAccountAddress(contractId)
         if (evmAddress !== null) {
 
@@ -54,8 +54,8 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
                 ERCUtils.loadSymbol(evmAddress),
             ]
             const resolutions = await Promise.all(promises)
-            const name = resolutions[0] as string|null
-            const symbol = resolutions[1] as string|null
+            const name = resolutions[0] as string | null
+            const symbol = resolutions[1] as string | null
             result = {
                 contractId,
                 evmAddress,
@@ -73,6 +73,6 @@ export class ERC721InfoCache extends EntityCache<string, ERC721Info|null> {
 export interface ERC721Info {
     contractId: string
     evmAddress: string
-    name: string|null
-    symbol: string|null
+    name: string | null
+    symbol: string | null
 }

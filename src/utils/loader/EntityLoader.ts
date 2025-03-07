@@ -89,7 +89,7 @@ export abstract class EntityLoader<E> {
         this.requestCount.value += 1
         const capturedRequestCount = this.requestCount.value
         this.load()
-            .then((newEntity: E|null) => {
+            .then((newEntity: E | null) => {
                 this.loadDidComplete(newEntity, capturedRequestCount)
             })
             .catch((error: Error) => {

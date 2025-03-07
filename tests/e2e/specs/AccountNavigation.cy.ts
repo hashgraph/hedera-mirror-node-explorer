@@ -117,7 +117,7 @@ describe('Account Navigation', () => {
             .eq(0)
             .click()
             .then(($id) => {
-                cy.url().should('include', '/testnet/contract/'+ $id.text())
+                cy.url().should('include', '/testnet/contract/' + $id.text())
                 cy.contains('Contract Details')
                 cy.contains($id.text())
                 cy.contains(accountID)

@@ -8,7 +8,7 @@ import {TableLoader} from "@/utils/table/TableLoader";
 export class TokensByNameTableLoader extends TableLoader<Token> {
 
     private readonly name: Ref<string | null>
-    private nameWatchHandle: WatchStopHandle|null = null
+    private nameWatchHandle: WatchStopHandle | null = null
 
     //
     // Public
@@ -28,7 +28,7 @@ export class TokensByNameTableLoader extends TableLoader<Token> {
             limit: 100,
             name: this.name.value
         }
-        const r = await  axios.get<TokensResponse>("api/v1/tokens", {params: params})
+        const r = await axios.get<TokensResponse>("api/v1/tokens", {params: params})
         return Promise.resolve(r.data.tokens ?? [])
     }
 

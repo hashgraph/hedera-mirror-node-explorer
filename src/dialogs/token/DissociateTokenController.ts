@@ -32,7 +32,7 @@ export class DissociateTokenController extends TransactionController {
     }
 
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         const tid = await walletManager.dissociateToken(this.tokenId.value!)
         const result = await waitForTransactionRefresh(tid)
         this.tokenAnalyzer.value.tokenAssociationDidChange()

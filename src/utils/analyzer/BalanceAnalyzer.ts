@@ -61,7 +61,7 @@ export class BalanceAnalyzer extends EntityLoader<BalancesResponse> {
     }
 
     protected async load(): Promise<BalancesResponse | null> {
-        let result: BalancesResponse|null
+        let result: BalancesResponse | null
         if (this.accountId.value !== null) {
             result = await BalanceCache.instance.lookup(this.accountId.value, true)
         } else {

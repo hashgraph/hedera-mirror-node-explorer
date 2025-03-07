@@ -42,7 +42,7 @@ describe("NftDetails.vue", () => {
         const wrapper = mount(NftDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: nftId,
@@ -53,7 +53,7 @@ describe("NftDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol +")#2Non Fungible Token")
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol + ")#2Non Fungible Token")
 
         const media = wrapper.get('#media-placeholder')
         expect(media.text()).toBe('Non Fungible TokenThe NFT metadata does not provide any image')
@@ -109,7 +109,7 @@ describe("NftDetails.vue", () => {
         const wrapper = mount(NftDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: nftId,

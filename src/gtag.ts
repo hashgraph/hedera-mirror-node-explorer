@@ -9,7 +9,7 @@
 
 declare global {
     interface Window {
-        gtag: Function|undefined
+        gtag: Function | undefined
     }
 }
 

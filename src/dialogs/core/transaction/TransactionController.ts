@@ -15,8 +15,8 @@ export abstract class TransactionController extends TaskController {
     // Public
     //
 
-    public readonly transactionId = ref<string|null>(null)
-    public readonly transactionResult = ref<string|null>(null)
+    public readonly transactionId = ref<string | null>(null)
+    public readonly transactionResult = ref<string | null>(null)
 
     public readonly isFailedResult = computed(() => {
         const r = this.transactionResult.value
@@ -27,7 +27,7 @@ export abstract class TransactionController extends TaskController {
     // To be subclassed
     //
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         throw "Must be subclassed"
     }
 
@@ -53,7 +53,7 @@ export abstract class TransactionController extends TaskController {
                 this.transactionId.value = r.transaction_id
                 this.transactionResult.value = r.result
             }
-        } catch(error) {
+        } catch (error) {
             this.transactionId.value = null
             this.transactionResult.value = null
             if (error instanceof WalletClientRejectError) {

@@ -13,35 +13,40 @@
       :enabled="true"
       :size="buttonSize"
       @action="showAssociateDialog=true"
-  >ASSOCIATE</ButtonView>
+  >ASSOCIATE
+  </ButtonView>
 
   <ButtonView
       v-if="dissociateEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showDissociateDialog=true"
-  >DISSOCIATE</ButtonView>
+  >DISSOCIATE
+  </ButtonView>
 
   <ButtonView
       v-if="rejectEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showRejectDialog=true"
-  >REJECT</ButtonView>
+  >REJECT
+  </ButtonView>
 
   <ButtonView
       v-if="claimEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showClaimDialog=true"
-  >CLAIM</ButtonView>
+  >CLAIM
+  </ButtonView>
 
   <ButtonView
       v-if="watchEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showWatchDialog=true"
-  >IMPORT</ButtonView>
+  >IMPORT
+  </ButtonView>
 
   <AssociateTokenDialog
       v-model:show-dialog="showAssociateDialog"
@@ -130,7 +135,7 @@ const tokenAirdrops = computed(() => props.analyzer.pendingAirdrops.value)
 const isFungibleToken = computed(() => props.analyzer.isFungible.value)
 
 const connectedAccountOK = computed(() =>
-  walletManager.accountId.value !==  null && walletManager.accountId.value !== treasuryAccountId.value)
+    walletManager.accountId.value !== null && walletManager.accountId.value !== treasuryAccountId.value)
 
 const associateEnabled = computed(
     () => connectedAccountOK.value
@@ -144,15 +149,15 @@ const dissociateEnabled = computed(
 
 const rejectEnabled = computed(
     () => connectedAccountOK.value
-          && balanceForConnectedAccount.value !== null
-          && balanceForConnectedAccount.value > 0 /* => token associated */
-          && isFungibleToken.value !== null
-          && isFungibleToken.value)
+        && balanceForConnectedAccount.value !== null
+        && balanceForConnectedAccount.value > 0 /* => token associated */
+        && isFungibleToken.value !== null
+        && isFungibleToken.value)
 
 const claimEnabled = computed(
     () => connectedAccountOK.value
-          && tokenAirdrops.value !== null
-          && tokenAirdrops.value.length >= 1)
+        && tokenAirdrops.value !== null
+        && tokenAirdrops.value.length >= 1)
 
 const watchEnabled = computed(
     () => walletManager.isWatchSupported.value

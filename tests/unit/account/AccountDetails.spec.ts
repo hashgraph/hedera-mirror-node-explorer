@@ -88,18 +88,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT.account ?? undefined
@@ -217,18 +217,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         let matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         let matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT.account ?? undefined
@@ -294,10 +294,10 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         mock.resetHistory()
 
@@ -361,7 +361,7 @@ describe("AccountDetails.vue", () => {
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: invalidAccountId
@@ -418,18 +418,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: deletedAccount.account ?? undefined
@@ -514,18 +514,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
@@ -626,18 +626,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { [networkConfigKey]: networkConfig, "isMediumScreen": false }
+                provide: {[networkConfigKey]: networkConfig, "isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined

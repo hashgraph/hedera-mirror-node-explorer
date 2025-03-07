@@ -5,7 +5,7 @@ import {Resolver} from '@hedera-name-service/hns-resolution-sdk'
 
 export class HNSProvider extends NameServiceProvider {
 
-    private readonly resolverCache = new Map<string,Resolver>()
+    private readonly resolverCache = new Map<string, Resolver>()
 
     //
     // Public
@@ -19,8 +19,8 @@ export class HNSProvider extends NameServiceProvider {
     // NameServiceProvider
     //
 
-    public async resolve(name: string, network: string): Promise<string|null> {
-        let result: string|null
+    public async resolve(name: string, network: string): Promise<string | null> {
+        let result: string | null
         const r = this.findResolver(network)
         if (r !== null) {
             result = await r.resolveSLD(name) ?? null
@@ -34,7 +34,7 @@ export class HNSProvider extends NameServiceProvider {
     // Private
     //
 
-    private findResolver(network: string): Resolver|null {
+    private findResolver(network: string): Resolver | null {
 
         let service: string | null
         switch (network) {
@@ -49,7 +49,7 @@ export class HNSProvider extends NameServiceProvider {
                 break
         }
 
-        let result: Resolver|null
+        let result: Resolver | null
         if (service !== null) {
             result = this.resolverCache.get(service) ?? null
             if (result == null) {

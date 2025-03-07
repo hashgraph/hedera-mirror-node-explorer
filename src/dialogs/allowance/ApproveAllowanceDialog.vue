@@ -141,13 +141,13 @@ const nftSerialInput = controller.nftSerialsController.input
 const feedbackMessage = controller.feedbackMessage
 const allowanceChoice = controller.allowanceChoice
 
-const transactionDidExecute = async (transactionId: string|null) => {
+const transactionDidExecute = async (transactionId: string | null) => {
   emit("allowanceApproved", transactionId)
 }
 
 const visibleIndex = computed(() => {
   let result: number
-  switch(controller.allowanceChoice.value) {
+  switch (controller.allowanceChoice.value) {
     default:
     case "crypto":
       result = 0

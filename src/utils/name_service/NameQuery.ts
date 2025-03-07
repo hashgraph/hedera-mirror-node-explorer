@@ -8,22 +8,22 @@ import {NameRecord, NameService} from "@/utils/name_service/NameService";
 
 export class NameQuery {
 
-    public readonly entityId: Ref<string|null>
-    private readonly nameRecord = ref<NameRecord|null>(null)
-    private watchHandle: WatchStopHandle|null = null
+    public readonly entityId: Ref<string | null>
+    private readonly nameRecord = ref<NameRecord | null>(null)
+    private watchHandle: WatchStopHandle | null = null
 
     //
     // Public
     //
 
-    public constructor(entityId: Ref<string|null>) {
+    public constructor(entityId: Ref<string | null>) {
         this.entityId = entityId
     }
 
     public mount(): void {
         this.watchHandle = watch(
             [this.entityId, AppStorage.nameRecordChangeCounter],
-            this.entityIdDidChange, {immediate: true} )
+            this.entityIdDidChange, {immediate: true})
     }
 
     public unmount(): void {
@@ -37,7 +37,7 @@ export class NameQuery {
     public readonly name = computed(() => this.nameRecord.value?.name ?? null)
 
     public readonly providerName = computed(() => {
-        let result: string|null
+        let result: string | null
         const providerAlias = this.nameRecord.value?.providerAlias ?? null
         if (providerAlias !== null) {
             const p = NameService.instance.lookupProvider(providerAlias)
@@ -73,8 +73,8 @@ export class NameQuery {
     private readonly FRESH_DURATION = 24 * 3600 * 1000 // one day in milliseconds
     // private readonly FRESH_DURATION = 20 * 1000
 
-    private async refreshRecord(record: NameRecord): Promise<NameRecord|null> {
-        let result: NameRecord|null
+    private async refreshRecord(record: NameRecord): Promise<NameRecord | null> {
+        let result: NameRecord | null
 
         const network = routeManager.currentNetwork.value
 

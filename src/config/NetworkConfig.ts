@@ -69,7 +69,8 @@ export class SourcifySetup {
         public readonly repoURL: string,
         public readonly serverURL: string,
         public readonly chainID: number,
-    ) {}
+    ) {
+    }
 
     private static missingPropertyError(key: string): Error {
         throw new Error("Property " + key + " is missing")
@@ -138,27 +139,23 @@ export class NetworkEntry {
         public readonly displayName: string,
         public readonly mirrorNodeURL: string,
         public readonly ledgerID: string,
-
         // When set to 'true', this variable will enable connecting a wallet
         public readonly enableWallet: boolean,
         // When set to 'true', this variable will enable staking feature
         public readonly enableStaking: boolean,
         // When set to 'true', this variable will enable properties related to account/contract expiry
         public readonly enableExpiry: boolean,
-
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
-
         // The URL of the popular token index
-        public readonly popularTokenIndexURL: string|null,
-
+        public readonly popularTokenIndexURL: string | null,
         // The URL of the ERC20 contract index
-        public readonly erc20IndexURL: string|null,
-
+        public readonly erc20IndexURL: string | null,
         // The URL of the ERC721 contract index
-        public readonly erc721IndexURL: string|null,
+        public readonly erc721IndexURL: string | null,
         public readonly sourcifySetup: SourcifySetup | null
-    ) {}
+    ) {
+    }
 
     private static missingPropertyError(key: string): Error {
         throw new Error("Property " + key + " is missing")
@@ -248,7 +245,7 @@ export class NetworkConfig {
     }
 
     public static make(): NetworkConfig { // For unit testing
-        return NetworkConfig.parse({ })
+        return NetworkConfig.parse({})
     }
 
     public lookup(name: string): NetworkEntry | null {

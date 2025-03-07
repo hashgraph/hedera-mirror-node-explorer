@@ -36,7 +36,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
 
     private async appendNfts(nfts: Nft[], result: NftCollectionInfo[]) {
         for (const nft of nfts) {
-           await this.appendNft(nft, result)
+            await this.appendNft(nft, result)
         }
     }
 
@@ -52,7 +52,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
         if (lastCollection !== null && lastCollection.tokenId === nft.token_id) {
             lastCollection.serials.push(nft.serial_number)
         } else {
-           const info = await TokenInfoCache.instance.lookup(nft.token_id ?? '')
+            const info = await TokenInfoCache.instance.lookup(nft.token_id ?? '')
             result.push(new NftCollectionInfo(
                 nft.token_id ?? null,
                 info?.name ?? null,

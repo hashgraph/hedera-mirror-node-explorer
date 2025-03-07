@@ -94,8 +94,7 @@ describe("InfoTooltip.vue", () => {
             global: {
                 plugins: [router, Oruga]
             },
-            props: {
-            },
+            props: {},
         })
 
         await flushPromises()

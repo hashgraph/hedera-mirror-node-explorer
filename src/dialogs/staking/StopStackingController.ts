@@ -12,14 +12,14 @@ import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache.ts";
 
 export class StopStackingController extends TransactionController {
 
-    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions|null>
+    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions | null>
     private readonly stakedNodeAnalyzer: NodeAnalyzer
 
     //
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, public readonly accountId: Ref<string|null>) {
+    public constructor(showDialog: Ref<boolean>, public readonly accountId: Ref<string | null>) {
         super(showDialog)
         this.accountLookup = AccountByIdCache.instance.makeLookup(this.accountId)
         this.stakedNodeAnalyzer = new NodeAnalyzer(this.stakedNodeId)
@@ -47,7 +47,7 @@ export class StopStackingController extends TransactionController {
     }
 
 
-    protected async executeTransaction(): Promise<string|null> {
+    protected async executeTransaction(): Promise<string | null> {
         const result = await walletManager.changeStaking(null, null, null)
 
         if (this.accountId.value !== null) {

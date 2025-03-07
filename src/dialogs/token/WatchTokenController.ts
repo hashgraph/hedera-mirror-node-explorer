@@ -31,7 +31,7 @@ export class WatchTokenController extends TransactionController {
     }
 
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         await walletManager.watchToken(this.tokenId.value!)
         return Promise.resolve(null)
     }

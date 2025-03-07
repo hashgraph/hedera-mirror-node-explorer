@@ -97,7 +97,7 @@ describe("Transactions.vue", () => {
         const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply(200,  {
+        mock.onGet(matcher1).reply(200, {
             "transactions": [
                 SAMPLE_TRANSACTION,
                 SAMPLE_TRANSACTION,
@@ -147,7 +147,7 @@ describe("Transactions.vue", () => {
         const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
-        mock.onGet(matcher1).reply(200,  {
+        mock.onGet(matcher1).reply(200, {
             "transactions": [
                 SAMPLE_TRANSACTION,
                 SAMPLE_TRANSACTION,
