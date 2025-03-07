@@ -96,25 +96,24 @@ describe("Nodes.vue", () => {
             "Hosted by Hedera | East Coast, USA" +
             "6,000,000ℏ" + tooltipStake +
             "25.00%" + tooltipPercentage +
-            " min  max " +
-            "Rewarded:5,000,000ℏNot Rewarded:1,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
+            " min  max  " +
+            "Rewarded: 5,000,000ℏ Not Rewarded: 1,000,000ℏ Min: 1,000,000ℏ Max: 30,000,000ℏ" +
             "1%" + tooltipRewardRate +
             "1" +
             "Hosted by Hedera | East Coast, USA" +
             "9,000,000ℏ" + tooltipStake +
             "37.50%" +
             tooltipPercentage +
-            " min  max " +
-            "Rewarded:7,000,000ℏNot Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
+            " min  max  " +
+            "Rewarded: 7,000,000ℏ Not Rewarded: 2,000,000ℏ Min: 1,000,000ℏ Max: 30,000,000ℏ" +
             "2%" + tooltipRewardRate +
             "2" +
             "Hosted by Hedera | Central, USA" +
             "9,000,000ℏ" + tooltipStake +
             "37.50%" +
             tooltipPercentage +
-            " min  max " +
-            "Rewarded:7,000,000ℏ" +
-            "Not Rewarded:2,000,000ℏMin:1,000,000ℏMax:30,000,000ℏ" +
+            " min  max  " +
+            "Rewarded: 7,000,000ℏ Not Rewarded: 2,000,000ℏ Min: 1,000,000ℏ Max: 30,000,000ℏ" +
             "3%" +
             tooltipRewardRate
         )

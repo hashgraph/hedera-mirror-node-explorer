@@ -187,12 +187,12 @@ describe("Transactions.vue", () => {
         expect(select.exists()).toBe(true)
 
         expect(select.text()).toBe(
-            "5 per page" +
-            "10 per page" +
-            "15 per page" +
-            "20 per page" +
-            "50 per pag" +
-            "e100 per page")
+            "5 per page  " +
+            "10 per page  " +
+            "15 per page  " +
+            "20 per page  " +
+            "50 per page  " +
+            "100 per page")
 
         mock.restore()
         wrapper.unmount()

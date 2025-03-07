@@ -96,11 +96,11 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         expect(wrapper.get("#nameValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.get("#symbolValue").text()).toBe("23423")
-        expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin Key  None Token is immutable")
         expect(wrapper.get("#memoValue").text()).toBe("Predator")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
         expect(wrapper.get("#autoRenewPeriodValue").text()).toBe("90 days")
@@ -117,7 +117,7 @@ describe("TokenDetails.vue", () => {
         expect(wrapper.get("#maxSupplyValue").text()).toBe("Infinite")
         expect(wrapper.get("#decimalsValue").text()).toBe("0")
         expect(wrapper.get("#evmAddress").text()).toMatch(
-            RegExp("^EVM Address0x0000000000000000000000000000000001c49eecCopy"))
+            RegExp("^EVM Address 0x0000000000000000000000000000000001c49eec Copy"))
 
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
 
@@ -184,12 +184,12 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.find("#adminKey").text()).toBe(
-            "Admin Key0xc1a8c8c5b446ce053b6eff4fe4f0192f76535ea9ed6b2b91981177ba237f4b5dCopyED25519"
+            "Admin Key 0xc1a8c8c5b446ce053b6eff4fe4f0192f76535ea9ed6b2b91981177ba237f4b5d Copy ED25519"
         )
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -266,7 +266,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
         expect(wrapper.get("#nameValue").text()).toBe("Ħ Frens Kingdom Dude")
         expect(wrapper.get("#symbolValue").text()).toBe("ĦFRENSKINGDOM")
         expect(wrapper.text()).toMatch("NFTs")
@@ -312,7 +312,7 @@ describe("TokenDetails.vue", () => {
             "api/v1/contracts/" + SAMPLE_TOKEN.token_id + "/results",
         ])
 
-        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
         expect(wrapper.get("#nameValue").text()).toBe("QmVGABnvpbPwLcfG4iuW2JSzY8MLkALhd54bdPAbJxoEkB")
         expect(wrapper.get("#symbolValue").text()).toBe("23423")
         expect(wrapper.text()).toMatch("Balances")
@@ -408,17 +408,17 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
-        expect(wrapper.find("#adminKey").text()).toBe("Admin Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#kycKey").text()).toBe("KYC Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#supplyKey").text()).toBe("Supply Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#pauseKey").text()).toBe("Pause Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
-        expect(wrapper.find("#metadataKey").text()).toBe("Metadata Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
+        expect(wrapper.find("#metadataKey").text()).toBe("Metadata Key 0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2b Copy ED25519")
 
         mock.restore()
         wrapper.unmount()
@@ -479,17 +479,17 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
-        expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
-        expect(wrapper.find("#kycKey").text()).toBe("KYC KeyNoneKYC is not required")
-        expect(wrapper.find("#freezeKey").text()).toBe("Freeze KeyNoneToken cannot be frozen")
-        expect(wrapper.find("#wipeKey").text()).toBe("Wipe KeyNoneToken cannot be wiped")
-        expect(wrapper.find("#supplyKey").text()).toBe("Supply KeyNoneToken cannot be minted or burnt")
-        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule KeyNoneCustom fee schedule is immutable")
-        expect(wrapper.find("#pauseKey").text()).toBe("Pause KeyNoneToken cannot be paused")
-        expect(wrapper.find("#metadataKey").text()).toBe("Metadata KeyNoneToken metadata is immutable")
+        expect(wrapper.find("#adminKey").text()).toBe("Admin Key  None Token is immutable")
+        expect(wrapper.find("#kycKey").text()).toBe("KYC Key  None KYC is not required")
+        expect(wrapper.find("#freezeKey").text()).toBe("Freeze Key  None Token cannot be frozen")
+        expect(wrapper.find("#wipeKey").text()).toBe("Wipe Key  None Token cannot be wiped")
+        expect(wrapper.find("#supplyKey").text()).toBe("Supply Key  None Token cannot be minted or burnt")
+        expect(wrapper.find("#feeScheduleKey").text()).toBe("Fee Schedule Key  None Custom fee schedule is immutable")
+        expect(wrapper.find("#pauseKey").text()).toBe("Pause Key  None Token cannot be paused")
+        expect(wrapper.find("#metadataKey").text()).toBe("Metadata Key  None Token metadata is immutable")
 
         mock.restore()
         wrapper.unmount()
@@ -508,7 +508,7 @@ describe("TokenDetails.vue", () => {
         const testTokenId = "0.0.91961"
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name
         const testTokenSymbol = SAMPLE_TOKEN_WITHOUT_KEYS.symbol
-        const testTokenIdWithChecksum = "0.0.91961Copy-mkkua"
+        const testTokenIdWithChecksum = "0.0.91961 Copy -mkkua"
         const testTokenEVMAddress = "0x0000000000000000000000000000000000016739"
         const matcher1 = "/api/v1/tokens/" + testTokenId
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITHOUT_KEYS);
@@ -551,8 +551,8 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toContain(
             "Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')'
-            + 'Token ID' + testTokenIdWithChecksum
-            + 'EVM Address' + testTokenEVMAddress + "Copy")
+            + ' Token ID ' + testTokenIdWithChecksum
+            + ' EVM Address ' + testTokenEVMAddress + " Copy")
         expect(wrapper.text()).toMatch("Token is deleted")
 
         mock.restore()
@@ -611,7 +611,7 @@ describe("TokenDetails.vue", () => {
             "api/v1/tokens/" + SAMPLE_TOKEN.token_id + "/balances",
         ])
 
-        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Fungible Token" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenFeesSection)
         expect(customFees.exists()).toBe(true)
@@ -694,7 +694,7 @@ describe("TokenDetails.vue", () => {
             "api/v1/tokens/" + SAMPLE_NFTS.nfts[2].token_id + "/nfts/342",
         ])
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenFeesSection)
         expect(customFees.exists()).toBe(true)
@@ -773,7 +773,7 @@ describe("TokenDetails.vue", () => {
 
         expect(wrapper.text()).toContain(
             "Token DetailsToken is deletedNFT Collection" + testTokenName
-            + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
+            + ' (' + testTokenSymbol + ')' + ' Token ID ' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenFeesSection)
         expect(customFees.exists()).toBe(false)

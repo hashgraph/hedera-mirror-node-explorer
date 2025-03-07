@@ -122,7 +122,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CRYPTO TRANSFER")
         expect(wrapper.get("#consensusAtValue").text()).toBe("5:12:31.6676 AMFeb 28, 2022, UTC") // UTC because of HMSF.forceUTC
-        expect(wrapper.get("#transactionHashValue").text()).toBe("0xa012961232ed7d2842836e95f7e9c4356fdfe2de08199091701a969c1d1fd93671d3078ee83b28fb460a88b4cbd8ecd2Copy")
+        expect(wrapper.get("#transactionHashValue").text()).toBe("0xa012961232ed7d2842836e95f7e9c4356fdfe2de08199091701a969c1d1fd93671d3078ee83b28fb460a88b4cbd8ecd2 Copy")
         expect(wrapper.get("#blockNumberValue").text()).toBe("25175998")
         expect(wrapper.get("#chargedFeeValue").text()).toBe("0.00470065ℏ$0.00116")
         expect(wrapper.get("#maxFeeName").text()).toBe("Max Fee")
@@ -145,7 +145,7 @@ describe("TransactionDetails.vue", () => {
             "0.0.980.00448037ℏ$0.00110Hedera fee collection account")
 
         expect(wrapper.findComponent(TokenTransferGraph).text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.29624024-123423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.29624024-123423\n\n" +
             "0.0.29693911123423Transfer")
 
         expect(wrapper.findComponent(NftTransferGraph).text()).toBe("")
@@ -268,9 +268,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#evm-hashValue").text()).toBe("0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2dCopy")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
+        expect(wrapper.get("#evm-hashValue").text()).toBe("0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d Copy")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4 Copy (0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783 Copy (0.0.1062787)")
         expect(wrapper.find("#typeValue").exists()).toBe(false)
         // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy")
         expect(wrapper.get("#errorMessageValue").text()).toBe("None")
@@ -387,9 +387,9 @@ describe("TransactionDetails.vue", () => {
         expect(wrapper.findComponent(ContractResult).exists()).toBe(true)
         expect(wrapper.findComponent(ContractResult).text()).toMatch(RegExp("^Contract Result"))
         expect(wrapper.get("#resultValue").text()).toBe("SUCCESS")
-        expect(wrapper.get("#evm-hashValue").text()).toBe("0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2dCopy")
-        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4Copy(0.0.846260)")
-        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783Copy(0.0.1062787)")
+        expect(wrapper.get("#evm-hashValue").text()).toBe("0xc43db9eacf72c91629ac03088535dd9ae41059a2c1eefce3a528e04e7e908d2d Copy")
+        expect(wrapper.get("#fromValue").text()).toBe("0x00000000000000000000000000000000000ce9b4 Copy (0.0.846260)")
+        expect(wrapper.get("#toValue").text()).toBe("0x0000000000000000000000000000000000103783 Copy (0.0.1062787)")
         expect(wrapper.find("#typeValue").exists()).toBe(false)
         // expect(wrapper.get("#functionParametersValue").text()).toBe("18cb afe5 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0017 4876 e800 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 001b 2702 b2a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 00a0 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c e9b4 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0183 1e10 602d 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0003 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000c ba44 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 000d 1ea6 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0000 0010 3708Copy")
         // expect(wrapper.get("#errorMessageValue").text()).toBe("None")
@@ -658,7 +658,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("Transaction " + TransactionID.normalizeForDisplay(transaction.transaction_id)))
         expect(wrapper.get("#transactionTypeValue").text()).toBe("CONTRACT CALL")
-        expect(wrapper.get("#entityId").text()).toBe("Contract IDHedera Token Service System Contract")
+        expect(wrapper.get("#entityId").text()).toBe("Contract ID Hedera Token Service System Contract")
 
         wrapper.unmount()
         await flushPromises()
@@ -1057,7 +1057,7 @@ describe("TransactionDetails.vue", () => {
 
         expect(wrapper.get("#transactionTypeValue").text()).toBe("TOKEN ASSOCIATE")
         expect(wrapper.get("#consensusAtValue").text()).toBe("6:51:52.1505 PMDec 21, 2022, UTC") // UTC because of HMSF.forceUTC
-        expect(wrapper.get("#transactionHashValue").text()).toBe("0x4786079999df169a38349249d3c9a5489a83f1c7c51b6b1edeb81347a496d93183e24a43ad03372ebc501528a6032debCopy")
+        expect(wrapper.get("#transactionHashValue").text()).toBe("0x4786079999df169a38349249d3c9a5489a83f1c7c51b6b1edeb81347a496d93183e24a43ad03372ebc501528a6032deb Copy")
 
         expect(wrapper.get("#associatedTokenIdValue").text()).toBe("0.0.34332104HSuite0.0.49292859TokenA7")
         expect(wrapper.get("#entityIdValue").text()).toBe("0.0.642949")

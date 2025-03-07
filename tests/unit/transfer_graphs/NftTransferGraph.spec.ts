@@ -114,7 +114,7 @@ describe("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
+            "NFT Transfers  ACCOUNT  NFT  ACCOUNT 0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601 #602\n\n" +
             "0.0.101Transfer0.0.100\n\n" +
             "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #501\n\n" +
@@ -145,7 +145,7 @@ describe("NftTransferGraph.vue", () => {
         await flushPromises()
 
         expect(wrapper2.text()).toBe(
-            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
+            "NFT Transfers  ACCOUNT  NFT  ACCOUNT 0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601 #602\n\n" +
             "0.0.1010.0.100\n\n" +
             "0.0.748384" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #501\n\n" +
@@ -198,7 +198,7 @@ describe("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT Transfers ACCOUNTNFTACCOUNTMINT\n\n" +
+            "NFT Transfers  ACCOUNT  NFT  ACCOUNT MINT\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "0.0.100")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
@@ -251,7 +251,7 @@ describe("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT Transfers ACCOUNTNFTACCOUNTMINT\n\n" +
+            "NFT Transfers  ACCOUNT  NFT  ACCOUNT MINT\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "0.0.100MINT\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601\n\n" +
@@ -298,7 +298,7 @@ describe("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
+            "NFT Transfers  ACCOUNT  NFT  ACCOUNT 0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "BURN")
         expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.symbol)
@@ -351,7 +351,7 @@ describe("NftTransferGraph.vue", () => {
          */
 
         expect(wrapper.text()).toBe(
-            "NFT Transfers ACCOUNTNFTACCOUNT0.0.100\n\n" +
+            "NFT Transfers  ACCOUNT  NFT  ACCOUNT 0.0.100\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #604\n\n" +
             "BURN0.0.101\n\n" +
             "0.0.748383" + SAMPLE_NONFUNGIBLE_DUDE.symbol + " #601\n\n" +

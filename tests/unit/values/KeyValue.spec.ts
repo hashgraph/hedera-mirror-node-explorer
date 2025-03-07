@@ -21,7 +21,7 @@ describe("KeyValue.vue", () => {
             },
         });
 
-        expect(wrapper.text()).toBe("0x000102030405060708090A0B0C0D0E0FCopy")
+        expect(wrapper.text()).toBe("0x000102030405060708090A0B0C0D0E0F Copy")
 
         wrapper.unmount()
     });
@@ -74,7 +74,7 @@ describe("KeyValue.vue", () => {
             },
         });
 
-        expect(wrapper.text()).toBe("NoneThis should be displayed below None")
+        expect(wrapper.text()).toBe("None This should be displayed below None")
 
         wrapper.unmount()
     });

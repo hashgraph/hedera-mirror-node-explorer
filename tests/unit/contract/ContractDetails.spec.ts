@@ -124,7 +124,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
-        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38CopyED25519")
+        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38 Copy ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -137,7 +137,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#nonceValue").text()).toBe("1")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cf Copy")
         expect(wrapper.get("#bytecode").text()).toContain(
             "6080 6040 5236 606d 5730 73ff ffff ffff ffff ffff ffff ffff ffff ffff ffff ff16 3373 ffff ffff ffff ffff " +
             "ffff ffff ffff ffff ffff ffff 167f ddf2 52ad 1be2 c89b 69c2 b068 fc37 8daa 952b a7f1 63c4 a116 28f5 5a4d " +
@@ -146,18 +146,18 @@ describe("ContractDetails.vue", () => {
             "7358 2212 20b9 4efc a641 a0cf 62b2 bd50 5f79 fe4b e165 c582 520b c615 e5c5 fa34 0215 6eaf d864 736f 6c63 " +
             "4300 0804 0033")
         expect(wrapper.get("#assembly-code").text()).toContain(
-            "Assembly Bytecode" +
+            "Assembly Bytecode " +
             "Show hexa opcode" +
-            "0x0000:PUSH10x800x0002:PUSH10x400x0004:MSTORE0x0005:CALLDATASIZE0x0006:PUSH10x6d0x0008:JUMPI0x0009:ADDRESS" +
-            "0x000a:PUSH200xffffffffffffffffffffffffffffffffffffffff0x001f:AND0x0020:CALLER0x0021:PUSH200xffffffffffffffffffffffffffffffffffffffff" +
-            "0x0036:AND0x0037:PUSH320xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef0x0058:CALLVALUE0x0059:PUSH10x400x005b:MLOAD" +
-            "0x005c:PUSH10x630x005e:SWAP20x005f:SWAP10x0060:PUSH10x7f0x0062:JUMP0x0063:JUMPDEST0x0064:PUSH10x400x0066:MLOAD0x0067:DUP10x0068:SWAP2" +
-            "0x0069:SUB0x006a:SWAP10x006b:LOG30x006c:STOP0x006d:JUMPDEST0x006e:PUSH10x000x0070:DUP10x0071:REVERT0x0072:JUMPDEST0x0073:PUSH10x79" +
-            "0x0075:DUP20x0076:PUSH10x980x0078:JUMP0x0079:JUMPDEST0x007a:DUP30x007b:MSTORE0x007c:POP0x007d:POP0x007e:JUMP0x007f:JUMPDEST0x0080:PUSH10x00" +
-            "0x0082:PUSH10x200x0084:DUP30x0085:ADD0x0086:SWAP10x0087:POP0x0088:PUSH10x920x008a:PUSH10x000x008c:DUP40x008d:ADD0x008e:DUP50x008f:PUSH10x72" +
-            "0x0091:JUMP0x0092:JUMPDEST0x0093:SWAP30x0094:SWAP20x0095:POP0x0096:POP0x0097:JUMP0x0098:JUMPDEST0x0099:PUSH10x000x009b:DUP20x009c:SWAP1" +
-            "0x009d:POP0x009e:SWAP20x009f:SWAP10x00a0:POP0x00a1:JUMP0x00a2:INVALID")
-        expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
+            "0x0000: PUSH10x800x0002: PUSH10x400x0004: MSTORE0x0005: CALLDATASIZE0x0006: PUSH10x6d0x0008: JUMPI0x0009: ADDRESS" +
+            "0x000a: PUSH200xffffffffffffffffffffffffffffffffffffffff0x001f: AND0x0020: CALLER0x0021: PUSH200xffffffffffffffffffffffffffffffffffffffff" +
+            "0x0036: AND0x0037: PUSH320xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef0x0058: CALLVALUE0x0059: PUSH10x400x005b: MLOAD" +
+            "0x005c: PUSH10x630x005e: SWAP20x005f: SWAP10x0060: PUSH10x7f0x0062: JUMP0x0063: JUMPDEST0x0064: PUSH10x400x0066: MLOAD0x0067: DUP10x0068: SWAP2" +
+            "0x0069: SUB0x006a: SWAP10x006b: LOG30x006c: STOP0x006d: JUMPDEST0x006e: PUSH10x000x0070: DUP10x0071: REVERT0x0072: JUMPDEST0x0073: PUSH10x79" +
+            "0x0075: DUP20x0076: PUSH10x980x0078: JUMP0x0079: JUMPDEST0x007a: DUP30x007b: MSTORE0x007c: POP0x007d: POP0x007e: JUMP0x007f: JUMPDEST0x0080: PUSH10x00" +
+            "0x0082: PUSH10x200x0084: DUP30x0085: ADD0x0086: SWAP10x0087: POP0x0088: PUSH10x920x008a: PUSH10x000x008c: DUP40x008d: ADD0x008e: DUP50x008f: PUSH10x72" +
+            "0x0091: JUMP0x0092: JUMPDEST0x0093: SWAP30x0094: SWAP20x0095: POP0x0096: POP0x0097: JUMP0x0098: JUMPDEST0x0099: PUSH10x000x009b: DUP20x009c: SWAP1" +
+            "0x009d: POP0x009e: SWAP20x009f: SWAP10x00a0: POP0x00a1: JUMP0x00a2: INVALID")
+        expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version 0.8.4")
 
         // None of the elements related to contract verification should be present in this context
         expect(wrapper.find('#verify-button').exists()).toBe(false)
@@ -255,7 +255,7 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.text()).toMatch(RegExp("Contract " + " Associated account " + "Contract ID " + SAMPLE_CONTRACT.contract_id))
         expect(wrapper.get("#balanceValue").text()).toContain("23.42647909ℏ$5.76369")
-        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38CopyED25519")
+        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38 Copy ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#createTransactionValue").text()).toBe(TransactionID.normalizeForDisplay(SAMPLE_TRANSACTION.transaction_id))
         expect(wrapper.get("#expiresAtValue").text()).toBe("None")
@@ -268,7 +268,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#validUntilValue").text()).toBe("None")
         expect(wrapper.get("#nonceValue").text()).toBe("1")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cf Copy")
         expect(wrapper.get("#bytecode").text()).toContain(
             "6080 6040 5236 606d 5730 73ff ffff ffff ffff ffff ffff ffff ffff ffff ffff ff16 3373 ffff ffff ffff ffff " +
             "ffff ffff ffff ffff ffff ffff 167f ddf2 52ad 1be2 c89b 69c2 b068 fc37 8daa 952b a7f1 63c4 a116 28f5 5a4d " +
@@ -277,18 +277,18 @@ describe("ContractDetails.vue", () => {
             "7358 2212 20b9 4efc a641 a0cf 62b2 bd50 5f79 fe4b e165 c582 520b c615 e5c5 fa34 0215 6eaf d864 736f 6c63 " +
             "4300 0804 0033")
         expect(wrapper.get("#assembly-code").text()).toContain(
-            "Assembly Bytecode" +
+            "Assembly Bytecode " +
             "Show hexa opcode" +
-            "0x0000:PUSH10x800x0002:PUSH10x400x0004:MSTORE0x0005:CALLDATASIZE0x0006:PUSH10x6d0x0008:JUMPI0x0009:ADDRESS" +
-            "0x000a:PUSH200xffffffffffffffffffffffffffffffffffffffff0x001f:AND0x0020:CALLER0x0021:PUSH200xffffffffffffffffffffffffffffffffffffffff" +
-            "0x0036:AND0x0037:PUSH320xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef0x0058:CALLVALUE0x0059:PUSH10x400x005b:MLOAD" +
-            "0x005c:PUSH10x630x005e:SWAP20x005f:SWAP10x0060:PUSH10x7f0x0062:JUMP0x0063:JUMPDEST0x0064:PUSH10x400x0066:MLOAD0x0067:DUP10x0068:SWAP2" +
-            "0x0069:SUB0x006a:SWAP10x006b:LOG30x006c:STOP0x006d:JUMPDEST0x006e:PUSH10x000x0070:DUP10x0071:REVERT0x0072:JUMPDEST0x0073:PUSH10x79" +
-            "0x0075:DUP20x0076:PUSH10x980x0078:JUMP0x0079:JUMPDEST0x007a:DUP30x007b:MSTORE0x007c:POP0x007d:POP0x007e:JUMP0x007f:JUMPDEST0x0080:PUSH10x00" +
-            "0x0082:PUSH10x200x0084:DUP30x0085:ADD0x0086:SWAP10x0087:POP0x0088:PUSH10x920x008a:PUSH10x000x008c:DUP40x008d:ADD0x008e:DUP50x008f:PUSH10x72" +
-            "0x0091:JUMP0x0092:JUMPDEST0x0093:SWAP30x0094:SWAP20x0095:POP0x0096:POP0x0097:JUMP0x0098:JUMPDEST0x0099:PUSH10x000x009b:DUP20x009c:SWAP1" +
-            "0x009d:POP0x009e:SWAP20x009f:SWAP10x00a0:POP0x00a1:JUMP0x00a2:INVALID")
-        expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version0.8.4")
+            "0x0000: PUSH10x800x0002: PUSH10x400x0004: MSTORE0x0005: CALLDATASIZE0x0006: PUSH10x6d0x0008: JUMPI0x0009: ADDRESS" +
+            "0x000a: PUSH200xffffffffffffffffffffffffffffffffffffffff0x001f: AND0x0020: CALLER0x0021: PUSH200xffffffffffffffffffffffffffffffffffffffff" +
+            "0x0036: AND0x0037: PUSH320xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef0x0058: CALLVALUE0x0059: PUSH10x400x005b: MLOAD" +
+            "0x005c: PUSH10x630x005e: SWAP20x005f: SWAP10x0060: PUSH10x7f0x0062: JUMP0x0063: JUMPDEST0x0064: PUSH10x400x0066: MLOAD0x0067: DUP10x0068: SWAP2" +
+            "0x0069: SUB0x006a: SWAP10x006b: LOG30x006c: STOP0x006d: JUMPDEST0x006e: PUSH10x000x0070: DUP10x0071: REVERT0x0072: JUMPDEST0x0073: PUSH10x79" +
+            "0x0075: DUP20x0076: PUSH10x980x0078: JUMP0x0079: JUMPDEST0x007a: DUP30x007b: MSTORE0x007c: POP0x007d: POP0x007e: JUMP0x007f: JUMPDEST0x0080: PUSH10x00" +
+            "0x0082: PUSH10x200x0084: DUP30x0085: ADD0x0086: SWAP10x0087: POP0x0088: PUSH10x920x008a: PUSH10x000x008c: DUP40x008d: ADD0x008e: DUP50x008f: PUSH10x72" +
+            "0x0091: JUMP0x0092: JUMPDEST0x0093: SWAP30x0094: SWAP20x0095: POP0x0096: POP0x0097: JUMP0x0098: JUMPDEST0x0099: PUSH10x000x009b: DUP20x009c: SWAP1" +
+            "0x009d: POP0x009e: SWAP20x009f: SWAP10x00a0: POP0x00a1: JUMP0x00a2: INVALID")
+        expect(wrapper.get("#solcVersion").text()).toBe("Solidity Compiler Version 0.8.4")
 
         // None of the elements related to contract verification should be present in this context
         expect(wrapper.find('#verify-button').exists()).toBe(false)
@@ -484,11 +484,11 @@ describe("ContractDetails.vue", () => {
 
         expect(wrapper.findComponent(NotificationBanner).exists()).toBe(false)
 
-        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38CopyED25519")
+        expect(wrapper.get("#keyValue").text()).toBe("0x421050820e1485acdd59726088e0e4a2130ebbbb70009f640ad95c78dd5a7b38 Copy ED25519")
         expect(wrapper.get("#memoValue").text()).toBe("Mirror Node acceptance test: 2022-03-07T15:09:15.228564328Z Create contract")
         expect(wrapper.get("#autoRenewAccountValue").text()).toBe("0.0.730632")
         expect(wrapper.get("#fileValue").text()).toBe("0.0.749773")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000b70cf Copy")
 
         const contract2 = SAMPLE_CONTRACT_DUDE
         matcherAirdrop = "api/v1/accounts/" + contract2.contract_id + "/airdrops/pending"
@@ -545,7 +545,7 @@ describe("ContractDetails.vue", () => {
         expect(wrapper.get("#memoValue").text()).toBe("None")
         expect(wrapper.find("#nonce").exists()).toBe(false)
         expect(wrapper.get("#fileValue").text()).toBe("0.0.803267")
-        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000c41dfCopy")
+        expect(wrapper.get("#evmAddress").text()).toBe("EVM Address 0x00000000000000000000000000000000000c41df Copy")
 
         mock.restore()
         wrapper.unmount()

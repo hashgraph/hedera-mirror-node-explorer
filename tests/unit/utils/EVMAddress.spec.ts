@@ -35,7 +35,7 @@ describe("EVMAddress", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(`${evmAddress}Copy(${entityId})`)
+        expect(wrapper.text()).toBe(`${evmAddress} Copy (${entityId})`)
 
         wrapper.unmount()
         await flushPromises()
@@ -60,7 +60,7 @@ describe("EVMAddress", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(`${compactAddress}Copy(${entityId})`)
+        expect(wrapper.text()).toBe(`${compactAddress} Copy (${entityId})`)
 
         wrapper.unmount()
         await flushPromises()
@@ -84,7 +84,7 @@ describe("EVMAddress", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(`${evmAddress}Copy(${entityId})`)
+        expect(wrapper.text()).toBe(`${evmAddress} Copy (${entityId})`)
 
         wrapper.unmount()
         await flushPromises()
@@ -105,7 +105,7 @@ describe("EVMAddress", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(`${evmAddress}Copy(${entityId})`)
+        expect(wrapper.text()).toBe(`${evmAddress} Copy (${entityId})`)
 
         wrapper.unmount()
         await flushPromises()
@@ -127,7 +127,7 @@ describe("EVMAddress", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(`${evmAddress}Copy`)
+        expect(wrapper.text()).toBe(`${evmAddress} Copy`)
 
         wrapper.unmount()
         await flushPromises()
@@ -151,7 +151,7 @@ describe("EVMAddress", () => {
         });
         await flushPromises()
 
-        expect(wrapper.text()).toBe(`${systemContractAddress}Copy(${systemContractLabel})`)
+        expect(wrapper.text()).toBe(`${systemContractAddress} Copy (${systemContractLabel})`)
 
         wrapper.unmount()
         await flushPromises()

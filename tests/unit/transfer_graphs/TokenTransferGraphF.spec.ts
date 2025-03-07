@@ -70,7 +70,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNTMINT-1023423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT MINT-1023423\n\n" +
             "0.0.2001023423")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
@@ -104,7 +104,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-1023423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-1023423\n\n" +
             "0.0.2001023423Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
@@ -125,7 +125,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper2.text())
 
         expect(wrapper2.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-10\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-10\n\n" +
             "0.0.20010")
         expect(wrapper2.text()).not.toMatch(SAMPLE_TOKEN.name)
 
@@ -160,7 +160,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-1023423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-1023423\n\n" +
             "0.0.200223423Transfer\n\n" +
             "0.0.201823423Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
@@ -195,7 +195,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-723423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-723423\n\n" +
             "BURN10234230.0.101-323423")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
@@ -230,7 +230,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-723423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-723423\n\n" +
             "0.0.2001023423Transfer0.0.101-323423")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
 
@@ -266,7 +266,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toBe(
-            "Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-723423\n\n" +
+            "Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-723423\n\n" +
             "0.0.200223423Transfer0.0.101-323423\n\n" +
             "0.0.201823423Transfer")
         expect(wrapper.text()).toMatch(SAMPLE_TOKEN.symbol)
@@ -310,7 +310,7 @@ describe("TokenTransferGraphF.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        expect(wrapper.text()).toBe("Token Transfers ACCOUNTAMOUNTACCOUNTAMOUNT0.0.100-723423\n\n" +
+        expect(wrapper.text()).toBe("Token Transfers  ACCOUNT  AMOUNT  ACCOUNT  AMOUNT 0.0.100-723423\n\n" +
             "0.0.200223423Transfer0.0.101-323423\n\n" +
             "0.0.201823423Transfer0.0.100-0.0623423 DUDE\n\n" +
             "0.0.2000.0623423 DUDETransfer")

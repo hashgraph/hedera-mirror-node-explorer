@@ -38,13 +38,13 @@ describe("OpcodeValue.vue", () => {
             operand: ['4e', '48', '7b', '71']
         }
         const displayWithHexaOpcode =
-            "0x0dc2" + ":" +
-            "63" + "-" +
+            "0x0dc2" + ": " +
+            "63" + " - " +
             "PUSH4" +
             "0x4e487b71"
 
         const displayWithoutHexaOpcode =
-            "0x0dc2" + ":" +
+            "0x0dc2" + ": " +
             "PUSH4" +
             "0x4e487b71"
 
@@ -93,15 +93,15 @@ describe("OpcodeValue.vue", () => {
         }
 
         const displayWithHexaOpcode =
-            "0x0dc2" + ":" +
-            "73" + "-" +
+            "0x0dc2" + ": " +
+            "73" + " - " +
             "PUSH20" +
             SAMPLE_CONTRACT.evm_address +
             "//" +
             SAMPLE_CONTRACT.contract_id
 
         const displayWithoutHexaOpcode =
-            "0x0dc2" + ":" +
+            "0x0dc2" + ": " +
             "PUSH20" +
             SAMPLE_CONTRACT.evm_address +
             "//" +
@@ -157,15 +157,15 @@ describe("OpcodeValue.vue", () => {
 
         const displayWithHexaOpcode =
             "0x0dc2" + ":" +
-            "73" + "-" +
-            "PUSH20" +
+            " 73 " + "-" +
+            " PUSH20" +
             SAMPLE_ACCOUNT.evm_address +
             "//" +
             SAMPLE_ACCOUNT.account
 
         const displayWithoutHexaOpcode =
             "0x0dc2" + ":" +
-            "PUSH20" +
+            " PUSH20" +
             SAMPLE_ACCOUNT.evm_address +
             "//" +
             SAMPLE_ACCOUNT.account
