@@ -4,48 +4,26 @@
 
 Visual Explorer for the Hiero DLT.
 
-## Project setup
-
-```shell
-npm install
-```
-
-## Build
+### Project setup
+`npm install`
 
 ### Compile and hot-reload for development
-
-```shell
-npm run dev
-```
+`npm run dev`
 
 ### Compile and minify for production
-
-```shell
-npm run build
-```
+`npm run build`
 
 ### Lint files (find and fix problems)
+`npm run lint`
 
-```shell
-npm run lint
-```
+### Run unit tests
+`npm run test:unit`
 
-## Test
+### Run end-to-end tests interactively
+`npm run test:e2e:dev`
 
-### Run unit tests (based on Jest)
-
-```shell
-npm run test:unit
-```
-
-### Run end-to-end tests (based on Cypress)
-
-```shell
-# Run the tests interactively
-npm run test:e2e:dev 
-# Or run the tests in headless browser mode
-npm run test:e2e
-```
+### Run end-to-end tests in headless browser mode
+`npm run test:e2e`
 
 ## Configuration
 
@@ -58,23 +36,21 @@ Details for these configuration files can be found in [CONFIGURATION.md](https:/
 
 ## Run in Docker
 
-```shell
-# Build the Docker image locally
-npm run docker:build
+### Build the Docker image (skip to use pre-built image)
+`npm run docker:build`
 
-# Copy and adjust configuration of Hiero networks as needed
-cp networks-config-http-example.json networks-config.json
+### Copy and adjust configuration of Hiero networks as needed
+`cp networks-config-http-example.json networks-config.json`
 
-# Start the Docker container
-# (if not built locally, this will fetch a pre-built image from Google Container Registry)
-npm run docker:start
-open http://127.0.0.1:8080
+### Start the Docker container (fetches a pre-built image if not built locally)
+`npm run docker:start`
 
-# Stop the Docker container
-npm run docker:stop
+### Launch Explorer
+`open http://localhost:8080`
 
-# then open http://localhost:8080 in your web browser
-```
+### Stop the Docker container
+`npm run docker:stop`
+
 
 ## Run in Kubernetes
 
@@ -82,9 +58,7 @@ To run in [Kubernetes](https://kubernetes.io) the hiero-explorer [Helm](https://
 obtain access to a Kubernetes cluster running version 1.23 or greater. [Minikube](https://minikube.sigs.k8s.io/docs/)
 can be used for a local Kubernetes cluster.
 
-```shell
-helm upgrade --install hiero-explorer chart/
-```
+`helm upgrade --install hiero-explorer chart/`
 
 ### Configure custom networks 
 
@@ -106,36 +80,21 @@ An example:
   ]
 ```
 
-## Run local sourcify instance (for smart contract verification)
+## Testing smart contract verification with a local sourcify server
 
-This set-up uses an nginx reverse proxy in front of the 3 sourcify services (ui, server, repository) in order to
-support HTTPS. The SSL set-up is based on a self-signed certificate obtained per the instructions at:
-https://letsencrypt.org/docs/certificates-for-localhost/
+The default sourcify configuration in `networks-config.json` allows the explorer to contact a local installation of sourcify for verifying contracts.
+Note that the production sourcify server will not accept verification requests from an explorer running on localhost.
 
-The design of the repository (itself based on an nginx reverse proxy) is such that it requires to be on a distinct host,
-so it cannot be accessed by localhost like ui and server. To this effect you need to define a hostname locally (see below)
+Use the following commands to use sourcify locally:
 
-```shell
-# Define the domain repository.local` used by the repository
-bash -c 'echo "127.0.0.1       repository.local" >> /etc/hosts'
+`npm run sourcify:setup`: Check environment set-up for running sourcify locally
 
-# Start sourcify services
-# in sourcify-setup directory do:
-docker-compose up -d
+`npm run sourcify:start`: Start sourcify service. This should open a page saying that the server is alive.
 
-# Invoke the server API once to make sure your browser accepts the self-signed certificate
-open https://localhost/server/chains
+`npm run sourcify:stop`: Stop sourcify service
 
-# To open the sourcify UI
-open https://localhost
-
-# To open the sourcify repository UI
-open https://repository.local
-
-# Stop sourcify services
-# in sourcify-setup directory do:
-docker-compose down
-```
+Please see
+[sourcify-setup/README.md](https://github.com/hashgraph/hedera-mirror-node-explorer/blob/main/sourcify-setup/README.md) for more details. 
 
 ## Contributing
 
