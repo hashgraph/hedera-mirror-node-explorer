@@ -394,13 +394,67 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
     let result = r.transactions ?? []
     // let i = 1
     while (r.links?.next && result.length < limit) {
-        // console.log("drain iteration: " + i);
-        // i += 1
+        // console.log(`drainTransactions (iteration ${i++})`)
+        // console.log(`  - limit:${limit}`)
+        // console.log(`  - result.length:${result.length}`)
+        // console.log(`  - r.links.next:${r.links.next}`)
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions)
         }
         r = ar.data
+    }
+    return result
+}
+
+export async function drainAndFilterTransactions(
+    r: TransactionResponse,
+    limit: number,
+    minTinyBar: number,
+    account: string
+): Promise<Transaction[]> {
+
+    const MAX_DRAIN_ITERATION_WHEN_FILTERING = 40
+
+    // This function is used to filter out what we consider as 'spam' transactions
+    // A transaction is considered spam if it contains a transfer involving the user account which has an amount
+    // below the limit chosen by the user (e.g. 1 hbar).
+    // The amount considered is the (absolute) net value of the transfer -- we deduce the amount of the perceived staking reward if any.
+    const filterTinyTxn = (txn: Transaction) => {
+        let filter = true
+        let reward = 0
+        if (txn.name === TransactionType.CRYPTOTRANSFER && minTinyBar > 0) {
+            for (const r of txn.staking_reward_transfers) {
+                if (r.account === account) {
+                    reward = r.amount
+                }
+            }
+            for (const t of txn.transfers) {
+                if (t.account === account) {
+                    const netAmount = Math.abs(t.amount - reward)
+                    if (netAmount < minTinyBar) {
+                        filter = false
+                    }
+                    break
+                }
+            }
+        }
+        return filter
+    }
+
+    let result = (r.transactions ?? []).filter(filterTinyTxn)
+    let i = 0
+    while (r.links?.next && result.length < limit && i < MAX_DRAIN_ITERATION_WHEN_FILTERING) {
+        // console.log(`drainAndFilterTransactions (iteration ${i + 1})`)
+        // console.log(`  - limit:${limit}`)
+        // console.log(`  - result.length:${result.length}`)
+        // console.log(`  - r.links.next:${r.links.next}`)
+        const ar = await axios.get<TransactionResponse>(r.links.next)
+        if (ar.data.transactions) {
+            result = result.concat(ar.data.transactions.filter(filterTinyTxn))
+        }
+        r = ar.data
+        i += 1
     }
     return result
 }

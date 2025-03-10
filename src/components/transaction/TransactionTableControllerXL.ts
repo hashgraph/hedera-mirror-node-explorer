@@ -6,13 +6,14 @@ import {ref, Ref, watch, WatchStopHandle} from "vue";
 import axios from "axios";
 import {LocationQuery, Router} from "vue-router";
 import {fetchStringQueryParam} from "@/utils/RouteManager";
-import {drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
+import {drainAndFilterTransactions, drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
 
 
 export class TransactionTableControllerXL extends TableController<Transaction, string> {
 
     private readonly accountId: Ref<string | null>
     private readonly accountIdMandatory: boolean
+    private readonly minTinyBar: Ref<number>
 
     //
     // Public
@@ -23,7 +24,8 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                        pageSize: Ref<number>,
                        accountIdMandatory: boolean,
                        storageKey: string,
-                       pageParamName = "p", keyParamName = "k") {
+                       pageParamName = "p", keyParamName = "k",
+                       minTinyBar = ref(0)) {
         super(
             router,
             pageSize,
@@ -36,8 +38,9 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         );
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
+        this.minTinyBar = minTinyBar
         this.storageKey = storageKey
-        this.watchAndReload([this.transactionType, this.accountId, this.pageSize])
+        this.watchAndReload([this.transactionType, this.accountId, this.pageSize, this.minTinyBar])
     }
 
     public readonly transactionType: Ref<string> = ref("")
@@ -61,7 +64,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                 transactiontype: string | undefined
                 timestamp: string | undefined
             }
-            params.limit = limit
+            params.limit = (this.minTinyBar.value > 0) ? 100 : limit
             params.order = order
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value
@@ -73,7 +76,11 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                 params.timestamp = operator + ":" + consensusTimestamp
             }
             const r = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
-            result = await drainTransactions(r.data, limit)
+            if (this.accountId.value && this.minTinyBar.value > 0) {
+                result = await drainAndFilterTransactions(r.data, limit, this.minTinyBar.value, this.accountId.value)
+            } else {
+                result = await drainTransactions(r.data, limit)
+            }
         }
 
         return Promise.resolve(result)
