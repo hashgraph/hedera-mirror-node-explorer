@@ -58,5 +58,6 @@ networks-config.json
 /src/assets/styles
 /public
 
-# Sourcify data
+# Sourcify setup
 /sourcify-setup/data
+/sourcify-setup/nginx/certificate
