@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // https://docs.cypress.io/api/introduction/api.html
 
@@ -97,7 +79,6 @@ describe('Transaction Navigation', () => {
     })
 
     it('should follow schedule relationship links', () => {
-        const transactionId = "0.0.723493@1674825784.117967020"
         const schedulingConsensusTimestamp = "1674825796.070463898"
         const scheduledConsensusTimestamp = "1674825835.244778007"
 
@@ -127,7 +108,6 @@ describe('Transaction Navigation', () => {
     })
 
     it('should follow parent/child relationship links', () => {
-        const transactionId = "0.0.1425530@1674827792.993110472"
         const parentConsensusTimestamp = "1674827805.332465003"
         const childConsensusTimestamp = "1674827805.332465004"
 
@@ -209,7 +189,6 @@ describe('Transaction Navigation', () => {
     })
 
     it('should handle ETHEREUMTRANSACTION type', () => {
-        const transactionId = "0.0.995584@1674505107.270597663"
         const parentConsensusTimestamp = "1674505116.619586691"
         const childConsensusTimestamp = "1674505116.619586692"
         const contractId = "0.0.1718841"

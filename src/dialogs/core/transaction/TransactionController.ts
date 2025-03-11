@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, ref} from "vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
@@ -33,8 +15,8 @@ export abstract class TransactionController extends TaskController {
     // Public
     //
 
-    public readonly transactionId = ref<string|null>(null)
-    public readonly transactionResult = ref<string|null>(null)
+    public readonly transactionId = ref<string | null>(null)
+    public readonly transactionResult = ref<string | null>(null)
 
     public readonly isFailedResult = computed(() => {
         const r = this.transactionResult.value
@@ -45,7 +27,7 @@ export abstract class TransactionController extends TaskController {
     // To be subclassed
     //
 
-    protected async executeTransaction(): Promise<Transaction|string|null> {
+    protected async executeTransaction(): Promise<Transaction | string | null> {
         throw "Must be subclassed"
     }
 
@@ -71,7 +53,7 @@ export abstract class TransactionController extends TaskController {
                 this.transactionId.value = r.transaction_id
                 this.transactionResult.value = r.result
             }
-        } catch(error) {
+        } catch (error) {
             this.transactionId.value = null
             this.transactionResult.value = null
             if (error instanceof WalletClientRejectError) {

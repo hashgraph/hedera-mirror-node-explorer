@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -39,7 +21,7 @@
             :size="isMediumScreen ? props.size : undefined"
             style="width: 100%; text-overflow: ellipsis;"
         />
-        <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none" >
+        <button type="submit" value="searchBar" :disabled="submitDisabled" style="flex: none">
           <Search :size="18" style="color: var(--network-button-text-color); margin-top: 4px;"/>
         </button>
       </form>
@@ -168,7 +150,7 @@ input {
   background-color: transparent;
   border-color: transparent;
   color: var(--text-primary);
-  font-size: 14px;
+  font-size: 16px;
   outline: none;
 }
 

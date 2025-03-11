@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {NameRecord} from "@/utils/name_service/NameService";
 import {ref} from "vue";
@@ -44,7 +26,7 @@ export class AppStorage {
 
     private static readonly LAST_USED_NETWORK_KEY = 'network'
 
-    public static getLastNetwork(): string|null {
+    public static getLastNetwork(): string | null {
         return this.getLocalStorageItem(this.LAST_USED_NETWORK_KEY)
     }
 
@@ -366,6 +348,21 @@ export class AppStorage {
 
     private static makeWalletAccountIdKey(network: string): string {
         return this.WALLET_ACCOUNT_ID + "/" + network
+    }
+
+    //
+    // minimum transfer value for filtering 'spam' CRYPTO TRANSFER transactions
+    //
+
+    private static readonly MIN_TINYBAR_TRANSFER_KEY = 'minTinyBarTransfer'
+
+    public static getMinTinyBarTransfer(): number | null {
+        const size = this.getLocalStorageItem(this.MIN_TINYBAR_TRANSFER_KEY)
+        return size ? Number(size) : null
+    }
+
+    public static setMinTinyBarTransfer(newValue: number | null): void {
+        this.setLocalStorageItem(this.MIN_TINYBAR_TRANSFER_KEY, newValue ? newValue?.toString() : null)
     }
 
     //

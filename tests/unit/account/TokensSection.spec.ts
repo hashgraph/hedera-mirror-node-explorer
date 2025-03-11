@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {afterAll, beforeAll, describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -34,10 +16,10 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import TokensSection from "../../../src/components/token/TokensSection.vue";
-import Tabs from "../../../src/components/Tabs.vue";
-import {HMSF} from "../../../src/utils/HMSF";
-import router from "../../../src/router";
+import TokensSection from "@/components/token/TokensSection.vue";
+import Tabs from "@/components/Tabs.vue";
+import {HMSF} from "@/utils/HMSF.ts";
+import router from "@/router";
 import {fetchGetURLs} from "../MockUtils";
 
 /*
@@ -59,7 +41,7 @@ describe("TokensSection.vue", () => {
         ]
     }
 
-    const mock = new MockAdapter(axios);
+    const mock = new MockAdapter(axios as any);
 
     beforeAll(async () => {
         // For NFTs tab
@@ -76,11 +58,11 @@ describe("TokensSection.vue", () => {
         const matcher5 = "/api/v1/tokens/" + SAMPLE_ASSOCIATED_TOKEN_2.token_id
         mock.onGet(matcher5).reply(200, SAMPLE_ASSOCIATED_TOKEN_2)
         const token1 = SAMPLE_TOKEN_RELATIONSHIP_1.token_id
-        const response1 = { tokens: [SAMPLE_TOKEN_RELATIONSHIP_1]}
+        const response1 = {tokens: [SAMPLE_TOKEN_RELATIONSHIP_1]}
         const matcher6 = "/api/v1/accounts/" + accountId + "/tokens?token.id=" + token1 + "&limit=1"
         mock.onGet(matcher6).reply(200, response1)
         const token2 = SAMPLE_TOKEN_RELATIONSHIP_2.token_id
-        const response2 = { tokens: [SAMPLE_TOKEN_RELATIONSHIP_2]}
+        const response2 = {tokens: [SAMPLE_TOKEN_RELATIONSHIP_2]}
         const matcher7 = "/api/v1/accounts/" + accountId + "/tokens?token.id=" + token2 + "&limit=1"
         mock.onGet(matcher7).reply(200, response2)
 

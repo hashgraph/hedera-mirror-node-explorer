@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import router from "@/router";
@@ -27,7 +9,7 @@ import {SAMPLE_NONFUNGIBLE, SAMPLE_NONFUNGIBLE_DUDE} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
 
-const mock = new MockAdapter(axios);
+const mock = new MockAdapter(axios as any);
 const matcher1 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE.token_id
 mock.onGet(matcher1).reply(200, SAMPLE_NONFUNGIBLE);
 const matcher2 = "/api/v1/tokens/" + SAMPLE_NONFUNGIBLE_DUDE.token_id

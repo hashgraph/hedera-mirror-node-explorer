@@ -1,29 +1,11 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 
 //
 // Fungible token inspired from https://testnet.mirrornode.hedera.com/api/v1/tokens/0.0.29662956
 //
 
-import {ContractStateResponse, KeyType} from "../../src/schemas/MirrorNodeSchemas";
+import {ContractStateResponse, KeyType, TransactionResponse, TransactionType} from "@/schemas/MirrorNodeSchemas.ts";
 
 export const SAMPLE_TOKEN = {
     "admin_key": null,
@@ -708,11 +690,13 @@ export const SAMPLE_TRANSACTION = {
     "max_fee": "100000000",
     "memo_base64": "",
     "name": "CRYPTOTRANSFER",
+    "nft_transfers": [],
     "node": "0.0.5",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
     "scheduled": false,
+    "staking_reward_transfers": [],
     "token_transfers": [
         {
             "token_id": "0.0.29662956",
@@ -753,11 +737,14 @@ export const SAMPLE_FAILED_TRANSACTION = {
     "max_fee": "1000000000",
     "memo_base64": "",
     "name": "CONTRACTCALL",
+    "nft_transfers": [],
     "node": "0.0.3",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "CONTRACT_REVERT_EXECUTED",
     "scheduled": false,
+    "staking_reward_transfers": [],
+    "token_transfers": [],
     "transaction_hash": "kLnhFcr1zLlhcuH4Doz6VF20IB4dEaxomChYqSie0+xkDNwaWrd2UFWl0ZxWYStj",
     "transaction_id": "0.0.34376678-1652256313-310050890",
     "transfers": [
@@ -805,11 +792,14 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
             "max_fee": "20000000",
             "memo_base64": "TWlycm9yIE5vZGUgYWNjZXB0YW5jZSB0ZXN0OiAyMDIyLTAzLTA3VDE1OjA5OjI2LjA2NjY4MDk3N1ogRXhlY3V0ZSBjb250cmFjdA==",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.3",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "INSUFFICIENT_GAS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "rW+y3bjDPq1I3d7WeeyNbROuerh9oG8xcthiCodI5Q1xMHXInn3qOUR7TLj6LNQo",
             "transaction_id": "0.0.950-1646665756-235554077",
             "transfers": [
@@ -837,11 +827,14 @@ export const SAMPLE_CONTRACTCALL_TRANSACTIONS = {
             "max_fee": "10000000000",
             "memo_base64": "TWlycm9yIE5vZGUgYWNjZXB0YW5jZSB0ZXN0OiAyMDIyLTAzLTA3VDE0OjQyOjMzLjk4NzcxMTIwMlogRXhlY3V0ZSBjb250cmFjdA==",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.3",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "INSUFFICIENT_GAS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "Vz4cLGBUmxgYSaHJu1bcxi2/1Heildtgg3zSbpp2xX3jqG0PsQJJYdp0rg+9nV7h",
             "transaction_id": "0.0.950-1646664143-028737238",
             "transfers": [
@@ -874,11 +867,14 @@ export const SAMPLE_SYSTEM_CONTRACT_CALL_TRANSACTIONS = {
             "max_fee": "0",
             "memo_base64": "",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": null,
             "nonce": 2,
             "parent_consensus_timestamp": "1662623752.949648608",
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "LC8tH/tqkOEndC3ERShZO7n6NSxhdhbkSZJX3hnbwKAWaQ2KLMsg1DgaXByxrUEY",
             "transaction_id": "0.0.29511696-1662623740-379586211",
             "transfers": [],
@@ -896,11 +892,14 @@ export const SAMPLE_CRYPTO_TRANSFER_WITH_ONLY_FEE = {
     "max_fee": "200000000",
     "memo_base64": "",
     "name": "CONSENSUSCREATETOPIC",
+    "nft_transfers": [],
     "node": "0.0.25",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
     "scheduled": false,
+    "staking_reward_transfers": [],
+    "token_transfers": [],
     "transaction_hash": "c2sSCuCRNOI6gvCYs5KFxe7Z60TV8vJXxuOWNEtH4doYj0MnruIi3NLFXIX6e8s1",
     "transaction_id": "0.0.1786365-1687197599-390469131",
     "transfers": [{"account": "0.0.25", "amount": 1190235, "is_approval": false}, {
@@ -924,11 +923,13 @@ export const SAMPLE_CRYPTO_TRANSFER_WITH_REWARDS = {
     "max_fee": "100000000",
     "memo_base64": "KDAuMC4yOTk4NTU1KUNvbmZpcm0gcHVyY2hhc2Ugb2YgTkZUOiAwLjAuMjE3Mzg5OSB3aXRoIHNlcmlhbCBudW1iZXIgMTYxMiBmb3IgMjUgSEJBUg==",
     "name": "CRYPTOTRANSFER",
+    "nft_transfers": [],
     "node": "0.0.4",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
     "scheduled": false,
+    "token_transfers": [],
     "staking_reward_transfers": [{"account": "0.0.788887", "amount": 210704256}, {
         "account": "0.0.2254995",
         "amount": 2289378672
@@ -965,12 +966,14 @@ export const SAMPLE_TOKEN_CALL_TRANSACTIONS = {
         "max_fee": "200000000",
         "memo_base64": "",
         "name": "CONTRACTCALL",
+        "nft_transfers": [],
         "node": "0.0.14",
         "nonce": 0,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
         "staking_reward_transfers": [{"account": "0.0.939841", "amount": 6816724320}],
+        "token_transfers": [],
         "transaction_hash": "v0daADT5AeJQdNGIpDZww+amcD9C1ngBhzQwPhm7g8BRtvN1p2TaOLHIMtD0C0MS",
         "transaction_id": "0.0.939841-1677545092-878406670",
         "transfers": [{"account": "0.0.98", "amount": 93600000, "is_approval": false}, {
@@ -1226,6 +1229,8 @@ export const SAMPLE_CONTRACT_CALL_TRANSACTION = {
     "parent_consensus_timestamp": "1662623752.949648608",
     "result": "SUCCESS",
     "scheduled": false,
+    "staking_reward_transfers": [],
+    "token_transfers": [],
     "transaction_hash": "LC8tH/tqkOEndC3ERShZO7n6NSxhdhbkSZJX3hnbwKAWaQ2KLMsg1DgaXByxrUEY",
     "transaction_id": "0.0.29511696-1662623740-379586211",
     "transfers": [],
@@ -1553,6 +1558,8 @@ export const SAMPLE_CRYPTO_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "RYfHjZoGCeAr9K1CNwVMztmx/F2im7Ae3yHkI3thlluzucsoP0uEuj3bKq+Qh84x",
             "transaction_id": "0.0.14622-1646746046-722961649",
             "transfers": [
@@ -1593,6 +1600,8 @@ export const SAMPLE_CRYPTO_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "+eQ70U7gSMiSavPTAr1RoKsWipe3H/oef5CiZ051Xli73Dc0XxXdQPnwT8Sml9sE",
             "transaction_id": "0.0.19852-1646746046-457048377",
             "transfers": [
@@ -1639,6 +1648,8 @@ export const SAMPLE_MESSAGE_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "HGSDoR+EX3JmeINOPf7nxfD0SSsTWDQ3u02iPudAluSvIeu3yE0Is0P6lu1jlyvA",
             "transaction_id": "0.0.41104-1646747931-190710543",
             "transfers": [{"account": "0.0.3", "amount": 2705}, {
@@ -1661,6 +1672,8 @@ export const SAMPLE_MESSAGE_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "pgHT3L9tuWlYidtXt9uP5Q1v8MsJvQjMfN5wZBxb53J6MwlZfyY7xUokMej6J/hO",
             "transaction_id": "0.0.41099-1646747932-228613829",
             "transfers": [{"account": "0.0.15", "amount": 2700}, {
@@ -1690,6 +1703,8 @@ export const SAMPLE_CREATETOPIC_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "kU7imDB9zIs8ocmjh+vJLHBubopaGVPEm7Sg4UliizruYRbD0FeiFrF6SwUDgN4w",
             "transaction_id": "0.0.636139-1646676896-310548965",
             "transfers": [{"account": "0.0.5", "amount": 231332}, {
@@ -1712,6 +1727,8 @@ export const SAMPLE_CREATETOPIC_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "Bj5AhikOLdBux8XYp8XNzK8wzCfX0ForHEIRb/QkkaFatWBbbhJ1yCee0y2Rc0IS",
             "transaction_id": "0.0.950-1646666046-105179272",
             "transfers": [{"account": "0.0.3", "amount": 247218}, {
@@ -1739,6 +1756,8 @@ export const SAMPLE_REWARDS_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "RYfHjZoGCeAr9K1CNwVMztmx/F2im7Ae3yHkI3thlluzucsoP0uEuj3bKq+Qh84x",
             "transaction_id": "0.0.14622-1646746046-722961649",
             "transfers": [
@@ -1789,6 +1808,8 @@ export const SAMPLE_REWARDS_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "j7iGcapZ01hw9tAmf5P1cojq3NEeONl5i43oBrknSD3uaPaS9BzKjkoEG4SHVWr3",
             "transaction_id": "0.0.47813131-1660577918-385318328",
             "transfers": [
@@ -1834,6 +1855,8 @@ export const SAMPLE_REWARDS_TRANSACTIONS = {
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "+eQ70U7gSMiSavPTAr1RoKsWipe3H/oef5CiZ051Xli73Dc0XxXdQPnwT8Sml9sE",
             "transaction_id": "0.0.19852-1646746046-457048377",
             "transfers": [
@@ -1877,7 +1900,7 @@ export const SAMPLE_REWARDS_TRANSACTIONS = {
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions/0.0.48113503-1662470948-432078184
 //
 
-export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
+export const SAMPLE_PARENT_CHILD_TRANSACTIONS: TransactionResponse = {
     "transactions":
         [{
             "bytes": null,
@@ -1886,12 +1909,15 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "entity_id": "0.0.48193749",
             "max_fee": "200000000",
             "memo_base64": "",
-            "name": "CONTRACTCALL",
+            "name": TransactionType.CONTRACTCALL,
+            "nft_transfers": [],
             "node": "0.0.5",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "jthcv17LsslWUAzQkuIzeVMFpwJ3Uf5g6sSp1aZ8qqSWTz52XhPaMGAzt/5UgYob",
             "transaction_id": "0.0.48113503-1662470948-432078184",
             "transfers": [{"account": "0.0.98", "amount": 160800000, "is_approval": false}, {
@@ -1908,7 +1934,7 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "entity_id": "0.0.48193741",
             "max_fee": "0",
             "memo_base64": "",
-            "name": "TOKENMINT",
+            "name": TransactionType.TOKENMINT,
             "nft_transfers": [{
                 "is_approval": false,
                 "receiver_account_id": "0.0.48113503",
@@ -1945,10 +1971,12 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "parent_consensus_timestamp": "1662470957.014478705",
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "gLobKtgAWqka6N/3K5o2TS8XKeQIafH8wxkzZfycRJcOfJ7vccaR/6drUU8j6Xci",
             "transaction_id": "0.0.48113503-1662470948-432078184",
             "transfers": [],
-            "valid_duration_seconds": null,
+            "valid_duration_seconds": "120",
             "valid_start_timestamp": "1662470948.432078184"
         }, {
             "bytes": null,
@@ -1957,7 +1985,7 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "entity_id": null,
             "max_fee": "0",
             "memo_base64": "",
-            "name": "CRYPTOTRANSFER",
+            "name": TransactionType.CRYPTOTRANSFER,
             "nft_transfers": [{
                 "is_approval": false,
                 "receiver_account_id": "0.0.48193739",
@@ -1994,20 +2022,24 @@ export const SAMPLE_PARENT_CHILD_TRANSACTIONS = {
             "parent_consensus_timestamp": "1662470957.014478705",
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
             "token_transfers": [],
             "transaction_hash": "Gqep6H2B3iE4id1qPG92q51LP20WXW7r53ujWlKekk8RBhYTfpFiD4iJBkK8UnGc",
             "transaction_id": "0.0.48113503-1662470948-432078184",
             "transfers": [],
-            "valid_duration_seconds": null,
+            "valid_duration_seconds": "120",
             "valid_start_timestamp": "1662470948.432078184"
-        }]
+        }],
+    "links": {
+        next: null
+    }
 }
 
 //
 // https://mainnet-public.mirrornode.hedera.com/api/v1/transactions/0.0.503733-1666754898-238965661
 //
 
-export const SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS = {
+export const SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS: TransactionResponse = {
     "transactions": [{
         "bytes": null,
         "charged_tx_fee": 10222951,
@@ -2015,12 +2047,15 @@ export const SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS = {
         "entity_id": "0.0.1382775",
         "max_fee": "500000000",
         "memo_base64": "",
-        "name": "SCHEDULECREATE",
+        "name": TransactionType.SCHEDULECREATE,
+        "nft_transfers": [],
         "node": "0.0.22",
         "nonce": 0,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
         "transaction_hash": "kf0Uakt9YM0AztfHZanJXU9Rk5nmX0ZFjiyvGGHPPeZI/gdSTy+ThDAsLT1p7yfx",
         "transaction_id": "0.0.503733-1666754898-238965661",
         "transfers": [{"account": "0.0.22", "amount": 513563, "is_approval": false}, {
@@ -2037,12 +2072,14 @@ export const SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS = {
         "entity_id": "0.0.1304757",
         "max_fee": "3000000000",
         "memo_base64": "",
-        "name": "TOKENMINT",
+        "name": TransactionType.TOKENMINT,
+        "nft_transfers": [],
         "node": null,
         "nonce": 0,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": true,
+        "staking_reward_transfers": [],
         "token_transfers": [{
             "token_id": "0.0.1304757",
             "account": "0.0.540219",
@@ -2056,9 +2093,12 @@ export const SAMPLE_SCHEDULING_SCHEDULED_TRANSACTIONS = {
             "amount": -250757,
             "is_approval": false
         }],
-        "valid_duration_seconds": null,
+        "valid_duration_seconds": "120",
         "valid_start_timestamp": "1666754898.238965661"
-    }]
+    }],
+    "links": {
+        "next": null
+    }
 }
 
 //
@@ -2074,11 +2114,14 @@ export const SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS = {
         "max_fee": "10000000000",
         "memo_base64": "",
         "name": "CRYPTODELETEALLOWANCE",
+        "nft_transfers": [],
         "node": "0.0.4",
         "nonce": 0,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
         "transaction_hash": "KuwQ5qibGSidcXJKP62s3aBPA+xIcN+EnH/GDXnN2+2hS5UlRRKtY+TlIurY9Vyo",
         "transaction_id": "0.0.2520793-1665085799-890453831",
         "transfers": [{"account": "0.0.4", "amount": 3630931, "is_approval": false}, {
@@ -2096,11 +2139,14 @@ export const SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS = {
         "max_fee": "0",
         "memo_base64": "",
         "name": "CONTRACTDELETEINSTANCE",
+        "nft_transfers": [],
         "node": null,
         "nonce": 1,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
         "transaction_hash": "QCcVBlDByJ9a+GbYmTwoSzBt8teJmS4r5j2IF0SidtfmkNAjDNnoIcWFnWm/wCQk",
         "transaction_id": "0.0.2520793-1665085799-890453831",
         "transfers": [],
@@ -2114,11 +2160,14 @@ export const SAMPLE_SAME_ID_NOT_PARENT_TRANSACTIONS = {
         "max_fee": "0",
         "memo_base64": "",
         "name": "CONTRACTDELETEINSTANCE",
+        "nft_transfers": [],
         "node": null,
         "nonce": 2,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
+        "staking_reward_transfers": [],
+        "token_transfers": [],
         "transaction_hash": "tJWvi9tJwnT3Wnmi6wBj8qo8kItCzdBSdHnISaJfRxB+kyKmHa81Pak3VwjCxh8P",
         "transaction_id": "0.0.2520793-1665085799-890453831",
         "transfers": [],
@@ -2138,12 +2187,14 @@ export const SAMPLE_TOKEN_ASSOCIATE_TRANSACTION = {
     "max_fee": "500000000",
     "memo_base64": "",
     "name": "TOKENASSOCIATE",
+    "nft_transfers": [],
     "node": "0.0.3",
     "nonce": 0,
     "parent_consensus_timestamp": null,
     "result": "SUCCESS",
     "scheduled": false,
     "staking_reward_transfers": [],
+    "token_transfers": [],
     "transaction_hash": "R4YHmZnfFpo4NJJJ08mlSJqD8cfFG2se3rgTR6SW2TGD4kpDrQM3LrxQFSimAy3r",
     "transaction_id": "0.0.642949-1671648699-088023490",
     "transfers": [{"account": "0.0.3", "amount": 5805847, "is_approval": false}, {
@@ -2164,12 +2215,14 @@ export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_ACCOUNT = {
         "max_fee": "1965000000",
         "memo_base64": "",
         "name": "ETHEREUMTRANSACTION",
+        "nft_transfers": [],
         "node": "0.0.9",
         "nonce": 0,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
         "staking_reward_transfers": [],
+        "token_transfers": [],
         "transaction_hash": "eCUqd8lk6CpS7/s9RJ3ZsKaeCXUqleE3Jpz5MzrkULc4xLI+B77Rrqd0rcmB0G7l",
         "transaction_id": "0.0.902-1680856100-967831537",
         "transfers": [
@@ -2207,12 +2260,14 @@ export const SAMPLE_ETHEREUM_TRANSACTIONS_ON_CONTRACT = {
         "max_fee": "1965000000",
         "memo_base64": "",
         "name": "ETHEREUMTRANSACTION",
+        "nft_transfers": [],
         "node": "0.0.3",
         "nonce": 0,
         "parent_consensus_timestamp": null,
         "result": "SUCCESS",
         "scheduled": false,
         "staking_reward_transfers": [],
+        "token_transfers": [],
         "transaction_hash": "4EWj/Lk9U/Iqg+uidRapSKXbxrfJfiXxUSl9gV+p2cgDGVMg0ioUWAH8gJy7asiG",
         "transaction_id": "0.0.3675516-1680856194-531027354",
         "transfers": [
@@ -2256,6 +2311,7 @@ export const SAMPLE_ASSOCIATED_TOKEN = {
     "memo": "",
     "modified_timestamp": "1664459798.418712003",
     "name": "HSUITE",
+    "nft_transfers": [],
     "pause_key": {"_type": "ED25519", "key": "8d2e8b0cc2518eb79d4ab07188387fe6f297ca230bd2f9b1faf31f889bf65f40"},
     "pause_status": "UNPAUSED",
     "supply_key": {"_type": "ED25519", "key": "f53f56ca2a83399aff9163c15a3868135a6d0589ce011e4eb2e98166148039d2"},
@@ -2286,6 +2342,7 @@ export const SAMPLE_ASSOCIATED_TOKEN_2 = {
     "memo": "",
     "modified_timestamp": "1673613321.257283003",
     "name": "Token SymbolA7",
+    "nft_transfers": [],
     "pause_key": null,
     "pause_status": "NOT_APPLICABLE",
     "supply_key": {"_type": "ED25519", "key": "2e61deb649eee47b0693d878fc5b2d8baa733f5e7b625314519064616ead62fe"},
@@ -2546,12 +2603,14 @@ export const SAMPLE_ACCOUNT_PROTOBUF_KEY = {
             "max_fee": "500000000",
             "memo_base64": "",
             "name": "CRYPTOUPDATEACCOUNT",
+            "nft_transfers": [],
             "node": "0.0.3",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
             "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "A/brQJF7Fx5BW/u6556mOOrcEZib5icD4sgBlII7hXhnqGJiQ6MrJezJ/FFCUdZ8",
             "transaction_id": "0.0.49058639-1670947192-898000000",
             "transfers": [{"account": "0.0.3", "amount": 210956, "is_approval": false}, {
@@ -2712,11 +2771,14 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
             "max_fee": "200000000",
             "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LXRyYW5zZmVyQW1vdW50LTo6VGFza2Jhcjo6U21hcnQgY29udHJhY3Qgc3RhdGUgY2hhbmdlIGNhbGwu",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.8",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "N174IhVVDxEtHG9iE3RKGhLgzWnKrTnPDolPjDVNLOldF3lU6IQdUVmM3zp8coQy",
             "transaction_id": "0.0.178899-1645373457-761328453",
             "transfers": [
@@ -2752,11 +2814,14 @@ export const SAMPLE_CONTRACT_AS_ACCOUNT = {
             "max_fee": "200000000",
             "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LWFkZEhiYXJzLTo6VGFza2Jhcjo6IEFkZGluZyBhbW91bnQgdG8gdGFzayBzbWFydC1jb250cmFjdA==",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.5",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "H9P5awEyK5ApqNxwMVwQBUzshRJfIwWPVj/QPl5qL3qrqTTSzPIHqI/+A202qhpg",
             "transaction_id": "0.0.178899-1645373391-947654307",
             "transfers": [
@@ -2810,11 +2875,14 @@ export const SAMPLE_CONTRACT_DUDE_AS_ACCOUNT = {
             "max_fee": "200000000",
             "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LXRyYW5zZmVyQW1vdW50LTo6VGFza2Jhcjo6U21hcnQgY29udHJhY3Qgc3RhdGUgY2hhbmdlIGNhbGwu",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.8",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "N174IhVVDxEtHG9iE3RKGhLgzWnKrTnPDolPjDVNLOldF3lU6IQdUVmM3zp8coQy",
             "transaction_id": "0.0.178899-1645373457-761328453",
             "transfers": [
@@ -2850,11 +2918,14 @@ export const SAMPLE_CONTRACT_DUDE_AS_ACCOUNT = {
             "max_fee": "200000000",
             "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LWFkZEhiYXJzLTo6VGFza2Jhcjo6IEFkZGluZyBhbW91bnQgdG8gdGFzayBzbWFydC1jb250cmFjdA==",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.5",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "H9P5awEyK5ApqNxwMVwQBUzshRJfIwWPVj/QPl5qL3qrqTTSzPIHqI/+A202qhpg",
             "transaction_id": "0.0.178899-1645373391-947654307",
             "transfers": [
@@ -2908,11 +2979,14 @@ export const SAMPLE_CONTRACT_DELETED_AS_ACCOUNT = {
             "max_fee": "200000000",
             "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LXRyYW5zZmVyQW1vdW50LTo6VGFza2Jhcjo6U21hcnQgY29udHJhY3Qgc3RhdGUgY2hhbmdlIGNhbGwu",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.8",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "N174IhVVDxEtHG9iE3RKGhLgzWnKrTnPDolPjDVNLOldF3lU6IQdUVmM3zp8coQy",
             "transaction_id": "0.0.178899-1645373457-761328453",
             "transfers": [
@@ -2948,11 +3022,14 @@ export const SAMPLE_CONTRACT_DELETED_AS_ACCOUNT = {
             "max_fee": "200000000",
             "memo_base64": "c21hcnRDb250cmFjdEZ1bmN0aW9uRXhlY3V0ZTo6LWFkZEhiYXJzLTo6VGFza2Jhcjo6IEFkZGluZyBhbW91bnQgdG8gdGFzayBzbWFydC1jb250cmFjdA==",
             "name": "CONTRACTCALL",
+            "nft_transfers": [],
             "node": "0.0.5",
             "nonce": 0,
             "parent_consensus_timestamp": null,
             "result": "SUCCESS",
             "scheduled": false,
+            "staking_reward_transfers": [],
+            "token_transfers": [],
             "transaction_hash": "H9P5awEyK5ApqNxwMVwQBUzshRJfIwWPVj/QPl5qL3qrqTTSzPIHqI/+A202qhpg",
             "transaction_id": "0.0.178899-1645373391-947654307",
             "transfers": [
@@ -3465,7 +3542,7 @@ export const SAMPLE_LOGIC_ADDRESS_RESPONSE: ContractStateResponse = {
             "value": "0x00000000000000000000000000000000000000000000000000000000000c41df" // SAMPLE_CONTRACT_DUDE
         }
     ],
-    links: null
+    links: {next: null}
 }
 
 export const SAMPLE_ADMIN_ADDRESS_RESPONSE: ContractStateResponse = {
@@ -3478,7 +3555,7 @@ export const SAMPLE_ADMIN_ADDRESS_RESPONSE: ContractStateResponse = {
             "value": "0x000000000000000000000000000000000000000000000000000000000002294a" // SAMPLE_CONTRACT_WITH_SWARM_HASH
         }
     ],
-    links: null
+    links: {next: null}
 }
 
 //

@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+/* SPDX-License-Identifier: Apache-2.0 */
 
 /*
 @import "https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css";
@@ -83,7 +65,7 @@
     --light-border-secondary: #D7D7D7;
     --light-table-border: #EFEFEF;
     --light-chip-text-primary: white;
-    --light-chip-secondary-default: #545454;
+    --light-chip-secondary-default: #EFEFEF;
     --light-button-text-secondary: var(--text-primary);
     --light-button-background-secondary: #EFEFEF;
     --light-copy-button-text: #FFFFFF;
@@ -184,6 +166,56 @@
 }
 
 /*  ============================================================================
+    Network Color Maps
+ */
+
+:root {
+    --purple-light-button-text-color: #FFFFFF;
+    --purple-light-button-color: #7A1B80;
+    --purple-light-chip-text-color: #FFFFFF;
+    --purple-light-chip-color: #A7449D;
+    --purple-light-text-accent-color: #E0007B;
+    --purple-light-border-accent-color: #B664AE;
+    --purple-light-graph-bar-color: #E183E7;
+    --purple-dark-button-text-color: #FFFFFF;
+    --purple-dark-button-color: #7A1B80;
+    --purple-dark-chip-text-color: #FFFFFF;
+    --purple-dark-chip-color: #A7449D;
+    --purple-dark-text-accent-color: #F258AC;
+    --purple-dark-border-accent-color: #7A1B80;
+    --purple-dark-graph-bar-color: #D245DB;
+
+    --orange-light-button-text-color: #FFFFFF;
+    --orange-light-button-color: #FF4D00;
+    --orange-light-chip-text-color: #000000;
+    --orange-light-chip-color: #FF6B2BE5;
+    --orange-light-text-accent-color: #C73C00;
+    --orange-light-border-accent-color: #C2C2C2;
+    --orange-light-graph-bar-color: #FF4D0099;
+    --orange-dark-button-text-color: #FFFFFF;
+    --orange-dark-button-color: #FF4D00;
+    --orange-dark-chip-text-color: #000000;
+    --orange-dark-chip-color: #EB6931;
+    --orange-dark-text-accent-color: #FF4D00;
+    --orange-dark-border-accent-color: #FF4D00;
+    --orange-dark-graph-bar-color: #FF4D00E5;
+
+    --yellow-light-button-text-color: #050505;
+    --yellow-light-button-color: #FFDE00;
+    --yellow-light-chip-text-color: #000000;
+    --yellow-light-chip-color: #FFDE00BD;
+    --yellow-light-text-accent-color: #B87700;
+    --yellow-light-border-accent-color: #C2C2C2;
+    --yellow-dark-button-text-color: #050505;
+    --yellow-dark-button-color: #FFDE00;
+    --yellow-dark-chip-text-color: #000000;
+    --yellow-dark-chip-color: #FFE221D4;
+    --yellow-dark-text-accent-color: #FFDE00;
+    --yellow-dark-border-accent-color: #FFDE00;
+}
+
+
+/*  ============================================================================
     Explorer classes
 */
 
@@ -267,7 +299,7 @@ ul {
     background-color: var(--tab-background);
     border-radius: 8px;
     color: var(--text-primary);
-    font-family: "Styrene A Web", sans-serif;
+    font-family: var(--font-family-heading), sans-serif;
     font-weight: 700;
     font-size: 14px;
     max-width: fit-content;
@@ -279,12 +311,27 @@ ul {
     border-radius: 32px;
     color: var(--network-chip-text-color);
     display: inline-block;
-    font-family: "Styrene A Web", sans-serif;
+    font-family: var(--font-family-heading), sans-serif;
     font-size: 10px;
-    font-weight: 500;
+    font-weight: 400;
     height: 20px;
     padding: 2px 8px;
     text-wrap: nowrap;
+}
+
+.h-has-pill.h-chip-success {
+    background-color: var(--status-success-color);
+    color: #FFFFFF;
+}
+
+.h-has-pill.h-chip-error {
+    background-color: var(--status-error-color);
+    color: #FFFFFF;
+}
+
+.h-has-pill.h-chip-default {
+    background-color: var(--chip-secondary-default);
+    color: var(--text-primary);
 }
 
 .h-is-bold {
@@ -311,17 +358,6 @@ ul {
     color: var(--network-text-accent-color);
 }
 
-.h-status-success {
-    background-color: var(--status-success-color);
-}
-
-.h-status-error {
-    background-color: var(--status-error-color);
-}
-
-.h-chip-default {
-    background-color: var(--chip-secondary-default);
-}
 
 .h-should-wrap {
     word-break: break-word;
@@ -336,32 +372,26 @@ hr.horizontal-line {
 }
 
 .h-is-label {
-    color: #DDD;
-    background: #383838;
-    border: solid 0.5px var(--network-theme-color);
+    background: var(--button-background-secondary);
+    border: solid 1px var(--border-secondary);
     border-radius: 4px;
-    font-family: "Styrene A Web", sans-serif;
-    font-weight: normal;
-    font-size: 13px;
-    line-height: 19px;
+    color: var(--text-primary);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 16px;
     padding: 3px 6px 3px;
-    letter-spacing: normal;
-    align-content: center;
 }
 
 .h-is-compact-label {
-    color: #DDD;
-    background: #383838;
-    border: solid 0.5px var(--network-theme-color);
+    background: var(--button-background-secondary);
+    border: solid 1px var(--border-secondary);
     border-radius: 4px;
-    font-family: "Styrene A Web", sans-serif;
-    font-weight: normal;
+    color: var(--text-primary);
     font-size: 11px;
-    line-height: 16px;
+    font-weight: 400;
+    line-height: 14px;
+    margin-bottom: 2px;
     padding: 1px 4px 2px;
-    width: fit-content;
-    letter-spacing: normal;
-    align-content: center;
 }
 
 .w250 {
@@ -477,7 +507,7 @@ a.h-banner-link:hover {
 */
 
 :root {
-    --dp-font-family: "Inter", sans-serif;
+    --dp-font-family: var(--font-family-proportional), sans-serif;
     --dp-border-radius: 0;
     --dp-font-size: 11px;
 }

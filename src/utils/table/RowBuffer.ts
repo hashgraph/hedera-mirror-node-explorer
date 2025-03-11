@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {computed, ComputedRef, ref, Ref} from "vue";
@@ -203,7 +185,7 @@ export class RowBuffer<R, K> {
                     this.executedAbortCounter += 1
                 }
 
-            } else if (nextEndIndex > bufferLength + shadowRowCount  && !this.drained.value) {
+            } else if (nextEndIndex > bufferLength + shadowRowCount && !this.drained.value) {
 
                 // We need to load rows at buffer tail      :\
                 const rowCount = nextEndIndex - bufferLength - shadowRowCount
@@ -251,7 +233,7 @@ export class RowBuffer<R, K> {
     //
 
     private async headLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
-        let result: R[]|null
+        let result: R[] | null
 
         if (rowCount >= 1) {
 
@@ -280,7 +262,7 @@ export class RowBuffer<R, K> {
     }
 
     private async tailLoad(key: K | null, rowCount: number, lte: boolean, current: R[] = []): Promise<R[] | null> {
-        let result: R[]|null
+        let result: R[] | null
 
         if (rowCount >= 1) {
 
@@ -309,7 +291,7 @@ export class RowBuffer<R, K> {
     }
 
     private async lastLoad(key: K, rowCount: number, current: R[] = []): Promise<R[] | null> {
-        let result: R[]|null
+        let result: R[] | null
 
         if (rowCount >= 1) {
 

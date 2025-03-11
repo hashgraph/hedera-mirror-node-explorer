@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {ContractResponse} from "@/schemas/MirrorNodeSchemas";
 import {EntityCache} from "@/utils/cache/base/EntityCache";
@@ -32,8 +14,8 @@ export class ContractByIdCache extends EntityCache<string, ContractResponse | nu
     // Public
     //
 
-    public async findContractAddress(contractId: string): Promise<string|null> {
-        let result: string|null
+    public async findContractAddress(contractId: string): Promise<string | null> {
+        let result: string | null
         const contractInfo = await this.lookup(contractId)
         if (contractInfo !== null) {
             result = contractInfo.evm_address ?? EntityID.parse(contractId)?.toAddress() ?? null

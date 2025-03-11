@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Transaction, TransactionResponse} from "@/schemas/MirrorNodeSchemas";
@@ -24,13 +6,14 @@ import {ref, Ref, watch, WatchStopHandle} from "vue";
 import axios from "axios";
 import {LocationQuery, Router} from "vue-router";
 import {fetchStringQueryParam} from "@/utils/RouteManager";
-import {drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
+import {drainAndFilterTransactions, drainTransactions} from "@/schemas/MirrorNodeUtils.ts";
 
 
 export class TransactionTableControllerXL extends TableController<Transaction, string> {
 
     private readonly accountId: Ref<string | null>
     private readonly accountIdMandatory: boolean
+    private readonly minTinyBar: Ref<number>
 
     //
     // Public
@@ -41,7 +24,8 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                        pageSize: Ref<number>,
                        accountIdMandatory: boolean,
                        storageKey: string,
-                       pageParamName = "p", keyParamName = "k") {
+                       pageParamName = "p", keyParamName = "k",
+                       minTinyBar = ref(0)) {
         super(
             router,
             pageSize,
@@ -54,8 +38,9 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         );
         this.accountId = accountId
         this.accountIdMandatory = accountIdMandatory
+        this.minTinyBar = minTinyBar
         this.storageKey = storageKey
-        this.watchAndReload([this.transactionType, this.accountId, this.pageSize])
+        this.watchAndReload([this.transactionType, this.accountId, this.pageSize, this.minTinyBar])
     }
 
     public readonly transactionType: Ref<string> = ref("")
@@ -79,7 +64,7 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                 transactiontype: string | undefined
                 timestamp: string | undefined
             }
-            params.limit = limit
+            params.limit = (this.minTinyBar.value > 0) ? 100 : limit
             params.order = order
             if (this.accountId.value !== null) {
                 params["account.id"] = this.accountId.value
@@ -91,7 +76,11 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
                 params.timestamp = operator + ":" + consensusTimestamp
             }
             const r = await axios.get<TransactionResponse>("api/v1/transactions", {params: params})
-            result = await drainTransactions(r.data, limit)
+            if (this.accountId.value && this.minTinyBar.value > 0) {
+                result = await drainAndFilterTransactions(r.data, limit, this.minTinyBar.value, this.accountId.value)
+            } else {
+                result = await drainTransactions(r.data, limit)
+            }
         }
 
         return Promise.resolve(result)

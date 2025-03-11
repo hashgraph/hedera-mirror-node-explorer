@@ -1,26 +1,8 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {SAMPLE_BLOCK} from "../Mocks";
@@ -37,7 +19,7 @@ describe("BlockLocParser.ts", () => {
 
     test("mount + set/unset block loc + unmount", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK.number
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
@@ -108,7 +90,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc + mount + unmount + unset block loc", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK.number
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
@@ -179,7 +161,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc with block hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const SAMPLE_BLOCK_HASH = PathParam.parseBlockLoc(SAMPLE_BLOCK.hash)!.toString()
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK_HASH
@@ -251,7 +233,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc with unknown block number", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_NB = 42
         const matcher1 = "/api/v1/blocks/" + UNKNOWN_NB
@@ -324,7 +306,7 @@ describe("BlockLocParser.ts", () => {
 
     test("set block loc with unknown ethereum hash", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_HASH = "0x0011223344556677001122334455667700112233445566770011223344556677"
         const matcher1 = "/api/v1/blocks/" + UNKNOWN_HASH

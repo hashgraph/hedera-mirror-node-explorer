@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, Ref, ref} from "vue";
 import {TaskController} from "@/dialogs/core/task/TaskController.ts";
@@ -89,7 +71,7 @@ export abstract class TransactionGroupController extends TaskController {
 
     public abstract getTransactionCount(): number
 
-    protected async executeTransaction(index: number): Promise<Transaction|string|null> {
+    protected async executeTransaction(index: number): Promise<Transaction | string | null> {
         throw "To be subclassed (i=" + index + ")"
     }
 
@@ -119,14 +101,14 @@ export abstract class TransactionGroupController extends TaskController {
                     try {
                         const t = await waitForTransactionRefresh(r)
                         newOutcome = new TransactionOutcome(t, null)
-                    } catch(error) {
+                    } catch (error) {
                         newOutcome = new TransactionOutcome(null, error)
                     }
                 } else {
                     // r is a Transaction object
                     newOutcome = new TransactionOutcome(r, null)
                 }
-            } catch(error) {
+            } catch (error) {
                 if (error instanceof WalletClientRejectError) {
                     rejected = true
                     break
@@ -155,8 +137,8 @@ export class TransactionOutcome {
         public readonly error: unknown) {
     }
 
-    public getTransactionId(): string|null {
-        let result: string|null
+    public getTransactionId(): string | null {
+        let result: string | null
         if (typeof this.result === "object" && this.result !== null) {
             result = (this.result as Transaction).transaction_id
         } else { // string | null
@@ -165,8 +147,8 @@ export class TransactionOutcome {
         return result
     }
 
-    public getResult(): string|null {
-        let result: string|null
+    public getResult(): string | null {
+        let result: string | null
         if (typeof this.result === "object" && this.result !== null) {
             result = (this.result as Transaction).result
         } else { // string | null

@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {WalletSession} from "@/utils/wallet/WalletSession";
 import {WalletClient} from "@/utils/wallet/client/WalletClient";
@@ -44,8 +26,8 @@ export class WalletConnectAgent {
     // Public
     //
 
-    public static async makeInstance(projectId: string): Promise<WalletConnectAgent|null> {
-        let result: WalletConnectAgent|null
+    public static async makeInstance(projectId: string): Promise<WalletConnectAgent | null> {
+        let result: WalletConnectAgent | null
         if (projectId !== null) {
             const PRODUCT_NAME = import.meta.env.VITE_APP_PRODUCT_NAME ?? "Hedera Mirror Node Explorer"
             const METADATA: SignClientTypes.Metadata = {
@@ -69,18 +51,18 @@ export class WalletConnectAgent {
     }
 
 
-    public async requestSession(): Promise<WalletSession|null> {
+    public async requestSession(): Promise<WalletSession | null> {
 
         const network = routeManager.currentNetwork.value
         const params = {
             optionalNamespaces: WalletConnectAgent.makeNamespaces([network])
         }
-        const { uri, approval } = await this.signClient.connect(params)
+        const {uri, approval} = await this.signClient.connect(params)
         const {WalletConnectModal} = await import("@walletconnect/modal")
         // https://docs.reown.com/advanced/walletconnectmodal/options
         const connectModal = new WalletConnectModal({
             projectId: this.projectId,
-            explorerRecommendedWalletIds:[
+            explorerRecommendedWalletIds: [
                 // https://walletguide.walletconnect.network
                 "a29498d225fa4b13468ff4d6cf4ae0ea4adcbd95f07ce8a843a1dee10b632f3f", // HashPack
                 "a9104b630bac1929ad9ac2a73a17ed4beead1889341f307bff502f89b46c8501", // Blade
@@ -95,8 +77,8 @@ export class WalletConnectAgent {
         return Promise.resolve(result)
     }
 
-    public async restoreSession(sessionTopic: string): Promise<WalletSession|null> {
-        let result: WalletSession|null
+    public async restoreSession(sessionTopic: string): Promise<WalletSession | null> {
+        let result: WalletSession | null
 
         const session = this.fetchSession(sessionTopic)
         if (session !== null) {
@@ -115,7 +97,8 @@ export class WalletConnectAgent {
 
     private constructor(
         private readonly signClient: SignClient,
-        private readonly projectId: string) {}
+        private readonly projectId: string) {
+    }
 
     private async makeWalletSession(session: SessionTypes.Struct): Promise<WalletSession> {
         const name = session.peer.metadata.name
@@ -158,8 +141,8 @@ export class WalletConnectAgent {
         return Promise.resolve(result)
     }
 
-    private fetchSession(sessionTopic: string): SessionTypes.Struct|null {
-        let result: SessionTypes.Struct|null = null
+    private fetchSession(sessionTopic: string): SessionTypes.Struct | null {
+        let result: SessionTypes.Struct | null = null
 
         const sessions = this.signClient.session.getAll()
         for (const session of sessions) {
@@ -172,13 +155,13 @@ export class WalletConnectAgent {
         return result
     }
 
-    private fetchIconURL(session: SessionTypes.Struct): string|null {
-        let result: string|null
+    private fetchIconURL(session: SessionTypes.Struct): string | null {
+        let result: string | null
 
         const walletName = session.peer.metadata.name
         const fallbackEntry = WalletConnectAgent.FALLBACK_ICONS.get(walletName) ?? null
         const icons = session.peer.metadata.icons
-        let candidate: string|null
+        let candidate: string | null
         if (icons.length > 0) {
             candidate = icons[0]
         } else {
@@ -201,7 +184,7 @@ export class WalletConnectAgent {
         }],
         ["Blade Wallet", {
             "buggyURL": "https://www.bladewallet.io/wp-content/uploads/2022/04/Icon.png",
-            fallback:  "data:image/png;base64,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"
+            fallback: "data:image/png;base64,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"
         }]
     ])
 
@@ -218,7 +201,7 @@ export class WalletConnectAgent {
         }
         return {
             hedera: {
-                chains:hederaChains,
+                chains: hederaChains,
                 methods: [
                     // "hedera_getNodeAddresses",
                     // "hedera_executeTransaction",
@@ -249,8 +232,8 @@ export class WalletConnectAgent {
         return new CAChainId(CAChainId.NAMESPACE_HEDERA, network).toString()
     }
 
-    private static makeCaChainForEIP155(network: string): string|null {
-        let result: string|null
+    private static makeCaChainForEIP155(network: string): string | null {
+        let result: string | null
         const chainId = routeManager.findChainID(network)
         if (chainId !== null) {
             result = new CAChainId(CAChainId.NAMESPACE_EIP155, chainId.toString()).toString()
@@ -261,12 +244,12 @@ export class WalletConnectAgent {
     }
 
     private async waitForApprovalOrModalClose(
-        uri: string|undefined,
+        uri: string | undefined,
         approval: () => Promise<SessionTypes.Struct>,
-        connectModal: WalletConnectModal): Promise<SessionTypes.Struct|null> {
+        connectModal: WalletConnectModal): Promise<SessionTypes.Struct | null> {
 
         return new Promise(async (resolve, reject) => {
-            connectModal.subscribeModal((state: {open: boolean}) => {
+            connectModal.subscribeModal((state: { open: boolean }) => {
                 if (!state.open) {
                     // User has closed the modal without flashing the QR code
                     resolve(null)
@@ -275,7 +258,7 @@ export class WalletConnectAgent {
             try {
                 await connectModal.openModal({uri})
                 resolve(await approval())
-            } catch(reason) {
+            } catch (reason) {
                 reject(reason)
             } finally {
                 connectModal.closeModal()
@@ -290,7 +273,7 @@ class WalletSession_WC extends WalletSession {
     constructor(private readonly signClient: SignClient,
                 private readonly session: SessionTypes.Struct,
                 name: string,
-                iconURL: string|null,
+                iconURL: string | null,
                 usableAccountIds: string[],
                 otherAccountIds: string[]) {
         super(name, iconURL, usableAccountIds, otherAccountIds)
@@ -300,8 +283,8 @@ class WalletSession_WC extends WalletSession {
     // WalletSession
     //
 
-    public async makeClient(accountId: string): Promise<WalletClient|null> {
-        let result: WalletClient|null
+    public async makeClient(accountId: string): Promise<WalletClient | null> {
+        let result: WalletClient | null
         const caAccountId = await this.findCaAccountId(accountId)
         if (caAccountId !== null) {
             const caChainId = caAccountId.chainId
@@ -330,7 +313,7 @@ class WalletSession_WC extends WalletSession {
         return "wc:" + this.session.topic
     }
 
-    public getWalletUUID(): string|null {
+    public getWalletUUID(): string | null {
         return null
     }
 
@@ -338,8 +321,8 @@ class WalletSession_WC extends WalletSession {
     // Private
     //
 
-    private async findCaAccountId(accountId: string): Promise<CAAccountId|null> {
-        let result: CAAccountId|null
+    private async findCaAccountId(accountId: string): Promise<CAAccountId | null> {
+        let result: CAAccountId | null
         const hederaCAAccountId = this.makeCAAccountIdForHedera(accountId)
         if (this.sessionContains(hederaCAAccountId)) {
             result = hederaCAAccountId
@@ -377,7 +360,7 @@ class WalletSession_WC extends WalletSession {
         return new CAAccountId(caChainId, accountId)
     }
 
-    private makeCAAccountIdForEIP155(accountAddress: string): CAAccountId|null {
+    private makeCAAccountIdForEIP155(accountAddress: string): CAAccountId | null {
         const chainId = networkToChainId(routeManager.currentNetwork.value, false)
         const caChainId = chainId !== null ? new CAChainId(CAChainId.NAMESPACE_EIP155, chainId) : null
         return caChainId !== null ? new CAAccountId(caChainId, accountAddress) : null
@@ -389,13 +372,14 @@ class Provider_WC implements EIP1193Provider {
 
     public constructor(private readonly signClient: SignClient,
                        private readonly session: SessionTypes.Struct,
-                       private readonly caChainId: CAChainId) {}
+                       private readonly caChainId: CAChainId) {
+    }
 
     //
     // EIP1193Provider
     //
 
-    request(request: {method: string, params?: Array<unknown>}|object): Promise<unknown> {
+    request(request: { method: string, params?: Array<unknown> } | object): Promise<unknown> {
         const requestParams = {
             topic: this.session.topic,
             request: request as any,

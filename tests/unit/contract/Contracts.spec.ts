@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -46,7 +28,7 @@ describe("Contracts.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const contracts = SAMPLE_CONTRACTS
         const matcher1 = "api/v1/contracts"
@@ -68,7 +50,7 @@ describe("Contracts.vue", () => {
             "api/v1/tokens/" + SAMPLE_CONTRACTS.contracts[0].contract_id,
         ])
 
-        expect(wrapper.vm.contractTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).contractTableController.mounted.value).toBe(true)
 
         const card = wrapper.findComponent(DashboardCardV2)
         expect(card.exists()).toBe(true)

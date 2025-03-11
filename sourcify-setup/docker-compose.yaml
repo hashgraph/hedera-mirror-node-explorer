@@ -1,4 +1,3 @@
-version: "3.7"
 x-project-base: &project-base
   env_file:
     - .env

@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, ref, Ref, watch, WatchStopHandle} from "vue";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
@@ -85,11 +67,11 @@ export class UpdateAccountController extends TransactionController {
 
     public readonly feedbackMessage = computed(
         () => this.memoFeedbackMessage.value
-        ?? this.autoRenewPeriodFeedbackMessage.value
-        ?? this.maxAutoAssociationFeedbackMessage.value
-        ?? this.recSigRequiredFeedkbackMessage.value
-        ?? this.stakingFeedbackMessage.value
-        ?? this.declineRewardFeedbackMessage.value)
+            ?? this.autoRenewPeriodFeedbackMessage.value
+            ?? this.maxAutoAssociationFeedbackMessage.value
+            ?? this.recSigRequiredFeedkbackMessage.value
+            ?? this.stakingFeedbackMessage.value
+            ?? this.declineRewardFeedbackMessage.value)
 
     //
     // TransactionController
@@ -99,7 +81,7 @@ export class UpdateAccountController extends TransactionController {
         return this.isValid.value && this.isEdited.value
     }
 
-    protected async executeTransaction(): Promise<string|null> {
+    protected async executeTransaction(): Promise<string | null> {
 
         const transaction = new AccountUpdateTransaction()
         if (this.memoInputText.value !== this.oldMemo.value) {
@@ -238,7 +220,7 @@ export class UpdateAccountController extends TransactionController {
 
     private readonly autoRenewPeriodUnitDidChange = (newValue: PeriodUnit) => {
         const p = this.autoRenewPeriodQuantityInputText.value
-        switch(newValue) {
+        switch (newValue) {
             case PeriodUnit.Days:
                 this.autoRenewPeriodQuantityInputText.value = Math.round(p / 86400)
                 break
@@ -249,11 +231,11 @@ export class UpdateAccountController extends TransactionController {
     }
 
     private readonly autoRenewPeriodFeedbackMessage = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.autoRenewPeriodValid.value) {
             result = null
         } else {
-            switch(this.newAutoRenewPeriodUnit.value) {
+            switch (this.newAutoRenewPeriodUnit.value) {
                 case PeriodUnit.Days:
                     result = "Auto Renew Period must be comprised between 30 and 92 days."
                     break
@@ -271,7 +253,7 @@ export class UpdateAccountController extends TransactionController {
 
     private readonly maxAutoAssociationValid = computed(() => {
         let result: boolean
-        switch(this.autoAssociationMode.value) {
+        switch (this.autoAssociationMode.value) {
             case AutoAssociationMode.NoAutoAssociation: {
                 const usedAutoAssociationCount = this.usedAutoAssociationCount.value
                 result = usedAutoAssociationCount == 0
@@ -295,11 +277,11 @@ export class UpdateAccountController extends TransactionController {
         () => this.oldAutoAssociation.value !== this.newMaxAutoAssociation.value)
 
     private readonly oldAutoAssociation = computed(
-        () =>  this.oldAccountInfo.value?.max_automatic_token_associations ?? null)
+        () => this.oldAccountInfo.value?.max_automatic_token_associations ?? null)
 
     private readonly oldAutoAssociationMode = computed(() => {
-        let result: AutoAssociationMode|null
-        switch(this.oldAutoAssociation.value) {
+        let result: AutoAssociationMode | null
+        switch (this.oldAutoAssociation.value) {
             case null:
                 result = null
                 break
@@ -318,7 +300,7 @@ export class UpdateAccountController extends TransactionController {
 
     private readonly newMaxAutoAssociation = computed(() => {
         let result: number
-        switch(this.autoAssociationMode.value) {
+        switch (this.autoAssociationMode.value) {
             case AutoAssociationMode.NoAutoAssociation:
                 result = 0
                 break
@@ -332,7 +314,7 @@ export class UpdateAccountController extends TransactionController {
     })
 
     private readonly usedAutoAssociationCount = computed(() => {
-        let result: number|null
+        let result: number | null
         if (this.relationshipLookup.isLoaded.value) {
             result = 0
             for (const r of this.relationshipLookup.entity.value ?? []) {
@@ -347,8 +329,8 @@ export class UpdateAccountController extends TransactionController {
     })
 
     private readonly maxAutoAssociationFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.autoAssociationMode.value) {
+        let result: string | null
+        switch (this.autoAssociationMode.value) {
             case AutoAssociationMode.NoAutoAssociation: {
                 const requestAutoAssociationCount = 0
                 const usedAutoAssociationCount = this.usedAutoAssociationCount.value
@@ -395,14 +377,14 @@ export class UpdateAccountController extends TransactionController {
 
     private readonly stakingValid = computed(() => {
         let result: boolean
-        switch(this.stakeChoice.value) {
+        switch (this.stakeChoice.value) {
             case StakeChoice.NotStaking:
             case StakeChoice.StakeToNode:
                 result = true
                 break
             case StakeChoice.StakeToAccount:
                 result = this.newStakedAccountId.value !== null
-                      && this.newStakedAccountId.value !== walletManager.accountId.value
+                    && this.newStakedAccountId.value !== walletManager.accountId.value
                 break
         }
         return result
@@ -410,17 +392,17 @@ export class UpdateAccountController extends TransactionController {
 
     private readonly stakingEdited = computed(() => {
         let result: boolean
-        switch(this.stakeChoice.value) {
+        switch (this.stakeChoice.value) {
             case StakeChoice.NotStaking:
                 result = this.oldStakeChoice.value !== StakeChoice.NotStaking
                 break
             case StakeChoice.StakeToNode:
                 result = this.oldStakeChoice.value !== StakeChoice.StakeToNode
-                            || this.oldStakedNodeId.value !== this.newStakedNodeId.value
+                    || this.oldStakedNodeId.value !== this.newStakedNodeId.value
                 break
             case StakeChoice.StakeToAccount:
                 result = this.oldStakeChoice.value !== StakeChoice.StakeToAccount
-                            ||this.oldStakedAccountId.value !== this.newStakedAccountId.value
+                    || this.oldStakedAccountId.value !== this.newStakedAccountId.value
                 break
         }
         return result
@@ -448,15 +430,15 @@ export class UpdateAccountController extends TransactionController {
         () => this.stakedAccountIdController.newAccountId.value)
 
     private readonly stakingFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.stakeChoice.value) {
+        let result: string | null
+        switch (this.stakeChoice.value) {
             case StakeChoice.NotStaking:
             case StakeChoice.StakeToNode:
                 result = null
                 break
             case StakeChoice.StakeToAccount:
                 if (this.stakedAccountIdController.isLoaded.value) {
-                    switch(this.stakedAccountIdController.state.value) {
+                    switch (this.stakedAccountIdController.state.value) {
                         case AccountTextFieldState.empty:
                             result = null
                             break
@@ -491,7 +473,7 @@ export class UpdateAccountController extends TransactionController {
 
     public readonly declineRewardEdited = computed(
         () => this.stakeChoice.value == StakeChoice.StakeToNode
-        && this.oldDeclineReward.value !== this.newDeclineReward.value)
+            && this.oldDeclineReward.value !== this.newDeclineReward.value)
 
     public readonly oldDeclineReward = computed(() => this.oldAccountInfo.value?.decline_reward ?? null)
 

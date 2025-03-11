@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
     AccountInfo,
@@ -412,13 +394,67 @@ export async function drainTransactions(r: TransactionResponse, limit: number): 
     let result = r.transactions ?? []
     // let i = 1
     while (r.links?.next && result.length < limit) {
-        // console.log("drain iteration: " + i);
-        // i += 1
+        // console.log(`drainTransactions (iteration ${i++})`)
+        // console.log(`  - limit:${limit}`)
+        // console.log(`  - result.length:${result.length}`)
+        // console.log(`  - r.links.next:${r.links.next}`)
         const ar = await axios.get<TransactionResponse>(r.links.next)
         if (ar.data.transactions) {
             result = result.concat(ar.data.transactions)
         }
         r = ar.data
+    }
+    return result
+}
+
+export async function drainAndFilterTransactions(
+    r: TransactionResponse,
+    limit: number,
+    minTinyBar: number,
+    account: string
+): Promise<Transaction[]> {
+
+    const MAX_DRAIN_ITERATION_WHEN_FILTERING = 40
+
+    // This function is used to filter out what we consider as 'spam' transactions
+    // A transaction is considered spam if it contains a transfer involving the user account which has an amount
+    // below the limit chosen by the user (e.g. 1 hbar).
+    // The amount considered is the (absolute) net value of the transfer -- we deduce the amount of the perceived staking reward if any.
+    const filterTinyTxn = (txn: Transaction) => {
+        let filter = true
+        let reward = 0
+        if (txn.name === TransactionType.CRYPTOTRANSFER && minTinyBar > 0) {
+            for (const r of txn.staking_reward_transfers) {
+                if (r.account === account) {
+                    reward = r.amount
+                }
+            }
+            for (const t of txn.transfers) {
+                if (t.account === account) {
+                    const netAmount = Math.abs(t.amount - reward)
+                    if (netAmount < minTinyBar) {
+                        filter = false
+                    }
+                    break
+                }
+            }
+        }
+        return filter
+    }
+
+    let result = (r.transactions ?? []).filter(filterTinyTxn)
+    let i = 0
+    while (r.links?.next && result.length < limit && i < MAX_DRAIN_ITERATION_WHEN_FILTERING) {
+        // console.log(`drainAndFilterTransactions (iteration ${i + 1})`)
+        // console.log(`  - limit:${limit}`)
+        // console.log(`  - result.length:${result.length}`)
+        // console.log(`  - r.links.next:${r.links.next}`)
+        const ar = await axios.get<TransactionResponse>(r.links.next)
+        if (ar.data.transactions) {
+            result = result.concat(ar.data.transactions.filter(filterTinyTxn))
+        }
+        r = ar.data
+        i += 1
     }
     return result
 }
@@ -545,8 +581,8 @@ export function extractChecksum(address: string): string | null {
     return dash != -1 ? address.substring(dash + 1) : null
 }
 
-export function computeTPS(blocks: Block[]): number|null { // blocks should be in ascending order
-    let result: number|null
+export function computeTPS(blocks: Block[]): number | null { // blocks should be in ascending order
+    let result: number | null
 
     if (blocks.length >= 1) {
         const startBlock = blocks[0]

@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, test} from 'vitest'
 
@@ -32,7 +14,7 @@ import {describe, test} from 'vitest'
 // import {WalletDriver_Mock} from "../../staking/WalletDriver_Mock";
 // import {walletManager} from "@/router";
 // import {TokenInfo} from "@/schemas/MirrorNodeSchemas";
-// import {NetworkConfig} from "../../../../src/config/NetworkConfig";
+// import {NetworkConfig} from "@/config/NetworkConfig";
 
 describe.skip("TokenInfoAnalyzer.spec.ts", () => {
 
@@ -47,7 +29,7 @@ describe.skip("TokenInfoAnalyzer.spec.ts", () => {
         // expect(walletManager.accountId.value).toBe(null) // because not connected
         //
         // // Mock axios
-        // const mock = new MockAdapter(axios)
+        // const mock = new MockAdapter(axios as any)
         // const matcher1 = "api/v1/accounts/" + walletAccountId + "/tokens?token.id=" + SAMPLE_ASSOCIATED_TOKEN.token_id + "&limit=1"
         // const response1 = {
         //     "tokens": [SAMPLE_ASSOCIATED_TOKEN],

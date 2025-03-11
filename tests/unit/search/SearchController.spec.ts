@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {nextTick, ref} from "vue";
@@ -41,17 +23,17 @@ import {
     SAMPLE_TRANSACTIONS
 } from "../Mocks";
 import {fetchGetURLs} from "../MockUtils";
-import {base64DecToArr, byteToHex} from "../../../src/utils/B64Utils";
-import {SelectedTokensCache} from "../../../src/utils/cache/SelectedTokensCache";
+import {base64DecToArr, byteToHex} from "@/utils/B64Utils.ts";
+import {SelectedTokensCache} from "@/utils/cache/SelectedTokensCache.ts";
 
 describe("SearchController.vue", () => {
 
-    const mock = new MockAdapter(axios)
+    const mock = new MockAdapter(axios as any)
     const TRANSACTION_HASH = byteToHex(base64DecToArr(SAMPLE_TRANSACTION.transaction_hash))
 
     // We duplicate SAMPLE_ACCOUNT and patch its account id so that it conflicts with block number
     const SAMPLE_PATCHED_ACCOUNT = JSON.parse(JSON.stringify(SAMPLE_ACCOUNT))
-    const SAMPLE_PATCHED_ACCOUNT_ID = new EntityID(0, 0, SAMPLE_BLOCK.number)
+    const SAMPLE_PATCHED_ACCOUNT_ID = new EntityID(0, 0, SAMPLE_BLOCK.number, null)
     SAMPLE_PATCHED_ACCOUNT.account = SAMPLE_PATCHED_ACCOUNT_ID.toString()
 
     // We derive a NAME_PATTERN from SAMPLE_TOKEN.name
@@ -111,7 +93,7 @@ describe("SearchController.vue", () => {
             //
             const matcher0 = "api/v1/tokens/?name=" + SAMPLE_TOKEN_NAME + "&limit=100"
             mock.onGet(matcher0).reply(200, {
-                tokens: [ SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE ],
+                tokens: [SAMPLE_TOKEN, SAMPLE_TOKEN_DUDE],
                 links: {next: null}
             })
         }
@@ -186,9 +168,9 @@ describe("SearchController.vue", () => {
     it("should trim leading/trailing whitespaces from the search input text", async () => {
         const inputText = ref<string>("")
         const controller = new SearchController(inputText)
-    
+
         await flushPromises()
-    
+
         expect(vi.getTimerCount()).toBe(0)
         expect(controller.visible.value).toBe(false)
         expect(controller.actualInputText.value).toBe("")
@@ -196,8 +178,8 @@ describe("SearchController.vue", () => {
         expect(controller.candidateCount.value).toBe(0)
         expect(controller.visibleAgents.value.length).toBe(0)
         expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
-    
-        inputText.value = `   ${SAMPLE_ACCOUNT.account}   `        
+
+        inputText.value = `   ${SAMPLE_ACCOUNT.account}   `
         await nextTick()
         expect(vi.getTimerCount()).toBe(1)
         vi.advanceTimersToNextTimer()
@@ -207,7 +189,7 @@ describe("SearchController.vue", () => {
         expect(controller.candidateCount.value).toBe(0)
         expect(controller.visibleAgents.value.length).toBe(0)
         expect(controller.loadingDomainNameSearchAgents.value.length).toBe(0)
-    
+
         await flushPromises()
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/accounts/0.0.730631",
@@ -215,7 +197,7 @@ describe("SearchController.vue", () => {
             "api/v1/tokens/0.0.730631",
             "api/v1/topics/0.0.730631",
         ])
-    
+
         expect(controller.visible.value).toBe(true)
         expect(controller.actualInputText.value).toBe(SAMPLE_ACCOUNT.account)
         expect(controller.loading.value).toBe(false)
@@ -934,7 +916,6 @@ describe("SearchController.vue", () => {
         expect(candidates[1].entity).toStrictEqual(SAMPLE_TOKEN_DUDE)
 
     })
-
 
 
     //

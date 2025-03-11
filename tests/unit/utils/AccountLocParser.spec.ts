@@ -1,26 +1,8 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {Ref, ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import {SAMPLE_ACCOUNT} from "../Mocks";
@@ -30,7 +12,7 @@ import {AccountLocParser} from "@/utils/parser/AccountLocParser";
 import {AccountAlias} from "@/utils/AccountAlias";
 import {makeEthAddressForAccount} from "@/schemas/MirrorNodeUtils";
 import {AccountInfo} from "@/schemas/MirrorNodeSchemas";
-import {NetworkConfig} from "../../../src/config/NetworkConfig";
+import {NetworkConfig} from "@/config/NetworkConfig";
 
 describe("AccountLocParser.ts", () => {
 
@@ -44,7 +26,7 @@ describe("AccountLocParser.ts", () => {
 
     test("mount + set/unset account loc + unmount", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -175,7 +157,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc + mount + unmount + unset account loc", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -306,7 +288,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with account address", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_ADDRESS
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -437,7 +419,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with account alias in base 32", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.alias
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -567,7 +549,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with account alias in hex form", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.alias
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -697,7 +679,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with unknown account id", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ID = "0.0.42"
         const matcher1 = "/api/v1/accounts/" + UNKNOWN_ACCOUNT_ID
@@ -829,7 +811,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with unknown account address", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ADDRESS = "0x0001020304050607080900010203040506070809"
         const matcher1 = "/api/v1/accounts/" + UNKNOWN_ACCOUNT_ADDRESS
@@ -961,7 +943,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with unknown alias in base32", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ALIAS = SAMPLE_ACCOUNT.alias
         const matcher1 = "/api/v1/accounts/" + UNKNOWN_ACCOUNT_ALIAS
@@ -1093,7 +1075,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with unknown alias in hex", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ALIAS = SAMPLE_ACCOUNT_ALIAS_HEX
         const matcher1 = "/api/v1/accounts/" + UNKNOWN_ACCOUNT_ALIAS
@@ -1226,7 +1208,7 @@ describe("AccountLocParser.ts", () => {
 
     test("set account loc with dummy value", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const DUMMY_LOC = "dummy loc"
         const matcher1 = "/api/v1/accounts/" + DUMMY_LOC

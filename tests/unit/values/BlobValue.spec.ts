@@ -1,30 +1,12 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import BlobValue from '../../../src/components/values/BlobValue.vue';
+import BlobValue from '@/components/values/BlobValue.vue';
 import {IPFS_GATEWAY_PREFIX} from "../Mocks";
-import router from "../../../src/router";
-import {CoreConfig} from "../../../src/config/CoreConfig";
-import {coreConfigKey} from "../../../src/AppKeys";
+import router from "@/router";
+import {CoreConfig} from "@/config/CoreConfig";
+import {coreConfigKey} from "@/AppKeys";
 
 describe("BlobValue.vue", () => {
 

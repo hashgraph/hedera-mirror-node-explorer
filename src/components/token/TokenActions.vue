@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -31,35 +13,40 @@
       :enabled="true"
       :size="buttonSize"
       @action="showAssociateDialog=true"
-  >ASSOCIATE</ButtonView>
+  >ASSOCIATE
+  </ButtonView>
 
   <ButtonView
       v-if="dissociateEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showDissociateDialog=true"
-  >DISSOCIATE</ButtonView>
+  >DISSOCIATE
+  </ButtonView>
 
   <ButtonView
       v-if="rejectEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showRejectDialog=true"
-  >REJECT</ButtonView>
+  >REJECT
+  </ButtonView>
 
   <ButtonView
       v-if="claimEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showClaimDialog=true"
-  >CLAIM</ButtonView>
+  >CLAIM
+  </ButtonView>
 
   <ButtonView
       v-if="watchEnabled"
       :enabled="true"
       :size="buttonSize"
       @action="showWatchDialog=true"
-  >IMPORT</ButtonView>
+  >IMPORT
+  </ButtonView>
 
   <AssociateTokenDialog
       v-model:show-dialog="showAssociateDialog"
@@ -148,7 +135,7 @@ const tokenAirdrops = computed(() => props.analyzer.pendingAirdrops.value)
 const isFungibleToken = computed(() => props.analyzer.isFungible.value)
 
 const connectedAccountOK = computed(() =>
-  walletManager.accountId.value !==  null && walletManager.accountId.value !== treasuryAccountId.value)
+    walletManager.accountId.value !== null && walletManager.accountId.value !== treasuryAccountId.value)
 
 const associateEnabled = computed(
     () => connectedAccountOK.value
@@ -162,15 +149,15 @@ const dissociateEnabled = computed(
 
 const rejectEnabled = computed(
     () => connectedAccountOK.value
-          && balanceForConnectedAccount.value !== null
-          && balanceForConnectedAccount.value > 0 /* => token associated */
-          && isFungibleToken.value !== null
-          && isFungibleToken.value)
+        && balanceForConnectedAccount.value !== null
+        && balanceForConnectedAccount.value > 0 /* => token associated */
+        && isFungibleToken.value !== null
+        && isFungibleToken.value)
 
 const claimEnabled = computed(
     () => connectedAccountOK.value
-          && tokenAirdrops.value !== null
-          && tokenAirdrops.value.length >= 1)
+        && tokenAirdrops.value !== null
+        && tokenAirdrops.value.length >= 1)
 
 const watchEnabled = computed(
     () => walletManager.isWatchSupported.value

@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -123,7 +105,7 @@ const isPaginated = computed(() => props.auditItems.length > perPage.value)
 const tableTitle = computed(() => `Added (${props.auditItems.length})`)
 
 const filteredAuditItems = computed(() => {
-  let result: Array<ContractSourceAnalyzerItem> = []
+  const result: Array<ContractSourceAnalyzerItem> = []
   for (let i = 0; i < props.auditItems.length; i++) {
     if (!props.auditItems[i].unused) {
       result.push(props.auditItems[i])

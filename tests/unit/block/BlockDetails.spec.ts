@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -54,7 +36,7 @@ describe("BlockDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/blocks/" + BLOCK_NUMBER
         mock.onGet(matcher1).reply(200, BLOCK);
@@ -69,7 +51,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_NUMBER
@@ -115,7 +97,7 @@ describe("BlockDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/blocks/" + NORMALIZED_BLOCK_HASH
         mock.onGet(matcher1).reply(200, BLOCK);
@@ -130,7 +112,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -176,7 +158,7 @@ describe("BlockDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         let normalizedBlockHash = PathParam.parseBlockLoc(BLOCK_HASH)
         let matcher1 = "/api/v1/blocks/" + normalizedBlockHash!.toString()
@@ -192,7 +174,7 @@ describe("BlockDetails.vue", () => {
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_HASH
@@ -292,12 +274,12 @@ describe("BlockDetails.vue", () => {
     it("Should detect invalid block number", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const INVALID_BLOCK_NUMBER = "-42"
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: INVALID_BLOCK_NUMBER
@@ -332,12 +314,12 @@ describe("BlockDetails.vue", () => {
     it("Should detect invalid block hash", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const INVALID_BLOCK_HASH = "0xABCDEF"
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: INVALID_BLOCK_HASH
@@ -372,14 +354,14 @@ describe("BlockDetails.vue", () => {
     it("Should detect non-existent block number", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/blocks/" + BLOCK_NUMBER
         mock.onGet(matcher1).reply(404);
 
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_NUMBER
@@ -417,14 +399,14 @@ describe("BlockDetails.vue", () => {
     it("Should detect non-existent block hash", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/blocks/" + NORMALIZED_BLOCK_HASH
         mock.onGet(matcher1).reply(404);
 
         const wrapper = mount(BlockDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 blockHon: BLOCK_HASH

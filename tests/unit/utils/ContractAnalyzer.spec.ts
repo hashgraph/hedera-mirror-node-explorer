@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {Ref, ref} from "vue";
@@ -35,7 +17,7 @@ describe("ContractAnalyzer.spec.ts", () => {
     test("unknown custom contract", async () => {
 
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT)
 
         // 1) new
@@ -90,7 +72,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     test("custom contract verified on sourcify", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT)
@@ -152,7 +134,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     test("fungible token as a contract", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN.token_id
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN)
@@ -214,7 +196,7 @@ describe("ContractAnalyzer.spec.ts", () => {
 
     test("non fungible token as a contract", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "api/v1/tokens/" + SAMPLE_TOKEN_WITH_KEYS.token_id
         mock.onGet(matcher1).reply(200, SAMPLE_TOKEN_WITH_KEYS)

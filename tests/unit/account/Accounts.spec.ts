@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -45,7 +27,7 @@ describe("Accounts.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts"
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNTS);
@@ -64,7 +46,7 @@ describe("Accounts.vue", () => {
         // console.log(wrapper.text())
 
         const card = wrapper.findComponent(DashboardCardV2)
-        expect(wrapper.vm.accountTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).accountTableController.mounted.value).toBe(true)
         expect(card.exists()).toBe(true)
         expect(card.text()).toMatch(RegExp("^Recent Accounts"))
 
@@ -83,7 +65,7 @@ describe("Accounts.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.accountTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).accountTableController.mounted.value).toBe(false)
     });
 
 });

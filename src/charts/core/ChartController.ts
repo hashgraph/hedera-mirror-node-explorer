@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, Ref, ref, watch, WatchStopHandle} from "vue";
 import {Chart, ChartConfiguration} from 'chart.js/auto';
@@ -34,12 +16,12 @@ export enum ChartState {
 
 export abstract class ChartController<M> {
 
-    public readonly canvas: Ref<HTMLCanvasElement|null> = ref(null)
+    public readonly canvas: Ref<HTMLCanvasElement | null> = ref(null)
     public readonly range: Ref<ChartRange>
-    public readonly latestMetric: Ref<M|null> = ref(null)
+    public readonly latestMetric: Ref<M | null> = ref(null)
 
-    private metrics: M[]|null = null
-    private chart: Chart|null = null
+    private metrics: M[] | null = null
+    private chart: Chart | null = null
     private readonly error: Ref<unknown> = ref(null)
     private readonly building: Ref<boolean> = ref(false)
     private watchHandles: WatchStopHandle[] = []
@@ -59,7 +41,7 @@ export abstract class ChartController<M> {
     public mount(): void {
         this.watchHandles = [
             watch([this.range, this.routeManager.currentNetworkEntry], this.updateMetrics, {immediate: true}),
-            watch([this.canvas, this.themeController.darkSelected], this.updateChart, { immediate: true }),
+            watch([this.canvas, this.themeController.darkSelected], this.updateChart, {immediate: true}),
         ]
     }
 
@@ -91,7 +73,7 @@ export abstract class ChartController<M> {
     })
 
     public readonly errorExtra = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.state.value === ChartState.error) {
             result = JSON.stringify(this.error.value)
         } else {
@@ -115,19 +97,19 @@ export abstract class ChartController<M> {
     // To be subclassed
     //
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     public isSupported(): boolean {
         return true
     }
 
     public abstract getMetricDate(metric: M): Date | null
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     protected async loadData(range: ChartRange): Promise<LoadedData<M>> {
         throw "to be subclassed"
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     protected async transformMetrics(metrics: M[], range: ChartRange): Promise<M[]> {
         // No transformation by default
         return metrics
@@ -155,7 +137,7 @@ export abstract class ChartController<M> {
                 this.latestMetric.value = null
                 this.error.value = null
             }
-        } catch(error) {
+        } catch (error) {
             this.metrics = null
             this.latestMetric.value = null
             this.error.value = error
@@ -165,7 +147,7 @@ export abstract class ChartController<M> {
         }
     }
 
-    private readonly updateChart =  () => {
+    private readonly updateChart = () => {
         if (this.chart !== null) {
             this.chart.destroy()
             this.chart = null
@@ -175,8 +157,8 @@ export abstract class ChartController<M> {
         if (this.canvas.value !== null && this.metrics !== null) {
             try {
                 const chartConfig = this.makeChartConfig(this.metrics, this.range.value)
-                this.chart = new Chart(this.canvas.value,  chartConfig)
-            } catch(error) {
+                this.chart = new Chart(this.canvas.value, chartConfig)
+            } catch (error) {
                 this.chart = null
             }
         } // else leaves this.chart to null
@@ -194,5 +176,6 @@ export abstract class ChartController<M> {
 }
 
 export class LoadedData<M> {
-    constructor(public readonly metrics: M[], public readonly latestMetric: M|null) {}
+    constructor(public readonly metrics: M[], public readonly latestMetric: M | null) {
+    }
 }

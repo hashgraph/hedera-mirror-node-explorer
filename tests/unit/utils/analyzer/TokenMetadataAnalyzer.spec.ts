@@ -1,31 +1,13 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {ref} from "vue";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {TokenMetadataAnalyzer} from "../../../../src/components/token/TokenMetadataAnalyzer";
+import {TokenMetadataAnalyzer} from "@/components/token/TokenMetadataAnalyzer";
 import {
     AR_CID_METADATA,
     AR_IMAGE_URL,
@@ -57,7 +39,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("complete flow with metadata containing IPFS URL", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         // 1) new
@@ -146,7 +128,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("metadata containing IPFS CID", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         const metadata = ref(IPFS_CID_METADATA)
@@ -185,7 +167,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("complete flow with metadata containing Arweave URL", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(AR_METADATA_CONTENT_URL).reply(200, AR_METADATA_CONTENT)
 
         // 1) new
@@ -274,7 +256,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("metadata containing Arweave CID", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(AR_METADATA_CONTENT_URL).reply(200, AR_METADATA_CONTENT)
 
         const metadata = ref(AR_CID_METADATA)
@@ -313,7 +295,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("metadata containing HTTPS URL", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(HTTPS_METADATA_CONTENT_URL).reply(200, IPFS_METADATA_CONTENT)
 
         const metadata = ref(HTTPS_METADATA)
@@ -348,11 +330,14 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
         mock.restore()
     })
 
+    // This test in disabled because the processing of HCS-1 based contents
+    // involves decoding using the @bokuweb/zstd-wasm module, which currently
+    // fails when run in Vitest.
     test.skip("metadata containing HCS-1 URI", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
-        const matcher = `/api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
+        const mock = new MockAdapter(axios as any)
+        const matcher = `api/v1/topics/${HCS_TOPIC}/messages?limit=100&order=asc`
         mock.onGet(matcher).reply(200, HCS_TOPIC_MESSAGES)
 
         const metadata = ref(HCS_METADATA)
@@ -380,7 +365,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("metadata containing tx timestamp", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         // const matcher = "api/v1/topics/messages/" + "1713509435.878762003"
         const matcher = "api/v1/topics/messages/" + TIMESTAMP
         mock.onGet(matcher).reply(200, TIMESTAMP_SUBMIT_MESSAGE)
@@ -417,7 +402,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("metadata containing arbitrary string", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         // const matcher = "api/v1/topics/messages/" + "1713509435.878762003"
         const matcher = "api/v1/topics/messages/" + TIMESTAMP
         mock.onGet(matcher).reply(200, TIMESTAMP_SUBMIT_MESSAGE)
@@ -448,7 +433,7 @@ describe("TokenMetadataAnalyzer.spec.ts", () => {
     test("non standard metadata", async () => {
 
         // Mock axios
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         mock.onGet(IPFS_METADATA_CONTENT_URL).reply(200, NON_STD_METADATA_CONTENT)
 
         const metadata = ref(IPFS_METADATA)

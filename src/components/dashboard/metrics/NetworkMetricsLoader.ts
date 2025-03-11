@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import axios from "axios";
 import {computed} from "vue";
@@ -31,7 +13,7 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
 
     public constructor() {
         // Refresh every 10 min, forever
-        super(60*10*1000, EntityLoader.HUGE_COUNT)
+        super(60 * 10 * 1000, EntityLoader.HUGE_COUNT)
     }
 
     public readonly hbarPriceText = computed(() => {
@@ -75,15 +57,15 @@ export class NetworkMetricsLoader extends EntityLoader<NetworksMetrics> {
 
         const timeNow = new Date().getTime()
         const time24 = timeNow - 24 * 3600 * 1000
-        const paramsNow = { timestamp: timeNow / 1000 }
-        const params24 = { timestamp: time24 / 1000 }
+        const paramsNow = {timestamp: timeNow / 1000}
+        const params24 = {timestamp: time24 / 1000}
 
         const lastExchangeRate = (await axios.get<NetworkExchangeRateSetResponse>(
-            "api/v1/network/exchangerate", { params: paramsNow})).data
+            "api/v1/network/exchangerate", {params: paramsNow})).data
         const lastExchangeRate24 = (await axios.get<NetworkExchangeRateSetResponse>(
             "api/v1/network/exchangerate", {params: params24})).data
         const lastSupply = (await axios.get<NetworkSupplyResponse>(
-            "api/v1/network/supply", { params: paramsNow})).data
+            "api/v1/network/supply", {params: paramsNow})).data
         const lastSupply24 = (await axios.get<NetworkSupplyResponse>(
             "api/v1/network/supply", {params: params24})).data
 
@@ -177,7 +159,8 @@ export class NetworksMetrics {
         readonly lastExchangeRate: NetworkExchangeRateSetResponse,
         readonly lastExchangeRate24: NetworkExchangeRateSetResponse,
         readonly lastSupply: NetworkSupplyResponse,
-        readonly lastSupply24: NetworkSupplyResponse) {}
+        readonly lastSupply24: NetworkSupplyResponse) {
+    }
 
 }
 

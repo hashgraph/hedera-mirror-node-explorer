@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -25,16 +7,19 @@
 <template>
 
   <PageFrameV2 page-title="Transaction Details">
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification"/>
+    </template>
 
     <DashboardCardV2 collapsible-key="transactionDetails">
       <template #title>
         <span>Transaction </span>
         <TransactionIdValue :id="formattedTransactionId"/>
         <template v-if="transaction">
-          <div v-if="transactionSucceeded" class="h-has-pill h-status-success" style="margin-top: 2px">
+          <div v-if="transactionSucceeded" class="h-has-pill h-chip-success" style="margin-top: 2px">
             SUCCESS
           </div>
-          <div v-else class="h-has-pill h-status-error" style="margin-top: 2px">
+          <div v-else class="h-has-pill h-chip-error" style="margin-top: 2px">
             FAILURE
           </div>
         </template>
@@ -54,10 +39,6 @@
           <option value="atForm">DEFAULT FORMAT</option>
           <option value="dashForm">EXCHANGE FORMAT</option>
         </SelectView>
-      </template>
-
-      <template v-if="notification" #notification>
-        <NotificationBanner :message="notification"/>
       </template>
 
       <template #left-content>

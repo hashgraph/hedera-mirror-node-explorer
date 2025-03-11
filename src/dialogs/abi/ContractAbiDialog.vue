@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -31,7 +13,7 @@
         <div class="dialog-grid" style="align-self: stretch">
           <template v-for="b of paramBuilders" :key="b.paramType.name">
             <div style="align-self: center">{{ b.paramType.name }}</div>
-            <ParamTypeEditor :param-builder="b" style="width: 100%" />
+            <ParamTypeEditor :param-builder="b" style="width: 100%"/>
             <div/>
             <div>{{ b.paramType.format() }}</div>
           </template>
@@ -109,7 +91,7 @@ const controller = new ContractAbiController(showDialog, props.contractCallBuild
 const dialogTitle = computed(() => props.contractCallBuilder.fragment.name + "()")
 const paramBuilders = computed(() => props.contractCallBuilder.paramBuilders)
 const hasResult = computed(() => props.contractCallBuilder.hasResult())
-const callOutput =computed( () => props.contractCallBuilder.callOutput)
+const callOutput = computed(() => props.contractCallBuilder.callOutput)
 const errorMessage = controller.errorMessage
 const walletName = walletManager.walletName
 const walletIconURL = computed(() => walletManager.walletIconURL.value ?? "")

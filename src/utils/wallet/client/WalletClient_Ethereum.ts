@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
     WalletClient,
@@ -103,7 +85,6 @@ export class WalletClient_Ethereum extends WalletClient {
     }
 
 
-
     //
     // WalletSession
     //
@@ -124,7 +105,7 @@ export class WalletClient_Ethereum extends WalletClient {
         return Promise.resolve(result)
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     public async callContract(contractId: string, functionData: string): Promise<ContractResultDetails | string> {
         throw "to be implemented"
     }
@@ -144,14 +125,14 @@ export class WalletClient_Ethereum extends WalletClient {
                 if (!await this.isChainOK()) {
                     await this.trySetupChain()
                 }
-            } catch(error) {
+            } catch (error) {
                 // Let's go forward and try the remaining steps… :/
             }
             // 1.1) Estimate gas
             try {
                 const gas = await this.estimateGas(accountAddress, "0x" + tokenAddress, callData)
                 console.log("gas = " + gas)
-            } catch(reason) {
+            } catch (reason) {
                 console.log("failed to estimate gas = " + JSON.stringify(reason))
             }
             // 2) Sends transaction
@@ -215,7 +196,7 @@ export class WalletClient_Ethereum extends WalletClient {
             if (!await this.isChainOK()) {
                 await this.tryAddingChain()
             }
-        } catch(reason) {
+        } catch (reason) {
             if (eth_isUserReject(reason)) {
                 throw new WalletClientRejectError()
             } else if (eth_isUnsupportedMethod(reason)) {
@@ -245,7 +226,7 @@ export class WalletClient_Ethereum extends WalletClient {
     private async trySwitchingChain(): Promise<void> {
         try {
             await wallet_switchEthereumChain(this.provider, this.targetChainId())
-        } catch(reason) {
+        } catch (reason) {
             if (!eth_isUnsupportedMethod(reason) && !eth_isUnrecognizedChainId(reason)) {
                 throw reason
             }
@@ -261,10 +242,10 @@ export class WalletClient_Ethereum extends WalletClient {
         }
     }
 
-    private makeChainParam(): AddEthereumChainParameter|null {
-        let result: AddEthereumChainParameter|null
+    private makeChainParam(): AddEthereumChainParameter | null {
+        let result: AddEthereumChainParameter | null
 
-        switch(this.network) {
+        switch (this.network) {
             case "mainnet":
                 result = CHAIN_PARAM_MAINNET
                 break
@@ -310,10 +291,10 @@ export class WalletClient_Ethereum extends WalletClient {
 
 }
 
-export function networkToChainId(network: string, hex: boolean = true): string|null {
-    let result: number|null
+export function networkToChainId(network: string, hex: boolean = true): string | null {
+    let result: number | null
     // https://docs.hedera.com/hedera/core-concepts/smart-contracts/deploying-smart-contracts/json-rpc-relay
-    switch(network) {
+    switch (network) {
         case "mainnet":
             result = 295
             break

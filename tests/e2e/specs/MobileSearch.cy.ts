@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // https://docs.cypress.io/api/introduction/api.html
 
@@ -109,7 +91,6 @@ describe('Search Bar', () => {
     it('should find the transaction by hash', () => {
         const searchHash = "0x08e62c0531e603fa6d29930195682e937978d542bd404d490546717bb128da4ec4ed586e6d516735f24049b2c3eb7b20"
         const timestamp = "1674821555.935799283"
-        const transactionId = "0.0.445590@1674821543.265349407"
         testBodyV2(
             searchHash,
             '/mainnet/transaction/' + timestamp,
@@ -120,7 +101,6 @@ describe('Search Bar', () => {
 
     it('should find the transaction by timestamp', () => {
         const searchTimestamp = "1674821555.935799283"
-        const transactionId = "0.0.445590@1674821543.265349407"
         testBodyV2(
             searchTimestamp,
             '/mainnet/transaction/' + searchTimestamp,
@@ -217,9 +197,9 @@ describe('Search Bar', () => {
 })
 
 const testBodyV2 = (searchString: string,
-                  expectedPath: string,
-                  expectedTitle: string|null = null,
-                  expectTable = false) => {
+                    expectedPath: string,
+                    expectedTitle: string | null = null,
+                    expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
         cy.get('input').type(searchString)
     })

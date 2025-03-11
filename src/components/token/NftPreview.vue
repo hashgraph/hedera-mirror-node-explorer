@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -34,7 +16,7 @@
   >
     <template #placeHolder>
       <div class="placeholder">
-        <FileX v-if="size >= 100" :size="40"/>
+        <ImageOff v-if="size >= 100" :size="40"/>
         <span>
         {{ size > 200 ? 'Non Fungible Token' : 'NFT' }}
       </span>
@@ -58,7 +40,7 @@
 import {computed, PropType, ref} from "vue";
 import InfoTooltip from "@/components/InfoTooltip.vue";
 import MediaContent from "@/components/MediaContent.vue";
-import {FileX} from 'lucide-vue-next';
+import {ImageOff} from 'lucide-vue-next';
 
 const props = defineProps({
   url: {

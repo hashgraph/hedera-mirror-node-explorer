@@ -97,11 +97,11 @@ jobs:
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Report Unit Test Coverage
-        uses: step-security/vitest-coverage-report-action@aba564d7473e0398ae1f89a0f8987405608c1536 # v2.5.1
+        uses: step-security/vitest-coverage-report-action@c0d7154060c9f5bb7def5e23475dda4c4b14086e # v2.5.2
         if: ${{ inputs.enable-unit-tests && !cancelled() }}
 
       - name: Cypress run
-        uses: cypress-io/github-action@1052aa98bbbe4f55210f844878213c07d9c8c399 # v6.7.13
+        uses: cypress-io/github-action@01ab638e25de36956e276fd37e34446273874399 # v6.7.15
         if: ${{ inputs.enable-e2e-tests && !cancelled() }}
         with:
           install-command: npm install

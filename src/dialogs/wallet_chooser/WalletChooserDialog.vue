@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!--
 
@@ -59,7 +41,8 @@
       <ModalDialogButton v-model:show-dialog="showDialog"
                          :enabled="chosenWallet !== null"
                          :is-default="true"
-                         @action="handleConnect">CONNECT</ModalDialogButton>
+                         @action="handleConnect">CONNECT
+      </ModalDialogButton>
     </template>
 
   </ModalDialog>
@@ -89,12 +72,14 @@ const showDialog = defineModel("showDialog", {
   required: true
 })
 
-const chosenWallet =ref<WalletItem|null>(null)
+const chosenWallet = ref<WalletItem | null>(null)
 const showDisclaimerDialog = ref(false)
 
 const emit = defineEmits(["chooseWallet"])
 
-watch(showDialog, (showing) => {if (showing) chosenWallet.value = null})
+watch(showDialog, (showing) => {
+  if (showing) chosenWallet.value = null
+})
 
 //
 // Wallet items
@@ -103,17 +88,17 @@ watch(showDialog, (showing) => {if (showing) chosenWallet.value = null})
 export interface WalletItem {
   name: string
   iconURL: string
-  uuid: string|null
+  uuid: string | null
 }
 
 const walletConnectID = CoreConfig.inject().walletConnectID
 const walletItems = computed<WalletItem[]>(() => {
   const result: WalletItem[] = []
   if (walletConnectID !== null) {
-    result.push({ name: "Wallet Connect", iconURL: WALLECT_CONNECT_LOGO, uuid: null})
+    result.push({name: "Wallet Connect", iconURL: WALLECT_CONNECT_LOGO, uuid: null})
   }
   for (const d of EIP6963Agent.instance.providers.value) {
-    result.push({ name: d.info.name, iconURL: d.info.icon, uuid: d.info.uuid })
+    result.push({name: d.info.name, iconURL: d.info.icon, uuid: d.info.uuid})
   }
   return result
 })

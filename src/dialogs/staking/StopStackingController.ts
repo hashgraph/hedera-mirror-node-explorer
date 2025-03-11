@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, Ref} from "vue";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
@@ -30,14 +12,14 @@ import {AccountByAddressCache} from "@/utils/cache/AccountByAddressCache.ts";
 
 export class StopStackingController extends TransactionController {
 
-    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions|null>
+    private readonly accountLookup: EntityLookup<string, AccountBalanceTransactions | null>
     private readonly stakedNodeAnalyzer: NodeAnalyzer
 
     //
     // Public
     //
 
-    public constructor(showDialog: Ref<boolean>, public readonly accountId: Ref<string|null>) {
+    public constructor(showDialog: Ref<boolean>, public readonly accountId: Ref<string | null>) {
         super(showDialog)
         this.accountLookup = AccountByIdCache.instance.makeLookup(this.accountId)
         this.stakedNodeAnalyzer = new NodeAnalyzer(this.stakedNodeId)
@@ -65,7 +47,7 @@ export class StopStackingController extends TransactionController {
     }
 
 
-    protected async executeTransaction(): Promise<string|null> {
+    protected async executeTransaction(): Promise<string | null> {
         const result = await walletManager.changeStaking(null, null, null)
 
         if (this.accountId.value !== null) {

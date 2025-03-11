@@ -1,29 +1,11 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {ContractAnalyzer} from "@/utils/analyzer/ContractAnalyzer";
 import {ref} from "vue";
-import {ABIAnalyzer} from "../../../../src/utils/analyzer/ABIAnalyzer";
+import {ABIAnalyzer} from "@/utils/analyzer/ABIAnalyzer";
 import {
     SAMPLE_ADMIN_ADDRESS_RESPONSE,
     SAMPLE_CONTRACT,
@@ -35,15 +17,15 @@ import {flushPromises} from "@vue/test-utils";
 import {fetchGetURLs} from "../../MockUtils";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import {ABIController, ABIMode} from "../../../../src/components/contract/ABIController";
-import {routeManager} from "../../../../src/router";
+import {ABIController, ABIMode} from "@/components/contract/ABIController";
+import {routeManager} from "@/router";
 
 
 describe("ABIAnalyzer.ts", async () => {
 
     it("Non proxy contract", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -54,7 +36,7 @@ describe("ABIAnalyzer.ts", async () => {
         mock.onGet(matcher2).reply(200, []);
 
         // 1) new
-        const contractId = ref<string|null>(null)
+        const contractId = ref<string | null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
         const abiMode = ref<ABIMode>(ABIMode.Normal)
@@ -140,7 +122,7 @@ describe("ABIAnalyzer.ts", async () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -158,7 +140,7 @@ describe("ABIAnalyzer.ts", async () => {
 
 
         // 1) new
-        const contractId = ref<string|null>(null)
+        const contractId = ref<string | null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
         const abiMode = ref<ABIMode>(ABIMode.Normal)
@@ -253,7 +235,7 @@ describe("ABIAnalyzer.ts", async () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher0 = "api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher0).reply(200, SAMPLE_CONTRACT);
 
@@ -277,7 +259,7 @@ describe("ABIAnalyzer.ts", async () => {
 
 
         // 1) new
-        const contractId = ref<string|null>(null)
+        const contractId = ref<string | null>(null)
         const contractAnalyzer = new ContractAnalyzer(contractId)
         const abiAnalyzer = new ABIAnalyzer(contractAnalyzer)
         const abiMode = ref<ABIMode>(ABIMode.Normal)
@@ -376,7 +358,6 @@ describe("ABIAnalyzer.ts", async () => {
 
 
 })
-
 
 
 const PROXY_SOURCIFY_RESPONSE = {

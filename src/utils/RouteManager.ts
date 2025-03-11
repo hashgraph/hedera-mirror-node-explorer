@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {
     createRouter,
@@ -70,7 +52,7 @@ export class RouteManager {
 
     public readonly router: Router
     public readonly coreConfig = shallowRef(CoreConfig.FALLBACK)
-    private readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
+    public readonly networkConfig = shallowRef(NetworkConfig.FALLBACK)
 
     //
     // Public
@@ -173,8 +155,8 @@ export class RouteManager {
         this.switchThemes()
     }
 
-    public findChainID(network: string): number|null {
-        let result: number|null
+    public findChainID(network: string): number | null {
+        let result: number | null
         const entry = this.networkConfig.value.lookup(network)
         if (entry !== null) {
             result = entry.sourcifySetup?.chainID ?? null
@@ -464,11 +446,11 @@ export class RouteManager {
     // Main Pages
     //
 
-    public makeRouteToMainDashboard(network: string|null = null): RouteLocationRaw {
-        return {name: 'MainDashboard', params: {network: network ??  this.currentNetwork.value}}
+    public makeRouteToMainDashboard(network: string | null = null): RouteLocationRaw {
+        return {name: 'MainDashboard', params: {network: network ?? this.currentNetwork.value}}
     }
 
-    public routeToMainDashboard(network: string|null = null): Promise<NavigationFailure | void | undefined> {
+    public routeToMainDashboard(network: string | null = null): Promise<NavigationFailure | void | undefined> {
         return this.router.push(this.makeRouteToMainDashboard(network))
     }
 
@@ -526,7 +508,7 @@ export class RouteManager {
     // Private
     //
 
-    private readonly checkNetwork = (to: RouteLocationNormalized): boolean|string => {
+    private readonly checkNetwork = (to: RouteLocationNormalized): boolean | string => {
         let result: boolean | string
 
         if (this.getNetworkEntryFromRoute(to) === null) { // Unknown network)
@@ -537,7 +519,7 @@ export class RouteManager {
         return result
     }
 
-    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized):  void => {
+    private readonly setupTitleAndHeaders = (to: RouteLocationNormalized): void => {
         const envTitlePrefix = this.coreConfig.value.documentTitlePrefix
         const titlePrefix = envTitlePrefix !== "" ? envTitlePrefix + " " : ""
 
@@ -546,8 +528,7 @@ export class RouteManager {
                 document.title = titlePrefix + "Dashboard"
                 break;
             case "TransactionsById":
-                const tid = TransactionID.normalizeForDisplay(to.params.transactionId as string)
-                document.title = titlePrefix + "Transactions with ID " + tid
+                document.title = titlePrefix + "Transactions with ID " + TransactionID.normalizeForDisplay(to.params.transactionId as string)
                 break;
             case "TransactionDetails":
                 document.title = titlePrefix + "Transaction " + (to.query.tid ?? to.params.transactionLoc)
@@ -655,23 +636,28 @@ export class RouteManager {
     //
 
     private switchThemes() {
-        // Apply network theme colors to Light mode
-        document.documentElement.style.setProperty('--light-network-button-text-color', this.currentNetworkEntry.value.lightButtonTextColor)
-        document.documentElement.style.setProperty('--light-network-button-color', this.currentNetworkEntry.value.lightButtonColor)
-        document.documentElement.style.setProperty('--light-network-chip-color', this.currentNetworkEntry.value.lightChipColor)
-        document.documentElement.style.setProperty('--light-network-text-accent-color', this.currentNetworkEntry.value.lightTextAccentColor)
-        document.documentElement.style.setProperty('--light-network-border-accent-color', this.currentNetworkEntry.value.lightBorderAccentColor)
-        document.documentElement.style.setProperty('--light-network-graph-bar-color', this.currentNetworkEntry.value.lightGraphBarColor)
-        document.documentElement.style.setProperty('--light-network-chip-text-color', this.currentNetworkEntry.value.lightChipTextColor)
 
-        // Apply network theme to Dark mode
-        document.documentElement.style.setProperty('--dark-network-button-text-color', this.currentNetworkEntry.value.darkButtonTextColor)
-        document.documentElement.style.setProperty('--dark-network-button-color', this.currentNetworkEntry.value.darkButtonColor)
-        document.documentElement.style.setProperty('--dark-network-chip-color', this.currentNetworkEntry.value.darkChipColor)
-        document.documentElement.style.setProperty('--dark-network-text-accent-color', this.currentNetworkEntry.value.darkTextAccentColor)
-        document.documentElement.style.setProperty('--dark-network-border-accent-color', this.currentNetworkEntry.value.darkBorderAccentColor)
-        document.documentElement.style.setProperty('--dark-network-graph-bar-color', this.currentNetworkEntry.value.darkGraphBarColor)
-        document.documentElement.style.setProperty('--dark-network-chip-text-color', this.currentNetworkEntry.value.darkChipTextColor)
+        const colorMap = this.networkConfig.value.getColorMap(this.currentNetwork.value)
+
+        if (colorMap !== null) {
+            // Apply network theme colors to Light mode
+            document.documentElement.style.setProperty('--light-network-button-text-color', colorMap.lightButtonTextColor)
+            document.documentElement.style.setProperty('--light-network-button-color', colorMap.lightButtonColor)
+            document.documentElement.style.setProperty('--light-network-chip-color', colorMap.lightChipColor)
+            document.documentElement.style.setProperty('--light-network-text-accent-color', colorMap.lightTextAccentColor)
+            document.documentElement.style.setProperty('--light-network-border-accent-color', colorMap.lightBorderAccentColor)
+            document.documentElement.style.setProperty('--light-network-graph-bar-color', colorMap.lightGraphBarColor)
+            document.documentElement.style.setProperty('--light-network-chip-text-color', colorMap.lightChipTextColor)
+
+            // Apply network theme to Dark mode
+            document.documentElement.style.setProperty('--dark-network-button-text-color', colorMap.darkButtonTextColor)
+            document.documentElement.style.setProperty('--dark-network-button-color', colorMap.darkButtonColor)
+            document.documentElement.style.setProperty('--dark-network-chip-color', colorMap.darkChipColor)
+            document.documentElement.style.setProperty('--dark-network-text-accent-color', colorMap.darkTextAccentColor)
+            document.documentElement.style.setProperty('--dark-network-border-accent-color', colorMap.darkBorderAccentColor)
+            document.documentElement.style.setProperty('--dark-network-graph-bar-color', colorMap.darkGraphBarColor)
+            document.documentElement.style.setProperty('--dark-network-chip-text-color', colorMap.darkChipTextColor)
+        }
     }
 }
 
@@ -697,7 +683,6 @@ export function fetchNumberQueryParam(paramName: string, route: RouteLocationNor
     }
     return result
 }
-
 
 
 export enum TabId {

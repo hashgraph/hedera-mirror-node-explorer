@@ -1,32 +1,16 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// noinspection DuplicatedCode
+
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
-import router from "../../../src/router";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "../../../src/utils/HMSF";
-import HCSContentSection from "../../../src/components/topic/HCSContentSection.vue";
-import InfoTooltip from "../../../src/components/InfoTooltip.vue";
-import {HCSAsset} from "../../../src/utils/cache/HCSAsset";
-import {HCSTopicMemo} from "../../../src/utils/HCSTopicMemo";
+import {HMSF} from "@/utils/HMSF";
+import HCSContentSection from "@/components/topic/HCSContentSection.vue";
+import InfoTooltip from "@/components/InfoTooltip.vue";
+import {HCSAsset} from "@/utils/cache/HCSAsset";
+import {HCSTopicMemo} from "@/utils/HCSTopicMemo";
 
 /*
     Bookmarks
@@ -97,7 +81,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')
@@ -134,7 +118,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')
@@ -169,7 +153,7 @@ describe("HCSContentSection.vue", () => {
         expect(card.exists()).toBe(true)
 
         expect(card.text()).toMatch(RegExp("^HCS-1 Content"))
-        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo.hash)
+        expect(card.get('#hash').text()).toMatch('Hash' + hcs1TopicMemo?.hash)
         expect(card.get('#compression').text()).toMatch('Compression' + 'zstd')
         expect(card.get('#encoding').text()).toMatch('Encoding' + 'base64')
         expect(card.get('#mime-type').text()).toMatch('MIME Type' + 'application/json')

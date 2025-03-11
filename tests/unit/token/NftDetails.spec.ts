@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -24,9 +6,9 @@ import axios from "axios";
 import {IPFS_METADATA_CONTENT, IPFS_METADATA_CONTENT_URL, SAMPLE_NFTS, SAMPLE_NONFUNGIBLE,} from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import Oruga from "@oruga-ui/oruga-next";
-import {HMSF} from "../../../src/utils/HMSF";
-import router from "../../../src/router";
-import NftDetails from "../../../src/pages/NftDetails.vue";
+import {HMSF} from "@/utils/HMSF.ts";
+import router from "@/router";
+import NftDetails from "@/pages/NftDetails.vue";
 
 /*
     Bookmarks
@@ -42,7 +24,7 @@ describe("NftDetails.vue", () => {
     it("Should display details of NFT", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[0]
         const nftId = nft.token_id
@@ -60,7 +42,7 @@ describe("NftDetails.vue", () => {
         const wrapper = mount(NftDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: nftId,
@@ -71,10 +53,7 @@ describe("NftDetails.vue", () => {
         // console.log(wrapper.html())
         // console.log(wrapper.text())
 
-        // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
-
-        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol +")#2Non Fungible Token")
+        expect(wrapper.text()).toMatch(SAMPLE_NONFUNGIBLE.name + " (" + SAMPLE_NONFUNGIBLE.symbol + ")#2Non Fungible Token")
 
         const media = wrapper.get('#media-placeholder')
         expect(media.text()).toBe('Non Fungible TokenThe NFT metadata does not provide any image')
@@ -104,14 +83,14 @@ describe("NftDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(false)
     });
 
-    it.skip("Should display NFT with image and metadata", async () => {
+    it("Should display NFT with image and metadata", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -129,7 +108,8 @@ describe("NftDetails.vue", () => {
 
         const wrapper = mount(NftDetails, {
             global: {
-                plugins: [router, Oruga]
+                plugins: [router, Oruga],
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: nftId,
@@ -140,13 +120,14 @@ describe("NftDetails.vue", () => {
         // console.log(wrapper.html())
 
         // expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(true)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toMatch(RegExp(IPFS_METADATA_CONTENT.name + 'Non Fungible Token'))
+        expect(wrapper.text()).toMatch(RegExp('Non Fungible Token'))
 
         const media = wrapper.get('#image-content')
         expect(media.find('img').exists()).toBe(true)
 
+        expect(wrapper.find("#nameValue").text()).toBe(IPFS_METADATA_CONTENT.name)
         expect(wrapper.find("#descriptionValue").text()).toBe(IPFS_METADATA_CONTENT.description)
         expect(wrapper.get("#tokenIdValue").text()).toBe(`${SAMPLE_NONFUNGIBLE.name}(${SAMPLE_NONFUNGIBLE.token_id})`)
         expect(wrapper.get("#serialNumberValue").text()).toBe(nft.serial_number.toString())
@@ -161,6 +142,6 @@ describe("NftDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.transactionTableController.mounted.value).toBe(false)
+        expect((wrapper.vm as any).transactionTableController.mounted.value).toBe(false)
     });
 });

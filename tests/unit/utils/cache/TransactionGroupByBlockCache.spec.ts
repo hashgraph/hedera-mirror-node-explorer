@@ -1,25 +1,7 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {TransactionGroupByBlockCache} from "@/utils/cache/TransactionGroupByBlockCache";
 import {SAMPLE_BLOCK, SAMPLE_PARENT_CHILD_TRANSACTIONS} from "../../Mocks";
 import {flushPromises} from "@vue/test-utils";
@@ -35,20 +17,20 @@ describe("TransactionGroupByBlockCache", () => {
         expect(TransactionGroupByBlockCache.instance.isEmpty()).toBeTruthy()
 
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/blocks/" + SAMPLE_BLOCK.number
         mock.onGet(matcher1).reply(200, SAMPLE_BLOCK);
 
         const matcher2 = "/api/v1/transactions"
-        mock.onGet(matcher2).reply((config: AxiosRequestConfig) => {
+        mock.onGet(matcher2).reply(((config: AxiosRequestConfig) => {
             if (config.params.timestamp == "lte:" + SAMPLE_BLOCK.timestamp.to
                 && config.params.limit == SAMPLE_BLOCK.count) {
                 return [200, SAMPLE_PARENT_CHILD_TRANSACTIONS]
             } else {
                 return [404]
             }
-        })
+        }) as any)
 
         // lookup() triggers http requests
         const blockNumber = SAMPLE_BLOCK.number
@@ -65,7 +47,7 @@ describe("TransactionGroupByBlockCache", () => {
         expect(mock.history.get.length).toBe(0)
 
         // Checks that TransactionByHashCache and TransactionByTsCache has been populated
-        for (const t of SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions) {
+        for (const t of SAMPLE_PARENT_CHILD_TRANSACTIONS.transactions!) {
             expect(TransactionByHashCache.instance.contains(t.transaction_hash)).toBeTruthy()
             expect(TransactionByTsCache.instance.contains(t.consensus_timestamp)).toBeTruthy()
         }

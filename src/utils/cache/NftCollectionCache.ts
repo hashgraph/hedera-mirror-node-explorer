@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {EntityCache} from "@/utils/cache/base/EntityCache";
 import {Nft, Nfts} from "@/schemas/MirrorNodeSchemas";
@@ -54,7 +36,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
 
     private async appendNfts(nfts: Nft[], result: NftCollectionInfo[]) {
         for (const nft of nfts) {
-           await this.appendNft(nft, result)
+            await this.appendNft(nft, result)
         }
     }
 
@@ -70,7 +52,7 @@ export class NftCollectionCache extends EntityCache<string, NftCollectionInfo[]>
         if (lastCollection !== null && lastCollection.tokenId === nft.token_id) {
             lastCollection.serials.push(nft.serial_number)
         } else {
-           const info = await TokenInfoCache.instance.lookup(nft.token_id ?? '')
+            const info = await TokenInfoCache.instance.lookup(nft.token_id ?? '')
             result.push(new NftCollectionInfo(
                 nft.token_id ?? null,
                 info?.name ?? null,

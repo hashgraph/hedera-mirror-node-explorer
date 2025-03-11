@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -50,8 +32,8 @@ import {HMSF} from "@/utils/HMSF";
 import NotificationBanner from "@/components/NotificationBanner.vue";
 import {TransactionID} from "@/utils/TransactionID";
 import TransactionFilterSelect from "@/components/transaction/TransactionFilterSelect.vue";
-import {NetworkConfig} from "../../../src/config/NetworkConfig";
-import {networkConfigKey} from "../../../src/AppKeys";
+import {NetworkConfig} from "@/config/NetworkConfig.ts";
+import {networkConfigKey} from "@/AppKeys.ts";
 import {fetchGetURLs} from "../MockUtils";
 
 /*
@@ -68,7 +50,7 @@ describe("AccountDetails.vue", () => {
     it("Should display account details", async () => {
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);
@@ -106,18 +88,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT.account ?? undefined
@@ -202,7 +184,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const account1 = SAMPLE_ACCOUNT
         let matcher1 = "/api/v1/accounts/" + account1.account
@@ -235,18 +217,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         let matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         let matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT.account ?? undefined
@@ -312,10 +294,10 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DUDE.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         mock.resetHistory()
 
@@ -366,20 +348,20 @@ describe("AccountDetails.vue", () => {
         wrapper.unmount()
         await flushPromises()
 
-        expect(wrapper.vm.balanceAnalyzer.mounted.value).toBe(false)
+        expect((wrapper.vm as any).balanceAnalyzer.mounted.value).toBe(false)
     });
 
     it("Should detect invalid account ID", async () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const invalidAccountId = "0.0.0.1000"
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: invalidAccountId
@@ -403,7 +385,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const deletedAccount = SAMPLE_ACCOUNT_DELETED
         const matcher1 = "/api/v1/accounts/" + deletedAccount.account
@@ -436,18 +418,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: deletedAccount.account ?? undefined
@@ -487,7 +469,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
         ])
 
-        expect(wrapper.text()).toMatch(RegExp("Account is deleted Account ID " + deletedAccount.account))
+        expect(wrapper.text()).toMatch(RegExp("Account DetailsAccount is deleted Account  Account ID " + deletedAccount.account))
 
         const banner = wrapper.findComponent(NotificationBanner)
         expect(banner.exists()).toBe(true)
@@ -502,7 +484,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_STAKING_NODE);
@@ -532,18 +514,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined
@@ -599,7 +581,7 @@ describe("AccountDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const config = [
             {
@@ -644,18 +626,18 @@ describe("AccountDetails.vue", () => {
         mock.onGet(matcher11).reply(200, {nfts: []})
 
         const matcher12 = "api/v1/tokens"
-        mock.onGet(matcher12).reply(200, { tokens: [] });
+        mock.onGet(matcher12).reply(200, {tokens: []});
 
         const matcher13 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts"
-        mock.onGet(matcher13).reply(200, { nfts: [] });
+        mock.onGet(matcher13).reply(200, {nfts: []});
 
         const matcher14 = "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/airdrops/pending"
-        mock.onGet(matcher14).reply(200, { airdrops: [] });
+        mock.onGet(matcher14).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { [networkConfigKey]: networkConfig, "isMediumScreen": false }
+                provide: {[networkConfigKey]: networkConfig, "isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_STAKING_NODE.account ?? undefined

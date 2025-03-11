@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -49,7 +31,7 @@ describe("AdminKeyDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_PROTOBUF_KEY);
@@ -66,16 +48,16 @@ describe("AdminKeyDetails.vue", () => {
         const matcher4 = "/api/v1/tokens/0.0.29662956"
         mock.onGet(matcher4).reply(200, SAMPLE_TOKEN);
         const matcher5 = "api/v1/tokens"
-        mock.onGet(matcher5).reply(200, { tokens: [] });
+        mock.onGet(matcher5).reply(200, {tokens: []});
         const matcher6 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/nfts"
-        mock.onGet(matcher6).reply(200, { nfts: [] });
+        mock.onGet(matcher6).reply(200, {nfts: []});
         const matcher7 = "api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account + "/airdrops/pending"
-        mock.onGet(matcher7).reply(200, { airdrops: [] });
+        mock.onGet(matcher7).reply(200, {airdrops: []});
 
         const wrapper = mount(AccountDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 accountId: SAMPLE_ACCOUNT_PROTOBUF_KEY.account
@@ -103,7 +85,7 @@ describe("AdminKeyDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT_PROTOBUF_KEY.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_PROTOBUF_KEY);
@@ -159,7 +141,7 @@ describe("AdminKeyDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const matcher1 = "/api/v1/accounts/" + SAMPLE_ACCOUNT.account
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT);

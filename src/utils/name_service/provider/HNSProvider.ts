@@ -1,29 +1,11 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {NameServiceProvider} from "@/utils/name_service/provider/NameServiceProvider";
 import {Resolver} from '@hedera-name-service/hns-resolution-sdk'
 
 export class HNSProvider extends NameServiceProvider {
 
-    private readonly resolverCache = new Map<string,Resolver>()
+    private readonly resolverCache = new Map<string, Resolver>()
 
     //
     // Public
@@ -37,8 +19,8 @@ export class HNSProvider extends NameServiceProvider {
     // NameServiceProvider
     //
 
-    public async resolve(name: string, network: string): Promise<string|null> {
-        let result: string|null
+    public async resolve(name: string, network: string): Promise<string | null> {
+        let result: string | null
         const r = this.findResolver(network)
         if (r !== null) {
             result = await r.resolveSLD(name) ?? null
@@ -52,7 +34,7 @@ export class HNSProvider extends NameServiceProvider {
     // Private
     //
 
-    private findResolver(network: string): Resolver|null {
+    private findResolver(network: string): Resolver | null {
 
         let service: string | null
         switch (network) {
@@ -67,7 +49,7 @@ export class HNSProvider extends NameServiceProvider {
                 break
         }
 
-        let result: Resolver|null
+        let result: Resolver | null
         if (service !== null) {
             result = this.resolverCache.get(service) ?? null
             if (result == null) {

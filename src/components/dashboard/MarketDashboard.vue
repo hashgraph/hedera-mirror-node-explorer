@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -27,6 +9,7 @@
   <div class="dashboard-root">
     <div class="dashboard-content">
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarPriceLabel"
           :value="hbarPrice"
       >
@@ -36,6 +19,7 @@
       <div class="line"/>
 
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarMarketCapLabel"
           :value="hbarMarketCap"
       >
@@ -45,6 +29,7 @@
       <div v-if="isLargeScreen || !isSmallScreen" class="line"/>
 
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarReleasedLabel"
           :value="hbarReleased"
       >
@@ -54,6 +39,7 @@
       <div class="line"/>
 
       <MarketDashboardItem
+          data-cy="market-dashboard-item"
           :title="hbarTotalLabel"
           :value="hbarTotal"
       >
@@ -98,12 +84,12 @@ onMounted(() => networkMetricsLoader.mount())
 onBeforeUnmount(() => networkMetricsLoader.unmount())
 
 const hbarReleased = networkMetricsLoader.hbarReleasedText
-const hbarReleasedPercentage = networkMetricsLoader.hbarReleasedPercentageText
+// const hbarReleasedPercentage = networkMetricsLoader.hbarReleasedPercentageText
 const hbarTotal = networkMetricsLoader.hbarTotalText
 const hbarPrice = networkMetricsLoader.hbarPriceText
-const hbarPriceVariation = networkMetricsLoader.hbarPriceVariationText
+// const hbarPriceVariation = networkMetricsLoader.hbarPriceVariationText
 const hbarMarketCap = networkMetricsLoader.hbarMarketCapText
-const hbarMarketCapVariation = networkMetricsLoader.hbarMarketCapVariationText
+// const hbarMarketCapVariation = networkMetricsLoader.hbarMarketCapVariationText
 
 </script>
 

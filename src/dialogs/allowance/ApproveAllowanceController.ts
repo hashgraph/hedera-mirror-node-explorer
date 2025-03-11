@@ -1,30 +1,9 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, ref, Ref} from "vue";
 import {walletManager} from "@/router.ts";
 import {TransactionController} from "@/dialogs/core/transaction/TransactionController.ts";
-import {
-    AccountTextFieldController,
-    AccountTextFieldState
-} from "@/dialogs/common/AccountTextFieldController.ts";
+import {AccountTextFieldController, AccountTextFieldState} from "@/dialogs/common/AccountTextFieldController.ts";
 import {TokenTextFieldController, TokenTextFieldState} from "@/dialogs/common/TokenTextFieldController.ts";
 import {NetworkConfig} from "@/config/NetworkConfig.ts";
 import {CryptoTextFieldController, HbarTextFieldState} from "@/dialogs/common/CryptoTextFieldController.ts";
@@ -63,11 +42,11 @@ export class ApproveAllowanceController extends TransactionController {
     public readonly allowanceChoice = ref("crypto") // crypto, token, nft
 
     public readonly feedbackMessage = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.spenderFeedbackMessage.value !== null) {
             result = this.spenderFeedbackMessage.value
         } else {
-            switch(this.allowanceChoice.value) {
+            switch (this.allowanceChoice.value) {
                 case "crypto":
                     result = this.crytpoFeedbackMessage.value
                     break
@@ -91,7 +70,7 @@ export class ApproveAllowanceController extends TransactionController {
 
     public canBeExecuted(): boolean {
         let result: boolean
-        switch(this.allowanceChoice.value) {
+        switch (this.allowanceChoice.value) {
             case "crypto":
                 result = this.cryptoOK.value
                 break
@@ -109,11 +88,11 @@ export class ApproveAllowanceController extends TransactionController {
         return result && this.spenderOK.value
     }
 
-    public async executeTransaction(): Promise<string|null> {
-        let result: string|null
+    public async executeTransaction(): Promise<string | null> {
+        let result: string | null
 
         const spender = this.spender.value!
-        switch(this.allowanceChoice.value) {
+        switch (this.allowanceChoice.value) {
             case "crypto": {
                 const cryptoUserAmount = this.cryptoUserAmount.value!
                 result = await walletManager.approveHbarAllowance(spender, Number(cryptoUserAmount))
@@ -181,8 +160,8 @@ export class ApproveAllowanceController extends TransactionController {
         this.spenderController.newAccountInfo.value !== null)
 
     private readonly spenderFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.spenderController.state.value) {
+        let result: string | null
+        switch (this.spenderController.state.value) {
             case AccountTextFieldState.empty:
                 result = null
                 break
@@ -212,8 +191,8 @@ export class ApproveAllowanceController extends TransactionController {
     private readonly cryptoUserAmount = computed(() => this.cryptoController.newUserAmount.value)
 
     private readonly crytpoFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.cryptoController.state.value) {
+        let result: string | null
+        switch (this.cryptoController.state.value) {
             case HbarTextFieldState.empty:
                 result = null
                 break
@@ -247,8 +226,8 @@ export class ApproveAllowanceController extends TransactionController {
     private readonly tokenId = computed(() => this.tokenController.newTokenId.value)
 
     private readonly tokenFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.tokenController.state.value) {
+        let result: string | null
+        switch (this.tokenController.state.value) {
             case TokenTextFieldState.empty:
                 result = null
                 break
@@ -292,8 +271,8 @@ export class ApproveAllowanceController extends TransactionController {
     private readonly tokenAmount = computed(() => this.tokenAmountController.tinyAmount.value)
 
     private readonly tokenAmountFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.tokenAmountController.state.value) {
+        let result: string | null
+        switch (this.tokenAmountController.state.value) {
             case TokenAmountTextFieldState.empty:
                 result = null
                 break
@@ -325,8 +304,8 @@ export class ApproveAllowanceController extends TransactionController {
     private readonly nftId = computed(() => this.nftController.newTokenId.value)
 
     private readonly nftFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.nftController.state.value) {
+        let result: string | null
+        switch (this.nftController.state.value) {
             case TokenTextFieldState.empty:
                 result = null
                 break
@@ -365,8 +344,8 @@ export class ApproveAllowanceController extends TransactionController {
     private readonly rejectNftSerials = computed(() => this.nftSerialsController.rejectedSerials.value)
 
     private readonly nftSerialsFeedbackMessage = computed(() => {
-        let result: string|null
-        switch(this.nftSerialsController.state.value) {
+        let result: string | null
+        switch (this.nftSerialsController.state.value) {
             case NftSerialsTextFieldState.invalidSyntax:
                 result = "Invalid number list"
                 break

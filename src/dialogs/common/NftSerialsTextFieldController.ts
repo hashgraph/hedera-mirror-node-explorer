@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, ref, Ref} from "vue";
 import {EntityLookup} from "@/utils/cache/base/EntityCache.ts";
@@ -28,14 +10,14 @@ import {NftCollectionCache, NftCollectionInfo} from "@/utils/cache/NftCollection
 export class NftSerialsTextFieldController {
 
     private readonly inputChangeController: InputChangeController
-    private readonly nftCollectionLookup: EntityLookup<string, NftCollectionInfo[]|null>
+    private readonly nftCollectionLookup: EntityLookup<string, NftCollectionInfo[] | null>
 
     //
     // Public
     //
 
     public constructor(
-        public readonly tokenId: Ref<string|null>,
+        public readonly tokenId: Ref<string | null>,
         public readonly input: Ref<string> = ref("")) {
         this.inputChangeController = new InputChangeController(input)
         this.nftCollectionLookup = NftCollectionCache.instance.makeLookup(walletManager.accountId)
@@ -54,7 +36,7 @@ export class NftSerialsTextFieldController {
         return serials !== null ? NftSerialsTextFieldState.ok : NftSerialsTextFieldState.invalidSyntax
     })
 
-    public readonly serials = computed<number[]|null>(() => {
+    public readonly serials = computed<number[] | null>(() => {
         let ok = true
         const result: number[] = []
         const trimmedValue = this.inputChangeController.outputText.value.trim()
@@ -73,7 +55,7 @@ export class NftSerialsTextFieldController {
     })
 
     public readonly rejectedSerials = computed<number[] | null>(() => {
-        let result: number[]|null
+        let result: number[] | null
         const tokenId = this.tokenId.value
         const serials = this.serials.value
         const nftCollectionInfos = this.nftCollectionLookup.entity.value

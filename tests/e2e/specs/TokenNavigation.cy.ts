@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // https://docs.cypress.io/api/introduction/api.html
 
@@ -106,7 +88,7 @@ describe('Token Navigation', () => {
     //         })
     // })
     //
-    const tokenId = "0.0.1738807"
+    // const tokenId = "0.0.1738807"
     // it('should follow links from fungible token details', () => {
     //     cy.visit('mainnet/token/' + tokenId)
     //     cy.url().should('include', '/mainnet/token/' + tokenId)
@@ -187,7 +169,7 @@ describe('Token Navigation', () => {
             .find('td')
             .eq(0)
             .click()
-            .then(($id) => {
+            .then(() => {
                 // cy.log('Selected account Id: ' + $id.text())
                 cy.url().should('include', '/mainnet/transaction/')
                 cy.contains('CONTRACT CALL')

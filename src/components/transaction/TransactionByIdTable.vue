@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -44,12 +26,10 @@
       @cell-click="handleClick"
   >
     <o-table-column v-slot="props" field="consensus_timestamp" label="TIME">
-      <span>
+      <div style="display: flex; gap: 8px; line-height: 18px">
         <TimestampValue class="h-is-bold" v-bind:timestamp="props.row.consensus_timestamp"/>
-        <span v-if="props.row.result !== 'SUCCESS'" class="icon has-text-danger">
-          <i class="fas fa-exclamation-triangle"></i>
-        </span>
-      </span>
+        <TriangleAlert v-if="props.row.result !== 'SUCCESS'" :size="18" class="h-text-error"/>
+      </div>
     </o-table-column>
 
     <o-table-column v-slot="props" field="name" label="TYPE">
@@ -90,6 +70,7 @@ import TimestampValue from "@/components/values/TimestampValue.vue";
 import TransactionSummary from "@/components/transaction/TransactionSummary.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
 import EmptyTable from "@/components/EmptyTable.vue";
+import {TriangleAlert} from "lucide-vue-next";
 
 const props = defineProps({
   narrowed: Boolean,
@@ -116,7 +97,7 @@ const handleClick = (t: Transaction, c: unknown, i: number, ci: number, event: M
   routeManager.routeToTransaction(t, event)
 }
 
-let currentPage = ref(1)
+const currentPage = ref(1)
 
 const hasChild = computed(() => {
   let result = false

@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed} from "vue";
 import {EntityLoader} from "@/utils/loader/EntityLoader.ts";
@@ -24,7 +6,7 @@ import {Block, BlocksResponse} from "@/schemas/MirrorNodeSchemas.ts";
 import axios, {AxiosResponse} from "axios";
 import {computeTPS} from "@/schemas/MirrorNodeUtils.ts";
 
-export class TPSMetricLoader  extends EntityLoader<Block[]> {
+export class TPSMetricLoader extends EntityLoader<Block[]> {
 
     private readonly sampleCount = 100 // tps is computed over the last 'sampleCount' blocks
 
@@ -39,11 +21,11 @@ export class TPSMetricLoader  extends EntityLoader<Block[]> {
 
     public constructor() {
         // Refresh every 5s, forever
-        super(10*1000, EntityLoader.HUGE_COUNT)
+        super(10 * 1000, EntityLoader.HUGE_COUNT)
     }
 
     public readonly currentTPS = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.entity.value !== null) {
             const tps = computeTPS(this.entity.value)
             result = tps !== null ? this.formatter.format(tps) : null
@@ -85,13 +67,13 @@ export class TPSMetricLoader  extends EntityLoader<Block[]> {
     // Private
     //
 
-    private async loadBlocks(lastBlockNb: number|null): Promise<Block[]> {
+    private async loadBlocks(lastBlockNb: number | null): Promise<Block[]> {
 
         const blockFilter = lastBlockNb !== null ? "&block.number=gte:" + lastBlockNb : ""
         const limit = Math.min(100, this.sampleCount)
 
         let result: Block[] = []
-        let nextURL: string|null = "api/v1/blocks?limit=" + limit + blockFilter
+        let nextURL: string | null = "api/v1/blocks?limit=" + limit + blockFilter
         while (nextURL !== null && result.length < this.sampleCount) {
             const response: AxiosResponse<BlocksResponse> = await axios.get<BlocksResponse>(nextURL)
             result = result.concat(response.data.blocks ?? [])

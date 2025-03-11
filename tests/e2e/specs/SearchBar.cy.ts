@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 // https://docs.cypress.io/api/introduction/api.html
 
@@ -134,7 +116,6 @@ describe('Search Bar', () => {
 
     it('should find the transaction by timestamp', () => {
         const searchTimestamp = "1674821555.935799283"
-        const transactionId = "0.0.445590@1674821543.265349407"
         testBodyV2(
             searchTimestamp,
             '/mainnet/transaction/' + searchTimestamp,
@@ -215,7 +196,7 @@ describe('Search Bar', () => {
         const searchKey = "0x02e783457e4d054db3c7850c2dc83e458a13b210fca75984bc7cfb0fae7343ff60"
         const searchAccount = "0.0.1753997"
         testBodyV2(
-            searchAccount,
+            searchKey,
             '/mainnet/account/' + searchAccount,
             'Account ' + searchAccount,
             false,
@@ -228,14 +209,14 @@ describe('Search Bar', () => {
         const searchAccount = "0.0.721838"
         cy.visit('/mainnet/dashboard')
         testBodyV2(
-            searchAccount,
+            searchBase32Alias,
             '/mainnet/account/' + searchAccount,
             'Account ' + searchAccount,
             false,
         )
         cy.visit('/mainnet/dashboard')
         testBodyV2(
-            searchAccount,
+            searchHexaAlias,
             '/mainnet/account/' + searchAccount,
             'Account ' + searchAccount,
             false,
@@ -244,7 +225,6 @@ describe('Search Bar', () => {
 
     it('should find the account by Ethereum-format alias', () => {
         cy.visit('/mainnet/dashboard')
-        const searchAlias = "0x00000000000000000000000000000000000b03ae"
         const searchAccount = "0.0.721838"
         testBodyV2(
             searchAccount,
@@ -291,29 +271,11 @@ describe('Search Bar', () => {
             'Account ' + searchAccount,
             true)
     })
-
-    it.skip('should find account with kns name', () => {
-        const searchName = "kabuto.hh"
-        const searchAccount = "0.0.1001"
-        testBodyV2(
-            searchName,
-            '/mainnet/account/' + searchAccount,
-            'Account ' + searchAccount,
-            true
-        )
-        testBodyV2(
-            searchName.toUpperCase(),
-            '/mainnet/account/' + searchAccount,
-            'Account ' + searchName,
-            true
-        )
-    })
-
 })
 
 const testBodyV2 = (searchString: string,
                     expectedPath: string,
-                    expectedTitle: string|null = null,
+                    expectedTitle: string | null = null,
                     expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
         cy.get('input').type(searchString)
@@ -333,9 +295,9 @@ const testBodyV2 = (searchString: string,
 }
 
 const clickTestBodV2 = (searchString: string,
-                       expectedPath: string,
-                       expectedTitle: string|null = null,
-                       expectTable = false) => {
+                        expectedPath: string,
+                        expectedTitle: string | null = null,
+                        expectTable = false) => {
     cy.get('[data-cy=searchBar]').within(() => {
         cy.get('input').type(searchString)
     })

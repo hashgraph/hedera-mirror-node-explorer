@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import axios from "axios";
 import {SingletonCache} from "@/utils/cache/base/SingletonCache";
@@ -40,7 +22,7 @@ export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
 
     public async search(name: string): Promise<ERC20Contract[]> {
         name = name.toLowerCase()
-        const result : ERC20Contract[] = []
+        const result: ERC20Contract[] = []
         const tokens = await this.lookup()
         for (const t of tokens) {
             if (t.name && t.name.toLowerCase().indexOf(name) != -1) {
@@ -62,7 +44,8 @@ export class ERC20Cache extends SingletonCache<ERC20Contract[]> {
         } else {
             result = []
         }
-        return Promise.resolve(result)}
+        return Promise.resolve(result)
+    }
 
 }
 

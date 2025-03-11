@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {EntityID} from "@/utils/EntityID";
@@ -119,7 +101,7 @@ describe("EntityID.ts", () => {
         expect(EntityID.parse(str2)).toBeNull()
         expect(EntityID.parse(str2, true)).toBeNull()
         expect(EntityID.parseWithChecksum(str2)).toBeNull()
-        const obj2 = EntityID.parseWithChecksum(str2, true, true)
+        const obj2 = EntityID.parseWithChecksum(str2, true)
         expect(obj2?.shard).toBe(0)
         expect(obj2?.realm).toBe(0)
         expect(obj2?.num).toBe(98)

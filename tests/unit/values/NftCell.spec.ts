@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 
 /*
@@ -36,8 +18,8 @@ import {
 } from "../Mocks";
 import MockAdapter from "axios-mock-adapter";
 import axios from "axios";
-import NftCell, {NftCellItem} from "../../../src/components/token/NftCell.vue";
-import router from "../../../src/router";
+import NftCell, {NftCellItem} from "@/components/token/NftCell.vue";
+import router from "@/router";
 
 describe("NftCell.vue", () => {
 
@@ -59,7 +41,7 @@ describe("NftCell.vue", () => {
 
     test("tokenId and no serial #", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -90,7 +72,7 @@ describe("NftCell.vue", () => {
 
     test("tokenId, serial # and default prop", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id
@@ -127,7 +109,7 @@ describe("NftCell.vue", () => {
 
     test("tokenId, serial # and various props", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const nft = SAMPLE_NFTS.nfts[2]
         const nftId = nft.token_id

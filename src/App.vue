@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <template>
 
@@ -106,7 +88,7 @@ provide(networkConfigKey, props.networkConfig)
 
 const themeController = new ThemeController(props.coreConfig)
 provide(themeControllerKey, themeController)
-onMounted(() =>themeController.mount())
+onMounted(() => themeController.mount())
 
 const showCookiesDialog = ref(false)
 
@@ -139,7 +121,7 @@ onBeforeMount(() => {
 onMounted(() => {
   windowWidth.value = window.innerWidth
   window.addEventListener('resize', onResizeHandler);
-      walletManager.launch()
+  walletManager.launch()
 })
 
 onBeforeUnmount(() => {
@@ -158,7 +140,7 @@ const handleChooseAcceptCookies = () => {
 
 function insertGoogleTag(tagId: string) {
   const src1 = `https://www.googletagmanager.com/gtag/js?id=${tagId}`
-  let s1 = document.createElement('script');
+  const s1 = document.createElement('script');
   s1.setAttribute('async', '');
   s1.setAttribute('src', src1);
   document.head.appendChild(s1);
@@ -168,7 +150,7 @@ function insertGoogleTag(tagId: string) {
     function gtag() {dataLayer.push(arguments);}
     gtag('js', new Date());
     gtag('config', '${tagId}',{ send_page_view: false });`
-  let s2 = document.createElement('script');
+  const s2 = document.createElement('script');
   s2.innerHTML = src2;
   document.head.appendChild(s2);
 }

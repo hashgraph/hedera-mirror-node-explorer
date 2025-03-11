@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -25,6 +7,10 @@
 <template>
 
   <PageFrameV2 page-title="Account Details">
+
+    <template v-if="notification" #banner>
+      <NotificationBanner :message="notification" :is-error="!isInactiveEvmAddress"/>
+    </template>
 
     <DashboardCardV2 collapsible-key="accountDetails">
       <template #title>
@@ -61,8 +47,6 @@
       </template>
 
       <template #content>
-        <NotificationBanner v-if="notification" :message="notification" :is-error="!isInactiveEvmAddress"/>
-
         <Property id="entityId" full-width>
           <template #name>
             Account ID
@@ -101,8 +85,10 @@
             Domain
           </template>
           <template #value>
-            <EntityIOL :label="domainName"/>
-            <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
+            <div style="display: flex; align-items: center; gap: 4px">
+              <EntityIOL :label="domainName" :compact="false"/>
+              <InfoTooltip v-if="domainProviderName" :label="domainProviderName"/>
+            </div>
           </template>
         </Property>
       </template>
@@ -281,12 +267,36 @@
       </template>
 
       <template #content>
-        <Tabs
-            :selected-tab="selectedTab"
-            :tab-ids="tabIds"
-            :tabLabels="tabLabels"
-            @update:selected-tab="handleTabUpdate($event)"
-        />
+
+        <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap:16px">
+          <Tabs
+              :selected-tab="selectedTab"
+              :tab-ids="tabIds"
+              :tabLabels="tabLabels"
+              @update:selected-tab="handleTabUpdate($event)"
+          />
+          <div v-if="selectedTab === 'transactions'" style="display: flex; align-items: baseline; justify-content: flex-end; gap: 8px;">
+            <div>Hide transfers below</div>
+            <SelectView v-model="minTinyBar" small :style="{'font-size':minTinyBar!=0?'12px':'10px'}" style="min-width: 70px">
+              <option value=500000000>
+                <HbarAmount :amount="500000000" :decimals="0"/>
+              </option>
+              <option value=400000000>
+                <HbarAmount :amount="400000000" :decimals="0"/>
+              </option>
+              <option value=300000000>
+                <HbarAmount :amount="300000000" :decimals="0"/>
+              </option>
+              <option value=200000000>
+                <HbarAmount :amount="200000000" :decimals="0"/>
+              </option>
+              <option value=100000000>
+                <HbarAmount :amount="100000000" :decimals="0"/>
+              </option>
+              <option value=0>NONE</option>
+            </SelectView>
+          </div>
+        </div>
 
         <div v-if="selectedTab === 'transactions'" id="recentTransactionsTable">
           <TransactionTable v-if="account" :controller="transactionTableController" :narrowed="true"/>
@@ -418,6 +428,9 @@ function onDateCleared() {
   // (1) will restart auto-refresh
 }
 
+const minTinyBar = ref(AppStorage.getMinTinyBarTransfer() ?? 0)
+watch(minTinyBar, (newValue) => AppStorage.setMinTinyBarTransfer(newValue))
+
 //
 // account
 //
@@ -492,7 +505,8 @@ const transactionTableController = new TransactionTableControllerXL(
     perPage,
     true,
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
-    "p1", "k1")
+    "p1", "k1",
+    minTinyBar)
 
 const contractCreateTableController = new TransactionTableController(
     router,

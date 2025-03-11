@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -34,11 +16,11 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="txOverTimeController"/>
+      <ChartView :controller="txOverTimeController" data-cy="chart-view"/>
     </div>
 
     <div class="dashboard-content">
-      <ChartView :controller="networkFeeController"/>
+      <ChartView :controller="networkFeeController" data-cy="chart-view"/>
     </div>
 
     <div class="dashboard-title">
@@ -48,7 +30,7 @@
     <div class="dashboard-separator"/>
 
     <div class="dashboard-content">
-      <ChartView :controller="activeAccountsController"/>
+      <ChartView :controller="activeAccountsController" data-cy="chart-view"/>
     </div>
   </div>
 
@@ -100,7 +82,7 @@ onBeforeUnmount(() => activeAccountsController.unmount())
 
 div.dashboard-title {
   color: var(--text-primary);
-  font-family: 'Styrene A Web', serif;
+  font-family: var(--font-family-heading), sans-serif;
   font-size: 20px;
   font-weight: 500;
   line-height: 26px;

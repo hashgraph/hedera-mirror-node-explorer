@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -83,7 +65,7 @@
 
         </ContentCell>
 
-        <hr style="width: 100%;" />
+        <hr style="width: 100%;"/>
 
         <!-- Max. Auto. Associations -->
         <ContentCell>
@@ -99,13 +81,16 @@
           <template #cellContent>
             <div style="display: flex; align-items: center; column-gap: 8px; width: 100%">
               <SelectView v-model="autoAssociationMode" width="100%">
-                <option :key="0" :value="AutoAssociationMode.NoAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option :key="0" :value="AutoAssociationMode.NoAutoAssociation"
+                        style="background-color: var(--h-theme-page-background-color)">
                   No Automatic Association
                 </option>
-                <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option :key="1" :value="AutoAssociationMode.LimitedAutoAssociation"
+                        style="background-color: var(--h-theme-page-background-color)">
                   Limited Automatic Association
                 </option>
-                <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation" style="background-color: var(--h-theme-page-background-color)">
+                <option :key="-1" :value="AutoAssociationMode.UnlimitedAutoAssociation"
+                        style="background-color: var(--h-theme-page-background-color)">
                   Unlimited Automatic Association
                 </option>
               </SelectView>
@@ -142,7 +127,7 @@
 
       <template v-if="enableStaking">
 
-        <hr style="width: 100%;" />
+        <hr style="width: 100%;"/>
 
         <!-- Staking Choice -->
         <ContentCell>
@@ -151,9 +136,12 @@
 
           <template #cellContent>
             <div style="display: flex; column-gap: 12px">
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice">To Node</RabioBoxView>
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice">To Account</RabioBoxView>
-              <RabioBoxView name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice">Not Staking</RabioBoxView>
+              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToNode" v-model="stakeChoice">To Node
+              </RabioBoxView>
+              <RabioBoxView name="stakeTarget" :value="StakeChoice.StakeToAccount" v-model="stakeChoice">To Account
+              </RabioBoxView>
+              <RabioBoxView name="stakeTarget" :value="StakeChoice.NotStaking" v-model="stakeChoice">Not Staking
+              </RabioBoxView>
             </div>
           </template>
 
@@ -190,11 +178,13 @@
 
           <ContentCell>
 
-            <template #cellTitle>Staked Account ID</template>/>
+            <template #cellTitle>Staked Account ID</template>
+            />
 
             <template #cellContent>
               <div style="display:flex; align-items: center; width: 100%">
-                <TextFieldView v-model="stakedAccountIdInputText" placeholder="Account ID (0.0.1234)" style="width: 100%"/>
+                <TextFieldView v-model="stakedAccountIdInputText" placeholder="Account ID (0.0.1234)"
+                               style="width: 100%"/>
               </div>
             </template>
 
@@ -209,7 +199,7 @@
 
     </template>
 
-    <template #transactionDialogControls>{{ feedbackMessage ?? ""}}</template>
+    <template #transactionDialogControls>{{ feedbackMessage ?? "" }}</template>
 
   </TransactionDialog>
 
@@ -274,10 +264,9 @@ const nodes = controller.nodes
 const enableStaking = routeManager.enableStaking
 
 
-
 const visibleIndex = computed(() => {
   let result: number
-  switch(stakeChoice.value) {
+  switch (stakeChoice.value) {
     case StakeChoice.StakeToNode:
       result = 0
       break

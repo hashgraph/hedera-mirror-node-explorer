@@ -1,27 +1,9 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
-import NftPreview from "../../../src/components/token/NftPreview.vue";
-import router from "../../../src/router";
+import NftPreview from "@/components/token/NftPreview.vue";
+import router from "@/router";
 import Oruga from "@oruga-ui/oruga-next";
 
 describe("NftPreview.vue", () => {
@@ -76,7 +58,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token' + tooltipText)
         const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
+        expect(hbarLogo.attributes('class')).toContain('lucide-image-off-icon')
 
         const tooltip = wrapper.find('#info-tooltip')
         expect(tooltip.exists()).toBe(true)
@@ -110,7 +92,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token')
         const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
+        expect(hbarLogo.attributes('class')).toContain('lucide-image-off-icon')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
@@ -145,7 +127,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token')
         const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
+        expect(hbarLogo.attributes('class')).toContain('lucide-image-off-icon')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 
@@ -180,7 +162,7 @@ describe("NftPreview.vue", () => {
         expect(wrapper.text()).toBe('Non Fungible Token')
         const hbarLogo = wrapper.find('svg')
         expect(hbarLogo.exists()).toBe(true)
-        expect(hbarLogo.attributes('class')).toContain('lucide-file-xicon')
+        expect(hbarLogo.attributes('class')).toContain('lucide-image-off-icon')
 
         expect(wrapper.findComponent('o-tooltip').exists()).toBe(false)
 

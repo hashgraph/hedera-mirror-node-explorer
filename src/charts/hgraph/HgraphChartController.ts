@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {ChartController, LoadedData} from "@/charts/core/ChartController.ts";
 import {ChartGranularity, ChartRange, computeGranularityForRange} from "@/charts/core/ChartRange.ts";
@@ -31,6 +13,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
 
     protected abstract makeQuery(range: ChartRange): string
+
     protected abstract makeLatestQuery(): string
 
 
@@ -39,7 +22,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     //
 
     protected makeBarChartConfig(metrics: EcosystemMetric[], range: ChartRange,
-                                 logarithmic: boolean, yLabel: string|null): ChartConfiguration {
+                                 logarithmic: boolean, yLabel: string | null): ChartConfiguration {
         const granularity = computeGranularityForRange(range)
         const graphLabels = makeGraphLabels(metrics, granularity)
         const graphDataSet = this.makeGraphDataSet(metrics) as any
@@ -144,10 +127,10 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
     // Private
     //
 
-    private getHgraphURL(): string|null {
-        let result: string|null
+    private getHgraphURL(): string | null {
+        let result: string | null
         const hgraphKey = this.routeManager.hgraphKey.value
-        switch(this.routeManager.currentNetworkEntry.value.mirrorNodeURL) {
+        switch (this.routeManager.currentNetworkEntry.value.mirrorNodeURL) {
             case "https://mainnet-public.mirrornode.hedera.com/":
             case "https://mainnet.mirrornode.hedera.com/":
                 result = hgraphKey !== null
@@ -186,7 +169,7 @@ export abstract class HgraphChartController extends ChartController<EcosystemMet
         let result: EcosystemMetric[]
 
         const config = this.makeConfig()
-        const response = await axios.post<GraphQLResponse>(url, { query }, config)
+        const response = await axios.post<GraphQLResponse>(url, {query}, config)
         if (response.status === 200 && typeof response.data === "object" && response.data !== null) {
             if (response.data.data) {
                 result = response.data.data.all_metrics ?? []

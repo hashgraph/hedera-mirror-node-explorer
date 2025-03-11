@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {Ref, ref} from "vue";
@@ -36,7 +18,7 @@ describe("ContractLocParser.ts", () => {
 
     test("mount + set/unset contract loc + unmount", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -101,7 +83,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc + mount + unmount + unset account loc", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.contract_id
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -166,7 +148,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract with contract address", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/contracts/" + SAMPLE_CONTRACT.evm_address
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACT);
@@ -231,7 +213,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc with unknown contract id", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ID = "0.0.42"
         const matcher1 = "/api/v1/contracts/" + UNKNOWN_ACCOUNT_ID
@@ -297,7 +279,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc with unknown contract address", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const UNKNOWN_ACCOUNT_ADDRESS = "0x0001020304050607080900010203040506070809"
         const matcher1 = "/api/v1/contracts/" + UNKNOWN_ACCOUNT_ADDRESS
@@ -364,7 +346,7 @@ describe("ContractLocParser.ts", () => {
 
     test("set contract loc with dummy value", async () => {
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const DUMMY_LOC = "dummy loc"
         const matcher1 = "/api/v1/accounts/" + DUMMY_LOC

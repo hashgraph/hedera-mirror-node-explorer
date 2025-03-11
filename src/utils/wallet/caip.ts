@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 //
 // https://github.com/ethereum/EIPs/blob/master/EIPS/eip-155.md
@@ -59,7 +41,8 @@ export class CAChainId {
 
     public constructor(
         public readonly namespace: string,
-        public readonly reference: string) {}
+        public readonly reference: string) {
+    }
 
     public toString(): string {
         return this.namespace + ":" + this.reference
@@ -73,8 +56,8 @@ export class CAChainId {
         return this.namespace === CAChainId.NAMESPACE_EIP155
     }
 
-    public static parse(text: string): CAChainId|null {
-        let result: CAChainId|null
+    public static parse(text: string): CAChainId | null {
+        let result: CAChainId | null
         const components = text.split(":")
         if (components.length == 2) {
             result = new CAChainId(components[0], components[1])
@@ -96,14 +79,15 @@ export class CAAccountId {
 
     public constructor(
         public readonly chainId: CAChainId,
-        public readonly accountAddress: string) {}
+        public readonly accountAddress: string) {
+    }
 
     public toString(): string {
         return this.chainId.toString() + ":" + this.accountAddress
     }
 
-    public static parse(text: string): CAAccountId|null {
-        let result: CAAccountId|null
+    public static parse(text: string): CAAccountId | null {
+        let result: CAAccountId | null
         const components = text.split(":")
         if (components.length == 3) {
             result = new CAAccountId(new CAChainId(components[0], components[1]), components[2])

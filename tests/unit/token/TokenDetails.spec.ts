@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, it} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils"
@@ -45,8 +27,8 @@ import NftHolderTable from "@/components/token/NftHolderTable.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
 import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
 import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
-import {TransactionID} from "../../../src/utils/TransactionID";
-import TokenFeesSection from "../../../src/components/token/TokenFeesSection.vue";
+import {TransactionID} from "@/utils/TransactionID";
+import TokenFeesSection from "@/components/token/TokenFeesSection.vue";
 import {fetchGetURLs} from "../MockUtils";
 
 /*
@@ -64,7 +46,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN.token_id
         const testTokenName = SAMPLE_TOKEN.name
@@ -84,7 +66,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -155,7 +137,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
         const testTokenName = SAMPLE_NONFUNGIBLE_DUDE.name
@@ -173,7 +155,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -237,7 +219,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         let testTokenId = SAMPLE_NONFUNGIBLE_DUDE.token_id
         let testTokenName = SAMPLE_NONFUNGIBLE_DUDE.name
@@ -255,7 +237,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -316,7 +298,7 @@ describe("TokenDetails.vue", () => {
 
         expect(fetchGetURLs(mock)).toStrictEqual([
             "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
-            "api/v1/contracts/" + SAMPLE_TOKEN.token_id ,
+            "api/v1/contracts/" + SAMPLE_TOKEN.token_id,
             "api/v1/transactions",
             "api/v1/contracts/" + SAMPLE_TOKEN.auto_renew_account,
             "api/v1/contracts/" + SAMPLE_TOKEN.treasury_account_id,
@@ -349,13 +331,13 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const invalidTokenId = "0.0.0.1000"
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: invalidTokenId
@@ -379,7 +361,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN_WITH_KEYS.token_id
         const testTokenName = SAMPLE_TOKEN_WITH_KEYS.name
@@ -397,7 +379,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -426,7 +408,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin Key0xc539536f9599daefeeb777677aa1aeea2242dfc7cca92348c228a5187a0faf2bCopyED25519")
@@ -450,7 +432,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name
@@ -468,7 +450,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -497,7 +479,7 @@ describe("TokenDetails.vue", () => {
         expect((wrapper.vm as any).tokenBalanceTableController.mounted.value).toBe(true)
         expect((wrapper.vm as any).nftHolderTableController.mounted.value).toBe(true)
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain("Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
 
         expect(wrapper.text()).toMatch("Token Keys")
         expect(wrapper.find("#adminKey").text()).toBe("Admin KeyNoneToken is immutable")
@@ -521,7 +503,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = "0.0.91961"
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name
@@ -541,7 +523,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -568,8 +550,9 @@ describe("TokenDetails.vue", () => {
         ])
 
         expect(wrapper.text()).toContain(
-            "NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenIdWithChecksum
-                + 'EVM Address' + testTokenEVMAddress + "Copy")
+            "Token DetailsToken is deletedNFT Collection" + testTokenName + ' (' + testTokenSymbol + ')'
+            + 'Token ID' + testTokenIdWithChecksum
+            + 'EVM Address' + testTokenEVMAddress + "Copy")
         expect(wrapper.text()).toMatch("Token is deleted")
 
         mock.restore()
@@ -581,7 +564,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN.token_id
         const testTokenName = SAMPLE_TOKEN.name
@@ -601,7 +584,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -661,7 +644,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_NONFUNGIBLE.token_id
         const testTokenName = SAMPLE_NONFUNGIBLE.name
@@ -681,7 +664,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -744,7 +727,7 @@ describe("TokenDetails.vue", () => {
 
         await router.push("/") // To avoid "missing required param 'network'" error
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
 
         const testTokenId = SAMPLE_TOKEN_WITHOUT_KEYS.token_id
         const testTokenName = SAMPLE_TOKEN_WITHOUT_KEYS.name
@@ -762,7 +745,7 @@ describe("TokenDetails.vue", () => {
         const wrapper = mount(TokenDetails, {
             global: {
                 plugins: [router, Oruga],
-                provide: { "isMediumScreen": false }
+                provide: {"isMediumScreen": false}
             },
             props: {
                 tokenId: testTokenId
@@ -788,7 +771,9 @@ describe("TokenDetails.vue", () => {
             "api/v1/tokens/" + SAMPLE_NFTS.nfts[2].token_id + "/nfts/342",
         ])
 
-        expect(wrapper.text()).toContain("NFT Collection" + testTokenName + ' (' + testTokenSymbol + ')' + 'Token is deleted' + 'Token ID' + testTokenId)
+        expect(wrapper.text()).toContain(
+            "Token DetailsToken is deletedNFT Collection" + testTokenName
+            + ' (' + testTokenSymbol + ')' + 'Token ID' + testTokenId)
 
         const customFees = wrapper.findComponent(TokenFeesSection)
         expect(customFees.exists()).toBe(false)

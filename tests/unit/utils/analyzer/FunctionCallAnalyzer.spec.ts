@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {FunctionCallAnalyzer, NameTypeValue} from "@/utils/analyzer/FunctionCallAnalyzer";
@@ -34,7 +16,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
     test("Call to system contract", async () => {
 
         const abi = require('../../../../public/abi/IHederaTokenService.json')
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "http://localhost:3000/abi/IHederaTokenService.json"
         mock.onGet(matcher1).reply(200, abi)
 
@@ -126,8 +108,8 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
                 "name": "balanceOf",
                 "type": "uint256",
                 "value": 67920691671575n,
-              },
-            ])
+            },
+        ])
         expect(functionCallAnalyzer.errorHash.value).toBeNull()
         expect(functionCallAnalyzer.errorSignature.value).toBeNull()
         expect(functionCallAnalyzer.errorInputs.value).toStrictEqual([])
@@ -183,7 +165,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000002E7A5D"
         mock.onGet(matcher1).reply(200, SOURCIFY_RESPONSE)
         const matcher2 = "api/v1/contracts/" + CONTRACT_DETAILS.contract_id
@@ -277,7 +259,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
 
         const sourcifyURL = routeManager.currentNetworkEntry.value.sourcifySetup?.repoURL
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = sourcifyURL + "files/any/295/0x00000000000000000000000000000000002E7A5D"
         mock.onGet(matcher1).reply(200, SOURCIFY_RESPONSE)
         const matcher2 = "api/v1/contracts/" + CONTRACT_DETAILS.contract_id
@@ -372,7 +354,7 @@ describe("FunctionCallAnalyzer.spec.ts", () => {
         SignatureCache.instance.clear()
 
         const functionHash = "0xf305d719"
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "https://www.4byte.directory/api/v1/signatures/?format=json&hex_signature=" + functionHash
         mock.onGet(matcher1).reply(200, BYTES4_RESPONSE)
 

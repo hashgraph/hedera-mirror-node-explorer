@@ -1,24 +1,6 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
-import {describe, test, expect} from 'vitest'
+import {describe, expect, test} from 'vitest'
 import {flushPromises, mount} from "@vue/test-utils";
 import EVMAddress from "@/components/values/EVMAddress.vue";
 import router from "@/router";
@@ -38,7 +20,7 @@ describe("EVMAddress", () => {
 
     test("Constructing with EVM address and no Hedera ID", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/accounts/" + evmAddress
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
@@ -62,7 +44,7 @@ describe("EVMAddress", () => {
 
     test("Constructing a compact form with EVM address and no Hedera ID", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "/api/v1/accounts/" + evmAddress
         mock.onGet(matcher1).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
@@ -87,7 +69,7 @@ describe("EVMAddress", () => {
 
     test("Constructing with long-zero address and no Hedera ID", async () => {
 
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher2 = "/api/v1/accounts/" + longZeroAddress
         mock.onGet(matcher2).reply(200, SAMPLE_ACCOUNT_WITH_NATIVE_EVM_ADDRESS);
 
@@ -154,7 +136,7 @@ describe("EVMAddress", () => {
     test("Constructing with System Contract address", async () => {
 
         const abi = require('../../../public/abi/IHederaTokenService.json')
-        const mock = new MockAdapter(axios);
+        const mock = new MockAdapter(axios as any);
         const matcher1 = "http://localhost:3000/abi/IHederaTokenService.json"
         mock.onGet(matcher1).reply(200, abi)
 

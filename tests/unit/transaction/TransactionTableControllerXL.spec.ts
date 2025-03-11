@@ -1,24 +1,6 @@
 // noinspection DuplicatedCode
 
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {describe, expect, test} from 'vitest'
 import {RouteManager} from "@/utils/RouteManager";
@@ -40,13 +22,13 @@ describe("TransactionTableController.ts", () => {
     test("mount + unmount", async () => {
         const PAGE_SIZE = 5
         //
-        // const mock = new MockAdapter(axios)
+        // const mock = new MockAdapter(axios as any)
 
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Just after construction
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
@@ -96,7 +78,7 @@ describe("TransactionTableController.ts", () => {
     test("route with p/k + mount + accountId setup + unmount", async () => {
         const PAGE_SIZE = 5
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         mock.onGet(matcher1).reply(200, SAMPLE_CONTRACTCALL_TRANSACTIONS)
@@ -105,7 +87,7 @@ describe("TransactionTableController.ts", () => {
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Preset p and k params in current route
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
@@ -161,7 +143,7 @@ describe("TransactionTableController.ts", () => {
         const ACCOUNT_ID = "0.0.4"
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
         const matcher1 = "/api/v1/transactions"
         const param1 = {
             limit: PAGE_SIZE,
@@ -175,7 +157,7 @@ describe("TransactionTableController.ts", () => {
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
 
         // Preset p and k params in current route
         await tc.router.replace({query: {p: 10, k: TIMESTAMP0}})
@@ -225,7 +207,7 @@ describe("TransactionTableController.ts", () => {
     test("mount + transactionType setup + unmount [accountMandatory=false]", async () => {
         const PAGE_SIZE = 5
 
-        const mock = new MockAdapter(axios)
+        const mock = new MockAdapter(axios as any)
 
         const matcher1 = "/api/v1/transactions"
         const params1 = {limit: 5, order: "desc"}
@@ -242,7 +224,7 @@ describe("TransactionTableController.ts", () => {
         const router = makeRouter()
         const accountId = ref<string | null>(null)
         const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false)
+        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false, "testKey")
         const currentRoute = tc.router.currentRoute
 
         // Sanity checks

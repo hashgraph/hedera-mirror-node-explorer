@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import {computed, ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue";
 import {SystemContractEntry, systemContractRegistry} from "@/schemas/SystemContractRegistry";
@@ -35,7 +17,7 @@ export class ContractAnalyzer {
     public readonly contractId: Ref<string | null>
     public readonly byteCodeAnalyzer: ByteCodeAnalyzer
     private readonly contractResponse: Ref<ContractResponse | null> = ref(null)
-    public readonly tokenInfo: Ref<TokenInfo|null> = ref(null)
+    public readonly tokenInfo: Ref<TokenInfo | null> = ref(null)
     public readonly systemContractEntry: Ref<SystemContractEntry | null> = ref(null)
     public readonly sourcifyRecord: Ref<SourcifyRecord | null> = ref(null)
     private readonly abi: Ref<ethers.Fragment[] | null> = ref(null)
@@ -71,7 +53,7 @@ export class ContractAnalyzer {
     }
 
     public readonly contractAddress: ComputedRef<string | null> = computed(() => {
-        let result: string|null
+        let result: string | null
         if (this.contractResponse.value !== null) {
             result = this.contractResponse.value.evm_address ?? null
         } else if (this.tokenInfo.value !== null) {
@@ -285,8 +267,8 @@ export class ContractAnalyzer {
         } else if (this.metadata.value !== null) {
             this.abi.value = this.metadata.value.output.abi as ethers.Fragment[] | null
         } else if (this.tokenInfo.value !== null) {
-            let abiName: string|null
-            switch(this.tokenInfo.value.type) {
+            let abiName: string | null
+            switch (this.tokenInfo.value.type) {
                 case TokenType.FUNGIBLE_COMMON:
                     abiName = "IERC20+IHRC"
                     break

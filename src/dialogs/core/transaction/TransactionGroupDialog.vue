@@ -1,22 +1,4 @@
-<!--
-  -
-  - Hedera Mirror Node Explorer
-  -
-  - Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
-  -
-  - Licensed under the Apache License, Version 2.0 (the "License");
-  - you may not use this file except in compliance with the License.
-  - You may obtain a copy of the License at
-  -
-  -      http://www.apache.org/licenses/LICENSE-2.0
-  -
-  - Unless required by applicable law or agreed to in writing, software
-  - distributed under the License is distributed on an "AS IS" BASIS,
-  - WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  - See the License for the specific language governing permissions and
-  - limitations under the License.
-  -
-  -->
+// SPDX-License-Identifier: Apache-2.0
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 <!--                                                     TEMPLATE                                                    -->
@@ -77,7 +59,7 @@
             Transaction ID: {{ singleTransactionId }}
           </template>
           <template v-else-if="taskPanelExtra1">
-            {{ taskPanelExtra1}}
+            {{ taskPanelExtra1 }}
           </template>
         </template>
         <template #taskPanelExtra2>
@@ -205,7 +187,7 @@ const taskPanelMessage = computed(() => {
 
 
 const taskPanelExtra1 = computed(() => {
-  let result: string|null
+  let result: string | null
 
   const errorOutcomes = props.controller.errorOutcomes.value      // transactions have thrown an exception
   const successOutcomes = props.controller.successOutcomes.value  // transactions have completed with successful status
@@ -231,7 +213,7 @@ const taskPanelExtra1 = computed(() => {
 
 
 const singleTransactionId = computed(() => {
-  let result: string|null
+  let result: string | null
   const transactionCount = props.controller.transactionOutcomes.value.length
   const outcome0 = props.controller.outcome0.value
   if (transactionCount === 1 && outcome0 !== null) {
@@ -244,7 +226,7 @@ const singleTransactionId = computed(() => {
 })
 
 const singleTransactionFailedStatus = computed(() => {
-  let result: string|null
+  let result: string | null
   const transactionCount = props.controller.transactionOutcomes.value.length
   const outcome0 = props.controller.outcome0.value
   if (transactionCount === 1 && outcome0 !== null) {

@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 import axios from "axios";
 import {fetchBoolean, fetchNumber, fetchObject, fetchString, fetchURL} from "@/config/ConfigUtils";
@@ -25,6 +7,7 @@ import {networkConfigKey} from "@/AppKeys";
 import {hip15checksum} from "@/schemas/MirrorNodeUtils.ts";
 import {EntityID} from "@/utils/EntityID";
 import {EthereumAddress} from "@/utils/EthereumAddress";
+import {ColorMap, NetworkColorMaps} from "@/config/NetworkColorMaps.ts";
 
 export class SourcifySetup {
 
@@ -86,7 +69,8 @@ export class SourcifySetup {
         public readonly repoURL: string,
         public readonly serverURL: string,
         public readonly chainID: number,
-    ) {}
+    ) {
+    }
 
     private static missingPropertyError(key: string): Error {
         throw new Error("Property " + key + " is missing")
@@ -110,22 +94,6 @@ export class NetworkEntry {
         const popularTokenIndexURL = fetchURL(obj, "popularTokenIndexURL")
         const erc20IndexURL = fetchURL(obj, "erc20IndexURL")
         const erc721IndexURL = fetchURL(obj, "erc721IndexURL")
-
-        const lightButtonTextColor = fetchString(obj, "lightButtonTextColor") ?? "white"
-        const lightButtonColor = fetchString(obj, "lightButtonColor") ?? "grey"
-        const lightChipTextColor = fetchString(obj, "lightChipTextColor") ?? "grey"
-        const lightChipColor = fetchString(obj, "lightChipColor") ?? "grey"
-        const lightTextAccentColor = fetchString(obj, "lightTextAccentColor") ?? "grey"
-        const lightBorderAccentColor = fetchString(obj, "lightBorderAccentColor") ?? "grey"
-        const lightGraphBarColor = fetchString(obj, "lightGraphBarColor") ?? "grey"
-
-        const darkButtonTextColor = fetchString(obj, "darkButtonTextColor") ?? "white"
-        const darkButtonColor = fetchString(obj, "darkButtonColor") ?? "grey"
-        const darkChipTextColor = fetchString(obj, "darkChipTextColor") ?? "grey"
-        const darkChipColor = fetchString(obj, "darkChipColor") ?? "grey"
-        const darkTextAccentColor = fetchString(obj, "darkTextAccentColor") ?? "grey"
-        const darkBorderAccentColor = fetchString(obj, "darkBorderAccentColor") ?? "grey"
-        const darkGraphBarColor = fetchString(obj, "darkGraphBarColor") ?? "grey"
 
         const sourcifySetupObj = fetchObject(obj, "sourcifySetup")
 
@@ -158,20 +126,6 @@ export class NetworkEntry {
             popularTokenIndexURL,
             erc20IndexURL,
             erc721IndexURL,
-            lightButtonTextColor,
-            lightButtonColor,
-            lightChipTextColor,
-            lightChipColor,
-            lightTextAccentColor,
-            lightBorderAccentColor,
-            lightGraphBarColor,
-            darkButtonTextColor,
-            darkButtonColor,
-            darkChipTextColor,
-            darkChipColor,
-            darkTextAccentColor,
-            darkBorderAccentColor,
-            darkGraphBarColor,
             sourcifySetup
         )
     }
@@ -185,46 +139,23 @@ export class NetworkEntry {
         public readonly displayName: string,
         public readonly mirrorNodeURL: string,
         public readonly ledgerID: string,
-
         // When set to 'true', this variable will enable connecting a wallet
         public readonly enableWallet: boolean,
         // When set to 'true', this variable will enable staking feature
         public readonly enableStaking: boolean,
         // When set to 'true', this variable will enable properties related to account/contract expiry
         public readonly enableExpiry: boolean,
-
         // When set to 'true', this variable will enable the market dashboard
         public readonly enableMarket: boolean,
-
         // The URL of the popular token index
-        public readonly popularTokenIndexURL: string|null,
-
+        public readonly popularTokenIndexURL: string | null,
         // The URL of the ERC20 contract index
-        public readonly erc20IndexURL: string|null,
-
+        public readonly erc20IndexURL: string | null,
         // The URL of the ERC721 contract index
-        public readonly erc721IndexURL: string|null,
-
-        // The light variants of the network theme color
-        public readonly lightButtonTextColor: string|null,
-        public readonly lightButtonColor: string|null,
-        public readonly lightChipTextColor: string|null,
-        public readonly lightChipColor: string|null,
-        public readonly lightTextAccentColor: string|null,
-        public readonly lightBorderAccentColor: string|null,
-        public readonly lightGraphBarColor: string|null,
-
-        // The dark variants of the network theme color
-        public readonly darkButtonTextColor: string|null,
-        public readonly darkButtonColor: string|null,
-        public readonly darkChipTextColor: string|null,
-        public readonly darkChipColor: string|null,
-        public readonly darkTextAccentColor: string|null,
-        public readonly darkBorderAccentColor: string|null,
-        public readonly darkGraphBarColor: string|null,
-
+        public readonly erc721IndexURL: string | null,
         public readonly sourcifySetup: SourcifySetup | null
-    ) {}
+    ) {
+    }
 
     private static missingPropertyError(key: string): Error {
         throw new Error("Property " + key + " is missing")
@@ -314,11 +245,15 @@ export class NetworkConfig {
     }
 
     public static make(): NetworkConfig { // For unit testing
-        return NetworkConfig.parse({ })
+        return NetworkConfig.parse({})
     }
 
     public lookup(name: string): NetworkEntry | null {
         return this.entries.find(element => element.name === name) ?? null
+    }
+
+    public indexOf(name: string): number {
+        return this.entries.findIndex(element => element.name === name)
     }
 
     public isValidChecksum(id: string, checksum: string, network: string): boolean {
@@ -335,12 +270,19 @@ export class NetworkConfig {
         return hip15checksum(ledgerID ?? 'FF', id)
     }
 
+    public getColorMap(name: string): ColorMap | null {
+        return this.networkColorMaps.getColorMap(this.indexOf(name))
+    }
+
     //
     // Private
     //
 
-    private constructor(public readonly entries: NetworkEntry[]) {}
+    private networkColorMaps: NetworkColorMaps
 
+    private constructor(public readonly entries: NetworkEntry[]) {
+        this.networkColorMaps = new NetworkColorMaps()
+    }
 
     public static parse(obj: object): NetworkConfig {
         const entries: NetworkEntry[] = []

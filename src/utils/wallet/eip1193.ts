@@ -1,22 +1,4 @@
-/*-
- *
- * Hedera Mirror Node Explorer
- *
- * Copyright (C) 2021 - 2024 Hedera Hashgraph, LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
+// SPDX-License-Identifier: Apache-2.0
 
 //
 // https://eips.ethereum.org/EIPS/eip-1193
@@ -100,8 +82,8 @@ export async function wallet_revokePermissions(p: EIP1193Provider): Promise<void
 // Error tooling
 //
 
-export function eth_getErrorCode(reason: unknown): number|null {
-    let result: number|null
+export function eth_getErrorCode(reason: unknown): number | null {
+    let result: number | null
     if (typeof reason == "object" && reason !== null && "code" in reason && typeof reason["code"] == "number") {
         result = reason["code"]
     } else {
@@ -110,8 +92,8 @@ export function eth_getErrorCode(reason: unknown): number|null {
     return result
 }
 
-export function eth_getMessage(reason: unknown): string|null {
-    let result: string|null
+export function eth_getMessage(reason: unknown): string | null {
+    let result: string | null
     if (typeof reason == "object" && reason !== null && "message" in reason && typeof reason["message"] == "string") {
         result = reason["message"]
     } else {
@@ -154,6 +136,6 @@ export interface AddEthereumChainParameter {
 export async function wallet_addEthereumChain(p: EIP1193Provider, param: AddEthereumChainParameter): Promise<void> {
     await p.request({
         "method": "wallet_addEthereumChain",
-        "params": [ param ],
+        "params": [param],
     })
 }
