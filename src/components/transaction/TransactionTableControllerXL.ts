@@ -122,6 +122,11 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
         return result
     }
 
+    protected isRouteQueryOutdated(): boolean {
+        return super.isRouteQueryOutdated()
+            || this.fetchTransactionTypeParam() != this.transactionType.value
+    }
+
     //
     // Private
     //

@@ -226,11 +226,25 @@ export abstract class TableController<R, K> implements PlayPauseController {
         return result
     }
 
+    protected isRouteQueryOutdated(): boolean {
+
+        const currentPageParam = this.getPageParam()
+        const currentKeyParam = this.getKeyParam()
+        const newPageParam = this.autoRefresh.value ? null : this.buffer.computePage()
+        const newKeyParam = this.autoRefresh.value ? null : this.buffer.computeFirstVisibleKey()
+
+        const currentKeyString = currentKeyParam !== null ? this.stringFromKey(currentKeyParam) : null
+        const newKeyString = newKeyParam !== null ? this.stringFromKey(newKeyParam) : null
+        return currentPageParam !== newPageParam || currentKeyString !== newKeyString
+    }
+
     protected async updateRouteQuery(): Promise<void> {
-        const failure = await this.router.replace({query: this.makeRouteQuery()})
-        if (failure && failure.type != 8 && failure.type != 16) {
-            console.warn(failure.message)
-        }
+        if (this.isRouteQueryOutdated()) {
+            const failure = await this.router.replace({query: this.makeRouteQuery()})
+            if (failure && failure.type != 8 && failure.type != 16) {
+                console.warn(failure.message)
+            }
+        } // else no update needed :)
         return Promise.resolve()
     }
 
