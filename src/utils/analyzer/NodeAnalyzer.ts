@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {computed, ComputedRef, Ref} from "vue";
-import {makeShortNodeDescription, NetworkNode} from "@/schemas/MirrorNodeSchemas";
+import {Key, makeShortNodeDescription, NetworkNode} from "@/schemas/MirrorNodeSchemas";
 import {NetworkAnalyzer} from "@/utils/analyzer/NetworkAnalyzer";
 import {
     makeAnnualizedRate,
@@ -45,7 +45,7 @@ export class NodeAnalyzer {
         } else if (typeof this.nodeLoc.value == "string") {
             result = null
             for (const node of this.networkAnalyzer.nodes.value) {
-                if (node.node_account_id == this.nodeLoc.value) {
+                if (node.node_id.toString() == this.nodeLoc.value) {
                     result = node
                     break
                 }
@@ -66,6 +66,10 @@ export class NodeAnalyzer {
 
     public readonly shortNodeDescription: ComputedRef<string | null> = computed(
         () => this.nodeDescription.value ? makeShortNodeDescription(this.nodeDescription.value) : null)
+
+    public adminKey: ComputedRef<Key | null> = computed(() => this.node.value?.admin_key ?? null)
+
+    public nodeId: ComputedRef<number | null> = computed(() => this.node.value?.node_id ?? null)
 
     //
     // Public (staking)
