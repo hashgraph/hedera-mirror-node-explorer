@@ -19,6 +19,7 @@ import {
     SAMPLE_FAILED_TRANSACTIONS,
     SAMPLE_NETWORK_EXCHANGERATE,
     SAMPLE_NETWORK_NODES,
+    SAMPLE_NODE_ACCOUNT,
     SAMPLE_NONFUNGIBLE,
     SAMPLE_TOKEN,
     SAMPLE_TOKEN_DUDE,
@@ -174,6 +175,91 @@ describe("AccountDetails.vue", () => {
 
         expect(wrapper.find("#recentTransactions").exists()).toBe(true)
         expect(wrapper.findComponent(TransactionTable).exists()).toBe(true)
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
+
+    it("Should display a node account details", async () => {
+        await router.push("/") // To avoid "missing required param 'network'" error
+
+        const mock = new MockAdapter(axios as any);
+
+        const accountId = SAMPLE_NODE_ACCOUNT.account
+        const nodeId = 0
+
+        const matcher1 = "api/v1/accounts/" + accountId
+        mock.onGet(matcher1).reply(200, SAMPLE_NODE_ACCOUNT);
+
+        const matcher2 = "api/v1/network/nodes"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_NODES);
+
+        mock.onGet("/api/v1/transactions").reply(200, []);
+
+        mock.onGet("api/v1/tokens").reply(200, []);
+
+        const matcher8 = "api/v1/accounts/" + accountId + "/nfts"
+        mock.onGet(matcher8).reply(200, {nfts: []});
+
+        const matcher9 = "/api/v1/accounts/" + accountId + "/allowances/crypto"
+        mock.onGet(matcher9).reply(200, {allowances: []})
+
+        const matcher10 = "/api/v1/accounts/" + accountId + "/allowances/tokens"
+        mock.onGet(matcher10).reply(200, {allowances: []})
+
+        const matcher11 = "/api/v1/accounts/" + accountId + "/allowances/nfts"
+        mock.onGet(matcher11).reply(200, {allowances: []})
+
+        const matcher14 = "api/v1/accounts/" + accountId + "/airdrops/pending"
+        mock.onGet(matcher14).reply(200, {airdrops: []});
+
+        const wrapper = mount(AccountDetails, {
+            global: {
+                plugins: [router, Oruga],
+                provide: {"isMediumScreen": false}
+            },
+            props: {
+                accountId: SAMPLE_NODE_ACCOUNT.account ?? undefined
+            },
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+
+        expect(fetchGetURLs(mock)).toStrictEqual([
+            "api/v1/accounts/" + accountId,
+            "api/v1/network/nodes",
+            "api/v1/accounts/0.0.3/rewards?limit=1",
+            "api/v1/balances",
+            "api/v1/contracts/" + accountId,
+            "api/v1/transactions",
+            "api/v1/network/exchangerate",
+            "api/v1/transactions",
+            "api/v1/accounts/" + accountId + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + accountId + "/airdrops/pending",
+            "api/v1/accounts/" + accountId + "/airdrops/pending",
+            "api/v1/accounts/" + accountId + "/allowances/crypto",
+            "api/v1/accounts/" + accountId + "/allowances/tokens",
+            "api/v1/accounts/" + accountId + "/nfts",
+            "api/v1/accounts/" + accountId + "/nfts",
+            "api/v1/tokens",
+            "api/v1/accounts/" + accountId + "/airdrops/pending",
+            "api/v1/accounts/" + accountId + "/airdrops/pending",
+            "api/v1/accounts/" + accountId + "/allowances/crypto",
+            "api/v1/accounts/" + accountId + "/allowances/tokens",
+            "api/v1/accounts/" + accountId + "/nfts",
+            "api/v1/accounts/" + accountId + "/allowances/nfts",
+            "api/v1/accounts/" + accountId + "/allowances/nfts",
+        ])
+
+        expect(wrapper.text()).toMatch("Account  Account ID " + accountId)
+
+        expect(wrapper.find("#nodeLinkValue").exists()).toBe(true)
+        const link = wrapper.get("#nodeLinkValue")
+        expect(link.text()).toBe("0 - Hosted by Hedera | East Coast, USA")
+        expect(link.get('a').attributes('href')).toMatch(RegExp("/node/" + nodeId + "$"))
 
         mock.restore()
         wrapper.unmount()
