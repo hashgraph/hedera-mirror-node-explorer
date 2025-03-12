@@ -704,15 +704,16 @@ export interface NetworkNodesResponse {
 }
 
 export interface NetworkNode {
-    description: string | null | undefined
-    file_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    memo: string | undefined
-    node_id: number | undefined
-    node_account_id: string | null | undefined   // Network entity ID in the format of shard.realm.num
-    node_cert_hash: string | null | undefined
-    public_key: string | null | undefined   // hex encoded X509 RSA public key used to sign stream files
-    service_endpoints: ServiceEndPoint[] | undefined
-    timestamp: TimestampRange | undefined
+    admin_key: Key | null
+    description: string | null
+    file_id: string | null          // Network entity ID in the format of shard.realm.num
+    memo: string
+    node_id: number
+    node_account_id: string | null  // Network entity ID in the format of shard.realm.num
+    node_cert_hash: string | null
+    public_key: string | null       // hex encoded X509 RSA public key used to sign stream files
+    service_endpoints: ServiceEndPoint[]
+    timestamp: TimestampRange
     max_stake: number | null // The maximum stake (rewarded or not rewarded) this node can have as consensus weight
     min_stake: number | null // The minimum stake (rewarded or not rewarded) this node must reach before having non-zero consensus weight
     stake: number | null // The node consensus weight at the beginning of the staking period

@@ -54,6 +54,17 @@
             <Endpoints :endpoints="node?.service_endpoints"></Endpoints>
           </template>
         </Property>
+        <Property id="adminKey">
+          <template #name>Admin Key</template>
+          <template #value>
+            <KeyValue
+                :node-id="nodeIdNb"
+                :key-bytes="node?.admin_key?.key"
+                :key-type="node?.admin_key?._type"
+                :show-none="true"
+            />
+          </template>
+        </Property>
         <template v-if="enableStaking">
           <Property id="publicKey">
             <template #name>Public Key</template>

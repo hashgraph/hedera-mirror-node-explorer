@@ -6,10 +6,16 @@
 
 <template>
   <template v-if="isComplexKey">
-    <ComplexKeyValue :account-id="accountId" :details="details" :key-bytes="keyBytes" :show-none="showNone"/>
+    <ComplexKeyValue
+        :account-id="accountId"
+        :node-id="nodeId"
+        :in-details-page="inDetailsPage"
+        :key-bytes="keyBytes"
+        :show-none="showNone"
+    />
   </template>
   <template v-else>
-    <div v-if="details">
+    <div v-if="inDetailsPage">
       <span class="h-is-extra-text">{{ keyType }}</span>
       <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + keyBytes }}</span>
     </div>
@@ -43,7 +49,11 @@ const props = defineProps({
     type: String as PropType<string | null>,
     default: null
   },
-  details: {
+  nodeId: {
+    type: Number as PropType<number | null>,
+    default: null
+  },
+  inDetailsPage: {
     type: Boolean,
     default: false
   },

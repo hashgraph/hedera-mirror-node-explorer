@@ -8,27 +8,22 @@
 
   <PageFrameV2 page-title="Admin Key Details">
 
-    <template v-if="notification" #banner>
-      <NotificationBanner :message="notification"/>
-    </template>
-
     <DashboardCardV2>
       <template #title>
-        <span>Admin Key for Account </span>
-        <div v-if="normalizedAccountId">
-          <AccountLink id="accountId" :account-id="normalizedAccountId">
-            {{ normalizedAccountId }}
-          </AccountLink>
-          <span v-if="accountChecksum" class="h-is-low-contrast">-{{ accountChecksum }}</span>
+        <span>Admin Key for Node </span>
+        <div v-if="nodeId !== null">
+          <router-link :to="routeManager.makeRouteToNode(nodeId)">
+            <span>{{ nodeId }} - {{ nodeDescription }}</span>
+          </router-link>
         </div>
       </template>
 
       <template #content>
         <KeyValue
-            v-if="normalizedAccountId"
+            v-if="nodeId !== null"
             :in-details-page="true"
-            :key-bytes="key?.key"
-            :key-type="key?._type"
+            :key-bytes="nodeKey?.key"
+            :key-type="nodeKey?._type"
             :show-none="true"
         />
       </template>
@@ -44,35 +39,42 @@
 
 <script setup lang="ts">
 
-import {computed, onBeforeUnmount, onMounted} from 'vue';
+import {computed, onBeforeUnmount, onMounted, PropType} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
-import {AccountLocParser} from "@/utils/parser/AccountLocParser";
-import AccountLink from "@/components/values/link/AccountLink.vue";
 import KeyValue from "@/components/values/KeyValue.vue";
-import NotificationBanner from "@/components/NotificationBanner.vue";
-import {NetworkConfig} from "@/config/NetworkConfig";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import {NodeAnalyzer} from "@/utils/analyzer/NodeAnalyzer.ts";
+import {routeManager} from "@/router.ts";
 
 const props = defineProps({
-  accountId: String,
+  nodeId: {
+    type: String as PropType<string | null>,
+    default: null
+  },
   network: String
 })
 
-const networkConfig = NetworkConfig.inject()
-
 //
-// account
+// node
 //
 
-const accountLocator = computed(() => props.accountId ?? null)
-const accountLocParser = new AccountLocParser(accountLocator, networkConfig)
-onMounted(() => accountLocParser.mount())
-onBeforeUnmount(() => accountLocParser.unmount())
+const nodeId = computed(() => {
+  let result: number | null
+  if (props.nodeId !== null) {
+    const id = parseInt(props.nodeId)
+    result = isNaN(id) || id < 0 ? null : id
+  } else {
+    result = null
+  }
+  return result;
+})
 
-const notification = accountLocParser.errorNotification
-const normalizedAccountId = accountLocParser.accountId
-const accountChecksum = accountLocParser.accountChecksum
-const key = accountLocParser.key
+const nodeAnalyzer = new NodeAnalyzer(nodeId)
+onMounted(() => nodeAnalyzer.mount())
+onBeforeUnmount(() => nodeAnalyzer.unmount())
+
+const nodeKey = nodeAnalyzer.adminKey
+const nodeDescription = nodeAnalyzer.shortNodeDescription
 
 </script>
 
