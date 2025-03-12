@@ -21,18 +21,18 @@ export class TransactionTableControllerXL extends TableController<Transaction, s
 
     public constructor(router: Router,
                        accountId: Ref<string | null>,
-                       pageSize: Ref<number>,
+                       defaultPageSize: number,
                        accountIdMandatory: boolean,
                        storageKey: string,
                        pageParamName = "p", keyParamName = "k",
                        minTinyBar = ref(0)) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.FAST_REFRESH_PERIOD,
             TableController.FAST_REFRESH_COUNT,
             100,
+            storageKey,
             pageParamName,
             keyParamName
         );

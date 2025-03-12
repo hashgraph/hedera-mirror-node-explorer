@@ -668,6 +668,7 @@ class TestTableController extends TableController<number, number> {
     public static readonly UPDATED_PERIOD = 5000
     public static readonly MAX_UPDATE_COUNT = 5
     public static readonly MAX_LIMIT = 12
+    public static readonly STORAGE_KEY = "testTable"
 
     public startKey: number
     public endKey: number
@@ -680,11 +681,11 @@ class TestTableController extends TableController<number, number> {
                 scale: Ref<number> = computed(() => 1),
                 pageParamName = "p", keyParamName = "k",
                 router = makeRouter()) {
-        super(router, computed(() => pageSize),
-            TestTableController.PRESUMED_ROW_COUNT,
+        super(router, pageSize,
             TestTableController.UPDATED_PERIOD,
             TestTableController.MAX_UPDATE_COUNT,
             TestTableController.MAX_LIMIT,
+            TestTableController.STORAGE_KEY,
             pageParamName,
             keyParamName)
         this.startKey = startKey

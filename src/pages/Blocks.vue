@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 
-import {inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {inject, onBeforeUnmount, onMounted} from 'vue';
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import BlockTable from "@/components/block/BlockTable.vue";
 import {BlockTableController} from "@/components/block/BlockTableController";
@@ -45,8 +45,8 @@ defineProps({
 const isMediumScreen = inject('isMediumScreen', true)
 
 // BlockTableController
-const pageSize = ref(isMediumScreen ? 15 : 5)
-const blockTableController = new BlockTableController(useRouter(), pageSize)
+const defaultPageSize = isMediumScreen ? 15 : 5
+const blockTableController = new BlockTableController(useRouter(), defaultPageSize)
 onMounted(() => blockTableController.mount())
 onBeforeUnmount(() => blockTableController.unmount())
 

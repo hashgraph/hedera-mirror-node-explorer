@@ -6,6 +6,7 @@ import {fetchNumberQueryParam, fetchStringQueryParam} from "@/utils/RouteManager
 import {RowBuffer} from "@/utils/table/RowBuffer";
 import axios, {AxiosError} from "axios";
 import {PlayPauseController} from "@/components/PlayPauseButton.vue";
+import {AppStorage} from "@/AppStorage.ts";
 
 export abstract class TableController<R, K> implements PlayPauseController {
 
@@ -185,19 +186,25 @@ export abstract class TableController<R, K> implements PlayPauseController {
     // Protected
     //
 
-    protected constructor(router: Router, pageSize: Ref<number>,
-                          presumedRowCount: number, updatePeriod: number,
-                          maxUpdateCount: number, maxLimit: number,
-                          pageParamName = "p", keyParamName = "k") {
+    protected constructor(router: Router,
+                          defaultPageSize: number,
+                          updatePeriod: number,
+                          maxUpdateCount: number,
+                          maxLimit: number,
+                          pageSizeStorageKey: string,
+                          pageParamName = "p",
+                          keyParamName = "k") {
         this.router = router
-        this.presumedRowCount = presumedRowCount
         this.updatePeriod = updatePeriod
         this.maxAutoUpdateCount = maxUpdateCount
-        this.pageSize = pageSize
+        this.pageSize = ref(AppStorage.getTablePageSize(pageSizeStorageKey) ?? defaultPageSize)
+        this.presumedRowCount = 10 * this.pageSize.value
         this.maxLimit = maxLimit
         this.pageParamName = pageParamName
         this.keyParamName = keyParamName
-        this.buffer = new RowBuffer<R, K>(this, presumedRowCount);
+        this.buffer = new RowBuffer<R, K>(this, this.presumedRowCount);
+
+        watch(this.pageSize, () => AppStorage.setTablePageSize(pageSizeStorageKey, this.pageSize.value))
     }
 
     protected watchAndReload(sources: WatchSource<unknown>[]): void {

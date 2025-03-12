@@ -178,13 +178,13 @@ const showSection = computed(() =>
 
 const showAllTokensLink = computed(() =>
     !props.fullPage
-    && (fungibleTableController.totalRowCount.value >= perPage.value
-        || nftsTableController.totalRowCount.value >= perPage.value
-        || fungibleAirdropTableController.totalRowCount.value >= perPage.value
-        || nftsAirdropTableController.totalRowCount.value >= perPage.value)
+    && (fungibleTableController.totalRowCount.value >= defaultPageSize
+        || nftsTableController.totalRowCount.value >= defaultPageSize
+        || fungibleAirdropTableController.totalRowCount.value >= defaultPageSize
+        || nftsAirdropTableController.totalRowCount.value >= defaultPageSize)
 )
 
-const perPage = ref(props.fullPage ? 15 : 6)
+const defaultPageSize = props.fullPage ? 15 : 6
 
 const accountId = computed(() => props.accountId)
 
@@ -213,14 +213,14 @@ const onAirdropSelectTab = (tab: string | null) => {
 const nftsTableController = new NftsTableController(
     useRouter(),
     accountId,
-    perPage,
+    defaultPageSize,
     "ps", "ks"
 );
 
 const fungibleTableController = new FungibleTableController(
     useRouter(),
     accountId,
-    perPage,
+    defaultPageSize,
     "pf", "kf"
 );
 
@@ -228,14 +228,14 @@ const nftsAirdropTableController = new PendingAirdropTableController(
     useRouter(),
     accountId,
     TokenType.NON_FUNGIBLE_UNIQUE,
-    perPage,
+    defaultPageSize,
     "pa", "ka"
 )
 const fungibleAirdropTableController = new PendingAirdropTableController(
     useRouter(),
     accountId,
     TokenType.FUNGIBLE_COMMON,
-    perPage,
+    defaultPageSize,
     "pr", "kr"
 )
 

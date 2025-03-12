@@ -209,7 +209,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted} from 'vue';
 import {useRouter} from "vue-router";
 import {walletManager} from "@/router";
 import TimestampValue from "@/components/values/TimestampValue.vue";
@@ -300,13 +300,13 @@ const notification = computed(() => {
   return result
 })
 
-const perPage = ref(isMediumScreen ? 10 : 5)
+const defaultPageSize = isMediumScreen ? 10 : 5
 
 //
 // TokenBalanceTableController
 //
 const fungibleTokenId = computed(() => tokenAnalyzer.isFungible.value ? normalizedTokenId.value : null)
-const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, perPage);
+const tokenBalanceTableController = new TokenBalanceTableController(useRouter(), fungibleTokenId, defaultPageSize);
 onMounted(() => tokenBalanceTableController.mount())
 onBeforeUnmount(() => tokenBalanceTableController.unmount())
 
@@ -314,7 +314,7 @@ onBeforeUnmount(() => tokenBalanceTableController.unmount())
 // NftHolderTableController
 //
 const nftTokenId = computed(() => tokenAnalyzer.isNft.value ? normalizedTokenId.value : null)
-const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, perPage)
+const nftHolderTableController = new NftHolderTableController(useRouter(), nftTokenId, defaultPageSize)
 onMounted(() => nftHolderTableController.mount())
 onBeforeUnmount(() => nftHolderTableController.unmount())
 

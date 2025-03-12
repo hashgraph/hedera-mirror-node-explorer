@@ -5,6 +5,7 @@ import {Ref} from "vue";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 import axios, {AxiosResponse} from "axios";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class PendingAirdropTableController extends TableController<TokenAirdrop, AirdropKey> {
 
@@ -19,17 +20,17 @@ export class PendingAirdropTableController extends TableController<TokenAirdrop,
         router: Router,
         accountId: Ref<string | null>,
         tokenType: TokenType,
-        pageSize: Ref<number>,
+        defaultPageSize: number,
         pageParamName = "p",
         keyParamName = "k"
     ) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             0,
             100,
+            AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY,
             pageParamName,
             keyParamName
         )

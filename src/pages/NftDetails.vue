@@ -247,7 +247,7 @@ const notification = computed(() => {
   return result
 })
 
-const perPage = computed(() => (isMediumScreen ? 10 : 5))
+const defaultPageSize = isMediumScreen ? 10 : 5
 
 const tokenRoute = computed(() => routeManager.makeRouteToToken(props.tokenId))
 
@@ -260,7 +260,7 @@ const transactionTableController = new NftTransactionTableController(
     router,
     tokenId,
     serialNumber,
-    perPage,
+    defaultPageSize,
     "p1",
     "k1",
 )

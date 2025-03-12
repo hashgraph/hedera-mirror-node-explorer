@@ -2,10 +2,11 @@
 
 import {KeyOperator, SortOrder, TableController,} from "@/utils/table/TableController"
 import {NftTransactionHistory, NftTransactionTransfer,} from "@/schemas/MirrorNodeSchemas"
-import {ComputedRef, ref, Ref, watch, WatchStopHandle} from "vue"
+import {ref, Ref, watch, WatchStopHandle} from "vue"
 import axios from "axios"
 import {LocationQuery, Router} from "vue-router"
 import {fetchStringQueryParam} from "@/utils/RouteManager"
+import {AppStorage} from "@/AppStorage.ts";
 
 export class NftTransactionTableController extends TableController<
     NftTransactionTransfer,
@@ -22,17 +23,17 @@ export class NftTransactionTableController extends TableController<
         router: Router,
         tokenId: Ref<string | null>,
         serialNumber: Ref<string | null>,
-        pageSize: ComputedRef<number>,
+        defaultPageSize: number,
         pageParamName = "p",
         keyParamName = "k",
     ) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
             100,
+            AppStorage.NFT_TRANSACTION_TABLE_PAGE_SIZE_KEY,
             pageParamName,
             keyParamName,
         )

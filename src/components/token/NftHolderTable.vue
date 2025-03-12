@@ -83,7 +83,6 @@
     <TablePageSize
         v-if="!paginated && showPageSizeSelector"
         v-model:size="perPage"
-        :storage-key="AppStorage.NFT_HOLDER_TABLE_PAGE_SIZE_KEY"
         style="width: 116px; margin-left: 4px"
     />
 

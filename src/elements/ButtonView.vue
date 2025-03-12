@@ -81,6 +81,7 @@ button.button-view {
   height: 48px;
   padding: 0 24px;
   text-wrap: nowrap;
+  cursor: pointer;
 }
 
 button.button-view.is-medium {

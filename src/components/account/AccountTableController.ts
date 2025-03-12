@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {AccountInfo, AccountsResponse} from "@/schemas/MirrorNodeSchemas";
-import {Ref} from "vue";
 import axios from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {drainAccounts} from "@/schemas/MirrorNodeUtils.ts";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class AccountTableController extends TableController<AccountInfo, string> {
 
@@ -15,14 +15,14 @@ export class AccountTableController extends TableController<AccountInfo, string>
     // Public
     //
 
-    public constructor(router: Router, pageSize: Ref<number>, pubKey: string | null = null) {
+    public constructor(router: Router, defaultPageSize: number, pubKey: string | null = null) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             AccountTableController.SLOW_REFRESH_COUNT,
-            100
+            100,
+            AppStorage.ACCOUNT_TABLE_PAGE_SIZE_KEY,
         )
         this.pubKey = pubKey
         this.watchAndReload([this.pageSize])

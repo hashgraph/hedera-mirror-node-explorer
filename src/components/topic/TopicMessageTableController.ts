@@ -3,8 +3,9 @@
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController"
 import {TopicMessage, TopicMessagesResponse} from "@/schemas/MirrorNodeSchemas"
 import axios, {AxiosResponse} from "axios"
-import {ComputedRef, Ref} from "vue"
+import {ComputedRef} from "vue"
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class TopicMessageTableController extends TableController<TopicMessage, string> {
 
@@ -14,14 +15,14 @@ export class TopicMessageTableController extends TableController<TopicMessage, s
     // Public
     //
 
-    public constructor(router: Router, topicId: ComputedRef<string | null>, pageSize: Ref<number>) {
+    public constructor(router: Router, topicId: ComputedRef<string | null>, defaultPageSize: number) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.FAST_REFRESH_PERIOD,
             TableController.FAST_REFRESH_COUNT,
-            100
+            100,
+            AppStorage.TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY
         );
         this.topicId = topicId
         this.watchAndReload([this.topicId, this.pageSize])

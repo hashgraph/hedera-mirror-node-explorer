@@ -49,11 +49,10 @@ const accountId = walletManager.accountId
 //
 // Rewards Transactions Table Controller
 //
-const pageSize = ref(5)
 const transactionTableController = new StakingRewardsTableController(
     router,
     accountId,
-    pageSize,
+    5,
     AppStorage.STAKING_TABLE_PAGE_SIZE_KEY
 )
 onMounted(() => transactionTableController.mount())

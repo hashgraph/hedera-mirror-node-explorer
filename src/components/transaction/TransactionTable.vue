@@ -61,7 +61,6 @@
     <template v-slot:bottom-left>
       <TablePageSize
           v-model:size="perPage"
-          :storage-key="storageKey ?? undefined"
       />
     </template>
 
@@ -70,7 +69,6 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
-      :storage-key="storageKey ?? undefined"
       style="width: 116px; margin-left: 4px"
   />
 
