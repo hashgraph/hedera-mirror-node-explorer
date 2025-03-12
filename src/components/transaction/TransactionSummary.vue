@@ -33,9 +33,9 @@
 <!--                                                      SCRIPT                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<script lang="ts">
+<script setup lang="ts">
 
-import {computed, defineComponent, onBeforeUnmount, onMounted, PropType} from "vue";
+import {computed, onBeforeUnmount, onMounted, PropType} from "vue";
 import {Transaction, TransactionDetail, TransactionType} from "@/schemas/MirrorNodeSchemas";
 import {makeSummaryLabel} from "@/utils/TransactionTools";
 import TransferGraphSection from "@/components/transfer_graphs/TransferGraphSection.vue";
@@ -51,56 +51,40 @@ const GRAPH_TRANSACTION_TYPES = [
   TransactionType.TOKENCLAIMAIRDROP
 ]
 
-export default defineComponent({
-  name: "TransactionSummary",
-  components: {TokenExtra, TransferGraphSection},
-  props: {
-    transaction: Object as PropType<Transaction | undefined>
-  },
-
-  setup(props) {
-
-    const shouldGraph = computed(() => {
-      return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
-    })
-
-    const transactionAnalyzer = new TransactionAnalyzer(computed(() => props.transaction ?? null))
-    onMounted(() => transactionAnalyzer.mount())
-    onBeforeUnmount(() => transactionAnalyzer.unmount())
-
-    const additionalTokensNumber = computed(
-        () => Math.max(0, transactionAnalyzer.tokens.value.length - 1))
-
-    const ethereumSummary = computed(() => {
-      let result
-      if (transactionAnalyzer.entityId.value !== null) {
-        result = transactionAnalyzer.contractId.value !== null
-            ? 'Contract ID: ' + transactionAnalyzer.entityId.value
-            : 'Account ID: ' + transactionAnalyzer.entityId.value
-      } else {
-        result = ""
-      }
-      return result
-    })
-
-    const transactionDetail = computed(() => {
-      return props.transaction as TransactionDetail | undefined
-    })
-
-    return {
-      shouldGraph,
-      isTokenAssociation: transactionAnalyzer.isTokenAssociation,
-      tokens: transactionAnalyzer.tokens,
-      additionalTokensNumber,
-      isEthereumTransaction: transactionAnalyzer.isEthereumTransaction,
-      ethereumSummary,
-      // From TransactionTools
-      makeSummaryLabel,
-      TransactionType,
-      transactionDetail
-    }
-  }
+const props = defineProps({
+  transaction: Object as PropType<Transaction | undefined>
 })
+
+const shouldGraph = computed(() => {
+  return props.transaction?.name && GRAPH_TRANSACTION_TYPES.indexOf(props.transaction.name) != -1
+})
+
+const transactionAnalyzer = new TransactionAnalyzer(computed(() => props.transaction ?? null))
+onMounted(() => transactionAnalyzer.mount())
+onBeforeUnmount(() => transactionAnalyzer.unmount())
+
+const additionalTokensNumber = computed(
+    () => Math.max(0, transactionAnalyzer.tokens.value.length - 1))
+
+const ethereumSummary = computed(() => {
+  let result
+  if (transactionAnalyzer.entityId.value !== null) {
+    result = transactionAnalyzer.contractId.value !== null
+        ? 'Contract ID: ' + transactionAnalyzer.entityId.value
+        : 'Account ID: ' + transactionAnalyzer.entityId.value
+  } else {
+    result = ""
+  }
+  return result
+})
+
+const transactionDetail = computed(() => {
+  return props.transaction as TransactionDetail | undefined
+})
+
+const isTokenAssociation = transactionAnalyzer.isTokenAssociation
+const isEthereumTransaction = transactionAnalyzer.isEthereumTransaction
+const tokens = transactionAnalyzer.tokens
 
 </script>
 
