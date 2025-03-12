@@ -26,7 +26,7 @@
       <template #content>
         <KeyValue
             v-if="normalizedAccountId"
-            :details="true"
+            :in-details-page="true"
             :key-bytes="key?.key"
             :key-type="key?._type"
             :show-none="true"

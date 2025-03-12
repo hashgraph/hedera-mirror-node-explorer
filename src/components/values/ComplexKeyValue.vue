@@ -6,7 +6,7 @@
 
 <template>
   <div v-if="key">
-    <div v-if=" !details && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
+    <div v-if=" !inDetailsPage && maxLevel >= MAX_INLINE_LEVEL && adminKeyRoute">
       <span>{{ 'Complex Key (' + (maxLevel + 1) + ' levels)' }}</span>
       <router-link v-if="adminKeyRoute" :to="adminKeyRoute">
         <span class="ml-2 h-is-low-contrast">
@@ -14,11 +14,11 @@
         </span>
       </router-link>
     </div>
-    <div v-else :style="containerStyle(details ? 30 : 20)">
+    <div v-else :style="containerStyle(inDetailsPage ? 30 : 20)">
       <template v-for="line in lines" :key="line.seqNb">
         <div :style="lineStyle(line)">
           <template v-if="line.innerKeyBytes() !== null">
-            <div v-if="details" :class="lineClass(line)">
+            <div v-if="inDetailsPage" :class="lineClass(line)">
               <span class="h-is-extra-text">{{ line.innerKeyType() }}</span>
               <span class="h-is-monospace h-is-low-contrast">{{ ':&#8239;' + line.innerKeyBytes() }}</span>
             </div>
@@ -36,7 +36,7 @@
             <ContractLink :contract-id="line.delegatableContractId()"/>
           </template>
           <template v-else>
-            <div v-if="details && line.level" :class="lineClass(line)">{{ lineText(line) }}</div>
+            <div v-if="inDetailsPage && line.level" :class="lineClass(line)">{{ lineText(line) }}</div>
             <div v-else>{{ lineText(line) }}</div>
           </template>
         </div>
@@ -84,7 +84,11 @@ const props = defineProps({
     type: String as PropType<string | null>,
     default: null
   },
-  details: {
+  nodeId: {
+    type: Number as PropType<number | null>,
+    default: null
+  },
+  inDetailsPage: {
     type: Boolean,
     default: false
   },
@@ -160,7 +164,11 @@ const lineText = (line: ComplexKeyLine): string => {
 }
 
 const adminKeyRoute = computed(() => {
-  return props.accountId ? routeManager.makeRouteToAdminKey(props.accountId) : null
+  return props.accountId !== null
+      ? routeManager.makeRouteToAdminKey(props.accountId)
+      : props.nodeId !== null
+          ? routeManager.makeRouteToNodeAdminKey(props.nodeId.toString())
+          : null
 })
 
 const initialLoading = inject(initialLoadingKey, ref(false))
