@@ -69,6 +69,8 @@ describe("NodeDetails.vue", () => {
         // console.log(wrapper.text())
 
         expect(wrapper.text()).toMatch(RegExp("Node " + node))
+
+        expect(wrapper.get("#adminKeyValue").text()).toBe("0xc67e3c4172e3eea8e4f45714240e453ab8702e7fc13d7ea58e523e6caeb8a38e" + "Copy" + "ED25519")
         expect(wrapper.get("#nodeAccountValue").text()).toBe("0.0.3")
         expect(wrapper.get("#descriptionValue").text()).toBe("Hosted by Hedera | East Coast, USA")
         expect(wrapper.get("#publicKeyValue").text()).toBe("0x308201a2300d0609CopyRSA")
@@ -151,4 +153,38 @@ describe("NodeDetails.vue", () => {
         await flushPromises()
     });
 
+    it("should display node details with complex admin-key and link", async () => {
+
+        await router.push("/") // To avoid "missing required param 'network'" error
+        const mock = new MockAdapter(axios as any);
+
+        const node = 2
+        const matcher1 = "api/v1/network/nodes"
+        mock.onGet(matcher1).reply(200, SAMPLE_NETWORK_NODES);
+
+        const matcher2 = "api/v1/network/stake"
+        mock.onGet(matcher2).reply(200, SAMPLE_NETWORK_STAKE);
+
+        const wrapper = mount(NodeDetails, {
+            global: {
+                plugins: [router, Oruga],
+                provide: {"isMediumScreen": false}
+            },
+            props: {
+                nodeId: node.toString()
+            }
+        });
+
+        await flushPromises()
+        // console.log(wrapper.html())
+        // console.log(wrapper.text())
+
+        expect(wrapper.text()).toMatch(RegExp("Node " + node))
+
+        expect(wrapper.get("#adminKeyValue").text()).toBe("Complex Key (6 levels) See details")
+
+        mock.restore()
+        wrapper.unmount()
+        await flushPromises()
+    });
 });
