@@ -129,7 +129,6 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
             "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
-            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
             "api/v1/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
@@ -137,6 +136,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
         ])
 
@@ -258,7 +258,6 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
             "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
-            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
             "api/v1/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/airdrops/pending",
@@ -266,6 +265,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/crypto",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
             "api/v1/accounts/" + SAMPLE_ACCOUNT.account + "/allowances/nfts",
         ])
 
@@ -458,7 +458,6 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
             "api/v1/tokens/" + SAMPLE_TOKEN.token_id,
-            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
             "api/v1/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/airdrops/pending",
@@ -466,6 +465,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/crypto",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_DELETED.account + "/allowances/nfts",
         ])
 
@@ -554,7 +554,6 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
             "api/v1/contracts/results/" + SAMPLE_FAILED_TRANSACTION.transaction_id,
-            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/nfts",
             "api/v1/accounts/",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
             "api/v1/tokens",
@@ -563,6 +562,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/crypto",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/nfts",
             "api/v1/blocks",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_NODE.account + "/allowances/nfts",
         ])
@@ -667,7 +667,6 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
             "api/v1/contracts/results/" + SAMPLE_FAILED_TRANSACTION.transaction_id,
-            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/nfts",
             "api/v1/accounts/",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
             "api/v1/tokens",
@@ -676,6 +675,7 @@ describe("AccountDetails.vue", () => {
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/crypto",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/tokens",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/nfts",
+            "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/nfts",
             "api/v1/blocks",
             "api/v1/accounts/" + SAMPLE_ACCOUNT_STAKING_ACCOUNT.account + "/allowances/nfts",
         ])
