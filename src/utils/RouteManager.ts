@@ -22,6 +22,7 @@ import Accounts from "@/pages/Accounts.vue";
 import AccountsWithKey from "@/pages/AccountsWithKey.vue";
 import AccountDetails from "@/pages/AccountDetails.vue";
 import AdminKeyDetails from "@/pages/AdminKeyDetails.vue";
+import NodeAdminKeyDetails from "@/pages/NodeAdminKeyDetails.vue";
 import AddressDetails from "@/pages/AddressDetails.vue";
 import Tokens from "@/pages/Tokens.vue";
 import TokenDetails from "@/pages/TokenDetails.vue";
@@ -268,6 +269,12 @@ export class RouteManager {
     public makeRouteToAdminKey(accountId: string): RouteLocationRaw {
         return {
             name: 'AdminKeyDetails', params: {accountId: accountId, network: this.currentNetwork.value}
+        }
+    }
+
+    public makeRouteToNodeAdminKey(nodeId: string): RouteLocationRaw {
+        return {
+            name: 'NodeAdminKeyDetails', params: {nodeId: nodeId, network: this.currentNetwork.value}
         }
     }
 
@@ -551,6 +558,9 @@ export class RouteManager {
             case "AdminKeyDetails":
                 document.title = titlePrefix + "Admin Key for Account " + to.params.accountId
                 break;
+            case "NodeAdminKeyDetails":
+                document.title = titlePrefix + "Admin Key for Node" + to.params.nodeId
+                break;
             case "NodeDetails":
                 document.title = titlePrefix + "Node " + to.params.nodeId
                 break;
@@ -802,6 +812,15 @@ const routes: Array<RouteRecordRaw> = [
         props: true,
         meta: {
             tabId: TabId.Accounts
+        }
+    },
+    {
+        path: '/:network/nodeAdminKey/:nodeId',
+        name: 'NodeAdminKeyDetails',
+        component: NodeAdminKeyDetails,
+        props: true,
+        meta: {
+            tabId: TabId.Nodes
         }
     },
     {
