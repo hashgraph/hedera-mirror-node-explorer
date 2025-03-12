@@ -45,7 +45,7 @@ export class NodeAnalyzer {
         } else if (typeof this.nodeLoc.value == "string") {
             result = null
             for (const node of this.networkAnalyzer.nodes.value) {
-                if (node.node_id.toString() == this.nodeLoc.value) {
+                if (node.node_account_id == this.nodeLoc.value) {
                     result = node
                     break
                 }

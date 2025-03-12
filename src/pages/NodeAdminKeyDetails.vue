@@ -58,12 +58,21 @@ const props = defineProps({
 // node
 //
 
-const nodeLocator = computed(() => props.nodeId ?? null)
-const nodeAnalyzer = new NodeAnalyzer(nodeLocator)
+const nodeId = computed(() => {
+  let result: number | null
+  if (props.nodeId !== null) {
+    const id = parseInt(props.nodeId)
+    result = isNaN(id) || id < 0 ? null : id
+  } else {
+    result = null
+  }
+  return result;
+})
+
+const nodeAnalyzer = new NodeAnalyzer(nodeId)
 onMounted(() => nodeAnalyzer.mount())
 onBeforeUnmount(() => nodeAnalyzer.unmount())
 
-const nodeId = nodeAnalyzer.nodeId
 const nodeKey = nodeAnalyzer.adminKey
 const nodeDescription = nodeAnalyzer.shortNodeDescription
 
