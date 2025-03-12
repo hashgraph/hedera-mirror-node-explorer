@@ -5,6 +5,7 @@ import {ComputedRef, Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class TokenBalanceTableController extends TableController<TokenDistribution, string> {
 
@@ -14,14 +15,14 @@ export class TokenBalanceTableController extends TableController<TokenDistributi
     // Public
     //
 
-    public constructor(router: Router, tokenId: ComputedRef<string | null>, pageSize: Ref<number>) {
+    public constructor(router: Router, tokenId: ComputedRef<string | null>, defaultPageSize: number) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
-            100
+            100,
+            AppStorage.TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY
         );
         this.tokenId = tokenId
         this.watchAndReload([this.tokenId, this.pageSize])

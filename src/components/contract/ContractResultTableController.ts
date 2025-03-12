@@ -5,6 +5,7 @@ import {ContractResult, ContractResultsResponse} from "@/schemas/MirrorNodeSchem
 import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class ContractResultTableController extends TableController<ContractResult, string> {
 
@@ -16,15 +17,15 @@ export class ContractResultTableController extends TableController<ContractResul
 
     public constructor(router: Router,
                        contractId: Ref<string | null>,
-                       pageSize: Ref<number>,
+                       defaultPageSize: number,
                        pageParamName = "p", keyParamName = "k") {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
             100,
+            AppStorage.RECENT_CALL_TABLE_PAGE_SIZE_KEY,
             pageParamName,
             keyParamName
         );

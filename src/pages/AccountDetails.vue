@@ -496,13 +496,13 @@ const filterVerified = ref(false)
 // Table controllers and cache for Recent Account Operations
 // These are mounted only when their respective table is mounted, i.e. when the corresponding tab is selected
 //
-const perPage = ref(isMediumScreen ? 10 : 5)
+const defaultPageSize = isMediumScreen ? 10 : 5
 const accountIdRef = accountLocParser.accountId
 
 const transactionTableController = new TransactionTableControllerXL(
     router,
     accountIdRef,
-    perPage,
+    defaultPageSize,
     true,
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
     "p1", "k1",
@@ -510,7 +510,7 @@ const transactionTableController = new TransactionTableControllerXL(
 
 const contractCreateTableController = new TransactionTableController(
     router,
-    perPage,
+    defaultPageSize,
     TransactionType.CONTRACTCREATEINSTANCE,
     "success",
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
@@ -519,14 +519,14 @@ const contractCreateTableController = new TransactionTableController(
 
 const verifiedContractsController = new VerifiedContractsController(
     VerifiedContractsByAccountIdCache.instance.makeLookup(accountIdRef),
-    perPage,
+    ref(defaultPageSize),
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY
 )
 
 const rewardsTableController = new StakingRewardsTableController(
     router,
     accountLocParser.accountId,
-    perPage,
+    defaultPageSize,
     AppStorage.ACCOUNT_OPERATION_TABLE_PAGE_SIZE_KEY,
     "p2", "k2")
 

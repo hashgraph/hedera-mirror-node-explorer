@@ -30,7 +30,7 @@
 
 <script setup lang="ts">
 
-import {computed, inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {computed, inject, onBeforeUnmount, onMounted} from 'vue';
 import router from "@/router";
 import {ContractResultTableController} from "@/components/contract/ContractResultTableController";
 import ContractResultTable from "@/components/contract/ContractResultTable.vue";
@@ -44,7 +44,7 @@ const props = defineProps({
 const isMediumScreen = inject('isMediumScreen', true)
 
 const computedContractId = computed(() => props.contractId ?? null)
-const perPage = ref(isMediumScreen ? 10 : 5)
+const defaultPageSize = isMediumScreen ? 10 : 5
 
 const showContractResults = computed(() => resultTableController.rows.value.length)
 
@@ -52,7 +52,7 @@ const showContractResults = computed(() => resultTableController.rows.value.leng
 // resultTableController
 //
 
-const resultTableController = new ContractResultTableController(router, computedContractId, perPage)
+const resultTableController = new ContractResultTableController(router, computedContractId, defaultPageSize)
 onMounted(() => resultTableController.mount())
 onBeforeUnmount(() => resultTableController.unmount())
 

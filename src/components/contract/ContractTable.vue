@@ -52,7 +52,6 @@
     <template v-slot:bottom-left>
       <TablePageSize
           v-model:size="perPage"
-          :storage-key="AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY"
       />
     </template>
   </o-table>

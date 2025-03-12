@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {Contract, ContractsResponse} from "@/schemas/MirrorNodeSchemas";
-import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class ContractTableController extends TableController<Contract, string> {
 
@@ -12,14 +12,14 @@ export class ContractTableController extends TableController<Contract, string> {
     // Public
     //
 
-    public constructor(router: Router, pageSize: Ref<number>) {
+    public constructor(router: Router, defaultPageSize: number) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
-            100
+            100,
+            AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY
         );
         this.watchAndReload([this.pageSize])
     }

@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 
-import {inject, onBeforeUnmount, onMounted, ref, watch} from 'vue';
+import {inject, onBeforeUnmount, onMounted, watch} from 'vue';
 import TopicTable from "@/components/topic/TopicTable.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
@@ -42,11 +42,11 @@ const props = defineProps({
 
 const isMediumScreen = inject('isMediumScreen', true)
 const router = useRouter()
-const pageSize = ref(isMediumScreen ? 15 : 5)
+const defaultPageSize = isMediumScreen ? 15 : 5
 
 const transactionTableController = new TransactionTableController(
     router,
-    pageSize,
+    defaultPageSize,
     TransactionType.CONSENSUSCREATETOPIC,
     TransactionResult.SUCCESS,
     AppStorage.TOPIC_TABLE_PAGE_SIZE_KEY

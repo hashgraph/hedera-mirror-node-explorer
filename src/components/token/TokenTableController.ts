@@ -5,6 +5,7 @@ import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class TokenTableController extends TableController<Token, string> {
 
@@ -14,15 +15,15 @@ export class TokenTableController extends TableController<Token, string> {
     // Public
     //
 
-    public constructor(router: Router, pageSize: Ref<number>, tokenType: Ref<string | null>,
+    public constructor(router: Router, defaultPageSize: number, tokenType: Ref<string | null>,
                        pageParamName: string, keyParamName: string) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             TableController.SLOW_REFRESH_COUNT,
             100,
+            AppStorage.TOKEN_TABLE_PAGE_SIZE_KEY,
             pageParamName,
             keyParamName
         );

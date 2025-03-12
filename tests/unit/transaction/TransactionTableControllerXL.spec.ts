@@ -4,7 +4,7 @@
 
 import {describe, expect, test} from 'vitest'
 import {RouteManager} from "@/utils/RouteManager";
-import {computed, ref} from "vue";
+import {ref} from "vue";
 import {TransactionTableControllerXL} from "@/components/transaction/TransactionTableControllerXL";
 import {flushPromises} from "@vue/test-utils";
 import MockAdapter from "axios-mock-adapter";
@@ -26,9 +26,8 @@ describe("TransactionTableController.ts", () => {
 
         const router = makeRouter()
         const accountId = ref<string | null>(null)
-        const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
+        const tc = new TransactionTableControllerXL(router, accountId, PAGE_SIZE, true, "testKey")
 
         // Just after construction
         expect(tc.pageSize.value).toBe(PAGE_SIZE)
@@ -85,9 +84,8 @@ describe("TransactionTableController.ts", () => {
 
         const router = makeRouter()
         const accountId = ref<string | null>(null)
-        const pageSize = computed(() => PAGE_SIZE)
 
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
+        const tc = new TransactionTableControllerXL(router, accountId, PAGE_SIZE, true, "testKey")
 
         // Preset p and k params in current route
         const TIMESTAMP0 = SAMPLE_CONTRACTCALL_TRANSACTIONS.transactions[0].consensus_timestamp
@@ -156,8 +154,7 @@ describe("TransactionTableController.ts", () => {
         // Setup controller
         const router = makeRouter()
         const accountId = ref<string | null>(null)
-        const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, true, "testKey")
+        const tc = new TransactionTableControllerXL(router, accountId, PAGE_SIZE, true, "testKey")
 
         // Preset p and k params in current route
         await tc.router.replace({query: {p: 10, k: TIMESTAMP0}})
@@ -223,8 +220,7 @@ describe("TransactionTableController.ts", () => {
 
         const router = makeRouter()
         const accountId = ref<string | null>(null)
-        const pageSize = computed(() => PAGE_SIZE)
-        const tc = new TransactionTableControllerXL(router, accountId, pageSize, false, "testKey")
+        const tc = new TransactionTableControllerXL(router, accountId, PAGE_SIZE, false, "testKey")
         const currentRoute = tc.router.currentRoute
 
         // Sanity checks

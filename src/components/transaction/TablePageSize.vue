@@ -27,42 +27,22 @@
 
 <script lang="ts" setup>
 
-import {onMounted, PropType, ref, watch} from "vue";
-import {AppStorage} from "@/AppStorage";
+import {ref, watch} from "vue";
 import SelectView from "@/elements/SelectView.vue";
 
 const props = defineProps({
   size: {
     type: Number,
     required: true
-  },
-  storageKey: {
-    type: String as PropType<string | null>,
-    default: null
   }
 })
 
 const emit = defineEmits(["update:size"])
 
-const defaultValue = props.size
 const selected = ref(props.size)
 watch(() => props.size, () => selected.value = props.size)
-onMounted(() => {
-  const preferred = props.storageKey ? AppStorage.getTablePageSize(props.storageKey) : null
-  if (preferred) {
-    selected.value = preferred
-    emit("update:size", preferred)
-  }
-})
 const onSelect = (value: number) => {
   selected.value = value
-  if (props.storageKey !== null) {
-    if (value != defaultValue) {
-      AppStorage.setTablePageSize(props.storageKey, value)
-    } else {
-      AppStorage.setTablePageSize(props.storageKey, null)
-    }
-  }
   emit("update:size", value)
 }
 

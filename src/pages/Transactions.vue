@@ -55,11 +55,10 @@ const router = useRouter()
 //
 
 const accountId: Ref<string | null> = ref(null)
-const pageSize = ref(15)
 const transactionTableController = new TransactionTableControllerXL(
     router,
     accountId,
-    pageSize,
+    15,
     false,
     AppStorage.TRANSACTION_TABLE_PAGE_SIZE_KEY
 )

@@ -5,6 +5,7 @@ import {TokenAllowance, TokenAllowancesResponse} from "@/schemas/MirrorNodeSchem
 import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class TokenAllowanceTableController extends TableController<TokenAllowance, string> {
 
@@ -17,10 +18,11 @@ export class TokenAllowanceTableController extends TableController<TokenAllowanc
     public constructor(
         router: Router,
         accountId: Ref<string | null>,
-        pageSize: Ref<number>,
+        defaultPageSize: number,
         pageParamName = "p", keyParamName = "k"
     ) {
-        super(router, pageSize, 10 * pageSize.value, 5000, 0, 100,
+        super(router, defaultPageSize, 5000, 0, 100,
+            AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY,
             pageParamName, keyParamName);
         this.accountId = accountId
         this.watchAndReload([this.accountId, this.pageSize])

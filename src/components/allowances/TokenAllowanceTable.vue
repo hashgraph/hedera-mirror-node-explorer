@@ -58,7 +58,6 @@
     <template v-slot:bottom-left>
       <TablePageSize
           v-model:size="perPage"
-          :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
       />
     </template>
 
@@ -67,7 +66,6 @@
   <TablePageSize
       v-if="!paginated && showPageSizeSelector"
       v-model:size="perPage"
-      :storage-key="AppStorage.ALLOWANCE_TABLE_PAGE_SIZE_KEY"
       style="width: 116px; margin-left: 4px"
   />
 

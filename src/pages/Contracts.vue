@@ -71,11 +71,11 @@ const filterVerified = ref(false)
 //
 // ContractTableController
 //
-const perPage = ref(isMediumScreen ? 15 : 10)
-const contractTableController = new ContractTableController(useRouter(), perPage)
+const defaultPageSize = isMediumScreen ? 15 : 10
+const contractTableController = new ContractTableController(useRouter(), defaultPageSize)
 const verifiedContractsController = new VerifiedContractsController(
     VerifiedContractsCache.instance.makeLookup(),
-    perPage,
+    ref(defaultPageSize),
     AppStorage.CONTRACT_TABLE_PAGE_SIZE_KEY
 )
 const loaded = verifiedContractsController.loaded

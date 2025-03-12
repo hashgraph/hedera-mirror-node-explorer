@@ -31,7 +31,7 @@
 
 <script setup lang="ts">
 
-import {inject, onBeforeUnmount, onMounted, ref} from 'vue';
+import {inject, onBeforeUnmount, onMounted} from 'vue';
 import AccountTable from "@/components/account/AccountTable.vue";
 import PageFrameV2 from "@/components/page/PageFrameV2.vue";
 import {AccountTableController} from "@/components/account/AccountTableController";
@@ -49,8 +49,8 @@ const isMediumScreen = inject('isMediumScreen', true)
 //
 // AccountTableController
 //
-const perPage = ref(isMediumScreen ? 15 : 10)
-const accountTableController = new AccountTableController(useRouter(), perPage, props.pubKey ?? null)
+const defaultPageSize = isMediumScreen ? 15 : 10
+const accountTableController = new AccountTableController(useRouter(), defaultPageSize, props.pubKey ?? null)
 onMounted(() => accountTableController.mount())
 onBeforeUnmount(() => accountTableController.unmount())
 

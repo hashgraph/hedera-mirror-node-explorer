@@ -6,6 +6,7 @@ import axios from "axios";
 import {getNonStrictOperator, KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
 import {TransactionTableController} from "@/components/transaction/TransactionTableController";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class NftsTableController extends TableController<Nft, string> {
 
@@ -18,17 +19,17 @@ export class NftsTableController extends TableController<Nft, string> {
     public constructor(
         router: Router,
         accountId: Ref<string | null>,
-        pageSize: Ref<number>,
+        defaultPageSize: number,
         pageParamName = "p",
         keyParamName = "k"
     ) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.SLOW_REFRESH_PERIOD,
             0,
             100,
+            AppStorage.ACCOUNT_TOKENS_TABLE_PAGE_SIZE_KEY,
             pageParamName, keyParamName
         )
         this.accountId = accountId

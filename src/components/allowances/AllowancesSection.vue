@@ -174,7 +174,7 @@ watch(selectApprovedForAll, (value) => {
   value ? nftAllSerialsAllowanceTableController.refresh() : nftAllowanceTableController.refresh()
 })
 
-const perPage = ref(isMediumScreen ? 10 : 5)
+const defaultPageSize = isMediumScreen ? 10 : 5
 
 const currentHbarAllowance = ref<CryptoAllowance | null>(null)
 const currentTokenAllowance = ref<TokenAllowance | null>(null)
@@ -217,7 +217,7 @@ const currentNftSerialNumber = computed(() => {
 const hbarAllowanceTableController = new HbarAllowanceTableController(
     router,
     computedAccountId,
-    perPage,
+    defaultPageSize,
     "ph", "kh"
 )
 onMounted(() => hbarAllowanceTableController.mount())
@@ -229,7 +229,7 @@ onBeforeUnmount(() => hbarAllowanceTableController.unmount())
 const tokenAllowanceTableController = new TokenAllowanceTableController(
     router,
     computedAccountId,
-    perPage,
+    defaultPageSize,
     "pt", "kt"
 )
 onMounted(() => tokenAllowanceTableController.mount())
@@ -241,13 +241,13 @@ onBeforeUnmount(() => tokenAllowanceTableController.unmount())
 const nftAllowanceTableController = new NftAllowanceTableController(
     router,
     computedAccountId,
-    perPage,
+    defaultPageSize,
     "pn", "kn"
 )
 const nftAllSerialsAllowanceTableController = new NftAllSerialsAllowanceTableController(
     router,
     computedAccountId,
-    perPage,
+    defaultPageSize,
     "pc", "kc"
 )
 onMounted(() => {

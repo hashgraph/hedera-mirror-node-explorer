@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import {Block, BlocksResponse} from "@/schemas/MirrorNodeSchemas";
-import {Ref} from "vue";
 import axios, {AxiosResponse} from "axios";
 import {KeyOperator, SortOrder, TableController} from "@/utils/table/TableController";
 import {Router} from "vue-router";
+import {AppStorage} from "@/AppStorage.ts";
 
 export class BlockTableController extends TableController<Block, number> {
 
@@ -12,14 +12,14 @@ export class BlockTableController extends TableController<Block, number> {
     // Public
     //
 
-    public constructor(router: Router, pageSize: Ref<number>) {
+    public constructor(router: Router, defaultPageSize: number) {
         super(
             router,
-            pageSize,
-            10 * pageSize.value,
+            defaultPageSize,
             TableController.FAST_REFRESH_PERIOD,
             TableController.FAST_REFRESH_COUNT,
-            100
+            100,
+            AppStorage.BLOCK_TABLE_PAGE_SIZE_KEY
         );
         this.watchAndReload([this.pageSize])
     }

@@ -90,6 +90,7 @@ export class AppStorage {
     public static readonly TOKEN_TABLE_PAGE_SIZE_KEY = 'tokenPageSize'
     public static readonly TOKEN_BALANCE_TABLE_PAGE_SIZE_KEY = 'tokenBalancePageSize'
     public static readonly NFT_HOLDER_TABLE_PAGE_SIZE_KEY = 'nftHolderPageSize'
+    public static readonly NFT_TRANSACTION_TABLE_PAGE_SIZE_KEY = 'nftTransactionTablePageSize'
 
     public static readonly TOPIC_TABLE_PAGE_SIZE_KEY = 'topicPageSize'
     public static readonly TOPIC_MESSAGE_TABLE_PAGE_SIZE_KEY = 'topicMessagePageSize'
