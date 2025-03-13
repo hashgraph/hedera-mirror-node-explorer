@@ -78,12 +78,12 @@ const props = defineProps({
   }
 })
 
-const fees = props.analyzer?.customFees
-const hasFixedFees = props.analyzer?.hasFixedFees
-const fixedFees = props.analyzer?.fixedFees
-const hasFractionalFees = props.analyzer?.hasFractionalFees
-const hasRoyaltyFees = props.analyzer?.hasRoyaltyFees
-const isFungible = props.analyzer?.isFungible
+const fees = props.analyzer.customFees
+const hasFixedFees = props.analyzer.hasFixedFees
+const fixedFees = props.analyzer.fixedFees
+const hasFractionalFees = props.analyzer.hasFractionalFees
+const hasRoyaltyFees = props.analyzer.hasRoyaltyFees
+const isFungible = props.analyzer.isFungible
 
 </script>
 
