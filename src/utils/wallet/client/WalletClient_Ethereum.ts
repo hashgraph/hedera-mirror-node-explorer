@@ -107,7 +107,7 @@ export class WalletClient_Ethereum extends WalletClient {
 
 
     public async callContract(contractId: string, functionData: string): Promise<ContractResultDetails | string> {
-        throw "to be implemented"
+        return this.executeCall(contractId, functionData)
     }
 
     //
