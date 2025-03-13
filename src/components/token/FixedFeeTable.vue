@@ -39,24 +39,24 @@
 
 <script setup lang="ts">
 
-import {PropType} from 'vue';
+import {computed, PropType} from 'vue';
 import AccountLink from "@/components/values/link/AccountLink.vue";
 import TokenLink from "@/components/values/link/TokenLink.vue";
 import {ORUGA_MOBILE_BREAKPOINT} from "@/BreakPoints";
-import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import HbarAmount from "@/components/values/HbarAmount.vue";
 import PlainAmount from "@/components/values/PlainAmount.vue";
 import {CoreConfig} from "@/config/CoreConfig.ts";
+import {FixedCustomFee, FixedFee} from "@/schemas/MirrorNodeSchemas.ts";
 
 const props = defineProps({
-  analyzer: {
-    type: Object as PropType<TokenInfoAnalyzer>,
+  fees: {
+    type: Object as PropType<FixedFee[] | FixedCustomFee[] | null>,
     required: true
   }
 })
 
 const cryptoName = CoreConfig.inject().cryptoName
-const fees = props.analyzer.fixedFees
+const fees = computed(() => props.fees ?? [])
 
 </script>
 

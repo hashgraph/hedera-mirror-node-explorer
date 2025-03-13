@@ -23,7 +23,7 @@
       <Property id="fixedFee" full-width>
         <template #name>Fixed Fees</template>
         <template v-if="hasFixedFees" #value>
-          <FixedFeeTable :analyzer="analyzer"/>
+          <FixedFeeTable :fees="fixedFees ?? null"/>
         </template>
         <template v-else #value>
           <span class="h-is-low-contrast">None</span>
@@ -80,6 +80,7 @@ const props = defineProps({
 
 const fees = props.analyzer?.customFees
 const hasFixedFees = props.analyzer?.hasFixedFees
+const fixedFees = props.analyzer?.fixedFees
 const hasFractionalFees = props.analyzer?.hasFractionalFees
 const hasRoyaltyFees = props.analyzer?.hasRoyaltyFees
 const isFungible = props.analyzer?.isFungible
