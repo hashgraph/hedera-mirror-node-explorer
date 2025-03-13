@@ -75,11 +75,33 @@
             <KeyValue :key-bytes="topic?.submit_key?.key" :key-type="topic?.submit_key?._type" :show-none="true"/>
           </template>
         </Property>
+        <Property v-if="topic?.fee_schedule_key" id="fee-schedule-key" full-width>
+          <template #name>Fee Schedule Key</template>
+          <template #value>
+            <KeyValue :key-bytes="topic?.fee_schedule_key?.key" :key-type="topic?.fee_schedule_key?._type"
+                      :show-none="true"/>
+          </template>
+        </Property>
+        <Property v-if="hasExemptList" id="fee-exempt-key-list" full-width>
+          <template #name>Fee Exempt Key List</template>
+          <template #value>
+            <div class="exempt-list">
+              <KeyValue
+                  v-for="k in topic?.fee_exempt_key_list ?? []"
+                  :key-bytes="k.key"
+                  :key-type="k._type"
+                  :show-none="true"
+              />
+            </div>
+          </template>
+        </Property>
 
       </template>
     </DashboardCardV2>
 
     <HCSContentSection v-if="isHcs1Topic" :topic-memo="hcs1Memo" :hcs1-asset="hcs1Asset"/>
+
+    <TopicFeesSection v-if="customFees" :fees="customFees"/>
 
     <DashboardCardV2 collapsible-key="topicMessages">
 
@@ -130,6 +152,7 @@ import {HCSAssetCache} from "@/utils/cache/HCSAssetCache.ts";
 import HCSContentSection from "@/components/topic/HCSContentSection.vue";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
 import PlayPauseButton from "@/components/PlayPauseButton.vue";
+import TopicFeesSection from "@/components/topic/TopicFeesSection.vue";
 
 const props = defineProps({
   topicId: {
@@ -202,6 +225,12 @@ onMounted(() => assetLookup.mount())
 onBeforeUnmount(() => assetLookup.unmount())
 const hcs1Asset = assetLookup.entity
 
+//
+// Custom fees
+//
+const customFees = computed(() => topic.value?.custom_fees ?? null)
+const hasExemptList = computed(() => topic.value?.fee_exempt_key_list && topic.value.fee_exempt_key_list.length > 0)
+
 </script>
 
 <!-- --------------------------------------------------------------------------------------------------------------- -->
@@ -209,5 +238,11 @@ const hcs1Asset = assetLookup.entity
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
 <style scoped>
+
+.exempt-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px
+}
 
 </style>
