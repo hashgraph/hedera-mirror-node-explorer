@@ -11,8 +11,8 @@
 # NOTE: Must be placed last to ensure enforcement over all other rules
 
 # Protection Rules for Github Configuration Files and Actions Workflows
-/.github/                                       @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers
-/.github/workflows/                             @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering-managers
+/.github/                                       @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers
+/.github/workflows/                             @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering-managers
 
 # Self-protection for root CODEOWNERS files (this file should not exist and should definitely require approval)
 /CODEOWNERS                                      @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
@@ -26,8 +26,8 @@
 **/.gitignore.*                                 @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
 
 # Docker
-/chart/                                         @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
-/sourcify-setup/                                @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
-**/.env.docker                                  @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
-**/.dockerignore                                @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
-**/nginx-docker.conf                            @hashgraph/platform-ci @hashgraph/platform-ci-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+/chart/                                         @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+/sourcify-setup/                                @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/.env.docker                                  @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/.dockerignore                                @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot
+**/nginx-docker.conf                            @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hashgraph/release-engineering @hashgraph/release-engineering-managers @ericleponner @svienot

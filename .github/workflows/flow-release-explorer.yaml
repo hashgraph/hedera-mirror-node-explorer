@@ -20,7 +20,7 @@ permissions:
 jobs:
   prepare-release:
     name: Release / Prepare
-    runs-on: mirror-node-linux-medium
+    runs-on: hiero-mirror-node-linux-medium
     outputs:
       version: ${{ steps.release.outputs.version }}
     steps:
@@ -77,7 +77,7 @@ jobs:
 
   finalize-release:
     name: Release / Finalize
-    runs-on: mirror-node-linux-medium
+    runs-on: hiero-mirror-node-linux-medium
     needs:
       - publish-container
       - publish-chart
