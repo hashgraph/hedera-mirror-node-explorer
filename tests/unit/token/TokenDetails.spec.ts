@@ -627,7 +627,7 @@ describe("TokenDetails.vue", () => {
 
         const fractionalFee = customFees.findComponent(FractionalFeeTable)
         expect(fractionalFee.exists()).toBe(true)
-        expect(fractionalFee.get('thead').text()).toBe("FRACTIONAL_FEE FEE CURRENCY COLLECTOR ACCOUNT MIN MAX NET")
+        expect(fractionalFee.get('thead').text()).toBe("FRACTIONAL FEE FEE CURRENCY COLLECTOR ACCOUNT MIN MAX NET")
         expect(fractionalFee.get('tbody').text()).toBe(
             "0.5%" + "0.0.2966295623423" + "0.0.617888" + "0.01" + "2" + "✓" +
             "0.1%" + "0.0.2966295623423" + "0.0.617889" + "0.01" + "2" +

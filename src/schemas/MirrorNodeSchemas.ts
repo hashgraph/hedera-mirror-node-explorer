@@ -378,41 +378,44 @@ export interface TokenInfo {
 }
 
 export interface CustomFees {
-    created_timestamp: string | undefined
-    fixed_fees: FixedFee[] | undefined                    // Network entity ID in the format of shard.realm.num
-    fractional_fees: FractionalFee[] | undefined
-    royalty_fees: RoyaltyFee[] | null | undefined             // Network entity ID in the format of shard.realm.num
+    created_timestamp: string
+    fixed_fees: FixedFee[]                       // Always present
+    fractional_fees: FractionalFee[] | undefined // Present when FUNGIBLE
+    royalty_fees: RoyaltyFee[] | undefined       // Present when NON_FUNGIBLE
 }
 
 export interface FixedFee {
-    amount: number | undefined
-    collector_account_id: string | undefined            // Network entity ID in the format of shard.realm.num
-    denominating_token_id: string | undefined           // Network entity ID in the format of shard.realm.num
+    all_collectors_are_exempt: boolean
+    amount: number
+    collector_account_id: string | null          // Network entity ID in the format of shard.realm.num
+    denominating_token_id: string | null         // Network entity ID in the format of shard.realm.num
 }
 
 export interface FractionalFee {
-    amount: FractionAmount | undefined
-    collector_account_id: string | undefined            // Network entity ID in the format of shard.realm.num
-    denominating_token_id: string | undefined           // Network entity ID in the format of shard.realm.num
-    maximum: number | undefined
-    mininum: number | undefined
-    net_of_transfers: boolean | undefined
+    all_collectors_are_exempt: boolean
+    amount: FractionAmount
+    collector_account_id: string | null          // Network entity ID in the format of shard.realm.num
+    denominating_token_id: string | null         // Network entity ID in the format of shard.realm.num
+    maximum: number | null
+    minimum: number
+    net_of_transfers: boolean
 }
 
 export interface RoyaltyFee {
-    amount: FractionAmount | undefined
-    collector_account_id: string | undefined            // Network entity ID in the format of shard.realm.num
-    fallback_fee: FallbackFee | undefined              // Network entity ID in the format of shard.realm.num
+    all_collectors_are_exempt: boolean
+    amount: FractionAmount
+    collector_account_id: string | null          // Network entity ID in the format of shard.realm.num
+    fallback_fee: FallbackFee                    // Network entity ID in the format of shard.realm.num
 }
 
 export interface FallbackFee {
-    amount: number | undefined
-    denominating_token_id: string | undefined           // Network entity ID in the format of shard.realm.num
+    amount: number
+    denominating_token_id: string | null         // Network entity ID in the format of shard.realm.num
 }
 
 export interface FractionAmount {
-    numerator: number | undefined
-    denominator: number | undefined
+    numerator: number
+    denominator: number
 }
 
 export interface TokenBalancesResponse {
@@ -474,11 +477,25 @@ export interface Topic {
     auto_renew_account: string | null // Network entity ID in the format of shard.realm.num
     auto_renew_period: number | null
     created_timestamp: string | null
+    custom_fees: ConsensusCustomFees
     deleted: boolean | null
+    fee_exempt_key_list: Key[]
+    fee_schedule_key: Key | null
     memo: string
     submit_key: Key | null
     timestamp: TimestampRange   // timestamp range the entity is valid for
     topic_id: string | null // Network entity ID in the format of shard.realm.num
+}
+
+export interface ConsensusCustomFees {
+    created_timestamp: string
+    fixed_fees: FixedCustomFee[]
+}
+
+export interface FixedCustomFee {
+    amount: number
+    collector_account_id: string | null
+    denominating_token_id: string | null
 }
 
 // ---------------------------------------------------------------------------------------------------------------------

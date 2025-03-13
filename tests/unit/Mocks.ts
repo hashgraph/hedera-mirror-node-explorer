@@ -3290,6 +3290,50 @@ export const SAMPLE_DELETED_TOPIC = {
 }
 
 //
+// https://testnet.mirrornode.hedera.com/api/v1/topics/0.0.5707211
+//
+
+export const SAMPLE_TOPIC_WITH_CUSTOM_FEES = {
+    "admin_key": {"_type": "ED25519", "key": "a517d32585344b4f97429b71ced2b1a80991fb2a2b7afa6878adb04000909c54"},
+    "auto_renew_account": "0.0.4736212",
+    "auto_renew_period": 7776000,
+    "created_timestamp": "1741758402.192668771",
+    "custom_fees": {
+        "created_timestamp": "1741758408.472996923",
+        "fixed_fees": [
+            {
+                "amount": 3,
+                "collector_account_id": "0.0.4736212",
+                "denominating_token_id": "0.0.5707212"
+            },
+            {
+                "amount": 4,
+                "collector_account_id": "0.0.4736212",
+                "denominating_token_id": "0.0.5707213"
+            }
+        ]
+    },
+    "deleted": false,
+    "fee_exempt_key_list": [
+        {
+            "_type": "ECDSA_SECP256K1",
+            "key": "022759f5dcaba76d2c6cad9766643fd9bb3fce2ae6eda25afdae8bbef5badb4e95"
+        },
+        {
+            "_type": "ECDSA_SECP256K1", "key": "03b6902642e758d03e35f1b9aff9048ee0448476d134478d3f02be35a6c639b3ed"
+        }
+    ],
+    "fee_schedule_key": {
+        "_type": "ECDSA_SECP256K1",
+        "key": "021ef47310b559d5b6502239e021acc618a55f96f03b6664eb22e36583e4063a7d"
+    },
+    "memo": "",
+    "submit_key": {"_type": "ED25519", "key": "a517d32585344b4f97429b71ced2b1a80991fb2a2b7afa6878adb04000909c54"},
+    "timestamp": {"from": "1741758408.472996923", "to": null},
+    "topic_id": "0.0.5707211"
+}
+
+//
 // https://mainnet-public.mirrornode.hedera.com/api/v1/topics/0.0.642394/messages
 //
 
