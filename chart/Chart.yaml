@@ -1,8 +1,8 @@
-name: hedera-explorer-chart
+name: hiero-explorer-chart
 apiVersion: v2
 version: 0.0.1
 appVersion: 0.0.1
-description: Hedera Mirror Node Explorer for the Hedera Hashgraph DLT
-home: https://github.com/hashgraph/hedera-mirror-node-explorer
+description: Hiero Mirror Node Explorer for the Hiero Ledger DLT
+home: https://github.com/hiero-ledger/hiero-mirror-node-explorer
 sources:
-  - https://github.com/hashgraph/hedera-mirror-node-explorer
+  - https://github.com/hiero-ledger/hiero-mirror-node-explorer

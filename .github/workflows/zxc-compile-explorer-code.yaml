@@ -12,11 +12,6 @@ on:
         type: boolean
         required: false
         default: false
-      enable-sonar-analysis:
-        description: "Sonar Analysis Enabled"
-        type: boolean
-        required: false
-        default: false
       custom-job-label:
         description: "Custom Job Label:"
         type: string
@@ -27,9 +22,6 @@ on:
       access-token:
         description: "The Github access token used to checkout the repository, submodules, and make GitHub API calls."
         required: true
-      sonar-token:
-        description: "The SonarCloud access token used by the SonarQube agent to report an analysis."
-        required: false
 
 defaults:
   run:
@@ -108,10 +100,3 @@ jobs:
           browser: chrome
           start: npm run dev
           spec: tests/e2e/specs/*
-
-      - name: Sonar Analysis
-        uses: sonarsource/sonarcloud-github-action@383f7e52eae3ab0510c3cb0e7d9d150bbaeab838 # v3.1.0
-        if: ${{ inputs.enable-sonar-analysis && !cancelled() }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.access-token }}
-          SONAR_TOKEN: ${{ secrets.sonar-token }}
