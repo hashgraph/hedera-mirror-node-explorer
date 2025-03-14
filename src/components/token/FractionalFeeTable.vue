@@ -14,7 +14,7 @@
       :striped="false"
   >
 
-    <o-table-column v-slot="props" field="amount" label="FRACTIONAL_FEE">
+    <o-table-column v-slot="props" field="amount" label="FRACTIONAL FEE">
       <StringValue :string-value="makeAmount(props.row.amount)"/>
     </o-table-column>
 

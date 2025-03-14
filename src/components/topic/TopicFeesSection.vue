@@ -6,47 +6,24 @@
 
 <template>
 
-  <DashboardCardV2 collapsible-key="customFees">
+  <DashboardCardV2 v-if="hasFixedFees" collapsible-key="customFees">
 
     <template #title>
       Custom Fees
     </template>
 
     <template #content>
-      <Property id="customFeeCreatedAt" full-width>
+      <Property id="custom-fee-created-at" full-width>
         <template #name>Created at</template>
         <template #value>
-          <TimestampValue :nano="true" :show-none="true" :timestamp="fees?.created_timestamp?.toString()"/>
+          <TimestampValue :nano="true" :show-none="true" :timestamp="props.fees.created_timestamp"/>
         </template>
       </Property>
 
       <Property id="fixedFee" full-width>
         <template #name>Fixed Fees</template>
-        <template v-if="hasFixedFees" #value>
-          <FixedFeeTable :fees="fixedFees ?? null"/>
-        </template>
-        <template v-else #value>
-          <span class="h-is-low-contrast">None</span>
-        </template>
-      </Property>
-
-      <Property v-if="isFungible" id="fractionalFee" full-width>
-        <template #name>Fractional Fees</template>
-        <template v-if="hasFractionalFees" #value>
-          <FractionalFeeTable :analyzer="analyzer"/>
-        </template>
-        <template v-else #value>
-          <span class="h-is-low-contrast">None</span>
-        </template>
-      </Property>
-
-      <Property v-else id="royalteeFee" full-width>
-        <template #name>Percentage & Fallback Fees</template>
-        <template v-if="hasRoyaltyFees" #value>
-          <RoyaltyFeeTable :analyzer="analyzer"/>
-        </template>
-        <template v-else #value>
-          <span class="h-is-low-contrast">None</span>
+        <template #value>
+          <FixedFeeTable :fees="props.fees.fixed_fees ?? []"/>
         </template>
       </Property>
 
@@ -62,28 +39,21 @@
 
 <script setup lang="ts">
 
-import {PropType} from 'vue';
+import {computed, PropType} from 'vue';
 import TimestampValue from "@/components/values/TimestampValue.vue";
 import Property from "@/components/Property.vue";
 import FixedFeeTable from "@/components/token/FixedFeeTable.vue";
-import FractionalFeeTable from "@/components/token/FractionalFeeTable.vue";
-import RoyaltyFeeTable from "@/components/token/RoyaltyFeeTable.vue";
-import {TokenInfoAnalyzer} from "@/components/token/TokenInfoAnalyzer";
 import DashboardCardV2 from "@/components/DashboardCardV2.vue";
+import {ConsensusCustomFees} from "@/schemas/MirrorNodeSchemas.ts";
 
 const props = defineProps({
-  analyzer: {
-    type: Object as PropType<TokenInfoAnalyzer>,
+  fees: {
+    type: Object as PropType<ConsensusCustomFees>,
     required: true
   }
 })
 
-const fees = props.analyzer.customFees
-const hasFixedFees = props.analyzer.hasFixedFees
-const fixedFees = props.analyzer.fixedFees
-const hasFractionalFees = props.analyzer.hasFractionalFees
-const hasRoyaltyFees = props.analyzer.hasRoyaltyFees
-const isFungible = props.analyzer.isFungible
+const hasFixedFees = computed(() => props.fees.fixed_fees.length > 0)
 
 </script>
 
@@ -91,5 +61,4 @@ const isFungible = props.analyzer.isFungible
 <!--                                                       STYLE                                                     -->
 <!-- --------------------------------------------------------------------------------------------------------------- -->
 
-<style>
-</style>
+<style/>
