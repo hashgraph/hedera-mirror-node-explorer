@@ -31,3 +31,6 @@
 **/.env.docker                                  @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hiero-ledger/hiero-mirror-node-explorer-maintainers
 **/.dockerignore                                @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hiero-ledger/hiero-mirror-node-explorer-maintainers
 **/nginx-docker.conf                            @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hiero-ledger/hiero-mirror-node-explorer-maintainers
+**/docker-compose.yml                           @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hiero-ledger/hiero-mirror-node-explorer-maintainers
+**/package.json                                 @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hiero-ledger/hiero-mirror-node-explorer-maintainers
+**/sonar-project.properties                     @hiero-ledger/github-maintainers @hiero-ledger/github-committers @hiero-ledger/hiero-mirror-node-explorer-maintainers
