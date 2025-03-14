@@ -86,14 +86,6 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Authenticate to Google Cloud
-        id: google-auth
-        uses: google-github-actions/auth@71f986410dfbc7added4569d411d040a91dc6935 # v2.1.8
-        with:
-          workload_identity_provider: 'projects/101730247931/locations/global/workloadIdentityPools/hedera-registry-pool/providers/hedera-registry-gh-actions'
-          service_account: 'swirlds-automation@hedera-registry.iam.gserviceaccount.com'
-          token_format: access_token
-
       - name: Setup Docker Buildx QEMU
         uses: docker/setup-qemu-action@29109295f81e9208d7d86ff1c6c12d2833863392 # v3.6.0
 
@@ -105,14 +97,6 @@ jobs:
           buildkitd-config-inline: |
             [registry."docker.io"]
               mirrors = ["https://hub.mirror.docker.lat.ope.eng.hashgraph.io"]
-
-      - name: Authorize Docker
-        uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
-        if: ${{ inputs.dry-run-enabled != true }}
-        with:
-          registry: gcr.io
-          username: oauth2accesstoken
-          password: ${{ steps.google-auth.outputs.access_token }}
 
       - name: Authorize Docker
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
@@ -142,38 +126,25 @@ jobs:
             linux/arm64
             linux/amd64
           tags: |
-            gcr.io/hedera-registry/hedera-mirror-node-explorer:${{ inputs.new-version }}
-            gcr.io/hedera-registry/hedera-mirror-node-explorer:latest
-            ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer:${{ inputs.new-version }}
-            ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer:latest
+            ghcr.io/hiero-ledger/hiero-mirror-node-explorer/hiero-explorer:${{ inputs.new-version }}
+            ghcr.io/hiero-ledger/hiero-mirror-node-explorer/hiero-explorer:latest
 
       - name: Render Job Summary
         run: |
           printf "### Published Docker Images\n" >> "${GITHUB_STEP_SUMMARY}"
           printf "| Image Name | Version | URL | Supported Architectures |\n" >> "${GITHUB_STEP_SUMMARY}"
-          printf "| ---------- | ------- | --- | ----------------------- |\n" >> "${GITHUB_STEP_SUMMARY}"
+          printf "| ---------- | ------- | --- | ----------------------- |\n" >> "${GITHUB_STEP_SUMMARY}"       
+          
           printf "| %s | %s | %s | %s |\n" \
-            "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
+            "ghcr.io/hiero-ledger/hiero-mirror-node-explorer/hiero-explorer" \
             "${{ inputs.new-version }}" \
-            "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
+            "[Github Console](https://github.com/hiero-ledger/hiero-mirror-node-explorer/pkgs/container/hiero-mirror-node-explorer%2Fhiero-explorer)" \
             "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"          
           
           printf "| %s | %s | %s | %s |\n" \
-            "gcr.io/hedera-regsitry/hedera-mirror-node-explorer" \
+            "ghcr.io/hiero-ledger/hiero-mirror-node-explorer/hiero-explorer" \
             "latest" \
-            "[GCP Console](https://console.cloud.google.com/gcr/images/hedera-registry/global/hedera-mirror-node-explorer?project=hedera-registry)" \
-            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
-          
-          printf "| %s | %s | %s | %s |\n" \
-            "ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer" \
-            "${{ inputs.new-version }}" \
-            "[Github Console](https://github.com/hashgraph/hedera-mirror-node-explorer/pkgs/container/hedera-mirror-node-explorer%2Fhedera-explorer)" \
-            "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"          
-          
-          printf "| %s | %s | %s | %s |\n" \
-            "ghcr.io/hashgraph/hedera-mirror-node-explorer/hedera-explorer" \
-            "latest" \
-            "[Github Console](https://github.com/hashgraph/hedera-mirror-node-explorer/pkgs/container/hedera-mirror-node-explorer%2Fhedera-explorer)" \
+            "[Github Console](https://github.com/hiero-ledger/hiero-mirror-node-explorer/pkgs/container/hiero-mirror-node-explorer%2Fhiero-explorer)" \
             "linux/amd64, linux/arm64" >> "${GITHUB_STEP_SUMMARY}"
 
           printf "\n\n" >> "${GITHUB_STEP_SUMMARY}"

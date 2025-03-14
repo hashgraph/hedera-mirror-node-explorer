@@ -67,4 +67,4 @@ jobs:
 
       - name: Push Helm Chart
         if: ${{ inputs.dry-run-enabled != true }}
-        run: helm push hedera-explorer-chart-${{ inputs.new-version }}.tgz oci://ghcr.io/hashgraph/hedera-mirror-node-explorer
+        run: helm push hiero-explorer-chart-${{ inputs.new-version }}.tgz oci://ghcr.io/hiero-ledger/hiero-mirror-node-explorer

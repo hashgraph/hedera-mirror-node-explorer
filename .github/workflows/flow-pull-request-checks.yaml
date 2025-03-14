@@ -45,13 +45,3 @@ jobs:
       enable-e2e-tests: true
     secrets:
       access-token: ${{ secrets.GITHUB_TOKEN }}
-
-  sonar-analysis:
-    name: Sonar Analysis
-    uses: ./.github/workflows/zxc-compile-explorer-code.yaml
-    with:
-      custom-job-label: Standard
-      enable-sonar-analysis: true
-    secrets:
-      access-token: ${{ secrets.GITHUB_TOKEN }}
-      sonar-token: ${{ secrets.SONAR_TOKEN }}
